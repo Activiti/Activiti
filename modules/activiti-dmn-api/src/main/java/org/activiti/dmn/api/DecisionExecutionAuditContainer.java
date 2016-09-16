@@ -173,19 +173,19 @@ public class DecisionExecutionAuditContainer {
   }
 
   public static boolean isBoolean(Object obj) {
-    return obj != null && obj instanceof Boolean;
+    return obj instanceof Boolean;
   }
 
   public static boolean isDate(Object obj) {
-    return obj != null && (obj instanceof Date || obj instanceof DateTime);
+    return (obj instanceof Date || obj instanceof DateTime);
   }
 
   public static boolean isString(Object obj) {
-    return obj != null && obj instanceof String;
+    return obj instanceof String;
   }
 
   public static boolean isNumber(Object obj) {
-    return obj != null && obj instanceof Number;
+    return obj instanceof Number;
   }
 
   protected Map<String, Object> createDefensiveCopyInputVariables(Map<String, Object> inputVariables) {

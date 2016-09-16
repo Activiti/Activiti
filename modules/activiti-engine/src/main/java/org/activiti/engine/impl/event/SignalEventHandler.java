@@ -55,7 +55,7 @@ public class SignalEventHandler extends AbstractEventHandler {
       
       // Start process instance via that flow element
       Map<String, Object> variables = null;
-      if (payload != null && payload instanceof Map) {
+      if (payload instanceof Map) {
         variables = (Map<String, Object>) payload;
       }
       ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();

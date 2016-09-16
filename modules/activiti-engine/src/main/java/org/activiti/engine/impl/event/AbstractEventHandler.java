@@ -84,7 +84,7 @@ public abstract class AbstractEventHandler implements EventHandler {
 
     // activity with message/signal boundary events
     FlowElement flowElement = execution.getCurrentFlowElement();
-    if (flowElement != null && flowElement instanceof BoundaryEvent) {
+    if (flowElement instanceof BoundaryEvent) {
       BoundaryEvent boundaryEvent = (BoundaryEvent) flowElement;
       if (boundaryEvent.getAttachedToRef() != null) {
         dispatchActivityCancelled(eventSubscription, execution, boundaryEvent.getAttachedToRef(), commandContext);

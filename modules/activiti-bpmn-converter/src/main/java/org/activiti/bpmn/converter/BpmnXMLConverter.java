@@ -471,7 +471,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       } else if (flowElement instanceof BoundaryEvent) {
         BoundaryEvent boundaryEvent = (BoundaryEvent) flowElement;
         FlowElement attachedToElement = getFlowNodeFromScope(boundaryEvent.getAttachedToRefId(), parentScope);
-        if (attachedToElement != null && attachedToElement instanceof Activity) {
+        if (attachedToElement instanceof Activity) {
           Activity attachedActivity = (Activity) attachedToElement;
           boundaryEvent.setAttachedToRef(attachedActivity);
           attachedActivity.getBoundaryEvents().add(boundaryEvent);

@@ -57,7 +57,7 @@ public class FormHandlerUtil {
   public static TaskFormHandler getTaskFormHandlder(String processDefinitionId, String taskId) {
     org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
     FlowElement flowElement = process.getFlowElement(taskId, true);
-    if (flowElement != null && flowElement instanceof UserTask) {
+    if (flowElement instanceof UserTask) {
       UserTask userTask = (UserTask) flowElement;
       
       ProcessDefinition processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinition(processDefinitionId);
