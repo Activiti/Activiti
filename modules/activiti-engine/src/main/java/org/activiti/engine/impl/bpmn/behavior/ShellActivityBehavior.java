@@ -62,8 +62,8 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
     String cleanEnvStr = getStringFromField(cleanEnv, execution);
 
     waitFlag = waitStr == null || waitStr.equals("true");
-    redirectErrorFlag = redirectErrorStr != null && redirectErrorStr.equals("true");
-    cleanEnvBoolean = cleanEnvStr != null && cleanEnvStr.equals("true");
+    redirectErrorFlag = "true".equals(redirectErrorStr);
+    cleanEnvBoolean = "true".equals(cleanEnvStr);
     directoryStr = getStringFromField(directory, execution);
 
   }
