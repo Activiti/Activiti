@@ -38,7 +38,7 @@ public class DelegateExpressionTransactionDependentExecutionListener implements 
     Object delegate = expression.getValue(scope);
 
     if (delegate instanceof TransactionDependentExecutionListener) {
-      ((TransactionDependentExecutionListener) delegate).notify(processInstanceId, executionId, flowElement, executionVariables, customPropertiesMap);;
+      ((TransactionDependentExecutionListener) delegate).notify(processInstanceId, executionId, flowElement, executionVariables, customPropertiesMap);
     } else {
       throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did not resolve to an implementation of " + TransactionDependentExecutionListener.class);
     }

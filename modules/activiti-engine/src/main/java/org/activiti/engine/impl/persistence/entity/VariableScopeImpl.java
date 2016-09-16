@@ -454,7 +454,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
       variables.put(variableName, usedVariablesCache.get(variableName));
     }
     if (transientVariabes != null) {
-      variables.putAll(transientVariabes);;
+      variables.putAll(transientVariabes);
     }
     return variables;
   }
