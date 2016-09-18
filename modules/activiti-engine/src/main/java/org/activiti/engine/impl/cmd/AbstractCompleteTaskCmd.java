@@ -67,7 +67,7 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
     // Continue process (if not a standalone task)
     if (taskEntity.getExecutionId() != null) {
       ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(taskEntity.getExecutionId());
-      planTriggerExecutionOperation(commandContext.getAgenda(), commandContext, executionEntity);
+      planTriggerExecutionOperation(executionEntity);
     }
   }
 
