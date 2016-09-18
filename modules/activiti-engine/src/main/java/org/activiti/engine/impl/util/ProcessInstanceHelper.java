@@ -12,18 +12,8 @@
  */
 package org.activiti.engine.impl.util;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.EventDefinition;
-import org.activiti.bpmn.model.EventSubProcess;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.StartEvent;
-import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -34,6 +24,12 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueProcessOperation;
 
 /**
  * @author Tijs Rademakers
@@ -217,7 +213,7 @@ public class ProcessInstanceHelper {
 
   public void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext, Map<String, Object> variables) {
     ExecutionEntity execution = processInstance.getExecutions().get(0); // There will always be one child execution created
-    commandContext.getAgenda().planContinueProcessOperation(execution);
+    planContinueProcessOperation(execution);
 
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher()

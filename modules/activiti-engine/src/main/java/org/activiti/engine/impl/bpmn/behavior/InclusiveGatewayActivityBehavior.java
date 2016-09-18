@@ -97,7 +97,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
       }
 
       // Leave
-      planTakeOutgoingSequenceFlowsOperation(commandContext.getAgenda(), commandContext, execution, true);
+      planTakeOutgoingSequenceFlowsOperation(execution, true);
     }
   }
 }

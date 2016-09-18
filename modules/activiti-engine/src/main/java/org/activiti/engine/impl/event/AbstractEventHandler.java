@@ -13,20 +13,17 @@
 
 package org.activiti.engine.impl.event;
 
-import java.util.List;
-import java.util.Map;
-
-import org.activiti.bpmn.model.BoundaryEvent;
-import org.activiti.bpmn.model.EventSubProcess;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.FlowNode;
-import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.*;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTriggerExecutionOperation;
 
 /**
  * @author Tijs Rademakers
@@ -58,7 +55,7 @@ public abstract class AbstractEventHandler implements EventHandler {
       }
     }
 
-    planTriggerExecutionOperation(Context.getAgenda(), commandContext, execution);
+    planTriggerExecutionOperation(execution);
   }
 
   protected void dispatchActivitiesCanceledIfNeeded(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, FlowElement currentFlowElement, CommandContext commandContext) {

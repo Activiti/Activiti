@@ -134,7 +134,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
     deleteChildExecutions(parentScopeExecution, executionEntity, commandContext, DeleteReason.TRANSACTION_CANCELED);
     commandContext.getHistoryManager().recordActivityEnd(parentScopeExecution, DeleteReason.TRANSACTION_CANCELED);
 
-    planTriggerExecutionOperation(commandContext.getAgenda(), commandContext, executionEntity);
+    planTriggerExecutionOperation(executionEntity);
   }
 
   protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution,

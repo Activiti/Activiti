@@ -37,7 +37,7 @@ public class TriggerTimerEventJobHandler implements JobHandler {
 
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
 
-    planTriggerExecutionOperation(commandContext.getAgenda(), commandContext, execution);
+    planTriggerExecutionOperation(execution);
 
     if (commandContext.getEventDispatcher().isEnabled()) {
       commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
@@ -95,7 +95,7 @@ public class TriggerTimerEventJobHandler implements JobHandler {
 
   protected void dispatchActivityTimeOut(JobEntity timerEntity, FlowNode flowNode, ExecutionEntity execution, CommandContext commandContext) {
     commandContext.getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), execution.getId(), 
+        ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), execution.getId(),
             execution.getProcessInstanceId(), execution.getProcessDefinitionId(), parseActivityType(flowNode), timerEntity));
   }
 

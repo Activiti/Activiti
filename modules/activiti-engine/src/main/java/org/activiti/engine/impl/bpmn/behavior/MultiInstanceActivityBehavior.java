@@ -207,7 +207,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     }
 
     execution.setCurrentFlowElement(activity);
-    planContinueMultiInstanceOperation(Context.getAgenda(), Context.getCommandContext(), (ExecutionEntity) execution);
+    planContinueMultiInstanceOperation((ExecutionEntity) execution);
   }
 
   @SuppressWarnings("rawtypes")

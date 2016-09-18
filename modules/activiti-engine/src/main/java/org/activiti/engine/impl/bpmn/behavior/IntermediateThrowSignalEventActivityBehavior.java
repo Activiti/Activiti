@@ -13,8 +13,6 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.List;
-
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
@@ -91,7 +89,7 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
       eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, signalEventDefinition.isAsync());
     }
 
-    planTakeOutgoingSequenceFlowsOperation(commandContext.getAgenda(), commandContext, (ExecutionEntity) execution, true);
+    planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, true);
   }
 
 }

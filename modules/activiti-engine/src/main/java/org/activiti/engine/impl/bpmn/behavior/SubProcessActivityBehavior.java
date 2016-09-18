@@ -72,7 +72,7 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
     ExecutionEntity startSubProcessExecution = Context.getCommandContext().getExecutionEntityManager()
         .createChildExecution(executionEntity);
     startSubProcessExecution.setCurrentFlowElement(startElement);
-    planContinueProcessOperation(Context.getAgenda(), Context.getCommandContext(), startSubProcessExecution);
+    planContinueProcessOperation(startSubProcessExecution);
   }
 
   protected SubProcess getSubProcessFromExecution(DelegateExecution execution) {

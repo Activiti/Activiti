@@ -98,15 +98,15 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
       scopeExecutionEntity.setDeleteReason(deleteReason);
       if (subProcess.hasMultiInstanceLoopCharacteristics()) {
 
-        planDestroyScopeOperation(commandContext.getAgenda(), commandContext, scopeExecutionEntity);
+        planDestroyScopeOperation(scopeExecutionEntity);
         MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
         multiInstanceBehavior.leave(scopeExecutionEntity);
 
       } else {
-        planDestroyScopeOperation(commandContext.getAgenda(), commandContext, scopeExecutionEntity);
+        planDestroyScopeOperation(scopeExecutionEntity);
         ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(scopeExecutionEntity.getParent());
         outgoingFlowExecution.setCurrentFlowElement(scopeExecutionEntity.getCurrentFlowElement());
-        planTakeOutgoingSequenceFlowsOperation(commandContext.getAgenda(), commandContext, outgoingFlowExecution, true);
+        planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution, true);
       }
 
     } else if (scopeExecutionEntity.getParentId() == null
@@ -125,7 +125,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
         executionEntityManager.deleteProcessInstanceExecutionEntity(scopeExecutionEntity.getId(), execution.getCurrentFlowElement().getId(), "terminate end event", false, false, true);
         ExecutionEntity superExecutionEntity = executionEntityManager.findById(scopeExecutionEntity.getSuperExecutionId());
-        planTakeOutgoingSequenceFlowsOperation(commandContext.getAgenda(), commandContext, superExecutionEntity, true);
+        planTakeOutgoingSequenceFlowsOperation(superExecutionEntity, true);
 
       }
 
@@ -167,7 +167,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
       deleteExecutionEntities(executionEntityManager, miRootExecutionEntity, createDeleteReason(miRootExecutionEntity.getActivityId()));
 
-      planTakeOutgoingSequenceFlowsOperation(commandContext.getAgenda(), commandContext, siblingExecution, true);
+      planTakeOutgoingSequenceFlowsOperation(siblingExecution, true);
     } else {
       defaultTerminateEndEventBehaviour(execution, commandContext, executionEntityManager);
     }
@@ -186,9 +186,9 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       if ((execution.isProcessInstanceType() && execution.getSuperExecutionId() == null) ||
           (execution.getParentId() == null && execution.getSuperExecutionId() != null)) {
-        
+
         Context.getProcessEngineConfiguration().getEventDispatcher()
-            .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(), 
+            .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(),
                 execution.getProcessDefinitionId(), execution.getCurrentFlowElement()));
       }
     }
@@ -222,8 +222,8 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     Context.getProcessEngineConfiguration()
         .getEventDispatcher()
         .dispatchEvent(
-            ActivitiEventBuilder.createActivityCancelledEvent(execution.getCurrentFlowElement().getId(), 
-                execution.getCurrentFlowElement().getName(), execution.getId(), execution.getProcessInstanceId(), 
+            ActivitiEventBuilder.createActivityCancelledEvent(execution.getCurrentFlowElement().getId(),
+                execution.getCurrentFlowElement().getName(), execution.getId(), execution.getProcessInstanceId(),
                 execution.getProcessDefinitionId(), parseActivityType((FlowNode) execution.getCurrentFlowElement()), terminateEndEvent));
   }
 

@@ -1,7 +1,7 @@
 package org.activiti.examples.runtime;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.agenda.ListAgenda;
+import org.activiti.engine.impl.agenda.DefaultAgenda;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.runtime.Agenda;
 import org.springframework.beans.factory.FactoryBean;
@@ -13,7 +13,7 @@ public class WatchDogAgendaFactory implements FactoryBean<Agenda> {
 
     @Override
     public Agenda getObject() throws Exception {
-        return new WatchDogAgenda(new ListAgenda());
+        return new WatchDogAgenda(new DefaultAgenda());
     }
 
     @Override

@@ -16,7 +16,6 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.bpmn.model.AdhocSubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -61,7 +60,7 @@ public class CompleteAdhocSubProcessCmd implements Command<Void>, Serializable {
 
     executionEntityManager.deleteExecutionAndRelatedData(execution, null, false);
 
-    planTakeOutgoingSequenceFlowsOperation(Context.getAgenda(), commandContext, outgoingFlowExecution, true);
+    planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution, true);
 
     return null;
   }

@@ -23,8 +23,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
 
-import java.util.Map;
-
 import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTriggerExecutionOperation;
 
 /**
@@ -67,7 +65,7 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
         ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, execution.getCurrentActivityId(), null,
             null, execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId()));
 
-    planTriggerExecutionOperation(commandContext.getAgenda(), commandContext, execution);
+    planTriggerExecutionOperation(execution);
     return null;
   }
 

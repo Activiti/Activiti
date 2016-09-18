@@ -43,7 +43,7 @@ public class DelegateHelper {
    * that evaluates to true are followed.
    */
   public static void leaveDelegate(DelegateExecution delegateExecution) {
-    planTakeOutgoingSequenceFlowsOperation(Context.getAgenda(), Context.getCommandContext(), (ExecutionEntity) delegateExecution, true);
+    planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution, true);
   }
 
   /**
@@ -56,7 +56,7 @@ public class DelegateHelper {
     FlowElement flowElement = process.getFlowElement(sequenceFlowId);
     if (flowElement instanceof SequenceFlow) {
       delegateExecution.setCurrentFlowElement(flowElement);
-      planTakeOutgoingSequenceFlowsOperation(Context.getAgenda(), Context.getCommandContext(), (ExecutionEntity) delegateExecution, false);
+      planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution, false);
     } else {
       throw new ActivitiException(sequenceFlowId + " does not match a sequence flow");
     }

@@ -110,7 +110,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
       }
 
       // TODO: potential optimization here: reuse more then 1 execution, only 1 currently
-      planTakeOutgoingSequenceFlowsOperation(Context.getAgenda(), Context.getCommandContext(), (ExecutionEntity) execution, false); // false -> ignoring conditions on parallel gw
+      planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, false); // false -> ignoring conditions on parallel gw
 
     } else if (log.isDebugEnabled()) {
       log.debug("parallel gateway '{}' does not activate: {} of {} joined", execution.getCurrentActivityId(), nbrOfExecutionsCurrentlyJoined, nbrOfExecutionsToJoin);

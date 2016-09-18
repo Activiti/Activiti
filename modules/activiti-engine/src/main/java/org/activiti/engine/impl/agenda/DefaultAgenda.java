@@ -23,10 +23,11 @@ import java.util.LinkedList;
 /**
 
  * @author Joram Barrez
+ * @author martin.grofcik
  */
-public class ListAgenda implements Agenda {
+public class DefaultAgenda implements Agenda {
 
-  private static final Logger logger = LoggerFactory.getLogger(ListAgenda.class);
+  private static final Logger logger = LoggerFactory.getLogger(DefaultAgenda.class);
 
   protected LinkedList<Runnable> operations = new LinkedList<Runnable>();
 

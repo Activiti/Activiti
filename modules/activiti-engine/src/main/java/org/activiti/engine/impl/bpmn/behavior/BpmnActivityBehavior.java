@@ -95,7 +95,7 @@ public class BpmnActivityBehavior implements Serializable {
    *          If true, an {@link ActivitiException} will be thrown in case no transition could be found to leave the activity.
    */
   protected void performOutgoingBehavior(ExecutionEntity execution, boolean checkConditions, boolean throwExceptionIfExecutionStuck) {
-    planTakeOutgoingSequenceFlowsOperation(Context.getAgenda(), Context.getCommandContext(), execution, true);
+    planTakeOutgoingSequenceFlowsOperation(execution, true);
   }
 
 }

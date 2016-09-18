@@ -212,7 +212,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         removeLocalLoopVariable(executionToUse, getCollectionElementIndexVariable());
         executionToUse.setScope(false);
         executionToUse.setMultiInstanceRoot(false);
-        planTakeOutgoingSequenceFlowsOperation(Context.getAgenda(), Context.getCommandContext(), executionToUse, true);
+        planTakeOutgoingSequenceFlowsOperation(executionToUse, true);
       }
 
     } else {

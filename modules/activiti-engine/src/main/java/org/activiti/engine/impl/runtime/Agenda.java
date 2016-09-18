@@ -17,10 +17,14 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  * During a {@link Command} execution, the agenda can always be fetched using {@link Context#getAgenda()}.
  */
 public interface Agenda {
+
   boolean isEmpty();
 
   Runnable getNextOperation();
 
+  /**
+   * Generic method to plan a {@link Runnable}.
+   */
   void planOperation(Runnable operation);
 
   void planOperation(Runnable operation, ExecutionEntity executionEntity);

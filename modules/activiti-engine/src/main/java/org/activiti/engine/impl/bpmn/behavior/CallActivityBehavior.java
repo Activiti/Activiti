@@ -13,17 +13,8 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.activiti.bpmn.model.CallActivity;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.IOParameter;
-import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -38,6 +29,11 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueProcessOperation;
 
@@ -145,7 +141,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     ExecutionEntity subProcessInitialExecution = executionEntityManager.createChildExecution(subProcessInstance);
     subProcessInitialExecution.setCurrentFlowElement(initialFlowElement);
 
-    planContinueProcessOperation(Context.getAgenda(), Context.getCommandContext(), subProcessInitialExecution);
+    planContinueProcessOperation(subProcessInitialExecution);
 
     Context.getProcessEngineConfiguration().getEventDispatcher()
       .dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(subProcessInitialExecution, variables, false));

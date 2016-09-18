@@ -148,7 +148,7 @@ public class EndExecutionOperation extends AbstractOperation {
         // unless its a compensation, then we don't need to do anything and can just end it
 
         if (subProcess.isForCompensation()) {
-          planEndExecutionOperation(agenda, commandContext, parentExecution);
+          planEndExecutionOperation(parentExecution);
         } else {
           executionToContinue = handleSubProcessEnd(executionEntityManager, parentExecution, subProcess);
         }
@@ -168,7 +168,7 @@ public class EndExecutionOperation extends AbstractOperation {
           handleProcessInstanceExecution(executionToContinue);
 
         } else {
-          planTakeOutgoingSequenceFlowsOperation(agenda, commandContext, executionToContinue, true);
+          planTakeOutgoingSequenceFlowsOperation(executionToContinue, true);
         }
       }
 
@@ -267,7 +267,7 @@ public class EndExecutionOperation extends AbstractOperation {
       // Destroy the current scope (subprocess) and leave via the subprocess
 
       ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution);
-      planDestroyScopeOperation(agenda, commandContext, parentExecution);
+      planDestroyScopeOperation(parentExecution);
 
       SubProcess subProcess = execution.getCurrentFlowElement().getSubProcess();
       MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();

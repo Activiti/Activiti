@@ -185,14 +185,14 @@ public class ErrorPropagation {
       ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
 
       if (currentExecution.getParentId().equals(parentExecution.getId()) == false) {
-        planDestroyScopeOperation(Context.getAgenda(), Context.getCommandContext(), currentExecution);
+        planDestroyScopeOperation(currentExecution);
       } else {
         executionEntityManager.deleteExecutionAndRelatedData(currentExecution, null, false);
       }
 
       ExecutionEntity eventSubProcessExecution = executionEntityManager.createChildExecution(parentExecution);
       eventSubProcessExecution.setCurrentFlowElement(event);
-      planContinueProcessOperation(Context.getAgenda(), Context.getCommandContext(), eventSubProcessExecution);
+      planContinueProcessOperation(eventSubProcessExecution);
 
     } else {
       ExecutionEntity boundaryExecution = null;
@@ -203,7 +203,7 @@ public class ErrorPropagation {
         }
       }
 
-      planTriggerExecutionOperation(Context.getAgenda(), Context.getCommandContext(), boundaryExecution);
+      planTriggerExecutionOperation(boundaryExecution);
     }
   }
 

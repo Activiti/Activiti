@@ -1,7 +1,6 @@
 package org.activiti.osgi.blueprint.bean;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
@@ -14,6 +13,6 @@ public class ActivityBehaviourBean implements ActivityBehavior {
   @Override
   public void execute(DelegateExecution execution) {
     execution.setVariable("visitedActivityBehaviour", true);
-    planTakeOutgoingSequenceFlowsOperation(Context.getAgenda(), Context.getCommandContext(), (ExecutionEntity) execution, true);
+    planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, true);
   }
 }

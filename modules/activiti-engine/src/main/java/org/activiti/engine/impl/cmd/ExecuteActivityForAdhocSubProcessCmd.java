@@ -77,7 +77,7 @@ public class ExecuteActivityForAdhocSubProcessCmd implements Command<Execution>,
 
     ExecutionEntity activityExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(execution);
     activityExecution.setCurrentFlowElement(foundNode);
-    planContinueProcessOperation(Context.getAgenda(), Context.getCommandContext(), activityExecution);
+    planContinueProcessOperation(activityExecution);
 
     return activityExecution;
   }

@@ -92,7 +92,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     // set new parent for boundary event execution
     executionEntity.setParent(parentScopeExecution);
 
-    planTakeOutgoingSequenceFlowsOperation(commandContext.getAgenda(), commandContext, executionEntity, true);
+    planTakeOutgoingSequenceFlowsOperation(executionEntity, true);
   }
 
   protected void executeNonInterruptingBehavior(ExecutionEntity executionEntity, CommandContext commandContext) {
@@ -127,7 +127,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     ExecutionEntity nonInterruptingExecution = executionEntityManager.createChildExecution(scopeExecution);
     nonInterruptingExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
 
-    planTakeOutgoingSequenceFlowsOperation(commandContext.getAgenda(), commandContext, nonInterruptingExecution, true);
+    planTakeOutgoingSequenceFlowsOperation(nonInterruptingExecution, true);
   }
 
   protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution, CommandContext commandContext) {

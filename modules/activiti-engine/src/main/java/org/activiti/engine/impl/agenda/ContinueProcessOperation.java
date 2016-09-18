@@ -1,15 +1,6 @@
 package org.activiti.engine.impl.agenda;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.activiti.bpmn.model.Activity;
-import org.activiti.bpmn.model.BoundaryEvent;
-import org.activiti.bpmn.model.CompensateEventDefinition;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.FlowNode;
-import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.*;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -144,7 +135,7 @@ public class ContinueProcessOperation extends AbstractOperation {
 
     } else {
       logger.debug("No activityBehavior on activity '{}' with execution {}", flowNode.getId(), execution.getId());
-      Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
+      planTakeOutgoingSequenceFlowsOperation(execution, true);
     }
   }
 
@@ -230,7 +221,7 @@ public class ContinueProcessOperation extends AbstractOperation {
     execution.setCurrentFlowElement(targetFlowElement);
 
     logger.debug("Sequence flow '{}' encountered. Continuing process by following it using execution {}", sequenceFlow.getId(), execution.getId());
-    planContinueProcessOperation(agenda, commandContext, execution);
+    planContinueProcessOperation(execution);
   }
 
   protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ExecutionEntity execution) {
