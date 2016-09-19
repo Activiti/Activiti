@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,10 +11,6 @@
  * limitations under the License.
  */
 package org.activiti.engine.test.api.v6;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -28,10 +24,14 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * These are the first tests ever written for Activiti 6.
  * Keeping them here for nostalgic reasons.
- * 
+ *
  * @author Joram Barrez
  */
 public class Activiti6Test extends PluggableActivitiTestCase {
@@ -134,7 +134,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
 
     assertEquals(maxCount, CountingServiceTaskTestDelegate.CALL_COUNT.get());
     assertEquals(0, runtimeService.createExecutionQuery().count());
-    
+
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       assertEquals(maxCount, historyService.createHistoricActivityInstanceQuery()
           .processInstanceId(processInstance.getId()).activityId("serviceTask").count());
@@ -432,8 +432,8 @@ public class Activiti6Test extends PluggableActivitiTestCase {
    * Based on the process and use cases described in http://www.bp-3.com/blogs/2013/09/joins-and-ibm-bpm-diving-deeper/
    */
   @Test
-  @org.activiti.engine.test.Deployment
-  public void testInclusiveTrickyMerge() {
+  @org.activiti.engine.test.Deployment(resources = "org/activiti/engine/test/api/v6/Activiti6Test.testInclusiveTrickyMerge.bpmn20.xml")
+  public void testInclusiveTrickyMergeEasy() {
 
     // Use case 1 (easy):
     // "When C completes, depending on the data, we can immediately issue E no matter what the status is of A or B."
@@ -460,16 +460,24 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(0).getId());
     taskService.complete(tasks.get(1).getId());
     assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+
+  /**
+   * Based on the process and use cases described in http://www.bp-3.com/blogs/2013/09/joins-and-ibm-bpm-diving-deeper/
+   */
+  @Test
+  @org.activiti.engine.test.Deployment(resources = "org/activiti/engine/test/api/v6/Activiti6Test.testInclusiveTrickyMerge.bpmn20.xml")
+  public void testInclusiveTrickyMergeDifficult() {
 
     // Use case 2 (tricky):
     // "If A and B are complete and C routes to E, D will be issued in Parallel to E"
     // It's tricky cause the inclusive gateway is not visited directly.
     // Instead, it's done by the InactivatedActivityBehavior
 
-    processInstance = runtimeService.startProcessInstanceByKey("trickyInclusiveMerge");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("trickyInclusiveMerge");
     assertEquals(3, taskService.createTaskQuery().count());
 
-    tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
     assertEquals(3, tasks.size());
     assertEquals("A", tasks.get(0).getName());
     assertEquals("B", tasks.get(1).getName());
@@ -495,7 +503,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     taskService.complete(tasks.get(1).getId());
     assertEquals(0, runtimeService.createExecutionQuery().count());
   }
-  
+
   /**
    * Simple test that checks if all databases have correcly added the process definition tag.
    */

@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.agenda;
 
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.runtime.Agenda;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,24 +40,12 @@ public class DefaultAgenda implements Agenda {
   }
 
   /**
-   * Generic method to plan a {@link Runnable}.
+   * Generic method to plan a {@link Runnable} execution.
    */
   @Override
   public void planOperation(Runnable operation) {
-    planOperation(operation, null);
-  }
-
-  /**
-   * Generic method to plan a {@link Runnable}.
-   */
-  @Override
-  public void planOperation(Runnable operation, ExecutionEntity executionEntity) {
     operations.add(operation);
     logger.debug("Operation {} added to agenda", operation.getClass());
-
-    if (executionEntity != null) {
-      Context.getCommandContext().addInvolvedExecution(executionEntity);
-    }
   }
 
 }

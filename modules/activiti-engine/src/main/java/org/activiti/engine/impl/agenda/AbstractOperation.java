@@ -15,6 +15,7 @@ package org.activiti.engine.impl.agenda;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -45,6 +46,9 @@ public abstract class AbstractOperation implements Runnable {
     this.commandContext = commandContext;
     this.execution = execution;
     this.agenda = commandContext.getAgenda();
+    if (execution != null) {
+      Context.getCommandContext().addInvolvedExecution(execution);
+    }
   }
 
   /**

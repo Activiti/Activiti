@@ -2,7 +2,6 @@ package org.activiti.examples.runtime;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.agenda.DefaultAgenda;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.runtime.Agenda;
 import org.springframework.beans.factory.FactoryBean;
 
@@ -56,9 +55,5 @@ public class WatchDogAgendaFactory implements FactoryBean<Agenda> {
             agenda.planOperation(operation);
         }
 
-        @Override
-        public void planOperation(Runnable operation, ExecutionEntity executionEntity) {
-            agenda.planOperation(operation, executionEntity);
-        }
     }
 }

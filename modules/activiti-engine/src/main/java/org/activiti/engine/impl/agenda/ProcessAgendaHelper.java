@@ -11,35 +11,35 @@ import static org.activiti.engine.impl.context.Context.getCommandContext;
 public class ProcessAgendaHelper {
 
     public static void planContinueProcessOperation(ExecutionEntity execution) {
-        getAgenda().planOperation(new ContinueProcessOperation(getCommandContext(), execution), execution);
+        getAgenda().planOperation(new ContinueProcessOperation(getCommandContext(), execution));
     }
 
     public static void planContinueProcessSynchronousOperation(ExecutionEntity execution) {
-        getAgenda().planOperation(new ContinueProcessOperation(getCommandContext(), execution, true, false), execution);
+        getAgenda().planOperation(new ContinueProcessOperation(getCommandContext(), execution, true, false));
     }
 
     public static void planContinueProcessInCompensation(ExecutionEntity execution) {
-        getAgenda().planOperation(new ContinueProcessOperation(getCommandContext(), execution, false, true), execution);
+        getAgenda().planOperation(new ContinueProcessOperation(getCommandContext(), execution, false, true));
     }
 
     public static void planContinueMultiInstanceOperation(ExecutionEntity execution) {
-        getAgenda().planOperation(new ContinueMultiInstanceOperation(getCommandContext(), execution), execution);
+        getAgenda().planOperation(new ContinueMultiInstanceOperation(getCommandContext(), execution));
     }
 
     public static void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions) {
-        getAgenda().planOperation(new TakeOutgoingSequenceFlowsOperation(getCommandContext(), execution, evaluateConditions), execution);
+        getAgenda().planOperation(new TakeOutgoingSequenceFlowsOperation(getCommandContext(), execution, evaluateConditions));
     }
 
     public static void planEndExecutionOperation(ExecutionEntity execution) {
-        getAgenda().planOperation(new EndExecutionOperation(getCommandContext(), execution), execution);
+        getAgenda().planOperation(new EndExecutionOperation(getCommandContext(), execution));
     }
 
     public static void planTriggerExecutionOperation(ExecutionEntity execution) {
-        getAgenda().planOperation(new TriggerExecutionOperation(getCommandContext(), execution), execution);
+        getAgenda().planOperation(new TriggerExecutionOperation(getCommandContext(), execution));
     }
 
     public static void planDestroyScopeOperation(ExecutionEntity execution) {
-        getAgenda().planOperation(new DestroyScopeOperation(getCommandContext(), execution), execution);
+        getAgenda().planOperation(new DestroyScopeOperation(getCommandContext(), execution));
     }
 
     public static void planExecuteInactiveBehaviorsOperation() {

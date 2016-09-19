@@ -4,7 +4,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * For each API call (and thus {@link Command}) being executed, a new agenda instance is created.
@@ -27,5 +26,4 @@ public interface Agenda {
    */
   void planOperation(Runnable operation);
 
-  void planOperation(Runnable operation, ExecutionEntity executionEntity);
 }
