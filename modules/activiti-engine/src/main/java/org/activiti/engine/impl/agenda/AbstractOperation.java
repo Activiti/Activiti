@@ -27,7 +27,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
  * Abstract superclass for all operation interfaces (which are {@link Runnable} instances),
  * exposing some shared helper methods and member fields to subclasses.
  *
- * An operations is a {@link Runnable} instance that is put on the {@link DefaultAgenda} during
+ * An operations is a {@link Runnable} instance that is put on the {@link Agenda} during
  * the execution of a {@link Command}.
  *
  * @author Joram Barrez
