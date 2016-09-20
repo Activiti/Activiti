@@ -485,6 +485,7 @@
         </documentation>
       </annotation>
     </attribute>
+   </complexType>
   </element>
 
   <element name="executionListener">
