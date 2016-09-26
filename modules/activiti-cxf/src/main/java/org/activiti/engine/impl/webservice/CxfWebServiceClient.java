@@ -81,7 +81,10 @@ public class CxfWebServiceClient implements SyncWebServiceClient {
     } catch (Fault e) {
        LOGGER.debug("Technical error calling WS", e);
        throw new ActivitiException(e.getMessage(), e);
-    } catch (Exception e) {
+    } catch (RuntimeException e) {
+        LOGGER.debug("Technical error calling WS", e);
+        throw new ActivitiException(e.getMessage(), e);
+     } catch (Exception e) {
        // Other exceptions should be associated to business fault defined in the service WSDL
        LOGGER.debug("Business error calling WS", e);
        throw new BpmnError(e.getClass().getName(), e.getMessage());
