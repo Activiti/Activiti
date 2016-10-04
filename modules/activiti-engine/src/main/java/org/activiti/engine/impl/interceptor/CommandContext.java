@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
@@ -74,7 +75,7 @@ public class CommandContext {
   protected Command< ? > command;
   protected TransactionContext transactionContext;
   protected Map<Class< ? >, SessionFactory> sessionFactories;
-  protected Map<Class< ? >, Session> sessions = new HashMap<Class< ? >, Session>();
+  protected Map<Class< ? >, Session> sessions = new ConcurrentHashMap<Class< ? >, Session>();
   protected Throwable exception = null;
   protected LinkedList<AtomicOperation> nextOperations = new LinkedList<AtomicOperation>();
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
