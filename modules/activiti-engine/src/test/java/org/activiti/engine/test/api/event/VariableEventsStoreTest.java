@@ -12,6 +12,10 @@
  */
 package org.activiti.engine.test.api.event;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -56,6 +60,17 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
     
     assertEquals(2, listener.getEventsReceived().size());
     assertEquals(ActivitiEventType.VARIABLE_DELETED, listener.getEventsReceived().get(1).getType());
+
+    listener.clearEventsReceived();
+    
+    // bulk insert delete var test
+    Map<String, String> vars = new HashMap<String, String>();
+    vars.put("myVar", "value");
+    vars.put("myVar2", "value");
+    taskService.setVariablesLocal(task.getId(), vars);
+    taskService.removeVariablesLocal(task.getId(), Arrays.asList("myVar", "myVar2"));
+    
+    assertEquals(4, listener.getEventsReceived().size());
     
 	}
 

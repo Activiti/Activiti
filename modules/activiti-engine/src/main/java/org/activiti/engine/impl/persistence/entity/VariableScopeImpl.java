@@ -24,6 +24,9 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiVariableEvent;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.javax.el.ELContext;
@@ -799,6 +802,18 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     // Record historic detail
     Context.getCommandContext().getHistoryManager()
       .recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution,  isActivityIdUsedForDetails());
+    
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          createVariableDeleteEvent(variableInstance)
+        );
+    }
+    
+  }
+  
+  protected static ActivitiVariableEvent createVariableDeleteEvent(VariableInstanceEntity variableInstance) {
+    return ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, variableInstance.getName(), null, variableInstance.getType(),
+        variableInstance.getTaskId(), variableInstance.getExecutionId(), variableInstance.getProcessInstanceId(), null);
   }
 
   protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
