@@ -421,14 +421,14 @@ GET repository/deployments/{deploymentId}/resources
   {
     "id": "diagrams/my-process.bpmn20.xml",
     "url": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resources/diagrams%2Fmy-process.bpmn20.xml",
-    "dataUrl": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resourcedata/diagrams%2Fmy-process.bpmn20.xml",
+    "contentUrl": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resourcedata/diagrams%2Fmy-process.bpmn20.xml",
     "mediaType": "text/xml",
     "type": "processDefinition"
   },
   {
     "id": "image.png",
     "url": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resources/image.png",
-    "dataUrl": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resourcedata/image.png",
+    "contentUrl": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resourcedata/image.png",
     "mediaType": "image/png",
     "type": "resource"
   }
@@ -442,7 +442,7 @@ GET repository/deployments/{deploymentId}/resources
 * ++processDefinition++: Resource that contains one or more process-definitions. This resource is picked up by the deployer.
 * ++processImage++: Resource that represents a deployed process definition's graphical layout.
 
-_The dataUrl property in the resulting JSON for a single resource contains the actual URL to use for retrieving the binary resource._
+_The contentUrl property in the resulting JSON for a single resource contains the actual URL to use for retrieving the binary resource._
 
 
 ==== Get a deployment resource
@@ -478,7 +478,7 @@ GET repository/deployments/{deploymentId}/resources/{resourceId}
 {
   "id": "diagrams/my-process.bpmn20.xml",
   "url": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resources/diagrams%2Fmy-process.bpmn20.xml",
-  "dataUrl": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resourcedata/diagrams%2Fmy-process.bpmn20.xml",
+  "contentUrl": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resourcedata/diagrams%2Fmy-process.bpmn20.xml",
   "mediaType": "text/xml",
   "type": "processDefinition"
 }
