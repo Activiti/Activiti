@@ -134,7 +134,6 @@ public class ProcessInstanceResponse {
 	  return name;
   }
   
-  
   //Added by Ryan Johnston
   public boolean isCompleted() {
 	  return completed;
