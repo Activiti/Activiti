@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.*;
-
 /**
  * This operations ends an execution and follows the typical BPMN rules to continue the process (if possible).
  *
@@ -148,7 +146,7 @@ public class EndExecutionOperation extends AbstractOperation {
         // unless its a compensation, then we don't need to do anything and can just end it
 
         if (subProcess.isForCompensation()) {
-          planEndExecutionOperation(parentExecution);
+          Context.getAgenda().planEndExecutionOperation(parentExecution);
         } else {
           executionToContinue = handleSubProcessEnd(executionEntityManager, parentExecution, subProcess);
         }
@@ -168,7 +166,7 @@ public class EndExecutionOperation extends AbstractOperation {
           handleProcessInstanceExecution(executionToContinue);
 
         } else {
-          planTakeOutgoingSequenceFlowsOperation(executionToContinue, true);
+          Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionToContinue, true);
         }
       }
 
@@ -267,7 +265,7 @@ public class EndExecutionOperation extends AbstractOperation {
       // Destroy the current scope (subprocess) and leave via the subprocess
 
       ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution);
-      planDestroyScopeOperation(parentExecution);
+      Context.getAgenda().planDestroyScopeOperation(parentExecution);
 
       SubProcess subProcess = execution.getCurrentFlowElement().getSubProcess();
       MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();

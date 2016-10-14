@@ -30,9 +30,6 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 
 import java.util.List;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planDestroyScopeOperation;
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTakeOutgoingSequenceFlowsOperation;
-
 /**
  * @author Joram Barrez
  */
@@ -98,15 +95,15 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
       scopeExecutionEntity.setDeleteReason(deleteReason);
       if (subProcess.hasMultiInstanceLoopCharacteristics()) {
 
-        planDestroyScopeOperation(scopeExecutionEntity);
+        Context.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
         MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
         multiInstanceBehavior.leave(scopeExecutionEntity);
 
       } else {
-        planDestroyScopeOperation(scopeExecutionEntity);
+        Context.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
         ExecutionEntity outgoingFlowExecution = executionEntityManager.createChildExecution(scopeExecutionEntity.getParent());
         outgoingFlowExecution.setCurrentFlowElement(scopeExecutionEntity.getCurrentFlowElement());
-        planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution, true);
+        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(outgoingFlowExecution, true);
       }
 
     } else if (scopeExecutionEntity.getParentId() == null
@@ -125,7 +122,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
         executionEntityManager.deleteProcessInstanceExecutionEntity(scopeExecutionEntity.getId(), execution.getCurrentFlowElement().getId(), "terminate end event", false, false, true);
         ExecutionEntity superExecutionEntity = executionEntityManager.findById(scopeExecutionEntity.getSuperExecutionId());
-        planTakeOutgoingSequenceFlowsOperation(superExecutionEntity, true);
+        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(superExecutionEntity, true);
 
       }
 
@@ -167,7 +164,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 
       deleteExecutionEntities(executionEntityManager, miRootExecutionEntity, createDeleteReason(miRootExecutionEntity.getActivityId()));
 
-      planTakeOutgoingSequenceFlowsOperation(siblingExecution, true);
+      Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(siblingExecution, true);
     } else {
       defaultTerminateEndEventBehaviour(execution, commandContext, executionEntityManager);
     }

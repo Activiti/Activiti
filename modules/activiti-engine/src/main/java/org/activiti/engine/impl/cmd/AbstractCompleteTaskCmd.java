@@ -27,8 +27,6 @@ import org.activiti.engine.task.IdentityLinkType;
 
 import java.util.Map;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTriggerExecutionOperation;
-
 /**
  * @author Joram Barrez
  */
@@ -67,7 +65,7 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
     // Continue process (if not a standalone task)
     if (taskEntity.getExecutionId() != null) {
       ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findById(taskEntity.getExecutionId());
-      planTriggerExecutionOperation(executionEntity);
+      Context.getAgenda().planTriggerExecutionOperation(executionEntity);
     }
   }
 

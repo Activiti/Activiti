@@ -17,8 +17,6 @@ import org.activiti.engine.impl.context.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planExecuteInactiveBehaviorsOperation;
-
 /**
  * @author Joram Barrez
  */
@@ -47,7 +45,7 @@ public class CommandInvoker extends AbstractCommandInterceptor {
     // At the end, call the execution tree change listeners.
     // TODO: optimization: only do this when the tree has actually changed (ie check dbSqlSession).
     if (commandContext.hasInvolvedExecutions()) {
-      planExecuteInactiveBehaviorsOperation();
+      Context.getAgenda().planExecuteInactiveBehaviorsOperation();
       executeOperations(commandContext);
     }
 

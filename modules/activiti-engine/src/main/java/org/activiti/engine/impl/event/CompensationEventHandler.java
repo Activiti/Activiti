@@ -20,6 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
@@ -27,8 +28,6 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 import java.util.List;
-
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueProcessInCompensation;
 
 /**
  * @author Tijs Rademakers
@@ -73,7 +72,7 @@ public class CompensationEventHandler implements EventHandler {
                     compensatingExecution.getId(), compensatingExecution.getProcessInstanceId(), compensatingExecution.getProcessDefinitionId(), flowElement));
         }
         compensatingExecution.setCurrentFlowElement(flowElement);
-        planContinueProcessInCompensation(compensatingExecution);
+        Context.getAgenda().planContinueProcessInCompensation(compensatingExecution);
 
       } catch (Exception e) {
         throw new ActivitiException("Error while handling compensation event " + eventSubscription, e);

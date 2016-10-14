@@ -26,8 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTakeOutgoingSequenceFlowsOperation;
-
 /**
  * Class that provides helper operations for use in the {@link JavaDelegate},
  * {@link ActivityBehavior}, {@link ExecutionListener} and {@link TaskListener}
@@ -43,7 +41,7 @@ public class DelegateHelper {
    * that evaluates to true are followed.
    */
   public static void leaveDelegate(DelegateExecution delegateExecution) {
-    planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution, true);
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution, true);
   }
 
   /**
@@ -56,7 +54,7 @@ public class DelegateHelper {
     FlowElement flowElement = process.getFlowElement(sequenceFlowId);
     if (flowElement instanceof SequenceFlow) {
       delegateExecution.setCurrentFlowElement(flowElement);
-      planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution, false);
+      Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) delegateExecution, false);
     } else {
       throw new ActivitiException(sequenceFlowId + " does not match a sequence flow");
     }

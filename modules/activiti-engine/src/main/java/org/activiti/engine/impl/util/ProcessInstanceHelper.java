@@ -29,8 +29,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueProcessOperation;
-
 /**
  * @author Tijs Rademakers
  * @author Joram Barrez
@@ -213,7 +211,7 @@ public class ProcessInstanceHelper {
 
   public void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext, Map<String, Object> variables) {
     ExecutionEntity execution = processInstance.getExecutions().get(0); // There will always be one child execution created
-    planContinueProcessOperation(execution);
+    Context.getAgenda().planContinueProcessOperation(execution);
 
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher()

@@ -31,8 +31,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTriggerExecutionOperation;
-
 /**
  * @author Tijs Rademakers
  */
@@ -134,7 +132,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
     deleteChildExecutions(parentScopeExecution, executionEntity, commandContext, DeleteReason.TRANSACTION_CANCELED);
     commandContext.getHistoryManager().recordActivityEnd(parentScopeExecution, DeleteReason.TRANSACTION_CANCELED);
 
-    planTriggerExecutionOperation(executionEntity);
+    Context.getAgenda().planTriggerExecutionOperation(executionEntity);
   }
 
   protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution,

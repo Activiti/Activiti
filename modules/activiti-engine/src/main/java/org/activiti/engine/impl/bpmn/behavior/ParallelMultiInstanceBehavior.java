@@ -34,8 +34,6 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.apache.commons.lang3.StringUtils;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTakeOutgoingSequenceFlowsOperation;
-
 /**
  * @author Joram Barrez
  * @author Tijs Rademakers
@@ -212,7 +210,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         removeLocalLoopVariable(executionToUse, getCollectionElementIndexVariable());
         executionToUse.setScope(false);
         executionToUse.setMultiInstanceRoot(false);
-        planTakeOutgoingSequenceFlowsOperation(executionToUse, true);
+        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionToUse, true);
       }
 
     } else {

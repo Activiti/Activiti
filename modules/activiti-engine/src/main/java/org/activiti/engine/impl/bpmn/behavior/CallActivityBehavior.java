@@ -35,8 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueProcessOperation;
-
 /**
  * Implementation of the BPMN 2.0 call activity (limited currently to calling a subprocess and not (yet) a global task).
  *
@@ -141,7 +139,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     ExecutionEntity subProcessInitialExecution = executionEntityManager.createChildExecution(subProcessInstance);
     subProcessInitialExecution.setCurrentFlowElement(initialFlowElement);
 
-    planContinueProcessOperation(subProcessInitialExecution);
+    Context.getAgenda().planContinueProcessOperation(subProcessInitialExecution);
 
     Context.getProcessEngineConfiguration().getEventDispatcher()
       .dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(subProcessInitialExecution, variables, false));

@@ -27,7 +27,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventDispatcherImpl;
 import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.impl.*;
-import org.activiti.engine.impl.agenda.DefaultAgenda;
+import org.activiti.engine.impl.agenda.DefaultActivitiAgenda;
 import org.activiti.engine.impl.asyncexecutor.*;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.*;
@@ -64,6 +64,7 @@ import org.activiti.engine.impl.persistence.deploy.*;
 import org.activiti.engine.impl.persistence.entity.*;
 import org.activiti.engine.impl.persistence.entity.data.*;
 import org.activiti.engine.impl.persistence.entity.data.impl.*;
+import org.activiti.engine.impl.runtime.ActivitiAgenda;
 import org.activiti.engine.impl.runtime.Agenda;
 import org.activiti.engine.impl.scripting.*;
 import org.activiti.engine.impl.util.DefaultClockImpl;
@@ -1673,15 +1674,15 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public void initAgendaFactory() {
     if (agendaFactory == null) {
-      agendaFactory = new FactoryBean<Agenda>() {
+      agendaFactory = new FactoryBean<ActivitiAgenda>() {
         @Override
-        public Agenda getObject() throws Exception {
-          return new DefaultAgenda();
+        public ActivitiAgenda getObject() throws Exception {
+          return new DefaultActivitiAgenda();
         }
 
         @Override
         public Class<?> getObjectType() {
-          return DefaultAgenda.class;
+          return DefaultActivitiAgenda.class;
         }
 
         @Override

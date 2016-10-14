@@ -27,8 +27,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueProcessOperation;
-
 /**
  * Implementation of the BPMN 2.0 subprocess (formally known as 'embedded' subprocess): a subprocess defined within another process definition.
  *
@@ -72,7 +70,7 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
     ExecutionEntity startSubProcessExecution = Context.getCommandContext().getExecutionEntityManager()
         .createChildExecution(executionEntity);
     startSubProcessExecution.setCurrentFlowElement(startElement);
-    planContinueProcessOperation(startSubProcessExecution);
+    Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
   }
 
   protected SubProcess getSubProcessFromExecution(DelegateExecution execution) {

@@ -24,8 +24,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTakeOutgoingSequenceFlowsOperation;
-
 /**
  * Implementation of the BPMN 2.0 event subprocess start event.
  *
@@ -50,7 +48,7 @@ public class EventSubProcessErrorStartEventActivityBehavior extends AbstractBpmn
     ExecutionEntity startSubProcessExecution = Context.getCommandContext()
         .getExecutionEntityManager().createChildExecution((ExecutionEntity) execution);
     startSubProcessExecution.setCurrentFlowElement(startEvent);
-    planTakeOutgoingSequenceFlowsOperation(startSubProcessExecution, true);
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(startSubProcessExecution, true);
   }
 
   protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {

@@ -29,8 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTakeOutgoingSequenceFlowsOperation;
-
 /**
  * Implementation of the Parallel Gateway/AND gateway as defined in the BPMN 2.0 specification.
  *
@@ -110,7 +108,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
       }
 
       // TODO: potential optimization here: reuse more then 1 execution, only 1 currently
-      planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, false); // false -> ignoring conditions on parallel gw
+      Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, false); // false -> ignoring conditions on parallel gw
 
     } else if (log.isDebugEnabled()) {
       log.debug("parallel gateway '{}' does not activate: {} of {} joined", execution.getCurrentActivityId(), nbrOfExecutionsCurrentlyJoined, nbrOfExecutionsToJoin);

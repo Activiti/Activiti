@@ -22,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.*;
-
 /**
  * Operation that leaves the {@link FlowElement} where the {@link ExecutionEntity} is currently at
  * and leaves it following the sequence flow.
@@ -149,7 +147,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     if (outgoingSequenceFlows.size() == 0) {
       if (flowNode.getOutgoingFlows() == null || flowNode.getOutgoingFlows().size() == 0) {
         logger.debug("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
-        planEndExecutionOperation(execution);
+        Context.getAgenda().planEndExecutionOperation(execution);
 
       } else {
         throw new ActivitiException("No outgoing sequence flow of element '" + flowNode.getId() + "' could be selected for continuing the process");
@@ -186,7 +184,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
       // Leave (only done when all executions have been made, since some queries depend on this)
       for (ExecutionEntity outgoingExecution : outgoingExecutions) {
-        planContinueProcessOperation(outgoingExecution);
+        Context.getAgenda().planContinueProcessOperation(outgoingExecution);
       }
     }
   }
@@ -221,14 +219,14 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       }
 
       if (endAdhocSubProcess) {
-        planEndExecutionOperation(execution.getParent());
+        Context.getAgenda().planEndExecutionOperation(execution.getParent());
       }
     }
   }
 
   protected void handleSequenceFlow() {
     commandContext.getHistoryManager().recordActivityEnd(execution, null);
-    planContinueProcessOperation(execution);
+    Context.getAgenda().planContinueProcessOperation(execution);
   }
 
   protected void cleanupCompensation() {
@@ -255,9 +253,9 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         }
 
         if (executionEntityToEnd.isProcessInstanceType()) {
-          planEndExecutionOperation(executionEntityToEnd);
+          Context.getAgenda().planEndExecutionOperation(executionEntityToEnd);
         } else {
-          planDestroyScopeOperation(executionEntityToEnd);
+          Context.getAgenda().planDestroyScopeOperation(executionEntityToEnd);
         }
 
       }
@@ -270,7 +268,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       // If the execution is a scope (and not a process instance), the scope must first be
       // destroyed before we can continue and follow the sequence flow
 
-      planDestroyScopeOperation(execution);
+      Context.getAgenda().planDestroyScopeOperation(execution);
 
     } else if (currentFlowElement instanceof Activity) {
 

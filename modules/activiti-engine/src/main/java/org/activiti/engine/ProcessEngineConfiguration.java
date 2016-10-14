@@ -19,6 +19,7 @@ import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.runtime.ActivitiAgenda;
 import org.activiti.engine.impl.runtime.Agenda;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.image.ProcessDiagramGenerator;
@@ -166,10 +167,10 @@ public abstract class ProcessEngineConfiguration {
    * @since 5.9
    */
   protected String databaseTablePrefix = "";
-  
+
   /**
    * Escape character for doing wildcard searches.
-   * 
+   *
    * This will be added at then end of queries that include for example a LIKE clause.
    * For example: SELECT * FROM table WHERE column LIKE '%\%%' ESCAPE '\';
    */
@@ -212,7 +213,7 @@ public abstract class ProcessEngineConfiguration {
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
 
   protected boolean enableProcessDefinitionInfoCache = false;
-  protected FactoryBean<Agenda> agendaFactory;
+  protected FactoryBean<ActivitiAgenda> agendaFactory;
 
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
@@ -712,7 +713,7 @@ public abstract class ProcessEngineConfiguration {
   public boolean isTablePrefixIsSchema() {
     return tablePrefixIsSchema;
   }
-  
+
   public String getDatabaseWildcardEscapeCharacter() {
     return databaseWildcardEscapeCharacter;
   }
@@ -812,7 +813,7 @@ public abstract class ProcessEngineConfiguration {
     return this;
   }
 
-  public Agenda createAgenda() {
+  public ActivitiAgenda createAgenda() {
     try {
       return agendaFactory.getObject();
     } catch (Exception e) {
@@ -820,7 +821,7 @@ public abstract class ProcessEngineConfiguration {
     }
   }
 
-  public void setAgendaFactory(FactoryBean<Agenda> agendaFactory) {
+  public void setAgendaFactory(FactoryBean<ActivitiAgenda> agendaFactory) {
     this.agendaFactory = agendaFactory;
   }
 

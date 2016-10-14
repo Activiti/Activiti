@@ -24,8 +24,6 @@ import org.activiti.engine.impl.util.CollectionUtil;
 
 import java.util.Collection;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTakeOutgoingSequenceFlowsOperation;
-
 /**
  * @author Joram Barrez
  */
@@ -92,7 +90,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     // set new parent for boundary event execution
     executionEntity.setParent(parentScopeExecution);
 
-    planTakeOutgoingSequenceFlowsOperation(executionEntity, true);
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionEntity, true);
   }
 
   protected void executeNonInterruptingBehavior(ExecutionEntity executionEntity, CommandContext commandContext) {
@@ -127,7 +125,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     ExecutionEntity nonInterruptingExecution = executionEntityManager.createChildExecution(scopeExecution);
     nonInterruptingExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
 
-    planTakeOutgoingSequenceFlowsOperation(nonInterruptingExecution, true);
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(nonInterruptingExecution, true);
   }
 
   protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution, CommandContext commandContext) {

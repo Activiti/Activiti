@@ -30,8 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.*;
-
 /**
  * This class is responsible for finding and executing error handlers for BPMN Errors.
  *
@@ -185,14 +183,14 @@ public class ErrorPropagation {
       ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
 
       if (currentExecution.getParentId().equals(parentExecution.getId()) == false) {
-        planDestroyScopeOperation(currentExecution);
+        Context.getAgenda().planDestroyScopeOperation(currentExecution);
       } else {
         executionEntityManager.deleteExecutionAndRelatedData(currentExecution, null, false);
       }
 
       ExecutionEntity eventSubProcessExecution = executionEntityManager.createChildExecution(parentExecution);
       eventSubProcessExecution.setCurrentFlowElement(event);
-      planContinueProcessOperation(eventSubProcessExecution);
+      Context.getAgenda().planContinueProcessOperation(eventSubProcessExecution);
 
     } else {
       ExecutionEntity boundaryExecution = null;
@@ -203,7 +201,7 @@ public class ErrorPropagation {
         }
       }
 
-      planTriggerExecutionOperation(boundaryExecution);
+      Context.getAgenda().planTriggerExecutionOperation(boundaryExecution);
     }
   }
 

@@ -39,8 +39,6 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueMultiInstanceOperation;
-
 /**
  * Implementation of the multi-instance functionality as described in the BPMN 2.0 spec.
  *
@@ -207,7 +205,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     }
 
     execution.setCurrentFlowElement(activity);
-    planContinueMultiInstanceOperation((ExecutionEntity) execution);
+    Context.getAgenda().planContinueMultiInstanceOperation((ExecutionEntity) execution);
   }
 
   @SuppressWarnings("rawtypes")

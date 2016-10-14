@@ -25,8 +25,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTakeOutgoingSequenceFlowsOperation;
-
 /**
  * Implementation of the Inclusive Gateway/OR gateway/inclusive data-based gateway as defined in the BPMN specification.
  *
@@ -97,7 +95,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
       }
 
       // Leave
-      planTakeOutgoingSequenceFlowsOperation(execution, true);
+      commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
     }
   }
 }

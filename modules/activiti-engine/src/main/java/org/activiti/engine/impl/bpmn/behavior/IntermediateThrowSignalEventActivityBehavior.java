@@ -29,8 +29,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTakeOutgoingSequenceFlowsOperation;
-
 /**
  * @author Tijs Rademakers
  */
@@ -89,7 +87,7 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
       eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, signalEventDefinition.isAsync());
     }
 
-    planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, true);
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, true);
   }
 
 }

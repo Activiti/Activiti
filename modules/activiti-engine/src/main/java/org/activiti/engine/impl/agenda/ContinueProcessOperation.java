@@ -20,9 +20,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.List;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueProcessOperation;
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTakeOutgoingSequenceFlowsOperation;
-
 /**
  * Operation that takes the current {@link FlowElement} set on the {@link ExecutionEntity}
  * and executes the associated {@link ActivityBehavior}. In the case of async, schedules a {@link Job}.
@@ -135,7 +132,7 @@ public class ContinueProcessOperation extends AbstractOperation {
 
     } else {
       logger.debug("No activityBehavior on activity '{}' with execution {}", flowNode.getId(), execution.getId());
-      planTakeOutgoingSequenceFlowsOperation(execution, true);
+      Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
     }
   }
 
@@ -221,7 +218,7 @@ public class ContinueProcessOperation extends AbstractOperation {
     execution.setCurrentFlowElement(targetFlowElement);
 
     logger.debug("Sequence flow '{}' encountered. Continuing process by following it using execution {}", sequenceFlow.getId(), execution.getId());
-    planContinueProcessOperation(execution);
+    Context.getAgenda().planContinueProcessOperation(execution);
   }
 
   protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ExecutionEntity execution) {

@@ -15,14 +15,13 @@ package org.activiti.engine.impl.jobexecutor;
 import org.activiti.bpmn.model.*;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTriggerExecutionOperation;
 
 /**
  * @author Joram Barrez
@@ -37,7 +36,7 @@ public class TriggerTimerEventJobHandler implements JobHandler {
 
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
 
-    planTriggerExecutionOperation(execution);
+    Context.getAgenda().planTriggerExecutionOperation(execution);
 
     if (commandContext.getEventDispatcher().isEnabled()) {
       commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));

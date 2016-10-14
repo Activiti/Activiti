@@ -24,7 +24,7 @@ import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.*;
-import org.activiti.engine.impl.runtime.Agenda;
+import org.activiti.engine.impl.runtime.ActivitiAgenda;
 import org.activiti.engine.logging.LogMDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +50,7 @@ public class CommandContext {
   protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
   protected boolean reused;
 
-  protected Agenda agenda;
+  protected ActivitiAgenda agenda;
   protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the command
   protected LinkedList<Object> resultStack = new LinkedList<Object>(); // needs to be a stack, as JavaDelegates can do api calls again
 
@@ -436,7 +436,7 @@ public class CommandContext {
     return processEngineConfiguration.getEventDispatcher();
   }
 
-  public Agenda getAgenda() {
+  public ActivitiAgenda getAgenda() {
     return agenda;
   }
 

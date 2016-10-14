@@ -26,8 +26,6 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.util.List;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planTakeOutgoingSequenceFlowsOperation;
-
 /**
  * Helper class for implementing BPMN 2.0 activities, offering convenience methods specific to BPMN 2.0.
  *
@@ -95,7 +93,7 @@ public class BpmnActivityBehavior implements Serializable {
    *          If true, an {@link ActivitiException} will be thrown in case no transition could be found to leave the activity.
    */
   protected void performOutgoingBehavior(ExecutionEntity execution, boolean checkConditions, boolean throwExceptionIfExecutionStuck) {
-    planTakeOutgoingSequenceFlowsOperation(execution, true);
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
   }
 
 }

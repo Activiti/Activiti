@@ -1,18 +1,18 @@
 package org.activiti.examples.runtime;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.agenda.DefaultAgenda;
+import org.activiti.engine.impl.agenda.DefaultActivitiAgenda;
 import org.activiti.engine.impl.runtime.Agenda;
 import org.springframework.beans.factory.FactoryBean;
 
 /**
- * This class...
+ * This class implements an factory for generating watchdog agenda
  */
 public class WatchDogAgendaFactory implements FactoryBean<Agenda> {
 
     @Override
     public Agenda getObject() throws Exception {
-        return new WatchDogAgenda(new DefaultAgenda());
+        return new WatchDogAgenda(new DefaultActivitiAgenda());
     }
 
     @Override

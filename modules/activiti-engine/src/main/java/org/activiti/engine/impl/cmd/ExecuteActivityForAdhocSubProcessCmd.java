@@ -26,8 +26,6 @@ import org.activiti.engine.runtime.Execution;
 
 import java.io.Serializable;
 
-import static org.activiti.engine.impl.agenda.ProcessAgendaHelper.planContinueProcessOperation;
-
 /**
  * @author Tijs Rademakers
  */
@@ -77,7 +75,7 @@ public class ExecuteActivityForAdhocSubProcessCmd implements Command<Execution>,
 
     ExecutionEntity activityExecution = Context.getCommandContext().getExecutionEntityManager().createChildExecution(execution);
     activityExecution.setCurrentFlowElement(foundNode);
-    planContinueProcessOperation(activityExecution);
+    Context.getAgenda().planContinueProcessOperation(activityExecution);
 
     return activityExecution;
   }
