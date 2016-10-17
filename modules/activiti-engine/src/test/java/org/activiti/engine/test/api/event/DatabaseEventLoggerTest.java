@@ -388,8 +388,8 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			  // process definition Id can't be recognized in  DB flush
 			  assertNull(entry.getProcessDefinitionId());
 			  assertNotNull(entry.getProcessInstanceId());
-        assertNotNull(entry.getTimeStamp());
-        assertNull(entry.getTaskId());
+			  assertNotNull(entry.getTimeStamp());
+			  assertNull(entry.getTaskId());
 			}
 			
 			if (i == 16) {
