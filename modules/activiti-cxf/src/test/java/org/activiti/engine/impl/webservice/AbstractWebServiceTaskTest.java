@@ -26,6 +26,8 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
  */
 public abstract class AbstractWebServiceTaskTest extends PluggableActivitiTestCase {
 
+    public final static String WEBSERVICE_MOCK_ADDRESS = "http://localhost:63081/webservicemock";
+
     protected WebServiceMock webServiceMock;
 
     protected Server server;
@@ -37,7 +39,7 @@ public abstract class AbstractWebServiceTaskTest extends PluggableActivitiTestCa
         webServiceMock = new WebServiceMockImpl();
         JaxWsServerFactoryBean svrFactory = new JaxWsServerFactoryBean();
         svrFactory.setServiceClass(WebServiceMock.class);
-        svrFactory.setAddress("http://localhost:63081/webservicemock");
+        svrFactory.setAddress(WEBSERVICE_MOCK_ADDRESS);
         svrFactory.setServiceBean(webServiceMock);
         svrFactory.getInInterceptors().add(new LoggingInInterceptor());
         svrFactory.getOutInterceptors().add(new LoggingOutInterceptor());
@@ -49,6 +51,7 @@ public abstract class AbstractWebServiceTaskTest extends PluggableActivitiTestCa
     protected void tearDown() throws Exception {
         super.tearDown();
         server.stop();
+        server.destroy();
     }
 
 }

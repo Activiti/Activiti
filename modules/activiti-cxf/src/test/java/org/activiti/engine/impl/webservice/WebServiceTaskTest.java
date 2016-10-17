@@ -106,7 +106,7 @@ public class WebServiceTaskTest extends AbstractWebServiceTaskTest {
 
         processEngineConfiguration.addWsEndpointAddress(
                 new QName("http://webservice.impl.engine.activiti.org/", "CounterImplPort"),
-                new URL("http://localhost:63081/webservicemock"));
+                new URL(WEBSERVICE_MOCK_ADDRESS));
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("webServiceInvocation");
         waitForJobExecutorToProcessAllJobs(10000L, 250L);
