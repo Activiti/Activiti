@@ -589,6 +589,7 @@ public class RestResponseFactory {
     result.setActivityId(processInstance.getActivityId());
     result.setBusinessKey(processInstance.getBusinessKey());
     result.setId(processInstance.getId());
+    result.setName(processInstance.getName());
     result.setProcessDefinitionId(processInstance.getProcessDefinitionId());
     result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId()));
     result.setEnded(processInstance.isEnded());
