@@ -14,10 +14,14 @@ package org.activiti.engine.test.api.event;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.event.EventLogEntry;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
@@ -56,11 +60,29 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
 	  assertEquals(1, listener.getEventsReceived().size());
     assertEquals(ActivitiEventType.VARIABLE_CREATED, listener.getEventsReceived().get(0).getType());
     
+    managementService.executeCommand(new Command<Void>() {
+      @Override
+      public Void execute(CommandContext commandContext) {
+        List<EventLogEntry> eventLogEntries = commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
+        assertEquals(1, eventLogEntries.size());
+        return null;
+      }
+    });
+ 
     taskService.removeVariableLocal(task.getId(), "myVar");
     
     assertEquals(2, listener.getEventsReceived().size());
     assertEquals(ActivitiEventType.VARIABLE_DELETED, listener.getEventsReceived().get(1).getType());
-
+    
+    managementService.executeCommand(new Command<Void>() {
+      @Override
+      public Void execute(CommandContext commandContext) {
+        List<EventLogEntry> eventLogEntries = commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
+        assertEquals(2, eventLogEntries.size());
+        return null;
+      }
+    });
+    
     listener.clearEventsReceived();
     
     // bulk insert delete var test
@@ -70,7 +92,21 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
     taskService.setVariablesLocal(task.getId(), vars);
     taskService.removeVariablesLocal(task.getId(), Arrays.asList("myVar", "myVar2"));
     
+    taskService.deleteTask(task.getId());
+    historyService.deleteHistoricTaskInstance(task.getId());
     assertEquals(4, listener.getEventsReceived().size());
+    
+    managementService.executeCommand(new Command<Void>() {
+      @Override
+      public Void execute(CommandContext commandContext) {
+        List<EventLogEntry> eventLogEntries = commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
+        assertEquals(6, eventLogEntries.size());
+        for (EventLogEntry eventLogEntry: eventLogEntries) {
+          commandContext.getEventLogEntryEntityManager().deleteEventLogEntry(eventLogEntry.getLogNumber());
+        }
+        return null;
+      }
+    });
     
 	}
 

@@ -44,10 +44,10 @@ public class TestVariableEventListenerStore implements ActivitiEventListener {
 		if(event instanceof ActivitiVariableEvent) {
 			eventsReceived.add(event);
 			EventLogEntryEntity eventLogEntry = new EventLogEntryEntity();
-	    eventLogEntry.setProcessDefinitionId("processDefinitionId");
-	    eventLogEntry.setProcessInstanceId("processInstanceId");
-	    eventLogEntry.setExecutionId("executionId");
-	    eventLogEntry.setTaskId("taskId");
+	    eventLogEntry.setProcessDefinitionId(event.getProcessDefinitionId());
+	    eventLogEntry.setProcessInstanceId(event.getProcessInstanceId());
+	    eventLogEntry.setExecutionId(event.getExecutionId());
+	    eventLogEntry.setTaskId(((ActivitiVariableEvent) event).getTaskId());
 	    eventLogEntry.setType(event.getType().name());
 	    eventLogEntry.setTimeStamp(new Date());
 	    CommandContext commandContext = Context.getCommandContext();
