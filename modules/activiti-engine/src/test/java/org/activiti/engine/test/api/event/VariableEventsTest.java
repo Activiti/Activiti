@@ -270,7 +270,7 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 				.singleResult();
 		assertNotNull(task);
 
-		//assertEquals(3, listener.getEventsReceived().size());
+		assertEquals(3, listener.getEventsReceived().size());
 		
 		// Check create event
 		ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
@@ -303,12 +303,6 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 		assertEquals("variable", event.getVariableName());
     // deleted variable value is always null
 		assertEquals(null, event.getVariableValue());
-		
-		/*System.out.println("====== PRINTING =======");
-		
-		event = (ActivitiVariableEvent) listener.getEventsReceived().get(3);
-    System.out.println(event.getVariableName());*/
-		
 	}
 
 	/**

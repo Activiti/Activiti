@@ -102,16 +102,10 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
 			listener.clearEventsReceived();
 			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
 			
-			managementService.executeCommand(new Command<Void>() {
-	      @Override
-	      public Void execute(CommandContext commandContext) {
-	        List<EventLogEntry> eventLogEntries = commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
-	        for (EventLogEntry eventLogEntry: eventLogEntries) {
-	          commandContext.getEventLogEntryEntityManager().deleteEventLogEntry(eventLogEntry.getLogNumber());
-	        }
-	        return null;
-	      }
-	    });
+			// cleanup
+			for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
+	      managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
+	    }
 		}
 	}
 }
