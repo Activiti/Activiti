@@ -44,6 +44,7 @@ public class HistoricProcessInstanceResponse {
   protected String superProcessInstanceId;
   protected List<RestVariable> variables = new ArrayList<RestVariable>();
   protected String tenantId;
+  protected String name;
   
   public String getId() {
     return id;
@@ -137,5 +138,11 @@ public class HistoricProcessInstanceResponse {
   }
   public String getTenantId() {
 	  return tenantId;
+  }
+  public void setName(String name) {
+	  this.name = name;
+  }
+  public String getName() {
+	  return name;
   }
 }

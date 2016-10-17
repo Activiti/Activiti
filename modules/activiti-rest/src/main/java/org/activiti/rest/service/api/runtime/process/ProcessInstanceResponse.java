@@ -37,6 +37,7 @@ public class ProcessInstanceResponse {
   protected String activityId;
   protected List<RestVariable> variables = new ArrayList<RestVariable>();
   protected String tenantId;
+  protected String name;
   
   //Added by Ryan Johnston
   protected boolean completed;
@@ -123,6 +124,14 @@ public class ProcessInstanceResponse {
   
   public String getTenantId() {
 	  return tenantId;
+  }
+  
+  public void setName(String name) {
+	  this.name = name;
+  }
+  
+  public String getName() {
+	  return name;
   }
   
   //Added by Ryan Johnston
