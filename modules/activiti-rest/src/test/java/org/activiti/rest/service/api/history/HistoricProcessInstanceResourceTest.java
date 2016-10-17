@@ -37,7 +37,10 @@ public class HistoricProcessInstanceResourceTest extends BaseSpringRestTestCase 
    */
   @Deployment(resources = { "org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml" })
   public void testGetProcessInstance() throws Exception {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+	ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder()
+			  .processDefinitionKey("oneTaskProcess")
+			  .name("myProcessName")
+			  .start();
 
     CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, processInstance.getId())),
         HttpStatus.SC_OK);
@@ -48,6 +51,7 @@ public class HistoricProcessInstanceResourceTest extends BaseSpringRestTestCase 
     closeResponse(response);
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
+    assertEquals("myProcessName", responseNode.get("name").textValue());
 
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);

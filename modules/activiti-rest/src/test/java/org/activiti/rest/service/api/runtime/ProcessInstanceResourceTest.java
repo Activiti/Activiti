@@ -40,7 +40,11 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
    */
   @Deployment(resources = { "org/activiti/rest/service/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml" })
   public void testGetProcessInstance() throws Exception {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
+	ProcessInstance processInstance = runtimeService.createProcessInstanceBuilder()
+			  .processDefinitionKey("processOne")
+			  .businessKey("myBusinessKey")
+			  .name("myProcessName")
+			  .start();
 
     String url = buildUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId());
     CloseableHttpResponse response = executeRequest(new HttpGet(url), HttpStatus.SC_OK);
@@ -51,6 +55,7 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertEquals("myBusinessKey", responseNode.get("businessKey").textValue());
+    assertEquals("myProcessName", responseNode.get("name").textValue());
     assertFalse(responseNode.get("suspended").booleanValue());
     assertEquals("", responseNode.get("tenantId").textValue());
 
