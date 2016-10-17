@@ -104,7 +104,6 @@ public class VariableInstanceEntity implements VariableInstance, BulkDeleteable,
     byteArrayRef.delete();
     deleted = true; 
     
-    
   }
   
   protected static ActivitiVariableEvent createVariableDeleteEvent(VariableInstanceEntity variableInstance) {

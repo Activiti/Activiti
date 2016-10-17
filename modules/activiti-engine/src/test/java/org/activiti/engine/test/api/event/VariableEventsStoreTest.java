@@ -31,79 +31,79 @@ import org.activiti.engine.test.Deployment;
  */
 public class VariableEventsStoreTest extends PluggableActivitiTestCase {
 
-	private TestVariableEventListenerStore listener;
+  private TestVariableEventListenerStore listener;
 
-	@Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
-	public void testStartEndProcessInstanceVariableEvents() throws Exception {
-	  Map<String, Object> variables = new HashMap<String, Object>();
-	  variables.put("var1", "value1");
-	  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+  @Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
+  public void testStartEndProcessInstanceVariableEvents() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("var1", "value1");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
 
-	  assertEquals(1, listener.getEventsReceived().size());
-	  assertEquals(ActivitiEventType.VARIABLE_CREATED, listener.getEventsReceived().get(0).getType());
-	  assertEquals(1, managementService.getEventLogEntries(null, null).size());
-
-	  Task task = taskService.createTaskQuery().processInstanceId( processInstance.getId()).singleResult();
-	  taskService.complete(task.getId());
-
-	  assertEquals(2, listener.getEventsReceived().size());
-	  assertEquals(ActivitiEventType.VARIABLE_DELETED, listener.getEventsReceived().get(1).getType());
-	  assertEquals(2, managementService.getEventLogEntries(null, null).size());
-	  
-	}
-	
-	
-	public void testTaskInstanceVariableEvents() throws Exception {
-	  Task task = taskService.newTask();
-	  taskService.saveTask(task);
-	  
-	  taskService.setVariableLocal(task.getId(), "myVar", "value");
-	  
-	  assertEquals(1, listener.getEventsReceived().size());
+    assertEquals(1, listener.getEventsReceived().size());
     assertEquals(ActivitiEventType.VARIABLE_CREATED, listener.getEventsReceived().get(0).getType());
     assertEquals(1, managementService.getEventLogEntries(null, null).size());
- 
-    taskService.removeVariableLocal(task.getId(), "myVar");
-    
+
+    Task task = taskService.createTaskQuery().processInstanceId( processInstance.getId()).singleResult();
+    taskService.complete(task.getId());
+
     assertEquals(2, listener.getEventsReceived().size());
     assertEquals(ActivitiEventType.VARIABLE_DELETED, listener.getEventsReceived().get(1).getType());
     assertEquals(2, managementService.getEventLogEntries(null, null).size());
-    
+
+  }
+
+
+  public void testTaskInstanceVariableEvents() throws Exception {
+    Task task = taskService.newTask();
+    taskService.saveTask(task);
+
+    taskService.setVariableLocal(task.getId(), "myVar", "value");
+
+    assertEquals(1, listener.getEventsReceived().size());
+    assertEquals(ActivitiEventType.VARIABLE_CREATED, listener.getEventsReceived().get(0).getType());
+    assertEquals(1, managementService.getEventLogEntries(null, null).size());
+
+    taskService.removeVariableLocal(task.getId(), "myVar");
+
+    assertEquals(2, listener.getEventsReceived().size());
+    assertEquals(ActivitiEventType.VARIABLE_DELETED, listener.getEventsReceived().get(1).getType());
+    assertEquals(2, managementService.getEventLogEntries(null, null).size());
+
     // bulk insert delete var test
     Map<String, String> vars = new HashMap<String, String>();
     vars.put("myVar", "value");
     vars.put("myVar2", "value");
     taskService.setVariablesLocal(task.getId(), vars);
     taskService.removeVariablesLocal(task.getId(), Arrays.asList("myVar", "myVar2"));
-    
+
     assertEquals(6, listener.getEventsReceived().size());
     assertEquals(6, managementService.getEventLogEntries(null, null).size());
-    
+
     taskService.complete(task.getId());
     historyService.deleteHistoricTaskInstance(task.getId());
-    
-	}
 
-	@Override
-	protected void initializeServices() {
-		super.initializeServices();
+  }
 
-		listener = new TestVariableEventListenerStore();
-		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
-	}
+  @Override
+  protected void initializeServices() {
+    super.initializeServices();
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+    listener = new TestVariableEventListenerStore();
+    processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+  }
 
-		if (listener != null) {
-			listener.clearEventsReceived();
-			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
-			
-			// cleanup
-			for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
-	      managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
-	    }
-		}
-	}
+  @Override
+  protected void tearDown() throws Exception {
+    super.tearDown();
+
+    if (listener != null) {
+      listener.clearEventsReceived();
+      processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+
+      // cleanup
+      for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
+        managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
+      }
+    }
+  }
 }

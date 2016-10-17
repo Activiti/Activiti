@@ -41,9 +41,9 @@ public class TestVariableEventListenerStore implements ActivitiEventListener {
 	
 	@Override
 	public void onEvent(ActivitiEvent event) {
-		if(event instanceof ActivitiVariableEvent) {
-			eventsReceived.add(event);
-			EventLogEntryEntity eventLogEntry = new EventLogEntryEntity();
+	  if(event instanceof ActivitiVariableEvent) {
+	    eventsReceived.add(event);
+	    EventLogEntryEntity eventLogEntry = new EventLogEntryEntity();
 	    eventLogEntry.setProcessDefinitionId(event.getProcessDefinitionId());
 	    eventLogEntry.setProcessInstanceId(event.getProcessInstanceId());
 	    eventLogEntry.setExecutionId(event.getExecutionId());
@@ -51,8 +51,8 @@ public class TestVariableEventListenerStore implements ActivitiEventListener {
 	    eventLogEntry.setType(event.getType().name());
 	    eventLogEntry.setTimeStamp(new Date());
 	    CommandContext commandContext = Context.getCommandContext();
-      commandContext.getEventLogEntryEntityManager().insert(eventLogEntry);
-		}
+	    commandContext.getEventLogEntryEntityManager().insert(eventLogEntry);
+	  }
 	}
 
 	@Override
