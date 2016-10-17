@@ -17,24 +17,25 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.test.Deployment;
 
 /**
- * Test case for all {@link ActivitiEvent}s related to variables.
+ * Test variables delete events with storing events {@link EventLogEntryEntity}.
  * 
- * @author Frederik Heremans
+ * @author Bassam Al-Sarori
  */
 public class VariableEventsStoreTest extends PluggableActivitiTestCase {
 
 	private TestVariableEventListenerStore listener;
 
-	/*@Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
+	@Deployment(resources = {"org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml"})
 	public void testStartEndProcessInstanceVariableEvents() throws Exception {
 	  Map<String, Object> variables = new HashMap<String, Object>();
 	  variables.put("var1", "value1");
@@ -42,13 +43,16 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
 
 	  assertEquals(1, listener.getEventsReceived().size());
 	  assertEquals(ActivitiEventType.VARIABLE_CREATED, listener.getEventsReceived().get(0).getType());
+	  assertEquals(1, managementService.getEventLogEntries(0L, 100L).size());
 
 	  Task task = taskService.createTaskQuery().processInstanceId( processInstance.getId()).singleResult();
 	  taskService.complete(task.getId());
 
 	  assertEquals(2, listener.getEventsReceived().size());
 	  assertEquals(ActivitiEventType.VARIABLE_DELETED, listener.getEventsReceived().get(1).getType());
-	}*/
+	  assertEquals(2, managementService.getEventLogEntries(0L, 100L).size());
+	  
+	}
 	
 	
 	public void testTaskInstanceVariableEvents() throws Exception {
@@ -59,31 +63,13 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
 	  
 	  assertEquals(1, listener.getEventsReceived().size());
     assertEquals(ActivitiEventType.VARIABLE_CREATED, listener.getEventsReceived().get(0).getType());
-    
-    managementService.executeCommand(new Command<Void>() {
-      @Override
-      public Void execute(CommandContext commandContext) {
-        List<EventLogEntry> eventLogEntries = commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
-        assertEquals(1, eventLogEntries.size());
-        return null;
-      }
-    });
+    assertEquals(1, managementService.getEventLogEntries(0L, 100L).size());
  
     taskService.removeVariableLocal(task.getId(), "myVar");
     
     assertEquals(2, listener.getEventsReceived().size());
     assertEquals(ActivitiEventType.VARIABLE_DELETED, listener.getEventsReceived().get(1).getType());
-    
-    managementService.executeCommand(new Command<Void>() {
-      @Override
-      public Void execute(CommandContext commandContext) {
-        List<EventLogEntry> eventLogEntries = commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
-        assertEquals(2, eventLogEntries.size());
-        return null;
-      }
-    });
-    
-    listener.clearEventsReceived();
+    assertEquals(2, managementService.getEventLogEntries(0L, 100L).size());
     
     // bulk insert delete var test
     Map<String, String> vars = new HashMap<String, String>();
@@ -92,21 +78,11 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
     taskService.setVariablesLocal(task.getId(), vars);
     taskService.removeVariablesLocal(task.getId(), Arrays.asList("myVar", "myVar2"));
     
-    taskService.deleteTask(task.getId());
-    historyService.deleteHistoricTaskInstance(task.getId());
-    assertEquals(4, listener.getEventsReceived().size());
+    assertEquals(6, listener.getEventsReceived().size());
+    assertEquals(6, managementService.getEventLogEntries(0L, 100L).size());
     
-    managementService.executeCommand(new Command<Void>() {
-      @Override
-      public Void execute(CommandContext commandContext) {
-        List<EventLogEntry> eventLogEntries = commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
-        assertEquals(6, eventLogEntries.size());
-        for (EventLogEntry eventLogEntry: eventLogEntries) {
-          commandContext.getEventLogEntryEntityManager().deleteEventLogEntry(eventLogEntry.getLogNumber());
-        }
-        return null;
-      }
-    });
+    taskService.complete(task.getId());
+    historyService.deleteHistoricTaskInstance(task.getId());
     
 	}
 
@@ -125,6 +101,17 @@ public class VariableEventsStoreTest extends PluggableActivitiTestCase {
 		if (listener != null) {
 			listener.clearEventsReceived();
 			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+			
+			managementService.executeCommand(new Command<Void>() {
+	      @Override
+	      public Void execute(CommandContext commandContext) {
+	        List<EventLogEntry> eventLogEntries = commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
+	        for (EventLogEntry eventLogEntry: eventLogEntries) {
+	          commandContext.getEventLogEntryEntityManager().deleteEventLogEntry(eventLogEntry.getLogNumber());
+	        }
+	        return null;
+	      }
+	    });
 		}
 	}
 }
