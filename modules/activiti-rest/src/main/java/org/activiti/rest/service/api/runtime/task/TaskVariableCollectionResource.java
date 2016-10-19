@@ -76,21 +76,33 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
     result.addAll(variableMap.values());
     return result;
   }
-  
+
+  @RequestMapping(value="/runtime/tasks/{taskId}/variables", method = RequestMethod.PUT, produces="application/json")
+  public Object createOrUpdateTaskVariable(@PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
+
+    Task task = getTaskFromRequest(taskId);
+
+    return createOrUpdateTaskVariables(request, response, task, true);
+  }
+
   @RequestMapping(value="/runtime/tasks/{taskId}/variables", method = RequestMethod.POST, produces="application/json")
   public Object createTaskVariable(@PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
     
     Task task = getTaskFromRequest(taskId);
-    
+
+    return createOrUpdateTaskVariables(request, response, task, false);
+  }
+
+  private Object createOrUpdateTaskVariables(HttpServletRequest request, HttpServletResponse response, Task task, boolean override) {
     Object result = null;
     if (request instanceof MultipartHttpServletRequest) {
       result = setBinaryVariable((MultipartHttpServletRequest) request, task, true);
     } else {
-      
+
       List<RestVariable> inputVariables = new ArrayList<RestVariable>();
       List<RestVariable> resultVariables = new ArrayList<RestVariable>();
       result = resultVariables;
-      
+
       try {
         @SuppressWarnings("unchecked")
         List<Object> variableObjects = (List<Object>) objectMapper.readValue(request.getInputStream(), List.class);
@@ -101,22 +113,22 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
       } catch (Exception e) {
         throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
       }
-      
+
       if (inputVariables == null || inputVariables.size() == 0) {
         throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
       }
-      
+
       RestVariableScope sharedScope = null;
       RestVariableScope varScope = null;
       Map<String, Object> variablesToSet = new HashMap<String, Object>();
-      
+
       for (RestVariable var : inputVariables) {
         // Validate if scopes match
         varScope = var.getVariableScope();
         if (var.getName() == null) {
           throw new ActivitiIllegalArgumentException("Variable name is required");
         }
-        
+
         if (varScope == null) {
           varScope = RestVariableScope.LOCAL;
         }
@@ -126,17 +138,17 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
         if (varScope != sharedScope) {
           throw new ActivitiIllegalArgumentException("Only allowed to update multiple variables in the same scope.");
         }
-        
-        if (hasVariableOnScope(task, var.getName(), varScope)) {
+
+        if (!override && hasVariableOnScope(task, var.getName(), varScope)) {
           throw new ActivitiConflictException("Variable '" + var.getName() + "' is already present on task '" + task.getId() + "'.");
         }
-        
+
         Object actualVariableValue = restResponseFactory.getVariableValue(var);
         variablesToSet.put(var.getName(), actualVariableValue);
-        resultVariables.add(restResponseFactory.createRestVariable(var.getName(), actualVariableValue, varScope, 
+        resultVariables.add(restResponseFactory.createRestVariable(var.getName(), actualVariableValue, varScope,
             task.getId(), RestResponseFactory.VARIABLE_TASK, false));
       }
-      
+
       if (!variablesToSet.isEmpty()) {
         if (sharedScope == RestVariableScope.LOCAL) {
           taskService.setVariablesLocal(task.getId(), variablesToSet);
@@ -151,11 +163,11 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
         }
       }
     }
-    
+
     response.setStatus(HttpStatus.CREATED.value());
     return result;
   }
-  
+
   @RequestMapping(value="/runtime/tasks/{taskId}/variables", method = RequestMethod.DELETE)
   public void deleteAllLocalTaskVariables(@PathVariable String taskId, HttpServletResponse response) {
   	Task task = getTaskFromRequest(taskId);
