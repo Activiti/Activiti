@@ -224,4 +224,23 @@ public abstract class AbstractVariableQueryImpl<T extends Query<?,?>, U> extends
   public List<QueryVariableValue> getQueryVariableValues() {
     return queryVariableValues;
   }   
+
+  public boolean hasLocalQueryVariableValue() {
+    for (QueryVariableValue qvv : queryVariableValues) {
+        if (qvv.isLocal()) {
+            return true;
+        }
+    }
+    return false;
+  }
+
+  public boolean hasNonLocalQueryVariableValue() {
+    for (QueryVariableValue qvv : queryVariableValues) {
+        if (!qvv.isLocal()) {
+            return true;
+        }
+    }
+    return false;
+  }
+
 }
