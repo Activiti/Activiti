@@ -392,16 +392,14 @@
       <if test="orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)">
         left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex} ON RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_
       </if>
-      <foreach collection="orQueryObject.queryVariableValues" index="index" item="var">
-        <choose>
-          <when test="var.local">
-            left outer join ${prefix}ACT_HI_VARINST A_OR${orIndex}_${index} on RES.ID_ = A_OR${orIndex}_${index}.TASK_ID_ 
-          </when>
-          <otherwise>
-            left outer join ${prefix}ACT_HI_VARINST A_OR${orIndex}_${index} on RES.PROC_INST_ID_ = A_OR${orIndex}_${index}.PROC_INST_ID_ 
-          </otherwise>
-        </choose>       
-      </foreach>
+      <if test="orQueryObject.queryVariableValues.size() &gt; 0">
+        <if test="orQueryObject.hasLocalQueryVariableValue()">
+          left outer join ${prefix}ACT_HI_VARINST A_L_OR${orIndex} on RES.ID_ = A_L_OR${orIndex}.TASK_ID_ 
+        </if>
+        <if test="orQueryObject.hasNonLocalQueryVariableValue()">
+          left outer join ${prefix}ACT_HI_VARINST A_OR${orIndex} on RES.PROC_INST_ID_ = A_OR${orIndex}.PROC_INST_ID_ 
+        </if>
+      </if>
     </foreach>
     <where>
       <if test="taskId != null">
@@ -930,25 +928,31 @@
           <foreach item="queryVar" collection="orQueryObject.queryVariableValues" index="index">
             or
             <trim prefix="(" prefixOverrides="AND" suffix=")">
-              <if test="!queryVar.local">
-                <!-- When process instance variable is queried for, taskId should be null -->
-                and A_OR${orIndex}_${index}.TASK_ID_ is null
-              </if>
+              <choose>
+                <when test="!queryVar.local">
+                  <bind name="orLocal" value="''" />
+                  <!-- When process instance variable is queried for, taskId should be null -->
+                  and A_OR${orIndex}.TASK_ID_ is null
+                </when>
+                <otherwise>
+                  <bind name="orLocal" value="'L_'" />
+                </otherwise>
+              </choose>
               <if test="queryVar.name != null">
                 <!-- Match-all variable-names when name is null -->
-                and A_OR${orIndex}_${index}.NAME_= #{queryVar.name}
+                and A_${orLocal}OR${orIndex}.NAME_= #{queryVar.name}
               </if>
               <if test="!queryVar.type.equals('null')">
-                and A_OR${orIndex}_${index}.VAR_TYPE_ = #{queryVar.type}
+                and A_${orLocal}OR${orIndex}.VAR_TYPE_ = #{queryVar.type}
               </if>
               <!-- Variable value -->
               <if test="queryVar.textValue != null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
                 <choose>
                   <when test="queryVar.operator.equals('EQUALS_IGNORE_CASE') || queryVar.operator.equals('NOT_EQUALS_IGNORE_CASE') || queryVar.operator.equals('LIKE_IGNORE_CASE')">
-                    and lower(A_OR${orIndex}_${index}.TEXT_)
+                    and lower(A_${orLocal}OR${orIndex}.TEXT_)
                   </when>
                   <otherwise>
-                    and A_OR${orIndex}_${index}.TEXT_
+                    and A_${orLocal}OR${orIndex}.TEXT_
                   </otherwise>
                 </choose> 
                 <choose>
@@ -961,7 +965,7 @@
                 </choose>
               </if>
               <if test="queryVar.textValue2 != null">
-                and A_OR${orIndex}_${index}.TEXT2_ 
+                and A_${orLocal}OR${orIndex}.TEXT2_ 
                 <choose>
                   <when test="queryVar.operator.equals('LIKE')">LIKE</when>
                   <otherwise><include refid="executionVariableOperator" /></otherwise>
@@ -972,12 +976,12 @@
                 </choose>
               </if>
               <if test="queryVar.longValue != null">
-                and A_OR${orIndex}_${index}.LONG_
+                and A_${orLocal}OR${orIndex}.LONG_
                 <include refid="executionVariableOperator" />
                 #{queryVar.longValue}
               </if>
               <if test="queryVar.doubleValue != null">
-                and A_OR${orIndex}_${index}.DOUBLE_ 
+                and A_${orLocal}OR${orIndex}.DOUBLE_ 
                 <include refid="executionVariableOperator" />
                 #{queryVar.doubleValue}
               </if>
@@ -985,10 +989,10 @@
               <if test="queryVar.textValue == null &amp;&amp; queryVar.textValue2 == null &amp;&amp; queryVar.longValue == null &amp;&amp; queryVar.doubleValue == null">
                 <choose>
                   <when test="queryVar.operator.equals('NOT_EQUALS')">
-                    and (A_OR${orIndex}_${index}.TEXT_ is not null or A_OR${orIndex}_${index}.TEXT2_ is not null or A_OR${orIndex}_${index}.LONG_ is not null or A_OR${orIndex}_${index}.DOUBLE_ is not null or A_OR${orIndex}_${index}.BYTEARRAY_ID_ is not null)
+                    and (A_${orLocal}OR${orIndex}.TEXT_ is not null or A_${orLocal}OR${orIndex}.TEXT2_ is not null or A_${orLocal}OR${orIndex}.LONG_ is not null or A_${orLocal}OR${orIndex}.DOUBLE_ is not null or A_${orLocal}OR${orIndex}.BYTEARRAY_ID_ is not null)
                   </when>
                   <otherwise>
-                    and A_OR${orIndex}_${index}.TEXT_ is null and A_OR${orIndex}_${index}.TEXT2_ is null and A_OR${orIndex}_${index}.LONG_ is null and A_OR${orIndex}_${index}.DOUBLE_ is null and A_OR${orIndex}_${index}.BYTEARRAY_ID_ is null
+                    and A_${orLocal}OR${orIndex}.TEXT_ is null and A_${orLocal}OR${orIndex}.TEXT2_ is null and A_${orLocal}OR${orIndex}.LONG_ is null and A_${orLocal}OR${orIndex}.DOUBLE_ is null and A_${orLocal}OR${orIndex}.BYTEARRAY_ID_ is null
                   </otherwise>
                 </choose>          
               </if>
