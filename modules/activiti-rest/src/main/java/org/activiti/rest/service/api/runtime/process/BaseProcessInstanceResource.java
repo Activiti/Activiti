@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.ProcessInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
@@ -34,6 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Frederik Heremans
  */
 public class BaseProcessInstanceResource {
+
+  @Autowired
+  protected ManagementService managementService;
 
   private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
 

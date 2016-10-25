@@ -22,4 +22,12 @@ public class ProcessInstanceActionRequest extends RestActionRequest {
 
   public static final String ACTION_SUSPEND = "suspend";
   public static final String ACTION_ACTIVATE = "activate";
+  private Integer processDefinitionVersion;
+
+  public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
+    this.processDefinitionVersion = processDefinitionVersion;
+  }
+  public Integer getProcessDefinitionVersion() {
+    return processDefinitionVersion;
+  }
 }

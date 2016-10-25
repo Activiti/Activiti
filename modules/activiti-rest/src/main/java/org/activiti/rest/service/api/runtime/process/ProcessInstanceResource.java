@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.cmd.SetProcessDefinitionVersionCmd;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.exception.ActivitiConflictException;
 import org.springframework.http.HttpStatus;
@@ -54,8 +55,19 @@ public class ProcessInstanceResource extends BaseProcessInstanceResource {
       @RequestBody ProcessInstanceActionRequest actionRequest, HttpServletRequest request) {
     
     ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
-    
-    if (ProcessInstanceActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
+
+    if (actionRequest.getProcessDefinitionVersion() != null) {
+
+      // Update of process definition version is required
+      SetProcessDefinitionVersionCmd cmd = new SetProcessDefinitionVersionCmd(processInstanceId, actionRequest.getProcessDefinitionVersion());
+      managementService.executeCommand(cmd);
+
+      // No need to re-fetch the ProcessInstance entity
+      ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance);
+      return response;
+
+
+    } else if (ProcessInstanceActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
       return activateProcessInstance(processInstance);
       
     } else if (ProcessInstanceActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
