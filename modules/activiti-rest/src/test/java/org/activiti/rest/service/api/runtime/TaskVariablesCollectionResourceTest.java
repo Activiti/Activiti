@@ -31,8 +31,10 @@ import org.activiti.rest.service.api.RestUrls;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -142,29 +144,48 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
     }
     assertTrue(foundOverlapping);
   }
-  
+
   /**
    * Test creating a single task variable.
    * POST runtime/tasks/{taskId}/variables
    */
   @Deployment
-  public void testCreateSingleTaskVariable() throws Exception {
+  public void testCreateSingleTaskVariablePost() throws Exception {
+    doSingleTaskVariableTest("POST");
+  }
+
+  /**
+   * Test creating a single task variable using PUT (update or create).
+   * PUT runtime/tasks/{taskId}/variables
+   */
+  @Deployment
+  public void testCreateSingleTaskVariablePut() throws Exception {
+    doSingleTaskVariableTest("PUT");
+  }
+
+  private void doSingleTaskVariableTest(String httpMethod) throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    
+
     ArrayNode requestNode = objectMapper.createArrayNode();
     ObjectNode variableNode = requestNode.addObject();
     variableNode.put("name", "myVariable");
     variableNode.put("value", "simple string value");
     variableNode.put("scope", "local");
     variableNode.put("type", "string");
-            
+
+    HttpEntityEnclosingRequestBase httpCall;
     // Create a new local variable
-    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
-    httpPost.setEntity(new StringEntity(requestNode.toString()));
-    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
-    
+    if (httpMethod.equals("POST"))  {
+      httpCall = new HttpPost(SERVER_URL_PREFIX +
+              RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+    } else {
+      httpCall = new HttpPut(SERVER_URL_PREFIX +
+              RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+    }
+    httpCall.setEntity(new StringEntity(requestNode.toString()));
+    CloseableHttpResponse response = executeRequest(httpCall, HttpStatus.SC_CREATED);
+
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent()).get(0);
     closeResponse(response);
     assertNotNull(responseNode);
@@ -173,20 +194,25 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
     assertEquals("local", responseNode.get("scope").asText());
     assertEquals("string", responseNode.get("type").asText());
     assertNull(responseNode.get("valueUrl"));
-    
+
     assertTrue(taskService.hasVariableLocal(task.getId(), "myVariable"));
     assertEquals("simple string value", taskService.getVariableLocal(task.getId(), "myVariable"));
-    
+
     // Create a new global variable
     variableNode.put("name", "myVariable");
     variableNode.put("value", "Another simple string value");
     variableNode.put("scope", "global");
     variableNode.put("type", "string");
-    
-    httpPost = new HttpPost(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
-    httpPost.setEntity(new StringEntity(requestNode.toString()));
-    response = executeRequest(httpPost, HttpStatus.SC_CREATED);
+
+    if (httpMethod.equals("POST")) {
+      httpCall = new HttpPost(SERVER_URL_PREFIX +
+              RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+    } else {
+      httpCall = new HttpPut(SERVER_URL_PREFIX +
+              RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+    }
+    httpCall.setEntity(new StringEntity(requestNode.toString()));
+    response = executeRequest(httpCall, HttpStatus.SC_CREATED);
     responseNode = objectMapper.readTree(response.getEntity().getContent()).get(0);
     closeResponse(response);
     assertNotNull(responseNode);
@@ -195,21 +221,26 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
     assertEquals("global", responseNode.get("scope").asText());
     assertEquals("string", responseNode.get("type").asText());
     assertNull(responseNode.get("valueUrl"));
-    
+
     assertTrue(runtimeService.hasVariable(task.getExecutionId(), "myVariable"));
     assertEquals("Another simple string value", runtimeService.getVariableLocal(task.getExecutionId(), "myVariable"));
-    
-            
+
+
     // Create a new scope-less variable, which defaults to local variables
     variableNode.removeAll();
     variableNode.put("name", "scopelessVariable");
     variableNode.put("value", "simple string value");
     variableNode.put("type", "string");
-    
-    httpPost = new HttpPost(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
-    httpPost.setEntity(new StringEntity(requestNode.toString()));
-    response = executeRequest(httpPost, HttpStatus.SC_CREATED);
+
+    if (httpMethod.equals("POST")) {
+      httpCall = new HttpPost(SERVER_URL_PREFIX +
+              RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+    } else {
+      httpCall = new HttpPut(SERVER_URL_PREFIX +
+              RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+    }
+    httpCall.setEntity(new StringEntity(requestNode.toString()));
+    response = executeRequest(httpCall, HttpStatus.SC_CREATED);
     responseNode = objectMapper.readTree(response.getEntity().getContent()).get(0);
     closeResponse(response);
     assertNotNull(responseNode);
@@ -218,11 +249,11 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
     assertEquals("local", responseNode.get("scope").asText());
     assertEquals("string", responseNode.get("type").asText());
     assertNull(responseNode.get("valueUrl"));
-    
+
     assertTrue(taskService.hasVariableLocal(task.getId(), "scopelessVariable"));
     assertEquals("simple string value", taskService.getVariableLocal(task.getId(), "scopelessVariable"));
   }
-  
+
   /**
    * Test creating a single task variable using a binary stream.
    * POST runtime/tasks/{taskId}/variables
@@ -354,6 +385,12 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
       closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_CONFLICT));
+
+      // Test same thing but using PUT (create or update)
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX +
+              RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+      closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_CREATED));
 
       // Test setting global variable on standalone task
       variableNode.put("name", "myVariable");
@@ -550,7 +587,52 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
       assertEquals(123.456, taskVariables.get("doubleVariable"));
       assertEquals(Boolean.TRUE, taskVariables.get("booleanVariable"));
       assertEquals(dateFormat.parse(isoString), taskVariables.get("dateVariable"));
-      
+
+      // repeat the process with additional variables, testing PUT of a mixed set of variables
+      // where some exist and others do not
+
+      requestNode = objectMapper.createArrayNode();
+
+      // new String variable
+      ObjectNode stringVarNode2 = requestNode.addObject();
+      stringVarNode2.put("name", "new stringVariable");
+      stringVarNode2.put("value", "simple string value 2");
+      stringVarNode2.put("scope", "local");
+      stringVarNode2.put("type", "string");
+
+      // changed Integer variable
+      ObjectNode integerVarNode2 = requestNode.addObject();
+      integerVarNode2.put("name", "integerVariable");
+      integerVarNode2.put("value", 4321);
+      integerVarNode2.put("scope", "local");
+      integerVarNode2.put("type", "integer");
+
+
+      // Create or update local variables with a single request
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX +
+              RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+
+      response = executeBinaryRequest(httpPut, HttpStatus.SC_CREATED);
+      responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
+      assertNotNull(responseNode);
+      assertTrue(responseNode.isArray());
+      assertEquals(2, responseNode.size());
+
+      // Check if engine has correct variables set
+      taskVariables = taskService.getVariablesLocal(task.getId());
+      assertEquals(8, taskVariables.size());
+
+      assertEquals("simple string value", taskVariables.get("stringVariable"));
+      assertEquals("simple string value 2", taskVariables.get("new stringVariable"));
+      assertEquals(4321, taskVariables.get("integerVariable"));
+      assertEquals((short)123, taskVariables.get("shortVariable"));
+      assertEquals(4567890L, taskVariables.get("longVariable"));
+      assertEquals(123.456, taskVariables.get("doubleVariable"));
+      assertEquals(Boolean.TRUE, taskVariables.get("booleanVariable"));
+      assertEquals(dateFormat.parse(isoString), taskVariables.get("dateVariable"));
+
       
     } finally {
       // Clean adhoc-tasks even if test fails
