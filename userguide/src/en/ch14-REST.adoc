@@ -911,7 +911,7 @@ POST repository/process-definitions/{processDefinitionId}/identitylinks
 [source,json,linenums]
 ----
 {
-  "groupId" : "sales"
+  "group" : "sales"
 }
 ----
 
@@ -952,7 +952,7 @@ DELETE repository/process-definitions/{processDefinitionId}/identitylinks/{famil
 |Parameter|Required|Value|Description
 |processDefinitionId|Yes|String|The id of the process definition.
 |family|Yes|String|Either +users+ or +groups+, depending on the type of identity link.
-|identityId|Yes|String|Either the userId or groupId of the identity to remove as candidate starter.
+|identityId|Yes|String|Either the user or group of the identity to remove as candidate starter.
 
 |===============
 
@@ -994,7 +994,7 @@ GET repository/process-definitions/{processDefinitionId}/identitylinks/{family}/
 |Parameter|Required|Value|Description
 |processDefinitionId|Yes|String|The id of the process definition.
 |family|Yes|String|Either +users+ or +groups+, depending on the type of identity link.
-|identityId|Yes|String|Either the userId or groupId of the identity to get as candidate starter.
+|identityId|Yes|String|Either the user or group of the identity to get as candidate starter.
 
 |===============
 
@@ -1834,7 +1834,7 @@ GET runtime/process-instances/{processInstanceId}/identitylinks
 ----
 
 
-Note that the +groupId+ will always be null, as it's only possible to involve users with a process-instance.
+Note that the +group+ will always be null, as it's only possible to involve users with a process-instance.
 
 
 ==== Add an involved user to a process instance
@@ -1858,13 +1858,13 @@ POST runtime/process-instances/{processInstanceId}/identitylinks
 [source,json,linenums]
 ----
 {
-  "userId":"kermit",
+  "user":"kermit",
   "type":"participant"
 }
 ----
 
 
-Both +userId+ and +type+ are required.
+Both +user+ and +type+ are required.
 
 
 .Add an involved user to a process instance - Response codes
@@ -1872,7 +1872,7 @@ Both +userId+ and +type+ are required.
 |===============
 |Response code|Description
 |201|Indicates the process instance was found and the link is created.
-|400|Indicates the requested body did not contain a userId or a type.
+|400|Indicates the requested body did not contain a user or a type.
 |404|Indicates the requested process instance was not found.
 
 |===============
@@ -1891,7 +1891,7 @@ Both +userId+ and +type+ are required.
 ----
 
 
-Note that the +groupId+ will always be null, as it's only possible to involve users with a process-instance.
+Note that the +group+ will always be null, as it's only possible to involve users with a process-instance.
 
 
 ==== Remove an involved user to from process instance
@@ -1934,7 +1934,7 @@ DELETE runtime/process-instances/{processInstanceId}/identitylinks/users/{userId
 ----
 
 
-Note that the +groupId+ will always be null, as it's only possible to involve users with a process-instance.
+Note that the +group+ will always be null, as it's only possible to involve users with a process-instance.
 
 
 ==== List of variables for a process instance
@@ -3811,14 +3811,14 @@ GET runtime/tasks/{taskId}/identitylinks
 ----
 [
   {
-    "userId" : "kermit",
-    "groupId" : null,
+    "user" : "kermit",
+    "group" : null,
     "type" : "candidate",
     "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/identitylinks/users/kermit/candidate"
   },
   {
-    "userId" : null,
-    "groupId" : "sales",
+    "user" : null,
+    "group" : "sales",
     "type" : "candidate",
     "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/identitylinks/groups/sales/candidate"
   },
@@ -3876,8 +3876,8 @@ GET runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
 [source,json,linenums]
 ----
 {
-  "userId" : null,
-  "groupId" : "sales",
+  "user" : null,
+  "group" : "sales",
   "type" : "candidate",
   "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/identitylinks/groups/sales/candidate"
 }
@@ -3907,7 +3907,7 @@ POST runtime/tasks/{taskId}/identitylinks
 [source,json,linenums]
 ----
 {
-  "userId" : "kermit",
+  "user" : "kermit",
   "type" : "candidate",
 }
 ----
@@ -3918,7 +3918,7 @@ POST runtime/tasks/{taskId}/identitylinks
 [source,json,linenums]
 ----
 {
-  "groupId" : "sales",
+  "group" : "sales",
   "type" : "candidate",
 }
 ----
@@ -3939,8 +3939,8 @@ POST runtime/tasks/{taskId}/identitylinks
 [source,json,linenums]
 ----
 {
-  "userId" : null,
-  "groupId" : "sales",
+  "user" : null,
+  "group" : "sales",
   "type" : "candidate",
   "url" : "http://localhost:8081/activiti-rest/service/runtime/tasks/100/identitylinks/groups/sales/candidate"
 }
@@ -4782,8 +4782,8 @@ GET history/historic-process-instance/{processInstanceId}/identitylinks
 [
  {
   "type" : "participant",
-  "userId" : "kermit",
-  "groupId" : null,
+  "user" : "kermit",
+  "group" : null,
   "taskId" : null,
   "taskUrl" : null,
   "processInstanceId" : "5",
@@ -5304,8 +5304,8 @@ GET history/historic-task-instance/{taskId}/identitylinks
 [
  {
   "type" : "assignee",
-  "userId" : "kermit",
-  "groupId" : null,
+  "user" : "kermit",
+  "group" : null,
   "taskId" : "6",
   "taskUrl" : "http://localhost:8182/history/historic-task-instances/5",
   "processInstanceId" : null,
@@ -7158,7 +7158,7 @@ POST identity/groups/{groupId}/members
 [source,json,linenums]
 ----
 {
-   "userId":"kermit"
+   "user":"kermit"
 }
 ----
 
@@ -7168,7 +7168,7 @@ POST identity/groups/{groupId}/members
 |===============
 |Response code|Description
 |201|Indicates the group was found and the member has been added.
-|404|Indicates the userId was not included in the request body.
+|404|Indicates the user was not included in the request body.
 |404|Indicates the requested group was not found.
 |409|Indicates the requested user is already a member of the group.
 
@@ -7180,8 +7180,8 @@ POST identity/groups/{groupId}/members
 [source,json,linenums]
 ----
 {
-   "userId":"kermit",
-   "groupId":"sales",
+   "user":"kermit",
+   "group":"sales",
     "url":"http://localhost:8182/identity/groups/sales/members/kermit"
 }
 ----
@@ -7220,8 +7220,8 @@ DELETE identity/groups/{groupId}/members/{userId}
 [source,json,linenums]
 ----
 {
-   "userId":"kermit",
-   "groupId":"sales",
+   "user":"kermit",
+   "group":"sales",
     "url":"http://localhost:8182/identity/groups/sales/members/kermit"
 }
 ----
