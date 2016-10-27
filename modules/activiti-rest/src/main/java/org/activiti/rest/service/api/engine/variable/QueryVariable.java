@@ -40,6 +40,10 @@ public class QueryVariable {
     return QueryVariableOperation.forFriendlyName(operation);
   }
 
+  public String getOperation() {
+    return operation;
+  }
+
   public void setOperation(String operation) {
     this.operation = operation;
   }
