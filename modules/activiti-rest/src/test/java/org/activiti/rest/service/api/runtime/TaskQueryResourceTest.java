@@ -559,6 +559,32 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
     variableNode.put("name", "stringVar");
     variableNode.put("value", "Azert%");
     variableNode.put("operation", "like");
+
+    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+
+    // incomplete Like missing wildcard does not match
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "Azert");
+    variableNode.put("operation", "like");
+
+    assertResultsPresentInPostDataResponse(url, requestNode);
+
+    // complete Like missing wildcard does match
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "Azerty");
+    variableNode.put("operation", "like");
+
+    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+/*
+    // Like ignore case
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "aZeRt%");
+    variableNode.put("operation", "likeIgnoreCase");
+
+    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());*/
   }
   
   /**

@@ -364,12 +364,12 @@ public class TaskBaseResource {
       	break;
 
       case LIKE_IGNORE_CASE:
-          if (actualValue instanceof String) {
-            taskQuery.taskVariableValueLikeIgnoreCase(variable.getName(), (String) actualValue);
-          } else {
-            throw new ActivitiIllegalArgumentException("Only string variable values are supported using likeIgnoreCase, but was: " + actualValue.getClass().getName());
-          }
-          break;
+        if (actualValue instanceof String) {
+          taskQuery.taskVariableValueLikeIgnoreCase(variable.getName(), (String) actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported using likeIgnoreCase, but was: " + actualValue.getClass().getName());
+        }
+        break;
 
       case LIKE:
       	if (actualValue instanceof String) {
