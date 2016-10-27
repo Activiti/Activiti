@@ -320,11 +320,11 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
     // Additional tasks to confirm it's filtered out
     runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-    ObjectNode requestNode = objectMapper.createObjectNode();
+    ObjectNode taskVariableRequestNode = objectMapper.createObjectNode();
     ArrayNode variableArray = objectMapper.createArrayNode();
     ObjectNode variableNode = objectMapper.createObjectNode();
     variableArray.add(variableNode);
-    requestNode.put("taskVariables", variableArray);
+    taskVariableRequestNode.put("taskVariables", variableArray);
 
     String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_QUERY);
     
@@ -332,100 +332,100 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
     variableNode.put("name", "stringVar");
     variableNode.put("value", "Abcdef");
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
 
     // Integer equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 12345);
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     
     // Boolean equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", true);
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     
     // String not equals
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "ghijkl");
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
 
     // Integer not equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 45678);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     
     // Boolean not equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", false);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     
     // String equals ignore case
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "abCDEF");
     variableNode.put("operation", "equalsIgnoreCase");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     
     // String not equals ignore case
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "HIJKLm");
     variableNode.put("operation", "notEqualsIgnoreCase");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     
     // String equals without value
     variableNode.removeAll();
     variableNode.put("value", "Abcdef");
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     
     // Greater than
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 12300);
     variableNode.put("operation", "greaterThan");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     variableNode.put("value", 12345);
     variableNode.put("operation", "greaterThan");
-    assertResultsPresentInPostDataResponse(url, requestNode);
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode);
     
     // Greater than or equal
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 12300);
     variableNode.put("operation", "greaterThanOrEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     variableNode.put("value", 12345);
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     
     // Less than
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 12400);
     variableNode.put("operation", "lessThan");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     variableNode.put("value", 12345);
     variableNode.put("operation", "lessThan");
-    assertResultsPresentInPostDataResponse(url, requestNode);
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode);
     
     // Less than or equal
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 12400);
     variableNode.put("operation", "lessThanOrEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     variableNode.put("value", 12345);
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
     
     // Like
     variableNode.removeAll();
@@ -438,7 +438,7 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
     variableNode.put("value", "abcdef");
     variableNode.put("operation", "notEquals");
     
-    assertResultsPresentInPostDataResponseWithStatusCheck(url, requestNode, HttpStatus.SC_BAD_REQUEST);
+    assertResultsPresentInPostDataResponseWithStatusCheck(url, taskVariableRequestNode, HttpStatus.SC_BAD_REQUEST);
     
     // Illegal (but existing) operation
     variableNode.removeAll();
@@ -446,113 +446,141 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
     variableNode.put("value", "abcdef");
     variableNode.put("operation", "operationX");
     
-    assertResultsPresentInPostDataResponseWithStatusCheck(url, requestNode, HttpStatus.SC_BAD_REQUEST);
-    
+    assertResultsPresentInPostDataResponseWithStatusCheck(url, taskVariableRequestNode, HttpStatus.SC_BAD_REQUEST);
+
+    // String like case does not match
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "%Abc%");
+    variableNode.put("operation", "like");
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
+
+    // String like case does not match
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "%Bcde%");
+    variableNode.put("operation", "like");
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode);
+
+    // String like ignore case
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "%Bcde%");
+    variableNode.put("operation", "likeIgnoreCase");
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode, processTask.getId());
+
+    // String like ignore case process not found
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "%xyz%");
+    variableNode.put("operation", "likeIgnoreCase");
+    assertResultsPresentInPostDataResponse(url, taskVariableRequestNode);
+
     // Process variables
-    requestNode = objectMapper.createObjectNode();
+    ObjectNode processVariableRequestNode = objectMapper.createObjectNode();
     variableArray = objectMapper.createArrayNode();
     variableNode = objectMapper.createObjectNode();
     variableArray.add(variableNode);
-    requestNode.put("processInstanceVariables", variableArray);
+    processVariableRequestNode.put("processInstanceVariables", variableArray);
     
     // String equals
     variableNode.put("name", "stringVar");
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
 
     // Integer equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 67890);
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     
     // Boolean equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", false);
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     
     // String not equals
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "ghijkl");
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
 
     // Integer not equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 45678);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     
     // Boolean not equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", true);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     
     // String equals ignore case
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "azeRTY");
     variableNode.put("operation", "equalsIgnoreCase");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     
     // String not equals ignore case
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "HIJKLm");
     variableNode.put("operation", "notEqualsIgnoreCase");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     
     // String equals without value
     variableNode.removeAll();
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     
     // Greater than
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 67800);
     variableNode.put("operation", "greaterThan");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     variableNode.put("value", 67890);
     variableNode.put("operation", "greaterThan");
-    assertResultsPresentInPostDataResponse(url, requestNode);
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode);
     
     // Greater than or equal
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 67800);
     variableNode.put("operation", "greaterThanOrEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     variableNode.put("value", 67890);
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     
     // Less than
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 67900);
     variableNode.put("operation", "lessThan");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     variableNode.put("value", 67890);
     variableNode.put("operation", "lessThan");
-    assertResultsPresentInPostDataResponse(url, requestNode);
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode);
     
     // Less than or equal
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 67900);
     variableNode.put("operation", "lessThanOrEquals");
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     variableNode.put("value", 67890);
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
     
     // Like
     variableNode.removeAll();
@@ -560,7 +588,7 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
     variableNode.put("value", "Azert%");
     variableNode.put("operation", "like");
 
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
 
     // incomplete Like missing wildcard does not match
     variableNode.removeAll();
@@ -568,7 +596,7 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
     variableNode.put("value", "Azert");
     variableNode.put("operation", "like");
 
-    assertResultsPresentInPostDataResponse(url, requestNode);
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode);
 
     // complete Like missing wildcard does match
     variableNode.removeAll();
@@ -576,15 +604,15 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "like");
 
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());
-/*
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
+
     // Like ignore case
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
-    variableNode.put("value", "aZeRt%");
+    variableNode.put("value", "%aZeRt%");
     variableNode.put("operation", "likeIgnoreCase");
 
-    assertResultsPresentInPostDataResponse(url, requestNode, processTask.getId());*/
+    assertResultsPresentInPostDataResponse(url, processVariableRequestNode, processTask.getId());
   }
   
   /**
