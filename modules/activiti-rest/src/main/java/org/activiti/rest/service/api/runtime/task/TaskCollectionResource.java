@@ -14,6 +14,7 @@
 package org.activiti.rest.service.api.runtime.task;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -139,7 +140,13 @@ public class TaskCollectionResource extends TaskBaseResource {
     if (requestParams.containsKey("processInstanceId")) {
       request.setProcessInstanceId(requestParams.get("processInstanceId"));
     }
-    
+
+    if (requestParams.containsKey("processInstanceIdIn")) {
+      String[] processInstanceIds = requestParams.get("processInstanceIdIn").split(",");
+      List<String> ids = Arrays.asList(processInstanceIds);
+      request.setProcessInstanceIdIn(ids);
+    }
+
     if (requestParams.containsKey("processInstanceBusinessKey")) {
       request.setProcessInstanceBusinessKey(requestParams.get("processInstanceBusinessKey"));
     }
