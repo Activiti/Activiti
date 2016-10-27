@@ -180,6 +180,9 @@ public class TaskBaseResource {
     if (request.getProcessInstanceId() != null) {
       taskQuery.processInstanceId(request.getProcessInstanceId());
     }
+    if (request.getProcessInstanceIdIn() != null) {
+      taskQuery.processInstanceIdIn(request.getProcessInstanceIdIn());
+    }
     if (request.getProcessInstanceBusinessKey() != null) {
       taskQuery.processInstanceBusinessKey(request.getProcessInstanceBusinessKey());
     }

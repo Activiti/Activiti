@@ -47,6 +47,7 @@ public class TaskQueryRequest extends PaginateRequest {
   private String processInstanceId;
   private String processInstanceBusinessKey;
   private String processInstanceBusinessKeyLike;
+  private List<String> processInstanceIdIn;
   private String processDefinitionId;
   private String processDefinitionKey;
   private String processDefinitionName;
@@ -217,6 +218,14 @@ public class TaskQueryRequest extends PaginateRequest {
 
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
+  }
+
+  public List<String> getProcessInstanceIdIn() {
+    return processInstanceIdIn;
+  }
+
+  public void setProcessInstanceIdIn(List<String> processInstanceIdIn) {
+      this.processInstanceIdIn = processInstanceIdIn;
   }
 
   public String getProcessInstanceBusinessKey() {
