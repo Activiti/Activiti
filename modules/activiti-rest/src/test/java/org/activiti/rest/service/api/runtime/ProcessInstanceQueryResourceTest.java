@@ -118,7 +118,35 @@ public class ProcessInstanceQueryResourceTest extends BaseSpringRestTestCase {
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
     assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
-    
+
+    // String like
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "%ert%");
+    variableNode.put("operation", "like");
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
+
+    // String like no results
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "%b%");
+    variableNode.put("operation", "like");
+    assertResultsPresentInPostDataResponse(url, requestNode);
+
+    // String like ignore case
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "%ErT%");
+    variableNode.put("operation", "likeIgnoreCase");
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
+
+    // String like ignore case no results
+    variableNode.removeAll();
+    variableNode.put("name", "stringVar");
+    variableNode.put("value", "%X%");
+    variableNode.put("operation", "likeIgnoreCase");
+    assertResultsPresentInPostDataResponse(url, requestNode);
+
     // String equals with non existing value
     variableNode.removeAll();
     variableNode.put("value", "Azerty2");

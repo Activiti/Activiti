@@ -365,7 +365,15 @@ public class TaskBaseResource {
       case LESS_THAN_OR_EQUALS:
       	taskQuery.taskVariableValueLessThanOrEqual(variable.getName(), actualValue);
       	break;
-      	
+
+      case LIKE_IGNORE_CASE:
+        if (actualValue instanceof String) {
+          taskQuery.taskVariableValueLikeIgnoreCase(variable.getName(), (String) actualValue);
+        } else {
+          throw new ActivitiIllegalArgumentException("Only string variable values are supported using likeIgnoreCase, but was: " + actualValue.getClass().getName());
+        }
+        break;
+
       case LIKE:
       	if (actualValue instanceof String) {
       		taskQuery.taskVariableValueLike(variable.getName(), (String) actualValue);
@@ -450,7 +458,15 @@ public class TaskBaseResource {
         		throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
         	}
         	break;
-        	
+
+        case LIKE_IGNORE_CASE:
+          if (actualValue instanceof String) {
+            taskQuery.processVariableValueLikeIgnoreCase(variable.getName(), (String) actualValue);
+          } else {
+            throw new ActivitiIllegalArgumentException("Only string variable values are supported using likeIgnoreCase, but was: " + actualValue.getClass().getName());
+          }
+          break;
+
         default:
           throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
       }
