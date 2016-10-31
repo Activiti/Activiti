@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot-samples</artifactId>
-        <version>5.22.0-SNAPSHOT</version>
+        <version>5.22.0</version>
     </parent>
 
     <artifactId>spring-boot-sample-integration</artifactId>
@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring-boot-starter-integration</artifactId>
-            <version>5.22.0-SNAPSHOT</version>
+            <version>5.22.0</version>
         </dependency>
         <dependency>
 			<groupId>junit</groupId>
