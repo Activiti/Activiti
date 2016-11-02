@@ -80,40 +80,40 @@
     <dependency>
       <groupId>org.ops4j.pax.exam</groupId>
       <artifactId>pax-exam-junit4</artifactId>
-      <version>3.3.0</version>
+      <version>4.9.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.exam</groupId>
       <artifactId>pax-exam-link-mvn</artifactId>
-      <version>3.3.0</version>
+      <version>4.9.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.url</groupId>
       <artifactId>pax-url-aether</artifactId>
-      <version>1.6.0</version>
+      <version>2.4.7</version>
       <type>bundle</type>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.felix</groupId>
       <artifactId>org.apache.felix.framework</artifactId>
-      <version>3.2.2</version>
+      <version>5.4.0</version>
       <type>bundle</type>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.tinybundles</groupId>
       <artifactId>tinybundles</artifactId>
-      <version>2.0.0</version>
+      <version>2.1.1</version>
       <type>bundle</type>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.ops4j.pax.exam</groupId>
       <artifactId>pax-exam-container-native</artifactId>
-      <version>3.3.0</version>
+      <version>4.9.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -124,6 +124,12 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
