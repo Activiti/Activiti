@@ -1064,6 +1064,16 @@
     <url>http://www.alfresco.com</url>
   </organization>
   <developers>
+  	<developer>
+      <name>Bassam Al-Sarori</name>
+      <organization>Alfresco</organization>
+      <url>http://www.alfresco.com</url>
+    </developer>
+    <developer>
+      <name>Vasile Dirla</name>
+      <organization>Alfresco</organization>
+      <url>http://www.alfresco.com</url>
+    </developer>
     <developer>
       <name>Tijs Rademakers</name>
       <organization>Alfresco</organization>
