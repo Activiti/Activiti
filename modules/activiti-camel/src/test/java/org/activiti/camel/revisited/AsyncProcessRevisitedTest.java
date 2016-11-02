@@ -53,7 +53,7 @@ public class AsyncProcessRevisitedTest extends SpringActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncCamelProcessRevisited");
     List<Execution> executionList = runtimeService.createExecutionQuery().list();
     assertEquals(3, executionList.size());
-    waitForJobExecutorToProcessAllJobs(3000, 500);
+    waitForJobExecutorToProcessAllJobs(10000, 500);
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
   }
 }
