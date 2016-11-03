@@ -34,6 +34,48 @@ A more elaborate collection of Activiti-links can be found on the
 
 <h1>Activiti Release Notes</h1>
 
+<h3>Release Notes - Activiti - Version 5.22.0</h3>
+
+<h4>Highlights</h4>
+<p>
+This release contains an important bug fix. A concurrency bug caused when deleting a variable (task or process variable) and attempting to save the delete variable event.
+</p>
+    
+<p>    
+All changes:
+</p>    
+
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-1968'>ACT-1968</a>] -         Custom Database schema on PostgreSQL not working
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4113'>ACT-4113</a>] -         REST Task API Not working: /service/runtime/tasks?assigneeLike=XX and service/runtime/tasks?ownerLike=YY
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4193'>ACT-4193</a>] -         Bug in &#39;Like&#39; expressions in Activiti Rest?
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4199'>ACT-4199</a>] -         DefaultDeploymentCache uses non thread safe HashMap
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4212'>ACT-4212</a>] -         Mutating list variable for users in parallel multi instance tasks causes floating executions
+</li>
+</ul>
+                
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4210'>ACT-4210</a>] -         Add category as query param and json field for Task Rest API
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4074'>ACT-4074</a>] -         Activiti Spring Boot REST API starter does not use IdentityServiceUserDetailsService
+</li>
+<li>[<a href='https://activiti.atlassian.net/browse/ACT-4206'>ACT-4206</a>] -         Webservice endpoint address should be customizable
+</li>
+</ul>
+
 <h3>Release Notes - Activiti - Version 5.21.0</h3>
 
 <h4>Highlights</h4>
