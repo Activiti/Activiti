@@ -13,6 +13,9 @@
 
 package org.activiti.engine.test.api.task;
 
+import static com.googlecode.catchexception.CatchException.catchException;
+import static com.googlecode.catchexception.CatchException.caughtException;
+
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,8 +29,10 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.TaskServiceImpl;
@@ -45,9 +50,6 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
 
 /**
  * @author Frederik Heremans
@@ -1271,6 +1273,29 @@ public void testCompleteWithParametersTask2() {
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("taskId is null", ae.getMessage());
     }    
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testGetVariableByHistoricActivityInstance() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    assertNotNull(processInstance);
+    Task task = taskService.createTaskQuery().singleResult();
+
+    taskService.setVariable(task.getId(), "variable1", "value1");
+    taskService.setVariable(task.getId(), "variable1", "value2");
+
+    HistoricActivityInstance historicActivitiInstance = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId())
+            .activityId("theTask").singleResult();
+    assertNotNull(historicActivitiInstance);
+
+    List<HistoricDetail> resultSet = historyService.createHistoricDetailQuery().variableUpdates().activityInstanceId(historicActivitiInstance.getId())
+            .orderByTime().asc().list();
+
+    assertEquals(2, resultSet.size());
+    assertEquals("variable1", ((HistoricVariableUpdate) resultSet.get(0)).getVariableName());
+    assertEquals("value1", ((HistoricVariableUpdate) resultSet.get(0)).getValue());
+    assertEquals("variable1", ((HistoricVariableUpdate) resultSet.get(1)).getVariableName());
+    assertEquals("value2", ((HistoricVariableUpdate) resultSet.get(1)).getValue());
   }
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
