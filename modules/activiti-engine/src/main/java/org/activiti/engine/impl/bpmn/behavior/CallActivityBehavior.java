@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,17 +13,8 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.activiti.bpmn.model.CallActivity;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.IOParameter;
-import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -39,9 +30,14 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Implementation of the BPMN 2.0 call activity (limited currently to calling a subprocess and not (yet) a global task).
- * 
+ *
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
@@ -89,7 +85,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
       throw new ActivitiException("Cannot start process instance. Process definition " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
     }
-    
+
     ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
     ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
     ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
@@ -102,7 +98,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     if (!StringUtils.isEmpty(callActivity.getBusinessKey())) {
       Expression expression = expressionManager.createExpression(callActivity.getBusinessKey());
       businessKey = expression.getValue(execution).toString();
-      
+
     } else if (callActivity.isInheritBusinessKey()) {
       ExecutionEntity processInstance = executionEntityManager.findById(execution.getProcessInstanceId());
       businessKey = processInstance.getBusinessKey();
@@ -114,7 +110,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
     // process template-defined data objects
     Map<String, Object> variables = processDataObjects(subProcess.getDataObjects());
-    
+
     if (callActivity.isInheritVariables()) {
       Map<String, Object> executionVariables = execution.getVariables();
       for (Map.Entry<String, Object> entry : executionVariables.entrySet()) {
@@ -140,15 +136,15 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
 
     // Create the first execution that will visit all the process definition elements
-    ExecutionEntity subProcessInitialExecution = executionEntityManager.createChildExecution(subProcessInstance); 
+    ExecutionEntity subProcessInitialExecution = executionEntityManager.createChildExecution(subProcessInstance);
     subProcessInitialExecution.setCurrentFlowElement(initialFlowElement);
 
     Context.getAgenda().planContinueProcessOperation(subProcessInitialExecution);
-    
+
     Context.getProcessEngineConfiguration().getEventDispatcher()
       .dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(subProcessInitialExecution, variables, false));
   }
-  
+
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
     // only data. no control flow available on this execution.
 
@@ -183,7 +179,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
     }
   }
-  
+
   protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
   	Map<String, Object> variablesMap = new HashMap<String,Object>();
   	// convert data objects to process variables
@@ -200,7 +196,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   protected void initializeVariables(ExecutionEntity subProcessInstance, Map<String,Object> variables) {
     subProcessInstance.setVariables(variables);
   }
-  
+
   public void setProcessDefinitonKey(String processDefinitonKey) {
     this.processDefinitonKey = processDefinitonKey;
   }

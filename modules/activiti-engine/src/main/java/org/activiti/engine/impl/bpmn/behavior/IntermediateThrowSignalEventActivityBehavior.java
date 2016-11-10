@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,8 +12,6 @@
  */
 
 package org.activiti.engine.impl.bpmn.behavior;
-
-import java.util.List;
 
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -28,6 +26,8 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManage
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 /**
  * @author Tijs Rademakers
@@ -52,14 +52,14 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
     } else {
       signalExpression = signalEventDefinition.getSignalExpression();
     }
-    
+
     this.signalEventDefinition = signalEventDefinition;
   }
 
   public void execute(DelegateExecution execution) {
 
     CommandContext commandContext = Context.getCommandContext();
-    
+
     String eventSubscriptionName = null;
     if (signalEventName != null) {
       eventSubscriptionName = signalEventName;
@@ -80,14 +80,14 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
 
     for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalEventSubscriptionEntity.getActivityId(), eventSubscriptionName, 
-              null, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(), 
+          ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalEventSubscriptionEntity.getActivityId(), eventSubscriptionName,
+              null, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(),
               signalEventSubscriptionEntity.getProcessDefinitionId()));
-      
+
       eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, signalEventDefinition.isAsync());
     }
 
-    commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, true);
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, true);
   }
 
 }

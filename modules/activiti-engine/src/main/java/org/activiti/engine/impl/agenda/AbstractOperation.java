@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,15 +19,16 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.runtime.Agenda;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
  * Abstract superclass for all operation interfaces (which are {@link Runnable} instances),
  * exposing some shared helper methods and member fields to subclasses.
- * 
+ *
  * An operations is a {@link Runnable} instance that is put on the {@link Agenda} during
  * the execution of a {@link Command}.
- * 
+ *
  * @author Joram Barrez
  */
 public abstract class AbstractOperation implements Runnable {
@@ -74,14 +75,14 @@ public abstract class AbstractOperation implements Runnable {
    * Executes the execution listeners defined on the given element, with the given event type,
    * and passing the provided execution to the {@link ExecutionListener} instances.
    */
-  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, 
+  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners,
       ExecutionEntity executionEntity, String eventType) {
     commandContext.getProcessEngineConfiguration().getListenerNotificationHelper()
       .executeExecutionListeners(elementWithExecutionListeners, executionEntity, eventType);
   }
-  
+
   /**
-   * Returns the first parent execution of the provided execution that is a scope. 
+   * Returns the first parent execution of the provided execution that is a scope.
    */
   protected ExecutionEntity findFirstParentScopeExecution(ExecutionEntity executionEntity) {
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
@@ -109,7 +110,7 @@ public abstract class AbstractOperation implements Runnable {
     return agenda;
   }
 
-  public void setAgenda(Agenda agenda) {
+  public void setAgenda(DefaultActivitiAgenda agenda) {
     this.agenda = agenda;
   }
 

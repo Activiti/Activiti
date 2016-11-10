@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,10 +12,6 @@
  */
 
 package org.activiti.engine.impl.bpmn.behavior;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.FlowElement;
@@ -29,20 +25,24 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Implementation of the Parallel Gateway/AND gateway as defined in the BPMN 2.0 specification.
- * 
+ *
  * The Parallel Gateway can be used for splitting a path of execution into multiple paths of executions (AND-split/fork behavior), one for every outgoing sequence flow.
- * 
+ *
  * The Parallel Gateway can also be used for merging or joining paths of execution (AND-join). In this case, on every incoming sequence flow an execution needs to arrive, before leaving the Parallel
  * Gateway (and potentially then doing the fork behavior in case of multiple outgoing sequence flow).
- * 
+ *
  * Note that there is a slight difference to spec (p. 436): "The parallel gateway is activated if there is at least one Token on each incoming sequence flow." We only check the number of incoming
  * tokens to the number of sequenceflow. So if two tokens would arrive through the same sequence flow, our implementation would activate the gateway.
- * 
+ *
  * Note that a Parallel Gateway having one incoming and multiple outgoing sequence flow, is the same as having multiple outgoing sequence flow on a given activity. However, a parallel gateway does NOT
  * check conditions on the outgoing sequence flow.
- * 
+ *
  * @author Joram Barrez
  * @author Tom Baeyens
  */
@@ -65,20 +65,20 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     } else {
       throw new ActivitiException("Programmatic error: parallel gateway behaviour can only be applied" + " to a ParallelGateway instance, but got an instance of " + flowElement);
     }
-    
+
     lockFirstParentScope(execution);
-    
+
     DelegateExecution multiInstanceExecution = null;
     if (hasMultiInstanceParent(parallelGateway)) {
       multiInstanceExecution = findMultiInstanceParentExecution(execution);
     }
-    
+
     ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
     Collection<ExecutionEntity> joinedExecutions = executionEntityManager.findInactiveExecutionsByActivityIdAndProcessInstanceId(execution.getCurrentActivityId(), execution.getProcessInstanceId());
     if (multiInstanceExecution != null) {
       joinedExecutions = cleanJoinedExecutions(joinedExecutions, multiInstanceExecution);
     }
-    
+
     int nbrOfExecutionsToJoin = parallelGateway.getIncomingFlows().size();
     int nbrOfExecutionsCurrentlyJoined = joinedExecutions.size();
 
@@ -115,7 +115,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     }
 
   }
-  
+
   protected Collection<ExecutionEntity> cleanJoinedExecutions(Collection<ExecutionEntity> joinedExecutions, DelegateExecution multiInstanceExecution) {
     List<ExecutionEntity> cleanedExecutions = new ArrayList<ExecutionEntity>();
     for (ExecutionEntity executionEntity : joinedExecutions) {
@@ -125,7 +125,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     }
     return cleanedExecutions;
   }
-  
+
   protected boolean isChildOfMultiInstanceExecution(DelegateExecution executionEntity, DelegateExecution multiInstanceExecution) {
     boolean isChild = false;
     DelegateExecution parentExecution = executionEntity.getParent();
@@ -139,10 +139,10 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
         }
       }
     }
-    
+
     return isChild;
   }
-  
+
   protected boolean hasMultiInstanceParent(FlowNode flowNode) {
     boolean hasMultiInstanceParent = false;
     if (flowNode.getSubProcess() != null) {
@@ -155,10 +155,10 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
         }
       }
     }
-    
+
     return hasMultiInstanceParent;
   }
-  
+
   protected DelegateExecution findMultiInstanceParentExecution(DelegateExecution execution) {
     DelegateExecution multiInstanceExecution = null;
     DelegateExecution parentExecution = execution.getParent();
@@ -170,7 +170,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
           multiInstanceExecution = parentExecution;
         }
       }
-      
+
       if (multiInstanceExecution == null) {
         DelegateExecution potentialMultiInstanceExecution = findMultiInstanceParentExecution(parentExecution);
         if (potentialMultiInstanceExecution != null) {
@@ -178,7 +178,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
         }
       }
     }
-    
+
     return multiInstanceExecution;
   }
 

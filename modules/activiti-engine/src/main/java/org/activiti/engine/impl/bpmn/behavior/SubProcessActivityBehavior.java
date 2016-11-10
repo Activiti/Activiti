@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,10 +12,6 @@
  */
 
 package org.activiti.engine.impl.bpmn.behavior;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
@@ -27,9 +23,13 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Implementation of the BPMN 2.0 subprocess (formally known as 'embedded' subprocess): a subprocess defined within another process definition.
- * 
+ *
  * @author Joram Barrez
  */
 public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
@@ -57,7 +57,7 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
     if (startElement == null) {
       throw new ActivitiException("No initial activity found for subprocess " + subProcess.getId());
     }
-    
+
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     executionEntity.setScope(true);
 
@@ -68,7 +68,7 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
     }
 
     ExecutionEntity startSubProcessExecution = Context.getCommandContext().getExecutionEntityManager()
-        .createChildExecution(executionEntity); 
+        .createChildExecution(executionEntity);
     startSubProcessExecution.setCurrentFlowElement(startElement);
     Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
   }

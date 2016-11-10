@@ -12,12 +12,13 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
- * 
+ *
  * @author Tijs Rademakers
  */
 public class AsyncContinuationJobHandler implements JobHandler {
@@ -29,7 +30,7 @@ public class AsyncContinuationJobHandler implements JobHandler {
   }
 
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    commandContext.getAgenda().planContinueProcessSynchronousOperation(execution);
+    Context.getAgenda().planContinueProcessSynchronousOperation(execution);
   }
 
 }
