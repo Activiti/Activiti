@@ -103,11 +103,13 @@ public class HistoricActivityInstanceQueryImpl extends AbstractQuery<HistoricAct
 
   public HistoricActivityInstanceQueryImpl finished() {
     this.finished = true;
+    this.unfinished = false;
     return this;
   }
 
   public HistoricActivityInstanceQueryImpl unfinished() {
     this.unfinished = true;
+    this.finished = false;
     return this;
   }
   
