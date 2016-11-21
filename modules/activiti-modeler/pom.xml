@@ -19,6 +19,11 @@
     <activiti.artifact>
       org.activiti.modeler
     </activiti.artifact>
+    <!-- Add the packages that contain classes with @RestController annotations: -->
+    <activiti.osgi.export.additional>
+      org.activiti.rest.editor.main,
+      org.activiti.rest.editor.model,
+    </activiti.osgi.export.additional>
   </properties>
   
   <repositories>

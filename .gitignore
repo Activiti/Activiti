@@ -9,3 +9,5 @@ target
 .DS_Store
 *.bpmn/
 /userguide/src/en/index.html
+.m2
+*.orig

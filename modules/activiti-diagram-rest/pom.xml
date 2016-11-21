@@ -19,6 +19,8 @@
     <activiti.artifact>
       org.activiti.rest.diagram
     </activiti.artifact>
+    <!-- Add the packages that contain classes with @RestController annotations: -->
+    <activiti.osgi.export.additional>org.activiti.rest.diagram.services</activiti.osgi.export.additional>
   </properties>
 
   <build>
