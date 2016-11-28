@@ -1,4 +1,4 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -1131,4 +1131,16 @@
     <connection>scm:git:git@github.com:Activiti/Activiti.git</connection>
     <developerConnection>scm:git:git@github.com:Activiti/Activiti.git</developerConnection>
   </scm>
+  <distributionManagement>
+    <repository>
+        <id>nexus</id>
+        <name>Internal Releases</name>
+        <url>${dist.url}</url>
+    </repository>
+    <snapshotRepository>
+        <id>nexus</id>
+        <name>Internal Releases</name>
+        <url>${dist.url.snapshot}</url>
+    </snapshotRepository>
+ </distributionManagement>
 </project>
