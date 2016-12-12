@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,20 +28,20 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>Interface to the work management component of activiti.</p>
- * 
- * <p>This component is responsible for performing all background work 
+ *
+ * <p>This component is responsible for performing all background work
  * ({@link Job Jobs}) scheduled by activiti.</p>
- * 
- * <p>You should generally only have one of these per Activiti instance (process 
+ *
+ * <p>You should generally only have one of these per Activiti instance (process
  * engine) in a JVM.
  * In clustered situations, you can have multiple of these running against the
  * same queue + pending job list.</p>
- * 
+ *
  * @author Daniel Meyer
  * @author Joram Barrez
  */
 public abstract class JobExecutor {
-  
+
   private static Logger log = LoggerFactory.getLogger(JobExecutor.class);
 
   protected String name = "JobExecutor["+getClass().getName()+"]";
@@ -50,7 +50,7 @@ public abstract class JobExecutor {
   protected AcquireJobsRunnable acquireJobsRunnable;
   protected RejectedJobsHandler rejectedJobsHandler;
   protected Thread jobAcquisitionThread;
-  
+
   protected boolean isAutoActivate = false;
   protected boolean isActive = false;
 
@@ -59,10 +59,10 @@ public abstract class JobExecutor {
    * This way, in a clustered setup, multiple job executors can acquire jobs
    * without creating a deadlock due to fetching multiple jobs at once and
    * trying to lock them all at once.
-   * 
+   *
    * In a non-clustered setup, this setting can be changed to any value > 0
    * without problems.
-   * 
+   *
    * See https://activiti.atlassian.net/browse/ACT-1879 for more information.
    */
   protected int maxJobsPerAcquisition = 1;
@@ -70,18 +70,18 @@ public abstract class JobExecutor {
   protected String lockOwner = UUID.randomUUID().toString();
   protected int lockTimeInMillis = 5 * 60 * 1000;
   protected ClockReader clockReader;
-  
+
   /** Starts the job executor */
   public void start() {
     if (isActive) {
       return;
     }
     log.info("Starting up the JobExecutor[{}].", getClass().getName());
-    ensureInitialization();    
+    ensureInitialization();
     startExecutingJobs();
     isActive = true;
   }
-  
+
   /** Shuts down the whole job executor */
   public synchronized void shutdown() {
     if (!isActive) {
@@ -90,12 +90,12 @@ public abstract class JobExecutor {
     log.info("Shutting down the JobExecutor[{}].", getClass().getName());
     acquireJobsRunnable.stop();
     stopExecutingJobs();
-    ensureCleanup();   
+    ensureCleanup();
     isActive = false;
   }
-  
+
   /** Possibility to ensure everything is nicely initialized before starting the threads */
-  protected void ensureInitialization() { 
+  protected void ensureInitialization() {
   	if (acquireJobsCmd == null) {
   		acquireJobsCmd = new AcquireJobsCmd(this);
   	}
@@ -103,14 +103,14 @@ public abstract class JobExecutor {
   		acquireJobsRunnable = new AcquireJobsRunnableImpl(this);
   	}
   }
-  
+
   /** Possibility to clean up resources */
-  protected void ensureCleanup() {  
+  protected void ensureCleanup() {
     acquireJobsCmd = null;
-    acquireJobsRunnable = null;  
+    acquireJobsRunnable = null;
   }
-  
-  /** 
+
+  /**
    * Called when a new job was added by the process engine to which
    * this job executor belongs. This is a hint, that for example
    * the acquiring needs to start again when it would be sleeping.
@@ -120,7 +120,7 @@ public abstract class JobExecutor {
       acquireJobsRunnable.jobWasAdded();
     }
   }
-  
+
   /** Starts the acquisition thread */
   protected void startJobAcquisitionThread() {
 		if (jobAcquisitionThread == null) {
@@ -128,33 +128,33 @@ public abstract class JobExecutor {
 		}
 		jobAcquisitionThread.start();
 	}
-	
+
   /** Stops the acquisition thread */
 	protected void stopJobAcquisitionThread() {
 		try {
 			jobAcquisitionThread.join();
 		} catch (InterruptedException e) {
 			log.warn("Interrupted while waiting for the job Acquisition thread to terminate", e);
-		}	
+		}
 		jobAcquisitionThread = null;
 	}
-  
+
   /* Need to be implemented by concrete subclasses */
-  
+
 	public abstract void executeJobs(List<String> jobIds);
   protected abstract void startExecutingJobs();
-  protected abstract void stopExecutingJobs(); 
-  
+  protected abstract void stopExecutingJobs();
+
   /* Can be overridden by subclasses if wanted */
   public void jobDone(JobEntity job) {
   	// Default: do nothing
   }
-  
+
   /* Can be overridden by subclasses if wanted */
   public void jobDone(String jobId) {
   	// Default: do nothing
   }
-  
+
   // getters and setters //////////////////////////////////////////////////////
 
   public CommandExecutor getCommandExecutor() {
@@ -165,7 +165,7 @@ public abstract class JobExecutor {
     return waitTimeInMillis;
   }
 
-  public void setWaitTimeInMillis(int waitTimeInMillis) {
+  public void setWaitTimeInMillis(long waitTimeInMillis) {
     this.waitTimeInMillis = waitTimeInMillis;
   }
 
@@ -200,7 +200,7 @@ public abstract class JobExecutor {
   public int getMaxJobsPerAcquisition() {
     return maxJobsPerAcquisition;
   }
-  
+
   public void setMaxJobsPerAcquisition(int maxJobsPerAcquisition) {
     this.maxJobsPerAcquisition = maxJobsPerAcquisition;
   }
@@ -208,15 +208,15 @@ public abstract class JobExecutor {
   public String getName() {
     return name;
   }
-  
+
   public Command<AcquiredJobs> getAcquireJobsCmd() {
     return acquireJobsCmd;
   }
-  
+
   public void setAcquireJobsCmd(Command<AcquiredJobs> acquireJobsCmd) {
     this.acquireJobsCmd = acquireJobsCmd;
   }
-    
+
   public AcquireJobsRunnable getAcquireJobsRunnable() {
 		return acquireJobsRunnable;
 	}
@@ -228,15 +228,15 @@ public abstract class JobExecutor {
 	public boolean isActive() {
     return isActive;
   }
-  
+
   public RejectedJobsHandler getRejectedJobsHandler() {
     return rejectedJobsHandler;
   }
-    
+
   public void setRejectedJobsHandler(RejectedJobsHandler rejectedJobsHandler) {
     this.rejectedJobsHandler = rejectedJobsHandler;
   }
-  
+
   public Date getCurrentTime() {
     return clockReader.getCurrentTime();
   }

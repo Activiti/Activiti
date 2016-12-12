@@ -18,8 +18,21 @@
     <activiti.artifact>
       org.activiti.rest.service
     </activiti.artifact>
+    <activiti.osgi.export.additional>
+              org.activiti.rest.service.api,
+              <!-- Add the packages that contain classes with @RestController annotations: -->
+              org.activiti.rest.service.api.form,
+              org.activiti.rest.service.api.history,
+              org.activiti.rest.service.api.identity,
+              org.activiti.rest.service.api.management,
+              org.activiti.rest.service.api.repository,
+              org.activiti.rest.service.api.runtime,
+              org.activiti.rest.service.api.runtime.process,
+              org.activiti.rest.service.api.runtime.task,
+              org.activiti.rest.exception,
+    </activiti.osgi.export.additional>
   </properties>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -180,7 +193,7 @@
       <version>4.3.5</version>
       <scope>test</scope>
     </dependency>
-    
+
     <!-- SPRING -->
     <dependency>
       <groupId>org.springframework</groupId>
@@ -222,14 +235,11 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
     </dependency>
-    
     <dependency>
-      <groupId>org.eclipse.jetty.orbit</groupId>
-      <artifactId>javax.servlet</artifactId>
-      <version>3.0.0.v201112011016</version>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>

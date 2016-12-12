@@ -932,8 +932,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 	  configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
   }
 
-	protected void initCustomMybatisMappers(Configuration configuration) {
-	  if (getCustomMybatisMappers() != null) {
+	protected void initCustomMybatisMappers(Configuration configuration) { 
+                log.info("Initialising custom Mybatis mappers");
+          if (getCustomMybatisMappers() != null) {
+                log.info("Custom Mybatis Mappers found");
 	  	for (Class<?> clazz : getCustomMybatisMappers()) {
 	  		configuration.addMapper(clazz);
 	  	}

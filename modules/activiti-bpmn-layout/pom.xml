@@ -17,6 +17,9 @@
     <activiti.artifact>
       org.activiti.bpmn.layout
     </activiti.artifact>
+    <activiti.osgi.export.additional>
+      org.activiti.bpmn
+    </activiti.osgi.export.additional>
   </properties>
 
   <build>
