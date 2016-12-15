@@ -17,6 +17,7 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -46,8 +47,17 @@ public class SignalEventHandler extends AbstractEventHandler {
       
       // Find initial flow element matching the signal start event
       String processDefinitionId = eventSubscription.getProcessDefinitionId();
-      org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
       ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinition(processDefinitionId);
+      
+      if (processDefinition == null) {
+        throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
+      }
+      
+      if (processDefinition.isSuspended()) {
+        throw new ActivitiException("Could not handle signal: process definition with id: " + processDefinitionId + " is suspended");
+      }
+      
+      org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
       FlowElement flowElement = process.getFlowElement(eventSubscription.getActivityId(), true);
       if (flowElement == null) {
         throw new ActivitiException("Could not find matching FlowElement for activityId " + eventSubscription.getActivityId());
