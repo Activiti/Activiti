@@ -153,5 +153,11 @@ public class SecureScriptingTest extends SecureScriptingBaseTest {
     task = taskService.createTaskQuery().singleResult();
     Assert.assertNotNull(task);
   }
+  
+  @Test
+  public void testUsingBean() {
+    deployProcessDefinition("test-secure-script-bean.bpmn20.xml");
+    runtimeService.startProcessInstanceByKey("secureScripting");
+  }
 
 }
