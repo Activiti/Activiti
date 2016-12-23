@@ -13,13 +13,17 @@
 package org.activiti.scripting.secure.behavior;
 
 import org.activiti.engine.impl.bpmn.behavior.ScriptTaskActivityBehavior;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.scripting.secure.impl.SecureJavascriptUtil;
 
 /**
  * @author Joram Barrez
+ * @author Bassam Al-Sarori
  */
 public class SecureJavascriptTaskActivityBehavior extends ScriptTaskActivityBehavior {
+
+    private static final long serialVersionUID = 1L;
 
     public SecureJavascriptTaskActivityBehavior(String scriptTaskId, String script,
                                             String language, String resultVariable, boolean storeScriptVariables) {
@@ -28,7 +32,8 @@ public class SecureJavascriptTaskActivityBehavior extends ScriptTaskActivityBeha
 
     @Override
     public void execute(ActivityExecution execution) throws Exception {
-      SecureJavascriptUtil.evaluateScript(execution, script);
+      ProcessEngineConfigurationImpl config = (ProcessEngineConfigurationImpl) execution.getEngineServices().getProcessEngineConfiguration();
+      SecureJavascriptUtil.evaluateScript(execution, script, config.getBeans());
     }
 
 }

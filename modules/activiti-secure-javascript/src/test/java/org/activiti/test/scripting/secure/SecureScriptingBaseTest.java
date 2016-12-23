@@ -13,7 +13,9 @@
 package org.activiti.test.scripting.secure;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -22,6 +24,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.scripting.secure.SecureJavascriptConfigurator;
+import org.activiti.scripting.secure.impl.DefaultClassWhitelister;
 import org.activiti.scripting.secure.impl.SecureScriptClassShutter;
 import org.junit.After;
 import org.junit.Before;
@@ -40,12 +43,15 @@ public abstract class SecureScriptingBaseTest {
   public void initProcessEngine() {
 
     SecureJavascriptConfigurator configurator = new SecureJavascriptConfigurator()
-        .setWhiteListedClasses(new HashSet<String>(Arrays.asList("java.util.ArrayList")))
+        .setWhiteListedClasses(new HashSet<String>(Arrays.asList("java.util.ArrayList", "org.activiti.test.scripting.secure.MyBean")))
         .setMaxStackDepth(10).setMaxScriptExecutionTime(3000L)
         .setMaxMemoryUsed(3145728L);
 
+    Map<Object, Object> beans = new HashMap<Object, Object>();
+    beans.put("myBean", new MyBean());
     this.processEngine = new StandaloneInMemProcessEngineConfiguration()
         .addConfigurator(configurator)
+        .setBeans(beans)
         .setDatabaseSchemaUpdate("create-drop")
         .buildProcessEngine();
 
@@ -80,12 +86,12 @@ public abstract class SecureScriptingBaseTest {
 
   protected void addWhiteListedClass(String whiteListedClass) {
     SecureScriptClassShutter secureScriptClassShutter = SecureJavascriptConfigurator.getSecureScriptClassShutter();
-    secureScriptClassShutter.addWhiteListedClass(whiteListedClass);
+    ((DefaultClassWhitelister)secureScriptClassShutter.getClassWhitelister()).addWhiteListedClass(whiteListedClass);
   }
   
   protected void removeWhiteListedClass(String whiteListedClass) {
     SecureScriptClassShutter secureScriptClassShutter = SecureJavascriptConfigurator.getSecureScriptClassShutter();
-    secureScriptClassShutter.removeWhiteListedClass(whiteListedClass);
+    ((DefaultClassWhitelister)secureScriptClassShutter.getClassWhitelister()).removeWhiteListedClass(whiteListedClass);
   }
 
 }

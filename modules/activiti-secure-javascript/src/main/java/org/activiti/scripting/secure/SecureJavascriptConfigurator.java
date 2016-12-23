@@ -21,12 +21,14 @@ import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.scripting.secure.behavior.SecureJavascriptTaskParseHandler;
+import org.activiti.scripting.secure.impl.DefaultClassWhitelister;
 import org.activiti.scripting.secure.impl.SecureScriptClassShutter;
 import org.activiti.scripting.secure.impl.SecureScriptContextFactory;
 import org.mozilla.javascript.ContextFactory;
 
 /**
  * @author Joram Barrez
+ * @author Bassam Al-Sarori
  */
 public class SecureJavascriptConfigurator extends AbstractProcessEngineConfigurator {
 
@@ -107,6 +109,13 @@ public class SecureJavascriptConfigurator extends AbstractProcessEngineConfigura
    */
   protected int scriptOptimizationLevel = -1;
   
+  /**
+   * An implementation of {@link ClassWhitelister}
+   * if set will be used to determine whether 
+   * a class is visible for scripts or not
+   */
+  protected ClassWhitelister classWhitelister;
+  
   @Override
   public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
     
@@ -130,11 +139,16 @@ public class SecureJavascriptConfigurator extends AbstractProcessEngineConfigura
 
       secureScriptContextFactory.setOptimizationLevel(getScriptOptimizationLevel());
 
-      if (isEnableClassWhiteListing() || getWhiteListedClasses() != null) {
-        secureScriptClassShutter = new SecureScriptClassShutter();
-        if (getWhiteListedClasses() != null && getWhiteListedClasses().size() > 0) {
-          secureScriptClassShutter .setWhiteListedClasses(getWhiteListedClasses());
+      if (isEnableClassWhiteListing() || getWhiteListedClasses() != null
+          || classWhitelister != null) {
+        if (classWhitelister == null) {
+          classWhitelister = new DefaultClassWhitelister();
+          if (getWhiteListedClasses() != null && getWhiteListedClasses().size() > 0) {
+            ((DefaultClassWhitelister)classWhitelister).setWhiteListedClasses(getWhiteListedClasses());
+          }
         }
+        secureScriptClassShutter = new SecureScriptClassShutter();
+        secureScriptClassShutter.setClassWhitelister(classWhitelister);
         secureScriptContextFactory.setClassShutter(secureScriptClassShutter);
       }
 
