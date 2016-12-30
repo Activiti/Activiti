@@ -120,9 +120,13 @@ public class FormField implements Serializable {
     this.layout = layout;
   }
 
-  public int getSizeY() { return sizeY;}
+  public int getSizeY() {
+    return sizeY;
+  }
 
-  public void setSizeY(int sizeY) {this.sizeY = sizeY;}
+  public void setSizeY(int sizeY) {
+    this.sizeY = sizeY;
+  }
 
   @JsonInclude(Include.NON_EMPTY)
   public Map<String, Object> getParams() {
