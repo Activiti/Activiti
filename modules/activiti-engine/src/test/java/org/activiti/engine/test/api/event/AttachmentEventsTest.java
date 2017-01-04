@@ -189,6 +189,29 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
 		}
 	}
 	
+	@Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+	public void testAttachmentEntityEventsOnHistoricProcessInstanceDelete() throws Exception {
+		if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+			
+			// Create link-attachment
+			Attachment attachment = taskService.createAttachment("test", null, processInstance.getId(), "attachment name", "description", "http://activiti.org");
+			listener.clearEventsReceived();
+			
+			runtimeService.deleteProcessInstance(processInstance.getId(), null);
+			historyService.deleteHistoricProcessInstance(processInstance.getId());
+			
+			assertEquals(1, listener.getEventsReceived().size());
+			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
+			assertEquals(processInstance.getId(), event.getProcessInstanceId());
+			assertEquals(processInstance.getId(), event.getExecutionId());
+			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+			Attachment attachmentFromEvent = (Attachment) event.getEntity();
+			assertEquals(attachment.getId(), attachmentFromEvent.getId());
+		}
+	}
+	
 	public void testAttachmentEntityEventsOnHistoricTaskDelete() throws Exception {
 		if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
 			Task task = null;
@@ -223,6 +246,32 @@ public class AttachmentEventsTest extends PluggableActivitiTestCase {
 		}
 	}
 
+	@Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+	public void testAttachmentEntityEventsOnHistoricTaskDeleteInProcessInstance() throws Exception {
+		if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+			
+			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+			assertNotNull(task);
+			
+			// Create link-attachment
+			Attachment attachment = taskService.createAttachment("test", task.getId(), processInstance.getId(), "attachment name", "description", "http://activiti.org");
+			listener.clearEventsReceived();
+			
+			runtimeService.deleteProcessInstance(processInstance.getId(), null);
+			historyService.deleteHistoricProcessInstance(processInstance.getId());
+			
+			assertEquals(1, listener.getEventsReceived().size());
+			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
+			assertEquals(processInstance.getId(), event.getProcessInstanceId());
+			assertEquals(processInstance.getId(), event.getExecutionId());
+			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+			Attachment attachmentFromEvent = (Attachment) event.getEntity();
+			assertEquals(attachment.getId(), attachmentFromEvent.getId());
+		}
+	}
+	
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();

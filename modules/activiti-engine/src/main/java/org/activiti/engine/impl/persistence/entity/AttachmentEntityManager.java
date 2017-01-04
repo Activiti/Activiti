@@ -18,9 +18,9 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.task.Attachment;
-import org.activiti.engine.task.Task;
 
 
 /**
@@ -41,6 +41,39 @@ public class AttachmentEntityManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
+  public void deleteAttachmentsByProcessInstanceId(String processInstanceId) {
+      checkHistoryEnabled();
+      List<AttachmentEntity> attachments = getDbSqlSession().selectList("selectAttachmentsByProcessInstanceId", processInstanceId);
+      boolean dispatchEvents = getProcessEngineConfiguration().getEventDispatcher().isEnabled();
+
+      String processDefinitionId = null;
+      String executionId = null;
+
+      if (dispatchEvents && attachments != null && !attachments.isEmpty()) {
+          // Forced to fetch the process instance to get hold of the process definition for event-dispatching, if available
+          HistoricProcessInstance processInstance = getHistoricProcessInstanceManager().findHistoricProcessInstance(processInstanceId);
+          if (processInstance != null) {
+              processDefinitionId = processInstance.getProcessDefinitionId();
+              executionId = processInstance.getId();
+          }
+      }
+
+      for (AttachmentEntity attachment : attachments) {
+          if (attachment.getTaskId() != null) {
+              continue;
+          }
+          String contentId = attachment.getContentId();
+          if (contentId != null) {
+              getByteArrayManager().deleteByteArrayById(contentId);
+          }
+          getDbSqlSession().delete(attachment);
+          if (dispatchEvents) {
+              getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, executionId, processInstanceId, processDefinitionId));
+          }
+      }
+  }
+
+  @SuppressWarnings("unchecked")
   public void deleteAttachmentsByTaskId(String taskId) {
     checkHistoryEnabled();
     List<AttachmentEntity> attachments = getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
@@ -52,7 +85,7 @@ public class AttachmentEntityManager extends AbstractManager {
     
     if(dispatchEvents && attachments != null && !attachments.isEmpty()) {
     	// Forced to fetch the task to get hold of the process definition for event-dispatching, if available
-    	Task task = getTaskManager().findTaskById(taskId);
+    	HistoricTaskInstanceEntity task = getHistoricTaskInstanceManager().findHistoricTaskInstanceById(taskId);
     	if(task != null) {
     		processDefinitionId = task.getProcessDefinitionId();
     		processInstanceId = task.getProcessInstanceId();
