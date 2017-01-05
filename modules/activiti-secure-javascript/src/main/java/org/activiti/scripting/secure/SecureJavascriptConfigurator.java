@@ -251,4 +251,12 @@ public class SecureJavascriptConfigurator extends AbstractProcessEngineConfigura
     return secureScriptClassShutter;
   }
 
+  public ClassWhitelister getClassWhitelister() {
+	  return classWhitelister;
+  }
+
+  public void setClassWhitelister(ClassWhitelister classWhitelister) {
+	  this.classWhitelister = classWhitelister;
+  }
+  
 }
