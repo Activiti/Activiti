@@ -14,10 +14,14 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
+import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.TerminateEventDefinition;
@@ -43,6 +47,8 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior {
   
   private static final long serialVersionUID = 1L;
+  
+  public static final String DELETE_REASON_TERMINATE_END_EVENT_FIRED = "terminate end event fired";
   
   protected EndEvent endEvent;
   protected boolean terminateAll; 
@@ -112,7 +118,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     sendCancelledEvent( execution, terminateEndEventActivity, scopeExecution);
     
     // destroy the scope
-    scopeExecution.destroyScope("terminate end event fired");
+    scopeExecution.destroyScope(DELETE_REASON_TERMINATE_END_EVENT_FIRED);
 
     // set the scope execution to the terminate end event and make it end here.
     // (the history should reflect that the execution ended here and we want an 'end time' for the
@@ -129,29 +135,39 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     
   }
   
-  protected void terminateProcessInstanceExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution processInstanceExecution) {
+  protected void terminateProcessInstanceExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution processInstanceExecution) throws InterruptedException {
     sendCancelledEvent( execution, terminateEndEventActivity, processInstanceExecution);
     deleteProcessInstance((ExecutionEntity) processInstanceExecution, execution, "terminate end event (" + terminateEndEventActivity.getId() + ")");
   }
   
-  protected void deleteProcessInstance(ExecutionEntity processInstanceExecution, ActivityExecution execution, String deleteReason) {
+  protected void deleteProcessInstance(ExecutionEntity processInstanceExecution, ActivityExecution execution, String deleteReason) throws InterruptedException {
   	
-    List<ExecutionEntity> orderedExecutions = orderExecutionsRootToLeaf(processInstanceExecution);
-    Collections.reverse(orderedExecutions);
-    
-    endAllHistoricActivities(processInstanceExecution.getId());
-    
-    for (ExecutionEntity executionToDelete : orderedExecutions) {
-      
-    	executionToDelete.setDeleteReason(deleteReason);
-    	executionToDelete.setEnded(true);
-    	executionToDelete.setActive(false);
-    	executionToDelete.setDeleteRoot(true);
-      
-    	executionToDelete.remove();
-    }
-    
-    Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(processInstanceExecution.getId(), deleteReason, execution.getActivity().getId());
+      List<ExecutionEntity> orderedExecutions = orderExecutionsRootToLeaf(processInstanceExecution);
+      Collections.reverse(orderedExecutions);
+
+      endAllHistoricActivities(processInstanceExecution.getId(), execution);
+
+      for (ExecutionEntity executionToDelete : orderedExecutions) {
+
+          executionToDelete.setDeleteReason(deleteReason);
+          executionToDelete.setEnded(true);
+          executionToDelete.setActive(false);
+          executionToDelete.setDeleteRoot(true);
+
+          executionToDelete.remove();
+
+          if(!executionToDelete.getProcessInstanceId().equals(executionToDelete.getId())){
+              continue;
+          }
+
+          // terminated by parent process or sub process
+          if(!executionToDelete.getId().equals( execution.getProcessInstanceId() )){
+              Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(executionToDelete.getId(), DELETE_REASON_TERMINATE_END_EVENT_FIRED, null);
+          } else {
+              // terminated by current process
+              Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(executionToDelete.getId(), deleteReason, execution.getActivity().getId());
+          }
+      }
   }
   
   protected List<ExecutionEntity> orderExecutionsRootToLeaf(ExecutionEntity execution) {
@@ -184,42 +200,82 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     return orderedExecutions;
   }
   
-  protected void endAllHistoricActivities(String processInstanceId) {
+  protected void endAllHistoricActivities(String processInstanceId, final ActivityExecution execution) throws InterruptedException {
     
-    if (!Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      return;
-    }
-    
-    Map<String, HistoricActivityInstanceEntity> historicActivityInstancMap = new HashMap<String, HistoricActivityInstanceEntity>();
-    
-    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
+      if (!Context.getProcessEngineConfiguration().getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+          return;
+      }
+
+      Map<String, HistoricActivityInstanceEntity> historicActivityInstancMap = new HashMap<String, HistoricActivityInstanceEntity>();
+
+      List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
       .processInstanceId(processInstanceId)
       .unfinished()
       .list();
-    for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
-      historicActivityInstancMap.put(historicActivityInstance.getId(), (HistoricActivityInstanceEntity) historicActivityInstance);
-    }
-    
-    // Cached version overwites entity
-    List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = Context.getCommandContext().getDbSqlSession()
-        .findInCache(HistoricActivityInstanceEntity.class);
-    for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
-      if (processInstanceId.equals(cachedHistoricActivityInstance.getProcessInstanceId())
-          && (cachedHistoricActivityInstance.getEndTime() == null)) {
-        historicActivityInstancMap.put(cachedHistoricActivityInstance.getId(), cachedHistoricActivityInstance);
+      for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
+          historicActivityInstancMap.put(historicActivityInstance.getId(), (HistoricActivityInstanceEntity) historicActivityInstance);
       }
-    }
 
-    for (HistoricActivityInstanceEntity historicActivityInstance : historicActivityInstancMap.values()) {
-      historicActivityInstance.markEnded(null);
-      
-      // Fire event
-      ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
-      if (config != null && config.getEventDispatcher().isEnabled()) {
-        config.getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, historicActivityInstance));
+      // Cached version overwites entity
+      List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = Context.getCommandContext().getDbSqlSession()
+              .findInCache(HistoricActivityInstanceEntity.class);
+      for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
+          if (processInstanceId.equals(cachedHistoricActivityInstance.getProcessInstanceId())
+                  && (cachedHistoricActivityInstance.getEndTime() == null)) {
+              historicActivityInstancMap.put(cachedHistoricActivityInstance.getId(), cachedHistoricActivityInstance);
+              // establish consistency in db and cache
+          } else if(processInstanceId.equals(cachedHistoricActivityInstance.getProcessInstanceId())
+                  && (cachedHistoricActivityInstance.getEndTime() != null)){
+
+              String excludedHistoricActivityInstanceId = null;
+              for(HistoricActivityInstanceEntity historicActivityInstance : historicActivityInstancMap.values()){
+                  if(cachedHistoricActivityInstance.getId().equals(historicActivityInstance.getId())){
+                      excludedHistoricActivityInstanceId = historicActivityInstance.getId();
+                  }
+              }
+
+              if(excludedHistoricActivityInstanceId != null){
+                  historicActivityInstancMap.remove(excludedHistoricActivityInstanceId);
+              }
+          }
       }
-    }
+
+      // sort in processing order
+      List<Map.Entry<String, HistoricActivityInstanceEntity>> historicActivityInstanceList = new ArrayList<Map.Entry<String, HistoricActivityInstanceEntity>>(historicActivityInstancMap.entrySet());
+      Collections.sort(historicActivityInstanceList, new Comparator<Map.Entry<String, HistoricActivityInstanceEntity>>() {
+          @Override
+          public int compare(Entry<String, HistoricActivityInstanceEntity> entry1, Entry<String, HistoricActivityInstanceEntity> entry2) {
+              HistoricActivityInstanceEntity entity1 = entry1.getValue();
+              HistoricActivityInstanceEntity entity2 = entry2.getValue();
+              // check terminate end event(fired)
+              if((execution.getProcessInstanceId().equals(entity1.getProcessInstanceId())) && (execution.getActivity().getId().equals(entity1.getActivityId()))){
+                  return -1;
+              } else if((execution.getProcessInstanceId().equals(entity2.getProcessInstanceId())) && (execution.getActivity().getId().equals(entity2.getActivityId()))){
+                  return 1;
+              } else {
+                  return entity1.getStartTime().compareTo(entity2.getStartTime());
+              }
+          }
+      });
+
+      for (Entry<String, HistoricActivityInstanceEntity> historicActivityInstanceEntry : historicActivityInstanceList) {
+          HistoricActivityInstanceEntity historicActivityInstance = historicActivityInstanceEntry.getValue();
+          // call activities
+          if(BpmnXMLConstants.ELEMENT_CALL_ACTIVITY.equals(historicActivityInstance.getActivityType())){
+              endAllHistoricActivities(historicActivityInstance.getCalledProcessInstanceId(), execution);
+          }
+
+          // for end time
+          TimeUnit.MILLISECONDS.sleep(1);
+          historicActivityInstance.markEnded(null);
+
+          // Fire event
+          ProcessEngineConfigurationImpl config = Context.getProcessEngineConfiguration();
+          if (config != null && config.getEventDispatcher().isEnabled()) {
+              config.getEventDispatcher().dispatchEvent(
+                      ActivitiEventBuilder.createEntityEvent(ActivitiEventType.HISTORIC_ACTIVITY_INSTANCE_ENDED, historicActivityInstance));
+          }
+      }
     
   }
   
