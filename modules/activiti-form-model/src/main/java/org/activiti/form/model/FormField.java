@@ -45,6 +45,9 @@ public class FormField implements Serializable {
 
   protected LayoutDefinition layout;
 
+  // size of the dropdown
+  protected int sizeY;
+
   public String getId() {
     return id;
   }
@@ -115,6 +118,14 @@ public class FormField implements Serializable {
 
   public void setLayout(LayoutDefinition layout) {
     this.layout = layout;
+  }
+
+  public int getSizeY() {
+    return sizeY;
+  }
+
+  public void setSizeY(int sizeY) {
+    this.sizeY = sizeY;
   }
 
   @JsonInclude(Include.NON_EMPTY)
