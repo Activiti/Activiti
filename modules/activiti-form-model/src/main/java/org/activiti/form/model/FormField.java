@@ -46,6 +46,7 @@ public class FormField implements Serializable {
   protected LayoutDefinition layout;
 
   // size of the dropdown
+  protected int sizeX;
   protected int sizeY;
 
   public String getId() {
@@ -120,6 +121,14 @@ public class FormField implements Serializable {
     this.layout = layout;
   }
 
+  public int getSizeX() {
+	  return sizeX;
+  }
+
+  public void setSizeX(int sizeX) {
+	  this.sizeX = sizeX;
+  }
+  
   public int getSizeY() {
     return sizeY;
   }
