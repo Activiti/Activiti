@@ -42,9 +42,9 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 		assertEquals(5, tasks.size());
 		for (int i=0; i<5; i++) {
 			Map<String, Object> task = tasks.get(i);
-			assertNotNull(task.get("ID"));
-			assertNotNull(task.get("NAME"));
-			assertNotNull(task.get("CREATETIME"));
+			assertNotNull(getResultObject("ID", task));
+			assertNotNull(getResultObject("NAME", task));
+			assertNotNull(getResultObject("CREATETIME", task));
 		}
 		
 		// Cleanup
@@ -82,12 +82,13 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 		assertEquals(5, results.size());
 		for (int i=0; i<5; i++) {
 			Map<String, Object> result = results.get(i);
-			Long id = Long.valueOf((String) result.get("TASKID"));
+			Long id = Long.valueOf((String) getResultObject("TASKID", result));
 			Long variableValue = null;
-			if (result.get("VARIABLEVALUE") instanceof BigDecimal) { // in oracle it's BigDecimal
-			  variableValue = ((BigDecimal)result.get("VARIABLEVALUE")).longValue();
+			Object variableObjectValue = getResultObject("VARIABLEVALUE", result);
+			if (variableObjectValue instanceof BigDecimal) { // in oracle it's BigDecimal
+			  variableValue = ((BigDecimal)variableObjectValue).longValue();
 			} else {
-			  variableValue = (Long) result.get("VARIABLEVALUE");
+			  variableValue = (Long) variableObjectValue;
 			}
 			assertEquals(id * 2, variableValue.longValue());
 		}
@@ -98,6 +99,14 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 			historyService.deleteHistoricTaskInstance(task.getId());
 		}
 		
+	}
+	
+	protected Object getResultObject(String key, Map<String, Object> result) {
+		Object resultObject = result.get(key);
+		if (resultObject == null) { // postgresql requires lower case
+			resultObject = result.get(key.toLowerCase());
+		}
+		return resultObject;
 	}
 	
 }
