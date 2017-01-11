@@ -66,6 +66,8 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected Integer processDefinitionVersion;
   protected Set<String> processInstanceIds;
   protected String involvedUser;
+  protected String involvedUserLike;
+  protected String involvedUserLikeIgnoreCase;
   protected boolean includeProcessVariables;
   protected Integer processInstanceVariablesLimit;
   protected boolean withJobException;
@@ -319,6 +321,32 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     return this;
   }
   
+  public HistoricProcessInstanceQuery involvedUserLike(String involvedUserLike) {
+    if (inOrStatement) {
+      this.orQueryObject.involvedUserLike = involvedUserLike;
+    } else {
+      this.involvedUserLike = involvedUserLike;
+    }
+    return this;
+  }
+
+  public String getInvolvedUserLike() {
+    return involvedUserLike;
+  }
+
+  public String getInvolvedUserLikeIgnoreCase() {
+    return involvedUserLikeIgnoreCase;
+  }
+
+  public HistoricProcessInstanceQuery involvedUserLikeIgnoreCase(String involvedUserLikeIgnoreCase) {
+    if (inOrStatement) {
+      this.orQueryObject.involvedUserLikeIgnoreCase = involvedUserLikeIgnoreCase;
+    } else {
+      this.involvedUserLikeIgnoreCase = involvedUserLikeIgnoreCase;
+    }
+    return this;
+  }
+
   public HistoricProcessInstanceQuery includeProcessVariables() {
     this.includeProcessVariables = true;
     return this;

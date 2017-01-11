@@ -596,6 +596,20 @@
           or RES.OWNER_ = #{involvedUser}
           )
       </if>
+      <if test="involvedUserLike != null">
+        and (
+          exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where USER_ID_ like #{involvedUserLike} and LINK.TASK_ID_ = RES.ID_)
+          or RES.ASSIGNEE_ like #{involvedUserLike}
+          or RES.OWNER_ like #{involvedUserLike}
+          )
+      </if>
+      <if test="involvedUserLikeIgnoreCase != null">
+        and (
+          exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where lower(USER_ID_) like lower(#{involvedUserLikeIgnoreCase}) and LINK.TASK_ID_ = RES.ID_)
+          or lower(RES.ASSIGNEE_) like lower(#{involvedUserLikeIgnoreCase})
+          or lower(RES.OWNER_) like lower(#{involvedUserLikeIgnoreCase})
+          )
+      </if>
       <foreach item="var" collection="queryVariableValues" index="index">
         <if test="!var.local">
           <!-- When process instance variable is queried for, taskId should be null -->
@@ -909,6 +923,20 @@
                 exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where USER_ID_ = #{orQueryObject.involvedUser} and LINK.TASK_ID_ = RES.ID_)
                 or RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
                 or RES.OWNER_ = #{orQueryObject.involvedUser}
+                )
+            </if>
+            <if test="orQueryObject.involvedUserLike != null">
+              or (
+                exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where USER_ID_ like #{orQueryObject.involvedUserLike} and LINK.TASK_ID_ = RES.ID_)
+                or RES.ASSIGNEE_ like #{orQueryObject.involvedUserLike}
+                or RES.OWNER_ like #{orQueryObject.involvedUserLike}
+                )
+            </if>
+            <if test="orQueryObject.involvedUserLikeIgnoreCase != null">
+              or (
+                exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where lower(USER_ID_) like lower(#{orQueryObject.involvedUserLikeIgnoreCase}) and LINK.TASK_ID_ = RES.ID_)
+                or lower(RES.ASSIGNEE_) like lower(#{orQueryObject.involvedUserLikeIgnoreCase})
+                or lower(RES.OWNER_) like lower(#{orQueryObject.involvedUserLikeIgnoreCase})
                 )
             </if>
             <foreach item="var" collection="orQueryObject.queryVariableValues" index="index">

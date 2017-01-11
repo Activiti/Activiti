@@ -444,6 +444,16 @@
           exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.PROC_INST_ID_ = RES.ID_)
         )
       </if>
+       <if test="involvedUserLike != null">
+        and (
+          exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ like #{involvedUserLike} and LINK.PROC_INST_ID_ = RES.ID_)
+        )
+      </if>
+       <if test="involvedUserLikeIgnoreCase != null">
+        and (
+          exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where lower(USER_ID_) like lower(#{involvedUserLikeIgnoreCase}) and LINK.PROC_INST_ID_ = RES.ID_)
+        )
+      </if>
       <if test="startedBy != null">
         and RES.START_USER_ID_ = #{startedBy}
       </if>
@@ -613,6 +623,16 @@
           <if test="orQueryObject.involvedUser != null">
             or (
               exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{orQueryObject.involvedUser} and LINK.PROC_INST_ID_ = RES.ID_)
+            )
+          </if>
+          <if test="orQueryObject.involvedUserLike != null">
+            or (
+              exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ like #{orQueryObject.involvedUserLike} and LINK.PROC_INST_ID_ = RES.ID_)
+            )
+          </if>
+          <if test="orQueryObject.involvedUserLikeIgnoreCase != null">
+            or (
+              exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where lower(USER_ID_) like lower(#{orQueryObject.involvedUserLikeIgnoreCase}) and LINK.PROC_INST_ID_ = RES.ID_)
             )
           </if>
           <if test="orQueryObject.startedBy != null">

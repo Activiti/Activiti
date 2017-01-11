@@ -61,6 +61,8 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String subProcessInstanceId;
   protected boolean excludeSubprocesses;
   protected String involvedUser;
+  protected String involvedUserLike;
+  protected String involvedUserLikeIgnoreCase;
   protected SuspensionState suspensionState;
   protected boolean includeProcessVariables;
   protected Integer processInstanceVariablesLimit;
@@ -339,7 +341,40 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     }
     return this;
   }
-  
+  public ProcessInstanceQuery involvedUserLike(String involvedUserLike) {
+    if (involvedUser == null) {
+      throw new ActivitiIllegalArgumentException("Involved user is null");
+    }
+
+    if (inOrStatement) {
+      this.orQueryObject.involvedUserLike = involvedUserLike;
+    } else {
+      this.involvedUserLike = involvedUserLike;
+    }
+    return this;
+  }
+
+  public String getInvolvedUserLike() {
+    return involvedUserLike;
+  }
+
+  public String getInvolvedUserLikeIgnoreCase() {
+    return involvedUserLikeIgnoreCase;
+  }
+
+  public ProcessInstanceQuery involvedUserLikeIgnoreCase(String involvedUserLikeIgnoreCase) {
+    if (involvedUserLikeIgnoreCase == null) {
+      throw new ActivitiIllegalArgumentException("Involved user is null");
+    }
+
+    if (inOrStatement) {
+      this.orQueryObject.involvedUserLikeIgnoreCase = involvedUserLikeIgnoreCase;
+    } else {
+      this.involvedUserLikeIgnoreCase = involvedUserLikeIgnoreCase;
+    }
+    return this;
+  }
+
   public ProcessInstanceQuery active() {
     if (inOrStatement) {
       this.currentOrQueryObject.suspensionState = SuspensionState.ACTIVE;
