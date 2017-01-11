@@ -1,6 +1,5 @@
 package org.activiti.standalone.cfg;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -81,16 +80,10 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 		List<Map<String, Object>> results = managementService.executeCustomSql(customSqlExecution);
 		assertEquals(5, results.size());
 		for (int i=0; i<5; i++) {
-			Map<String, Object> result = results.get(i);
-			Long id = Long.valueOf((String) getResultObject("TASKID", result));
-			Long variableValue = null;
-			Object variableObjectValue = getResultObject("VARIABLEVALUE", result);
-			if (variableObjectValue instanceof BigDecimal) { // in oracle it's BigDecimal
-			  variableValue = ((BigDecimal)variableObjectValue).longValue();
-			} else {
-			  variableValue = (Long) variableObjectValue;
-			}
-			assertEquals(id * 2, variableValue.longValue());
+		  Map<String, Object> result = results.get(i);
+		  Long id = Long.valueOf((String) getResultObject("TASKID", result));
+		  Long variableValue = ((Number) getResultObject("VARIABLEVALUE", result)).longValue();
+		  assertEquals(id * 2, variableValue.longValue());
 		}
 		
 		// Cleanup
