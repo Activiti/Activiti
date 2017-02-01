@@ -142,6 +142,9 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
    * assigned to the given user (assignee) or owned by the given user (owner). */
   T taskInvolvedUser(String involvedUser);
 
+  /** Only select tasks for users involved in the given groups */
+  T taskInvolvedGroups(List<String> involvedGroups);
+
   /** Only select tasks for which users in the given group are candidates. */
   T taskCandidateGroup(String candidateGroup);
   
