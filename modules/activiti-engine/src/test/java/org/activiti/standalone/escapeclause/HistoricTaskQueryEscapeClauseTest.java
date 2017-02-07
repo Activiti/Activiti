@@ -49,16 +49,17 @@ public class HistoricTaskQueryEscapeClauseTest extends AbstractEscapeClauseTestC
       .deploy()
       .getId();
 
+      processInstance1 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", "One%", "One%");
+      runtimeService.setProcessInstanceName(processInstance1.getId(), "One%");
+
+
     deploymentTwoId = repositoryService
       .createDeployment()
       .tenantId("Two_")
       .addClasspathResource("org/activiti/engine/test/history/oneTaskProcessEscapeClauseTest.bpmn20.xml")
       .deploy()
       .getId();
-    
-    processInstance1 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", "One%", "One%");
-    runtimeService.setProcessInstanceName(processInstance1.getId(), "One%");
-    
+
     processInstance2 = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", "Two_", "Two_");
     runtimeService.setProcessInstanceName(processInstance2.getId(), "Two_");
     
