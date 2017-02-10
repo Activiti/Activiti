@@ -13,6 +13,11 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +33,16 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Tasks" }, description = "Manage Tasks")
 public class TaskEventCollectionResource extends TaskBaseResource {
 
+	@ApiOperation(value = "Get all events for a task", tags = {"Tasks"})
+	  @ApiResponses(value = {
+	          @ApiResponse(code = 200, message = "Indicates the task was found and the events are returned."),
+	          @ApiResponse(code = 404, message = "Indicates the requested task was not found.")
+	  })
   @RequestMapping(value = "/runtime/tasks/{taskId}/events", method = RequestMethod.GET, produces = "application/json")
-  public List<EventResponse> getEvents(@PathVariable String taskId, HttpServletRequest request) {
+  public List<EventResponse> getEvents(@ApiParam(name = "taskId") @PathVariable String taskId, HttpServletRequest request) {
     HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
     return restResponseFactory.createEventResponseList(taskService.getTaskEvents(task.getId()));
   }

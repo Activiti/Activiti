@@ -13,6 +13,12 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.io.InputStream;
 
 import javax.servlet.http.HttpServletResponse;
@@ -35,42 +41,51 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Tasks" }, description = "Manage Tasks")
 public class TaskAttachmentContentResource extends TaskBaseResource {
 
-  @RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}/content", method = RequestMethod.GET)
-  public ResponseEntity<byte[]> getAttachmentContent(@PathVariable("taskId") String taskId, @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
 
-    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
-    Attachment attachment = taskService.getAttachment(attachmentId);
 
-    if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
-      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Attachment.class);
-    }
+	@ApiOperation(value = "Get the content for an attachment", tags = {"Tasks"},
+			notes = "The response body contains the binary content. By default, the content-type of the response is set to application/octet-stream unless the attachment type contains a valid Content-type.")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Indicates the task and attachment was found and the requested content is returned."),
+			@ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have an attachment with the given id or the attachment doesn’t have a binary stream available. Status message provides additional information.")
+	})	
+	@RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}/content", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> getAttachmentContent(@ApiParam(name = "taskId") @PathVariable("taskId") String taskId,@ApiParam(name = "attachmentId") @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
 
-    InputStream attachmentStream = taskService.getAttachmentContent(attachmentId);
-    if (attachmentStream == null) {
-      throw new ActivitiObjectNotFoundException("Attachment with id '" + attachmentId + "' doesn't have content associated with it.", Attachment.class);
-    }
+		HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
+		Attachment attachment = taskService.getAttachment(attachmentId);
 
-    HttpHeaders responseHeaders = new HttpHeaders();
-    MediaType mediaType = null;
-    if (attachment.getType() != null) {
-      try {
-        mediaType = MediaType.valueOf(attachment.getType());
-        responseHeaders.set("Content-Type", attachment.getType());
-      } catch (Exception e) {
-        // ignore if unknown media type
-      }
-    }
+		if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
+			throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Attachment.class);
+		}
 
-    if (mediaType == null) {
-      responseHeaders.set("Content-Type", "application/octet-stream");
-    }
+		InputStream attachmentStream = taskService.getAttachmentContent(attachmentId);
+		if (attachmentStream == null) {
+			throw new ActivitiObjectNotFoundException("Attachment with id '" + attachmentId + "' doesn't have content associated with it.", Attachment.class);
+		}
 
-    try {
-      return new ResponseEntity<byte[]>(IOUtils.toByteArray(attachmentStream), responseHeaders, HttpStatus.OK);
-    } catch (Exception e) {
-      throw new ActivitiException("Error creating attachment data", e);
-    }
-  }
+		HttpHeaders responseHeaders = new HttpHeaders();
+		MediaType mediaType = null;
+		if (attachment.getType() != null) {
+			try {
+				mediaType = MediaType.valueOf(attachment.getType());
+				responseHeaders.set("Content-Type", attachment.getType());
+			} catch (Exception e) {
+				// ignore if unknown media type
+			}
+		}
+
+		if (mediaType == null) {
+			responseHeaders.set("Content-Type", "application/octet-stream");
+		}
+
+		try {
+			return new ResponseEntity<byte[]>(IOUtils.toByteArray(attachmentStream), responseHeaders, HttpStatus.OK);
+		} catch (Exception e) {
+			throw new ActivitiException("Error creating attachment data", e);
+		}
+	}
 }

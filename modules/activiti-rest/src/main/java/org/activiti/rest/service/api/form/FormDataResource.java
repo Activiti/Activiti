@@ -13,6 +13,11 @@
 
 package org.activiti.rest.service.api.form;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Tijs Rademakers
  */
 @RestController
+@Api(tags = { "Forms" }, description = "Manage Forms")
 public class FormDataResource {
 
   @Autowired
@@ -47,6 +53,10 @@ public class FormDataResource {
   @Autowired
   protected FormService formService;
 
+  @ApiOperation(value = "Get form data", tags = { "Forms" }, notes = "")
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Indicates that form data could be queried."),
+          @ApiResponse(code = 404, message = "Indicates that form data could not be found.") })
   @RequestMapping(value = "/form/form-data", method = RequestMethod.GET, produces = "application/json")
   public FormDataResponse getFormData(@RequestParam(value = "taskId", required = false) String taskId, @RequestParam(value = "processDefinitionId", required = false) String processDefinitionId,
       HttpServletRequest request) {
@@ -76,6 +86,10 @@ public class FormDataResource {
     return restResponseFactory.createFormDataResponse(formData);
   }
 
+  @ApiOperation(value = "Submit task form data", tags = { "Forms" })
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message = "Indicates request was successful and the form data was submitted"),
+          @ApiResponse(code = 400, message = "Indicates an parameter was passed in the wrong format. The status-message contains additional information.") })
   @RequestMapping(value = "/form/form-data", method = RequestMethod.POST, produces = "application/json")
   public ProcessInstanceResponse submitForm(@RequestBody SubmitFormRequest submitRequest, HttpServletRequest request, HttpServletResponse response) {
 

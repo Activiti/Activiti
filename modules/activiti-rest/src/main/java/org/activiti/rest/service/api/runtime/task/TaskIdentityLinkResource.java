@@ -13,6 +13,11 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,70 +39,82 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Tasks" }, description = "Manage Tasks")
 public class TaskIdentityLinkResource extends TaskBaseResource {
 
-  @RequestMapping(value = "/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}", method = RequestMethod.GET, produces = "application/json")
-  public RestIdentityLink getIdentityLink(@PathVariable("taskId") String taskId, @PathVariable("family") String family, @PathVariable("identityId") String identityId,
-      @PathVariable("type") String type, HttpServletRequest request) {
 
-    Task task = getTaskFromRequest(taskId);
-    validateIdentityLinkArguments(family, identityId, type);
+	@ApiOperation(value = "Get a single identity link on a task", tags = {"Tasks"}, nickname = "getTaskInstanceIdentityLinks")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message =  "Indicates the task and identity link was found and returned."),
+			@ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have the requested identityLink. The status contains additional information about this error.")
+	})
+	@RequestMapping(value = "/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}", method = RequestMethod.GET, produces = "application/json")
+	public RestIdentityLink getIdentityLink(@ApiParam(name="taskId") @PathVariable("taskId") String taskId,@ApiParam(name="family") @PathVariable("family") String family,@ApiParam(name="identityId") @PathVariable("identityId") String identityId,
+			@ApiParam(name="type") @PathVariable("type") String type, HttpServletRequest request) {
 
-    IdentityLink link = getIdentityLink(family, identityId, type, task.getId());
+		Task task = getTaskFromRequest(taskId);
+		validateIdentityLinkArguments(family, identityId, type);
 
-    return restResponseFactory.createRestIdentityLink(link);
-  }
+		IdentityLink link = getIdentityLink(family, identityId, type, task.getId());
 
-  @RequestMapping(value = "/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}", method = RequestMethod.DELETE)
-  public void deleteIdentityLink(@PathVariable("taskId") String taskId, @PathVariable("family") String family, @PathVariable("identityId") String identityId, @PathVariable("type") String type,
-      HttpServletResponse response) {
+		return restResponseFactory.createRestIdentityLink(link);
+	}
 
-    Task task = getTaskFromRequest(taskId);
+	@ApiOperation(value = "Delete an identity link on a task", tags = {"Tasks"}, nickname = "deleteTaskInstanceIdentityLinks")
+	@ApiResponses(value = {
+			@ApiResponse(code = 204, message = "Indicates the task and identity link were found and the link has been deleted. Response-body is intentionally empty."),
+			@ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have the requested identityLink. The status contains additional information about this error.")
+	})
+	@RequestMapping(value = "/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}", method = RequestMethod.DELETE)
+	public void deleteIdentityLink(@ApiParam(name = "taskId") @PathVariable("taskId") String taskId, @PathVariable("family") String family, @PathVariable("identityId") String identityId, @PathVariable("type") String type,
+			HttpServletResponse response) {
 
-    validateIdentityLinkArguments(family, identityId, type);
+		Task task = getTaskFromRequest(taskId);
 
-    // Check if identitylink to delete exists
-    getIdentityLink(family, identityId, type, task.getId());
+		validateIdentityLinkArguments(family, identityId, type);
 
-    if (RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family)) {
-      taskService.deleteUserIdentityLink(task.getId(), identityId, type);
-    } else {
-      taskService.deleteGroupIdentityLink(task.getId(), identityId, type);
-    }
+		// Check if identitylink to delete exists
+		getIdentityLink(family, identityId, type, task.getId());
 
-    response.setStatus(HttpStatus.NO_CONTENT.value());
-  }
+		if (RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family)) {
+			taskService.deleteUserIdentityLink(task.getId(), identityId, type);
+		} else {
+			taskService.deleteGroupIdentityLink(task.getId(), identityId, type);
+		}
 
-  protected void validateIdentityLinkArguments(String family, String identityId, String type) {
-    if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family) && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
-      throw new ActivitiIllegalArgumentException("Identity link family should be 'users' or 'groups'.");
-    }
-    if (identityId == null) {
-      throw new ActivitiIllegalArgumentException("IdentityId is required.");
-    }
-    if (type == null) {
-      throw new ActivitiIllegalArgumentException("Type is required.");
-    }
-  }
+		response.setStatus(HttpStatus.NO_CONTENT.value());
+	}
 
-  protected IdentityLink getIdentityLink(String family, String identityId, String type, String taskId) {
-    boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
+	protected void validateIdentityLinkArguments(String family, String identityId, String type) {
+		if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family) && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
+			throw new ActivitiIllegalArgumentException("Identity link family should be 'users' or 'groups'.");
+		}
+		if (identityId == null) {
+			throw new ActivitiIllegalArgumentException("IdentityId is required.");
+		}
+		if (type == null) {
+			throw new ActivitiIllegalArgumentException("Type is required.");
+		}
+	}
 
-    // Perhaps it would be better to offer getting a single identitylink
-    // from the API
-    List<IdentityLink> allLinks = taskService.getIdentityLinksForTask(taskId);
-    for (IdentityLink link : allLinks) {
-      boolean rightIdentity = false;
-      if (isUser) {
-        rightIdentity = identityId.equals(link.getUserId());
-      } else {
-        rightIdentity = identityId.equals(link.getGroupId());
-      }
+	protected IdentityLink getIdentityLink(String family, String identityId, String type, String taskId) {
+		boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
 
-      if (rightIdentity && link.getType().equals(type)) {
-        return link;
-      }
-    }
-    throw new ActivitiObjectNotFoundException("Could not find the requested identity link.", IdentityLink.class);
-  }
+		// Perhaps it would be better to offer getting a single identitylink
+		// from the API
+		List<IdentityLink> allLinks = taskService.getIdentityLinksForTask(taskId);
+		for (IdentityLink link : allLinks) {
+			boolean rightIdentity = false;
+			if (isUser) {
+				rightIdentity = identityId.equals(link.getUserId());
+			} else {
+				rightIdentity = identityId.equals(link.getGroupId());
+			}
+
+			if (rightIdentity && link.getType().equals(type)) {
+				return link;
+			}
+		}
+		throw new ActivitiObjectNotFoundException("Could not find the requested identity link.", IdentityLink.class);
+	}
 }

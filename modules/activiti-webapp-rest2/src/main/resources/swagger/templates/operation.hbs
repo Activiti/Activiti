@@ -1,0 +1,73 @@
+{{#deprecated}}-deprecated-{{/deprecated}}
+<a id="{{operationId}}">{{summary}}</a>
+
+{{description}}
+
+{{#if externalDocs.url}}{{externalDocs.description}}. [See external documents for more details]({{externalDocs.url}})
+{{/if}}
+
+{{#if security}}
+#### Security
+{{/if}}
+
+{{#security}}
+{{#each this}}
+* {{@key}}
+{{#this}}   * {{this}}
+{{/this}}
+{{/each}}
+{{/security}}
+
+#### Request
+
+{{#if consumes}}
+**Content-Type: ** {{join consumes ", "}}{{/if}}
+
+##### Parameters
+{{#if parameters}}
+<table border="1">
+    <tr>
+        <th>Name</th>
+        <th>Located in</th>
+        <th>Required</th>
+        <th>Description</th>
+        <th>Default</th>
+        <th>Schema</th>
+    </tr>
+{{/if}}
+
+{{#parameters}}
+<tr>
+    <th>{{name}}</th>
+    <td>{{in}}</td>
+    <td>{{#if required}}yes{{else}}no{{/if}}</td>
+    <td>{{description}}{{#if pattern}} (**Pattern**: `{{pattern}}`){{/if}}</td>
+    <td> - </td>
+{{#ifeq in "body"}}
+    <td>
+    {{#ifeq schema.type "array"}}Array[<a href="{{schema.items.$ref}}">{{basename schema.items.$ref}}</a>]{{/ifeq}}
+    {{#schema.$ref}}<a href="{{schema.$ref}}">{{basename schema.$ref}}</a> {{/schema.$ref}}
+    </td>
+{{else}}
+    {{#ifeq type "array"}}
+            <td>Array[{{items.type}}] ({{collectionFormat}})</td>
+    {{else}}
+            <td>{{type}} {{#format}}({{format}}){{/format}}</td>
+    {{/ifeq}}
+{{/ifeq}}
+</tr>
+{{/parameters}}
+{{#if parameters}}
+</table>
+{{/if}}
+
+
+#### Response
+
+{{#if produces}}**Content-Type: ** {{join produces ", "}}{{/if}}
+
+
+| Status Code | Reason      | Response Model |
+|-------------|-------------|----------------|
+{{#each responses}}| {{@key}}    | {{description}} | {{#schema.$ref}}<a href="{{schema.$ref}}">{{basename schema.$ref}}</a>{{/schema.$ref}}{{#ifeq schema.type "array"}}Array[<a href="{{schema.items.$ref}}">{{basename schema.items.$ref}}</a>]{{/ifeq}}{{^schema}} - {{/schema}}|
+{{/each}}

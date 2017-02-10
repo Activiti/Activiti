@@ -262,6 +262,22 @@
       <version>8.1.16.v20140903</version>
       <scope>test</scope>
     </dependency>
+    
+    <!-- swagger dependencies -->
+	<dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <version>1.5.10</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.swagger</groupId>
+      <artifactId>swagger-models</artifactId>
+      <version>1.5.10</version>
+      <scope>compile</scope>
+    </dependency>
+	 <!-- swagger dependencies end -->
+    
   </dependencies>
 
   <profiles>

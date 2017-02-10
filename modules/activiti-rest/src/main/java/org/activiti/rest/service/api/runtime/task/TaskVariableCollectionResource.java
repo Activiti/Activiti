@@ -19,6 +19,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -43,13 +51,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Tasks" }, description = "Manage Tasks")
 public class TaskVariableCollectionResource extends TaskVariableBaseResource {
 
   @Autowired
   protected ObjectMapper objectMapper;
 
+  @ApiOperation(value = "Get all variables for a task", tags = {"Tasks"}, nickname = "listTaskVariables")
+  @ApiResponses(value = {
+          @ApiResponse(code = 200, message =  "Indicates the task was found and the requested variables are returned"),
+          @ApiResponse(code = 404, message = "Indicates the requested task was not found..")
+  })
+  @ApiImplicitParams(
+          @ApiImplicitParam(name = "scope", dataType = "string", value = "Scope of variable to be returned. When local, only task-local variable value is returned. When global, only variable value from the task’s parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.", paramType = "query")
+  )
   @RequestMapping(value = "/runtime/tasks/{taskId}/variables", method = RequestMethod.GET, produces = "application/json")
-  public List<RestVariable> getVariables(@PathVariable String taskId, @RequestParam(value = "scope", required = false) String scope, HttpServletRequest request) {
+  public List<RestVariable> getVariables(@ApiParam(name="taskId") @PathVariable String taskId,@ApiParam(hidden=true) @RequestParam(value = "scope", required = false) String scope, HttpServletRequest request) {
 
     List<RestVariable> result = new ArrayList<RestVariable>();
     Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
@@ -75,8 +92,34 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
     return result;
   }
 
+  
+  //FIXME Multiple Endpoints
+  @ApiOperation(value = "Create new variables on a task", tags = {"Tasks"},
+          notes="## Request body for creating simple (non-binary) variables\n\n"
+          + " ```JSON\n" + "[\n" + "  {\n" + "    \"name\" : \"myTaskVariable\",\n" + "    \"scope\" : \"local\",\n" + "    \"type\" : \"string\",\n"
+                  + "    \"value\" : \"Hello my friend\"\n" + "  },\n" + "  {\n" + "\n" + "  }\n" + "] ```"
+          + "\n\n\n"
+          + "The request body should be an array containing one or more JSON-objects representing the variables that should be created.\n" + "\n"
+                  + "- *name*: Required name of the variable\n" + "\n" + "scope: Scope of variable that is created. If omitted, local is assumed.\n" + "\n"
+                  + "- *type*: Type of variable that is created. If omitted, reverts to raw JSON-value type (string, boolean, integer or double).\n" + "\n"
+                  + "- *value*: Variable value.\n" + "\n" + "More information about the variable format can be found in the REST variables section."
+          + "\n\n\n"
+          + "## Request body for Creating a new binary variable\n\n"
+          + "The request should be of type multipart/form-data. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:\n"
+                  + "\n"
+                  + "- *name*: Required name of the variable.\n" + "\n" + "scope: Scope of variable that is created. If omitted, local is assumed.\n" + "\n"
+                  + "- *type*: Type of variable that is created. If omitted, binary is assumed and the binary data in the request will be stored as an array of bytes."
+          + "\n\n\n"
+  )
+  @ApiResponses(value = {
+          @ApiResponse(code = 201, message =  "Indicates the variables were created and the result is returned."),
+          @ApiResponse(code = 400, message =  "Indicates the name of a variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope global or an empty array of variables was included in the request or request did not contain an array of variables. Status message provides additional information."),
+          @ApiResponse(code = 404, message = "Indicates the requested task was not found."),
+          @ApiResponse(code = 409, message = "Indicates the task already has a variable with the given name. Use the PUT method to update the task variable instead."),
+          @ApiResponse(code = 415, message = "Indicates the serializable data contains an object for which no class is present in the JVM running the Flowable engine and therefore cannot be deserialized.")
+  }) 
   @RequestMapping(value = "/runtime/tasks/{taskId}/variables", method = RequestMethod.POST, produces = "application/json")
-  public Object createTaskVariable(@PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
+  public Object createTaskVariable(@ApiParam(name = "taskId") @PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
 
     Task task = getTaskFromRequest(taskId);
 
@@ -155,8 +198,13 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
     return result;
   }
 
+  @ApiOperation(value = "Delete all local variables on a task", tags = {"Tasks"})
+  @ApiResponses(value = {
+          @ApiResponse(code = 204, message = "Indicates all local task variables have been deleted. Response-body is intentionally empty."),
+          @ApiResponse(code = 404, message = "Indicates the requested task was not found.")
+  })
   @RequestMapping(value = "/runtime/tasks/{taskId}/variables", method = RequestMethod.DELETE)
-  public void deleteAllLocalTaskVariables(@PathVariable String taskId, HttpServletResponse response) {
+  public void deleteAllLocalTaskVariables(@ApiParam(name="taskId") @PathVariable String taskId, HttpServletResponse response) {
     Task task = getTaskFromRequest(taskId);
     Collection<String> currentVariables = taskService.getVariablesLocal(task.getId()).keySet();
     taskService.removeVariablesLocal(task.getId(), currentVariables);

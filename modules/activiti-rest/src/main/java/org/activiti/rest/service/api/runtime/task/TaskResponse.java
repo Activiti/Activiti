@@ -16,6 +16,7 @@ package org.activiti.rest.service.api.runtime.task;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import io.swagger.annotations.ApiModelProperty;
 
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
@@ -119,7 +120,7 @@ public class TaskResponse {
   public void setAssignee(String assignee) {
     this.assignee = assignee;
   }
-
+  @ApiModelProperty(value="Delegation-state of the task, can be null, \"pending\" or \"resolved\".")
   public String getDelegationState() {
     return delegationState;
   }
