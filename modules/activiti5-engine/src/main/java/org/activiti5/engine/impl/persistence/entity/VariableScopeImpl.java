@@ -799,7 +799,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     
     VariableType newType = variableTypes.findVariableType(value);
     
-    if ((variableInstance != null) && (!variableInstance.getType().equals(newType))) {
+    if (newType != null && !newType.equals(variableInstance.getType())) {
       variableInstance.setValue(null);
       variableInstance.setType(newType);
       variableInstance.forceUpdate();
