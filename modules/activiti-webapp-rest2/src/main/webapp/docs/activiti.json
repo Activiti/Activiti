@@ -266,6 +266,828 @@
         }
       }
     },
+    "/history/historic-process-instances" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "List of historic process instances",
+        "description" : "",
+        "operationId" : "listHistoricProcessInstances",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "query",
+          "description" : "An id of the historic process instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionKey",
+          "in" : "query",
+          "description" : "The process definition key of the historic process instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionId",
+          "in" : "query",
+          "description" : "The process definition id of the historic process instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "businessKey",
+          "in" : "query",
+          "description" : "The business key of the historic process instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "involvedUser",
+          "in" : "query",
+          "description" : "An involved user of the historic process instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "finished",
+          "in" : "query",
+          "description" : "Indication if the historic process instance is finished.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "superProcessInstanceId",
+          "in" : "query",
+          "description" : "An optional parent process id of the historic process instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "excludeSubprocesses",
+          "in" : "query",
+          "description" : "Return only historic process instances which aren’t sub processes.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "finishedAfter",
+          "in" : "query",
+          "description" : "Return only historic process instances that were finished after this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "finishedBefore",
+          "in" : "query",
+          "description" : "Return only historic process instances that were finished before this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "startedAfter",
+          "in" : "query",
+          "description" : "Return only historic process instances that were started after this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "startedBefore",
+          "in" : "query",
+          "description" : "Return only historic process instances that were started before this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "startedBy",
+          "in" : "query",
+          "description" : "Return only historic process instances that were started by this user.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "includeProcessVariables",
+          "in" : "query",
+          "description" : "An indication if the historic process instance variables should be returned as well.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "tenantId",
+          "in" : "query",
+          "description" : "Only return instances with the given tenantId.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantIdLike",
+          "in" : "query",
+          "description" : "Only return instances with a tenantId like the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "withoutTenantId",
+          "in" : "query",
+          "description" : "If true, only returns instances without a tenantId set. If false, the withoutTenantId parameter is ignored.\n",
+          "required" : false,
+          "type" : "boolean"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates that historic process instances could be queried.",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
+          }
+        }
+      }
+    },
+    "/history/historic-process-instances/{processInstanceId}" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "Get a historic process instance",
+        "description" : "",
+        "operationId" : "getHistoricProcessInstance",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates that the historic process instances could be found.",
+            "schema" : {
+              "$ref" : "#/definitions/HistoricProcessInstanceResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates that the historic process instances could not be found."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "History" ],
+        "summary" : " Delete a historic process instance",
+        "description" : "",
+        "operationId" : "deleteHitoricProcessInstance",
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates that the historic process instance was deleted."
+          },
+          "404" : {
+            "description" : "Indicates that the historic process instance could not be found."
+          }
+        }
+      }
+    },
+    "/history/historic-process-instances/{processInstanceId}/comments" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "Get all comments on a historic process instance",
+        "description" : "",
+        "operationId" : "getComments",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the process instance was found and the comments are returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/CommentResponse"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates that the historic process instance could not be found."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "History" ],
+        "summary" : "Create a new comment on a historic process instance",
+        "description" : "Parameter saveProcessInstanceId is optional, if true save process instance id of task with comment.",
+        "operationId" : "createComment",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "",
+          "in" : "path",
+          "description" : "processInstanceId",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/CommentResponse"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/CommentResponse"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the comment was created and the result is returned."
+          },
+          "400" : {
+            "description" : "Indicates the comment is missing from the request."
+          },
+          "404" : {
+            "description" : "Indicates that the historic process instance could not be found."
+          }
+        }
+      }
+    },
+    "/history/historic-process-instances/{processInstanceId}/comments/{commentId}" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "Get a comment on a historic process instance",
+        "description" : "",
+        "operationId" : "getComment",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "commentId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the historic process instance and comment were found and the comment is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/CommentResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested historic process instance was not found or the historic process instance doesn’t have a comment with the given ID."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "History" ],
+        "summary" : "Delete a comment on a historic process instance",
+        "description" : "",
+        "operationId" : "deleteComment",
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "commentId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the historic process instance and comment were found and the comment is deleted. Response body is left empty intentionally."
+          },
+          "404" : {
+            "description" : "Indicates the requested historic process instance was not found or the historic process instance doesn’t have a comment with the given ID."
+          }
+        }
+      }
+    },
+    "/history/historic-process-instances/{processInstanceId}/identitylinks" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "Get the identity links of a historic process instance",
+        "description" : "",
+        "operationId" : "getProcessIdentityLinks",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the identity links are returned",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/HistoricIdentityLinkResponse"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the process instance could not be found.."
+          }
+        }
+      }
+    },
+    "/history/historic-process-instances/{processInstanceId}/variables/{variableName}/data" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "Get the binary data for a historic process instance variable",
+        "description" : "The response body contains the binary value of the variable. When the variable is of type binary, the content-type of the response is set to application/octet-stream, regardless of the content of the variable or the request accept-type header. In case of serializable, application/x-java-serialized-object is used as content-type.",
+        "operationId" : "getHistoricProcessInstanceVariableData",
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "variableName",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the process instance was found and the requested variable data is returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string",
+                "format" : "byte"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found or the process instance doesn’t have a variable with the given name or the variable doesn’t have a binary stream available. Status message provides additional information."
+          }
+        }
+      }
+    },
+    "/history/historic-task-instances" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "Get historic task instances",
+        "description" : "",
+        "operationId" : "listHistoricTaskInstances",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "taskId",
+          "in" : "query",
+          "description" : "An id of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processInstanceId",
+          "in" : "query",
+          "description" : "The process instance id of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionKey",
+          "in" : "query",
+          "description" : "The process definition key of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionKeyLike",
+          "in" : "query",
+          "description" : "The process definition key of the historic task instance, which matches the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionId",
+          "in" : "query",
+          "description" : "The process definition id of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionName",
+          "in" : "query",
+          "description" : "The process definition name of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionNameLike",
+          "in" : "query",
+          "description" : "The process definition name of the historic task instance, which matches the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processBusinessKey",
+          "in" : "query",
+          "description" : "The process instance business key of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processBusinessKeyLike",
+          "in" : "query",
+          "description" : "The process instance business key of the historic task instance that matches the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "executionId",
+          "in" : "query",
+          "description" : "The execution id of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskDefinitionKey",
+          "in" : "query",
+          "description" : "The task definition key for tasks part of a process",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskName",
+          "in" : "query",
+          "description" : "The task name of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskNameLike",
+          "in" : "query",
+          "description" : "The task name with like operator for the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskDescription",
+          "in" : "query",
+          "description" : "The task description of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskDescriptionLike",
+          "in" : "query",
+          "description" : "The task description with like operator for the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskCategory",
+          "in" : "query",
+          "description" : "Select tasks with the given category. Note that this is the task category, not the category of the process definition (namespace within the BPMN Xml).",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskDeleteReason",
+          "in" : "query",
+          "description" : "The task delete reason of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskDeleteReasonLike",
+          "in" : "query",
+          "description" : "The task delete reason with like operator for the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskAssignee",
+          "in" : "query",
+          "description" : "The assignee of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskAssigneeLike",
+          "in" : "query",
+          "description" : "The assignee with like operator for the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskOwner",
+          "in" : "query",
+          "description" : "The owner of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskOwnerLike",
+          "in" : "query",
+          "description" : "The owner with like operator for the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskInvolvedUser",
+          "in" : "query",
+          "description" : "An involved user of the historic task instance",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskPriority",
+          "in" : "query",
+          "description" : "The priority of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "finished",
+          "in" : "query",
+          "description" : "Indication if the historic task instance is finished.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "processFinished",
+          "in" : "query",
+          "description" : "Indication if the process instance of the historic task instance is finished.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "parentTaskId",
+          "in" : "query",
+          "description" : "An optional parent task id of the historic task instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "dueDate",
+          "in" : "query",
+          "description" : "Return only historic task instances that have a due date equal this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "dueDateAfter",
+          "in" : "query",
+          "description" : "Return only historic task instances that have a due date after this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "dueDateBefore",
+          "in" : "query",
+          "description" : "Return only historic task instances that have a due date before this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "withoutDueDate",
+          "in" : "query",
+          "description" : "Return only historic task instances that have no due-date. When false is provided as value, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "taskCompletedOn",
+          "in" : "query",
+          "description" : "Return only historic task instances that have been completed on this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskCompletedAfter",
+          "in" : "query",
+          "description" : "Return only historic task instances that have been completed after this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskCompletedBefore",
+          "in" : "query",
+          "description" : "Return only historic task instances that have been completed before this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskCreatedOn",
+          "in" : "query",
+          "description" : "Return only historic task instances that were created on this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskCreatedBefore",
+          "in" : "query",
+          "description" : "Return only historic task instances that were created before this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskCreatedAfter",
+          "in" : "query",
+          "description" : "Return only historic task instances that were created after this date.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "includeTaskLocalVariables",
+          "in" : "query",
+          "description" : "An indication if the historic task instance local variables should be returned as well.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "includeProcessVariables",
+          "in" : "query",
+          "description" : "An indication if the historic task instance global variables should be returned as well.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "tenantId",
+          "in" : "query",
+          "description" : "Only return historic task instances with the given tenantId.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantIdLike",
+          "in" : "query",
+          "description" : "Only return historic task instances with a tenantId like the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "withoutTenantId",
+          "in" : "query",
+          "description" : "If true, only returns historic task instances without a tenantId set. If false, the withoutTenantId parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates that historic task instances could be queried.",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
+          }
+        }
+      }
+    },
+    "/history/historic-task-instances/{taskId}" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "Get a single historic task instance",
+        "description" : "",
+        "operationId" : "getTaskInstance",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates that the historic task instances could be found.",
+            "schema" : {
+              "$ref" : "#/definitions/HistoricTaskInstanceResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates that the historic task instances could not be found."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "History" ],
+        "summary" : "Delete a historic task instance",
+        "description" : "",
+        "operationId" : "deleteTaskInstance",
+        "parameters" : [ {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates that the historic task instance was deleted."
+          },
+          "404" : {
+            "description" : "Indicates that the historic task instance could not be found."
+          }
+        }
+      }
+    },
+    "/history/historic-task-instances/{taskId}/identitylinks" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "Get the identity links of a historic task instance",
+        "description" : "",
+        "operationId" : "getTaskIdentityLinks",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the identity links are returned",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/HistoricIdentityLinkResponse"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the task instance could not be found."
+          }
+        }
+      }
+    },
+    "/history/historic-task-instances/{taskId}/variables/{variableName}/data" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "Get the binary data for a historic task instance variable",
+        "description" : "The response body contains the binary value of the variable. When the variable is of type binary, the content-type of the response is set to application/octet-stream, regardless of the content of the variable or the request accept-type header. In case of serializable, application/x-java-serialized-object is used as content-type.",
+        "operationId" : "getHistoricTaskInstanceVariableData",
+        "parameters" : [ {
+          "name" : "taskId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "variableName",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "scope",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the task instance was found and the requested variable data is returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string",
+                "format" : "byte"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested task instance was not found or the process instance doesn’t have a variable with the given name or the variable doesn’t have a binary stream available. Status message provides additional information."
+          }
+        }
+      }
+    },
+    "/history/historic-variable-instances" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "List of historic variable instances",
+        "description" : "",
+        "operationId" : "getHistoricVariableInstances",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "query",
+          "description" : "The process instance id of the historic variable instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "taskId",
+          "in" : "query",
+          "description" : "The task id of the historic variable instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "excludeTaskVariables",
+          "in" : "query",
+          "description" : "Indication to exclude the task variables from the result.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "variableName",
+          "in" : "query",
+          "description" : "The variable name of the historic variable instance.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "variableNameLike",
+          "in" : "query",
+          "description" : "The variable name using the like operator for the historic variable instance.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates that historic variable instances could be queried.",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
+          }
+        }
+      }
+    },
+    "/history/historic-variable-instances/{varInstanceId}/data" : {
+      "get" : {
+        "tags" : [ "History" ],
+        "summary" : "Get the binary data for a historic task instance variable",
+        "description" : "The response body contains the binary value of the variable. When the variable is of type binary, the content-type of the response is set to application/octet-stream, regardless of the content of the variable or the request accept-type header. In case of serializable, application/x-java-serialized-object is used as content-type.",
+        "operationId" : "getHistoricInstanceVariableData",
+        "parameters" : [ {
+          "name" : "varInstanceId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the variable instance was found and the requested variable data is returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string",
+                "format" : "byte"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested variable instance was not found or the variable instance doesn’t have a variable with the given name or the variable doesn’t have a binary stream available. Status message provides additional information."
+          }
+        }
+      }
+    },
     "/query/historic-activity-instances" : {
       "post" : {
         "tags" : [ "History" ],
@@ -290,6 +1112,118 @@
           },
           "400" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information"
+          }
+        }
+      }
+    },
+    "/query/historic-detail" : {
+      "post" : {
+        "tags" : [ "History" ],
+        "summary" : "Query for historic details",
+        "description" : "All supported JSON parameter fields allowed are exactly the same as the parameters found for getting a collection of historic process instances, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri’s that are too long.",
+        "operationId" : "queryHistoricDetail",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/HistoricDetailQueryRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the historic details are returned",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
+          }
+        }
+      }
+    },
+    "/query/historic-process-instances" : {
+      "post" : {
+        "tags" : [ "History" ],
+        "summary" : "Query for historic process instances",
+        "description" : "All supported JSON parameter fields allowed are exactly the same as the parameters found for getting a collection of historic process instances, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri’s that are too long. On top of that, the query allows for filtering based on process variables. The variables property is a JSON-array containing objects with the format as described here.",
+        "operationId" : "queryHistoricProcessInstance",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/HistoricProcessInstanceQueryRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the process instances are returned",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
+          }
+        }
+      }
+    },
+    "/query/historic-task-instances" : {
+      "post" : {
+        "tags" : [ "History" ],
+        "summary" : "Query for historic task instances",
+        "description" : "All supported JSON parameter fields allowed are exactly the same as the parameters found for getting a collection of historic task instances, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri’s that are too long. On top of that, the query allows for filtering based on process variables. The taskVariables and processVariables properties are JSON-arrays containing objects with the format as described here.",
+        "operationId" : "queryHistoricTaskInstance",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/HistoricTaskInstanceQueryRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the tasks are returned",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
+          }
+        }
+      }
+    },
+    "/query/historic-variable-instances" : {
+      "post" : {
+        "tags" : [ "History" ],
+        "summary" : "Query for historic variable instances",
+        "description" : "All supported JSON parameter fields allowed are exactly the same as the parameters found for getting a collection of historic process instances, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri’s that are too long. On top of that, the query allows for filtering based on process variables. The variables property is a JSON-array containing objects with the format as described here.",
+        "operationId" : "queryVariableInstances",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/HistoricVariableInstanceQueryRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the tasks are returned",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
           }
         }
       }
@@ -1809,6 +2743,530 @@
         "withoutTenantId" : {
           "type" : "boolean",
           "default" : false
+        }
+      }
+    },
+    "HistoricDetailQueryRequest" : {
+      "type" : "object",
+      "properties" : {
+        "start" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sort" : {
+          "type" : "string"
+        },
+        "order" : {
+          "type" : "string"
+        },
+        "id" : {
+          "type" : "string"
+        },
+        "processInstanceId" : {
+          "type" : "string"
+        },
+        "executionId" : {
+          "type" : "string"
+        },
+        "activityInstanceId" : {
+          "type" : "string"
+        },
+        "taskId" : {
+          "type" : "string"
+        },
+        "selectOnlyFormProperties" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "selectOnlyVariableUpdates" : {
+          "type" : "boolean",
+          "default" : false
+        }
+      }
+    },
+    "HistoricIdentityLinkResponse" : {
+      "type" : "object",
+      "properties" : {
+        "type" : {
+          "type" : "string"
+        },
+        "userId" : {
+          "type" : "string"
+        },
+        "groupId" : {
+          "type" : "string"
+        },
+        "taskId" : {
+          "type" : "string"
+        },
+        "taskUrl" : {
+          "type" : "string"
+        },
+        "processInstanceId" : {
+          "type" : "string"
+        },
+        "processInstanceUrl" : {
+          "type" : "string"
+        }
+      }
+    },
+    "HistoricProcessInstanceQueryRequest" : {
+      "type" : "object",
+      "properties" : {
+        "start" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sort" : {
+          "type" : "string"
+        },
+        "order" : {
+          "type" : "string"
+        },
+        "processInstanceId" : {
+          "type" : "string"
+        },
+        "processInstanceIds" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "processBusinessKey" : {
+          "type" : "string"
+        },
+        "processDefinitionId" : {
+          "type" : "string"
+        },
+        "processDefinitionKey" : {
+          "type" : "string"
+        },
+        "superProcessInstanceId" : {
+          "type" : "string"
+        },
+        "excludeSubprocesses" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "finished" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "involvedUser" : {
+          "type" : "string"
+        },
+        "finishedAfter" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "finishedBefore" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "startedAfter" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "startedBefore" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "startedBy" : {
+          "type" : "string"
+        },
+        "includeProcessVariables" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "variables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/QueryVariable"
+          }
+        },
+        "tenantId" : {
+          "type" : "string"
+        },
+        "tenantIdLike" : {
+          "type" : "string"
+        },
+        "withoutTenantId" : {
+          "type" : "boolean",
+          "default" : false
+        }
+      }
+    },
+    "HistoricProcessInstanceResponse" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "businessKey" : {
+          "type" : "string"
+        },
+        "processDefinitionId" : {
+          "type" : "string"
+        },
+        "processDefinitionUrl" : {
+          "type" : "string"
+        },
+        "startTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "endTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "durationInMillis" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "startUserId" : {
+          "type" : "string"
+        },
+        "startActivityId" : {
+          "type" : "string"
+        },
+        "endActivityId" : {
+          "type" : "string"
+        },
+        "deleteReason" : {
+          "type" : "string"
+        },
+        "superProcessInstanceId" : {
+          "type" : "string"
+        },
+        "variables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RestVariable"
+          }
+        },
+        "tenantId" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        }
+      }
+    },
+    "HistoricTaskInstanceQueryRequest" : {
+      "type" : "object",
+      "properties" : {
+        "start" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sort" : {
+          "type" : "string"
+        },
+        "order" : {
+          "type" : "string"
+        },
+        "taskId" : {
+          "type" : "string"
+        },
+        "processInstanceId" : {
+          "type" : "string"
+        },
+        "processBusinessKey" : {
+          "type" : "string"
+        },
+        "processBusinessKeyLike" : {
+          "type" : "string"
+        },
+        "processDefinitionId" : {
+          "type" : "string"
+        },
+        "processDefinitionKey" : {
+          "type" : "string"
+        },
+        "processDefinitionKeyLike" : {
+          "type" : "string"
+        },
+        "processDefinitionName" : {
+          "type" : "string"
+        },
+        "processDefinitionNameLike" : {
+          "type" : "string"
+        },
+        "executionId" : {
+          "type" : "string"
+        },
+        "taskName" : {
+          "type" : "string"
+        },
+        "taskNameLike" : {
+          "type" : "string"
+        },
+        "taskDescription" : {
+          "type" : "string"
+        },
+        "taskDescriptionLike" : {
+          "type" : "string"
+        },
+        "taskDefinitionKey" : {
+          "type" : "string"
+        },
+        "taskDefinitionKeyLike" : {
+          "type" : "string"
+        },
+        "taskCategory" : {
+          "type" : "string"
+        },
+        "taskDeleteReason" : {
+          "type" : "string"
+        },
+        "taskDeleteReasonLike" : {
+          "type" : "string"
+        },
+        "taskAssignee" : {
+          "type" : "string"
+        },
+        "taskAssigneeLike" : {
+          "type" : "string"
+        },
+        "taskOwner" : {
+          "type" : "string"
+        },
+        "taskOwnerLike" : {
+          "type" : "string"
+        },
+        "taskInvolvedUser" : {
+          "type" : "string"
+        },
+        "taskPriority" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "taskMinPriority" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "taskMaxPriority" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "finished" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "processFinished" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "parentTaskId" : {
+          "type" : "string"
+        },
+        "dueDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "dueDateAfter" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "dueDateBefore" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "withoutDueDate" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "taskCreatedOn" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "taskCreatedBefore" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "taskCreatedAfter" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "taskCompletedOn" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "taskCompletedBefore" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "taskCompletedAfter" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "includeTaskLocalVariables" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "includeProcessVariables" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "taskVariables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/QueryVariable"
+          }
+        },
+        "processVariables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/QueryVariable"
+          }
+        },
+        "tenantId" : {
+          "type" : "string"
+        },
+        "tenantIdLike" : {
+          "type" : "string"
+        },
+        "withoutTenantId" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "taskCandidateGroup" : {
+          "type" : "string"
+        }
+      }
+    },
+    "HistoricTaskInstanceResponse" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "processDefinitionId" : {
+          "type" : "string"
+        },
+        "processDefinitionUrl" : {
+          "type" : "string"
+        },
+        "processInstanceId" : {
+          "type" : "string"
+        },
+        "processInstanceUrl" : {
+          "type" : "string"
+        },
+        "executionId" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "deleteReason" : {
+          "type" : "string"
+        },
+        "owner" : {
+          "type" : "string"
+        },
+        "assignee" : {
+          "type" : "string"
+        },
+        "startTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "endTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "durationInMillis" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "workTimeInMillis" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "claimTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "taskDefinitionKey" : {
+          "type" : "string"
+        },
+        "formKey" : {
+          "type" : "string"
+        },
+        "priority" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "dueDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "parentTaskId" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "variables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RestVariable"
+          }
+        },
+        "tenantId" : {
+          "type" : "string"
+        },
+        "category" : {
+          "type" : "string"
+        }
+      }
+    },
+    "HistoricVariableInstanceQueryRequest" : {
+      "type" : "object",
+      "properties" : {
+        "excludeTaskVariables" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "taskId" : {
+          "type" : "string"
+        },
+        "executionId" : {
+          "type" : "string"
+        },
+        "processInstanceId" : {
+          "type" : "string"
+        },
+        "variableName" : {
+          "type" : "string"
+        },
+        "variableNameLike" : {
+          "type" : "string"
+        },
+        "variables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/QueryVariable"
+          }
         }
       }
     },
