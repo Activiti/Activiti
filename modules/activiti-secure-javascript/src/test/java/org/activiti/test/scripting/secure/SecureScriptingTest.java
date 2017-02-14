@@ -159,7 +159,9 @@ public class SecureScriptingTest extends SecureScriptingBaseTest {
 	addWhiteListedClass("org.activiti.engine.impl.persistence.entity.ExecutionEntity");
     deployProcessDefinition("test-secure-script-execution.bpmn20.xml");
     String processInstanceId = runtimeService.startProcessInstanceByKey("secureScripting").getId();
-    Assert.assertEquals(1, taskService.createTaskQuery().processInstanceId(processInstanceId).count());
+    Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
+    Assert.assertNotNull(task);
+    taskService.complete(task.getId());
     removeWhiteListedClass("org.activiti.engine.impl.persistence.entity.ExecutionEntity");
   }
   
