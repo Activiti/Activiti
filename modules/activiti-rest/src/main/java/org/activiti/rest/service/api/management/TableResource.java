@@ -13,6 +13,11 @@
 
 package org.activiti.rest.service.api.management;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -31,29 +36,35 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Database tables" }, description = "Manage Database tables")
 public class TableResource {
 
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
+	@Autowired
+	protected RestResponseFactory restResponseFactory;
 
-  @Autowired
-  protected ManagementService managementService;
+	@Autowired
+	protected ManagementService managementService;
 
-  @RequestMapping(value = "/management/tables/{tableName}", method = RequestMethod.GET, produces = "application/json")
-  public TableResponse getTable(@PathVariable String tableName, HttpServletRequest request) {
-    Map<String, Long> tableCounts = managementService.getTableCount();
+	@ApiOperation(value = "Get a single table", tags = {"Database tables"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Indicates the table exists and the table count is returned."),
+			@ApiResponse(code = 404, message = "Indicates the requested table does not exist.")
+	})
+	@RequestMapping(value = "/management/tables/{tableName}", method = RequestMethod.GET, produces = "application/json")
+	public TableResponse getTable(@ApiParam(name = "tableName") @PathVariable String tableName, HttpServletRequest request) {
+		Map<String, Long> tableCounts = managementService.getTableCount();
 
-    TableResponse response = null;
-    for (Entry<String, Long> entry : tableCounts.entrySet()) {
-      if (entry.getKey().equals(tableName)) {
-        response = restResponseFactory.createTableResponse(entry.getKey(), entry.getValue());
-        break;
-      }
-    }
+		TableResponse response = null;
+		for (Entry<String, Long> entry : tableCounts.entrySet()) {
+			if (entry.getKey().equals(tableName)) {
+				response = restResponseFactory.createTableResponse(entry.getKey(), entry.getValue());
+				break;
+			}
+		}
 
-    if (response == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
-    }
-    return response;
-  }
+		if (response == null) {
+			throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
+		}
+		return response;
+	}
 }

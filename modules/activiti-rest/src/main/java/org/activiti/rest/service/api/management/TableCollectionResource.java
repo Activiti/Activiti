@@ -13,6 +13,10 @@
 
 package org.activiti.rest.service.api.management;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,16 +32,21 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Database tables" }, description = "Manage Database tables")
 public class TableCollectionResource {
 
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
+	@Autowired
+	protected RestResponseFactory restResponseFactory;
 
-  @Autowired
-  protected ManagementService managementService;
+	@Autowired
+	protected ManagementService managementService;
 
-  @RequestMapping(value = "/management/tables", method = RequestMethod.GET, produces = "application/json")
-  public List<TableResponse> getTables(HttpServletRequest request) {
-    return restResponseFactory.createTableResponseList(managementService.getTableCount());
-  }
+	@ApiOperation(value = " List of tables", tags = {"Database tables"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Indicates the request was successful.")
+	})
+	@RequestMapping(value = "/management/tables", method = RequestMethod.GET, produces = "application/json")
+	public List<TableResponse> getTables(HttpServletRequest request) {
+		return restResponseFactory.createTableResponseList(managementService.getTableCount());
+	}
 }

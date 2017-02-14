@@ -18,9 +18,15 @@
   "tags" : [ {
     "name" : "Forms"
   }, {
+    "name" : "Groups"
+  }, {
     "name" : "History"
   }, {
+    "name" : "Jobs"
+  }, {
     "name" : "Tasks"
+  }, {
+    "name" : "Users"
   } ],
   "schemes" : [ "http", "https" ],
   "paths" : {
@@ -1084,6 +1090,885 @@
           },
           "404" : {
             "description" : "Indicates the requested variable instance was not found or the variable instance doesn’t have a variable with the given name or the variable doesn’t have a binary stream available. Status message provides additional information."
+          }
+        }
+      }
+    },
+    "/identity/groups" : {
+      "get" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Get a list of groups",
+        "description" : "",
+        "operationId" : "getGroups",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "Only return group with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "description" : "Only return groups with the given name",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "type",
+          "in" : "query",
+          "description" : "Only return groups with the given type",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "nameLike",
+          "in" : "query",
+          "description" : "Only return groups with a name like the given value. Use % as wildcard-character.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "member",
+          "in" : "query",
+          "description" : "Only return groups which have a member with the given username.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "potentialStarter",
+          "in" : "query",
+          "description" : "Only return groups which members are potential starters for a process-definition with the given id.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Property to sort on, to be used together with the order.",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "id", "name", "type" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the requested groups were returned.",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Create a group",
+        "description" : "",
+        "operationId" : "createGroup",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/GroupRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/GroupResponse"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the group was created."
+          },
+          "400" : {
+            "description" : "Indicates the id of the group was missing."
+          }
+        }
+      }
+    },
+    "/identity/groups/{groupId}" : {
+      "get" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Get a single group",
+        "description" : "",
+        "operationId" : "getGroup",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "groupId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the group exists and is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/GroupResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested group does not exist."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Update a group",
+        "description" : "All request values are optional. For example, you can only include the name attribute in the request body JSON-object, only updating the name of the group, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the group-value will be updated to null.",
+        "operationId" : "updateGroup",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "groupId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/GroupRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/GroupResponse"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the group was updated."
+          },
+          "404" : {
+            "description" : "Indicates the requested group was not found."
+          },
+          "409" : {
+            "description" : "Indicates the requested group was updated simultaneously."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Delete a group",
+        "description" : "",
+        "operationId" : "deleteGroup",
+        "parameters" : [ {
+          "name" : "groupId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the group was found and  has been deleted. Response-body is intentionally empty."
+          },
+          "404" : {
+            "description" : "Indicates the requested group does not exist."
+          }
+        }
+      }
+    },
+    "/identity/groups/{groupId}/members" : {
+      "post" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Add a member to a group",
+        "description" : "",
+        "operationId" : "createMembership",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "groupId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/MembershipRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/MembershipResponse"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the group was found and the member has been added."
+          },
+          "400" : {
+            "description" : "Indicates the userId was not included in the request body."
+          },
+          "404" : {
+            "description" : "Indicates the requested group was not found."
+          },
+          "409" : {
+            "description" : "Indicates the requested user is already a member of the group."
+          }
+        }
+      }
+    },
+    "/identity/groups/{groupId}/members/{userId}" : {
+      "delete" : {
+        "tags" : [ "Groups" ],
+        "summary" : "Delete a member from a group",
+        "description" : "",
+        "operationId" : "deleteMembership",
+        "parameters" : [ {
+          "name" : "groupId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the group was found and the member has been deleted. The response body is left empty intentionally."
+          },
+          "404" : {
+            "description" : "Indicates the requested group was not found or that the user is not a member of the group. The status description contains additional information about the error."
+          }
+        }
+      }
+    },
+    "/identity/users" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Get a list of users",
+        "description" : "",
+        "operationId" : "getUsers",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "Only return group with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "firstName",
+          "in" : "query",
+          "description" : "Only return users with the given firstname",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "lastName",
+          "in" : "query",
+          "description" : "Only return users with the given lastname",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "email",
+          "in" : "query",
+          "description" : "Only return users with the given email",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "firstNameLike",
+          "in" : "query",
+          "description" : "Only return userswith a firstname like the given value. Use % as wildcard-character.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "lastNameLike",
+          "in" : "query",
+          "description" : "Only return users with a lastname like the given value. Use % as wildcard-character.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "emailLike",
+          "in" : "query",
+          "description" : "Only return users with an email like the given value. Use % as wildcard-character.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "memberOfGroup",
+          "in" : "query",
+          "description" : "Only return users which are a member of the given group.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "potentialStarter",
+          "in" : "query",
+          "description" : "Only return users  which members are potential starters for a process-definition with the given id.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Property to sort on, to be used together with the order.",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "id", "firstName", "lastname", "email" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the group exists and is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Users" ],
+        "summary" : "Create a user",
+        "description" : "",
+        "operationId" : "createUser",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/UserRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/UserResponse"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the user was created."
+          },
+          "400" : {
+            "description" : "Indicates the id of the user was missing."
+          }
+        }
+      }
+    },
+    "/identity/users/{userId}" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Get a single user",
+        "description" : "",
+        "operationId" : "getUser",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the user exists and is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/UserResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested user does not exist."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Users" ],
+        "summary" : "Update a user",
+        "description" : "All request values are optional. For example, you can only include the firstName attribute in the request body JSON-object, only updating the firstName of the user, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the user-value will be updated to null. Example: {\"firstName\" : null} will clear the firstName of the user).",
+        "operationId" : "updateUser",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/UserRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the user was updated.",
+            "schema" : {
+              "$ref" : "#/definitions/UserResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested user was not found."
+          },
+          "409" : {
+            "description" : "Indicates the requested user was updated simultaneously."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Users" ],
+        "summary" : "Delete a user",
+        "description" : "",
+        "operationId" : "deleteUser",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the user was found and  has been deleted. Response-body is intentionally empty."
+          },
+          "404" : {
+            "description" : "Indicates the requested user was not found."
+          }
+        }
+      }
+    },
+    "/identity/users/{userId}/info" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "List a user’s info",
+        "description" : "",
+        "operationId" : "listUsersInfo",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the user was found and list of info (key and url) is returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/UserInfoResponse"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested user was not found."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Users" ],
+        "summary" : "Create a new user’s info entry",
+        "description" : "",
+        "operationId" : "createUserInfo",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/UserInfoRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/UserInfoResponse"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the user was found and the info has been created."
+          },
+          "400" : {
+            "description" : "Indicates the key or value was missing from the request body. Status description contains additional information about the error."
+          },
+          "404" : {
+            "description" : "Indicates the requested user was not found."
+          },
+          "409" : {
+            "description" : "Indicates there is already an info-entry with the given key for the user, update the resource instance (PUT)."
+          }
+        }
+      }
+    },
+    "/identity/users/{userId}/info/{key}" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Get a user’s info",
+        "description" : "",
+        "operationId" : "getUserInfo",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "key",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the user was found and the user has info for the given key.",
+            "schema" : {
+              "$ref" : "#/definitions/UserInfoResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Users" ],
+        "summary" : "Update a user’s info",
+        "description" : "",
+        "operationId" : "updateUserInfo",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "key",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/UserInfoRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the user was found and the info has been updated.",
+            "schema" : {
+              "$ref" : "#/definitions/UserInfoResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates the value was missing from the request body."
+          },
+          "404" : {
+            "description" : "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Users" ],
+        "summary" : "Delete a user’s info",
+        "description" : "",
+        "operationId" : "deleteUserInfo",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "key",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the user was found and the info for the given key has been deleted. Response body is left empty intentionally."
+          },
+          "404" : {
+            "description" : "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error."
+          }
+        }
+      }
+    },
+    "/identity/users/{userId}/picture" : {
+      "get" : {
+        "tags" : [ "Users" ],
+        "summary" : "Get a user’s picture",
+        "description" : "The response body contains the raw picture data, representing the user’s picture. The Content-type of the response corresponds to the mimeType that was set when creating the picture.",
+        "operationId" : "getUserPicture",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the user was found and has a picture, which is returned in the body.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string",
+                "format" : "byte"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested user was not found or the user does not have a profile picture. Status-description contains additional information about the error."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Users" ],
+        "summary" : "Updating a user’s picture",
+        "description" : "The request should be of type multipart/form-data. There should be a single file-part included with the binary value of the picture. On top of that, the following additional form-fields can be present:\n\nmimeType: Optional mime-type for the uploaded picture. If omitted, the default of image/jpeg is used as a mime-type for the picture.",
+        "operationId" : "updateUserPicture",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the user was found and the picture has been updated. The response-body is left empty intentionally."
+          },
+          "404" : {
+            "description" : "Indicates the requested user was not found."
+          }
+        }
+      }
+    },
+    "/management/deadletter-jobs" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get a list of deadletter jobs",
+        "description" : "",
+        "operationId" : "listDeadLetterJobs",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "Only return job with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processInstanceId",
+          "in" : "query",
+          "description" : "Only return jobs part of a process with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "executionId",
+          "in" : "query",
+          "description" : "Only return jobs part of an execution with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionId",
+          "in" : "query",
+          "description" : "Only return jobs with the given process definition id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "timersOnly",
+          "in" : "query",
+          "description" : "If true, only return jobs which are timers. If false, this parameter is ignored. Cannot be used together with 'messagesOnly'.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "messagesOnly",
+          "in" : "query",
+          "description" : "If true, only return jobs which are messages. If false, this parameter is ignored. Cannot be used together with 'timersOnly'",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "withException",
+          "in" : "query",
+          "description" : "If true, only return jobs for which an exception occurred while executing it. If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "dueBefore",
+          "in" : "query",
+          "description" : "Only return jobs which are due to be executed before the given date. Jobs without duedate are never returned using this parameter.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "dueAfter",
+          "in" : "query",
+          "description" : "Only return jobs which are due to be executed after the given date. Jobs without duedate are never returned using this parameter.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "exceptionMessage",
+          "in" : "query",
+          "description" : "Only return jobs with the given exception message",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantId",
+          "in" : "query",
+          "description" : "Only return jobs with the given tenantId.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantIdLike",
+          "in" : "query",
+          "description" : "Only return jobs with a tenantId like the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "withoutTenantId",
+          "in" : "query",
+          "description" : "If true, only returns jobs without a tenantId set. If false, the withoutTenantId parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "locked",
+          "in" : "query",
+          "description" : "If true, only return jobs which are locked.  If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "unlocked",
+          "in" : "query",
+          "description" : "If true, only return jobs which are unlocked. If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Property to sort on, to be used together with the order.",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "id", "dueDate", "executionId", "processInstanceId", "retries", "tenantId" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the requested jobs were returned.",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates an illegal value has been used in a url query parameter or the both 'messagesOnly' and 'timersOnly' are used as parameters. Status description contains additional details about the error."
+          }
+        }
+      }
+    },
+    "/management/jobs" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get a list of jobs",
+        "description" : "",
+        "operationId" : "listJobs",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "Only return job with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processInstanceId",
+          "in" : "query",
+          "description" : "Only return jobs part of a process with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "executionId",
+          "in" : "query",
+          "description" : "Only return jobs part of an execution with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionId",
+          "in" : "query",
+          "description" : "Only return jobs with the given process definition id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "timersOnly",
+          "in" : "query",
+          "description" : "If true, only return jobs which are timers. If false, this parameter is ignored. Cannot be used together with 'messagesOnly'.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "messagesOnly",
+          "in" : "query",
+          "description" : "If true, only return jobs which are messages. If false, this parameter is ignored. Cannot be used together with 'timersOnly'",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "withException",
+          "in" : "query",
+          "description" : "If true, only return jobs for which an exception occurred while executing it. If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "dueBefore",
+          "in" : "query",
+          "description" : "Only return jobs which are due to be executed before the given date. Jobs without duedate are never returned using this parameter.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "dueAfter",
+          "in" : "query",
+          "description" : "Only return jobs which are due to be executed after the given date. Jobs without duedate are never returned using this parameter.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "exceptionMessage",
+          "in" : "query",
+          "description" : "Only return jobs with the given exception message",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantId",
+          "in" : "query",
+          "description" : "Only return jobs with the given tenantId.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantIdLike",
+          "in" : "query",
+          "description" : "Only return jobs with a tenantId like the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "withoutTenantId",
+          "in" : "query",
+          "description" : "If true, only returns jobs without a tenantId set. If false, the withoutTenantId parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "locked",
+          "in" : "query",
+          "description" : "If true, only return jobs which are locked.  If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "unlocked",
+          "in" : "query",
+          "description" : "If true, only return jobs which are unlocked. If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Property to sort on, to be used together with the order.",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "id", "dueDate", "executionId", "processInstanceId", "retries", "tenantId" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the requested jobs were returned.",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates an illegal value has been used in a url query parameter or the both 'messagesOnly' and 'timersOnly' are used as parameters. Status description contains additional details about the error."
           }
         }
       }
@@ -2319,7 +3204,7 @@
             "description" : "Indicates the task already has a variable with the given name. Use the PUT method to update the task variable instead."
           },
           "415" : {
-            "description" : "Indicates the serializable data contains an object for which no class is present in the JVM running the Flowable engine and therefore cannot be deserialized."
+            "description" : "Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized."
           }
         }
       },
@@ -2422,7 +3307,7 @@
             "description" : "Indicates the requested task was not found or the task doesn’t have a variable with the given name in the given scope. Status message contains additional information about the error."
           },
           "415" : {
-            "description" : "Indicates the serializable data contains an object for which no class is present in the JVM running the Flowable engine and therefore cannot be deserialized."
+            "description" : "Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized."
           }
         }
       },
@@ -2536,7 +3421,7 @@
         },
         "externalUrl" : {
           "type" : "string",
-          "description" : "contentUrl:In case the attachment is a link to an external resource, the externalUrl contains the URL to the external content. If the attachment content is present in the Flowable engine, the contentUrl will contain an URL where the binary content can be streamed from."
+          "description" : "contentUrl:In case the attachment is a link to an external resource, the externalUrl contains the URL to the external content. If the attachment content is present in the Activiti engine, the contentUrl will contain an URL where the binary content can be streamed from."
         },
         "contentUrl" : {
           "type" : "string"
@@ -2686,6 +3571,48 @@
           "items" : {
             "$ref" : "#/definitions/RestFormProperty"
           }
+        }
+      }
+    },
+    "GroupRequest" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "type" : {
+          "type" : "string"
+        },
+        "typeChanged" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "nameChanged" : {
+          "type" : "boolean",
+          "default" : false
+        }
+      }
+    },
+    "GroupResponse" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "type" : {
+          "type" : "string"
         }
       }
     },
@@ -3270,6 +4197,28 @@
         }
       }
     },
+    "MembershipRequest" : {
+      "type" : "object",
+      "properties" : {
+        "userId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "MembershipResponse" : {
+      "type" : "object",
+      "properties" : {
+        "userId" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "groupId" : {
+          "type" : "string"
+        }
+      }
+    },
     "ProcessInstanceResponse" : {
       "type" : "object",
       "properties" : {
@@ -3827,6 +4776,83 @@
           "items" : {
             "$ref" : "#/definitions/RestVariable"
           }
+        }
+      }
+    },
+    "UserInfoRequest" : {
+      "type" : "object",
+      "properties" : {
+        "key" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        }
+      }
+    },
+    "UserInfoResponse" : {
+      "type" : "object",
+      "properties" : {
+        "key" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        }
+      }
+    },
+    "UserRequest" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "email" : {
+          "type" : "string"
+        },
+        "pictureUrl" : {
+          "type" : "string"
+        },
+        "password" : {
+          "type" : "string"
+        }
+      }
+    },
+    "UserResponse" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "firstName" : {
+          "type" : "string"
+        },
+        "lastName" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "email" : {
+          "type" : "string"
+        },
+        "pictureUrl" : {
+          "type" : "string"
+        },
+        "password" : {
+          "type" : "string"
         }
       }
     }
