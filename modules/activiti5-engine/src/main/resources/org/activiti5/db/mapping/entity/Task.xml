@@ -447,6 +447,13 @@
       <if test="assigneeLikeIgnoreCase != null">
         and lower(RES.ASSIGNEE_) like #{assigneeLikeIgnoreCase}${wildcardEscapeClause}
       </if>
+      <if test="assigneeIds != null &amp;&amp; assigneeIds.size() &gt; 0">
+        and RES.ASSIGNEE_ IN
+        <foreach item="assigneeId" index="index" collection="assigneeIds" 
+                 open="(" separator="," close=")">
+          #{assigneeId}
+        </foreach>
+	  </if>
       <if test="owner != null">
         and RES.OWNER_ = #{owner}
       </if>
@@ -764,6 +771,13 @@
             <if test="orQueryObject.assigneeLikeIgnoreCase != null">
               or lower(RES.ASSIGNEE_) like #{orQueryObject.assigneeLikeIgnoreCase}${wildcardEscapeClause}
             </if>
+            <if test="assigneeIds != null &amp;&amp; assigneeIds.size() &gt; 0">
+	          or RES.ASSIGNEE_ IN
+		      <foreach item="assigneeId" index="index" collection="assigneeIds" 
+		               open="(" separator="," close=")">
+		        #{assigneeId}
+		      </foreach>
+			</if>
             <if test="orQueryObject.owner != null">
               or RES.OWNER_ = #{orQueryObject.owner}
             </if>
