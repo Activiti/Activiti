@@ -116,7 +116,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
           @ApiResponse(code = 400, message =  "Indicates the name of a variable to create was missing or that an attempt is done to create a variable on a standalone task (without a process associated) with scope global or an empty array of variables was included in the request or request did not contain an array of variables. Status message provides additional information."),
           @ApiResponse(code = 404, message = "Indicates the requested task was not found."),
           @ApiResponse(code = 409, message = "Indicates the task already has a variable with the given name. Use the PUT method to update the task variable instead."),
-          @ApiResponse(code = 415, message = "Indicates the serializable data contains an object for which no class is present in the JVM running the Flowable engine and therefore cannot be deserialized.")
+          @ApiResponse(code = 415, message = "Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.")
   }) 
   @RequestMapping(value = "/runtime/tasks/{taskId}/variables", method = RequestMethod.POST, produces = "application/json")
   public Object createTaskVariable(@ApiParam(name = "taskId") @PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {

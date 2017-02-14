@@ -13,6 +13,11 @@
 
 package org.activiti.rest.service.api.identity;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,41 +40,54 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Users" }, description = "Manage Users")
 public class UserInfoCollectionResource extends BaseUserResource {
 
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
+	@Autowired
+	protected RestResponseFactory restResponseFactory;
 
-  @Autowired
-  protected IdentityService identityService;
+	@Autowired
+	protected IdentityService identityService;
 
-  @RequestMapping(value = "/identity/users/{userId}/info", method = RequestMethod.GET, produces = "application/json")
-  public List<UserInfoResponse> getUserInfo(@PathVariable String userId, HttpServletRequest request) {
-    User user = getUserFromRequest(userId);
+	@ApiOperation(value = "List a user’s info", tags = {"Users"}, nickname = "listUsersInfo")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Indicates the user was found and list of info (key and url) is returned."),
+			@ApiResponse(code = 404, message = "Indicates the requested user was not found.")
+	})
+	@RequestMapping(value = "/identity/users/{userId}/info", method = RequestMethod.GET, produces = "application/json")
+	public List<UserInfoResponse> getUserInfo(@ApiParam(name="userId") @PathVariable String userId, HttpServletRequest request) {
+		User user = getUserFromRequest(userId);
 
-    return restResponseFactory.createUserInfoKeysResponse(identityService.getUserInfoKeys(user.getId()), user.getId());
-  }
+		return restResponseFactory.createUserInfoKeysResponse(identityService.getUserInfoKeys(user.getId()), user.getId());
+	}
 
-  @RequestMapping(value = "/identity/users/{userId}/info", method = RequestMethod.POST, produces = "application/json")
-  public UserInfoResponse setUserInfo(@PathVariable String userId, @RequestBody UserInfoRequest userRequest, HttpServletRequest request, HttpServletResponse response) {
+	@ApiOperation(value = "Create a new user’s info entry", tags = {"Users"}, nickname = "createUserInfo")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Indicates the user was found and the info has been created."),
+			@ApiResponse(code = 400, message = "Indicates the key or value was missing from the request body. Status description contains additional information about the error."),
+			@ApiResponse(code = 404, message = "Indicates the requested user was not found."),
+			@ApiResponse(code = 409, message = "Indicates there is already an info-entry with the given key for the user, update the resource instance (PUT).")
+	})
+	@RequestMapping(value = "/identity/users/{userId}/info", method = RequestMethod.POST, produces = "application/json")
+	public UserInfoResponse setUserInfo(@ApiParam(name="userId") @PathVariable String userId, @RequestBody UserInfoRequest userRequest, HttpServletRequest request, HttpServletResponse response) {
 
-    User user = getUserFromRequest(userId);
+		User user = getUserFromRequest(userId);
 
-    if (userRequest.getKey() == null) {
-      throw new ActivitiIllegalArgumentException("The key cannot be null.");
-    }
-    if (userRequest.getValue() == null) {
-      throw new ActivitiIllegalArgumentException("The value cannot be null.");
-    }
+		if (userRequest.getKey() == null) {
+			throw new ActivitiIllegalArgumentException("The key cannot be null.");
+		}
+		if (userRequest.getValue() == null) {
+			throw new ActivitiIllegalArgumentException("The value cannot be null.");
+		}
 
-    String existingValue = identityService.getUserInfo(user.getId(), userRequest.getKey());
-    if (existingValue != null) {
-      throw new ActivitiConflictException("User info with key '" + userRequest.getKey() + "' already exists for this user.");
-    }
+		String existingValue = identityService.getUserInfo(user.getId(), userRequest.getKey());
+		if (existingValue != null) {
+			throw new ActivitiConflictException("User info with key '" + userRequest.getKey() + "' already exists for this user.");
+		}
 
-    identityService.setUserInfo(user.getId(), userRequest.getKey(), userRequest.getValue());
+		identityService.setUserInfo(user.getId(), userRequest.getKey(), userRequest.getValue());
 
-    response.setStatus(HttpStatus.CREATED.value());
-    return restResponseFactory.createUserInfoResponse(userRequest.getKey(), userRequest.getValue(), user.getId());
-  }
+		response.setStatus(HttpStatus.CREATED.value());
+		return restResponseFactory.createUserInfoResponse(userRequest.getKey(), userRequest.getValue(), user.getId());
+	}
 }

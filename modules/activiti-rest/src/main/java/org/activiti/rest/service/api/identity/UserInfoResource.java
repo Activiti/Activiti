@@ -13,6 +13,11 @@
 
 package org.activiti.rest.service.api.identity;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,61 +38,78 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Users" }, description = "Manage Users")
 public class UserInfoResource extends BaseUserResource {
 
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
+	@Autowired
+	protected RestResponseFactory restResponseFactory;
 
-  @Autowired
-  protected IdentityService identityService;
+	@Autowired
+	protected IdentityService identityService;
 
-  @RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.GET, produces = "application/json")
-  public UserInfoResponse getUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, HttpServletRequest request) {
-    User user = getUserFromRequest(userId);
+	@ApiOperation(value = "Get a user’s info", tags = {"Users"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Indicates the user was found and the user has info for the given key."),
+			@ApiResponse(code = 404, message = "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error.")
+	})
+	@RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.GET, produces = "application/json")
+	public UserInfoResponse getUserInfo(@ApiParam(name = "userId") @PathVariable("userId") String userId,@ApiParam(name = "key") @PathVariable("key") String key, HttpServletRequest request) {
+		User user = getUserFromRequest(userId);
 
-    String existingValue = identityService.getUserInfo(user.getId(), key);
-    if (existingValue == null) {
-      throw new ActivitiObjectNotFoundException("User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null);
-    }
+		String existingValue = identityService.getUserInfo(user.getId(), key);
+		if (existingValue == null) {
+			throw new ActivitiObjectNotFoundException("User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null);
+		}
 
-    return restResponseFactory.createUserInfoResponse(key, existingValue, user.getId());
-  }
+		return restResponseFactory.createUserInfoResponse(key, existingValue, user.getId());
+	}
 
-  @RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.PUT, produces = "application/json")
-  public UserInfoResponse setUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, @RequestBody UserInfoRequest userRequest, HttpServletRequest request) {
+	@ApiOperation(value = "Update a user’s info", tags = {"Users"},  nickname = "updateUserInfo")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Indicates the user was found and the info has been updated."),
+			@ApiResponse(code = 400, message = "Indicates the value was missing from the request body."),
+			@ApiResponse(code = 404, message = "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error.")
+	})
+	@RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.PUT, produces = "application/json")
+	public UserInfoResponse setUserInfo(@ApiParam(name = "userId") @PathVariable("userId") String userId,@ApiParam(name = "key") @PathVariable("key") String key, @RequestBody UserInfoRequest userRequest, HttpServletRequest request) {
 
-    User user = getUserFromRequest(userId);
-    String validKey = getValidKeyFromRequest(user, key);
+		User user = getUserFromRequest(userId);
+		String validKey = getValidKeyFromRequest(user, key);
 
-    if (userRequest.getValue() == null) {
-      throw new ActivitiIllegalArgumentException("The value cannot be null.");
-    }
+		if (userRequest.getValue() == null) {
+			throw new ActivitiIllegalArgumentException("The value cannot be null.");
+		}
 
-    if (userRequest.getKey() == null || validKey.equals(userRequest.getKey())) {
-      identityService.setUserInfo(user.getId(), key, userRequest.getValue());
-    } else {
-      throw new ActivitiIllegalArgumentException("Key provided in request body doesn't match the key in the resource URL.");
-    }
+		if (userRequest.getKey() == null || validKey.equals(userRequest.getKey())) {
+			identityService.setUserInfo(user.getId(), key, userRequest.getValue());
+		} else {
+			throw new ActivitiIllegalArgumentException("Key provided in request body doesn't match the key in the resource URL.");
+		}
 
-    return restResponseFactory.createUserInfoResponse(key, userRequest.getValue(), user.getId());
-  }
+		return restResponseFactory.createUserInfoResponse(key, userRequest.getValue(), user.getId());
+	}
 
-  @RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.DELETE)
-  public void deleteUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, HttpServletResponse response) {
-    User user = getUserFromRequest(userId);
-    String validKey = getValidKeyFromRequest(user, key);
+	@ApiOperation(value = "Delete a user’s info", tags = {"Users"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 204, message = "Indicates the user was found and the info for the given key has been deleted. Response body is left empty intentionally."),
+			@ApiResponse(code = 404, message = "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error.")
+	})
+	@RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.DELETE)
+	public void deleteUserInfo(@ApiParam(name = "userId") @PathVariable("userId") String userId,@ApiParam(name = "key") @PathVariable("key") String key, HttpServletResponse response) {
+		User user = getUserFromRequest(userId);
+		String validKey = getValidKeyFromRequest(user, key);
 
-    identityService.setUserInfo(user.getId(), validKey, null);
+		identityService.setUserInfo(user.getId(), validKey, null);
 
-    response.setStatus(HttpStatus.NO_CONTENT.value());
-  }
+		response.setStatus(HttpStatus.NO_CONTENT.value());
+	}
 
-  protected String getValidKeyFromRequest(User user, String key) {
-    String existingValue = identityService.getUserInfo(user.getId(), key);
-    if (existingValue == null) {
-      throw new ActivitiObjectNotFoundException("User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null);
-    }
+	protected String getValidKeyFromRequest(User user, String key) {
+		String existingValue = identityService.getUserInfo(user.getId(), key);
+		if (existingValue == null) {
+			throw new ActivitiObjectNotFoundException("User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null);
+		}
 
-    return key;
-  }
+		return key;
+	}
 }

@@ -103,7 +103,7 @@ public class AttachmentResponse {
   public void setProcessInstanceUrl(String processInstanceUrl) {
     this.processInstanceUrl = processInstanceUrl;
   }
-  @ApiModelProperty(value = "contentUrl:In case the attachment is a link to an external resource, the externalUrl contains the URL to the external content. If the attachment content is present in the Flowable engine, the contentUrl will contain an URL where the binary content can be streamed from.")
+  @ApiModelProperty(value = "contentUrl:In case the attachment is a link to an external resource, the externalUrl contains the URL to the external content. If the attachment content is present in the Activiti engine, the contentUrl will contain an URL where the binary content can be streamed from.")
   public String getExternalUrl() {
     return externalUrl;
   }

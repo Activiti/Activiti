@@ -90,7 +90,7 @@ public class TaskVariableResource extends TaskVariableBaseResource {
           @ApiResponse(code = 200, message = "Indicates the variables was updated and the result is returned."),
           @ApiResponse(code = 400, message = "Indicates the name of a variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope global. Status message provides additional information."),
           @ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have a variable with the given name in the given scope. Status message contains additional information about the error."),
-          @ApiResponse(code = 415, message = "Indicates the serializable data contains an object for which no class is present in the JVM running the Flowable engine and therefore cannot be deserialized."),
+          @ApiResponse(code = 415, message = "Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized."),
   })
   @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.PUT, produces = "application/json")
   public RestVariable updateVariable(@ApiParam(name = "taskId") @PathVariable("taskId") String taskId,@ApiParam(name = "variableName") @PathVariable("variableName") String variableName,@ApiParam(hidden=true) @RequestParam(value = "scope", required = false) String scope,

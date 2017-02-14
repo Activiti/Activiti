@@ -13,6 +13,12 @@
 
 package org.activiti.rest.service.api.identity;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,27 +36,36 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Groups" }, description = "Manage Groups")
 public class GroupMembershipCollectionResource extends BaseGroupResource {
 
-  @RequestMapping(value = "/identity/groups/{groupId}/members", method = RequestMethod.POST, produces = "application/json")
-  public MembershipResponse createMembership(@PathVariable String groupId, @RequestBody MembershipRequest memberShip, HttpServletRequest request, HttpServletResponse response) {
 
-    Group group = getGroupFromRequest(groupId);
+	@ApiOperation(value = "Add a member to a group", tags = {"Groups"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Indicates the group was found and the member has been added."),
+			@ApiResponse(code = 400, message = "Indicates the userId was not included in the request body."),
+			@ApiResponse(code = 404, message = "Indicates the requested group was not found."),
+			@ApiResponse(code = 409, message = "Indicates the requested user is already a member of the group.")
+	})
+	@RequestMapping(value = "/identity/groups/{groupId}/members", method = RequestMethod.POST, produces = "application/json")
+	public MembershipResponse createMembership(@ApiParam(name = "groupId") @PathVariable String groupId, @RequestBody MembershipRequest memberShip, HttpServletRequest request, HttpServletResponse response) {
 
-    if (memberShip.getUserId() == null) {
-      throw new ActivitiIllegalArgumentException("UserId cannot be null.");
-    }
+		Group group = getGroupFromRequest(groupId);
 
-    // Check if user is member of group since API doesn't return typed
-    // exception
-    if (identityService.createUserQuery().memberOfGroup(group.getId()).userId(memberShip.getUserId()).count() > 0) {
+		if (memberShip.getUserId() == null) {
+			throw new ActivitiIllegalArgumentException("UserId cannot be null.");
+		}
 
-      throw new ActivitiConflictException("User '" + memberShip.getUserId() + "' is already part of group '" + group.getId() + "'.");
-    }
+		// Check if user is member of group since API doesn't return typed
+		// exception
+		if (identityService.createUserQuery().memberOfGroup(group.getId()).userId(memberShip.getUserId()).count() > 0) {
 
-    identityService.createMembership(memberShip.getUserId(), group.getId());
-    response.setStatus(HttpStatus.CREATED.value());
+			throw new ActivitiConflictException("User '" + memberShip.getUserId() + "' is already part of group '" + group.getId() + "'.");
+		}
 
-    return restResponseFactory.createMembershipResponse(memberShip.getUserId(), group.getId());
-  }
+		identityService.createMembership(memberShip.getUserId(), group.getId());
+		response.setStatus(HttpStatus.CREATED.value());
+
+		return restResponseFactory.createMembershipResponse(memberShip.getUserId(), group.getId());
+	}
 }
