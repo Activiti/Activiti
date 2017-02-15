@@ -1212,11 +1212,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
   
   @Override
-  protected boolean isActivityIdUsedForDetails() {
-    return true;
-  }
-  
-  @Override
   protected VariableInstanceEntity createVariableInstance(String variableName, Object value,
       ExecutionEntity sourceActivityExecution) {
     VariableInstanceEntity result = super.createVariableInstance(variableName, value, sourceActivityExecution);

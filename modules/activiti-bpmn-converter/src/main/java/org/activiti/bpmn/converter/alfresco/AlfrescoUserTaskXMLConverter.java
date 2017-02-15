@@ -25,8 +25,4 @@ public class AlfrescoUserTaskXMLConverter extends UserTaskXMLConverter {
     return AlfrescoUserTask.class;
   }
 
-  @Override
-  protected String getXMLElementName() {
-    return ELEMENT_TASK_USER;
-  }
 }
