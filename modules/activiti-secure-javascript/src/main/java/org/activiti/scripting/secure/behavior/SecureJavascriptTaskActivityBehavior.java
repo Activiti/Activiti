@@ -12,10 +12,16 @@
  */
 package org.activiti.scripting.secure.behavior;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.impl.bpmn.behavior.ScriptTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.scripting.secure.impl.SecureJavascriptUtil;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
@@ -24,6 +30,7 @@ import org.activiti.scripting.secure.impl.SecureJavascriptUtil;
 public class SecureJavascriptTaskActivityBehavior extends ScriptTaskActivityBehavior {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecureJavascriptTaskActivityBehavior.class);
 
     public SecureJavascriptTaskActivityBehavior(String scriptTaskId, String script,
                                             String language, String resultVariable, boolean storeScriptVariables) {
@@ -33,7 +40,30 @@ public class SecureJavascriptTaskActivityBehavior extends ScriptTaskActivityBeha
     @Override
     public void execute(ActivityExecution execution) throws Exception {
       ProcessEngineConfigurationImpl config = (ProcessEngineConfigurationImpl) execution.getEngineServices().getProcessEngineConfiguration();
-      SecureJavascriptUtil.evaluateScript(execution, script, config.getBeans());
+      
+      boolean noErrors = true;
+      try {
+    	Object result = SecureJavascriptUtil.evaluateScript(execution, script, config.getBeans());
+        if (resultVariable != null) {
+          execution.setVariable(resultVariable, result);
+        }
+
+      } catch (ActivitiException e) {
+        
+        LOGGER.warn("Exception while executing " + execution.getActivity().getId() + " : " + e.getMessage());
+        
+        noErrors = false;
+        Throwable rootCause = ExceptionUtils.getRootCause(e);
+        if (rootCause instanceof BpmnError) {
+          ErrorPropagation.propagateError((BpmnError) rootCause, execution);
+        } else {
+          throw e;
+        }
+      }
+       
+      if (noErrors) {
+        leave(execution);
+      }
     }
 
 }
