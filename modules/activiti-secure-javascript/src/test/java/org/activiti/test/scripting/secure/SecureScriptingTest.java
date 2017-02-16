@@ -12,6 +12,7 @@
  */
 package org.activiti.test.scripting.secure;
 
+import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.junit.Assert;
@@ -19,6 +20,8 @@ import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Joram Barrez
@@ -153,7 +156,29 @@ public class SecureScriptingTest extends SecureScriptingBaseTest {
     task = taskService.createTaskQuery().singleResult();
     Assert.assertNotNull(task);
   }
-  
+
+  @Test
+  public void testDynamicScript() {
+    addWhiteListedClass("org.activiti.engine.impl.persistence.entity.ExecutionEntity");
+
+    deployProcessDefinition("test-dynamic-secure-script.bpmn20.xml");
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testDynamicScript", CollectionUtil.map("a", 20, "b", 22));
+    Assert.assertEquals(42.0, runtimeService.getVariable(processInstance.getId(), "test"));
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
+    assertProcessEnded(processInstance.getId());
+
+    String processDefinitionId = processInstance.getProcessDefinitionId();
+    ObjectNode infoNode = dynamicBpmnService.changeScriptTaskScript("script1", "var sum = c + d;\nexecution.setVariable('test2', sum);");
+    dynamicBpmnService.saveProcessDefinitionInfo(processDefinitionId, infoNode);
+
+    processInstance = runtimeService.startProcessInstanceByKey("testDynamicScript", CollectionUtil.map("c", 10, "d", 12));
+    Assert.assertEquals(22.0, runtimeService.getVariable(processInstance.getId(), "test2"));
+    taskService.complete(taskService.createTaskQuery().singleResult().getId());
+    assertProcessEnded(processInstance.getId());
+    removeWhiteListedClass("org.activiti.engine.impl.persistence.entity.ExecutionEntity");
+  }
+
   @Test
   public void testExecution() {
 	addWhiteListedClass("org.activiti.engine.impl.persistence.entity.ExecutionEntity");
