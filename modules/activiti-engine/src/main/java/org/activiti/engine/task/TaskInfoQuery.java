@@ -109,7 +109,7 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
   /**
    *Only select tasks with an assignee that is in the given list
    * 
-   * @throws FlowableIllegalArgumentException
+   * @throws ActivitiIllegalArgumentException
    *           When passed name list is empty or <code>null</code> or contains <code>null String</code>.
    */
   T taskAssigneeIds(List<String> assigneeListIds);
