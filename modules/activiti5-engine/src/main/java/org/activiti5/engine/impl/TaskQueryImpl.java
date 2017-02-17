@@ -57,6 +57,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String assignee;
   protected String assigneeLike;
   protected String assigneeLikeIgnoreCase;
+  protected List<String> assigneeIds;
   protected String involvedUser;
   protected String owner;
   protected String ownerLike;
@@ -356,6 +357,41 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
      }
      return this;
   }
+  
+	@Override
+	public TaskQuery taskAssigneeIds(List<String> assigneeIds) {
+		if (assigneeIds == null) {
+			throw new ActivitiIllegalArgumentException("Task assignee list is null");
+		}
+		if (assigneeIds.isEmpty()) {
+			throw new ActivitiIllegalArgumentException("Task assignee list is empty");
+		}
+		for (String assignee : assigneeIds) {
+			if (assignee == null) {
+				throw new ActivitiIllegalArgumentException("None of the given task assignees can be null");
+			}
+		}
+
+		if (assignee != null) {
+			throw new ActivitiIllegalArgumentException(
+					"Invalid query usage: cannot set both taskAssigneeIds and taskAssignee");
+		}
+		if (assigneeLike != null) {
+			throw new ActivitiIllegalArgumentException(
+					"Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLike");
+		}
+		if (assigneeLikeIgnoreCase != null) {
+			throw new ActivitiIllegalArgumentException(
+					"Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLikeIgnoreCase");
+		}
+
+		if (orActive) {
+			currentOrQueryObject.assigneeIds = assigneeIds;
+		} else {
+			this.assigneeIds = assigneeIds;
+		}
+		return this;
+	}
   
   public TaskQueryImpl taskOwner(String owner) {
     if (owner == null) {
@@ -1424,7 +1460,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return assigneeLike;
   }
 
-  public String getInvolvedUser() {
+  public List<String> getAssigneeIds() {
+	return assigneeIds;
+}
+
+public String getInvolvedUser() {
     return involvedUser;
   }
 

@@ -73,6 +73,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String taskAssignee;
   protected String taskAssigneeLike;
   protected String taskAssigneeLikeIgnoreCase;
+  protected List<String> taskAssigneeIds;
   protected String taskDefinitionKey;
   protected String taskDefinitionKeyLike;
   protected String candidateUser;
@@ -518,6 +519,41 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
      }
      return this;
   }
+  
+	@Override
+	public HistoricTaskInstanceQuery taskAssigneeIds(List<String> assigneeIds) {
+		if (assigneeIds == null) {
+			throw new ActivitiIllegalArgumentException("Task assignee list is null");
+		}
+		if (assigneeIds.isEmpty()) {
+			throw new ActivitiIllegalArgumentException("Task assignee list is empty");
+		}
+		for (String assignee : assigneeIds) {
+			if (assignee == null) {
+				throw new ActivitiIllegalArgumentException("None of the given task assignees can be null");
+			}
+		}
+
+		if (taskAssignee != null) {
+			throw new ActivitiIllegalArgumentException(
+					"Invalid query usage: cannot set both taskAssigneeIds and taskAssignee");
+		}
+		if (taskAssigneeLike != null) {
+			throw new ActivitiIllegalArgumentException(
+					"Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLike");
+		}
+		if (taskAssigneeLikeIgnoreCase != null) {
+			throw new ActivitiIllegalArgumentException(
+					"Invalid query usage: cannot set both taskAssigneeIds and taskAssigneeLikeIgnoreCase");
+		}
+
+		if (inOrStatement) {
+			currentOrQueryObject.taskAssigneeIds = assigneeIds;
+		} else {
+			this.taskAssigneeIds = assigneeIds;
+		}
+		return this;
+	}
   
   public HistoricTaskInstanceQuery taskOwner(String taskOwner) {
     if (inOrStatement) {
@@ -1427,7 +1463,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public String getTaskAssigneeLike() {
     return taskAssigneeLike;
   }
-  public String getTaskId() {
+  public List<String> getTaskAssigneeIds() {
+	return taskAssigneeIds;
+}
+
+public String getTaskId() {
     return taskId;
   }
   public String getTaskDefinitionKey() {
