@@ -94,11 +94,15 @@ public abstract class TestHelper {
         deploymentBuilder.addClasspathResource(resource);
       }
 
+           if (deploymentAnnotation.tenantId() != null
+                   && deploymentAnnotation.tenantId().length() > 0) {
+                   deploymentBuilder.tenantId(deploymentAnnotation.tenantId());
+                   } 
       deploymentId = deploymentBuilder.deploy().getId();
     }
 
     return deploymentId;
-  }
+  } 
 
   public static void annotationDeploymentTearDown(ProcessEngine processEngine, String deploymentId, Class<?> testClass, String methodName) {
     log.debug("annotation @Deployment deletes deployment for {}.{}", testClass.getSimpleName(), methodName);
