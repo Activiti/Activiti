@@ -20,6 +20,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -40,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
-@Api(tags = { "Database tables" }, description = "Manage Database tables")
+@Api(tags = { "Database tables" }, description = "Manage Database tables", authorizations = { @Authorization(value = "basicAuth") })
 public class TableDataResource {
 
 	protected static final Integer DEFAULT_RESULT_SIZE = 10;

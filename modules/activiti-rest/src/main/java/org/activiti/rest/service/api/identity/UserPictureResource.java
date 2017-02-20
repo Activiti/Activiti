@@ -18,6 +18,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.io.ByteArrayOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +45,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  * @author Frederik Heremans
  */
 @RestController
-@Api(tags = { "Users" }, description = "Manage Users")
+@Api(tags = { "Users" }, description = "Manage Users", authorizations = { @Authorization(value = "basicAuth") })
 public class UserPictureResource extends BaseUserResource {
 
 	@ApiOperation(value = "Get a user’s picture", tags = {"Users"},

@@ -14,12 +14,11 @@
 package org.activiti.rest.service.api.runtime.process;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Tijs Rademakers
  */
 @RestController
-@Api(tags = { "Process Instances" }, description = "Manage Process Instances")
+@Api(tags = { "Process Instances" }, description = "Manage Process Instances", authorizations = { @Authorization(value = "basicAuth") })
 public class ProcessInstanceVariableCollectionResource extends BaseVariableCollectionResource {
 
 	@ApiOperation(value = "List of variables for a process instance", tags = { "Process Instances" },

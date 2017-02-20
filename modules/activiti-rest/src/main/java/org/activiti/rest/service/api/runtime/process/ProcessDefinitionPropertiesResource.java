@@ -15,6 +15,7 @@ package org.activiti.rest.service.api.runtime.process;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.Authorization;
 
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Tijs Rademakers
  */
 @RestController
-@Api(tags = { "Process Definitions" }, description = "Manage Process Definitions")
+@Api(tags = { "Process Definitions" }, description = "Manage Process Definitions", authorizations = { @Authorization(value = "basicAuth") })
 public class ProcessDefinitionPropertiesResource {
 
   @Autowired

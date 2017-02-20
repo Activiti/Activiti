@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -42,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
-@Api(tags = { "Executions" }, description = "Manage Executions")
+@Api(tags = { "Executions" }, description = "Manage Executions", authorizations = { @Authorization(value = "basicAuth") })
 public class ExecutionVariableDataResource extends BaseExecutionVariableResource {
 
   @RequestMapping(value = "/runtime/executions/{executionId}/variables/{variableName}/data", method = RequestMethod.GET)

@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
-@Api(tags = { "Process Definitions" }, description = "Manage Process Definitions")
+@Api(tags = { "Process Definitions" }, description = "Manage Process Definitions", authorizations = { @Authorization(value = "basicAuth") })
 public class ProcessDefinitionCollectionResource {
 
   private static final Map<String, QueryProperty> properties = new HashMap<String, QueryProperty>();

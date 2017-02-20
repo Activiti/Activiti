@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -44,7 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Tijs Rademakers
  */
 @RestController
-@Api(tags = { "History" }, description = "Manage History")
+@Api(tags = { "History" }, description = "Manage History", authorizations = { @Authorization(value = "basicAuth") })
 public class HistoricVariableInstanceDataResource {
 
 	@Autowired

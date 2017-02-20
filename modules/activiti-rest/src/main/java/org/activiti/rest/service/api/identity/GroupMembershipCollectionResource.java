@@ -18,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
-@Api(tags = { "Groups" }, description = "Manage Groups")
+@Api(tags = { "Groups" }, description = "Manage Groups", authorizations = { @Authorization(value = "basicAuth") })
 public class GroupMembershipCollectionResource extends BaseGroupResource {
 
 

@@ -20,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +54,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Ryan Johnston (@rjfsu)
  */
 @RestController
-@Api(tags = { "Process Instances" }, description = "Manage Process Instances")
+@Api(tags = { "Process Instances" }, description = "Manage Process Instances", authorizations = { @Authorization(value = "basicAuth") })
 public class ProcessInstanceCollectionResource extends BaseProcessInstanceResource {
 
 	@Autowired

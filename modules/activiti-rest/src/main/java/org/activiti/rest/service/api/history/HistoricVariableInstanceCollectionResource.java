@@ -14,6 +14,7 @@
 package org.activiti.rest.service.api.history;
 
 import java.util.Map;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -21,6 +22,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.rest.common.api.DataResponse;
@@ -33,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Tijs Rademakers
  */
 @RestController
-@Api(tags = { "History" }, description = "Manage History")
+@Api(tags = { "History" }, description = "Manage History", authorizations = { @Authorization(value = "basicAuth") })
 public class HistoricVariableInstanceCollectionResource extends HistoricVariableInstanceBaseResource {
 
 

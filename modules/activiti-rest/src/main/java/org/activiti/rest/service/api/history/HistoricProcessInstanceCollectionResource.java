@@ -20,6 +20,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Tijs Rademakers
  */
 @RestController
-@Api(tags = { "History" }, description = "Manage History")
+@Api(tags = { "History" }, description = "Manage History", authorizations = { @Authorization(value = "basicAuth") })
 public class HistoricProcessInstanceCollectionResource extends HistoricProcessInstanceBaseResource {
 	@ApiOperation(value = "List of historic process instances", tags = { "History" }, nickname = "listHistoricProcessInstances")
 	@ApiImplicitParams({

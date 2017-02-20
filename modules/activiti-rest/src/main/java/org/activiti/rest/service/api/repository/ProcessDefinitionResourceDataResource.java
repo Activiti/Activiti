@@ -14,12 +14,11 @@
 package org.activiti.rest.service.api.repository;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
-@Api(tags = { "Process Definitions" }, description = "Manage Process Definitions")
+@Api(tags = { "Process Definitions" }, description = "Manage Process Definitions", authorizations = { @Authorization(value = "basicAuth") })
 public class ProcessDefinitionResourceDataResource extends BaseDeploymentResourceDataResource {
 
 	@ApiResponses(value = {

@@ -20,6 +20,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
@@ -52,7 +54,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  * @author Frederik Heremans
  */
 @RestController
-@Api(tags = { "Deployment" }, description = "Manage Deployment")
+@Api(tags = { "Deployment" }, description = "Manage Deployment", authorizations = { @Authorization(value = "basicAuth") })
 public class DeploymentCollectionResource {
 
 	protected static final String DEPRECATED_API_DEPLOYMENT_SEGMENT = "deployment";

@@ -14,12 +14,11 @@
 package org.activiti.rest.service.api.management;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -43,7 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Joram Barrez
  */
 @RestController
-@Api(tags = { "Jobs" }, description = "Manage Jobs")
+@Api(tags = { "Jobs" }, description = "Manage Jobs", authorizations = { @Authorization(value = "basicAuth") })
 public class JobResource {
 
 	private static final String EXECUTE_ACTION = "execute";
