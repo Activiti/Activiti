@@ -13,6 +13,14 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,33 +39,60 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Executions" }, description = "Manage Executions")
 public class ExecutionVariableCollectionResource extends BaseVariableCollectionResource {
 
-  @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.GET, produces = "application/json")
-  public List<RestVariable> getVariables(@PathVariable String executionId, @RequestParam(value = "scope", required = false) String scope, HttpServletRequest request) {
+	@ApiOperation(value = "List of variables for an execution", tags = {"Executions"}, nickname = "listExecutionVariables")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Indicates the execution was found and variables are returned."),
+			@ApiResponse(code = 404, message = "Indicates the requested execution was not found.")
+	})
+	@RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.GET, produces = "application/json")
+	public List<RestVariable> getVariables(@ApiParam(name = "executionId", value="The id of the execution to the variables for.") @PathVariable String executionId,@ApiParam(name="scope", value="Either local or global. If omitted, both local and global scoped variables are returned.") @RequestParam(value = "scope", required = false) String scope, HttpServletRequest request) {
 
-    Execution execution = getExecutionFromRequest(executionId);
-    return processVariables(execution, scope, RestResponseFactory.VARIABLE_EXECUTION);
-  }
+		Execution execution = getExecutionFromRequest(executionId);
+		return processVariables(execution, scope, RestResponseFactory.VARIABLE_EXECUTION);
+	}
 
-  @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.PUT, produces = "application/json")
-  public Object createOrUpdateExecutionVariable(@PathVariable String executionId, HttpServletRequest request, HttpServletResponse response) {
+	@ApiOperation(value = "Update variables on an execution", tags = {"Executions"}, nickname = "createOrUpdateExecutionVariable")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Indicates the execution was found and variable is created/updated."),
+			@ApiResponse(code = 400, message = "Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error."),
+			@ApiResponse(code = 404, message = "Indicates the requested execution was not found.")
+	})
+	@RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.PUT, produces = "application/json")
+	public Object createOrUpdateExecutionVariable(@ApiParam(name = "executionId", value="The id of the execution to the variables for.") @PathVariable String executionId, HttpServletRequest request, HttpServletResponse response) {
 
-    Execution execution = getExecutionFromRequest(executionId);
-    return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, request, response);
-  }
+		Execution execution = getExecutionFromRequest(executionId);
+		return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, request, response);
+	}
 
-  @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.POST, produces = "application/json")
-  public Object createExecutionVariable(@PathVariable String executionId, HttpServletRequest request, HttpServletResponse response) {
+	//FIXME Multiple entry point
+	@ApiOperation(value = "Create variables on an execution", tags = {"Executions"}, nickname = "createExecutionVariable")
+	@ApiResponses(value = {
+			@ApiResponse(code = 201, message = "Indicates the execution was found and variable is created/updated."),
+			@ApiResponse(code = 400, message = "Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error."),
+			@ApiResponse(code = 404, message = "Indicates the requested execution was not found."),
+			@ApiResponse(code = 409, message = "Indicates the execution was found but already contains a variable with the given name. Use the update-method instead.")
 
-    Execution execution = getExecutionFromRequest(executionId);
-    return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, request, response);
-  }
+	})
+	@RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.POST, produces = "application/json")
+	public Object createExecutionVariable(@ApiParam(name = "executionId", value="The id of the execution to create the new variable for.") @PathVariable String executionId, HttpServletRequest request, HttpServletResponse response) {
 
-  @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.DELETE)
-  public void deleteLocalVariables(@PathVariable String executionId, HttpServletResponse response) {
-    Execution execution = getExecutionFromRequest(executionId);
-    deleteAllLocalVariables(execution, response);
-  }
+		Execution execution = getExecutionFromRequest(executionId);
+		return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, request, response);
+	}
+
+	//FIXME Documentation
+	@ApiOperation(value = "Delete all variables for an execution", tags = {"Executions"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 204, message = "Indicates the execution was found and variables have been deleted."),
+			@ApiResponse(code = 404, message = "Indicates the requested execution was not found.")
+	})
+	@RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.DELETE)
+	public void deleteLocalVariables(@ApiParam(name = "executionId") @PathVariable String executionId, HttpServletResponse response) {
+		Execution execution = getExecutionFromRequest(executionId);
+		deleteAllLocalVariables(execution, response);
+	}
 
 }

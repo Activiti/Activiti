@@ -42,7 +42,7 @@ public class UserResource extends BaseUserResource {
 			@ApiResponse(code = 404, message = "Indicates the requested user does not exist.")
 	})
 	@RequestMapping(value = "/identity/users/{userId}", method = RequestMethod.GET, produces = "application/json")
-	public UserResponse getUser(@ApiParam(name = "userId") @PathVariable String userId, HttpServletRequest request) {
+	public UserResponse getUser(@ApiParam(name = "userId", value="The id of the user to get.") @PathVariable String userId, HttpServletRequest request) {
 		return restResponseFactory.createUserResponse(getUserFromRequest(userId), false);
 	}
 
@@ -83,7 +83,7 @@ public class UserResource extends BaseUserResource {
 			@ApiResponse(code = 404, message = "Indicates the requested user was not found.")
 	})
 	@RequestMapping(value = "/identity/users/{userId}", method = RequestMethod.DELETE)
-	public void deleteUser(@ApiParam(name = "userId") @PathVariable String userId, HttpServletResponse response) {
+	public void deleteUser(@ApiParam(name = "userId", value="The id of the user to delete.") @PathVariable String userId, HttpServletResponse response) {
 		User user = getUserFromRequest(userId);
 		identityService.deleteUser(user.getId());
 		response.setStatus(HttpStatus.NO_CONTENT.value());

@@ -54,7 +54,7 @@ public class TaskResource extends TaskBaseResource {
 	          @ApiResponse(code = 404, message = "Indicates the requested task was not found.")
 	  })
   @RequestMapping(value = "/runtime/tasks/{taskId}", method = RequestMethod.GET, produces = "application/json")
-  public TaskResponse getTask(@ApiParam(name="taskId") @PathVariable String taskId, HttpServletRequest request) {
+  public TaskResponse getTask(@ApiParam(name="taskId", value="The id of the task to get.") @PathVariable String taskId, HttpServletRequest request) {
     return restResponseFactory.createTaskResponse(getTaskFromRequest(taskId));
   }
 
@@ -144,17 +144,13 @@ public class TaskResource extends TaskBaseResource {
 	  
 	  
 	  @ApiOperation(value = "Delete a task", tags = {"Tasks"})
-	  @ApiImplicitParams({
-	          @ApiImplicitParam(name = "cascadeHistory", dataType = "string", value = "Whether or not to delete the HistoricTask instance when deleting the task (if applicable). If not provided, this value defaults to false.", paramType = "query"),
-	          @ApiImplicitParam(name = "deleteReason", dataType = "string", value = "Reason why the task is deleted. This value is ignored when cascadeHistory is true.", paramType = "query")
-	  })
 	  @ApiResponses(value = {
 	          @ApiResponse(code = 204, message =  "Indicates the task was found and has been deleted. Response-body is intentionally empty."),
 	          @ApiResponse(code = 403, message = "Indicates the requested task cannot be deleted because it’s part of a workflow."),
 	          @ApiResponse(code = 404, message = "Indicates the requested task was not found.")
 	  })	  
   @RequestMapping(value = "/runtime/tasks/{taskId}", method = RequestMethod.DELETE)
-  public void deleteTask(@ApiParam(name="taskId") @PathVariable String taskId,@ApiParam(hidden=true) @RequestParam(value = "cascadeHistory", required = false) Boolean cascadeHistory,
+  public void deleteTask(@ApiParam(name="taskId", value="The id of the task to delete.") @PathVariable String taskId,@ApiParam(hidden=true) @RequestParam(value = "cascadeHistory", required = false) Boolean cascadeHistory,
 		  @ApiParam(hidden=true) @RequestParam(value = "deleteReason", required = false) String deleteReason, HttpServletResponse response) {
 
     Task taskToDelete = getTaskFromRequest(taskId);

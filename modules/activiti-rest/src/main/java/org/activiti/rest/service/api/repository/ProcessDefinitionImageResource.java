@@ -13,6 +13,12 @@
 
 package org.activiti.rest.service.api.repository;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import java.io.InputStream;
 
 import org.activiti.engine.ActivitiException;
@@ -31,24 +37,30 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Tijs Rademakers
  */
 @RestController
+@Api(tags = { "Process Definitions" }, description = "Manage Process Definitions")
 public class ProcessDefinitionImageResource extends BaseProcessDefinitionResource {
 
-  @RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/image", method = RequestMethod.GET)
-  public ResponseEntity<byte[]> getModelResource(@PathVariable String processDefinitionId) {
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
-    InputStream imageStream = repositoryService.getProcessDiagram(processDefinition.getId());
+	@ApiOperation(value = "Get a process definition image", tags = {"Process Definitions"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Indicates request was successful and the process-definitions are returned"),
+			@ApiResponse(code = 404, message = "Indicates the requested process definition was not found.")
+	})
+	@RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/image", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> getModelResource(@ApiParam(name = "processDefinitionId") @PathVariable String processDefinitionId) {
+		ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
+		InputStream imageStream = repositoryService.getProcessDiagram(processDefinition.getId());
 
-    if (imageStream != null) {
-      HttpHeaders responseHeaders = new HttpHeaders();
-      responseHeaders.set("Content-Type", "image/png");
-      try {
-        return new ResponseEntity<byte[]>(IOUtils.toByteArray(imageStream), responseHeaders, HttpStatus.OK);
-      } catch (Exception e) {
-        throw new ActivitiException("Error reading image stream", e);
-      }
-    } else {
-      throw new ActivitiIllegalArgumentException("Process definition with id '" + processDefinition.getId() + "' has no image.");
-    }
-  }
+		if (imageStream != null) {
+			HttpHeaders responseHeaders = new HttpHeaders();
+			responseHeaders.set("Content-Type", "image/png");
+			try {
+				return new ResponseEntity<byte[]>(IOUtils.toByteArray(imageStream), responseHeaders, HttpStatus.OK);
+			} catch (Exception e) {
+				throw new ActivitiException("Error reading image stream", e);
+			}
+		} else {
+			throw new ActivitiIllegalArgumentException("Process definition with id '" + processDefinition.getId() + "' has no image.");
+		}
+	}
 
 }

@@ -52,15 +52,12 @@ public class TaskVariableResource extends TaskVariableBaseResource {
   protected ObjectMapper objectMapper;
 
   @ApiOperation(value = "Get a variable from a task", tags = {"Tasks"}, nickname = "getTaskInstanceVariable")
-  @ApiImplicitParams(
-          @ApiImplicitParam(name = "scope", dataType = "string", value = "Scope of variable to be returned. When local, only task-local variable value is returned. When global, only variable value from the task’s parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.", paramType = "query")
-  )
   @ApiResponses(value = {
           @ApiResponse(code = 200, message =  "Indicates the task was found and the requested variables are returned."),
           @ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have a variable with the given name (in the given scope). Status message provides additional information.")
   })
   @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.GET, produces = "application/json")
-  public RestVariable getVariable(@ApiParam(name = "taskId") @PathVariable("taskId") String taskId,@ApiParam(name = "variableName") @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
+  public RestVariable getVariable(@ApiParam(name = "taskId",  value = "The id of the task to get a variable for.") @PathVariable("taskId") String taskId,@ApiParam(name = "variableName", value = "The name of the variable to get.") @PathVariable("variableName") String variableName,@ApiParam(name="scope", value="Scope of variable to be returned. When local, only task-local variable value is returned. When global, only variable value from the task’s parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.") @RequestParam(value = "scope", required = false) String scope,
       HttpServletRequest request, HttpServletResponse response) {
 
     return getVariableFromRequest(taskId, variableName, scope, false);
@@ -83,9 +80,6 @@ public class TaskVariableResource extends TaskVariableBaseResource {
           + "- *scope*: Scope of variable that is updated. If omitted, local is assumed.\n" + "\n"
           + "- *type*: Type of variable that is updated. If omitted, binary is assumed and the binary data in the request will be stored as an array of bytes."
   )
-  @ApiImplicitParams(
-          @ApiImplicitParam(name = "scope", dataType = "string", value = "Scope of variable to be returned. When local, only task-local variable value is returned. When global, only variable value from the task’s parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.", paramType = "query")
-  )
   @ApiResponses(value = {
           @ApiResponse(code = 200, message = "Indicates the variables was updated and the result is returned."),
           @ApiResponse(code = 400, message = "Indicates the name of a variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope global. Status message provides additional information."),
@@ -93,7 +87,7 @@ public class TaskVariableResource extends TaskVariableBaseResource {
           @ApiResponse(code = 415, message = "Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized."),
   })
   @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.PUT, produces = "application/json")
-  public RestVariable updateVariable(@ApiParam(name = "taskId") @PathVariable("taskId") String taskId,@ApiParam(name = "variableName") @PathVariable("variableName") String variableName,@ApiParam(hidden=true) @RequestParam(value = "scope", required = false) String scope,
+  public RestVariable updateVariable(@ApiParam(name = "taskId", value="The id of the task to update the variable for.") @PathVariable("taskId") String taskId,@ApiParam(name = "variableName", value="The name of the variable to update.") @PathVariable("variableName") String variableName,@ApiParam(hidden=true) @RequestParam(value = "scope", required = false) String scope,
       HttpServletRequest request) {
 
     Task task = getTaskFromRequest(taskId);
@@ -130,15 +124,12 @@ public class TaskVariableResource extends TaskVariableBaseResource {
   
   
   @ApiOperation(value = "Delete a variable on a task", tags = {"Tasks"}, nickname = "deleteTaskInstanceVariable")
-  @ApiImplicitParams(
-          @ApiImplicitParam(name = "scope", dataType = "string", value = "Scope of variable to be returned. When local, only task-local variable value is returned. When global, only variable value from the task’s parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.", paramType = "query")
-  )
   @ApiResponses(value = {
-          @ApiResponse(code = 204, message = "Indicates the task variable was found and has been deleted. Response-body is intentionally empty."),
-          @ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have a variable with the given name. Status message contains additional information about the error.")
+		  @ApiResponse(code = 204, message = "Indicates the task variable was found and has been deleted. Response-body is intentionally empty."),
+		  @ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have a variable with the given name. Status message contains additional information about the error.")
   })
   @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.DELETE)
-  public void deleteVariable(@ApiParam(name="taskId") @PathVariable("taskId") String taskId,@ApiParam(name="variableName") @PathVariable("variableName") String variableName,@ApiParam(hidden=true) @RequestParam(value = "scope", required = false) String scopeString,
+  public void deleteVariable(@ApiParam(name="taskId", value = "The id of the task the variable to delete belongs to.") @PathVariable("taskId") String taskId,@ApiParam(name="variableName", value = "The name of the variable to delete.") @PathVariable("variableName") String variableName,@ApiParam(hidden=true) @RequestParam(value = "scope", required = false) String scopeString,
       HttpServletResponse response) {
 
     Task task = getTaskFromRequest(taskId);

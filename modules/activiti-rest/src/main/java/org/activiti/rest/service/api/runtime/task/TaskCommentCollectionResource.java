@@ -16,10 +16,13 @@ package org.activiti.rest.service.api.runtime.task;
 import java.util.List;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -50,7 +53,7 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
 			@ApiResponse(code = 404, message = "Indicates the requested task was not found.")
 	})	
 	@RequestMapping(value = "/runtime/tasks/{taskId}/comments", method = RequestMethod.GET, produces = "application/json")
-	public List<CommentResponse> getComments(@ApiParam(name = "taskId") @PathVariable String taskId, HttpServletRequest request) {
+	public List<CommentResponse> getComments(@ApiParam(name = "taskId", value="The id of the task to get the comments for.") @PathVariable String taskId, HttpServletRequest request) {
 		HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 		return restResponseFactory.createRestCommentList(taskService.getTaskComments(task.getId()));
 	}
@@ -62,7 +65,7 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
 			@ApiResponse(code = 404, message = "Indicates the requested task was not found.")
 	})
 	@RequestMapping(value = "/runtime/tasks/{taskId}/comments", method = RequestMethod.POST, produces = "application/json")
-	public CommentResponse createComment(@ApiParam(name = "taskId") @PathVariable String taskId, @RequestBody CommentRequest comment, HttpServletRequest request, HttpServletResponse response) {
+	public CommentResponse createComment(@ApiParam(name = "taskId", value="The id of the task to create the comment for.") @PathVariable String taskId, @RequestBody CommentRequest comment, HttpServletRequest request, HttpServletResponse response) {
 
 		Task task = getTaskFromRequest(taskId);
 

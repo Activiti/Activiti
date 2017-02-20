@@ -44,7 +44,7 @@ public class GroupResource extends BaseGroupResource {
 			@ApiResponse(code = 404, message = "Indicates the requested group does not exist.")
 	})
 	@RequestMapping(value = "/identity/groups/{groupId}", method = RequestMethod.GET, produces = "application/json")
-	public GroupResponse getGroup(@ApiParam(name="groupId") @PathVariable String groupId, HttpServletRequest request) {
+	public GroupResponse getGroup(@ApiParam(name="groupId", value="The id of the group to get.") @PathVariable String groupId, HttpServletRequest request) {
 		return restResponseFactory.createGroupResponse(getGroupFromRequest(groupId));
 	}
 
@@ -81,7 +81,7 @@ public class GroupResource extends BaseGroupResource {
 			@ApiResponse(code = 404, message = "Indicates the requested group does not exist.")
 	})
 	@RequestMapping(value = "/identity/groups/{groupId}", method = RequestMethod.DELETE)
-	public void deleteGroup(@ApiParam(name="groupId") @PathVariable String groupId, HttpServletResponse response) {
+	public void deleteGroup(@ApiParam(name="groupId", value="The id of the group to delete.") @PathVariable String groupId, HttpServletResponse response) {
 		Group group = getGroupFromRequest(groupId);
 		identityService.deleteGroup(group.getId());
 		response.setStatus(HttpStatus.NO_CONTENT.value());

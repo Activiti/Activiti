@@ -13,6 +13,14 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,58 +37,86 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Executions" }, description = "Manage Executions")
 public class ExecutionResource extends ExecutionBaseResource {
 
-  @RequestMapping(value = "/runtime/executions/{executionId}", method = RequestMethod.GET, produces = "application/json")
-  public ExecutionResponse getExecution(@PathVariable String executionId, HttpServletRequest request) {
-    return restResponseFactory.createExecutionResponse(getExecutionFromRequest(executionId));
-  }
+	@ApiOperation(value = "Get an execution", tags = {"Executions"})
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Indicates the execution was found and returned."),
+			@ApiResponse(code = 404, message = "Indicates the execution was not found.")
+	})
+	@RequestMapping(value = "/runtime/executions/{executionId}", method = RequestMethod.GET, produces = "application/json")
+	public ExecutionResponse getExecution(@ApiParam(name = "executionId", value="The id of the execution to get.") @PathVariable String executionId, HttpServletRequest request) {
+		return restResponseFactory.createExecutionResponse(getExecutionFromRequest(executionId));
+	}
 
-  @RequestMapping(value = "/runtime/executions/{executionId}", method = RequestMethod.PUT, produces = "application/json")
-  public ExecutionResponse performExecutionAction(@PathVariable String executionId, @RequestBody ExecutionActionRequest actionRequest, HttpServletRequest request, HttpServletResponse response) {
+	@ApiOperation(value = "Execute an action on an execution", tags = {"Executions"},
+			notes = "## Request body (signal an execution):\n\n"
+					+ " ```JSON\n" + "{\n" + "  \"action\":\"signal\"\n" + "} ```"
+					+ "\n\n\n"
+					+ "Both a variables and transientVariables property is accepted with following structure"
+					+ " ```JSON\n" + "{\n" + "  \"action\":\"signal\",\n" + "  \"variables\" : [\n" + "    {\n" + "      \"name\": \"myVar\",\n"
+					+ "      \"value\": \"someValue\"\n" + "    }\n" + "  ]\n" + "}```"
+					+ "\n\n\n"
+					+ "## Request body (signal event received for execution)\n\n"
+					+ " ```JSON\n" + "{\n" + "  \"action\":\"signal\"\n" + "} ```"
+					+ "\n\n\n"
+					+ "Notifies the execution that a signal event has been received, requires a signalName parameter. Optional variables can be passed that are set on the execution before the action is executed."
+					+ "## Request body (signal event received for execution)\n\n"
+					+ " ```JSON\n" + "{\n" + "  \"action\":\"messageEventReceived\",\n" + "  \"messageName\":\"myMessage\"\n" + "  \"variables\": [  ]\n" + "} ```"
+					+ "\n\n\n"
+			)
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Indicates the execution was found and the action is performed."),
+			@ApiResponse(code = 204, message = "Indicates the execution was found, the action was performed and the action caused the execution to end."),
+			@ApiResponse(code = 400, message = "Indicates an illegal action was requested, required parameters are missing in the request body or illegal variables are passed in. Status description contains additional information about the error."),
+			@ApiResponse(code = 404, message = "Indicates the execution was not found.")
+	})
+	@RequestMapping(value = "/runtime/executions/{executionId}", method = RequestMethod.PUT, produces = "application/json")
+	public ExecutionResponse performExecutionAction(@ApiParam(name = "executionId", value="The id of the execution to execute action on.") @PathVariable String executionId, @RequestBody ExecutionActionRequest actionRequest, HttpServletRequest request, HttpServletResponse response) {
 
-    Execution execution = getExecutionFromRequest(executionId);
+		Execution execution = getExecutionFromRequest(executionId);
 
-    if (ExecutionActionRequest.ACTION_SIGNAL.equals(actionRequest.getAction())
-        || ExecutionActionRequest.ACTION_TRIGGER.equals(actionRequest.getAction())) {
-      if (actionRequest.getTransientVariables() != null && actionRequest.getVariables() != null) {
-        runtimeService.trigger(execution.getId(), getVariablesToSet(actionRequest.getVariables()), getVariablesToSet(actionRequest.getTransientVariables()));
-      } else if (actionRequest.getVariables() != null) {
-        runtimeService.trigger(execution.getId(), getVariablesToSet(actionRequest.getVariables()));
-      } else {
-        runtimeService.trigger(execution.getId());
-      }
-    } else if (ExecutionActionRequest.ACTION_SIGNAL_EVENT_RECEIVED.equals(actionRequest.getAction())) {
-      if (actionRequest.getSignalName() == null) {
-        throw new ActivitiIllegalArgumentException("Signal name is required");
-      }
-      if (actionRequest.getVariables() != null) {
-        runtimeService.signalEventReceived(actionRequest.getSignalName(), execution.getId(), getVariablesToSet(actionRequest.getVariables()));
-      } else {
-        runtimeService.signalEventReceived(actionRequest.getSignalName(), execution.getId());
-      }
-    } else if (ExecutionActionRequest.ACTION_MESSAGE_EVENT_RECEIVED.equals(actionRequest.getAction())) {
-      if (actionRequest.getMessageName() == null) {
-        throw new ActivitiIllegalArgumentException("Message name is required");
-      }
-      if (actionRequest.getVariables() != null) {
-        runtimeService.messageEventReceived(actionRequest.getMessageName(), execution.getId(), getVariablesToSet(actionRequest.getVariables()));
-      } else {
-        runtimeService.messageEventReceived(actionRequest.getMessageName(), execution.getId());
-      }
-    } else {
-      throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
-    }
+		if (ExecutionActionRequest.ACTION_SIGNAL.equals(actionRequest.getAction())
+				|| ExecutionActionRequest.ACTION_TRIGGER.equals(actionRequest.getAction())) {
+			if (actionRequest.getTransientVariables() != null && actionRequest.getVariables() != null) {
+				runtimeService.trigger(execution.getId(), getVariablesToSet(actionRequest.getVariables()), getVariablesToSet(actionRequest.getTransientVariables()));
+			} else if (actionRequest.getVariables() != null) {
+				runtimeService.trigger(execution.getId(), getVariablesToSet(actionRequest.getVariables()));
+			} else {
+				runtimeService.trigger(execution.getId());
+			}
+		} else if (ExecutionActionRequest.ACTION_SIGNAL_EVENT_RECEIVED.equals(actionRequest.getAction())) {
+			if (actionRequest.getSignalName() == null) {
+				throw new ActivitiIllegalArgumentException("Signal name is required");
+			}
+			if (actionRequest.getVariables() != null) {
+				runtimeService.signalEventReceived(actionRequest.getSignalName(), execution.getId(), getVariablesToSet(actionRequest.getVariables()));
+			} else {
+				runtimeService.signalEventReceived(actionRequest.getSignalName(), execution.getId());
+			}
+		} else if (ExecutionActionRequest.ACTION_MESSAGE_EVENT_RECEIVED.equals(actionRequest.getAction())) {
+			if (actionRequest.getMessageName() == null) {
+				throw new ActivitiIllegalArgumentException("Message name is required");
+			}
+			if (actionRequest.getVariables() != null) {
+				runtimeService.messageEventReceived(actionRequest.getMessageName(), execution.getId(), getVariablesToSet(actionRequest.getVariables()));
+			} else {
+				runtimeService.messageEventReceived(actionRequest.getMessageName(), execution.getId());
+			}
+		} else {
+			throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
+		}
 
-    // Re-fetch the execution, could have changed due to action or even
-    // completed
-    execution = runtimeService.createExecutionQuery().executionId(execution.getId()).singleResult();
-    if (execution == null) {
-      // Execution is finished, return empty body to inform user
-      response.setStatus(HttpStatus.NO_CONTENT.value());
-      return null;
-    } else {
-      return restResponseFactory.createExecutionResponse(execution);
-    }
-  }
+		// Re-fetch the execution, could have changed due to action or even
+		// completed
+		execution = runtimeService.createExecutionQuery().executionId(execution.getId()).singleResult();
+		if (execution == null) {
+			// Execution is finished, return empty body to inform user
+			response.setStatus(HttpStatus.NO_CONTENT.value());
+			return null;
+		} else {
+			return restResponseFactory.createExecutionResponse(execution);
+		}
+	}
 }

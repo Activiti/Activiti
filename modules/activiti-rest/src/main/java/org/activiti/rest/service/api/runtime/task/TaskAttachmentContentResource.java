@@ -15,10 +15,13 @@ package org.activiti.rest.service.api.runtime.task;
 
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import java.io.InputStream;
 
 import javax.servlet.http.HttpServletResponse;
@@ -53,7 +56,7 @@ public class TaskAttachmentContentResource extends TaskBaseResource {
 			@ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have an attachment with the given id or the attachment doesn’t have a binary stream available. Status message provides additional information.")
 	})	
 	@RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}/content", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getAttachmentContent(@ApiParam(name = "taskId") @PathVariable("taskId") String taskId,@ApiParam(name = "attachmentId") @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
+	public ResponseEntity<byte[]> getAttachmentContent(@ApiParam(name = "taskId", value="The id of the task to get a variable data for.") @PathVariable("taskId") String taskId,@ApiParam(name = "attachmentId", value="The id of the attachment, a 404 is returned when the attachment points to an external URL rather than content attached in Activiti.") @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
 
 		HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 		Attachment attachment = taskService.getAttachment(attachmentId);

@@ -15,6 +15,8 @@ package org.activiti.rest.service.api.runtime.task;
 
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -62,7 +64,7 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
 			@ApiResponse(code = 404, message = "Indicates the requested task was not found.")
 	})  
 	@RequestMapping(value = "/runtime/tasks/{taskId}/attachments", method = RequestMethod.GET, produces = "application/json")
-	public List<AttachmentResponse> getAttachments(@ApiParam(name = "taskId") @PathVariable String taskId, HttpServletRequest request) {
+	public List<AttachmentResponse> getAttachments(@ApiParam(name = "taskId", value="The id of the task to get the attachments for.") @PathVariable String taskId, HttpServletRequest request) {
 		List<AttachmentResponse> result = new ArrayList<AttachmentResponse>();
 		HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
@@ -95,7 +97,7 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
 			@ApiResponse(code = 404, message = "Indicates the requested task was not found.")
 	})
 	@RequestMapping(value = "/runtime/tasks/{taskId}/attachments", method = RequestMethod.POST, produces = "application/json")
-	public AttachmentResponse createAttachment(@ApiParam(name = "taskId") @PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
+	public AttachmentResponse createAttachment(@ApiParam(name = "taskId", value="The id of the task to create the attachment for.") @PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
 
 		AttachmentResponse result = null;
 		Task task = getTaskFromRequest(taskId);

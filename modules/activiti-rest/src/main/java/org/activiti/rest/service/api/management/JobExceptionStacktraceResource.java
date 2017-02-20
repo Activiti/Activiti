@@ -14,10 +14,13 @@
 package org.activiti.rest.service.api.management;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -46,7 +49,7 @@ public class JobExceptionStacktraceResource {
 			@ApiResponse(code = 404, message = "Indicates the requested job was not found or the job doesn’t have an exception stacktrace. Status-description contains additional information about the error.")
 	})
 	@RequestMapping(value = "/management/jobs/{jobId}/exception-stacktrace", method = RequestMethod.GET)
-	public String getJobStacktrace(@ApiParam(name = "jobId") @PathVariable String jobId, HttpServletResponse response) {
+	public String getJobStacktrace(@ApiParam(name = "jobId", value="Id of the job to get the stacktrace for.") @PathVariable String jobId, HttpServletResponse response) {
 		Job job = managementService.createJobQuery().jobId(jobId).singleResult();
 		if (job == null) {
 			throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);

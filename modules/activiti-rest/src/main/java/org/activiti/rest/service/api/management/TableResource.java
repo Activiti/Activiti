@@ -14,10 +14,13 @@
 package org.activiti.rest.service.api.management;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -51,7 +54,7 @@ public class TableResource {
 			@ApiResponse(code = 404, message = "Indicates the requested table does not exist.")
 	})
 	@RequestMapping(value = "/management/tables/{tableName}", method = RequestMethod.GET, produces = "application/json")
-	public TableResponse getTable(@ApiParam(name = "tableName") @PathVariable String tableName, HttpServletRequest request) {
+	public TableResponse getTable(@ApiParam(name = "tableName", value="The name of the table to get.") @PathVariable String tableName, HttpServletRequest request) {
 		Map<String, Long> tableCounts = managementService.getTableCount();
 
 		TableResponse response = null;

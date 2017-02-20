@@ -15,6 +15,8 @@ package org.activiti.rest.service.api.history;
 import java.util.List;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -57,7 +59,7 @@ public class HistoricProcessInstanceCommentCollectionResource {
 			@ApiResponse(code = 200, message = "Indicates the process instance was found and the comments are returned."),
 			@ApiResponse(code = 404, message = "Indicates that the historic process instance could not be found.") })
 	@RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments", method = RequestMethod.GET, produces = "application/json")
-	public List<CommentResponse> getComments(@ApiParam(name="processInstanceId") @PathVariable String processInstanceId, HttpServletRequest request) {
+	public List<CommentResponse> getComments(@ApiParam(name="processInstanceId", value="The id of the process instance to get the comments for.") @PathVariable String processInstanceId, HttpServletRequest request) {
 		HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 		return restResponseFactory.createRestCommentList(taskService.getProcessInstanceComments(instance.getId()));
 	}

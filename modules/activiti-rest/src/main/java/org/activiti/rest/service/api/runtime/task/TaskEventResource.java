@@ -14,10 +14,13 @@
 package org.activiti.rest.service.api.runtime.task;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,7 +48,7 @@ public class TaskEventResource extends TaskBaseResource {
 			@ApiResponse(code = 404, message = "Indicates the requested task was not found or the tasks doesn’t have an event with the given ID.")
 	})
 	@RequestMapping(value = "/runtime/tasks/{taskId}/events/{eventId}", method = RequestMethod.GET, produces = "application/json")
-	public EventResponse getEvent(@ApiParam(name="taskId") @PathVariable("taskId") String taskId,@ApiParam(name="eventId") @PathVariable("eventId") String eventId, HttpServletRequest request) {
+	public EventResponse getEvent(@ApiParam(name="taskId", value="The id of the task to get the event for.") @PathVariable("taskId") String taskId,@ApiParam(name="eventId", value="The id of the event.") @PathVariable("eventId") String eventId, HttpServletRequest request) {
 
 		HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 

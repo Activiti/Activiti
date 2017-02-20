@@ -55,7 +55,7 @@ public class UserInfoCollectionResource extends BaseUserResource {
 			@ApiResponse(code = 404, message = "Indicates the requested user was not found.")
 	})
 	@RequestMapping(value = "/identity/users/{userId}/info", method = RequestMethod.GET, produces = "application/json")
-	public List<UserInfoResponse> getUserInfo(@ApiParam(name="userId") @PathVariable String userId, HttpServletRequest request) {
+	public List<UserInfoResponse> getUserInfo(@ApiParam(name="userId", value="The id of the user to get the info for.") @PathVariable String userId, HttpServletRequest request) {
 		User user = getUserFromRequest(userId);
 
 		return restResponseFactory.createUserInfoKeysResponse(identityService.getUserInfoKeys(user.getId()), user.getId());
@@ -69,7 +69,7 @@ public class UserInfoCollectionResource extends BaseUserResource {
 			@ApiResponse(code = 409, message = "Indicates there is already an info-entry with the given key for the user, update the resource instance (PUT).")
 	})
 	@RequestMapping(value = "/identity/users/{userId}/info", method = RequestMethod.POST, produces = "application/json")
-	public UserInfoResponse setUserInfo(@ApiParam(name="userId") @PathVariable String userId, @RequestBody UserInfoRequest userRequest, HttpServletRequest request, HttpServletResponse response) {
+	public UserInfoResponse setUserInfo(@ApiParam(name="userId", value="The id of the user to create the info for.") @PathVariable String userId, @RequestBody UserInfoRequest userRequest, HttpServletRequest request, HttpServletResponse response) {
 
 		User user = getUserFromRequest(userId);
 

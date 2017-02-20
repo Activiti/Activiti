@@ -16,6 +16,14 @@
   "host" : "localhost:8080",
   "basePath" : "/activiti-rest/service",
   "tags" : [ {
+    "name" : "Database tables"
+  }, {
+    "name" : "Deployment"
+  }, {
+    "name" : "Engine"
+  }, {
+    "name" : "Executions"
+  }, {
     "name" : "Forms"
   }, {
     "name" : "Groups"
@@ -23,6 +31,14 @@
     "name" : "History"
   }, {
     "name" : "Jobs"
+  }, {
+    "name" : "Models"
+  }, {
+    "name" : "Process Definitions"
+  }, {
+    "name" : "Process Instances"
+  }, {
+    "name" : "Runtime"
   }, {
     "name" : "Tasks"
   }, {
@@ -40,11 +56,13 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "query",
+          "description" : "The task id corresponding to the form data that needs to be retrieved.",
           "required" : false,
           "type" : "string"
         }, {
           "name" : "processDefinitionId",
           "in" : "query",
+          "description" : "The process definition id corresponding to the start event form data that needs to be retrieved.",
           "required" : false,
           "type" : "string"
         } ],
@@ -451,6 +469,7 @@
         "parameters" : [ {
           "name" : "processInstanceId",
           "in" : "path",
+          "description" : "The id of the process instance to get the comments for.",
           "required" : true,
           "type" : "string"
         } ],
@@ -518,11 +537,13 @@
         "parameters" : [ {
           "name" : "processInstanceId",
           "in" : "path",
+          "description" : "The id of the historic process instance to get the comment for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "commentId",
           "in" : "path",
+          "description" : "The id of the comment.",
           "required" : true,
           "type" : "string"
         } ],
@@ -546,11 +567,13 @@
         "parameters" : [ {
           "name" : "processInstanceId",
           "in" : "path",
+          "description" : "The id of the historic process instance to delete the comment for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "commentId",
           "in" : "path",
+          "description" : "The id of the comment.",
           "required" : true,
           "type" : "string"
         } ],
@@ -1194,6 +1217,7 @@
         "parameters" : [ {
           "name" : "groupId",
           "in" : "path",
+          "description" : "The id of the group to get.",
           "required" : true,
           "type" : "string"
         } ],
@@ -1254,6 +1278,7 @@
         "parameters" : [ {
           "name" : "groupId",
           "in" : "path",
+          "description" : "The id of the group to delete.",
           "required" : true,
           "type" : "string"
         } ],
@@ -1277,6 +1302,7 @@
         "parameters" : [ {
           "name" : "groupId",
           "in" : "path",
+          "description" : "The id of the group to add a member to.",
           "required" : true,
           "type" : "string"
         }, {
@@ -1318,11 +1344,13 @@
         "parameters" : [ {
           "name" : "groupId",
           "in" : "path",
+          "description" : "The id of the group to remove a member from.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "userId",
           "in" : "path",
+          "description" : "The id of the user to remove.",
           "required" : true,
           "type" : "string"
         } ],
@@ -1400,7 +1428,7 @@
         }, {
           "name" : "sort",
           "in" : "query",
-          "description" : "Property to sort on, to be used together with the order.",
+          "description" : "Field  to sort on, to be used together with the order.",
           "required" : false,
           "type" : "string",
           "enum" : [ "id", "firstName", "lastname", "email" ]
@@ -1454,6 +1482,7 @@
         "parameters" : [ {
           "name" : "userId",
           "in" : "path",
+          "description" : "The id of the user to get.",
           "required" : true,
           "type" : "string"
         } ],
@@ -1511,6 +1540,7 @@
         "parameters" : [ {
           "name" : "userId",
           "in" : "path",
+          "description" : "The id of the user to delete.",
           "required" : true,
           "type" : "string"
         } ],
@@ -1534,6 +1564,7 @@
         "parameters" : [ {
           "name" : "userId",
           "in" : "path",
+          "description" : "The id of the user to get the info for.",
           "required" : true,
           "type" : "string"
         } ],
@@ -1561,6 +1592,7 @@
         "parameters" : [ {
           "name" : "userId",
           "in" : "path",
+          "description" : "The id of the user to create the info for.",
           "required" : true,
           "type" : "string"
         }, {
@@ -1603,11 +1635,13 @@
         "parameters" : [ {
           "name" : "userId",
           "in" : "path",
+          "description" : "The id of the user to get the info for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "key",
           "in" : "path",
+          "description" : "The key of the user info to get.",
           "required" : true,
           "type" : "string"
         } ],
@@ -1632,11 +1666,13 @@
         "parameters" : [ {
           "name" : "userId",
           "in" : "path",
+          "description" : "The id of the user to update the info for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "key",
           "in" : "path",
+          "description" : "The key of the user info to update.",
           "required" : true,
           "type" : "string"
         }, {
@@ -1670,11 +1706,13 @@
         "parameters" : [ {
           "name" : "userId",
           "in" : "path",
+          "description" : "The id of the user to delete the info for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "key",
           "in" : "path",
+          "description" : "The key of the user info to delete.",
           "required" : true,
           "type" : "string"
         } ],
@@ -1697,6 +1735,7 @@
         "parameters" : [ {
           "name" : "userId",
           "in" : "path",
+          "description" : "The id of the user to get the picture for.",
           "required" : true,
           "type" : "string"
         } ],
@@ -1724,6 +1763,7 @@
         "parameters" : [ {
           "name" : "userId",
           "in" : "path",
+          "description" : "The id of the user to get the picture for.",
           "required" : true,
           "type" : "string"
         } ],
@@ -1855,6 +1895,94 @@
         }
       }
     },
+    "/management/deadletter-jobs/{jobId}" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get a single deadletter job",
+        "description" : "",
+        "operationId" : "getDeadletterJob",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the suspended job exists and is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/JobResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested job does not exist."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Delete a deadletter job",
+        "description" : "",
+        "operationId" : "deleteDeadLetterJob",
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the job was found and has been deleted. Response-body is intentionally empty."
+          },
+          "404" : {
+            "description" : "Indicates the requested job was not found."
+          }
+        }
+      }
+    },
+    "/management/deadletter-jobs/{jobId}/exception-stacktrace" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get the exception stacktrace for a deadletter job",
+        "description" : "",
+        "operationId" : "getDeadLetterJobStacktrace",
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the requested job was not found and the stacktrace has been returned. The response contains the raw stacktrace and always has a Content-type of text/plain.",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested job was not found or the job doesn’t have an exception stacktrace. Status-description contains additional information about the error."
+          }
+        }
+      }
+    },
+    "/management/engine" : {
+      "get" : {
+        "tags" : [ "Engine" ],
+        "summary" : "Get engine info",
+        "description" : "",
+        "operationId" : "getEngineInfo",
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the engine info is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/ProcessEngineInfoResponse"
+            }
+          }
+        }
+      }
+    },
     "/management/jobs" : {
       "get" : {
         "tags" : [ "Jobs" ],
@@ -1969,6 +2097,642 @@
           },
           "400" : {
             "description" : "Indicates an illegal value has been used in a url query parameter or the both 'messagesOnly' and 'timersOnly' are used as parameters. Status description contains additional details about the error."
+          }
+        }
+      }
+    },
+    "/management/jobs/{jobId}" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get a single job",
+        "description" : "",
+        "operationId" : "getJob",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "description" : "The id of the job to get.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the job exists and is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/JobResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested job does not exist."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Execute a single job",
+        "description" : "",
+        "operationId" : "executeJobAction",
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "actionRequest",
+          "description" : "Action to perform. Only execute is supported.",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/RestActionRequest"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the job was executed. Response-body is intentionally empty."
+          },
+          "404" : {
+            "description" : "Indicates the requested job was not found."
+          },
+          "500" : {
+            "description" : "Indicates the an exception occurred while executing the job. The status-description contains additional detail about the error. The full error-stacktrace can be fetched later on if needed."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Delete a job",
+        "description" : "",
+        "operationId" : "deleteJob",
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "description" : "The id of the job to delete.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the job was found and has been deleted. Response-body is intentionally empty."
+          },
+          "404" : {
+            "description" : "Indicates the requested job was not found.."
+          }
+        }
+      }
+    },
+    "/management/jobs/{jobId}/exception-stacktrace" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get the exception stacktrace for a job",
+        "description" : "",
+        "operationId" : "getJobStacktrace",
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "description" : "Id of the job to get the stacktrace for.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the requested job was not found and the stacktrace has been returned. The response contains the raw stacktrace and always has a Content-type of text/plain.",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested job was not found or the job doesn’t have an exception stacktrace. Status-description contains additional information about the error."
+          }
+        }
+      }
+    },
+    "/management/properties" : {
+      "get" : {
+        "tags" : [ "Engine" ],
+        "summary" : "Get engine properties",
+        "description" : "",
+        "operationId" : "getProperties",
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the properties are returned.",
+            "schema" : {
+              "type" : "object",
+              "additionalProperties" : {
+                "type" : "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/suspended-jobs" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get a list of suspended jobs",
+        "description" : "",
+        "operationId" : "listSuspendedJobs",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "Only return job with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processInstanceId",
+          "in" : "query",
+          "description" : "Only return jobs part of a process with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "executionId",
+          "in" : "query",
+          "description" : "Only return jobs part of an execution with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionId",
+          "in" : "query",
+          "description" : "Only return jobs with the given process definition id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "timersOnly",
+          "in" : "query",
+          "description" : "If true, only return jobs which are timers. If false, this parameter is ignored. Cannot be used together with 'messagesOnly'.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "messagesOnly",
+          "in" : "query",
+          "description" : "If true, only return jobs which are messages. If false, this parameter is ignored. Cannot be used together with 'timersOnly'",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "withException",
+          "in" : "query",
+          "description" : "If true, only return jobs for which an exception occurred while executing it. If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "dueBefore",
+          "in" : "query",
+          "description" : "Only return jobs which are due to be executed before the given date. Jobs without duedate are never returned using this parameter.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "dueAfter",
+          "in" : "query",
+          "description" : "Only return jobs which are due to be executed after the given date. Jobs without duedate are never returned using this parameter.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "exceptionMessage",
+          "in" : "query",
+          "description" : "Only return jobs with the given exception message",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantId",
+          "in" : "query",
+          "description" : "Only return jobs with the given tenantId.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantIdLike",
+          "in" : "query",
+          "description" : "Only return jobs with a tenantId like the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "withoutTenantId",
+          "in" : "query",
+          "description" : "If true, only returns jobs without a tenantId set. If false, the withoutTenantId parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "locked",
+          "in" : "query",
+          "description" : "If true, only return jobs which are locked.  If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "unlocked",
+          "in" : "query",
+          "description" : "If true, only return jobs which are unlocked. If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Property to sort on, to be used together with the order.",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "id", "dueDate", "executionId", "processInstanceId", "retries", "tenantId" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the requested jobs were returned.",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates an illegal value has been used in a url query parameter or the both 'messagesOnly' and 'timersOnly' are used as parameters. Status description contains additional details about the error."
+          }
+        }
+      }
+    },
+    "/management/suspended-jobs/{jobId}" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get a single suspended job",
+        "description" : "",
+        "operationId" : "getSuspendedJob",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the suspended job exists and is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/JobResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested job does not exist."
+          }
+        }
+      }
+    },
+    "/management/suspended-jobs/{jobId}/exception-stacktrace" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get the exception stacktrace for a suspended job",
+        "description" : "",
+        "operationId" : "getSuspendedJobStacktrace",
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the requested job was not found and the stacktrace has been returned. The response contains the raw stacktrace and always has a Content-type of text/plain.",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested job was not found or the job doesn’t have an exception stacktrace. Status-description contains additional information about the error."
+          }
+        }
+      }
+    },
+    "/management/tables" : {
+      "get" : {
+        "tags" : [ "Database tables" ],
+        "summary" : " List of tables",
+        "description" : "",
+        "operationId" : "getTables",
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the request was successful.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/TableResponse"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/management/tables/{tableName}" : {
+      "get" : {
+        "tags" : [ "Database tables" ],
+        "summary" : "Get a single table",
+        "description" : "",
+        "operationId" : "getTable",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "tableName",
+          "in" : "path",
+          "description" : "The name of the table to get.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the table exists and the table count is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/TableResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested table does not exist."
+          }
+        }
+      }
+    },
+    "/management/tables/{tableName}/columns" : {
+      "get" : {
+        "tags" : [ "Database tables" ],
+        "summary" : "Get column info for a single table",
+        "description" : "",
+        "operationId" : "getTableMetaData",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "tableName",
+          "in" : "path",
+          "description" : "The name of the table to get.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the table exists and the table column info is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/TableMetaData"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested table does not exist."
+          }
+        }
+      }
+    },
+    "/management/tables/{tableName}/data" : {
+      "get" : {
+        "tags" : [ "Database tables" ],
+        "summary" : "Get row data for a single table",
+        "description" : "",
+        "operationId" : "getTableData",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "tableName",
+          "in" : "path",
+          "description" : "The name of the table to get.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "start",
+          "in" : "query",
+          "description" : "Index of the first row to fetch. Defaults to 0.",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "size",
+          "in" : "query",
+          "description" : "Number of rows to fetch, starting from start. Defaults to 10.",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "orderAscendingColumn",
+          "in" : "query",
+          "description" : "Name of the column to sort the resulting rows on, ascending.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "orderDescendingColumn",
+          "in" : "query",
+          "description" : "Name of the column to sort the resulting rows on, descending.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the table exists and the table row data is returned",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested table does not exist."
+          }
+        }
+      }
+    },
+    "/management/timer-jobs" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get a list of timer jobs",
+        "description" : "",
+        "operationId" : "listTimerJobs",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "Only return job with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processInstanceId",
+          "in" : "query",
+          "description" : "Only return jobs part of a process with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "executionId",
+          "in" : "query",
+          "description" : "Only return jobs part of an execution with the given id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionId",
+          "in" : "query",
+          "description" : "Only return jobs with the given process definition id",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "timersOnly",
+          "in" : "query",
+          "description" : "If true, only return jobs which are timers. If false, this parameter is ignored. Cannot be used together with 'messagesOnly'.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "messagesOnly",
+          "in" : "query",
+          "description" : "If true, only return jobs which are messages. If false, this parameter is ignored. Cannot be used together with 'timersOnly'",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "withException",
+          "in" : "query",
+          "description" : "If true, only return jobs for which an exception occurred while executing it. If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "dueBefore",
+          "in" : "query",
+          "description" : "Only return jobs which are due to be executed before the given date. Jobs without duedate are never returned using this parameter.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "dueAfter",
+          "in" : "query",
+          "description" : "Only return jobs which are due to be executed after the given date. Jobs without duedate are never returned using this parameter.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "exceptionMessage",
+          "in" : "query",
+          "description" : "Only return jobs with the given exception message",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantId",
+          "in" : "query",
+          "description" : "Only return jobs with the given tenantId.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantIdLike",
+          "in" : "query",
+          "description" : "Only return jobs with a tenantId like the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "withoutTenantId",
+          "in" : "query",
+          "description" : "If true, only returns jobs without a tenantId set. If false, the withoutTenantId parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "locked",
+          "in" : "query",
+          "description" : "If true, only return jobs which are locked.  If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "unlocked",
+          "in" : "query",
+          "description" : "If true, only return jobs which are unlocked. If false, this parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Property to sort on, to be used together with the order.",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "id", "dueDate", "executionId", "processInstanceId", "retries", "tenantId" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the requested jobs were returned.",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates an illegal value has been used in a url query parameter or the both 'messagesOnly' and 'timersOnly' are used as parameters. Status description contains additional details about the error."
+          }
+        }
+      }
+    },
+    "/management/timer-jobs/{jobId}" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get a single timer job",
+        "description" : "",
+        "operationId" : "getTimerJob",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the timer job exists and is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/JobResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested job does not exist."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Delete a timer job",
+        "description" : "",
+        "operationId" : "deleteTimerJob",
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the job was found and has been deleted. Response-body is intentionally empty."
+          },
+          "404" : {
+            "description" : "Indicates the requested job was not found."
+          }
+        }
+      }
+    },
+    "/management/timer-jobs/{jobId}/exception-stacktrace" : {
+      "get" : {
+        "tags" : [ "Jobs" ],
+        "summary" : "Get the exception stacktrace for a timer job",
+        "description" : "",
+        "operationId" : "getTimerJobStacktrace",
+        "parameters" : [ {
+          "name" : "jobId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the requested job was not found and the stacktrace has been returned. The response contains the raw stacktrace and always has a Content-type of text/plain.",
+            "schema" : {
+              "type" : "string"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested job was not found or the job doesn’t have an exception stacktrace. Status-description contains additional information about the error."
+          }
+        }
+      }
+    },
+    "/query/executions" : {
+      "post" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Query executions",
+        "description" : "The request body can contain all possible filters that can be used in the List executions URL query. On top of these, it’s possible to provide an array of variables and processInstanceVariables to include in the query, with their format described here.\n\nThe general paging and sorting query-parameters can be used for this URL.",
+        "operationId" : "queryExecutions",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ExecutionQueryRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the executions are returned.",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates a parameter was passed in the wrong format . The status-message contains additional information."
           }
         }
       }
@@ -2113,6 +2877,34 @@
         }
       }
     },
+    "/query/process-instances" : {
+      "post" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Query process instances",
+        "description" : "The request body can contain all possible filters that can be used in the List process instances URL query. On top of these, it’s possible to provide an array of variables to include in the query, with their format described here.\n\nThe general paging and sorting query-parameters can be used for this URL.",
+        "operationId" : "queryProcessInstances",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ProcessInstanceQueryRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the process-instances are returned",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates a parameter was passed in the wrong format . The status-message contains additional information."
+          }
+        }
+      }
+    },
     "/query/tasks" : {
       "post" : {
         "tags" : [ "Tasks" ],
@@ -2137,6 +2929,2025 @@
           },
           "400" : {
             "description" : "Indicates a parameter was passed in the wrong format or that delegationState has an invalid value (other than pending and resolved). The status-message contains additional information."
+          }
+        }
+      }
+    },
+    "/repository/deployments" : {
+      "get" : {
+        "tags" : [ "Deployment" ],
+        "summary" : "List of Deployments",
+        "description" : "",
+        "operationId" : "getDeployments",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "name",
+          "in" : "query",
+          "description" : "Only return deployments with the given name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "nameLike",
+          "in" : "query",
+          "description" : "Only return deployments with a name like the given name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "description" : "Only return deployments with the given category.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "categoryNotEquals",
+          "in" : "query",
+          "description" : "Only return deployments which don’t have the given category.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantId",
+          "in" : "query",
+          "description" : "Only return deployments with the given tenantId.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantIdLike",
+          "in" : "query",
+          "description" : "Only return deployments with a tenantId like the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "withoutTenantId",
+          "in" : "query",
+          "description" : "If true, only returns deployments without a tenantId set. If false, the withoutTenantId parameter is ignored.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Property to sort on, to be used together with the order.",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "id", "name", "deployTime", "tenantId" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the request was successful.",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Deployment" ],
+        "summary" : "Create a new deployment",
+        "description" : "The request body should contain data of type multipart/form-data. There should be exactly one file in the request, any additional files will be ignored. If multiple resources need to be deployed in a single deployment, compress the resources in a zip and make sure the file-name ends with .bar or .zip.\n\nAn additional parameter (form-field) can be passed in the request body with name tenantId. The value of this field will be used as the id of the tenant this deployment is done in.",
+        "operationId" : "uploadDeployment",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "tenantId",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the deployment was created.",
+            "schema" : {
+              "$ref" : "#/definitions/DeploymentResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates there was no content present in the request body or the content mime-type is not supported for deployment. The status-description contains additional information."
+          }
+        }
+      }
+    },
+    "/repository/deployments/{deploymentId}" : {
+      "get" : {
+        "tags" : [ "Deployment" ],
+        "summary" : "Get a deployment",
+        "description" : "",
+        "operationId" : "getDeployment",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "deploymentId",
+          "in" : "path",
+          "description" : "The id of the deployment to get.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the deployment was found and returned.",
+            "schema" : {
+              "$ref" : "#/definitions/DeploymentResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested deployment was not found."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Deployment" ],
+        "summary" : "Delete a deployment",
+        "description" : "",
+        "operationId" : "deleteDeployment",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "deploymentId",
+          "in" : "path",
+          "description" : "The id of the deployment to delete.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "cascade",
+          "in" : "query",
+          "required" : false,
+          "type" : "boolean"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the deployment was found and has been deleted. Response-body is intentionally empty."
+          },
+          "404" : {
+            "description" : "Indicates the requested deployment was not found."
+          }
+        }
+      }
+    },
+    "/repository/deployments/{deploymentId}/resourcedata/{resourceId}" : {
+      "get" : {
+        "tags" : [ "Deployment" ],
+        "summary" : "Get a deployment resource content",
+        "description" : "The response body will contain the binary resource-content for the requested resource. The response content-type will be the same as the type returned in the resources mimeType property. Also, a content-disposition header is set, allowing browsers to download the file instead of displaying it.",
+        "operationId" : "getDeploymentResourceData",
+        "parameters" : [ {
+          "name" : "deploymentId",
+          "in" : "path",
+          "description" : "The id of the deployment the requested resource is part of.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "resourceId",
+          "in" : "path",
+          "description" : "The id of the resource to get the data for. Make sure you URL-encode the resourceId in case it contains forward slashes. Eg: use diagrams%2Fmy-process.bpmn20.xml instead of diagrams/Fmy-process.bpmn20.xml.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates both deployment and resource have been found and the resource data has been returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string",
+                "format" : "byte"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information."
+          }
+        }
+      }
+    },
+    "/repository/deployments/{deploymentId}/resources" : {
+      "get" : {
+        "tags" : [ "Deployment" ],
+        "summary" : "List resources in a deployment",
+        "description" : "The dataUrl property in the resulting JSON for a single resource contains the actual URL to use for retrieving the binary resource.",
+        "operationId" : "getDeploymentResources",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "deploymentId",
+          "in" : "path",
+          "description" : "The id of the deployment to get the resources for.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the deployment was found and the resource list has been returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/DeploymentResourceResponse"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested deployment was not found."
+          }
+        }
+      }
+    },
+    "/repository/deployments/{deploymentId}/resources/**" : {
+      "get" : {
+        "tags" : [ "Deployment" ],
+        "summary" : "Get a deployment resource",
+        "description" : "Replace ** by ResourceId",
+        "operationId" : "getDeploymentResource",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "deploymentId",
+          "in" : "path",
+          "description" : "The id of the deployment the requested resource is part of.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates both deployment and resource have been found and the resource has been returned.",
+            "schema" : {
+              "$ref" : "#/definitions/DeploymentResourceResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information."
+          }
+        }
+      }
+    },
+    "/repository/models" : {
+      "get" : {
+        "tags" : [ "Models" ],
+        "summary" : "Get a list of models",
+        "description" : "",
+        "operationId" : "getModels",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "Only return models with the given version.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "description" : "Only return models with the given category.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "categoryLike",
+          "in" : "query",
+          "description" : "Only return models with a category like the given name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "categoryNotEquals",
+          "in" : "query",
+          "description" : "Only return models which don’t have the given category.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "description" : "Only return models with the given name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "nameLike",
+          "in" : "query",
+          "description" : "Only return models with a name like the given name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "key",
+          "in" : "query",
+          "description" : "Only return models with the given key.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "deploymentId",
+          "in" : "query",
+          "description" : "Only return models with the given category.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "version",
+          "in" : "query",
+          "description" : "Only return models with the given version.",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "latestVersion",
+          "in" : "query",
+          "description" : "If true, only return models which are the latest version. Best used in combination with key. If false is passed in as value, this is ignored and all versions are returned.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "deployed",
+          "in" : "query",
+          "description" : "If true, only deployed models are returned. If false, only undeployed models are returned (deploymentId is null).",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "tenantId",
+          "in" : "query",
+          "description" : "Only return models with the given tenantId.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantIdLike",
+          "in" : "query",
+          "description" : "Only return models with a tenantId like the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "withoutTenantId",
+          "in" : "query",
+          "description" : "If true, only returns models without a tenantId set. If false, the withoutTenantId parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Property to sort on, to be used together with the order.",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "id", "category", "createTime", "key", "lastUpdateTime", "name", "version", "tenantId" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the models are returned",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates a parameter was passed in the wrong format. The status-message contains additional information."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Models" ],
+        "summary" : "Create a model",
+        "description" : "All request values are optional. For example, you can only include the name attribute in the request body JSON-object, only setting the name of the model, leaving all other fields null.",
+        "operationId" : "createModel",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ModelRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the model was created.",
+            "schema" : {
+              "$ref" : "#/definitions/ModelResponse"
+            }
+          }
+        }
+      }
+    },
+    "/repository/models/{modelId}" : {
+      "get" : {
+        "tags" : [ "Models" ],
+        "summary" : "Get a model",
+        "description" : "",
+        "operationId" : "getModel",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "modelId",
+          "in" : "path",
+          "description" : "The id of the model to get.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the model was found and returned.",
+            "schema" : {
+              "$ref" : "#/definitions/ModelResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested model was not found."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Models" ],
+        "summary" : "Update a model",
+        "description" : "All request values are optional. For example, you can only include the name attribute in the request body JSON-object, only updating the name of the model, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the model-value will be updated to null. Example: ```JSON \n{\"metaInfo\" : null}``` will clear the metaInfo of the model).",
+        "operationId" : "updateModel",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "modelId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ModelRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the model was found and updated.",
+            "schema" : {
+              "$ref" : "#/definitions/ModelResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested model was not found."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Models" ],
+        "summary" : "Delete a model",
+        "description" : "",
+        "operationId" : "deleteModel",
+        "parameters" : [ {
+          "name" : "modelId",
+          "in" : "path",
+          "description" : "The id of the model to delete.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the model was found and has been deleted. Response-body is intentionally empty."
+          },
+          "404" : {
+            "description" : "Indicates the requested model was not found."
+          }
+        }
+      }
+    },
+    "/repository/process-definitions" : {
+      "get" : {
+        "tags" : [ "Process Definitions" ],
+        "summary" : "List of process definitions",
+        "description" : "",
+        "operationId" : "getProcessDefinitions",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "version",
+          "in" : "query",
+          "description" : "Only return process definitions with the given version.",
+          "required" : false,
+          "type" : "integer"
+        }, {
+          "name" : "name",
+          "in" : "query",
+          "description" : "Only return process definitions with the given name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "nameLike",
+          "in" : "query",
+          "description" : "Only return process definitions with a name like the given name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "key",
+          "in" : "query",
+          "description" : "Only return process definitions with the given key.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "keyLike",
+          "in" : "query",
+          "description" : "Only return process definitions with a name like the given key.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "resourceName",
+          "in" : "query",
+          "description" : "Only return process definitions with the given resource name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "resourceNameLike",
+          "in" : "query",
+          "description" : "Only return process definitions with a name like the given resource name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "category",
+          "in" : "query",
+          "description" : "Only return process definitions with the given category.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "categoryLike",
+          "in" : "query",
+          "description" : "Only return process definitions with a category like the given name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "categoryNotEquals",
+          "in" : "query",
+          "description" : "Only return process definitions which don’t have the given category.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "deploymentId",
+          "in" : "query",
+          "description" : "Only return process definitions with the given category.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "startableByUser",
+          "in" : "query",
+          "description" : "Only return process definitions which are part of a deployment with the given id.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "latest",
+          "in" : "query",
+          "description" : "Only return the latest process definition versions. Can only be used together with key and keyLike parameters, using any other parameter will result in a 400-response.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "suspended",
+          "in" : "query",
+          "description" : "If true, only returns process definitions which are suspended. If false, only active process definitions (which are not suspended) are returned.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Property to sort on, to be used together with the order.",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "name", "id", "key", "category", "deploymentId", "version" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the process-definitions are returned",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates a parameter was passed in the wrong format or that latest is used with other parameters other than key and keyLike. The status-message contains additional information."
+          }
+        }
+      }
+    },
+    "/repository/process-definitions/{processDefinitionId}" : {
+      "get" : {
+        "tags" : [ "Process Definitions" ],
+        "summary" : "Get a process definition",
+        "description" : "",
+        "operationId" : "getProcessDefinition",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processDefinitionId",
+          "in" : "path",
+          "description" : "The id of the process definition to get.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the process-definitions are returned",
+            "schema" : {
+              "$ref" : "#/definitions/ProcessDefinitionResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process definition was not found."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Process Definitions" ],
+        "summary" : "Execute actions for a process definition (Update category, Suspend or Activate)",
+        "description" : "## Update category for a process definition\n\n ```JSON\n{\n  \"category\" : \"updatedcategory\"\n} ```\n\n\n## Suspend a process definition\n\n```JSON\n {\n  \"action\" : \"suspend\",\n  \"includeProcessInstances\" : \"false\",\n  \"date\" : \"2013-04-15T00:42:12Z\"\n} ```\n\n\n## Activate a process definition\n\n```JSON\n {\n  \"action\" : \"activate\",\n  \"includeProcessInstances\" : \"true\",\n  \"date\" : \"2013-04-15T00:42:12Z\"\n} ```",
+        "operationId" : "executeProcessDefinitionAction",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processDefinitionId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : true,
+          "schema" : {
+            "$ref" : "#/definitions/ProcessDefinitionActionRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates action has been executed for the specified process. (category altered, activate or suspend)",
+            "schema" : {
+              "$ref" : "#/definitions/ProcessDefinitionResponse"
+            }
+          },
+          "400" : {
+            "description" : "Indicates no category was defined in the request body."
+          },
+          "404" : {
+            "description" : "Indicates the requested process definition was not found."
+          },
+          "409" : {
+            "description" : "Indicates the requested process definition is already suspended or active."
+          }
+        }
+      }
+    },
+    "/repository/process-definitions/{processDefinitionId}/identitylinks" : {
+      "get" : {
+        "tags" : [ "Process Definitions" ],
+        "summary" : "Get all candidate starters for a process-definition",
+        "description" : "",
+        "operationId" : "getIdentityLinks",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processDefinitionId",
+          "in" : "path",
+          "description" : "The id of the process definition to get the identity links for.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the process definition was found and the requested identity links are returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/RestIdentityLink"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process definition was not found."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Process Definitions" ],
+        "summary" : "Add a candidate starter to a process definition",
+        "description" : "## For a User\n\n ```JSON\n{\n  \"user\" : \"kermit\"\n} ```\n\n## For a Group\n\n ```JSON\n{\n  \"groupId\" : \"sales\"\n} ```",
+        "operationId" : "createIdentityLink",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processDefinitionId",
+          "in" : "path",
+          "description" : "The id of the process definition.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/RestIdentityLink"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/RestIdentityLink"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the process definition was found and the identity link was created."
+          },
+          "400" : {
+            "description" : "Indicates the body doesn't contains the correct information."
+          },
+          "404" : {
+            "description" : "Indicates the requested process definition was not found."
+          }
+        }
+      }
+    },
+    "/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}" : {
+      "get" : {
+        "tags" : [ "Process Definitions" ],
+        "summary" : "Get a candidate starter from a process definition",
+        "description" : "",
+        "operationId" : "getIdentityLink",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processDefinitionId",
+          "in" : "path",
+          "description" : "The id of the process definition.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "family",
+          "in" : "path",
+          "description" : "Either users or groups, depending on the type of identity link.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "identityId",
+          "in" : "path",
+          "description" : "Either the user or group of the identity to get as candidate starter.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/RestIdentityLink"
+            }
+          },
+          "204" : {
+            "description" : "Indicates the process definition was found and the identity link was returned."
+          },
+          "404" : {
+            "description" : "Indicates the requested process definition was not found or the process definition doesn’t have an identity-link that matches the url."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Process Definitions" ],
+        "summary" : "Delete a candidate starter from a process definition",
+        "description" : "",
+        "operationId" : "deleteIdentityLink",
+        "parameters" : [ {
+          "name" : "processDefinitionId",
+          "in" : "path",
+          "description" : "The id of the process definition.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "family",
+          "in" : "path",
+          "description" : "Either users or groups, depending on the type of identity link.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "identityId",
+          "in" : "path",
+          "description" : "Either the user or group of the identity to remove as candidate starter.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the process definition was found and the identity link was removed. The response body is intentionally empty."
+          },
+          "404" : {
+            "description" : "Indicates the requested process definition was not found or the process definition doesn’t have an identity-link that matches the url."
+          }
+        }
+      }
+    },
+    "/repository/process-definitions/{processDefinitionId}/image" : {
+      "get" : {
+        "tags" : [ "Process Definitions" ],
+        "summary" : "Get a process definition image",
+        "description" : "",
+        "operationId" : "getModelResource",
+        "parameters" : [ {
+          "name" : "processDefinitionId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the process-definitions are returned",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string",
+                "format" : "byte"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process definition was not found."
+          }
+        }
+      }
+    },
+    "/repository/process-definitions/{processDefinitionId}/model" : {
+      "get" : {
+        "tags" : [ "Process Definitions" ],
+        "summary" : "Get a process definition BPMN model",
+        "description" : "",
+        "operationId" : "getBpmnModelResource",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processDefinitionId",
+          "in" : "path",
+          "description" : "The id of the process definition to get the model for.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the process definition was found and the model is returned. The response contains the full process definition model.",
+            "schema" : {
+              "$ref" : "#/definitions/BpmnModel"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process definition was not found."
+          }
+        }
+      }
+    },
+    "/repository/process-definitions/{processDefinitionId}/resourcedata" : {
+      "get" : {
+        "tags" : [ "Process Definitions" ],
+        "summary" : "Get a process definition resource content",
+        "description" : "",
+        "operationId" : "getProcessDefinitionResource",
+        "parameters" : [ {
+          "name" : "processDefinitionId",
+          "in" : "path",
+          "description" : "The id of the process definition to get the resource data for.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates both process definition and resource have been found and the resource data has been returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string",
+                "format" : "byte"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process definition was not found or there is no resource with the given id present in the process definition. The status-description contains additional information."
+          }
+        }
+      }
+    },
+    "/runtime/executions" : {
+      "get" : {
+        "tags" : [ "Executions" ],
+        "summary" : "List of executions",
+        "description" : "",
+        "operationId" : "getExecutions",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "Only return models with the given version.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "activityId",
+          "in" : "query",
+          "description" : "Only return executions with the given activity id.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionKey",
+          "in" : "query",
+          "description" : "Only return process instances with the given process definition key.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionId",
+          "in" : "query",
+          "description" : "Only return process instances with the given process definition id.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processInstanceId",
+          "in" : "query",
+          "description" : "Only return executions which are part of the process instance with the given id.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "messageEventSubscriptionName",
+          "in" : "query",
+          "description" : "Only return executions which are subscribed to a message with the given name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "signalEventSubscriptionName",
+          "in" : "query",
+          "description" : "Only return executions which are subscribed to a signal with the given name.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "parentId",
+          "in" : "query",
+          "description" : "Only return executions which are a direct child of the given execution.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantId",
+          "in" : "query",
+          "description" : "Only return process instances with the given tenantId.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantIdLike",
+          "in" : "query",
+          "description" : "Only return process instances with a tenantId like the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "withoutTenantId",
+          "in" : "query",
+          "description" : "If true, only returns process instances without a tenantId set. If false, the withoutTenantId parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Property to sort on, to be used together with the order.",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "processInstanceId", "processDefinitionId", "processDefinitionKey", "tenantId" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the executions are returned",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates a parameter was passed in the wrong format . The status-message contains additional information."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Signal event received",
+        "description" : "",
+        "operationId" : "executeExecutionAction",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ExecutionActionRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates request was successful and the executions are returned"
+          },
+          "404" : {
+            "description" : "Indicates a parameter was passed in the wrong format . The status-message contains additional information."
+          }
+        }
+      }
+    },
+    "/runtime/executions/{executionId}" : {
+      "get" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Get an execution",
+        "description" : "",
+        "operationId" : "getExecution",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "executionId",
+          "in" : "path",
+          "description" : "The id of the execution to get.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the execution was found and returned.",
+            "schema" : {
+              "$ref" : "#/definitions/ExecutionResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the execution was not found."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Execute an action on an execution",
+        "description" : "## Request body (signal an execution):\n\n ```JSON\n{\n  \"action\":\"signal\"\n} ```\n\n\nBoth a variables and transientVariables property is accepted with following structure ```JSON\n{\n  \"action\":\"signal\",\n  \"variables\" : [\n    {\n      \"name\": \"myVar\",\n      \"value\": \"someValue\"\n    }\n  ]\n}```\n\n\n## Request body (signal event received for execution)\n\n ```JSON\n{\n  \"action\":\"signal\"\n} ```\n\n\nNotifies the execution that a signal event has been received, requires a signalName parameter. Optional variables can be passed that are set on the execution before the action is executed.## Request body (signal event received for execution)\n\n ```JSON\n{\n  \"action\":\"messageEventReceived\",\n  \"messageName\":\"myMessage\"\n  \"variables\": [  ]\n} ```\n\n\n",
+        "operationId" : "performExecutionAction",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "executionId",
+          "in" : "path",
+          "description" : "The id of the execution to execute action on.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ExecutionActionRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the execution was found and the action is performed.",
+            "schema" : {
+              "$ref" : "#/definitions/ExecutionResponse"
+            }
+          },
+          "204" : {
+            "description" : "Indicates the execution was found, the action was performed and the action caused the execution to end."
+          },
+          "400" : {
+            "description" : "Indicates an illegal action was requested, required parameters are missing in the request body or illegal variables are passed in. Status description contains additional information about the error."
+          },
+          "404" : {
+            "description" : "Indicates the execution was not found."
+          }
+        }
+      }
+    },
+    "/runtime/executions/{executionId}/activities" : {
+      "get" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Get active activities in an execution",
+        "description" : "Returns all activities which are active in the execution and in all child-executions (and their children, recursively), if any.",
+        "operationId" : "getActiveActivities",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "executionId",
+          "in" : "path",
+          "description" : "The id of the execution to get activities for.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the execution was found and activities are returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the execution was not found."
+          }
+        }
+      }
+    },
+    "/runtime/executions/{executionId}/variables" : {
+      "get" : {
+        "tags" : [ "Executions" ],
+        "summary" : "List of variables for an execution",
+        "description" : "",
+        "operationId" : "listExecutionVariables",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "executionId",
+          "in" : "path",
+          "description" : "The id of the execution to the variables for.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "scope",
+          "in" : "query",
+          "description" : "Either local or global. If omitted, both local and global scoped variables are returned.",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the execution was found and variables are returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/RestVariable"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested execution was not found."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Create variables on an execution",
+        "description" : "",
+        "operationId" : "createExecutionVariable",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "executionId",
+          "in" : "path",
+          "description" : "The id of the execution to create the new variable for.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the execution was found and variable is created/updated."
+          },
+          "400" : {
+            "description" : "Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error."
+          },
+          "404" : {
+            "description" : "Indicates the requested execution was not found."
+          },
+          "409" : {
+            "description" : "Indicates the execution was found but already contains a variable with the given name. Use the update-method instead."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Update variables on an execution",
+        "description" : "",
+        "operationId" : "createOrUpdateExecutionVariable",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "executionId",
+          "in" : "path",
+          "description" : "The id of the execution to the variables for.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the execution was found and variable is created/updated."
+          },
+          "400" : {
+            "description" : "Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error."
+          },
+          "404" : {
+            "description" : "Indicates the requested execution was not found."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Delete all variables for an execution",
+        "description" : "",
+        "operationId" : "deleteLocalVariables",
+        "parameters" : [ {
+          "name" : "executionId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the execution was found and variables have been deleted."
+          },
+          "404" : {
+            "description" : "Indicates the requested execution was not found."
+          }
+        }
+      }
+    },
+    "/runtime/executions/{executionId}/variables/{variableName}" : {
+      "get" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Get a variable for an execution",
+        "description" : "",
+        "operationId" : "getExecutionVariable",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "executionId",
+          "in" : "path",
+          "description" : "The id of the execution to the variables for.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "variableName",
+          "in" : "path",
+          "description" : "Name of the variable to get.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "scope",
+          "in" : "query",
+          "description" : "Either local or global. If omitted, local variable is returned (if exists). If not, a global variable is returned (if exists).",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates both the execution and variable were found and variable is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/RestVariable"
+            }
+          },
+          "400" : {
+            "description" : "Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error."
+          },
+          "404" : {
+            "description" : "Indicates the requested execution was not found or the execution does not have a variable with the given name in the requested scope (in case scope-query parameter was omitted, variable doesn’t exist in local and global scope). Status description contains additional information about the error."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Update a variable on an execution",
+        "description" : "",
+        "operationId" : "updateExecutionVariable",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "executionId",
+          "in" : "path",
+          "description" : "The id of the execution to create the new variable for.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "variableName",
+          "in" : "path",
+          "description" : "The name of the variable to update.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates both the process instance and variable were found and variable is updated.",
+            "schema" : {
+              "$ref" : "#/definitions/RestVariable"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Delete a variable for an execution",
+        "description" : "",
+        "operationId" : "deletedExecutionVariable",
+        "parameters" : [ {
+          "name" : "executionId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "variableName",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "scope",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates both the execution and variable were found and variable has been deleted."
+          },
+          "404" : {
+            "description" : "Indicates the requested execution was not found or the execution does not have a variable with the given name in the requested scope. Status description contains additional information about the error."
+          }
+        }
+      }
+    },
+    "/runtime/executions/{executionId}/variables/{variableName}/data" : {
+      "get" : {
+        "tags" : [ "Executions" ],
+        "summary" : "Get the binary data for an execution",
+        "description" : "",
+        "operationId" : "getExecutionVariableData",
+        "parameters" : [ {
+          "name" : "executionId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "variableName",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "scope",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the execution was found and the requested variables are returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string",
+                "format" : "byte"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested execution was not found or the task doesn’t have a variable with the given name (in the given scope). Status message provides additional information."
+          }
+        }
+      }
+    },
+    "/runtime/process-instances" : {
+      "get" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "List of process instances",
+        "description" : "",
+        "operationId" : "getProcessInstances",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "Only return models with the given version.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionKey",
+          "in" : "query",
+          "description" : "Only return process instances with the given process definition key.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "processDefinitionId",
+          "in" : "query",
+          "description" : "Only return process instances with the given process definition id.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "businessKey",
+          "in" : "query",
+          "description" : "Only return process instances with the given businessKey.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "involvedUser",
+          "in" : "query",
+          "description" : "Only return process instances in which the given user is involved.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "suspended",
+          "in" : "query",
+          "description" : "If true, only return process instance which are suspended. If false, only return process instances which are not suspended (active).",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "superProcessInstanceId",
+          "in" : "query",
+          "description" : "Only return process instances which have the given super process-instance id (for processes that have a call-activities).",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "subProcessInstanceId",
+          "in" : "query",
+          "description" : "Only return process instances which have the given sub process-instance id (for processes started as a call-activity).",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "excludeSubprocesses",
+          "in" : "query",
+          "description" : "Return only process instances which aren’t sub processes.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "includeProcessVariables",
+          "in" : "query",
+          "description" : "Indication to include process variables in the result.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "tenantId",
+          "in" : "query",
+          "description" : "Only return process instances with the given tenantId.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "tenantIdLike",
+          "in" : "query",
+          "description" : "Only return process instances with a tenantId like the given value.",
+          "required" : false,
+          "type" : "string"
+        }, {
+          "name" : "withoutTenantId",
+          "in" : "query",
+          "description" : "If true, only returns process instances without a tenantId set. If false, the withoutTenantId parameter is ignored.",
+          "required" : false,
+          "type" : "boolean"
+        }, {
+          "name" : "sort",
+          "in" : "query",
+          "description" : "Property to sort on, to be used together with the order.",
+          "required" : false,
+          "type" : "string",
+          "enum" : [ "id", "processDefinitionId", "tenantId", "processDefinitionKey" ]
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/DataResponse"
+            }
+          },
+          "204" : {
+            "description" : "Indicates request was successful and the process-instances are returned"
+          },
+          "404" : {
+            "description" : "Indicates a parameter was passed in the wrong format . The status-message contains additional information."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Start a process instance",
+        "description" : "## Request body (start by process definition id)\n\n```JSON\n {\n   \"processDefinitionId\":\"oneTaskProcess:1:158\",\n   \"businessKey\":\"myBusinessKey\",\n   \"variables\": [\n      {\n        \"name\":\"myVar\",\n        \"value\":\"This is a variable\",\n      }\n   ]\n}```\n\n## Request body (start by process definition key)\n\n```JSON\n {\n   \"processDefinitionKey\":\"oneTaskProcess\",\n   \"businessKey\":\"myBusinessKey\",\n   \"tenantId\": \"tenant1\",\n   \"variables\": [\n      {\n        \"name\":\"myVar\",\n        \"value\":\"This is a variable\",\n      }\n   ]\n}```\n\n## Request body (start by message)\n\n```JSON\n{\n   \"message\":\"newOrderMessage\",\n   \"businessKey\":\"myBusinessKey\",\n   \"tenantId\": \"tenant1\",\n   \"variables\": [\n      {\n        \"name\":\"myVar\",\n        \"value\":\"This is a variable\",\n      }\n   ]\n}```\n\nNote that also a *transientVariables* property is accepted as part of this json, that follows the same structure as the *variables* property.\n\nOnly one of *processDefinitionId*, *processDefinitionKey* or *message* can be used in the request body. Parameters *businessKey*, *variables* and *tenantId* are optional. If tenantId is omitted, the default tenant will be used. More information about the variable format can be found in the REST variables section. Note that the variable-scope that is supplied is ignored, process-variables are always local.",
+        "operationId" : "createProcessInstance",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ProcessInstanceCreateRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/ProcessInstanceResponse"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the process instance was created."
+          },
+          "400" : {
+            "description" : "Indicates either the process-definition was not found (based on id or key), no process is started by sending the given message or an invalid variable has been passed. Status description contains additional information about the error."
+          }
+        }
+      }
+    },
+    "/runtime/process-instances/{processInstanceId}" : {
+      "get" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Get a process instance",
+        "description" : "",
+        "operationId" : "getProcessInstance",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to get.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the process instance was found and returned.",
+            "schema" : {
+              "$ref" : "#/definitions/ProcessInstanceResponse"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Activate or suspend a process instance",
+        "description" : "## Activate a process instance\n\n ```JSON\n{\n  \"action\" : \"suspend\"\n} ```\n\n\n## Suspend a process instance\n\n ```JSON\n{\n  \"action\" : \"activate\"\n} ```\n\n\n",
+        "operationId" : "performProcessInstanceAction",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to activate/suspend.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/ProcessInstanceActionRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the process instance was found and action was executed.",
+            "schema" : {
+              "$ref" : "#/definitions/ProcessInstanceResponse"
+            }
+          },
+          "400" : {
+            "description" : "\t\nIndicates an invalid action was supplied."
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found."
+          },
+          "409" : {
+            "description" : "Indicates the requested process instance action cannot be executed since the process-instance is already activated/suspended."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Delete a process instance",
+        "description" : "",
+        "operationId" : "deleteProcessInstance",
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to delete.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "deleteReason",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the process instance was found and deleted. Response body is left empty intentionally."
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found."
+          }
+        }
+      }
+    },
+    "/runtime/process-instances/{processInstanceId}/diagram" : {
+      "get" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Get diagram for a process instance",
+        "description" : "",
+        "operationId" : "getProcessInstanceDiagram",
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to get the diagram for.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the process instance was found and the diagram was returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string",
+                "format" : "byte"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Indicates the requested process instance was not found but the process doesn’t contain any graphical information (BPMN:DI) and no diagram can be created."
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found."
+          }
+        }
+      }
+    },
+    "/runtime/process-instances/{processInstanceId}/identitylinks" : {
+      "get" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Get involved people for process instance",
+        "description" : "Note that the groupId in Response Body will always be null, as it’s only possible to involve users with a process-instance.",
+        "operationId" : "listProcessInstanceIdentityLinks",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to the links for.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the process instance was found and links are returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/RestIdentityLink"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Add an involved user to a process instance",
+        "description" : "Note that the groupId in Response Body will always be null, as it’s only possible to involve users with a process-instance.",
+        "operationId" : "createProcessInstanceIdentityLinks",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to the links for.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/RestIdentityLink"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/RestIdentityLink"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the process instance was found and the link is created."
+          },
+          "400" : {
+            "description" : "Indicates the requested body did not contain a userId or a type."
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found."
+          }
+        }
+      }
+    },
+    "/runtime/process-instances/{processInstanceId}/identitylinks/users/{identityId}/{type}" : {
+      "get" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Get a specific involved people from process instance",
+        "description" : "",
+        "operationId" : "getProcessInstanceIdentityLinks",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to get.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "identityId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "type",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the process instance was found and the specified link is retrieved.",
+            "schema" : {
+              "$ref" : "#/definitions/RestIdentityLink"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found or the link to delete doesn’t exist. The response status contains additional information about the error."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Remove an involved user to from process instance",
+        "description" : "",
+        "operationId" : "deleteProcessInstanceIdentityLinks",
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "identityId",
+          "in" : "path",
+          "description" : "The id of the user to delete link for.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "type",
+          "in" : "path",
+          "description" : "Type of link to delete.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the process instance was found and the link has been deleted. Response body is left empty intentionally."
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found or the link to delete doesn’t exist. The response status contains additional information about the error."
+          }
+        }
+      }
+    },
+    "/runtime/process-instances/{processInstanceId}/variables" : {
+      "get" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "List of variables for a process instance",
+        "description" : "In case the variable is a binary variable or serializable, the valueUrl points to an URL to fetch the raw value. If it’s a plain variable, the value is present in the response. Note that only local scoped variables are returned, as there is no global scope for process-instance variables.",
+        "operationId" : "getVariables",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to the variables for.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "scope",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the process instance was found and variables are returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "$ref" : "#/definitions/RestVariable"
+              }
+            }
+          },
+          "400" : {
+            "description" : "Indicates the requested process instance was not found."
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Create variables or new binary variable on a process instance",
+        "description" : "## Update multiples variables\n\n ```JSON\n[\n   {\n      \"name\":\"intProcVar\"\n      \"type\":\"integer\"\n      \"value\":123\n   },\n\n   ...\n] ```\n\n\n Any number of variables can be passed into the request body array. More information about the variable format can be found in the REST variables section. Note that scope is ignored, only local variables can be set in a process instance.\n\n\nThe request should be of type multipart/form-data. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:\n\nname: Required name of the variable.\n\ntype: Type of variable that is created. If omitted, binary is assumed and the binary data in the request will be stored as an array of bytes.",
+        "operationId" : "createProcessInstanceVariable",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to create the new variable for",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the process instance was found and variable is created."
+          },
+          "400" : {
+            "description" : "Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error."
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found."
+          },
+          "409" : {
+            "description" : "Indicates the process instance was found but already contains a variable with the given name (only thrown when POST method is used). Use the update-method instead."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Update a single or binary variable or multiple variables on a process instance",
+        "description" : "## Update multiples variables\n\n ```JSON\n[\n   {\n      \"name\":\"intProcVar\"\n      \"type\":\"integer\"\n      \"value\":123\n   },\n\n   ...\n] ```\n\n\n Any number of variables can be passed into the request body array. More information about the variable format can be found in the REST variables section. Note that scope is ignored, only local variables can be set in a process instance.\n\n\n## Update a single variable\n\n```JSON\n {\n    \"name\":\"intProcVar\"\n    \"type\":\"integer\"\n    \"value\":123\n } ```\n\n\n##  Update an existing binary variable\n\n\n\n\nThe request should be of type multipart/form-data. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:\n\nname: Required name of the variable.\n\ntype: Type of variable that is created. If omitted, binary is assumed and the binary data in the request will be stored as an array of bytes.",
+        "operationId" : "createOrUpdateProcessVariable",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to create the new variable for.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "type" : "object"
+            }
+          },
+          "201" : {
+            "description" : "Indicates the process instance was found and variable is created."
+          },
+          "400" : {
+            "description" : "Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error."
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found."
+          },
+          "415" : {
+            "description" : "Indicates the serializable data contains an object for which no class is present in the JVM running the Flowable engine and therefore cannot be deserialized."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Delete all variables",
+        "description" : "",
+        "operationId" : "deleteLocalProcessVariable",
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates variables were found and have been deleted. Response-body is intentionally empty."
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found."
+          }
+        }
+      }
+    },
+    "/runtime/process-instances/{processInstanceId}/variables/{variableName}" : {
+      "get" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Get a variable for a process instance",
+        "description" : "",
+        "operationId" : "getProcessInstanceVariable",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to the variables for.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "variableName",
+          "in" : "path",
+          "description" : "Name of the variable to get.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "scope",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates both the process instance and variable were found and variable is returned.",
+            "schema" : {
+              "$ref" : "#/definitions/RestVariable"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error."
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Update a single variable on a process instance",
+        "description" : "",
+        "operationId" : "updateProcessInstanceVariable",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "description" : "The id of the process instance to the variables for.",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "variableName",
+          "in" : "path",
+          "description" : "Name of the variable to get.",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates both the process instance and variable were found and variable is updated.",
+            "schema" : {
+              "$ref" : "#/definitions/RestVariable"
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error."
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Delete a variable",
+        "description" : "",
+        "operationId" : "deleteProcessInstanceVariable",
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "variableName",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "scope",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Indicates the variable was found and has been deleted. Response-body is intentionally empty."
+          },
+          "404" : {
+            "description" : "Indicates the requested variable was not found."
+          }
+        }
+      }
+    },
+    "/runtime/process-instances/{processInstanceId}/variables/{variableName}/data" : {
+      "get" : {
+        "tags" : [ "Process Instances" ],
+        "summary" : "Get the binary data for a variable",
+        "description" : "",
+        "operationId" : "getProcessInstanceVariableData",
+        "parameters" : [ {
+          "name" : "processInstanceId",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "variableName",
+          "in" : "path",
+          "required" : true,
+          "type" : "string"
+        }, {
+          "name" : "scope",
+          "in" : "query",
+          "required" : false,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicates the process instance was found and the requested variables are returned.",
+            "schema" : {
+              "type" : "array",
+              "items" : {
+                "type" : "string",
+                "format" : "byte"
+              }
+            }
+          },
+          "404" : {
+            "description" : "Indicates the requested task was not found or the task doesn’t have a variable with the given name (in the given scope). Status message provides additional information."
+          }
+        }
+      }
+    },
+    "/runtime/signals" : {
+      "post" : {
+        "tags" : [ "Runtime" ],
+        "summary" : "Signal event received",
+        "description" : "",
+        "operationId" : "signalEventReceived",
+        "parameters" : [ {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/SignalEventReceivedRequest"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Indicated signal has been processed and no errors occurred."
+          },
+          "202" : {
+            "description" : "Indicated signal processing is queued as a job, ready to be executed."
+          },
+          "400" : {
+            "description" : "Signal not processed. The signal name is missing or variables are used together with async, which is not allowed. Response body contains additional information about the error."
           }
         }
       }
@@ -2459,6 +5270,7 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2549,19 +5361,8 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to delete.",
           "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "cascadeHistory",
-          "in" : "query",
-          "description" : "Whether or not to delete the HistoricTask instance when deleting the task (if applicable). If not provided, this value defaults to false.",
-          "required" : false,
-          "type" : "string"
-        }, {
-          "name" : "deleteReason",
-          "in" : "query",
-          "description" : "Reason why the task is deleted. This value is ignored when cascadeHistory is true.",
-          "required" : false,
           "type" : "string"
         } ],
         "responses" : {
@@ -2587,6 +5388,7 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get the attachments for.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2614,6 +5416,7 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to create the attachment for.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2646,11 +5449,13 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get the attachment for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "attachmentId",
           "in" : "path",
+          "description" : "The id of the attachment.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2674,11 +5479,13 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to delete the attachment for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "attachmentId",
           "in" : "path",
+          "description" : "The id of the attachment.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2701,11 +5508,13 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get a variable data for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "attachmentId",
           "in" : "path",
+          "description" : "The id of the attachment, a 404 is returned when the attachment points to an external URL rather than content attached in Activiti.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2736,6 +5545,7 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get the comments for.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2766,6 +5576,7 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to create the comment for.",
           "required" : true,
           "type" : "string"
         }, {
@@ -2805,11 +5616,13 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get the comment for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "commentId",
           "in" : "path",
+          "description" : "The id of the comment.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2833,11 +5646,13 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to delete the comment for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "commentId",
           "in" : "path",
+          "description" : "The id of the comment.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2861,6 +5676,7 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get the events for.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2890,11 +5706,13 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get the event for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "eventId",
           "in" : "path",
+          "description" : "The id of the event.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2946,6 +5764,7 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get the identity links for.",
           "required" : true,
           "type" : "string"
         } ],
@@ -2973,6 +5792,7 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task .",
           "required" : true,
           "type" : "string"
         }, {
@@ -3043,21 +5863,25 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task .",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "family",
           "in" : "path",
+          "description" : "Either groups or users, depending on what kind of identity is targeted.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "identityId",
           "in" : "path",
+          "description" : "The id of the identity.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "type",
           "in" : "path",
+          "description" : "The type of identity link.",
           "required" : true,
           "type" : "string"
         } ],
@@ -3081,21 +5905,25 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "family",
           "in" : "path",
+          "description" : "Either groups or users, depending on what kind of identity is targeted.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "identityId",
           "in" : "path",
+          "description" : "The id of the identity.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "type",
           "in" : "path",
+          "description" : "The type of identity link.",
           "required" : true,
           "type" : "string"
         } ],
@@ -3148,13 +5976,8 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get variables for.",
           "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "scope",
-          "in" : "query",
-          "description" : "Scope of variable to be returned. When local, only task-local variable value is returned. When global, only variable value from the task’s parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.",
-          "required" : false,
           "type" : "string"
         } ],
         "responses" : {
@@ -3181,6 +6004,7 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to create the new variable for.",
           "required" : true,
           "type" : "string"
         } ],
@@ -3216,6 +6040,7 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task the variable to delete belongs to.",
           "required" : true,
           "type" : "string"
         } ],
@@ -3239,17 +6064,14 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get a variable for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "variableName",
           "in" : "path",
+          "description" : "The name of the variable to get.",
           "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "scope",
-          "in" : "query",
-          "required" : false,
           "type" : "string"
         }, {
           "name" : "scope",
@@ -3279,18 +6101,14 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to update the variable for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "variableName",
           "in" : "path",
+          "description" : "The name of the variable to update.",
           "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "scope",
-          "in" : "query",
-          "description" : "Scope of variable to be returned. When local, only task-local variable value is returned. When global, only variable value from the task’s parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.",
-          "required" : false,
           "type" : "string"
         } ],
         "responses" : {
@@ -3319,18 +6137,14 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task the variable to delete belongs to.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "variableName",
           "in" : "path",
+          "description" : "The name of the variable to delete.",
           "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "scope",
-          "in" : "query",
-          "description" : "Scope of variable to be returned. When local, only task-local variable value is returned. When global, only variable value from the task’s parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.",
-          "required" : false,
           "type" : "string"
         } ],
         "responses" : {
@@ -3353,18 +6167,14 @@
         "parameters" : [ {
           "name" : "taskId",
           "in" : "path",
+          "description" : "The id of the task to get a variable data for.",
           "required" : true,
           "type" : "string"
         }, {
           "name" : "variableName",
           "in" : "path",
+          "description" : "The name of the variable to get data for. Only variables of type binary and serializable can be used. If any other type of variable is used, a 404 is returned.",
           "required" : true,
-          "type" : "string"
-        }, {
-          "name" : "scope",
-          "in" : "query",
-          "description" : "Scope of variable to be returned. When local, only task-local variable value is returned. When global, only variable value from the task’s parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.",
-          "required" : false,
           "type" : "string"
         } ],
         "responses" : {
@@ -3391,6 +6201,98 @@
     }
   },
   "definitions" : {
+    "ActivitiListener" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "event" : {
+          "type" : "string"
+        },
+        "implementationType" : {
+          "type" : "string"
+        },
+        "implementation" : {
+          "type" : "string"
+        },
+        "fieldExtensions" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/FieldExtension"
+          }
+        },
+        "onTransaction" : {
+          "type" : "string"
+        },
+        "customPropertiesResolverImplementationType" : {
+          "type" : "string"
+        },
+        "customPropertiesResolverImplementation" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Artifact" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        }
+      }
+    },
     "AttachmentResponse" : {
       "type" : "object",
       "properties" : {
@@ -3429,6 +6331,174 @@
         "time" : {
           "type" : "string",
           "format" : "date-time"
+        }
+      }
+    },
+    "BaseElement" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        }
+      }
+    },
+    "BpmnModel" : {
+      "type" : "object",
+      "properties" : {
+        "definitionsAttributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "processes" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Process"
+          }
+        },
+        "locationMap" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "$ref" : "#/definitions/GraphicInfo"
+          }
+        },
+        "labelLocationMap" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "$ref" : "#/definitions/GraphicInfo"
+          }
+        },
+        "flowLocationMap" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/GraphicInfo"
+            }
+          }
+        },
+        "signals" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Signal"
+          }
+        },
+        "pools" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Pool"
+          }
+        },
+        "imports" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Import"
+          }
+        },
+        "interfaces" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Interface"
+          }
+        },
+        "globalArtifacts" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Artifact"
+          }
+        },
+        "resources" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Resource"
+          }
+        },
+        "targetNamespace" : {
+          "type" : "string"
+        },
+        "sourceSystemId" : {
+          "type" : "string"
+        },
+        "userTaskFormTypes" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "startEventFormTypes" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "itemDefinitions" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "$ref" : "#/definitions/ItemDefinition"
+          }
+        },
+        "errors" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "string"
+          }
+        },
+        "messages" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Message"
+          }
+        },
+        "mainProcess" : {
+          "$ref" : "#/definitions/Process"
+        },
+        "messageFlows" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "$ref" : "#/definitions/MessageFlow"
+          }
+        },
+        "dataStores" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "$ref" : "#/definitions/DataStore"
+          }
+        },
+        "namespaces" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "string"
+          }
         }
       }
     },
@@ -3512,6 +6582,186 @@
         }
       }
     },
+    "DataSpec" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "itemSubjectRef" : {
+          "type" : "string"
+        },
+        "collection" : {
+          "type" : "boolean",
+          "default" : false
+        }
+      }
+    },
+    "DataStore" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "dataState" : {
+          "type" : "string"
+        },
+        "itemSubjectRef" : {
+          "type" : "string"
+        }
+      }
+    },
+    "DeploymentResourceResponse" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "contentUrl" : {
+          "type" : "string"
+        },
+        "mediaType" : {
+          "type" : "string",
+          "description" : "Contains the media-type the resource has. This is resolved using a (pluggable) MediaTypeResolver and contains, by default, a limited number of mime-type mappings."
+        },
+        "type" : {
+          "type" : "string",
+          "description" : "Type of resource",
+          "enum" : [ "resource", "processDefinition", "processImage" ]
+        }
+      }
+    },
+    "DeploymentResponse" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "deploymentTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "category" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "tenantId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "EventListener" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "events" : {
+          "type" : "string"
+        },
+        "implementationType" : {
+          "type" : "string"
+        },
+        "implementation" : {
+          "type" : "string"
+        },
+        "entityType" : {
+          "type" : "string"
+        }
+      }
+    },
     "EventResponse" : {
       "type" : "object",
       "properties" : {
@@ -3545,6 +6795,300 @@
         }
       }
     },
+    "ExecutionActionRequest" : {
+      "type" : "object",
+      "properties" : {
+        "action" : {
+          "type" : "string"
+        },
+        "signalName" : {
+          "type" : "string"
+        },
+        "messageName" : {
+          "type" : "string"
+        },
+        "variables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RestVariable"
+          }
+        },
+        "transientVariables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RestVariable"
+          }
+        }
+      }
+    },
+    "ExecutionQueryRequest" : {
+      "type" : "object",
+      "properties" : {
+        "start" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sort" : {
+          "type" : "string"
+        },
+        "order" : {
+          "type" : "string"
+        },
+        "id" : {
+          "type" : "string"
+        },
+        "activityId" : {
+          "type" : "string"
+        },
+        "parentId" : {
+          "type" : "string"
+        },
+        "processInstanceId" : {
+          "type" : "string"
+        },
+        "processBusinessKey" : {
+          "type" : "string"
+        },
+        "processDefinitionId" : {
+          "type" : "string"
+        },
+        "processDefinitionKey" : {
+          "type" : "string"
+        },
+        "signalEventSubscriptionName" : {
+          "type" : "string"
+        },
+        "messageEventSubscriptionName" : {
+          "type" : "string"
+        },
+        "variables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/QueryVariable"
+          }
+        },
+        "processInstanceVariables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/QueryVariable"
+          }
+        },
+        "tenantId" : {
+          "type" : "string"
+        },
+        "tenantIdLike" : {
+          "type" : "string"
+        },
+        "withoutTenantId" : {
+          "type" : "boolean",
+          "default" : false
+        }
+      }
+    },
+    "ExecutionResponse" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "parentId" : {
+          "type" : "string"
+        },
+        "parentUrl" : {
+          "type" : "string"
+        },
+        "superExecutionId" : {
+          "type" : "string"
+        },
+        "superExecutionUrl" : {
+          "type" : "string"
+        },
+        "processInstanceId" : {
+          "type" : "string"
+        },
+        "processInstanceUrl" : {
+          "type" : "string"
+        },
+        "suspended" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "activityId" : {
+          "type" : "string"
+        },
+        "tenantId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ExtensionAttribute" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "value" : {
+          "type" : "string"
+        },
+        "namespacePrefix" : {
+          "type" : "string"
+        },
+        "namespace" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ExtensionElement" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "namespacePrefix" : {
+          "type" : "string"
+        },
+        "namespace" : {
+          "type" : "string"
+        },
+        "elementText" : {
+          "type" : "string"
+        },
+        "childElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        }
+      }
+    },
+    "FieldExtension" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "fieldName" : {
+          "type" : "string"
+        },
+        "stringValue" : {
+          "type" : "string"
+        },
+        "expression" : {
+          "type" : "string"
+        }
+      }
+    },
+    "FlowElement" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "documentation" : {
+          "type" : "string"
+        },
+        "executionListeners" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ActivitiListener"
+          }
+        }
+      }
+    },
     "FormDataResponse" : {
       "type" : "object",
       "properties" : {
@@ -3574,6 +7118,42 @@
         }
       }
     },
+    "GraphicInfo" : {
+      "type" : "object",
+      "properties" : {
+        "x" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "y" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "height" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "width" : {
+          "type" : "number",
+          "format" : "double"
+        },
+        "element" : {
+          "$ref" : "#/definitions/BaseElement"
+        },
+        "expanded" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        }
+      }
+    },
     "GroupRequest" : {
       "type" : "object",
       "properties" : {
@@ -3589,11 +7169,11 @@
         "type" : {
           "type" : "string"
         },
-        "typeChanged" : {
+        "nameChanged" : {
           "type" : "boolean",
           "default" : false
         },
-        "nameChanged" : {
+        "typeChanged" : {
           "type" : "boolean",
           "default" : false
         }
@@ -4197,6 +7777,282 @@
         }
       }
     },
+    "IOSpecification" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "dataInputs" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DataSpec"
+          }
+        },
+        "dataOutputs" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/DataSpec"
+          }
+        },
+        "dataInputRefs" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "dataOutputRefs" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "Import" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "importType" : {
+          "type" : "string"
+        },
+        "location" : {
+          "type" : "string"
+        },
+        "namespace" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Interface" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "implementationRef" : {
+          "type" : "string"
+        },
+        "operations" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Operation"
+          }
+        }
+      }
+    },
+    "ItemDefinition" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "structureRef" : {
+          "type" : "string"
+        },
+        "itemKind" : {
+          "type" : "string"
+        }
+      }
+    },
+    "JobResponse" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "processInstanceId" : {
+          "type" : "string"
+        },
+        "processInstanceUrl" : {
+          "type" : "string"
+        },
+        "processDefinitionId" : {
+          "type" : "string"
+        },
+        "processDefinitionUrl" : {
+          "type" : "string"
+        },
+        "executionId" : {
+          "type" : "string"
+        },
+        "executionUrl" : {
+          "type" : "string"
+        },
+        "retries" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "exceptionMessage" : {
+          "type" : "string"
+        },
+        "dueDate" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "tenantId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Lane" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "parentProcess" : {
+          "$ref" : "#/definitions/Process"
+        },
+        "flowReferences" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
     "MembershipRequest" : {
       "type" : "object",
       "properties" : {
@@ -4216,6 +8072,573 @@
         },
         "groupId" : {
           "type" : "string"
+        }
+      }
+    },
+    "Message" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "itemRef" : {
+          "type" : "string"
+        }
+      }
+    },
+    "MessageFlow" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "sourceRef" : {
+          "type" : "string"
+        },
+        "targetRef" : {
+          "type" : "string"
+        },
+        "messageRef" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ModelRequest" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "key" : {
+          "type" : "string"
+        },
+        "category" : {
+          "type" : "string"
+        },
+        "version" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "metaInfo" : {
+          "type" : "string"
+        },
+        "deploymentId" : {
+          "type" : "string"
+        },
+        "tenantId" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ModelResponse" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "key" : {
+          "type" : "string"
+        },
+        "category" : {
+          "type" : "string"
+        },
+        "version" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "metaInfo" : {
+          "type" : "string"
+        },
+        "deploymentId" : {
+          "type" : "string"
+        },
+        "tenantId" : {
+          "type" : "string"
+        },
+        "id" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "createTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "lastUpdateTime" : {
+          "type" : "string",
+          "format" : "date-time"
+        },
+        "deploymentUrl" : {
+          "type" : "string"
+        },
+        "sourceUrl" : {
+          "type" : "string"
+        },
+        "sourceExtraUrl" : {
+          "type" : "string"
+        }
+      }
+    },
+    "Operation" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "implementationRef" : {
+          "type" : "string"
+        },
+        "inMessageRef" : {
+          "type" : "string"
+        },
+        "outMessageRef" : {
+          "type" : "string"
+        },
+        "errorMessageRef" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "Pool" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "processRef" : {
+          "type" : "string"
+        },
+        "executable" : {
+          "type" : "boolean",
+          "default" : false
+        }
+      }
+    },
+    "Process" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "executable" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "documentation" : {
+          "type" : "string"
+        },
+        "ioSpecification" : {
+          "$ref" : "#/definitions/IOSpecification"
+        },
+        "executionListeners" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ActivitiListener"
+          }
+        },
+        "lanes" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Lane"
+          }
+        },
+        "dataObjects" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ValuedDataObject"
+          }
+        },
+        "candidateStarterUsers" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "candidateStarterGroups" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "eventListeners" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/EventListener"
+          }
+        },
+        "flowElementMap" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "$ref" : "#/definitions/FlowElement"
+          }
+        },
+        "initialFlowElement" : {
+          "$ref" : "#/definitions/FlowElement"
+        },
+        "artifacts" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Artifact"
+          }
+        },
+        "flowElements" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/FlowElement"
+          }
+        }
+      }
+    },
+    "ProcessDefinitionActionRequest" : {
+      "type" : "object",
+      "properties" : {
+        "action" : {
+          "type" : "string"
+        },
+        "includeProcessInstances" : {
+          "type" : "boolean",
+          "description" : "Whether or not to suspend/activate running process-instances for this process-definition. If omitted, the process-instances are left in the state they are",
+          "default" : false
+        },
+        "date" : {
+          "type" : "string",
+          "format" : "date-time",
+          "description" : "Date (ISO-8601) when the suspension/activation should be executed. If omitted, the suspend/activation is effective immediately."
+        },
+        "category" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ProcessDefinitionResponse" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "key" : {
+          "type" : "string"
+        },
+        "version" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string"
+        },
+        "tenantId" : {
+          "type" : "string"
+        },
+        "deploymentId" : {
+          "type" : "string"
+        },
+        "deploymentUrl" : {
+          "type" : "string"
+        },
+        "resource" : {
+          "type" : "string"
+        },
+        "diagramResource" : {
+          "type" : "string"
+        },
+        "category" : {
+          "type" : "string"
+        },
+        "graphicalNotationDefined" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "suspended" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "startFormDefined" : {
+          "type" : "boolean",
+          "default" : false
+        }
+      }
+    },
+    "ProcessEngineInfoResponse" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "resourceUrl" : {
+          "type" : "string"
+        },
+        "exception" : {
+          "type" : "string"
+        },
+        "version" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ProcessInstanceActionRequest" : {
+      "type" : "object",
+      "properties" : {
+        "action" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ProcessInstanceCreateRequest" : {
+      "type" : "object",
+      "properties" : {
+        "processDefinitionId" : {
+          "type" : "string"
+        },
+        "processDefinitionKey" : {
+          "type" : "string"
+        },
+        "message" : {
+          "type" : "string"
+        },
+        "businessKey" : {
+          "type" : "string"
+        },
+        "variables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RestVariable"
+          }
+        },
+        "transientVariables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/RestVariable"
+          }
+        },
+        "tenantId" : {
+          "type" : "string"
+        },
+        "returnVariables" : {
+          "type" : "boolean",
+          "default" : false
+        }
+      }
+    },
+    "ProcessInstanceQueryRequest" : {
+      "type" : "object",
+      "properties" : {
+        "start" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "size" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "sort" : {
+          "type" : "string"
+        },
+        "order" : {
+          "type" : "string"
+        },
+        "processInstanceId" : {
+          "type" : "string"
+        },
+        "processBusinessKey" : {
+          "type" : "string"
+        },
+        "processDefinitionId" : {
+          "type" : "string"
+        },
+        "processDefinitionKey" : {
+          "type" : "string"
+        },
+        "superProcessInstanceId" : {
+          "type" : "string"
+        },
+        "subProcessInstanceId" : {
+          "type" : "string"
+        },
+        "excludeSubprocesses" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "involvedUser" : {
+          "type" : "string"
+        },
+        "suspended" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "includeProcessVariables" : {
+          "type" : "boolean",
+          "default" : false
+        },
+        "variables" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/QueryVariable"
+          }
+        },
+        "tenantId" : {
+          "type" : "string"
+        },
+        "tenantIdLike" : {
+          "type" : "string"
+        },
+        "withoutTenantId" : {
+          "type" : "boolean",
+          "default" : false
         }
       }
     },
@@ -4287,6 +8710,51 @@
         "variableOperation" : {
           "type" : "string",
           "enum" : [ "EQUALS", "NOT_EQUALS", "EQUALS_IGNORE_CASE", "NOT_EQUALS_IGNORE_CASE", "LIKE", "LIKE_IGNORE_CASE", "GREATER_THAN", "GREATER_THAN_OR_EQUALS", "LESS_THAN", "LESS_THAN_OR_EQUALS" ]
+        }
+      }
+    },
+    "Resource" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        }
+      }
+    },
+    "RestActionRequest" : {
+      "type" : "object",
+      "properties" : {
+        "action" : {
+          "type" : "string"
         }
       }
     },
@@ -4376,6 +8844,71 @@
         }
       }
     },
+    "Signal" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "scope" : {
+          "type" : "string"
+        }
+      }
+    },
+    "SignalEventReceivedRequest" : {
+      "type" : "object",
+      "properties" : {
+        "signalName" : {
+          "type" : "string",
+          "description" : "Name of the signal"
+        },
+        "variables" : {
+          "type" : "array",
+          "description" : "Array of variables (in the general variables format) to use as payload to pass along with the signal. Cannot be used in case async is set to true, this will result in an error.",
+          "items" : {
+            "$ref" : "#/definitions/RestVariable"
+          }
+        },
+        "tenantId" : {
+          "type" : "string",
+          "description" : "ID of the tenant that the signal event should be processed in"
+        },
+        "async" : {
+          "type" : "boolean",
+          "description" : "If true, handling of the signal will happen asynchronously. Return code will be 202 - Accepted to indicate the request is accepted but not yet executed. If false,\n                    handling the signal will be done immediately and result (200 - OK) will only return after this completed successfully. Defaults to false if omitted.",
+          "default" : false
+        }
+      }
+    },
     "SubmitFormRequest" : {
       "type" : "object",
       "properties" : {
@@ -4396,6 +8929,41 @@
           "items" : {
             "$ref" : "#/definitions/RestFormProperty"
           }
+        }
+      }
+    },
+    "TableMetaData" : {
+      "type" : "object",
+      "properties" : {
+        "tableName" : {
+          "type" : "string"
+        },
+        "columnNames" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "columnTypes" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      }
+    },
+    "TableResponse" : {
+      "type" : "object",
+      "properties" : {
+        "name" : {
+          "type" : "string"
+        },
+        "url" : {
+          "type" : "string"
+        },
+        "count" : {
+          "type" : "integer",
+          "format" : "int64"
         }
       }
     },
@@ -4852,6 +9420,61 @@
           "type" : "string"
         },
         "password" : {
+          "type" : "string"
+        }
+      }
+    },
+    "ValuedDataObject" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "string"
+        },
+        "xmlRowNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "xmlColumnNumber" : {
+          "type" : "integer",
+          "format" : "int32"
+        },
+        "extensionElements" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionElement"
+            }
+          }
+        },
+        "attributes" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/definitions/ExtensionAttribute"
+            }
+          }
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "documentation" : {
+          "type" : "string"
+        },
+        "executionListeners" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/ActivitiListener"
+          }
+        },
+        "itemSubjectRef" : {
+          "$ref" : "#/definitions/ItemDefinition"
+        },
+        "value" : {
+          "type" : "object"
+        },
+        "type" : {
           "type" : "string"
         }
       }

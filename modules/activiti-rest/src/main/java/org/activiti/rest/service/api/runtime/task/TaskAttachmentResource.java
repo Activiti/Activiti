@@ -14,10 +14,13 @@
 package org.activiti.rest.service.api.runtime.task;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,7 +49,7 @@ public class TaskAttachmentResource extends TaskBaseResource {
 			@ApiResponse(code = 404, message = "Indicates the requested task was not found or the tasks doesn’t have a attachment with the given ID.")
 	})
 	@RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.GET, produces = "application/json")
-	public AttachmentResponse getAttachment(@ApiParam(name = "taskId") @PathVariable("taskId") String taskId,@ApiParam(name = "attachmentId") @PathVariable("attachmentId") String attachmentId, HttpServletRequest request) {
+	public AttachmentResponse getAttachment(@ApiParam(name = "taskId", value="The id of the task to get the attachment for.") @PathVariable("taskId") String taskId,@ApiParam(name = "attachmentId", value="The id of the attachment.") @PathVariable("attachmentId") String attachmentId, HttpServletRequest request) {
 
 		HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
@@ -65,7 +68,7 @@ public class TaskAttachmentResource extends TaskBaseResource {
 			@ApiResponse(code = 404, message = "Indicates the requested task was not found or the tasks doesn’t have a attachment with the given ID.")
 	})
 	@RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.DELETE)
-	public void deleteAttachment(@ApiParam(name = "taskId") @PathVariable("taskId") String taskId,@ApiParam(name = "attachmentId") @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
+	public void deleteAttachment(@ApiParam(name = "taskId", value="The id of the task to delete the attachment for.") @PathVariable("taskId") String taskId,@ApiParam(name = "attachmentId", value="The id of the attachment.") @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
 
 		Task task = getTaskFromRequest(taskId);
 

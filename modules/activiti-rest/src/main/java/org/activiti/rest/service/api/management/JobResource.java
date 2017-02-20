@@ -14,10 +14,13 @@
 package org.activiti.rest.service.api.management;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -57,7 +60,7 @@ public class JobResource {
 			@ApiResponse(code = 404, message = "Indicates the requested job does not exist.")
 	})
 	@RequestMapping(value = "/management/jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
-	public JobResponse getJob(@ApiParam(name = "jobId") @PathVariable String jobId, HttpServletRequest request) {
+	public JobResponse getJob(@ApiParam(name = "jobId", value="The id of the job to get.") @PathVariable String jobId, HttpServletRequest request) {
 		Job job = managementService.createJobQuery().jobId(jobId).singleResult();
 
 		if (job == null) {
@@ -121,7 +124,7 @@ public class JobResource {
 			@ApiResponse(code = 404, message = "Indicates the requested job was not found..")
 	})
 	@RequestMapping(value = "/management/jobs/{jobId}", method = RequestMethod.DELETE)
-	public void deleteJob(@ApiParam(name = "jobId") @PathVariable String jobId, HttpServletResponse response) {
+	public void deleteJob(@ApiParam(name = "jobId", value="The id of the job to delete.") @PathVariable String jobId, HttpServletResponse response) {
 		try {
 			managementService.deleteJob(jobId);
 		} catch (ActivitiObjectNotFoundException aonfe) {
@@ -170,7 +173,7 @@ public class JobResource {
 			@ApiResponse(code = 500, message = "Indicates the an exception occurred while executing the job. The status-description contains additional detail about the error. The full error-stacktrace can be fetched later on if needed.")
 	})
 	@RequestMapping(value = "/management/jobs/{jobId}", method = RequestMethod.POST)
-	public void executeJobAction(@ApiParam(name = "jobId") @PathVariable String jobId, @RequestBody RestActionRequest actionRequest, HttpServletResponse response) {
+	public void executeJobAction(@ApiParam(name = "jobId") @PathVariable String jobId,@ApiParam(name = "actionRequest", value="Action to perform. Only execute is supported.") @RequestBody RestActionRequest actionRequest, HttpServletResponse response) {
 		if (actionRequest == null || !EXECUTE_ACTION.equals(actionRequest.getAction())) {
 			throw new ActivitiIllegalArgumentException("Invalid action, only 'execute' is supported.");
 		}

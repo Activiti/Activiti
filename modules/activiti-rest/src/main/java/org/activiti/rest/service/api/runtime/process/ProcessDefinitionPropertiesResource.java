@@ -13,6 +13,9 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiParam;
+
 import java.util.List;
 import java.util.Map;
 
@@ -34,6 +37,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Tijs Rademakers
  */
 @RestController
+@Api(tags = { "Process Definitions" }, description = "Manage Process Definitions")
 public class ProcessDefinitionPropertiesResource {
 
   @Autowired
@@ -42,8 +46,14 @@ public class ProcessDefinitionPropertiesResource {
   @Autowired
   protected ObjectMapper objectMapper;
 
+  //FIXME
+  /* @ApiOperation(value = "Get start form properties", tags = {"Process Definitions"})
+   @ApiResponses(value = {
+           @ApiResponse(code = 200, message = "Indicates request was successful and the properties are returned"),
+           @ApiResponse(code = 404, message = "Indicates the requested process definition was not found.")
+   })*/
   @RequestMapping(value = "/process-definition/{processDefinitionId}/properties", method = RequestMethod.GET, produces = "application/json")
-  public ObjectNode getStartFormProperties(@PathVariable String processDefinitionId) {
+  public ObjectNode getStartFormProperties(@ApiParam(name = "processDefinitionId") @PathVariable String processDefinitionId) {
     StartFormData startFormData = formService.getStartFormData(processDefinitionId);
 
     ObjectNode responseJSON = objectMapper.createObjectNode();

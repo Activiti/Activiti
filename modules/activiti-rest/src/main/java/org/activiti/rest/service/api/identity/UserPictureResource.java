@@ -53,7 +53,7 @@ public class UserPictureResource extends BaseUserResource {
 			@ApiResponse(code = 404, message = "Indicates the requested user was not found or the user does not have a profile picture. Status-description contains additional information about the error.")
 	})
 	@RequestMapping(value = "/identity/users/{userId}/picture", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getUserPicture(@ApiParam(name = "userId") @PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
+	public ResponseEntity<byte[]> getUserPicture(@ApiParam(name = "userId", value="The id of the user to get the picture for.") @PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
 		User user = getUserFromRequest(userId);
 		Picture userPicture = identityService.getUserPicture(user.getId());
 
@@ -84,7 +84,7 @@ public class UserPictureResource extends BaseUserResource {
 			@ApiResponse(code = 404, message = "Indicates the requested user was not found.")
 	})
 	@RequestMapping(value = "/identity/users/{userId}/picture", method = RequestMethod.PUT)
-	public void updateUserPicture(@ApiParam(name = "userId") @PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
+	public void updateUserPicture(@ApiParam(name = "userId", value="The id of the user to get the picture for.") @PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
 		User user = getUserFromRequest(userId);
 
 		if (request instanceof MultipartHttpServletRequest == false) {

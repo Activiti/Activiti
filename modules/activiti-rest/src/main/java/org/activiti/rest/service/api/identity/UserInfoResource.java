@@ -53,7 +53,7 @@ public class UserInfoResource extends BaseUserResource {
 			@ApiResponse(code = 404, message = "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error.")
 	})
 	@RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.GET, produces = "application/json")
-	public UserInfoResponse getUserInfo(@ApiParam(name = "userId") @PathVariable("userId") String userId,@ApiParam(name = "key") @PathVariable("key") String key, HttpServletRequest request) {
+	public UserInfoResponse getUserInfo(@ApiParam(name = "userId", value="The id of the user to get the info for.") @PathVariable("userId") String userId,@ApiParam(name = "key", value="The key of the user info to get.") @PathVariable("key") String key, HttpServletRequest request) {
 		User user = getUserFromRequest(userId);
 
 		String existingValue = identityService.getUserInfo(user.getId(), key);
@@ -71,7 +71,7 @@ public class UserInfoResource extends BaseUserResource {
 			@ApiResponse(code = 404, message = "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error.")
 	})
 	@RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.PUT, produces = "application/json")
-	public UserInfoResponse setUserInfo(@ApiParam(name = "userId") @PathVariable("userId") String userId,@ApiParam(name = "key") @PathVariable("key") String key, @RequestBody UserInfoRequest userRequest, HttpServletRequest request) {
+	public UserInfoResponse setUserInfo(@ApiParam(name = "userId", value="The id of the user to update the info for.") @PathVariable("userId") String userId,@ApiParam(name = "key", value="The key of the user info to update.") @PathVariable("key") String key, @RequestBody UserInfoRequest userRequest, HttpServletRequest request) {
 
 		User user = getUserFromRequest(userId);
 		String validKey = getValidKeyFromRequest(user, key);
@@ -95,7 +95,7 @@ public class UserInfoResource extends BaseUserResource {
 			@ApiResponse(code = 404, message = "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error.")
 	})
 	@RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.DELETE)
-	public void deleteUserInfo(@ApiParam(name = "userId") @PathVariable("userId") String userId,@ApiParam(name = "key") @PathVariable("key") String key, HttpServletResponse response) {
+	public void deleteUserInfo(@ApiParam(name = "userId", value="The id of the user to delete the info for.") @PathVariable("userId") String userId,@ApiParam(name = "key", value="The key of the user info to delete.") @PathVariable("key") String key, HttpServletResponse response) {
 		User user = getUserFromRequest(userId);
 		String validKey = getValidKeyFromRequest(user, key);
 

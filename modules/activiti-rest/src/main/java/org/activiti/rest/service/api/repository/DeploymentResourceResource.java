@@ -14,10 +14,13 @@
 package org.activiti.rest.service.api.repository;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,16 +53,13 @@ public class DeploymentResourceResource {
 	protected RepositoryService repositoryService;
 
 	@ApiOperation(value = "Get a deployment resource", tags = {"Deployment"}, notes="Replace ** by ResourceId")
-	/*@ApiImplicitParams({
-          @ApiImplicitParam(name = "resourceId", dataType = "string", value = "The id of the resource to get. Make sure you URL-encode the resourceId in case it contains forward slashes. Eg: use diagrams%2Fmy-process.bpmn20.xml instead of diagrams/Fmy-process.bpmn20.xml.", paramType = "path")
-  })*/
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Indicates both deployment and resource have been found and the resource has been returned."),
 			@ApiResponse(code = 404, message = "Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information.")
 	})
 	//FIXME Why ** ?
 	@RequestMapping(value = "/repository/deployments/{deploymentId}/resources/**", method = RequestMethod.GET, produces = "application/json")
-	public DeploymentResourceResponse getDeploymentResource(@ApiParam(name = "deploymentId") @PathVariable("deploymentId") String deploymentId, HttpServletRequest request) {
+	public DeploymentResourceResponse getDeploymentResource(@ApiParam(name = "deploymentId", value = "The id of the deployment the requested resource is part of.") @PathVariable("deploymentId") String deploymentId, HttpServletRequest request) {
 
 		// Check if deployment exists
 		Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();

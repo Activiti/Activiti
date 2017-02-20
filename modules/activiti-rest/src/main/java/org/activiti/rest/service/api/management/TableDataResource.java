@@ -63,7 +63,7 @@ public class TableDataResource {
 			@ApiResponse(code = 404, message = "Indicates the requested table does not exist.")
 	})
 	@RequestMapping(value = "/management/tables/{tableName}/data", method = RequestMethod.GET, produces = "application/json")
-	public DataResponse getTableData(@ApiParam(name = "tableName") @PathVariable String tableName,@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams) {
+	public DataResponse getTableData(@ApiParam(name = "tableName", value = "The name of the table to get.") @PathVariable String tableName,@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams) {
 		// Check if table exists before continuing
 		if (managementService.getTableMetaData(tableName) == null) {
 			throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);

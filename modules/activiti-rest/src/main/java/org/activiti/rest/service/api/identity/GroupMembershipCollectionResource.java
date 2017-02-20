@@ -48,7 +48,7 @@ public class GroupMembershipCollectionResource extends BaseGroupResource {
 			@ApiResponse(code = 409, message = "Indicates the requested user is already a member of the group.")
 	})
 	@RequestMapping(value = "/identity/groups/{groupId}/members", method = RequestMethod.POST, produces = "application/json")
-	public MembershipResponse createMembership(@ApiParam(name = "groupId") @PathVariable String groupId, @RequestBody MembershipRequest memberShip, HttpServletRequest request, HttpServletResponse response) {
+	public MembershipResponse createMembership(@ApiParam(name = "groupId", value="The id of the group to add a member to.") @PathVariable String groupId, @RequestBody MembershipRequest memberShip, HttpServletRequest request, HttpServletResponse response) {
 
 		Group group = getGroupFromRequest(groupId);
 

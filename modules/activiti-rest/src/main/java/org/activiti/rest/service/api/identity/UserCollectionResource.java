@@ -77,7 +77,7 @@ public class UserCollectionResource {
 		@ApiImplicitParam(name = "emailLike", dataType = "string", value = "Only return users with an email like the given value. Use % as wildcard-character.", paramType = "query"),
 		@ApiImplicitParam(name = "memberOfGroup", dataType = "string", value = "Only return users which are a member of the given group.", paramType = "query"),
 		@ApiImplicitParam(name = "potentialStarter", dataType = "string", value = "Only return users  which members are potential starters for a process-definition with the given id.", paramType = "query"),
-		@ApiImplicitParam(name = "sort", dataType = "string", value = "Property to sort on, to be used together with the order.", allowableValues ="id,firstName,lastname,email", paramType = "query"),
+		@ApiImplicitParam(name = "sort", dataType = "string", value = "Field  to sort on, to be used together with the order.", allowableValues ="id,firstName,lastname,email", paramType = "query"),
 	})
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Indicates the group exists and is returned.")

@@ -14,10 +14,13 @@
 package org.activiti.rest.service.api.repository;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,7 +43,7 @@ public class DeploymentResourceDataResource extends BaseDeploymentResourceDataRe
 	notes = "The response body will contain the binary resource-content for the requested resource. The response content-type will be the same as the type returned in the resources mimeType property. Also, a content-disposition header is set, allowing browsers to download the file instead of displaying it.")
 	@RequestMapping(value = "/repository/deployments/{deploymentId}/resourcedata/{resourceId}", method = RequestMethod.GET)
 	public @ResponseBody
-	byte[] getDeploymentResource(@ApiParam(name = "deploymentId") @PathVariable("deploymentId") String deploymentId,@ApiParam(name = "resourceId", value = "The id of the resource to get. Make sure you URL-encode the resourceId in case it contains forward slashes. Eg: use diagrams%2Fmy-process.bpmn20.xml instead of diagrams/Fmy-process.bpmn20.xml.")  @PathVariable("resourceId") String resourceId, HttpServletResponse response) {
+	byte[] getDeploymentResource(@ApiParam(name = "deploymentId", value="The id of the deployment the requested resource is part of.") @PathVariable("deploymentId") String deploymentId,@ApiParam(name = "resourceId", value = "The id of the resource to get the data for. Make sure you URL-encode the resourceId in case it contains forward slashes. Eg: use diagrams%2Fmy-process.bpmn20.xml instead of diagrams/Fmy-process.bpmn20.xml.")  @PathVariable("resourceId") String resourceId, HttpServletResponse response) {
 
 		return getDeploymentResourceData(deploymentId, resourceId, response);
 	}

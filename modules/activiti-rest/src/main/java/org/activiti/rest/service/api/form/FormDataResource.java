@@ -14,7 +14,10 @@
 package org.activiti.rest.service.api.form;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -58,7 +61,7 @@ public class FormDataResource {
           @ApiResponse(code = 200, message = "Indicates that form data could be queried."),
           @ApiResponse(code = 404, message = "Indicates that form data could not be found.") })
   @RequestMapping(value = "/form/form-data", method = RequestMethod.GET, produces = "application/json")
-  public FormDataResponse getFormData(@RequestParam(value = "taskId", required = false) String taskId, @RequestParam(value = "processDefinitionId", required = false) String processDefinitionId,
+  public FormDataResponse getFormData(@ApiParam(name="taskId", value="The task id corresponding to the form data that needs to be retrieved.") @RequestParam(value = "taskId", required = false) String taskId,@ApiParam(name="processDefinitionId", value="The process definition id corresponding to the start event form data that needs to be retrieved.") @RequestParam(value = "processDefinitionId", required = false) String processDefinitionId,
       HttpServletRequest request) {
 
     if (taskId == null && processDefinitionId == null) {

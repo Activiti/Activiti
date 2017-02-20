@@ -14,10 +14,13 @@
 package org.activiti.rest.service.api.management;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.management.TableMetaData;
@@ -43,7 +46,7 @@ public class TableColumnsResource {
 			@ApiResponse(code = 404, message = "Indicates the requested table does not exist.")
 	})
 	@RequestMapping(value = "/management/tables/{tableName}/columns", method = RequestMethod.GET, produces = "application/json")
-	public TableMetaData getTableMetaData(@ApiParam(name = "tableName") @PathVariable String tableName) {
+	public TableMetaData getTableMetaData(@ApiParam(name = "tableName", value="The name of the table to get.") @PathVariable String tableName) {
 		TableMetaData response = managementService.getTableMetaData(tableName);
 
 		if (response == null) {

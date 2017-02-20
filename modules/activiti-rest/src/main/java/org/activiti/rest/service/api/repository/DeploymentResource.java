@@ -14,10 +14,13 @@
 package org.activiti.rest.service.api.repository;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -52,7 +55,7 @@ public class DeploymentResource {
 			@ApiResponse(code = 404, message = "Indicates the requested deployment was not found.")
 	})
 	@RequestMapping(value = "/repository/deployments/{deploymentId}", method = RequestMethod.GET, produces = "application/json")
-	public DeploymentResponse getDeployment(@ApiParam(name = "deploymentId") @PathVariable String deploymentId, HttpServletRequest request) {
+	public DeploymentResponse getDeployment(@ApiParam(name = "deploymentId", value = "The id of the deployment to get.") @PathVariable String deploymentId, HttpServletRequest request) {
 		Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
 
 		if (deployment == null) {
@@ -68,7 +71,7 @@ public class DeploymentResource {
 			@ApiResponse(code = 404, message = "Indicates the requested deployment was not found.")
 	})
 	@RequestMapping(value = "/repository/deployments/{deploymentId}", method = RequestMethod.DELETE, produces = "application/json")
-	public void deleteDeployment(@ApiParam(name = "deploymentId") @PathVariable String deploymentId, @RequestParam(value = "cascade", required = false, defaultValue = "false") Boolean cascade, HttpServletResponse response) {
+	public void deleteDeployment(@ApiParam(name = "deploymentId" , value = "The id of the deployment to delete.") @PathVariable String deploymentId, @RequestParam(value = "cascade", required = false, defaultValue = "false") Boolean cascade, HttpServletResponse response) {
 
 		if (cascade) {
 			repositoryService.deleteDeployment(deploymentId, true);

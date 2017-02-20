@@ -62,11 +62,8 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
           @ApiResponse(code = 200, message =  "Indicates the task was found and the requested variables are returned"),
           @ApiResponse(code = 404, message = "Indicates the requested task was not found..")
   })
-  @ApiImplicitParams(
-          @ApiImplicitParam(name = "scope", dataType = "string", value = "Scope of variable to be returned. When local, only task-local variable value is returned. When global, only variable value from the task’s parent execution-hierarchy are returned. When the parameter is omitted, a local variable will be returned if it exists, otherwise a global variable.", paramType = "query")
-  )
   @RequestMapping(value = "/runtime/tasks/{taskId}/variables", method = RequestMethod.GET, produces = "application/json")
-  public List<RestVariable> getVariables(@ApiParam(name="taskId") @PathVariable String taskId,@ApiParam(hidden=true) @RequestParam(value = "scope", required = false) String scope, HttpServletRequest request) {
+  public List<RestVariable> getVariables(@ApiParam(name="taskId", value = "The id of the task to get variables for.") @PathVariable String taskId,@ApiParam(hidden=true) @RequestParam(value = "scope", required = false) String scope, HttpServletRequest request) {
 
     List<RestVariable> result = new ArrayList<RestVariable>();
     Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
@@ -119,7 +116,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
           @ApiResponse(code = 415, message = "Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.")
   }) 
   @RequestMapping(value = "/runtime/tasks/{taskId}/variables", method = RequestMethod.POST, produces = "application/json")
-  public Object createTaskVariable(@ApiParam(name = "taskId") @PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
+  public Object createTaskVariable(@ApiParam(name = "taskId", value="The id of the task to create the new variable for.") @PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
 
     Task task = getTaskFromRequest(taskId);
 
@@ -204,7 +201,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
           @ApiResponse(code = 404, message = "Indicates the requested task was not found.")
   })
   @RequestMapping(value = "/runtime/tasks/{taskId}/variables", method = RequestMethod.DELETE)
-  public void deleteAllLocalTaskVariables(@ApiParam(name="taskId") @PathVariable String taskId, HttpServletResponse response) {
+  public void deleteAllLocalTaskVariables(@ApiParam(name="taskId", value="The id of the task the variable to delete belongs to.") @PathVariable String taskId, HttpServletResponse response) {
     Task task = getTaskFromRequest(taskId);
     Collection<String> currentVariables = taskService.getVariablesLocal(task.getId()).keySet();
     taskService.removeVariablesLocal(task.getId(), currentVariables);
