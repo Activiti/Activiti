@@ -14,6 +14,8 @@
 package org.activiti.rest.service.api.identity;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
@@ -62,6 +64,7 @@ public class UserPictureResource extends BaseUserResource {
 		if (userPicture == null) {
 			throw new ActivitiObjectNotFoundException("The user with id '" + user.getId() + "' does not have a picture.", Picture.class);
 		}
+		
 
 		HttpHeaders responseHeaders = new HttpHeaders();
 		if (userPicture.getMimeType() != null) {

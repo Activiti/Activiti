@@ -76,7 +76,10 @@
           "404" : {
             "description" : "Indicates that form data could not be found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Forms" ],
@@ -102,7 +105,10 @@
           "400" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-activity-instances" : {
@@ -195,7 +201,10 @@
           "400" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-detail" : {
@@ -258,7 +267,10 @@
           "400" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-detail/{detailId}/data" : {
@@ -287,7 +299,10 @@
           "404" : {
             "description" : "Indicates the requested historic detail instance was not found or the historic detail instance doesn’t have a variable with the given name or the variable doesn’t have a binary stream available. Status message provides additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-process-instances" : {
@@ -410,7 +425,10 @@
           "400" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-process-instances/{processInstanceId}" : {
@@ -436,7 +454,10 @@
           "404" : {
             "description" : "Indicates that the historic process instances could not be found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "History" ],
@@ -456,7 +477,10 @@
           "404" : {
             "description" : "Indicates that the historic process instance could not be found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-process-instances/{processInstanceId}/comments" : {
@@ -486,7 +510,10 @@
           "404" : {
             "description" : "Indicates that the historic process instance could not be found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "History" ],
@@ -524,7 +551,10 @@
           "404" : {
             "description" : "Indicates that the historic process instance could not be found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-process-instances/{processInstanceId}/comments/{commentId}" : {
@@ -557,7 +587,10 @@
           "404" : {
             "description" : "Indicates the requested historic process instance was not found or the historic process instance doesn’t have a comment with the given ID."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "History" ],
@@ -584,7 +617,10 @@
           "404" : {
             "description" : "Indicates the requested historic process instance was not found or the historic process instance doesn’t have a comment with the given ID."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-process-instances/{processInstanceId}/identitylinks" : {
@@ -613,7 +649,10 @@
           "404" : {
             "description" : "Indicates the process instance could not be found.."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-process-instances/{processInstanceId}/variables/{variableName}/data" : {
@@ -647,7 +686,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found or the process instance doesn’t have a variable with the given name or the variable doesn’t have a binary stream available. Status message provides additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-task-instances" : {
@@ -920,7 +962,10 @@
           "404" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-task-instances/{taskId}" : {
@@ -946,7 +991,10 @@
           "404" : {
             "description" : "Indicates that the historic task instances could not be found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "History" ],
@@ -966,7 +1014,10 @@
           "404" : {
             "description" : "Indicates that the historic task instance could not be found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-task-instances/{taskId}/identitylinks" : {
@@ -995,7 +1046,10 @@
           "404" : {
             "description" : "Indicates the task instance could not be found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-task-instances/{taskId}/variables/{variableName}/data" : {
@@ -1034,7 +1088,10 @@
           "404" : {
             "description" : "Indicates the requested task instance was not found or the process instance doesn’t have a variable with the given name or the variable doesn’t have a binary stream available. Status message provides additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-variable-instances" : {
@@ -1085,7 +1142,10 @@
           "400" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/history/historic-variable-instances/{varInstanceId}/data" : {
@@ -1114,7 +1174,10 @@
           "404" : {
             "description" : "Indicates the requested variable instance was not found or the variable instance doesn’t have a variable with the given name or the variable doesn’t have a binary stream available. Status message provides additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/identity/groups" : {
@@ -1175,7 +1238,10 @@
               "$ref" : "#/definitions/DataResponse"
             }
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Groups" ],
@@ -1204,7 +1270,10 @@
           "400" : {
             "description" : "Indicates the id of the group was missing."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/identity/groups/{groupId}" : {
@@ -1332,7 +1401,10 @@
           "409" : {
             "description" : "Indicates the requested user is already a member of the group."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/identity/groups/{groupId}/members/{userId}" : {
@@ -1361,7 +1433,10 @@
           "404" : {
             "description" : "Indicates the requested group was not found or that the user is not a member of the group. The status description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/identity/users" : {
@@ -1440,7 +1515,10 @@
               "$ref" : "#/definitions/DataResponse"
             }
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Users" ],
@@ -1469,7 +1547,10 @@
           "400" : {
             "description" : "Indicates the id of the user was missing."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/identity/users/{userId}" : {
@@ -1496,7 +1577,10 @@
           "404" : {
             "description" : "Indicates the requested user does not exist."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Users" ],
@@ -1530,7 +1614,10 @@
           "409" : {
             "description" : "Indicates the requested user was updated simultaneously."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Users" ],
@@ -1551,7 +1638,10 @@
           "404" : {
             "description" : "Indicates the requested user was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/identity/users/{userId}/info" : {
@@ -1581,7 +1671,10 @@
           "404" : {
             "description" : "Indicates the requested user was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Users" ],
@@ -1622,7 +1715,10 @@
           "409" : {
             "description" : "Indicates there is already an info-entry with the given key for the user, update the resource instance (PUT)."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/identity/users/{userId}/info/{key}" : {
@@ -1655,7 +1751,10 @@
           "404" : {
             "description" : "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Users" ],
@@ -1696,7 +1795,10 @@
           "404" : {
             "description" : "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Users" ],
@@ -1723,7 +1825,10 @@
           "404" : {
             "description" : "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/identity/users/{userId}/picture" : {
@@ -1753,7 +1858,10 @@
           "404" : {
             "description" : "Indicates the requested user was not found or the user does not have a profile picture. Status-description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Users" ],
@@ -1766,6 +1874,13 @@
           "description" : "The id of the user to get the picture for.",
           "required" : true,
           "type" : "string"
+        }, {
+          "in" : "body",
+          "name" : "body",
+          "required" : false,
+          "schema" : {
+            "$ref" : "#/definitions/UserPictureResource"
+          }
         } ],
         "responses" : {
           "200" : {
@@ -1774,7 +1889,10 @@
           "404" : {
             "description" : "Indicates the requested user was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/deadletter-jobs" : {
@@ -1892,7 +2010,10 @@
           "400" : {
             "description" : "Indicates an illegal value has been used in a url query parameter or the both 'messagesOnly' and 'timersOnly' are used as parameters. Status description contains additional details about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/deadletter-jobs/{jobId}" : {
@@ -1918,7 +2039,10 @@
           "404" : {
             "description" : "Indicates the requested job does not exist."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Jobs" ],
@@ -1938,7 +2062,10 @@
           "404" : {
             "description" : "Indicates the requested job was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/deadletter-jobs/{jobId}/exception-stacktrace" : {
@@ -1963,7 +2090,10 @@
           "404" : {
             "description" : "Indicates the requested job was not found or the job doesn’t have an exception stacktrace. Status-description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/engine" : {
@@ -1980,7 +2110,10 @@
               "$ref" : "#/definitions/ProcessEngineInfoResponse"
             }
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/jobs" : {
@@ -2098,7 +2231,10 @@
           "400" : {
             "description" : "Indicates an illegal value has been used in a url query parameter or the both 'messagesOnly' and 'timersOnly' are used as parameters. Status description contains additional details about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/jobs/{jobId}" : {
@@ -2125,7 +2261,10 @@
           "404" : {
             "description" : "Indicates the requested job does not exist."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Jobs" ],
@@ -2156,7 +2295,10 @@
           "500" : {
             "description" : "Indicates the an exception occurred while executing the job. The status-description contains additional detail about the error. The full error-stacktrace can be fetched later on if needed."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Jobs" ],
@@ -2177,7 +2319,10 @@
           "404" : {
             "description" : "Indicates the requested job was not found.."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/jobs/{jobId}/exception-stacktrace" : {
@@ -2203,7 +2348,10 @@
           "404" : {
             "description" : "Indicates the requested job was not found or the job doesn’t have an exception stacktrace. Status-description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/properties" : {
@@ -2223,7 +2371,10 @@
               }
             }
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/suspended-jobs" : {
@@ -2341,7 +2492,10 @@
           "400" : {
             "description" : "Indicates an illegal value has been used in a url query parameter or the both 'messagesOnly' and 'timersOnly' are used as parameters. Status description contains additional details about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/suspended-jobs/{jobId}" : {
@@ -2367,7 +2521,10 @@
           "404" : {
             "description" : "Indicates the requested job does not exist."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/suspended-jobs/{jobId}/exception-stacktrace" : {
@@ -2392,7 +2549,10 @@
           "404" : {
             "description" : "Indicates the requested job was not found or the job doesn’t have an exception stacktrace. Status-description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/tables" : {
@@ -2412,7 +2572,10 @@
               }
             }
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/tables/{tableName}" : {
@@ -2439,7 +2602,10 @@
           "404" : {
             "description" : "Indicates the requested table does not exist."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/tables/{tableName}/columns" : {
@@ -2466,7 +2632,10 @@
           "404" : {
             "description" : "Indicates the requested table does not exist."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/tables/{tableName}/data" : {
@@ -2517,7 +2686,10 @@
           "404" : {
             "description" : "Indicates the requested table does not exist."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/timer-jobs" : {
@@ -2635,7 +2807,10 @@
           "400" : {
             "description" : "Indicates an illegal value has been used in a url query parameter or the both 'messagesOnly' and 'timersOnly' are used as parameters. Status description contains additional details about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/timer-jobs/{jobId}" : {
@@ -2661,7 +2836,10 @@
           "404" : {
             "description" : "Indicates the requested job does not exist."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Jobs" ],
@@ -2681,7 +2859,10 @@
           "404" : {
             "description" : "Indicates the requested job was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/management/timer-jobs/{jobId}/exception-stacktrace" : {
@@ -2706,7 +2887,10 @@
           "404" : {
             "description" : "Indicates the requested job was not found or the job doesn’t have an exception stacktrace. Status-description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/query/executions" : {
@@ -2734,7 +2918,10 @@
           "404" : {
             "description" : "Indicates a parameter was passed in the wrong format . The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/query/historic-activity-instances" : {
@@ -2762,7 +2949,10 @@
           "400" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information"
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/query/historic-detail" : {
@@ -2790,7 +2980,10 @@
           "400" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/query/historic-process-instances" : {
@@ -2818,7 +3011,10 @@
           "400" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/query/historic-task-instances" : {
@@ -2846,7 +3042,10 @@
           "404" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/query/historic-variable-instances" : {
@@ -2874,7 +3073,10 @@
           "400" : {
             "description" : "Indicates an parameter was passed in the wrong format. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/query/process-instances" : {
@@ -2902,7 +3104,10 @@
           "400" : {
             "description" : "Indicates a parameter was passed in the wrong format . The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/query/tasks" : {
@@ -2997,7 +3202,10 @@
               "$ref" : "#/definitions/DataResponse"
             }
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Deployment" ],
@@ -3021,7 +3229,10 @@
           "400" : {
             "description" : "Indicates there was no content present in the request body or the content mime-type is not supported for deployment. The status-description contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/deployments/{deploymentId}" : {
@@ -3048,7 +3259,10 @@
           "404" : {
             "description" : "Indicates the requested deployment was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Deployment" ],
@@ -3075,7 +3289,10 @@
           "404" : {
             "description" : "Indicates the requested deployment was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/deployments/{deploymentId}/resourcedata/{resourceId}" : {
@@ -3111,7 +3328,10 @@
           "404" : {
             "description" : "Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/deployments/{deploymentId}/resources" : {
@@ -3141,7 +3361,10 @@
           "404" : {
             "description" : "Indicates the requested deployment was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/deployments/{deploymentId}/resources/**" : {
@@ -3168,7 +3391,10 @@
           "404" : {
             "description" : "Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/models" : {
@@ -3280,7 +3506,10 @@
           "400" : {
             "description" : "Indicates a parameter was passed in the wrong format. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Models" ],
@@ -3303,7 +3532,10 @@
               "$ref" : "#/definitions/ModelResponse"
             }
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/models/{modelId}" : {
@@ -3330,7 +3562,10 @@
           "404" : {
             "description" : "Indicates the requested model was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Models" ],
@@ -3361,7 +3596,10 @@
           "404" : {
             "description" : "Indicates the requested model was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Models" ],
@@ -3382,7 +3620,10 @@
           "404" : {
             "description" : "Indicates the requested model was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/process-definitions" : {
@@ -3494,7 +3735,10 @@
           "400" : {
             "description" : "Indicates a parameter was passed in the wrong format or that latest is used with other parameters other than key and keyLike. The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/process-definitions/{processDefinitionId}" : {
@@ -3521,7 +3765,10 @@
           "404" : {
             "description" : "Indicates the requested process definition was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Process Definitions" ],
@@ -3558,7 +3805,10 @@
           "409" : {
             "description" : "Indicates the requested process definition is already suspended or active."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/process-definitions/{processDefinitionId}/identitylinks" : {
@@ -3588,7 +3838,10 @@
           "404" : {
             "description" : "Indicates the requested process definition was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Process Definitions" ],
@@ -3626,7 +3879,10 @@
           "404" : {
             "description" : "Indicates the requested process definition was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}" : {
@@ -3668,7 +3924,10 @@
           "404" : {
             "description" : "Indicates the requested process definition was not found or the process definition doesn’t have an identity-link that matches the url."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Process Definitions" ],
@@ -3701,7 +3960,10 @@
           "404" : {
             "description" : "Indicates the requested process definition was not found or the process definition doesn’t have an identity-link that matches the url."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/process-definitions/{processDefinitionId}/image" : {
@@ -3730,7 +3992,10 @@
           "404" : {
             "description" : "Indicates the requested process definition was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/process-definitions/{processDefinitionId}/model" : {
@@ -3757,7 +4022,10 @@
           "404" : {
             "description" : "Indicates the requested process definition was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/repository/process-definitions/{processDefinitionId}/resourcedata" : {
@@ -3787,7 +4055,10 @@
           "404" : {
             "description" : "Indicates the requested process definition was not found or there is no resource with the given id present in the process definition. The status-description contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/executions" : {
@@ -3881,7 +4152,10 @@
           "404" : {
             "description" : "Indicates a parameter was passed in the wrong format . The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Executions" ],
@@ -3903,7 +4177,10 @@
           "404" : {
             "description" : "Indicates a parameter was passed in the wrong format . The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/executions/{executionId}" : {
@@ -3930,7 +4207,10 @@
           "404" : {
             "description" : "Indicates the execution was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Executions" ],
@@ -3968,7 +4248,10 @@
           "404" : {
             "description" : "Indicates the execution was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/executions/{executionId}/activities" : {
@@ -3998,7 +4281,10 @@
           "404" : {
             "description" : "Indicates the execution was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/executions/{executionId}/variables" : {
@@ -4034,7 +4320,10 @@
           "404" : {
             "description" : "Indicates the requested execution was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Executions" ],
@@ -4068,7 +4357,10 @@
           "409" : {
             "description" : "Indicates the execution was found but already contains a variable with the given name. Use the update-method instead."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Executions" ],
@@ -4099,7 +4391,10 @@
           "404" : {
             "description" : "Indicates the requested execution was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Executions" ],
@@ -4119,7 +4414,10 @@
           "404" : {
             "description" : "Indicates the requested execution was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/executions/{executionId}/variables/{variableName}" : {
@@ -4161,7 +4459,10 @@
           "404" : {
             "description" : "Indicates the requested execution was not found or the execution does not have a variable with the given name in the requested scope (in case scope-query parameter was omitted, variable doesn’t exist in local and global scope). Status description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Executions" ],
@@ -4192,7 +4493,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Executions" ],
@@ -4222,7 +4526,10 @@
           "404" : {
             "description" : "Indicates the requested execution was not found or the execution does not have a variable with the given name in the requested scope. Status description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/executions/{executionId}/variables/{variableName}/data" : {
@@ -4261,7 +4568,10 @@
           "404" : {
             "description" : "Indicates the requested execution was not found or the task doesn’t have a variable with the given name (in the given scope). Status message provides additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/process-instances" : {
@@ -4370,7 +4680,10 @@
           "404" : {
             "description" : "Indicates a parameter was passed in the wrong format . The status-message contains additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Process Instances" ],
@@ -4399,7 +4712,10 @@
           "400" : {
             "description" : "Indicates either the process-definition was not found (based on id or key), no process is started by sending the given message or an invalid variable has been passed. Status description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/process-instances/{processInstanceId}" : {
@@ -4426,7 +4742,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Process Instances" ],
@@ -4464,7 +4783,10 @@
           "409" : {
             "description" : "Indicates the requested process instance action cannot be executed since the process-instance is already activated/suspended."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Process Instances" ],
@@ -4490,7 +4812,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/process-instances/{processInstanceId}/diagram" : {
@@ -4523,7 +4848,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/process-instances/{processInstanceId}/identitylinks" : {
@@ -4553,7 +4881,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Process Instances" ],
@@ -4591,7 +4922,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/process-instances/{processInstanceId}/identitylinks/users/{identityId}/{type}" : {
@@ -4628,7 +4962,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found or the link to delete doesn’t exist. The response status contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Process Instances" ],
@@ -4661,7 +4998,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found or the link to delete doesn’t exist. The response status contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/process-instances/{processInstanceId}/variables" : {
@@ -4696,7 +5036,10 @@
           "400" : {
             "description" : "Indicates the requested process instance was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "post" : {
         "tags" : [ "Process Instances" ],
@@ -4730,7 +5073,10 @@
           "409" : {
             "description" : "Indicates the process instance was found but already contains a variable with the given name (only thrown when POST method is used). Use the update-method instead."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Process Instances" ],
@@ -4764,7 +5110,10 @@
           "415" : {
             "description" : "Indicates the serializable data contains an object for which no class is present in the JVM running the Flowable engine and therefore cannot be deserialized."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Process Instances" ],
@@ -4784,7 +5133,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/process-instances/{processInstanceId}/variables/{variableName}" : {
@@ -4822,7 +5174,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "put" : {
         "tags" : [ "Process Instances" ],
@@ -4853,7 +5208,10 @@
           "404" : {
             "description" : "Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       },
       "delete" : {
         "tags" : [ "Process Instances" ],
@@ -4883,7 +5241,10 @@
           "404" : {
             "description" : "Indicates the requested variable was not found."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/process-instances/{processInstanceId}/variables/{variableName}/data" : {
@@ -4922,7 +5283,10 @@
           "404" : {
             "description" : "Indicates the requested task was not found or the task doesn’t have a variable with the given name (in the given scope). Status message provides additional information."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/signals" : {
@@ -4949,7 +5313,10 @@
           "400" : {
             "description" : "Signal not processed. The signal name is missing or variables are used together with async, which is not allowed. Response body contains additional information about the error."
           }
-        }
+        },
+        "security" : [ {
+          "basicAuth" : [ ]
+        } ]
       }
     },
     "/runtime/tasks" : {
@@ -6461,10 +6828,10 @@
             "type" : "string"
           }
         },
-        "itemDefinitions" : {
-          "type" : "object",
-          "additionalProperties" : {
-            "$ref" : "#/definitions/ItemDefinition"
+        "messages" : {
+          "type" : "array",
+          "items" : {
+            "$ref" : "#/definitions/Message"
           }
         },
         "errors" : {
@@ -6473,10 +6840,10 @@
             "type" : "string"
           }
         },
-        "messages" : {
-          "type" : "array",
-          "items" : {
-            "$ref" : "#/definitions/Message"
+        "itemDefinitions" : {
+          "type" : "object",
+          "additionalProperties" : {
+            "$ref" : "#/definitions/ItemDefinition"
           }
         },
         "mainProcess" : {
@@ -9371,6 +9738,9 @@
           "type" : "string"
         }
       }
+    },
+    "UserPictureResource" : {
+      "type" : "object"
     },
     "UserRequest" : {
       "type" : "object",
