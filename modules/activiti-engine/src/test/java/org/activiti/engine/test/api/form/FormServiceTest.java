@@ -33,6 +33,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.joda.time.DateTime;
 
 /**
  * @author Joram Barrez
@@ -348,6 +349,24 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     assertEquals("123", processInstance.getBusinessKey());
 
     assertEquals(processInstance.getId(), runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("123").singleResult().getId());
+  }
+
+  @Deployment
+  public void testSubmitStartFormDataWithVariables() {
+    Map<String, String> properties = new HashMap<String, String>();
+    properties.put("name", "Mike");
+    properties.put("birthday", "2010-08-20");
+    Map<String, Object> processVariables = new HashMap<String, Object>();
+    processVariables.put("speaker", new Speaker());
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    ProcessInstance processInstance = formService.submitStartFormData(procDefId, "123", properties, processVariables);
+
+    assertEquals(processInstance.getId(), runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("123").singleResult().getId());
+
+    Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
+    Speaker mike = (Speaker)variables.get("speaker");
+    assertEquals("Mike", mike.getName());
+    assertEquals(new DateTime(2010, 8 ,20, 0, 0).toDate(), mike.getBirthday());
   }
 
   public void testGetStartFormKeyEmptyArgument() {

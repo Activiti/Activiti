@@ -32,11 +32,19 @@ public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessI
   
   protected final String businessKey;
   protected Map<String, String> properties;
+  protected Map<String, Object> variables;
   
   public SubmitStartFormCmd(String processDefinitionId, String businessKey, Map<String, String> properties) {
     super(processDefinitionId);
     this.businessKey = businessKey;
     this.properties = properties;
+  }
+
+  public SubmitStartFormCmd(String processDefinitionId, String businessKey, Map<String, String> properties, Map<String, Object> variables) {
+    super(processDefinitionId);
+    this.businessKey = businessKey;
+    this.properties = properties;
+    this.variables = variables;
   }
   
   protected ProcessInstance execute(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
@@ -47,6 +55,9 @@ public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessI
       processInstance = processDefinition.createProcessInstance();
     }
 
+    // now set the variables passed into the start command
+    initializeVariables(processInstance);
+
     commandContext.getHistoryManager()
       .reportFormPropertiesSubmitted(processInstance, properties, null);
     
@@ -56,5 +67,11 @@ public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessI
     processInstance.start();
     
     return processInstance;
+  }
+
+  protected void initializeVariables(ExecutionEntity processInstance) {
+    if (variables != null) {
+      processInstance.setVariables(variables);
+    }
   }
 }

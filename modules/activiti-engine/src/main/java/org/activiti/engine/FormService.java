@@ -63,6 +63,10 @@ public interface FormService {
    */  
   ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties);
 
+  ProcessInstance submitStartFormData(String processDefinitionId, Map<String, String> properties, Map<String, Object> variables);
+
+  ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties, Map<String, Object> variables);
+
   /** Retrieves all data necessary for rendering a form to complete a task.  This can be used to perform rendering of the forms outside of the process engine. */
   TaskFormData getTaskFormData(String taskId);
   
