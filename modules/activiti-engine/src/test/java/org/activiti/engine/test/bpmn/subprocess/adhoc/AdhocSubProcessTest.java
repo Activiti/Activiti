@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.subprocess.adhoc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,9 +110,13 @@ public class AdhocSubProcessTest extends PluggableActivitiTestCase {
           .list();
       
       assertEquals(3, historicTasks.size());
-      assertEquals("subProcessTask", historicTasks.get(0).getTaskDefinitionKey());
-      assertEquals("subProcessTask2", historicTasks.get(1).getTaskDefinitionKey());
-      assertEquals("afterTask", historicTasks.get(2).getTaskDefinitionKey());
+      List<String> taskDefinitionKeys = new ArrayList<String>(3);
+      taskDefinitionKeys.add(historicTasks.get(0).getTaskDefinitionKey());
+      taskDefinitionKeys.add(historicTasks.get(1).getTaskDefinitionKey());
+      taskDefinitionKeys.add(historicTasks.get(2).getTaskDefinitionKey());
+      assertTrue(taskDefinitionKeys.contains("subProcessTask"));
+      assertTrue(taskDefinitionKeys.contains("subProcessTask2"));
+      assertTrue(taskDefinitionKeys.contains("afterTask"));
       
     }
     
