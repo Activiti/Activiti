@@ -285,7 +285,7 @@
   </select>
   
   <select id="selectHistoricTaskInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultType="long">
-    select count(RES.ID_)
+    select count(DISTINCT RES.ID_)
     <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
   </select>
   
@@ -629,20 +629,9 @@
           exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.TASK_ID_ = RES.ID_)
           or RES.ASSIGNEE_ = #{involvedUser}
           or RES.OWNER_ = #{involvedUser}
-          <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
-            or
-            (
-              HI.TYPE_ = 'participant'
-              and
-              HI.GROUP_ID_ IN
-              <foreach item="group" index="index" collection="involvedGroups" open="(" separator="," close=")">
-                #{group}
-              </foreach>
-            )
-          </if>
         )
       </if>
-      <if test="involvedUser == null &amp;&amp; involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+      <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
         and
         (
           HI.TYPE_ = 'participant'
@@ -947,21 +936,10 @@
               exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{orQueryObject.involvedUser} and LINK.TASK_ID_ = RES.ID_)
               or RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
               or RES.OWNER_ = #{orQueryObject.involvedUser}
-              <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
-                or
-                (
-                  HI_OR${orIndex}.TYPE_ = 'participant'
-                  and
-                  HI_OR${orIndex}.GROUP_ID_ IN
-                  <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
-                    #{group}
-                  </foreach>
-                )
-              </if>
             )
           </if>
-          <if test="orQueryObject.involvedUser == null &amp;&amp; orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
-            and
+          <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+            or
             (
               HI_OR${orIndex}.TYPE_ = 'participant'
               and
