@@ -3,7 +3,6 @@ package org.activiti.engine.test.api.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.IdentityLinkType;
@@ -28,7 +27,7 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
                     //.taskId(adhocTask.getId())
                     .or()
                     .taskInvolvedUser("involvedUser")
-                    .taskInvolvedGroups(groups)
+                    .taskInvolvedGroupsIn(groups)
                     .endOr()
                     .count());
 
@@ -36,7 +35,7 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
                     .or().taskCategory("j").taskPriority(10).endOr()
                     .or()
                     .taskInvolvedUser("involvedUser")
-                    .taskInvolvedGroups(groups)
+                    .taskInvolvedGroupsIn(groups)
                     .endOr()
                     .count());
         } finally {
@@ -70,14 +69,14 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             assertEquals(0, taskService.createTaskQuery()
 
                     .taskInvolvedUser("involvedUser")
-                    .taskInvolvedGroups(groups)
+                    .taskInvolvedGroupsIn(groups)
 
                     .count());
 
             assertEquals(0, historyService.createHistoricTaskInstanceQuery()
 
                     .taskInvolvedUser("involvedUser")
-                    .taskInvolvedGroups(groups)
+                    .taskInvolvedGroupsIn(groups)
 
                     .count());
 
@@ -149,9 +148,9 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             assertEquals(2, taskService.createTaskQuery()
 
                     .taskInvolvedUser("user1")
-                    .taskInvolvedGroups(andGroup)
+                    .taskInvolvedGroupsIn(andGroup)
 
-                    .or().taskInvolvedGroups(orGroup).endOr()
+                    .or().taskInvolvedGroupsIn(orGroup).endOr()
 
                     .count());
 
@@ -260,23 +259,23 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             assertEquals(4, taskService.createTaskQuery()
 
                     .taskInvolvedUser("user1")
-                    .taskInvolvedGroups(andGroup)
+                    .taskInvolvedGroupsIn(andGroup)
 
                     .or()
-                        .taskInvolvedGroups(orGroup)
+                        .taskInvolvedGroupsIn(orGroup)
                         .taskInvolvedUser("user2")
                     .endOr()
 
                     .count());
 
 
-            List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery()
+            historyService.createHistoricTaskInstanceQuery()
 
                     .taskInvolvedUser("user1")
-                    .taskInvolvedGroups(andGroup)
+                    .taskInvolvedGroupsIn(andGroup)
 
                     .or()
-                    .taskInvolvedGroups(orGroup)
+                    .taskInvolvedGroupsIn(orGroup)
                     .taskInvolvedUser("user2")
                     .endOr()
 
@@ -285,10 +284,10 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             assertEquals(4, historyService.createHistoricTaskInstanceQuery()
 
                     .taskInvolvedUser("user1")
-                    .taskInvolvedGroups(andGroup)
+                    .taskInvolvedGroupsIn(andGroup)
 
                     .or()
-                        .taskInvolvedGroups(orGroup)
+                        .taskInvolvedGroupsIn(orGroup)
                         .taskInvolvedUser("user2")
                     .endOr()
 

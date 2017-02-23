@@ -452,7 +452,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
 
-  public TaskQueryImpl taskInvolvedGroups(List<String> involvedGroups) {
+  public TaskQueryImpl taskInvolvedGroupsIn(List<String> involvedGroups) {
     if (involvedGroups == null || involvedGroups.isEmpty()) {
       throw new ActivitiIllegalArgumentException("Involved groups list is null or empty.");
     }

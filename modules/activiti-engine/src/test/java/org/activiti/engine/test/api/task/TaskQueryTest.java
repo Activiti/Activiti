@@ -695,7 +695,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 
       assertEquals(3, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
       assertEquals(1, taskService.createTaskQuery()
-          .taskId(adhocTask.getId()).taskInvolvedGroups(groups).count());
+          .taskId(adhocTask.getId()).taskInvolvedGroupsIn(groups).count());
     } finally {
       List<Task> allTasks = taskService.createTaskQuery().list();
       for(Task task : allTasks) {
