@@ -448,6 +448,7 @@
             "ADD-COMMENT-CONFIRM": "Add comment",
             "CREATE-CONFIRM": "Create new decision table",
             "DUPLICATE-CONFIRM": "Duplicate the decision table",
+            "CANCEL": "Cancel",
             "OPEN-IN-EDITOR": "Decision Table Editor",
             "EXPORT": "Export decision table",
             "EDIT-CONFIRM": "Save",
@@ -484,7 +485,14 @@
             "SAVE-DESCRIPTION": "You need to give a name and a unique key for the new decision table and you may want to add a description at the same time.",
             "DUPLICATE-DESCRIPTION": "You need to give a name for the new decision table and you may want to add a description at the same time.",
             "SAVE-DECISION-TABLE-TITLE": "Save decision table",
-
+            "IMPORT-DESCRIPTION": "Browse for or drop a DMN XML definition with an .dmn or .dmn.xml extension",
+            "IMPORT-TITLE": "Import a DMN model",
+ 	        "IMPORT": {
+ 	            "DROPZONE": "Drop a .dmn or .dmn.xml DMN XML file",
+ 	            "CANCEL-UPLOAD": "Cancel the upload",
+ 	            "ERROR": "Error while processing the DMN XML file",
+ 	            "NO-DROP": "Drag and drop not supported"
+ 	        },
             "EDIT-DESCRIPTION": "Change any of the decision table properties below and then click Save to update the decision table.",
             "EDIT-TITLE":"Edit decision table details",
 
@@ -497,8 +505,6 @@
             "SHARE-TITLE": "Share decision table",
             "SHARE-DESCRIPTION": "You can decide who you wish to share this decision table with and if they can edit it.",
             "NOT-SHARED": "This decision table is not shared with anyone.",
-            "IMPORT-DESCRIPTION": "Browse for or drop a decision table file with a .dmn or .xml extension",
-            "IMPORT-TITLE": "Import a decision table",
             "IMPORT-DROPZONE": "Drop a .dmn or .xml decision table file",
             "IMPORT-NO-DROP": "Drag and drop not supported",
             "IMPORT-CANCEL-UPLOAD": "Cancel the upload",
