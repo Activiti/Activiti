@@ -1138,6 +1138,8 @@ paths:
             $ref: "#/definitions/GroupResponse"
         404:
           description: "Indicates the requested group does not exist."
+      security:
+      - basicAuth: []
     put:
       tags:
       - "Groups"
@@ -1171,6 +1173,8 @@ paths:
           description: "Indicates the requested group was not found."
         409:
           description: "Indicates the requested group was updated simultaneously."
+      security:
+      - basicAuth: []
     delete:
       tags:
       - "Groups"
@@ -1189,6 +1193,8 @@ paths:
             \ is intentionally empty."
         404:
           description: "Indicates the requested group does not exist."
+      security:
+      - basicAuth: []
   /identity/groups/{groupId}/members:
     post:
       tags:
@@ -1636,11 +1642,6 @@ paths:
         description: "The id of the user to get the picture for."
         required: true
         type: "string"
-      - in: "body"
-        name: "body"
-        required: false
-        schema:
-          $ref: "#/definitions/UserPictureResource"
       responses:
         200:
           description: "Indicates the user was found and the picture has been updated.\
@@ -2784,6 +2785,8 @@ paths:
           description: "Indicates a parameter was passed in the wrong format or that\
             \ delegationState has an invalid value (other than pending and resolved).\
             \ The status-message contains additional information."
+      security:
+      - basicAuth: []
   /repository/deployments:
     get:
       tags:
@@ -4587,7 +4590,7 @@ paths:
           description: "Indicates the requested process instance was not found."
         415:
           description: "Indicates the serializable data contains an object for which\
-            \ no class is present in the JVM running the Flowable engine and therefore\
+            \ no class is present in the JVM running the Activiti engine and therefore\
             \ cannot be deserialized."
       security:
       - basicAuth: []
@@ -5021,6 +5024,8 @@ paths:
           description: "Indicates a parameter was passed in the wrong format or that\
             \ delegationState has an invalid value (other than pending and resolved).\
             \ The status-message contains additional information."
+      security:
+      - basicAuth: []
     post:
       tags:
       - "Tasks"
@@ -5046,6 +5051,8 @@ paths:
           description: "Indicates a parameter was passed in the wrong format or that\
             \ delegationState has an invalid value (other than pending and resolved).\
             \ The status-message contains additional information."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}:
     get:
       tags:
@@ -5068,6 +5075,8 @@ paths:
             $ref: "#/definitions/TaskResponse"
         404:
           description: "Indicates the requested task was not found."
+      security:
+      - basicAuth: []
     post:
       tags:
       - "Tasks"
@@ -5113,6 +5122,8 @@ paths:
           description: "Indicates the action cannot be performed due to a conflict.\
             \ Either the task was updates simultaneously or the task was claimed by\
             \ another user, in case of the claim action."
+      security:
+      - basicAuth: []
     put:
       tags:
       - "Tasks"
@@ -5144,6 +5155,8 @@ paths:
           description: "Indicates the requested task was not found."
         409:
           description: "Indicates the requested task was updated simultaneously."
+      security:
+      - basicAuth: []
     delete:
       tags:
       - "Tasks"
@@ -5165,6 +5178,8 @@ paths:
             s part of a workflow."
         404:
           description: "Indicates the requested task was not found."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/attachments:
     get:
       tags:
@@ -5189,6 +5204,8 @@ paths:
               $ref: "#/definitions/AttachmentResponse"
         404:
           description: "Indicates the requested task was not found."
+      security:
+      - basicAuth: []
     post:
       tags:
       - "Tasks"
@@ -5225,6 +5242,8 @@ paths:
           description: "Indicates the attachment name is missing from the request."
         404:
           description: "Indicates the requested task was not found."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/attachments/{attachmentId}:
     get:
       tags:
@@ -5254,6 +5273,8 @@ paths:
         404:
           description: "Indicates the requested task was not found or the tasks doesn’\
             t have a attachment with the given ID."
+      security:
+      - basicAuth: []
     delete:
       tags:
       - "Tasks"
@@ -5278,6 +5299,8 @@ paths:
         404:
           description: "Indicates the requested task was not found or the tasks doesn’\
             t have a attachment with the given ID."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/attachments/{attachmentId}/content:
     get:
       tags:
@@ -5312,6 +5335,8 @@ paths:
           description: "Indicates the requested task was not found or the task doesn’\
             t have an attachment with the given id or the attachment doesn’t have\
             \ a binary stream available. Status message provides additional information."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/comments:
     get:
       tags:
@@ -5338,6 +5363,8 @@ paths:
           description: "Indicates the task was found and the comments are returned."
         404:
           description: "Indicates the requested task was not found."
+      security:
+      - basicAuth: []
     post:
       tags:
       - "Tasks"
@@ -5368,6 +5395,8 @@ paths:
           description: "Indicates the comment is missing from the request."
         404:
           description: "Indicates the requested task was not found."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/comments/{commentId}:
     get:
       tags:
@@ -5397,6 +5426,8 @@ paths:
         404:
           description: "Indicates the requested task was not found or the tasks doesn’\
             t have a comment with the given ID."
+      security:
+      - basicAuth: []
     delete:
       tags:
       - "Tasks"
@@ -5421,6 +5452,8 @@ paths:
         404:
           description: "Indicates the requested task was not found or the tasks doesn’\
             t have a comment with the given ID."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/events:
     get:
       tags:
@@ -5445,6 +5478,8 @@ paths:
               $ref: "#/definitions/EventResponse"
         404:
           description: "Indicates the requested task was not found."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/events/{eventId}:
     get:
       tags:
@@ -5473,6 +5508,8 @@ paths:
         404:
           description: "Indicates the requested task was not found or the tasks doesn’\
             t have an event with the given ID."
+      security:
+      - basicAuth: []
     delete:
       tags:
       - "Tasks"
@@ -5494,6 +5531,8 @@ paths:
         404:
           description: "Indicates the requested task was not found or the task doesn’\
             t have the requested event."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/identitylinks:
     get:
       tags:
@@ -5519,6 +5558,8 @@ paths:
               $ref: "#/definitions/RestIdentityLink"
         404:
           description: "Indicates the requested task was not found."
+      security:
+      - basicAuth: []
     post:
       tags:
       - "Tasks"
@@ -5551,6 +5592,8 @@ paths:
           description: "Indicates the requested task was not found or the task doesn’\
             t have the requested identityLink. The status contains additional information\
             \ about this error."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/identitylinks/{family}:
     get:
       tags:
@@ -5583,6 +5626,8 @@ paths:
               $ref: "#/definitions/RestIdentityLink"
         404:
           description: "Indicates the requested task was not found."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}:
     get:
       tags:
@@ -5623,6 +5668,8 @@ paths:
           description: "Indicates the requested task was not found or the task doesn’\
             t have the requested identityLink. The status contains additional information\
             \ about this error."
+      security:
+      - basicAuth: []
     delete:
       tags:
       - "Tasks"
@@ -5659,6 +5706,8 @@ paths:
           description: "Indicates the requested task was not found or the task doesn’\
             t have the requested identityLink. The status contains additional information\
             \ about this error."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/subtasks:
     get:
       tags:
@@ -5682,6 +5731,8 @@ paths:
               $ref: "#/definitions/TaskResponse"
         404:
           description: "Indicates the requested task was not found."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/variables:
     get:
       tags:
@@ -5707,6 +5758,8 @@ paths:
               $ref: "#/definitions/RestVariable"
         404:
           description: "Indicates the requested task was not found.."
+      security:
+      - basicAuth: []
     post:
       tags:
       - "Tasks"
@@ -5760,6 +5813,8 @@ paths:
           description: "Indicates the serializable data contains an object for which\
             \ no class is present in the JVM running the Activiti engine and therefore\
             \ cannot be deserialized."
+      security:
+      - basicAuth: []
     delete:
       tags:
       - "Tasks"
@@ -5778,6 +5833,8 @@ paths:
             \ is intentionally empty."
         404:
           description: "Indicates the requested task was not found."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/variables/{variableName}:
     get:
       tags:
@@ -5817,6 +5874,8 @@ paths:
           description: "Indicates the requested task was not found or the task doesn’\
             t have a variable with the given name (in the given scope). Status message\
             \ provides additional information."
+      security:
+      - basicAuth: []
     put:
       tags:
       - "Tasks"
@@ -5867,6 +5926,8 @@ paths:
           description: "Indicates the serializable data contains an object for which\
             \ no class is present in the JVM running the Activiti engine and therefore\
             \ cannot be deserialized."
+      security:
+      - basicAuth: []
     delete:
       tags:
       - "Tasks"
@@ -5892,6 +5953,8 @@ paths:
           description: "Indicates the requested task was not found or the task doesn’\
             t have a variable with the given name. Status message contains additional\
             \ information about the error."
+      security:
+      - basicAuth: []
   /runtime/tasks/{taskId}/variables/{variableName}/data:
     get:
       tags:
@@ -5931,6 +5994,8 @@ paths:
           description: "Indicates the requested task was not found or the task doesn’\
             t have a variable with the given name (in the given scope). Status message\
             \ provides additional information."
+      security:
+      - basicAuth: []
 securityDefinitions:
   basicAuth:
     type: "basic"
@@ -6116,14 +6181,14 @@ definitions:
         type: "array"
         items:
           type: "string"
-      messages:
-        type: "array"
-        items:
-          $ref: "#/definitions/Message"
       errors:
         type: "object"
         additionalProperties:
           type: "string"
+      messages:
+        type: "array"
+        items:
+          $ref: "#/definitions/Message"
       itemDefinitions:
         type: "object"
         additionalProperties:
@@ -8118,8 +8183,6 @@ definitions:
         type: "string"
       url:
         type: "string"
-  UserPictureResource:
-    type: "object"
   UserRequest:
     type: "object"
     properties:

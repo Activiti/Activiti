@@ -48,8 +48,7 @@ public class ModelSourceExtraResource extends BaseModelSourceResource {
 			@ApiResponse(code = 404, message = "Indicates the requested model was not found.")
 	})
 	@ApiOperation(value = "Get the extra editor source for a model", tags = {"Models"},
-	notes = "Response body contains the model’s raw editor source. The response’s content-type is set to application/octet-stream, regardless of the content of the source."
-			)
+	notes = "Response body contains the model’s raw editor source. The response’s content-type is set to application/octet-stream, regardless of the content of the source.")
 	@RequestMapping(value = "/repository/models/{modelId}/source-extra", method = RequestMethod.GET)
 	protected @ResponseBody
 	byte[] getModelBytes(@ApiParam(name = "modelId", value="The id of the model.") @PathVariable String modelId, HttpServletResponse response) {

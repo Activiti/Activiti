@@ -77,7 +77,7 @@ public class ProcessInstanceVariableCollectionResource extends BaseVariableColle
 			@ApiResponse(code = 201, message = "Indicates the process instance was found and variable is created."),
 			@ApiResponse(code = 400, message = "Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error."),
 			@ApiResponse(code = 404, message = "Indicates the requested process instance was not found."),
-			@ApiResponse(code = 415, message = "Indicates the serializable data contains an object for which no class is present in the JVM running the Flowable engine and therefore cannot be deserialized.")
+			@ApiResponse(code = 415, message = "Indicates the serializable data contains an object for which no class is present in the JVM running the Activiti engine and therefore cannot be deserialized.")
 
 	})
 	@RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.PUT, produces = "application/json")

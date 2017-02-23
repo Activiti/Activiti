@@ -43,14 +43,15 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 @Api(tags = { "Models" }, description = "Manage Models", authorizations = { @Authorization(value = "basicAuth") })
 public class ModelSourceResource extends BaseModelSourceResource {
 
+	@ApiOperation(value = "Get the editor source for a model", tags = {"Models"},
+			notes = "Response body contains the model’s raw editor source. "
+					+ "The response’s content-type is set to application/octet-stream, regardless of the content of the source.")
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Indicates the model was found and source is returned."),
 			@ApiResponse(code = 404, message = "Indicates the requested model was not found.")
 	})
-	@ApiOperation(value = "Get the editor source for a model", tags = {"Models"},
-	notes = "Response body contains the model’s raw editor source. The response’s content-type is set to application/octet-stream, regardless of the content of the source.")
 	@RequestMapping(value = "/repository/models/{modelId}/source", method = RequestMethod.GET)
-	protected @ResponseBody
+	@ResponseBody protected
 	byte[] getModelBytes(@ApiParam(name = "modelId", value="The id of the model.") @PathVariable String modelId, HttpServletResponse response) {
 		byte[] editorSource = repositoryService.getModelEditorSource(modelId);
 		if (editorSource == null) {
