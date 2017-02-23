@@ -3,7 +3,6 @@ package org.activiti.engine.test.api.runtime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.IdentityLinkType;
@@ -69,7 +68,6 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
                     //.taskId(adhocTask.getId())
                     .or()
                     .taskInvolvedUser("involvedUser")
-                    .taskInvolvedGroups(groups)
                     .taskInvolvedGroupsIn(groups)
                     .endOr()
                     .count());
