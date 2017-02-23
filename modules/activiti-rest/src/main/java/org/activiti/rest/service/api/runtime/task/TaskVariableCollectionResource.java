@@ -89,7 +89,6 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
 	}
 
 
-	//FIXME Multiple Endpoints
 	@ApiOperation(value = "Create new variables on a task", tags = {"Tasks"},
 			notes="## Request body for creating simple (non-binary) variables\n\n"
 					+ " ```JSON\n" + "[\n" + "  {\n" + "    \"name\" : \"myTaskVariable\",\n" + "    \"scope\" : \"local\",\n" + "    \"type\" : \"string\",\n"

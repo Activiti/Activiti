@@ -59,7 +59,6 @@ public class TaskEventResource extends TaskBaseResource {
 		return restResponseFactory.createEventResponse(event);
 	}
 
-	//FIXME Documentation
 	@ApiOperation(value = "Delete an event on a task", tags = {"Tasks"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 204, message = "Indicates the task was found and the events are returned."),

@@ -75,7 +75,6 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
 	}
 
 
-	//FIXME Multiple Endpoint
 	@ApiOperation(value = "Create a new attachment on a task, containing a link to an external resource or an attached file", tags = {"Tasks"},
 			notes="## Create a new attachment on a task, containing a link to an external resource\n\n"
 					+ " ```JSON\n" + "{\n" + "  \"name\":\"Simple attachment\",\n" + "  \"description\":\"Simple attachment description\",\n"

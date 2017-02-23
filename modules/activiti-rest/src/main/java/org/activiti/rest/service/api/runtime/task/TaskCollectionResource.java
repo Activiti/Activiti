@@ -291,7 +291,6 @@ public class TaskCollectionResource extends TaskBaseResource {
 		return getTasksFromQueryRequest(request, requestParams);
 	}
 
-	//FIXME Documentation
 	@ApiOperation(value = "Create Task", tags = {"Tasks"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Indicates request was successful and the tasks are returned"),
