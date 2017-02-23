@@ -1049,7 +1049,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
 
   @Override
-  public HistoricTaskInstanceQuery taskInvolvedGroups(List<String> involvedGroups) {
+  public HistoricTaskInstanceQuery taskInvolvedGroupsIn(List<String> involvedGroups) {
     if (involvedGroups == null || involvedGroups.isEmpty()) {
       throw new ActivitiIllegalArgumentException("Involved groups list is null or empty.");
     }
