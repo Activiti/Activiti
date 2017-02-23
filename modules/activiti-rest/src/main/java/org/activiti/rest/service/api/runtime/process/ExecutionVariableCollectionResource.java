@@ -66,7 +66,6 @@ public class ExecutionVariableCollectionResource extends BaseVariableCollectionR
 		return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, request, response);
 	}
 
-	//FIXME Multiple entry point
 	@ApiOperation(value = "Create variables on an execution", tags = {"Executions"}, nickname = "createExecutionVariable")
 	@ApiResponses(value = {
 			@ApiResponse(code = 201, message = "Indicates the execution was found and variable is created/updated."),
@@ -82,7 +81,6 @@ public class ExecutionVariableCollectionResource extends BaseVariableCollectionR
 		return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, request, response);
 	}
 
-	//FIXME Documentation
 	@ApiOperation(value = "Delete all variables for an execution", tags = {"Executions"})
 	@ApiResponses(value = {
 			@ApiResponse(code = 204, message = "Indicates the execution was found and variables have been deleted."),

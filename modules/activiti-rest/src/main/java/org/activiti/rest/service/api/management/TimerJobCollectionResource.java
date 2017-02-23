@@ -51,7 +51,6 @@ public class TimerJobCollectionResource {
 	@Autowired
 	protected ManagementService managementService;
 
-	//Fixme documentation & real parameters
 	@ApiOperation(value = "Get a list of timer jobs", tags = {"Jobs"}, nickname = "listTimerJobs")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "id", dataType = "string", value = "Only return job with the given id", paramType = "query"),

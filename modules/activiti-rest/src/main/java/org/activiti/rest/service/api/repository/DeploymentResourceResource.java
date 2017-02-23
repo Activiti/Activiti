@@ -56,11 +56,10 @@ public class DeploymentResourceResource {
 			@ApiResponse(code = 200, message = "Indicates both deployment and resource have been found and the resource has been returned."),
 			@ApiResponse(code = 404, message = "Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information.")
 	})
-	//FIXME Why ** ?
+
 	@RequestMapping(value = "/repository/deployments/{deploymentId}/resources/**", method = RequestMethod.GET, produces = "application/json")
 	public DeploymentResourceResponse getDeploymentResource(@ApiParam(name = "deploymentId", value = "The id of the deployment the requested resource is part of.") @PathVariable("deploymentId") String deploymentId, HttpServletRequest request) {
 
-		// Check if deployment exists
 		Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
 		if (deployment == null) {
 			throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.");

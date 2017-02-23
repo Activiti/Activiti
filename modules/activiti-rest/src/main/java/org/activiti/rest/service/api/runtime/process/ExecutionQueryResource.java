@@ -38,7 +38,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "Executions" }, description = "Manage Executions", authorizations = { @Authorization(value = "basicAuth") })
 public class ExecutionQueryResource extends ExecutionBaseResource {
 
-	//FIXME Naming issue ?
 	@ApiOperation(value = "Query executions", tags = {"Executions"}, nickname = "queryExecutions",
 			notes ="The request body can contain all possible filters that can be used in the List executions URL query. On top of these, it’s possible to provide an array of variables and processInstanceVariables to include in the query, with their format described here.\n"
 					+ "\n" + "The general paging and sorting query-parameters can be used for this URL.")

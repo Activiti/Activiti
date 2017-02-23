@@ -52,7 +52,6 @@ public class SuspendedJobCollectionResource {
 	protected ManagementService managementService;
 
 
-	//Fixme documentation & real parameters
 	@ApiOperation(value = "Get a list of suspended jobs", tags = {"Jobs"}, nickname = "listSuspendedJobs")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "id", dataType = "string", value = "Only return job with the given id", paramType = "query"),

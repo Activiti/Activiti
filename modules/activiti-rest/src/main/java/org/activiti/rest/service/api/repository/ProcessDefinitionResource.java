@@ -52,7 +52,6 @@ public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
     return restResponseFactory.createProcessDefinitionResponse(processDefinition);
   }
 
-	  //FIXME Unique endpoint but with multiple actions
 	  @ApiOperation(value = "Execute actions for a process definition (Update category, Suspend or Activate)", tags = {"Process Definitions"},
 	          notes="## Update category for a process definition\n\n"
 	          + " ```JSON\n" + "{\n" + "  \"category\" : \"updatedcategory\"\n" + "} ```"

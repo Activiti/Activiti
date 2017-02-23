@@ -43,7 +43,6 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "Executions" }, description = "Manage Executions", authorizations = { @Authorization(value = "basicAuth") })
 public class ExecutionCollectionResource extends ExecutionBaseResource {
 
-	//FIXME naming issue ?
 	@ApiOperation(value = "List of executions", tags = {"Executions"}, nickname = "getExecutions")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "id", dataType = "string", value = "Only return models with the given version.", paramType = "query"),

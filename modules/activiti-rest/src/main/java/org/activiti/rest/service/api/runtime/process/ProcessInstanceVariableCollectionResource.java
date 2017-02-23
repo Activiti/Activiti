@@ -56,7 +56,6 @@ public class ProcessInstanceVariableCollectionResource extends BaseVariableColle
 		return processVariables(execution, scope, RestResponseFactory.VARIABLE_PROCESS);
 	}
 
-	//FIXME Multiple entry point
 	@ApiOperation(value = "Update a single or binary variable or multiple variables on a process instance", tags = { "Process Instances" }, nickname = "createOrUpdateProcessVariable",
 			notes="## Update multiples variables\n\n"
 					+ " ```JSON\n" + "[\n" + "   {\n" + "      \"name\":\"intProcVar\"\n" + "      \"type\":\"integer\"\n" + "      \"value\":123\n" + "   },\n"
@@ -87,7 +86,6 @@ public class ProcessInstanceVariableCollectionResource extends BaseVariableColle
 		return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_PROCESS, request, response);
 	}
 
-	//FIXME Multiple entry point
 	@ApiOperation(value = "Create variables or new binary variable on a process instance", tags = { "Process Instances" }, nickname = "createProcessInstanceVariable",
 			notes="## Update multiples variables\n\n"
 					+ " ```JSON\n" + "[\n" + "   {\n" + "      \"name\":\"intProcVar\"\n" + "      \"type\":\"integer\"\n" + "      \"value\":123\n" + "   },\n"
@@ -113,7 +111,6 @@ public class ProcessInstanceVariableCollectionResource extends BaseVariableColle
 		return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_PROCESS, request, response);
 	}
 
-	//FIXME Documentation
 	@ApiOperation(value = "Delete all variables", tags = {"Process Instances"}, nickname = "deleteLocalProcessVariable")
 	@ApiResponses(value = {
 			@ApiResponse(code = 204, message = "Indicates variables were found and have been deleted. Response-body is intentionally empty."),

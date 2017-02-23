@@ -51,7 +51,6 @@ public class JobCollectionResource {
   @Autowired
   protected ManagementService managementService;
 
-  //FIXME documentation & real parameters
   @ApiOperation(value = "Get a list of jobs", tags = {"Jobs"}, nickname = "listJobs")
   @ApiImplicitParams({
           @ApiImplicitParam(name = "id", dataType = "string", value = "Only return job with the given id", paramType = "query"),

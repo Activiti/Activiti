@@ -52,7 +52,6 @@ public class DeadLetterJobCollectionResource {
 	protected ManagementService managementService;
 
 
-	//FIXME documentation & real parameters
 	@ApiOperation(value = "Get a list of deadletter jobs", tags = {"Jobs"}, nickname = "listDeadLetterJobs")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "id", dataType = "string", value = "Only return job with the given id", paramType = "query"),

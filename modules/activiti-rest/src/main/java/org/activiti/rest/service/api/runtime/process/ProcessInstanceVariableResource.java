@@ -103,7 +103,6 @@ public class ProcessInstanceVariableResource extends BaseExecutionVariableResour
 		return result;
 	}
 
-	//FIXME Documentation
 	@ApiOperation(value = "Delete a variable", tags = {"Process Instances"}, nickname = "deleteProcessInstanceVariable")
 	@ApiResponses(value = {
 			@ApiResponse(code = 204, message = "Indicates the variable was found and has been deleted. Response-body is intentionally empty."),

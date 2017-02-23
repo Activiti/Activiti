@@ -106,7 +106,6 @@ public class ExecutionVariableResource extends BaseExecutionVariableResource {
     return result;
   }
 
-//FIXME Documentation
   @ApiOperation(value = "Delete a variable for an execution", tags = {"Executions"}, nickname = "deletedExecutionVariable")
   @ApiResponses(value = {
           @ApiResponse(code = 204, message = "Indicates both the execution and variable were found and variable has been deleted."),

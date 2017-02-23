@@ -39,79 +39,79 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "History" }, description = "Manage History", authorizations = { @Authorization(value = "basicAuth") })
 public class HistoricActivityInstanceCollectionResource extends HistoricActivityInstanceBaseResource {
 
-	
-	
-	  @ApiOperation(value = "Get historic activity instances", tags = { "History" }, nickname = "getHistoricActivityInstances")
-	  @ApiResponses(value = {
-	          @ApiResponse(code = 200, message = "Indicates that historic activity instances could be queried."),
-	          @ApiResponse(code = 400, message = "Indicates an parameter was passed in the wrong format. The status-message contains additional information.") })
-	  @ApiImplicitParams({
-	          @ApiImplicitParam(name = "activityId", dataType = "string", value = "An id of the activity instance.", paramType = "query"),
-	          @ApiImplicitParam(name = "activityInstanceId", dataType = "string", value = "An id of the historic activity instance.", paramType = "query"),
-	          @ApiImplicitParam(name = "activityName",  dataType = "string", value = "The name of the historic activity instance.", paramType = "query"),
-	          @ApiImplicitParam(name = "activityType",  dataType = "string", value = "The element type of the historic activity instance.", paramType = "query"),
-	          @ApiImplicitParam(name = "executionId",  dataType = "string", value = "The execution id of the historic activity instance.", paramType = "query"),
-	          @ApiImplicitParam(name = "finished",  dataType = "boolean", value = "Indication if the historic activity instance is finished.", paramType = "query"),
-	          @ApiImplicitParam(name = "taskAssignee",  dataType = "string", value = "The assignee of the historic activity instance.", paramType = "query"),
-	          @ApiImplicitParam(name = "processInstanceId",  dataType = "string", value = "The process instance id of the historic activity instance.", paramType = "query"),
-	          @ApiImplicitParam(name = "processDefinitionId",  dataType = "string", value = "The process definition id of the historic activity instance.", paramType = "query"),
-	          @ApiImplicitParam(name = "tenantId",  dataType = "string", value = "Only return instances with the given tenantId.", paramType = "query"),
-	          @ApiImplicitParam(name = "tenantIdLike",  dataType = "string", value = "Only return instances with a tenantId like the given value.", paramType = "query"),
-	          @ApiImplicitParam(name = "withoutTenantId",  dataType = "boolean", value = "If true, only returns instances without a tenantId set. If false, the withoutTenantId parameter is ignored.", paramType = "query")
-	  })
-  @RequestMapping(value = "/history/historic-activity-instances", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getHistoricActivityInstances(@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
-    HistoricActivityInstanceQueryRequest query = new HistoricActivityInstanceQueryRequest();
 
-    // Populate query based on request
-    if (allRequestParams.get("activityId") != null) {
-      query.setActivityId(allRequestParams.get("activityId"));
-    }
 
-    if (allRequestParams.get("activityInstanceId") != null) {
-      query.setActivityInstanceId(allRequestParams.get("activityInstanceId"));
-    }
+	@ApiOperation(value = "Get historic activity instances", tags = { "History" }, nickname = "getHistoricActivityInstances")
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Indicates that historic activity instances could be queried."),
+			@ApiResponse(code = 400, message = "Indicates an parameter was passed in the wrong format. The status-message contains additional information.") })
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "activityId", dataType = "string", value = "An id of the activity instance.", paramType = "query"),
+		@ApiImplicitParam(name = "activityInstanceId", dataType = "string", value = "An id of the historic activity instance.", paramType = "query"),
+		@ApiImplicitParam(name = "activityName",  dataType = "string", value = "The name of the historic activity instance.", paramType = "query"),
+		@ApiImplicitParam(name = "activityType",  dataType = "string", value = "The element type of the historic activity instance.", paramType = "query"),
+		@ApiImplicitParam(name = "executionId",  dataType = "string", value = "The execution id of the historic activity instance.", paramType = "query"),
+		@ApiImplicitParam(name = "finished",  dataType = "boolean", value = "Indication if the historic activity instance is finished.", paramType = "query"),
+		@ApiImplicitParam(name = "taskAssignee",  dataType = "string", value = "The assignee of the historic activity instance.", paramType = "query"),
+		@ApiImplicitParam(name = "processInstanceId",  dataType = "string", value = "The process instance id of the historic activity instance.", paramType = "query"),
+		@ApiImplicitParam(name = "processDefinitionId",  dataType = "string", value = "The process definition id of the historic activity instance.", paramType = "query"),
+		@ApiImplicitParam(name = "tenantId",  dataType = "string", value = "Only return instances with the given tenantId.", paramType = "query"),
+		@ApiImplicitParam(name = "tenantIdLike",  dataType = "string", value = "Only return instances with a tenantId like the given value.", paramType = "query"),
+		@ApiImplicitParam(name = "withoutTenantId",  dataType = "boolean", value = "If true, only returns instances without a tenantId set. If false, the withoutTenantId parameter is ignored.", paramType = "query")
+	})
+	@RequestMapping(value = "/history/historic-activity-instances", method = RequestMethod.GET, produces = "application/json")
+	public DataResponse getHistoricActivityInstances(@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+		HistoricActivityInstanceQueryRequest query = new HistoricActivityInstanceQueryRequest();
 
-    if (allRequestParams.get("activityName") != null) {
-      query.setActivityName(allRequestParams.get("activityName"));
-    }
+		// Populate query based on request
+		if (allRequestParams.get("activityId") != null) {
+			query.setActivityId(allRequestParams.get("activityId"));
+		}
 
-    if (allRequestParams.get("activityType") != null) {
-      query.setActivityType(allRequestParams.get("activityType"));
-    }
+		if (allRequestParams.get("activityInstanceId") != null) {
+			query.setActivityInstanceId(allRequestParams.get("activityInstanceId"));
+		}
 
-    if (allRequestParams.get("executionId") != null) {
-      query.setExecutionId(allRequestParams.get("executionId"));
-    }
+		if (allRequestParams.get("activityName") != null) {
+			query.setActivityName(allRequestParams.get("activityName"));
+		}
 
-    if (allRequestParams.get("finished") != null) {
-      query.setFinished(Boolean.valueOf(allRequestParams.get("finished")));
-    }
+		if (allRequestParams.get("activityType") != null) {
+			query.setActivityType(allRequestParams.get("activityType"));
+		}
 
-    if (allRequestParams.get("taskAssignee") != null) {
-      query.setTaskAssignee(allRequestParams.get("taskAssignee"));
-    }
+		if (allRequestParams.get("executionId") != null) {
+			query.setExecutionId(allRequestParams.get("executionId"));
+		}
 
-    if (allRequestParams.get("processInstanceId") != null) {
-      query.setProcessInstanceId(allRequestParams.get("processInstanceId"));
-    }
+		if (allRequestParams.get("finished") != null) {
+			query.setFinished(Boolean.valueOf(allRequestParams.get("finished")));
+		}
 
-    if (allRequestParams.get("processDefinitionId") != null) {
-      query.setProcessDefinitionId(allRequestParams.get("processDefinitionId"));
-    }
+		if (allRequestParams.get("taskAssignee") != null) {
+			query.setTaskAssignee(allRequestParams.get("taskAssignee"));
+		}
 
-    if (allRequestParams.get("tenantId") != null) {
-      query.setTenantId(allRequestParams.get("tenantId"));
-    }
+		if (allRequestParams.get("processInstanceId") != null) {
+			query.setProcessInstanceId(allRequestParams.get("processInstanceId"));
+		}
 
-    if (allRequestParams.get("tenantIdLike") != null) {
-      query.setTenantIdLike(allRequestParams.get("tenantIdLike"));
-    }
+		if (allRequestParams.get("processDefinitionId") != null) {
+			query.setProcessDefinitionId(allRequestParams.get("processDefinitionId"));
+		}
 
-    if (allRequestParams.get("withoutTenantId") != null) {
-      query.setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
-    }
+		if (allRequestParams.get("tenantId") != null) {
+			query.setTenantId(allRequestParams.get("tenantId"));
+		}
 
-    return getQueryResponse(query, allRequestParams);
-  }
+		if (allRequestParams.get("tenantIdLike") != null) {
+			query.setTenantIdLike(allRequestParams.get("tenantIdLike"));
+		}
+
+		if (allRequestParams.get("withoutTenantId") != null) {
+			query.setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
+		}
+
+		return getQueryResponse(query, allRequestParams);
+	}
 }

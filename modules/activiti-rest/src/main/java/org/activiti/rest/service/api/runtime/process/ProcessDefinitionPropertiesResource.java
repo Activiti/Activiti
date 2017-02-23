@@ -47,7 +47,6 @@ public class ProcessDefinitionPropertiesResource {
   @Autowired
   protected ObjectMapper objectMapper;
 
-  //FIXME
   /* @ApiOperation(value = "Get start form properties", tags = {"Process Definitions"})
    @ApiResponses(value = {
            @ApiResponse(code = 200, message = "Indicates request was successful and the properties are returned"),

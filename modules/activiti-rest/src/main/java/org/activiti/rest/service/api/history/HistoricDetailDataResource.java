@@ -57,7 +57,7 @@ public class HistoricDetailDataResource {
 	@ApiResponses(value = {
 			@ApiResponse(code = 200, message = "Indicates the historic detail instance was found and the requested variable data is returned."),
 			@ApiResponse(code = 404, message = "Indicates the requested historic detail instance was not found or the historic detail instance doesn’t have a variable with the given name or the variable doesn’t have a binary stream available. Status message provides additional information.")
-			})
+	})
 	@ApiOperation(value = "Get the binary data for a historic detail variable", tags = {"History"}, nickname = "getHistoricDetailVariableData",
 	notes = "The response body contains the binary value of the variable. When the variable is of type binary, the content-type of the response is set to application/octet-stream, regardless of the content of the variable or the request accept-type header. In case of serializable, application/x-java-serialized-object is used as content-type.")
 	@RequestMapping(value = "/history/historic-detail/{detailId}/data", method = RequestMethod.GET)
