@@ -52,85 +52,85 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "Groups" }, description = "Manage Groups", authorizations = { @Authorization(value = "basicAuth") })
 public class GroupCollectionResource {
 
-	protected static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
+  protected static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
 
-	static {
-		properties.put("id", GroupQueryProperty.GROUP_ID);
-		properties.put("name", GroupQueryProperty.NAME);
-		properties.put("type", GroupQueryProperty.TYPE);
-	}
+  static {
+    properties.put("id", GroupQueryProperty.GROUP_ID);
+    properties.put("name", GroupQueryProperty.NAME);
+    properties.put("type", GroupQueryProperty.TYPE);
+  }
 
-	@Autowired
-	protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-	@Autowired
-	protected IdentityService identityService;
+  @Autowired
+  protected IdentityService identityService;
 
-	@ApiOperation(value = "Get a list of groups", tags = {"Groups"}, produces = "application/json")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "id", dataType = "string", value = "Only return group with the given id", paramType = "query"),
-		@ApiImplicitParam(name = "name", dataType = "string", value = "Only return groups with the given name", paramType = "query"),
-		@ApiImplicitParam(name = "type", dataType = "string", value = "Only return groups with the given type", paramType = "query"),
-		@ApiImplicitParam(name = "nameLike", dataType = "string", value = "Only return groups with a name like the given value. Use % as wildcard-character.", paramType = "query"),
-		@ApiImplicitParam(name = "member", dataType = "string", value = "Only return groups which have a member with the given username.", paramType = "query"),
-		@ApiImplicitParam(name = "potentialStarter", dataType = "string", value = "Only return groups which members are potential starters for a process-definition with the given id.", paramType = "query"),
-		@ApiImplicitParam(name = "sort", dataType = "string", value = "Property to sort on, to be used together with the order.", allowableValues ="id,name,type", paramType = "query"),
-	})
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates the requested groups were returned.")
-	})
-	@RequestMapping(value = "/identity/groups", method = RequestMethod.GET, produces = "application/json")
-	public DataResponse getGroups(@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
-		GroupQuery query = identityService.createGroupQuery();
+  @ApiOperation(value = "Get a list of groups", tags = {"Groups"}, produces = "application/json")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "id", dataType = "string", value = "Only return group with the given id", paramType = "query"),
+    @ApiImplicitParam(name = "name", dataType = "string", value = "Only return groups with the given name", paramType = "query"),
+    @ApiImplicitParam(name = "type", dataType = "string", value = "Only return groups with the given type", paramType = "query"),
+    @ApiImplicitParam(name = "nameLike", dataType = "string", value = "Only return groups with a name like the given value. Use % as wildcard-character.", paramType = "query"),
+    @ApiImplicitParam(name = "member", dataType = "string", value = "Only return groups which have a member with the given username.", paramType = "query"),
+    @ApiImplicitParam(name = "potentialStarter", dataType = "string", value = "Only return groups which members are potential starters for a process-definition with the given id.", paramType = "query"),
+    @ApiImplicitParam(name = "sort", dataType = "string", value = "Property to sort on, to be used together with the order.", allowableValues ="id,name,type", paramType = "query"),
+  })
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the requested groups were returned.")
+  })
+  @RequestMapping(value = "/identity/groups", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getGroups(@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+    GroupQuery query = identityService.createGroupQuery();
 
-		if (allRequestParams.containsKey("id")) {
-			query.groupId(allRequestParams.get("id"));
-		}
-		if (allRequestParams.containsKey("name")) {
-			query.groupName(allRequestParams.get("name"));
-		}
-		if (allRequestParams.containsKey("nameLike")) {
-			query.groupNameLike(allRequestParams.get("nameLike"));
-		}
-		if (allRequestParams.containsKey("type")) {
-			query.groupType(allRequestParams.get("type"));
-		}
-		if (allRequestParams.containsKey("member")) {
-			query.groupMember(allRequestParams.get("member"));
-		}
-		if (allRequestParams.containsKey("potentialStarter")) {
-			query.potentialStarter(allRequestParams.get("potentialStarter"));
-		}
+    if (allRequestParams.containsKey("id")) {
+      query.groupId(allRequestParams.get("id"));
+    }
+    if (allRequestParams.containsKey("name")) {
+      query.groupName(allRequestParams.get("name"));
+    }
+    if (allRequestParams.containsKey("nameLike")) {
+      query.groupNameLike(allRequestParams.get("nameLike"));
+    }
+    if (allRequestParams.containsKey("type")) {
+      query.groupType(allRequestParams.get("type"));
+    }
+    if (allRequestParams.containsKey("member")) {
+      query.groupMember(allRequestParams.get("member"));
+    }
+    if (allRequestParams.containsKey("potentialStarter")) {
+      query.potentialStarter(allRequestParams.get("potentialStarter"));
+    }
 
-		return new GroupPaginateList(restResponseFactory).paginateList(allRequestParams, query, "id", properties);
-	}
+    return new GroupPaginateList(restResponseFactory).paginateList(allRequestParams, query, "id", properties);
+  }
 
-	@ApiOperation(value = "Create a group", tags = {"Groups"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "Indicates the group was created."),
-			@ApiResponse(code = 400, message = "Indicates the id of the group was missing.")
-	})
-	@RequestMapping(value = "/identity/groups", method = RequestMethod.POST, produces = "application/json")
-	public GroupResponse createGroup(@RequestBody GroupRequest groupRequest, HttpServletRequest httpRequest, HttpServletResponse response) {
-		if (groupRequest.getId() == null) {
-			throw new ActivitiIllegalArgumentException("Id cannot be null.");
-		}
+  @ApiOperation(value = "Create a group", tags = {"Groups"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 201, message = "Indicates the group was created."),
+      @ApiResponse(code = 400, message = "Indicates the id of the group was missing.")
+  })
+  @RequestMapping(value = "/identity/groups", method = RequestMethod.POST, produces = "application/json")
+  public GroupResponse createGroup(@RequestBody GroupRequest groupRequest, HttpServletRequest httpRequest, HttpServletResponse response) {
+    if (groupRequest.getId() == null) {
+      throw new ActivitiIllegalArgumentException("Id cannot be null.");
+    }
 
-		// Check if a user with the given ID already exists so we return a
-		// CONFLICT
-		if (identityService.createGroupQuery().groupId(groupRequest.getId()).count() > 0) {
-			throw new ActivitiConflictException("A group with id '" + groupRequest.getId() + "' already exists.");
-		}
+    // Check if a user with the given ID already exists so we return a
+    // CONFLICT
+    if (identityService.createGroupQuery().groupId(groupRequest.getId()).count() > 0) {
+      throw new ActivitiConflictException("A group with id '" + groupRequest.getId() + "' already exists.");
+    }
 
-		Group created = identityService.newGroup(groupRequest.getId());
-		created.setId(groupRequest.getId());
-		created.setName(groupRequest.getName());
-		created.setType(groupRequest.getType());
-		identityService.saveGroup(created);
+    Group created = identityService.newGroup(groupRequest.getId());
+    created.setId(groupRequest.getId());
+    created.setName(groupRequest.getName());
+    created.setType(groupRequest.getType());
+    identityService.saveGroup(created);
 
-		response.setStatus(HttpStatus.CREATED.value());
+    response.setStatus(HttpStatus.CREATED.value());
 
-		return restResponseFactory.createGroupResponse(created);
-	}
+    return restResponseFactory.createGroupResponse(created);
+  }
 
 }

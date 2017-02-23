@@ -38,16 +38,16 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "Executions" }, description = "Manage Executions", authorizations = { @Authorization(value = "basicAuth") })
 public class ExecutionQueryResource extends ExecutionBaseResource {
 
-	@ApiOperation(value = "Query executions", tags = {"Executions"}, nickname = "queryExecutions",
-			notes ="The request body can contain all possible filters that can be used in the List executions URL query. On top of these, it’s possible to provide an array of variables and processInstanceVariables to include in the query, with their format described here.\n"
-					+ "\n" + "The general paging and sorting query-parameters can be used for this URL.")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates request was successful and the executions are returned."),
-			@ApiResponse(code = 404, message = "Indicates a parameter was passed in the wrong format . The status-message contains additional information.")
-	})
-	@RequestMapping(value = "/query/executions", method = RequestMethod.POST, produces = "application/json")
-	public DataResponse queryProcessInstances(@RequestBody ExecutionQueryRequest queryRequest,@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+  @ApiOperation(value = "Query executions", tags = {"Executions"}, nickname = "queryExecutions",
+      notes ="The request body can contain all possible filters that can be used in the List executions URL query. On top of these, it’s possible to provide an array of variables and processInstanceVariables to include in the query, with their format described here.\n"
+          + "\n" + "The general paging and sorting query-parameters can be used for this URL.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates request was successful and the executions are returned."),
+      @ApiResponse(code = 404, message = "Indicates a parameter was passed in the wrong format . The status-message contains additional information.")
+  })
+  @RequestMapping(value = "/query/executions", method = RequestMethod.POST, produces = "application/json")
+  public DataResponse queryProcessInstances(@RequestBody ExecutionQueryRequest queryRequest,@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
 
-		return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/query/executions", ""));
-	}
+    return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/query/executions", ""));
+  }
 }

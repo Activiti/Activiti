@@ -42,36 +42,36 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "History" }, description = "Manage History", authorizations = { @Authorization(value = "basicAuth") })
 public class HistoricProcessInstanceResource {
 
-	@Autowired
-	protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-	@Autowired
-	protected HistoryService historyService;
+  @Autowired
+  protected HistoryService historyService;
 
-	@ApiOperation(value = "Get a historic process instance", tags = { "History" }, nickname = "getHistoricProcessInstance")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates that the historic process instances could be found."),
-			@ApiResponse(code = 404, message = "Indicates that the historic process instances could not be found.") })
-	@RequestMapping(value = "/history/historic-process-instances/{processInstanceId}", method = RequestMethod.GET, produces = "application/json")
-	public HistoricProcessInstanceResponse getProcessInstance(@ApiParam(name = "processInstanceId") @PathVariable String processInstanceId, HttpServletRequest request) {
-		return restResponseFactory.createHistoricProcessInstanceResponse(getHistoricProcessInstanceFromRequest(processInstanceId));
-	}
+  @ApiOperation(value = "Get a historic process instance", tags = { "History" }, nickname = "getHistoricProcessInstance")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates that the historic process instances could be found."),
+      @ApiResponse(code = 404, message = "Indicates that the historic process instances could not be found.") })
+  @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}", method = RequestMethod.GET, produces = "application/json")
+  public HistoricProcessInstanceResponse getProcessInstance(@ApiParam(name = "processInstanceId") @PathVariable String processInstanceId, HttpServletRequest request) {
+    return restResponseFactory.createHistoricProcessInstanceResponse(getHistoricProcessInstanceFromRequest(processInstanceId));
+  }
 
-	@ApiOperation(value = " Delete a historic process instance", tags = { "History" }, nickname = "deleteHitoricProcessInstance")
-	@ApiResponses(value = {
-			@ApiResponse(code = 204, message = "Indicates that the historic process instance was deleted."),
-			@ApiResponse(code = 404, message = "Indicates that the historic process instance could not be found.") })
-	@RequestMapping(value = "/history/historic-process-instances/{processInstanceId}", method = RequestMethod.DELETE)
-	public void deleteProcessInstance(@ApiParam(name="processInstanceId") @PathVariable String processInstanceId, HttpServletResponse response) {
-		historyService.deleteHistoricProcessInstance(processInstanceId);
-		response.setStatus(HttpStatus.NO_CONTENT.value());
-	}
+  @ApiOperation(value = " Delete a historic process instance", tags = { "History" }, nickname = "deleteHitoricProcessInstance")
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates that the historic process instance was deleted."),
+      @ApiResponse(code = 404, message = "Indicates that the historic process instance could not be found.") })
+  @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}", method = RequestMethod.DELETE)
+  public void deleteProcessInstance(@ApiParam(name="processInstanceId") @PathVariable String processInstanceId, HttpServletResponse response) {
+    historyService.deleteHistoricProcessInstance(processInstanceId);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
 
-	protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {
-		HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-		if (processInstance == null) {
-			throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", HistoricProcessInstance.class);
-		}
-		return processInstance;
-	}
+  protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {
+    HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+    if (processInstance == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", HistoricProcessInstance.class);
+    }
+    return processInstance;
+  }
 }

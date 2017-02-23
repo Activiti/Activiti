@@ -48,8 +48,8 @@ public class ExecutionVariableDataResource extends BaseExecutionVariableResource
 
   @RequestMapping(value = "/runtime/executions/{executionId}/variables/{variableName}/data", method = RequestMethod.GET)
   @ApiResponses(value = {
-          @ApiResponse(code = 200, message = "Indicates the execution was found and the requested variables are returned."),
-          @ApiResponse(code = 404, message = "Indicates the requested execution was not found or the task doesn’t have a variable with the given name (in the given scope). Status message provides additional information.")
+      @ApiResponse(code = 200, message = "Indicates the execution was found and the requested variables are returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested execution was not found or the task doesn’t have a variable with the given name (in the given scope). Status message provides additional information.")
   })
   @ApiOperation(value = "Get the binary data for an execution", tags = {"Executions"}, nickname = "getExecutionVariableData")
   public @ResponseBody

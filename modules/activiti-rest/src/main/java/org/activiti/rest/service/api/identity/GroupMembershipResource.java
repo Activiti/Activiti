@@ -38,11 +38,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "Groups" }, description = "Manage Groups", authorizations = { @Authorization(value = "basicAuth") })
 public class GroupMembershipResource extends BaseGroupResource {
 
-	@ApiOperation(value = "Delete a member from a group", tags = {"Groups"})
-	  @ApiResponses(value = {
-	          @ApiResponse(code = 204, message = "Indicates the group was found and the member has been deleted. The response body is left empty intentionally."),
-	          @ApiResponse(code = 404, message = "Indicates the requested group was not found or that the user is not a member of the group. The status description contains additional information about the error.")
-	  })
+  @ApiOperation(value = "Delete a member from a group", tags = {"Groups"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the group was found and the member has been deleted. The response body is left empty intentionally."),
+      @ApiResponse(code = 404, message = "Indicates the requested group was not found or that the user is not a member of the group. The status description contains additional information about the error.")
+  })
   @RequestMapping(value = "/identity/groups/{groupId}/members/{userId}", method = RequestMethod.DELETE)
   public void deleteMembership(@ApiParam(name = "groupId", value="The id of the group to remove a member from.") @PathVariable("groupId") String groupId,@ApiParam(name = "userId", value="The id of the user to remove.") @PathVariable("userId") String userId, HttpServletRequest request, HttpServletResponse response) {
 

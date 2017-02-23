@@ -41,25 +41,25 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "History" }, description = "Manage History", authorizations = { @Authorization(value = "basicAuth") })
 public class HistoricProcessInstanceIdentityLinkCollectionResource {
 
-	@Autowired
-	protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-	@Autowired
-	protected HistoryService historyService;
+  @Autowired
+  protected HistoryService historyService;
 
-	@ApiOperation(value = "Get the identity links of a historic process instance", tags = { "History" }, notes = "")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates request was successful and the identity links are returned", response = HistoricIdentityLinkResponse.class, responseContainer="List"),
-			@ApiResponse(code = 404, message = "Indicates the process instance could not be found..") })
-	@RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
-	public List<HistoricIdentityLinkResponse> getProcessIdentityLinks(@ApiParam(name="processInstanceId") @PathVariable String processInstanceId, HttpServletRequest request) {
+  @ApiOperation(value = "Get the identity links of a historic process instance", tags = { "History" }, notes = "")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates request was successful and the identity links are returned", response = HistoricIdentityLinkResponse.class, responseContainer="List"),
+      @ApiResponse(code = 404, message = "Indicates the process instance could not be found..") })
+  @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
+  public List<HistoricIdentityLinkResponse> getProcessIdentityLinks(@ApiParam(name="processInstanceId") @PathVariable String processInstanceId, HttpServletRequest request) {
 
-		List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForProcessInstance(processInstanceId);
+    List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForProcessInstance(processInstanceId);
 
-		if (identityLinks != null) {
-			return restResponseFactory.createHistoricIdentityLinkResponseList(identityLinks);
-		}
+    if (identityLinks != null) {
+      return restResponseFactory.createHistoricIdentityLinkResponseList(identityLinks);
+    }
 
-		return new ArrayList<HistoricIdentityLinkResponse>();
-	}
+    return new ArrayList<HistoricIdentityLinkResponse>();
+  }
 }

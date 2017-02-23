@@ -49,41 +49,41 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "Process Instances" }, description = "Manage Process Instances", authorizations = { @Authorization(value = "basicAuth") })
 public class ProcessInstanceDiagramResource extends BaseProcessInstanceResource {
 
-	@Autowired
-	protected RepositoryService repositoryService;
+  @Autowired
+  protected RepositoryService repositoryService;
 
-	@Autowired
-	protected ProcessEngineConfiguration processEngineConfiguration;
+  @Autowired
+  protected ProcessEngineConfiguration processEngineConfiguration;
 
-	@ApiOperation(value = "Get diagram for a process instance", tags = { "Process Instances" })
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates the process instance was found and the diagram was returned."),
-			@ApiResponse(code = 400, message = "Indicates the requested process instance was not found but the process doesn’t contain any graphical information (BPMN:DI) and no diagram can be created."),
-			@ApiResponse(code = 404, message = "Indicates the requested process instance was not found.")
-	})
-	@RequestMapping(value = "/runtime/process-instances/{processInstanceId}/diagram", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> getProcessInstanceDiagram(@ApiParam(name = "processInstanceId", value="The id of the process instance to get the diagram for.") @PathVariable String processInstanceId, HttpServletResponse response) {
-		ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
+  @ApiOperation(value = "Get diagram for a process instance", tags = { "Process Instances" })
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the process instance was found and the diagram was returned."),
+      @ApiResponse(code = 400, message = "Indicates the requested process instance was not found but the process doesn’t contain any graphical information (BPMN:DI) and no diagram can be created."),
+      @ApiResponse(code = 404, message = "Indicates the requested process instance was not found.")
+  })
+  @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/diagram", method = RequestMethod.GET)
+  public ResponseEntity<byte[]> getProcessInstanceDiagram(@ApiParam(name = "processInstanceId", value="The id of the process instance to get the diagram for.") @PathVariable String processInstanceId, HttpServletResponse response) {
+    ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
-		ProcessDefinition pde = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+    ProcessDefinition pde = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
 
-		if (pde != null && pde.hasGraphicalNotation()) {
-			BpmnModel bpmnModel = repositoryService.getBpmnModel(pde.getId());
-			ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
-			InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstance.getId()), Collections.<String> emptyList(),
-					processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(), 
-					processEngineConfiguration.getAnnotationFontName(), processEngineConfiguration.getClassLoader(), 1.0);
+    if (pde != null && pde.hasGraphicalNotation()) {
+      BpmnModel bpmnModel = repositoryService.getBpmnModel(pde.getId());
+      ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
+      InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstance.getId()), Collections.<String> emptyList(),
+          processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(), 
+          processEngineConfiguration.getAnnotationFontName(), processEngineConfiguration.getClassLoader(), 1.0);
 
-			HttpHeaders responseHeaders = new HttpHeaders();
-			responseHeaders.set("Content-Type", "image/png");
-			try {
-				return new ResponseEntity<byte[]>(IOUtils.toByteArray(resource), responseHeaders, HttpStatus.OK);
-			} catch (Exception e) {
-				throw new ActivitiIllegalArgumentException("Error exporting diagram", e);
-			}
+      HttpHeaders responseHeaders = new HttpHeaders();
+      responseHeaders.set("Content-Type", "image/png");
+      try {
+        return new ResponseEntity<byte[]>(IOUtils.toByteArray(resource), responseHeaders, HttpStatus.OK);
+      } catch (Exception e) {
+        throw new ActivitiIllegalArgumentException("Error exporting diagram", e);
+      }
 
-		} else {
-			throw new ActivitiIllegalArgumentException("Process instance with id '" + processInstance.getId() + "' has no graphical notation defined.");
-		}
-	}
+    } else {
+      throw new ActivitiIllegalArgumentException("Process instance with id '" + processInstance.getId() + "' has no graphical notation defined.");
+    }
+  }
 }

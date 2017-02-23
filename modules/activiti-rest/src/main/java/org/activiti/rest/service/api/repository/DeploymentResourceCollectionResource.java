@@ -42,30 +42,30 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "Deployment" }, description = "Manage Deployment", authorizations = { @Authorization(value = "basicAuth") })
 public class DeploymentResourceCollectionResource {
 
-	@Autowired
-	protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-	@Autowired
-	protected ContentTypeResolver contentTypeResolver;
+  @Autowired
+  protected ContentTypeResolver contentTypeResolver;
 
-	@Autowired
-	protected RepositoryService repositoryService;
+  @Autowired
+  protected RepositoryService repositoryService;
 
-	@ApiOperation(value = "List resources in a deployment", tags = {"Deployment"}, notes="The dataUrl property in the resulting JSON for a single resource contains the actual URL to use for retrieving the binary resource.")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates the deployment was found and the resource list has been returned."),
-			@ApiResponse(code = 404, message = "Indicates the requested deployment was not found.")
-	})
-	@RequestMapping(value = "/repository/deployments/{deploymentId}/resources", method = RequestMethod.GET, produces = "application/json")
-	public List<DeploymentResourceResponse> getDeploymentResources(@ApiParam(name = "deploymentId", value = "The id of the deployment to get the resources for.") @PathVariable String deploymentId, HttpServletRequest request) {
-		// Check if deployment exists
-		Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
-		if (deployment == null) {
-			throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
-		}
+  @ApiOperation(value = "List resources in a deployment", tags = {"Deployment"}, notes="The dataUrl property in the resulting JSON for a single resource contains the actual URL to use for retrieving the binary resource.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the deployment was found and the resource list has been returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested deployment was not found.")
+  })
+  @RequestMapping(value = "/repository/deployments/{deploymentId}/resources", method = RequestMethod.GET, produces = "application/json")
+  public List<DeploymentResourceResponse> getDeploymentResources(@ApiParam(name = "deploymentId", value = "The id of the deployment to get the resources for.") @PathVariable String deploymentId, HttpServletRequest request) {
+    // Check if deployment exists
+    Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+    if (deployment == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
+    }
 
-		List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
+    List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
 
-		return restResponseFactory.createDeploymentResourceResponseList(deploymentId, resourceList, contentTypeResolver);
-	}
+    return restResponseFactory.createDeploymentResourceResponseList(deploymentId, resourceList, contentTypeResolver);
+  }
 }

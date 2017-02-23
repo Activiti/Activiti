@@ -53,131 +53,131 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Api(tags = { "Tasks" }, description = "Manage Tasks", authorizations = { @Authorization(value = "basicAuth") })
 public class TaskAttachmentCollectionResource extends TaskBaseResource {
 
-	@Autowired
-	protected ObjectMapper objectMapper;
+  @Autowired
+  protected ObjectMapper objectMapper;
 
 
-	@ApiOperation(value = "Get all attachments on a task", tags = {"Tasks"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates the task was found and the attachments are returned."),
-			@ApiResponse(code = 404, message = "Indicates the requested task was not found.")
-	})  
-	@RequestMapping(value = "/runtime/tasks/{taskId}/attachments", method = RequestMethod.GET, produces = "application/json")
-	public List<AttachmentResponse> getAttachments(@ApiParam(name = "taskId", value="The id of the task to get the attachments for.") @PathVariable String taskId, HttpServletRequest request) {
-		List<AttachmentResponse> result = new ArrayList<AttachmentResponse>();
-		HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
+  @ApiOperation(value = "Get all attachments on a task", tags = {"Tasks"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the task was found and the attachments are returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested task was not found.")
+  })  
+  @RequestMapping(value = "/runtime/tasks/{taskId}/attachments", method = RequestMethod.GET, produces = "application/json")
+  public List<AttachmentResponse> getAttachments(@ApiParam(name = "taskId", value="The id of the task to get the attachments for.") @PathVariable String taskId, HttpServletRequest request) {
+    List<AttachmentResponse> result = new ArrayList<AttachmentResponse>();
+    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
-		for (Attachment attachment : taskService.getTaskAttachments(task.getId())) {
-			result.add(restResponseFactory.createAttachmentResponse(attachment));
-		}
+    for (Attachment attachment : taskService.getTaskAttachments(task.getId())) {
+      result.add(restResponseFactory.createAttachmentResponse(attachment));
+    }
 
-		return result;
-	}
+    return result;
+  }
 
 
-	@ApiOperation(value = "Create a new attachment on a task, containing a link to an external resource or an attached file", tags = {"Tasks"},
-			notes="## Create a new attachment on a task, containing a link to an external resource\n\n"
-					+ " ```JSON\n" + "{\n" + "  \"name\":\"Simple attachment\",\n" + "  \"description\":\"Simple attachment description\",\n"
-					+ "  \"type\":\"simpleType\",\n" + "  \"externalUrl\":\"http://activiti.org\"\n" + "} ```"
-					+ "\n\n\n"
-					+ "Only the attachment name is required to create a new attachment.\n"
-					+ "\n\n\n"
-					+ "## Create a new attachment on a task, with an attached file\n\n"
-					+ "The request should be of type multipart/form-data. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:\n"
-					+ "\n"
-					+ "- *name*: Required name of the variable.\n" + "\n"
-					+ "- *description*: Description of the attachment, optional.\n" + "\n"
-					+ "- *type*: Type of attachment, optional. Supports any arbitrary string or a valid HTTP content-type."
-			)
-	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "Indicates the attachment was created and the result is returned."),
-			@ApiResponse(code = 400, message = "Indicates the attachment name is missing from the request."),
-			@ApiResponse(code = 404, message = "Indicates the requested task was not found.")
-	})
-	@RequestMapping(value = "/runtime/tasks/{taskId}/attachments", method = RequestMethod.POST, produces = "application/json")
-	public AttachmentResponse createAttachment(@ApiParam(name = "taskId", value="The id of the task to create the attachment for.") @PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
+  @ApiOperation(value = "Create a new attachment on a task, containing a link to an external resource or an attached file", tags = {"Tasks"},
+      notes="## Create a new attachment on a task, containing a link to an external resource\n\n"
+          + " ```JSON\n" + "{\n" + "  \"name\":\"Simple attachment\",\n" + "  \"description\":\"Simple attachment description\",\n"
+          + "  \"type\":\"simpleType\",\n" + "  \"externalUrl\":\"http://activiti.org\"\n" + "} ```"
+          + "\n\n\n"
+          + "Only the attachment name is required to create a new attachment.\n"
+          + "\n\n\n"
+          + "## Create a new attachment on a task, with an attached file\n\n"
+          + "The request should be of type multipart/form-data. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:\n"
+          + "\n"
+          + "- *name*: Required name of the variable.\n" + "\n"
+          + "- *description*: Description of the attachment, optional.\n" + "\n"
+          + "- *type*: Type of attachment, optional. Supports any arbitrary string or a valid HTTP content-type."
+      )
+  @ApiResponses(value = {
+      @ApiResponse(code = 201, message = "Indicates the attachment was created and the result is returned."),
+      @ApiResponse(code = 400, message = "Indicates the attachment name is missing from the request."),
+      @ApiResponse(code = 404, message = "Indicates the requested task was not found.")
+  })
+  @RequestMapping(value = "/runtime/tasks/{taskId}/attachments", method = RequestMethod.POST, produces = "application/json")
+  public AttachmentResponse createAttachment(@ApiParam(name = "taskId", value="The id of the task to create the attachment for.") @PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
 
-		AttachmentResponse result = null;
-		Task task = getTaskFromRequest(taskId);
-		if (request instanceof MultipartHttpServletRequest) {
-			result = createBinaryAttachment((MultipartHttpServletRequest) request, task, response);
-		} else {
+    AttachmentResponse result = null;
+    Task task = getTaskFromRequest(taskId);
+    if (request instanceof MultipartHttpServletRequest) {
+      result = createBinaryAttachment((MultipartHttpServletRequest) request, task, response);
+    } else {
 
-			AttachmentRequest attachmentRequest = null;
-			try {
-				attachmentRequest = objectMapper.readValue(request.getInputStream(), AttachmentRequest.class);
+      AttachmentRequest attachmentRequest = null;
+      try {
+        attachmentRequest = objectMapper.readValue(request.getInputStream(), AttachmentRequest.class);
 
-			} catch (Exception e) {
-				throw new ActivitiIllegalArgumentException("Failed to serialize to a AttachmentRequest instance", e);
-			}
+      } catch (Exception e) {
+        throw new ActivitiIllegalArgumentException("Failed to serialize to a AttachmentRequest instance", e);
+      }
 
-			if (attachmentRequest == null) {
-				throw new ActivitiIllegalArgumentException("AttachmentRequest properties not found in request");
-			}
+      if (attachmentRequest == null) {
+        throw new ActivitiIllegalArgumentException("AttachmentRequest properties not found in request");
+      }
 
-			result = createSimpleAttachment(attachmentRequest, task);
-		}
+      result = createSimpleAttachment(attachmentRequest, task);
+    }
 
-		response.setStatus(HttpStatus.CREATED.value());
-		return result;
-	}
+    response.setStatus(HttpStatus.CREATED.value());
+    return result;
+  }
 
-	protected AttachmentResponse createSimpleAttachment(AttachmentRequest attachmentRequest, Task task) {
+  protected AttachmentResponse createSimpleAttachment(AttachmentRequest attachmentRequest, Task task) {
 
-		if (attachmentRequest.getName() == null) {
-			throw new ActivitiIllegalArgumentException("Attachment name is required.");
-		}
+    if (attachmentRequest.getName() == null) {
+      throw new ActivitiIllegalArgumentException("Attachment name is required.");
+    }
 
-		Attachment createdAttachment = taskService.createAttachment(attachmentRequest.getType(), task.getId(), task.getProcessInstanceId(), attachmentRequest.getName(),
-				attachmentRequest.getDescription(), attachmentRequest.getExternalUrl());
+    Attachment createdAttachment = taskService.createAttachment(attachmentRequest.getType(), task.getId(), task.getProcessInstanceId(), attachmentRequest.getName(),
+        attachmentRequest.getDescription(), attachmentRequest.getExternalUrl());
 
-		return restResponseFactory.createAttachmentResponse(createdAttachment);
-	}
+    return restResponseFactory.createAttachmentResponse(createdAttachment);
+  }
 
-	protected AttachmentResponse createBinaryAttachment(MultipartHttpServletRequest request, Task task, HttpServletResponse response) {
+  protected AttachmentResponse createBinaryAttachment(MultipartHttpServletRequest request, Task task, HttpServletResponse response) {
 
-		String name = null;
-		String description = null;
-		String type = null;
+    String name = null;
+    String description = null;
+    String type = null;
 
-		Map<String, String[]> paramMap = request.getParameterMap();
-		for (String parameterName : paramMap.keySet()) {
-			if (paramMap.get(parameterName).length > 0) {
+    Map<String, String[]> paramMap = request.getParameterMap();
+    for (String parameterName : paramMap.keySet()) {
+      if (paramMap.get(parameterName).length > 0) {
 
-				if (parameterName.equalsIgnoreCase("name")) {
-					name = paramMap.get(parameterName)[0];
+        if (parameterName.equalsIgnoreCase("name")) {
+          name = paramMap.get(parameterName)[0];
 
-				} else if (parameterName.equalsIgnoreCase("description")) {
-					description = paramMap.get(parameterName)[0];
+        } else if (parameterName.equalsIgnoreCase("description")) {
+          description = paramMap.get(parameterName)[0];
 
-				} else if (parameterName.equalsIgnoreCase("type")) {
-					type = paramMap.get(parameterName)[0];
-				}
-			}
-		}
+        } else if (parameterName.equalsIgnoreCase("type")) {
+          type = paramMap.get(parameterName)[0];
+        }
+      }
+    }
 
-		if (name == null) {
-			throw new ActivitiIllegalArgumentException("Attachment name is required.");
-		}
+    if (name == null) {
+      throw new ActivitiIllegalArgumentException("Attachment name is required.");
+    }
 
-		if (request.getFileMap().size() == 0) {
-			throw new ActivitiIllegalArgumentException("Attachment content is required.");
-		}
+    if (request.getFileMap().size() == 0) {
+      throw new ActivitiIllegalArgumentException("Attachment content is required.");
+    }
 
-		MultipartFile file = request.getFileMap().values().iterator().next();
+    MultipartFile file = request.getFileMap().values().iterator().next();
 
-		if (file == null) {
-			throw new ActivitiIllegalArgumentException("Attachment content is required.");
-		}
+    if (file == null) {
+      throw new ActivitiIllegalArgumentException("Attachment content is required.");
+    }
 
-		try {
-			Attachment createdAttachment = taskService.createAttachment(type, task.getId(), task.getProcessInstanceId(), name, description, file.getInputStream());
+    try {
+      Attachment createdAttachment = taskService.createAttachment(type, task.getId(), task.getProcessInstanceId(), name, description, file.getInputStream());
 
-			response.setStatus(HttpStatus.CREATED.value());
-			return restResponseFactory.createAttachmentResponse(createdAttachment);
+      response.setStatus(HttpStatus.CREATED.value());
+      return restResponseFactory.createAttachmentResponse(createdAttachment);
 
-		} catch (Exception e) {
-			throw new ActivitiException("Error creating attachment response", e);
-		}
-	}
+    } catch (Exception e) {
+      throw new ActivitiException("Error creating attachment response", e);
+    }
+  }
 }

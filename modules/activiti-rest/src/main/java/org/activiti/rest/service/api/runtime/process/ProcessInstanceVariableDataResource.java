@@ -37,18 +37,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @Api(tags = { "Process Instances" }, description = "Manage Process Instances", authorizations = { @Authorization(value = "basicAuth") })
 public class ProcessInstanceVariableDataResource extends BaseExecutionVariableResource {
-	
-	@ApiOperation(value = "Get the binary data for a variable", tags = {"Process Instances"}, nickname = "getProcessInstanceVariableData")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates the process instance was found and the requested variables are returned."),
-			@ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have a variable with the given name (in the given scope). Status message provides additional information.")
-	})
-	@RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables/{variableName}/data", method = RequestMethod.GET)
-	public @ResponseBody
-	byte[] getVariableData(@ApiParam(name = "processInstanceId") @PathVariable("processInstanceId") String processInstanceId,@ApiParam(name = "variableName") @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
-			HttpServletRequest request, HttpServletResponse response) {
 
-		Execution execution = getProcessInstanceFromRequest(processInstanceId);
-		return getVariableDataByteArray(execution, variableName, scope, response);
-	}
+  @ApiOperation(value = "Get the binary data for a variable", tags = {"Process Instances"}, nickname = "getProcessInstanceVariableData")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the process instance was found and the requested variables are returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have a variable with the given name (in the given scope). Status message provides additional information.")
+  })
+  @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables/{variableName}/data", method = RequestMethod.GET)
+  public @ResponseBody
+  byte[] getVariableData(@ApiParam(name = "processInstanceId") @PathVariable("processInstanceId") String processInstanceId,@ApiParam(name = "variableName") @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
+      HttpServletRequest request, HttpServletResponse response) {
+
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    return getVariableDataByteArray(execution, variableName, scope, response);
+  }
 }

@@ -34,15 +34,15 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "Engine" }, description = "Manage Engine", authorizations = { @Authorization(value = "basicAuth") })
 public class PropertiesCollectionResource {
 
-	@Autowired
-	protected ManagementService managementService;
+  @Autowired
+  protected ManagementService managementService;
 
-	@ApiOperation(value = "Get engine properties", tags = {"Engine"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message =  "Indicates the properties are returned."),
-	})
-	@RequestMapping(value = "/management/properties", method = RequestMethod.GET, produces = "application/json")
-	public Map<String, String> getProperties() {
-		return managementService.getProperties();
-	}
+  @ApiOperation(value = "Get engine properties", tags = {"Engine"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message =  "Indicates the properties are returned."),
+  })
+  @RequestMapping(value = "/management/properties", method = RequestMethod.GET, produces = "application/json")
+  public Map<String, String> getProperties() {
+    return managementService.getProperties();
+  }
 }

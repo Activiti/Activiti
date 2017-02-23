@@ -42,41 +42,41 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "Tasks" }, description = "Manage Tasks", authorizations = { @Authorization(value = "basicAuth") })
 public class TaskAttachmentResource extends TaskBaseResource {
 
-	@ApiOperation(value = "Get an attachment on a task", tags = {"Tasks"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates the task and attachment were found and the attachment is returned."),
-			@ApiResponse(code = 404, message = "Indicates the requested task was not found or the tasks doesn’t have a attachment with the given ID.")
-	})
-	@RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.GET, produces = "application/json")
-	public AttachmentResponse getAttachment(@ApiParam(name = "taskId", value="The id of the task to get the attachment for.") @PathVariable("taskId") String taskId,@ApiParam(name = "attachmentId", value="The id of the attachment.") @PathVariable("attachmentId") String attachmentId, HttpServletRequest request) {
+  @ApiOperation(value = "Get an attachment on a task", tags = {"Tasks"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the task and attachment were found and the attachment is returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested task was not found or the tasks doesn’t have a attachment with the given ID.")
+  })
+  @RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.GET, produces = "application/json")
+  public AttachmentResponse getAttachment(@ApiParam(name = "taskId", value="The id of the task to get the attachment for.") @PathVariable("taskId") String taskId,@ApiParam(name = "attachmentId", value="The id of the attachment.") @PathVariable("attachmentId") String attachmentId, HttpServletRequest request) {
 
-		HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
+    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
-		Attachment attachment = taskService.getAttachment(attachmentId);
-		if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
-			throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
-		}
+    Attachment attachment = taskService.getAttachment(attachmentId);
+    if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
+    }
 
-		return restResponseFactory.createAttachmentResponse(attachment);
-	}
+    return restResponseFactory.createAttachmentResponse(attachment);
+  }
 
 
-	@ApiOperation(value = "Delete an attachment on a task", tags = {"Tasks"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 204, message = "Indicates the task and attachment were found and the attachment is deleted. Response body is left empty intentionally."),
-			@ApiResponse(code = 404, message = "Indicates the requested task was not found or the tasks doesn’t have a attachment with the given ID.")
-	})
-	@RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.DELETE)
-	public void deleteAttachment(@ApiParam(name = "taskId", value="The id of the task to delete the attachment for.") @PathVariable("taskId") String taskId,@ApiParam(name = "attachmentId", value="The id of the attachment.") @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
+  @ApiOperation(value = "Delete an attachment on a task", tags = {"Tasks"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the task and attachment were found and the attachment is deleted. Response body is left empty intentionally."),
+      @ApiResponse(code = 404, message = "Indicates the requested task was not found or the tasks doesn’t have a attachment with the given ID.")
+  })
+  @RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.DELETE)
+  public void deleteAttachment(@ApiParam(name = "taskId", value="The id of the task to delete the attachment for.") @PathVariable("taskId") String taskId,@ApiParam(name = "attachmentId", value="The id of the attachment.") @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
 
-		Task task = getTaskFromRequest(taskId);
+    Task task = getTaskFromRequest(taskId);
 
-		Attachment attachment = taskService.getAttachment(attachmentId);
-		if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
-			throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
-		}
+    Attachment attachment = taskService.getAttachment(attachmentId);
+    if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
+    }
 
-		taskService.deleteAttachment(attachmentId);
-		response.setStatus(HttpStatus.NO_CONTENT.value());
-	}
+    taskService.deleteAttachment(attachmentId);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
 }

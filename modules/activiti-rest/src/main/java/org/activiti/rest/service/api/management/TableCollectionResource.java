@@ -37,18 +37,18 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "Database tables" }, description = "Manage Database tables", authorizations = { @Authorization(value = "basicAuth") })
 public class TableCollectionResource {
 
-	@Autowired
-	protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-	@Autowired
-	protected ManagementService managementService;
+  @Autowired
+  protected ManagementService managementService;
 
-	@ApiOperation(value = " List of tables", tags = {"Database tables"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates the request was successful.")
-	})
-	@RequestMapping(value = "/management/tables", method = RequestMethod.GET, produces = "application/json")
-	public List<TableResponse> getTables(HttpServletRequest request) {
-		return restResponseFactory.createTableResponseList(managementService.getTableCount());
-	}
+  @ApiOperation(value = " List of tables", tags = {"Database tables"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the request was successful.")
+  })
+  @RequestMapping(value = "/management/tables", method = RequestMethod.GET, produces = "application/json")
+  public List<TableResponse> getTables(HttpServletRequest request) {
+    return restResponseFactory.createTableResponseList(managementService.getTableCount());
+  }
 }

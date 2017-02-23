@@ -44,55 +44,55 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "History" }, description = "Manage History", authorizations = { @Authorization(value = "basicAuth") })
 public class HistoricProcessInstanceCommentResource {
 
-	@Autowired
-	protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-	@Autowired
-	protected HistoryService historyService;
+  @Autowired
+  protected HistoryService historyService;
 
-	@Autowired
-	protected TaskService taskService;
+  @Autowired
+  protected TaskService taskService;
 
-	@ApiOperation(value = "Get a comment on a historic process instance", tags = { "History" }, notes = "")
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates the historic process instance and comment were found and the comment is returned."),
-			@ApiResponse(code = 404, message = "Indicates the requested historic process instance was not found or the historic process instance doesn’t have a comment with the given ID.") })
-	@RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments/{commentId}", method = RequestMethod.GET, produces = "application/json")
-	public CommentResponse getComment(@ApiParam(name="processInstanceId", value="The id of the historic process instance to get the comment for.") @PathVariable("processInstanceId") String processInstanceId,@ApiParam(name="commentId", value="The id of the comment.") @PathVariable("commentId") String commentId, HttpServletRequest request) {
+  @ApiOperation(value = "Get a comment on a historic process instance", tags = { "History" }, notes = "")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the historic process instance and comment were found and the comment is returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested historic process instance was not found or the historic process instance doesn’t have a comment with the given ID.") })
+  @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments/{commentId}", method = RequestMethod.GET, produces = "application/json")
+  public CommentResponse getComment(@ApiParam(name="processInstanceId", value="The id of the historic process instance to get the comment for.") @PathVariable("processInstanceId") String processInstanceId,@ApiParam(name="commentId", value="The id of the comment.") @PathVariable("commentId") String commentId, HttpServletRequest request) {
 
-		HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
+    HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
-		Comment comment = taskService.getComment(commentId);
-		if (comment == null || comment.getProcessInstanceId() == null || !comment.getProcessInstanceId().equals(instance.getId())) {
-			throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
-		}
+    Comment comment = taskService.getComment(commentId);
+    if (comment == null || comment.getProcessInstanceId() == null || !comment.getProcessInstanceId().equals(instance.getId())) {
+      throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
+    }
 
-		return restResponseFactory.createRestComment(comment);
-	}
+    return restResponseFactory.createRestComment(comment);
+  }
 
-	@ApiOperation(value = "Delete a comment on a historic process instance", tags = { "History" }, notes = "")
-	@ApiResponses(value = {
-			@ApiResponse(code = 204, message = "Indicates the historic process instance and comment were found and the comment is deleted. Response body is left empty intentionally."),
-			@ApiResponse(code = 404, message = "Indicates the requested historic process instance was not found or the historic process instance doesn’t have a comment with the given ID.") })
-	@RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments/{commentId}", method = RequestMethod.DELETE)
-	public void deleteComment(@ApiParam(name="processInstanceId", value="The id of the historic process instance to delete the comment for.") @PathVariable("processInstanceId") String processInstanceId, @ApiParam(name="commentId", value="The id of the comment.") @PathVariable("commentId") String commentId, HttpServletRequest request, HttpServletResponse response) {
+  @ApiOperation(value = "Delete a comment on a historic process instance", tags = { "History" }, notes = "")
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the historic process instance and comment were found and the comment is deleted. Response body is left empty intentionally."),
+      @ApiResponse(code = 404, message = "Indicates the requested historic process instance was not found or the historic process instance doesn’t have a comment with the given ID.") })
+  @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments/{commentId}", method = RequestMethod.DELETE)
+  public void deleteComment(@ApiParam(name="processInstanceId", value="The id of the historic process instance to delete the comment for.") @PathVariable("processInstanceId") String processInstanceId, @ApiParam(name="commentId", value="The id of the comment.") @PathVariable("commentId") String commentId, HttpServletRequest request, HttpServletResponse response) {
 
-		HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
+    HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
-		Comment comment = taskService.getComment(commentId);
-		if (comment == null || comment.getProcessInstanceId() == null || !comment.getProcessInstanceId().equals(instance.getId())) {
-			throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
-		}
+    Comment comment = taskService.getComment(commentId);
+    if (comment == null || comment.getProcessInstanceId() == null || !comment.getProcessInstanceId().equals(instance.getId())) {
+      throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
+    }
 
-		taskService.deleteComment(commentId);
-		response.setStatus(HttpStatus.NO_CONTENT.value());
-	}
+    taskService.deleteComment(commentId);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
 
-	protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {
-		HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-		if (processInstance == null) {
-			throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", HistoricProcessInstance.class);
-		}
-		return processInstance;
-	}
+  protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {
+    HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+    if (processInstance == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", HistoricProcessInstance.class);
+    }
+    return processInstance;
+  }
 }

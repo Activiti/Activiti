@@ -52,100 +52,100 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = { "Users" }, description = "Manage Users", authorizations = { @Authorization(value = "basicAuth") })
 public class UserCollectionResource {
 
-	protected static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
+  protected static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
 
-	static {
-		properties.put("id", UserQueryProperty.USER_ID);
-		properties.put("firstName", UserQueryProperty.FIRST_NAME);
-		properties.put("lastName", UserQueryProperty.LAST_NAME);
-		properties.put("email", UserQueryProperty.EMAIL);
-	}
+  static {
+    properties.put("id", UserQueryProperty.USER_ID);
+    properties.put("firstName", UserQueryProperty.FIRST_NAME);
+    properties.put("lastName", UserQueryProperty.LAST_NAME);
+    properties.put("email", UserQueryProperty.EMAIL);
+  }
 
-	@Autowired
-	protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-	@Autowired
-	protected IdentityService identityService;
+  @Autowired
+  protected IdentityService identityService;
 
 
-	@ApiOperation(value = "Get a list of users", tags = {"Users"})
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "id", dataType = "string", value = "Only return group with the given id", paramType = "query"),
-		@ApiImplicitParam(name = "firstName", dataType = "string", value = "Only return users with the given firstname", paramType = "query"),
-		@ApiImplicitParam(name = "lastName", dataType = "string", value = "Only return users with the given lastname", paramType = "query"),
-		@ApiImplicitParam(name = "email", dataType = "string", value = "Only return users with the given email", paramType = "query"),
-		@ApiImplicitParam(name = "firstNameLike", dataType = "string", value = "Only return userswith a firstname like the given value. Use % as wildcard-character.", paramType = "query"),
-		@ApiImplicitParam(name = "lastNameLike", dataType = "string", value = "Only return users with a lastname like the given value. Use % as wildcard-character.", paramType = "query"),
-		@ApiImplicitParam(name = "emailLike", dataType = "string", value = "Only return users with an email like the given value. Use % as wildcard-character.", paramType = "query"),
-		@ApiImplicitParam(name = "memberOfGroup", dataType = "string", value = "Only return users which are a member of the given group.", paramType = "query"),
-		@ApiImplicitParam(name = "potentialStarter", dataType = "string", value = "Only return users  which members are potential starters for a process-definition with the given id.", paramType = "query"),
-		@ApiImplicitParam(name = "sort", dataType = "string", value = "Field  to sort on, to be used together with the order.", allowableValues ="id,firstName,lastname,email", paramType = "query"),
-	})
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Indicates the group exists and is returned.")
-	})
-	@RequestMapping(value = "/identity/users", method = RequestMethod.GET, produces = "application/json")
-	public DataResponse getUsers(@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
-		UserQuery query = identityService.createUserQuery();
+  @ApiOperation(value = "Get a list of users", tags = {"Users"})
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "id", dataType = "string", value = "Only return group with the given id", paramType = "query"),
+    @ApiImplicitParam(name = "firstName", dataType = "string", value = "Only return users with the given firstname", paramType = "query"),
+    @ApiImplicitParam(name = "lastName", dataType = "string", value = "Only return users with the given lastname", paramType = "query"),
+    @ApiImplicitParam(name = "email", dataType = "string", value = "Only return users with the given email", paramType = "query"),
+    @ApiImplicitParam(name = "firstNameLike", dataType = "string", value = "Only return userswith a firstname like the given value. Use % as wildcard-character.", paramType = "query"),
+    @ApiImplicitParam(name = "lastNameLike", dataType = "string", value = "Only return users with a lastname like the given value. Use % as wildcard-character.", paramType = "query"),
+    @ApiImplicitParam(name = "emailLike", dataType = "string", value = "Only return users with an email like the given value. Use % as wildcard-character.", paramType = "query"),
+    @ApiImplicitParam(name = "memberOfGroup", dataType = "string", value = "Only return users which are a member of the given group.", paramType = "query"),
+    @ApiImplicitParam(name = "potentialStarter", dataType = "string", value = "Only return users  which members are potential starters for a process-definition with the given id.", paramType = "query"),
+    @ApiImplicitParam(name = "sort", dataType = "string", value = "Field  to sort on, to be used together with the order.", allowableValues ="id,firstName,lastname,email", paramType = "query"),
+  })
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the group exists and is returned.")
+  })
+  @RequestMapping(value = "/identity/users", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getUsers(@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+    UserQuery query = identityService.createUserQuery();
 
-		if (allRequestParams.containsKey("id")) {
-			query.userId(allRequestParams.get("id"));
-		}
-		if (allRequestParams.containsKey("firstName")) {
-			query.userFirstName(allRequestParams.get("firstName"));
-		}
-		if (allRequestParams.containsKey("lastName")) {
-			query.userLastName(allRequestParams.get("lastName"));
-		}
-		if (allRequestParams.containsKey("email")) {
-			query.userEmail(allRequestParams.get("email"));
-		}
-		if (allRequestParams.containsKey("firstNameLike")) {
-			query.userFirstNameLike(allRequestParams.get("firstNameLike"));
-		}
-		if (allRequestParams.containsKey("lastNameLike")) {
-			query.userLastNameLike(allRequestParams.get("lastNameLike"));
-		}
-		if (allRequestParams.containsKey("emailLike")) {
-			query.userEmailLike(allRequestParams.get("emailLike"));
-		}
-		if (allRequestParams.containsKey("memberOfGroup")) {
-			query.memberOfGroup(allRequestParams.get("memberOfGroup"));
-		}
-		if (allRequestParams.containsKey("potentialStarter")) {
-			query.potentialStarter(allRequestParams.get("potentialStarter"));
-		}
+    if (allRequestParams.containsKey("id")) {
+      query.userId(allRequestParams.get("id"));
+    }
+    if (allRequestParams.containsKey("firstName")) {
+      query.userFirstName(allRequestParams.get("firstName"));
+    }
+    if (allRequestParams.containsKey("lastName")) {
+      query.userLastName(allRequestParams.get("lastName"));
+    }
+    if (allRequestParams.containsKey("email")) {
+      query.userEmail(allRequestParams.get("email"));
+    }
+    if (allRequestParams.containsKey("firstNameLike")) {
+      query.userFirstNameLike(allRequestParams.get("firstNameLike"));
+    }
+    if (allRequestParams.containsKey("lastNameLike")) {
+      query.userLastNameLike(allRequestParams.get("lastNameLike"));
+    }
+    if (allRequestParams.containsKey("emailLike")) {
+      query.userEmailLike(allRequestParams.get("emailLike"));
+    }
+    if (allRequestParams.containsKey("memberOfGroup")) {
+      query.memberOfGroup(allRequestParams.get("memberOfGroup"));
+    }
+    if (allRequestParams.containsKey("potentialStarter")) {
+      query.potentialStarter(allRequestParams.get("potentialStarter"));
+    }
 
-		return new UserPaginateList(restResponseFactory).paginateList(allRequestParams, query, "id", properties);
-	}
+    return new UserPaginateList(restResponseFactory).paginateList(allRequestParams, query, "id", properties);
+  }
 
-	@ApiOperation(value = "Create a user", tags = {"Users"})
-	@ApiResponses(value = {
-			@ApiResponse(code = 201, message = "Indicates the user was created."),
-			@ApiResponse(code = 400, message = "Indicates the id of the user was missing.")
-	})
-	@RequestMapping(value = "/identity/users", method = RequestMethod.POST, produces = "application/json")
-	public UserResponse createUser(@RequestBody UserRequest userRequest, HttpServletRequest request, HttpServletResponse response) {
-		if (userRequest.getId() == null) {
-			throw new ActivitiIllegalArgumentException("Id cannot be null.");
-		}
+  @ApiOperation(value = "Create a user", tags = {"Users"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 201, message = "Indicates the user was created."),
+      @ApiResponse(code = 400, message = "Indicates the id of the user was missing.")
+  })
+  @RequestMapping(value = "/identity/users", method = RequestMethod.POST, produces = "application/json")
+  public UserResponse createUser(@RequestBody UserRequest userRequest, HttpServletRequest request, HttpServletResponse response) {
+    if (userRequest.getId() == null) {
+      throw new ActivitiIllegalArgumentException("Id cannot be null.");
+    }
 
-		// Check if a user with the given ID already exists so we return a
-		// CONFLICT
-		if (identityService.createUserQuery().userId(userRequest.getId()).count() > 0) {
-			throw new ActivitiConflictException("A user with id '" + userRequest.getId() + "' already exists.");
-		}
+    // Check if a user with the given ID already exists so we return a
+    // CONFLICT
+    if (identityService.createUserQuery().userId(userRequest.getId()).count() > 0) {
+      throw new ActivitiConflictException("A user with id '" + userRequest.getId() + "' already exists.");
+    }
 
-		User created = identityService.newUser(userRequest.getId());
-		created.setEmail(userRequest.getEmail());
-		created.setFirstName(userRequest.getFirstName());
-		created.setLastName(userRequest.getLastName());
-		created.setPassword(userRequest.getPassword());
-		identityService.saveUser(created);
+    User created = identityService.newUser(userRequest.getId());
+    created.setEmail(userRequest.getEmail());
+    created.setFirstName(userRequest.getFirstName());
+    created.setLastName(userRequest.getLastName());
+    created.setPassword(userRequest.getPassword());
+    identityService.saveUser(created);
 
-		response.setStatus(HttpStatus.CREATED.value());
+    response.setStatus(HttpStatus.CREATED.value());
 
-		return restResponseFactory.createUserResponse(created, true);
-	}
+    return restResponseFactory.createUserResponse(created, true);
+  }
 
 }
