@@ -514,6 +514,7 @@ public class BpmnAutoLayout {
             if (flowElement instanceof SubProcess) {
               translateNestedSubprocessElements((SubProcess) flowElement);
             }
+       }
   }
 
   protected void translateNestedSubprocessElements(SubProcess subProcess) {
