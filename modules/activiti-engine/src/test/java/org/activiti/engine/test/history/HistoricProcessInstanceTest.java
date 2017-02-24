@@ -350,13 +350,19 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
 
     // Verify orderByProcessInstanceEndTime
     List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().list();
-    assertEquals(processInstance1.getId(), historicProcessInstances.get(0).getId());
-    assertEquals(processInstance2.getId(), historicProcessInstances.get(1).getId());
+    List<String> processInstanceIds = new ArrayList<String>(2);
+    processInstanceIds.add(historicProcessInstances.get(0).getId());
+    processInstanceIds.add(historicProcessInstances.get(1).getId());
+    assertTrue(processInstanceIds.contains(processInstance1.getId()));
+    assertTrue(processInstanceIds.contains(processInstance2.getId()));
 
     // Verify again, with variables included (bug reported on that)
     historicProcessInstances = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().includeProcessVariables().list();
-    assertEquals(processInstance1.getId(), historicProcessInstances.get(0).getId());
-    assertEquals(processInstance2.getId(), historicProcessInstances.get(1).getId());
+    processInstanceIds = new ArrayList<String>(2);
+    processInstanceIds.add(historicProcessInstances.get(0).getId());
+    processInstanceIds.add(historicProcessInstances.get(1).getId());
+    assertTrue(processInstanceIds.contains(processInstance1.getId()));
+    assertTrue(processInstanceIds.contains(processInstance2.getId()));
   }
 
   public void testInvalidSorting() {
