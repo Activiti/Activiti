@@ -381,7 +381,11 @@
     </foreach>
     <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
       <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null || orQueryObject.involvedGroups != null">
-        inner join ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
+        <choose>
+          <when test="orQueryObject.involvedGroups != null">left</when>
+          <otherwise>inner</otherwise>
+        </choose>
+         join ${prefix}ACT_HI_IDENTITYLINK HI_OR${orIndex} on HI_OR${orIndex}.TASK_ID_ = RES.ID_
       </if>
       <if test="orQueryObject.processFinished || orQueryObject.processUnfinished || orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
         inner join ${prefix}ACT_HI_PROCINST HPI_OR${orIndex} ON RES.PROC_INST_ID_ = HPI_OR${orIndex}.ID_

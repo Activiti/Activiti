@@ -355,7 +355,7 @@
     <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
       <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null || orQueryObject.bothCandidateAndAssigned || orQueryObject.involvedGroups != null">
         <choose>
-          <when test="orQueryObject.bothCandidateAndAssigned">left</when>
+          <when test="orQueryObject.bothCandidateAndAssigned || orQueryObject.involvedGroups != null">left</when>
           <otherwise>inner</otherwise>
         </choose>
         join ${prefix}ACT_RU_IDENTITYLINK I_OR${orIndex} on I_OR${orIndex}.TASK_ID_ = RES.ID_
