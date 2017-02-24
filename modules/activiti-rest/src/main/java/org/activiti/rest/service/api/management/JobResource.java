@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.management;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -35,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Joram Barrez
  */
 @RestController
+@Api(tags = { "Jobs" }, description = "Manage Jobs", authorizations = { @Authorization(value = "basicAuth") })
 public class JobResource {
 
   private static final String EXECUTE_ACTION = "execute";
@@ -45,8 +53,13 @@ public class JobResource {
   @Autowired
   protected ManagementService managementService;
 
+  @ApiOperation(value = "Get a single job", tags = {"Jobs"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the job exists and is returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested job does not exist.")
+  })
   @RequestMapping(value = "/management/jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
-  public JobResponse getJob(@PathVariable String jobId, HttpServletRequest request) {
+  public JobResponse getJob(@ApiParam(name = "jobId", value="The id of the job to get.") @PathVariable String jobId, HttpServletRequest request) {
     Job job = managementService.createJobQuery().jobId(jobId).singleResult();
 
     if (job == null) {
@@ -55,9 +68,14 @@ public class JobResource {
 
     return restResponseFactory.createJobResponse(job);
   }
-  
+
+  @ApiOperation(value = "Get a single timer job", tags = {"Jobs"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the timer job exists and is returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested job does not exist.")
+  })
   @RequestMapping(value = "/management/timer-jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
-  public JobResponse getTimerJob(@PathVariable String jobId, HttpServletRequest request) {
+  public JobResponse getTimerJob(@ApiParam(name = "jobId") @PathVariable String jobId, HttpServletRequest request) {
     Job job = managementService.createTimerJobQuery().jobId(jobId).singleResult();
 
     if (job == null) {
@@ -66,9 +84,14 @@ public class JobResource {
 
     return restResponseFactory.createJobResponse(job);
   }
-  
+
+  @ApiOperation(value = "Get a single suspended job", tags = {"Jobs"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the suspended job exists and is returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested job does not exist.")
+  })
   @RequestMapping(value = "/management/suspended-jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
-  public JobResponse getSuspendedJob(@PathVariable String jobId, HttpServletRequest request) {
+  public JobResponse getSuspendedJob(@ApiParam(name = "jobId") @PathVariable String jobId, HttpServletRequest request) {
     Job job = managementService.createSuspendedJobQuery().jobId(jobId).singleResult();
 
     if (job == null) {
@@ -77,9 +100,14 @@ public class JobResource {
 
     return restResponseFactory.createJobResponse(job);
   }
-  
+
+  @ApiOperation(value = "Get a single deadletter job", tags = {"Jobs"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the suspended job exists and is returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested job does not exist.")
+  })
   @RequestMapping(value = "/management/deadletter-jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
-  public JobResponse getDeadletterJob(@PathVariable String jobId, HttpServletRequest request) {
+  public JobResponse getDeadletterJob(@ApiParam(name = "jobId")  @PathVariable String jobId, HttpServletRequest request) {
     Job job = managementService.createDeadLetterJobQuery().jobId(jobId).singleResult();
 
     if (job == null) {
@@ -89,8 +117,13 @@ public class JobResource {
     return restResponseFactory.createJobResponse(job);
   }
 
+  @ApiOperation(value = "Delete a job", tags = {"Jobs"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the job was found and has been deleted. Response-body is intentionally empty."),
+      @ApiResponse(code = 404, message = "Indicates the requested job was not found..")
+  })
   @RequestMapping(value = "/management/jobs/{jobId}", method = RequestMethod.DELETE)
-  public void deleteJob(@PathVariable String jobId, HttpServletResponse response) {
+  public void deleteJob(@ApiParam(name = "jobId", value="The id of the job to delete.") @PathVariable String jobId, HttpServletResponse response) {
     try {
       managementService.deleteJob(jobId);
     } catch (ActivitiObjectNotFoundException aonfe) {
@@ -99,9 +132,14 @@ public class JobResource {
     }
     response.setStatus(HttpStatus.NO_CONTENT.value());
   }
-  
+
+  @ApiOperation(value = "Delete a timer job", tags = {"Jobs"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the job was found and has been deleted. Response-body is intentionally empty."),
+      @ApiResponse(code = 404, message = "Indicates the requested job was not found.")
+  })
   @RequestMapping(value = "/management/timer-jobs/{jobId}", method = RequestMethod.DELETE)
-  public void deleteTimerJob(@PathVariable String jobId, HttpServletResponse response) {
+  public void deleteTimerJob(@ApiParam(name = "jobId") @PathVariable String jobId, HttpServletResponse response) {
     try {
       managementService.deleteTimerJob(jobId);
     } catch (ActivitiObjectNotFoundException aonfe) {
@@ -110,9 +148,14 @@ public class JobResource {
     }
     response.setStatus(HttpStatus.NO_CONTENT.value());
   }
-  
+
+  @ApiOperation(value = "Delete a deadletter job", tags = {"Jobs"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the job was found and has been deleted. Response-body is intentionally empty."),
+      @ApiResponse(code = 404, message = "Indicates the requested job was not found.")
+  })
   @RequestMapping(value = "/management/deadletter-jobs/{jobId}", method = RequestMethod.DELETE)
-  public void deleteDeadLetterJob(@PathVariable String jobId, HttpServletResponse response) {
+  public void deleteDeadLetterJob(@ApiParam(name = "jobId") @PathVariable String jobId, HttpServletResponse response) {
     try {
       managementService.deleteDeadLetterJob(jobId);
     } catch (ActivitiObjectNotFoundException aonfe) {
@@ -122,8 +165,14 @@ public class JobResource {
     response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 
+  @ApiOperation(value = "Execute a single job", tags = {"Jobs"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the job was executed. Response-body is intentionally empty."),
+      @ApiResponse(code = 404, message = "Indicates the requested job was not found."),
+      @ApiResponse(code = 500, message = "Indicates the an exception occurred while executing the job. The status-description contains additional detail about the error. The full error-stacktrace can be fetched later on if needed.")
+  })
   @RequestMapping(value = "/management/jobs/{jobId}", method = RequestMethod.POST)
-  public void executeJobAction(@PathVariable String jobId, @RequestBody RestActionRequest actionRequest, HttpServletResponse response) {
+  public void executeJobAction(@ApiParam(name = "jobId") @PathVariable String jobId,@ApiParam(name = "actionRequest", value="Action to perform. Only execute is supported.") @RequestBody RestActionRequest actionRequest, HttpServletResponse response) {
     if (actionRequest == null || !EXECUTE_ACTION.equals(actionRequest.getAction())) {
       throw new ActivitiIllegalArgumentException("Invalid action, only 'execute' is supported.");
     }

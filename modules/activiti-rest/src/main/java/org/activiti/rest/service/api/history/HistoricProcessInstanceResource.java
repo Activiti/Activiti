@@ -13,6 +13,14 @@
 
 package org.activiti.rest.service.api.history;
 
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Tijs Rademakers
  */
 @RestController
+@Api(tags = { "History" }, description = "Manage History", authorizations = { @Authorization(value = "basicAuth") })
 public class HistoricProcessInstanceResource {
 
   @Autowired
@@ -39,13 +48,21 @@ public class HistoricProcessInstanceResource {
   @Autowired
   protected HistoryService historyService;
 
+  @ApiOperation(value = "Get a historic process instance", tags = { "History" }, nickname = "getHistoricProcessInstance")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates that the historic process instances could be found."),
+      @ApiResponse(code = 404, message = "Indicates that the historic process instances could not be found.") })
   @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}", method = RequestMethod.GET, produces = "application/json")
-  public HistoricProcessInstanceResponse getProcessInstance(@PathVariable String processInstanceId, HttpServletRequest request) {
+  public HistoricProcessInstanceResponse getProcessInstance(@ApiParam(name = "processInstanceId") @PathVariable String processInstanceId, HttpServletRequest request) {
     return restResponseFactory.createHistoricProcessInstanceResponse(getHistoricProcessInstanceFromRequest(processInstanceId));
   }
 
+  @ApiOperation(value = " Delete a historic process instance", tags = { "History" }, nickname = "deleteHitoricProcessInstance")
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates that the historic process instance was deleted."),
+      @ApiResponse(code = 404, message = "Indicates that the historic process instance could not be found.") })
   @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}", method = RequestMethod.DELETE)
-  public void deleteProcessInstance(@PathVariable String processInstanceId, HttpServletResponse response) {
+  public void deleteProcessInstance(@ApiParam(name="processInstanceId") @PathVariable String processInstanceId, HttpServletResponse response) {
     historyService.deleteHistoricProcessInstance(processInstanceId);
     response.setStatus(HttpStatus.NO_CONTENT.value());
   }

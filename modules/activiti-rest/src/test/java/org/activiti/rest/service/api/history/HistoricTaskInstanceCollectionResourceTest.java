@@ -60,7 +60,7 @@ public class HistoricTaskInstanceCollectionResourceTest extends BaseSpringRestTe
     created.set(Calendar.YEAR, 2001);
     created.set(Calendar.MILLISECOND, 0);
     processEngineConfiguration.getClock().setCurrentTime(created.getTime());
-    
+
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", "testBusinessKey", processVariables);
     processEngineConfiguration.getClock().reset();
     Task task1 = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -79,25 +79,25 @@ public class HistoricTaskInstanceCollectionResourceTest extends BaseSpringRestTe
     String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_TASK_INSTANCES);
 
     assertResultsPresentInDataResponse(url, 3, task.getId(), task2.getId());
-    
-    
+
+
     assertResultsPresentInDataResponse(url + "?processDefinitionName=" + "The%20One%20Task%20Process", 3, task.getId());
 
     assertResultsPresentInDataResponse(url + "?processDefinitionNameLike=" + "The%25", 3, task.getId());
- 
+
     assertResultsPresentInDataResponse(url + "?processDefinitionKey=" + "oneTaskProcess", 3, task.getId());
 
     assertResultsPresentInDataResponse(url + "?processDefinitionKeyLike=" + "oneTask%25", 3, task.getId());
-    
+
     assertResultsPresentInDataResponse(url + "?taskMinPriority=" + "0", 3, task.getId());
 
     assertResultsPresentInDataResponse(url + "?taskMaxPriority=" + "60", 3, task.getId());
 
     assertResultsPresentInDataResponse(url + "?processBusinessKey=" + "testBusinessKey", 2, task.getId());
-    
+
     assertResultsPresentInDataResponse(url + "?processBusinessKeyLike=" + "testBusin%25", 2, task.getId());
-    
-    
+
+
     assertResultsPresentInDataResponse(url + "?processInstanceId=" + processInstance.getId(), 2, task.getId());
 
     assertResultsPresentInDataResponse(url + "?processInstanceId=" + processInstance2.getId(), 1, task2.getId());

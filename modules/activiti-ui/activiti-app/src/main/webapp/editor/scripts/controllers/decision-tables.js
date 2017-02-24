@@ -191,8 +191,8 @@ angular.module('activitiModeler')
 }]);
 
 angular.module('activitiModeler')
-	.controller('DuplicateDecisionTableCtrl', ['$rootScope', '$scope', '$http', 'EventTrackingService',
-		function ($rootScope, $scope, $http, EventTrackingService) {
+	.controller('DuplicateDecisionTableCtrl', ['$rootScope', '$scope', '$http',
+		function ($rootScope, $scope, $http) {
 
 			$scope.model = {
 				loading: false,
@@ -210,8 +210,8 @@ angular.module('activitiModeler')
 				$scope.model.decisionTable.description = $scope.originalModel.decisionTable.description;
 				$scope.model.decisionTable.modelType = $scope.originalModel.decisionTable.modelType;
 				$scope.model.decisionTable.id = $scope.originalModel.decisionTable.id;
-			}
-
+			}	
+			
 			$scope.ok = function () {
 
 				if (!$scope.model.decisionTable.name || $scope.model.decisionTable.name.length == 0) {
@@ -225,8 +225,7 @@ angular.module('activitiModeler')
 						$scope.$hide();
 						$scope.model.loading = false;
 
-                        EventTrackingService.trackEvent('editor', 'decision-table-model-created');
-
+                        
 						if ($scope.duplicateDecisionTableCallback) {
 							$scope.duplicateDecisionTableCallback(data);
 							$scope.duplicateDecisionTableCallback = undefined;
@@ -247,7 +246,7 @@ angular.module('activitiModeler')
 		}]);
 
 angular.module('activitiModeler')
-.controller('ImportDecisionTableModelCrtl', ['$rootScope', '$scope', '$http', 'Upload', '$location', 'EventTrackingService', function ($rootScope, $scope, $http, Upload, $location, EventTrackingService) {
+.controller('ImportDecisionTableModelCtrl', ['$rootScope', '$scope', '$http', 'Upload', '$location', function ($rootScope, $scope, $http, Upload, $location ) {
 
   $scope.model = {
        loading: false
@@ -270,19 +269,16 @@ angular.module('activitiModeler')
               method: 'POST',
               file: file
           }).progress(function(evt) {
-              $scope.model.loading = true;
+         	  $scope.model.loading = true;
               $scope.model.uploadProgress = parseInt(100.0 * evt.loaded / evt.total);
-
+			 
           }).success(function(data, status, headers, config) {
               $scope.model.loading = false;
-
-              EventTrackingService.trackEvent('editor', 'decision-table-import');
-
               $location.path("/decision-table-editor/" + data.id);
               $scope.$hide();
 
           }).error(function(data, status, headers, config) {
-
+			
               if (data && data.message) {
                   $scope.model.errorMessage = data.message;
               }
