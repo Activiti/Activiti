@@ -13,6 +13,8 @@
 
 package org.activiti.rest.service.api.repository;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 import org.activiti.rest.service.api.RestActionRequest;
@@ -22,6 +24,7 @@ import org.activiti.rest.service.api.RestActionRequest;
  */
 public class ProcessDefinitionActionRequest extends RestActionRequest {
 
+  @ApiModelProperty(value = "Action to perform: Either activate or suspend")
   public static final String ACTION_SUSPEND = "suspend";
   public static final String ACTION_ACTIVATE = "activate";
 
@@ -32,7 +35,7 @@ public class ProcessDefinitionActionRequest extends RestActionRequest {
   public void setIncludeProcessInstances(boolean includeProcessInstances) {
     this.includeProcessInstances = includeProcessInstances;
   }
-
+  @ApiModelProperty(value = "Whether or not to suspend/activate running process-instances for this process-definition. If omitted, the process-instances are left in the state they are")
   public boolean isIncludeProcessInstances() {
     return includeProcessInstances;
   }
@@ -40,7 +43,7 @@ public class ProcessDefinitionActionRequest extends RestActionRequest {
   public void setDate(Date date) {
     this.date = date;
   }
-
+  @ApiModelProperty(value = "Date (ISO-8601) when the suspension/activation should be executed. If omitted, the suspend/activation is effective immediately.")
   public Date getDate() {
     return date;
   }

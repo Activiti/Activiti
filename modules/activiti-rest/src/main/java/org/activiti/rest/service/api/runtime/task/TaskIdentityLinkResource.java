@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,11 +41,18 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Tasks" }, description = "Manage Tasks", authorizations = { @Authorization(value = "basicAuth") })
 public class TaskIdentityLinkResource extends TaskBaseResource {
 
+
+  @ApiOperation(value = "Get a single identity link on a task", tags = {"Tasks"}, nickname = "getTaskInstanceIdentityLinks")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message =  "Indicates the task and identity link was found and returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have the requested identityLink. The status contains additional information about this error.")
+  })
   @RequestMapping(value = "/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}", method = RequestMethod.GET, produces = "application/json")
-  public RestIdentityLink getIdentityLink(@PathVariable("taskId") String taskId, @PathVariable("family") String family, @PathVariable("identityId") String identityId,
-      @PathVariable("type") String type, HttpServletRequest request) {
+  public RestIdentityLink getIdentityLink(@ApiParam(name="taskId", value="The id of the task .") @PathVariable("taskId") String taskId,@ApiParam(name="family", value="Either groups or users, depending on what kind of identity is targeted.") @PathVariable("family") String family,@ApiParam(name="identityId", value="The id of the identity.") @PathVariable("identityId") String identityId,
+      @ApiParam(name="type", value="The type of identity link.") @PathVariable("type") String type, HttpServletRequest request) {
 
     Task task = getTaskFromRequest(taskId);
     validateIdentityLinkArguments(family, identityId, type);
@@ -48,8 +62,13 @@ public class TaskIdentityLinkResource extends TaskBaseResource {
     return restResponseFactory.createRestIdentityLink(link);
   }
 
+  @ApiOperation(value = "Delete an identity link on a task", tags = {"Tasks"}, nickname = "deleteTaskInstanceIdentityLinks")
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the task and identity link were found and the link has been deleted. Response-body is intentionally empty."),
+      @ApiResponse(code = 404, message = "Indicates the requested task was not found or the task doesn’t have the requested identityLink. The status contains additional information about this error.")
+  })
   @RequestMapping(value = "/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}", method = RequestMethod.DELETE)
-  public void deleteIdentityLink(@PathVariable("taskId") String taskId, @PathVariable("family") String family, @PathVariable("identityId") String identityId, @PathVariable("type") String type,
+  public void deleteIdentityLink(@ApiParam(name = "taskId", value="The id of the task.") @PathVariable("taskId") String taskId,@ApiParam(name = "family", value="Either groups or users, depending on what kind of identity is targeted.") @PathVariable("family") String family,@ApiParam(name = "identityId", value="The id of the identity.") @PathVariable("identityId") String identityId,@ApiParam(name = "type", value="The type of identity link.") @PathVariable("type") String type,
       HttpServletResponse response) {
 
     Task task = getTaskFromRequest(taskId);

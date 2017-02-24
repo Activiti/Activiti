@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.repository;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Deployment" }, description = "Manage Deployment", authorizations = { @Authorization(value = "basicAuth") })
 public class DeploymentResourceResource {
 
   @Autowired
@@ -43,10 +51,15 @@ public class DeploymentResourceResource {
   @Autowired
   protected RepositoryService repositoryService;
 
-  @RequestMapping(value = "/repository/deployments/{deploymentId}/resources/**", method = RequestMethod.GET, produces = "application/json")
-  public DeploymentResourceResponse getDeploymentResource(@PathVariable("deploymentId") String deploymentId, HttpServletRequest request) {
+  @ApiOperation(value = "Get a deployment resource", tags = {"Deployment"}, notes="Replace ** by ResourceId")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates both deployment and resource have been found and the resource has been returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information.")
+  })
 
-    // Check if deployment exists
+  @RequestMapping(value = "/repository/deployments/{deploymentId}/resources/**", method = RequestMethod.GET, produces = "application/json")
+  public DeploymentResourceResponse getDeploymentResource(@ApiParam(name = "deploymentId", value = "The id of the deployment the requested resource is part of.") @PathVariable("deploymentId") String deploymentId, HttpServletRequest request) {
+
     Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
     if (deployment == null) {
       throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.");

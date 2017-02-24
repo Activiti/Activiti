@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,10 +38,16 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Tasks" }, description = "Manage Tasks", authorizations = { @Authorization(value = "basicAuth") })
 public class TaskCommentResource extends TaskBaseResource {
 
+  @ApiOperation(value = " Get a comment on a task", tags = {"Tasks"}, nickname = "getTaskComment")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the task and comment were found and the comment is returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested task was not found or the tasks doesn’t have a comment with the given ID.")
+  })
   @RequestMapping(value = "/runtime/tasks/{taskId}/comments/{commentId}", method = RequestMethod.GET, produces = "application/json")
-  public CommentResponse getComment(@PathVariable("taskId") String taskId, @PathVariable("commentId") String commentId, HttpServletRequest request) {
+  public CommentResponse getComment(@ApiParam(name = "taskId", value="The id of the task to get the comment for.") @PathVariable("taskId") String taskId,@ApiParam(name = "commentId", value="The id of the comment.") @PathVariable("commentId") String commentId, HttpServletRequest request) {
 
     HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
@@ -46,8 +59,13 @@ public class TaskCommentResource extends TaskBaseResource {
     return restResponseFactory.createRestComment(comment);
   }
 
+  @ApiOperation(value = "Delete a comment on a task", tags = {"Tasks"}, nickname = "deleteTaskComment")
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the task and comment were found and the comment is deleted. Response body is left empty intentionally."),
+      @ApiResponse(code = 404, message = "Indicates the requested task was not found or the tasks doesn’t have a comment with the given ID.")
+  })
   @RequestMapping(value = "/runtime/tasks/{taskId}/comments/{commentId}", method = RequestMethod.DELETE)
-  public void deleteComment(@PathVariable("taskId") String taskId, @PathVariable("commentId") String commentId, HttpServletResponse response) {
+  public void deleteComment(@ApiParam(name = "taskId", value="The id of the task to delete the comment for.") @PathVariable("taskId") String taskId,@ApiParam(name = "commentId", value="The id of the comment.") @PathVariable("commentId") String commentId, HttpServletResponse response) {
 
     // Check if task exists
     Task task = getTaskFromRequest(taskId);

@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.io.InputStream;
 import java.util.Collections;
 
@@ -39,6 +46,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Process Instances" }, description = "Manage Process Instances", authorizations = { @Authorization(value = "basicAuth") })
 public class ProcessInstanceDiagramResource extends BaseProcessInstanceResource {
 
   @Autowired
@@ -47,8 +55,14 @@ public class ProcessInstanceDiagramResource extends BaseProcessInstanceResource 
   @Autowired
   protected ProcessEngineConfiguration processEngineConfiguration;
 
+  @ApiOperation(value = "Get diagram for a process instance", tags = { "Process Instances" })
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the process instance was found and the diagram was returned."),
+      @ApiResponse(code = 400, message = "Indicates the requested process instance was not found but the process doesn’t contain any graphical information (BPMN:DI) and no diagram can be created."),
+      @ApiResponse(code = 404, message = "Indicates the requested process instance was not found.")
+  })
   @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/diagram", method = RequestMethod.GET)
-  public ResponseEntity<byte[]> getProcessInstanceDiagram(@PathVariable String processInstanceId, HttpServletResponse response) {
+  public ResponseEntity<byte[]> getProcessInstanceDiagram(@ApiParam(name = "processInstanceId", value="The id of the process instance to get the diagram for.") @PathVariable String processInstanceId, HttpServletResponse response) {
     ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
     ProcessDefinition pde = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());

@@ -13,6 +13,14 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -42,13 +50,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Tasks" }, description = "Manage Tasks", authorizations = { @Authorization(value = "basicAuth") })
 public class TaskAttachmentCollectionResource extends TaskBaseResource {
 
   @Autowired
   protected ObjectMapper objectMapper;
 
+
+  @ApiOperation(value = "Get all attachments on a task", tags = {"Tasks"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the task was found and the attachments are returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested task was not found.")
+  })  
   @RequestMapping(value = "/runtime/tasks/{taskId}/attachments", method = RequestMethod.GET, produces = "application/json")
-  public List<AttachmentResponse> getAttachments(@PathVariable String taskId, HttpServletRequest request) {
+  public List<AttachmentResponse> getAttachments(@ApiParam(name = "taskId", value="The id of the task to get the attachments for.") @PathVariable String taskId, HttpServletRequest request) {
     List<AttachmentResponse> result = new ArrayList<AttachmentResponse>();
     HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
@@ -59,8 +74,28 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
     return result;
   }
 
+
+  @ApiOperation(value = "Create a new attachment on a task, containing a link to an external resource or an attached file", tags = {"Tasks"},
+      notes="## Create a new attachment on a task, containing a link to an external resource\n\n"
+          + " ```JSON\n" + "{\n" + "  \"name\":\"Simple attachment\",\n" + "  \"description\":\"Simple attachment description\",\n"
+          + "  \"type\":\"simpleType\",\n" + "  \"externalUrl\":\"http://activiti.org\"\n" + "} ```"
+          + "\n\n\n"
+          + "Only the attachment name is required to create a new attachment.\n"
+          + "\n\n\n"
+          + "## Create a new attachment on a task, with an attached file\n\n"
+          + "The request should be of type multipart/form-data. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:\n"
+          + "\n"
+          + "- *name*: Required name of the variable.\n" + "\n"
+          + "- *description*: Description of the attachment, optional.\n" + "\n"
+          + "- *type*: Type of attachment, optional. Supports any arbitrary string or a valid HTTP content-type."
+      )
+  @ApiResponses(value = {
+      @ApiResponse(code = 201, message = "Indicates the attachment was created and the result is returned."),
+      @ApiResponse(code = 400, message = "Indicates the attachment name is missing from the request."),
+      @ApiResponse(code = 404, message = "Indicates the requested task was not found.")
+  })
   @RequestMapping(value = "/runtime/tasks/{taskId}/attachments", method = RequestMethod.POST, produces = "application/json")
-  public AttachmentResponse createAttachment(@PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
+  public AttachmentResponse createAttachment(@ApiParam(name = "taskId", value="The id of the task to create the attachment for.") @PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
 
     AttachmentResponse result = null;
     Task task = getTaskFromRequest(taskId);

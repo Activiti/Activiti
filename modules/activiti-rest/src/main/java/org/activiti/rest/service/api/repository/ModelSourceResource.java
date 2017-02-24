@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.repository;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,11 +40,19 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Models" }, description = "Manage Models", authorizations = { @Authorization(value = "basicAuth") })
 public class ModelSourceResource extends BaseModelSourceResource {
 
+  @ApiOperation(value = "Get the editor source for a model", tags = {"Models"},
+      notes = "Response body contains the model’s raw editor source. "
+          + "The response’s content-type is set to application/octet-stream, regardless of the content of the source.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the model was found and source is returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested model was not found.")
+  })
   @RequestMapping(value = "/repository/models/{modelId}/source", method = RequestMethod.GET)
-  protected @ResponseBody
-  byte[] getModelBytes(@PathVariable String modelId, HttpServletResponse response) {
+  @ResponseBody protected
+  byte[] getModelBytes(@ApiParam(name = "modelId", value="The id of the model.") @PathVariable String modelId, HttpServletResponse response) {
     byte[] editorSource = repositoryService.getModelEditorSource(modelId);
     if (editorSource == null) {
       throw new ActivitiObjectNotFoundException("Model with id '" + modelId + "' does not have source available.", String.class);
@@ -46,8 +61,14 @@ public class ModelSourceResource extends BaseModelSourceResource {
     return editorSource;
   }
 
+  @ApiOperation(value = "Set the editor source for a model", tags = {"Models"}, consumes = "multipart/form-data",
+      notes = "Response body contains the model’s raw editor source. The response’s content-type is set to application/octet-stream, regardless of the content of the source.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the model was found and the source has been updated."),
+      @ApiResponse(code = 404, message = "Indicates the requested model was not found.")
+  })
   @RequestMapping(value = "/repository/models/{modelId}/source", method = RequestMethod.PUT)
-  protected void setModelSource(@PathVariable String modelId, HttpServletRequest request, HttpServletResponse response) {
+  protected void setModelSource(@ApiParam(name = "modelId", value="The id of the model.") @PathVariable String modelId, HttpServletRequest request, HttpServletResponse response) {
     Model model = getModelFromRequest(modelId);
     if (model != null) {
 

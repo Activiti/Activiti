@@ -13,6 +13,15 @@
 
 package org.activiti.rest.service.api.history;
 
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,11 +35,27 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author Tijs Rademakers
  */
+
 @RestController
+@Api(tags = { "History" }, description = "Manage History", authorizations = { @Authorization(value = "basicAuth") })
 public class HistoricDetailCollectionResource extends HistoricDetailBaseResource {
 
+
+  @ApiOperation(value = "Get historic detail", tags = { "History" }, notes = "")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "id", dataType = "string", value = "The id of the historic detail.", paramType = "query"),
+    @ApiImplicitParam(name = "processInstanceId", dataType = "string", value = "The process instance id of the historic detail.", paramType = "query"),
+    @ApiImplicitParam(name = "executionId", dataType = "string", value = "The execution id of the historic detail.", paramType = "query"),
+    @ApiImplicitParam(name = "activityInstanceId", dataType = "string", value = "The activity instance id of the historic detail.", paramType = "query"),
+    @ApiImplicitParam(name = "taskId", dataType = "string", value = "The task id of the historic detail.", paramType = "query"),
+    @ApiImplicitParam(name = "selectOnlyFormProperties", dataType = "boolean", value = "Indication to only return form properties in the result.", paramType = "query"),
+    @ApiImplicitParam(name = "selectOnlyVariableUpdates", dataType = "boolean", value = "Indication to only return variable updates in the result.", paramType = "query"),
+  })
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates that historic detail could be queried."),
+      @ApiResponse(code = 400, message = "Indicates an parameter was passed in the wrong format. The status-message contains additional information.") })
   @RequestMapping(value = "/history/historic-detail", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getHistoricDetailInfo(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+  public DataResponse getHistoricDetailInfo(@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
     // Populate query based on request
     HistoricDetailQueryRequest queryRequest = new HistoricDetailQueryRequest();
 
