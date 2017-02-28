@@ -13,6 +13,15 @@
 
 package org.activiti.rest.service.api.management;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -33,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Database tables" }, description = "Manage Database tables", authorizations = { @Authorization(value = "basicAuth") })
 public class TableDataResource {
 
   protected static final Integer DEFAULT_RESULT_SIZE = 10;
@@ -43,8 +53,19 @@ public class TableDataResource {
   @Autowired
   protected ManagementService managementService;
 
+  @ApiOperation(value = "Get row data for a single table", tags = {"Database tables"})
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "start", dataType = "integer", value = "Index of the first row to fetch. Defaults to 0.", paramType = "query"),
+    @ApiImplicitParam(name = "size", dataType = "integer", value = "Number of rows to fetch, starting from start. Defaults to 10.", paramType = "query"),
+    @ApiImplicitParam(name = "orderAscendingColumn", dataType = "string", value = "Name of the column to sort the resulting rows on, ascending.", paramType = "query"),
+    @ApiImplicitParam(name = "orderDescendingColumn", dataType = "string", value = "Name of the column to sort the resulting rows on, descending.", paramType = "query"),
+  })
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the table exists and the table row data is returned"),
+      @ApiResponse(code = 404, message = "Indicates the requested table does not exist.")
+  })
   @RequestMapping(value = "/management/tables/{tableName}/data", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getTableData(@PathVariable String tableName, @RequestParam Map<String, String> allRequestParams) {
+  public DataResponse getTableData(@ApiParam(name = "tableName", value = "The name of the table to get.") @PathVariable String tableName,@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams) {
     // Check if table exists before continuing
     if (managementService.getTableMetaData(tableName) == null) {
       throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);

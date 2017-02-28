@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.identity;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Users" }, description = "Manage Users", authorizations = { @Authorization(value = "basicAuth") })
 public class UserInfoResource extends BaseUserResource {
 
   @Autowired
@@ -41,8 +49,13 @@ public class UserInfoResource extends BaseUserResource {
   @Autowired
   protected IdentityService identityService;
 
+  @ApiOperation(value = "Get a user’s info", tags = {"Users"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the user was found and the user has info for the given key."),
+      @ApiResponse(code = 404, message = "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error.")
+  })
   @RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.GET, produces = "application/json")
-  public UserInfoResponse getUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, HttpServletRequest request) {
+  public UserInfoResponse getUserInfo(@ApiParam(name = "userId", value="The id of the user to get the info for.") @PathVariable("userId") String userId,@ApiParam(name = "key", value="The key of the user info to get.") @PathVariable("key") String key, HttpServletRequest request) {
     User user = getUserFromRequest(userId);
 
     String existingValue = identityService.getUserInfo(user.getId(), key);
@@ -53,8 +66,14 @@ public class UserInfoResource extends BaseUserResource {
     return restResponseFactory.createUserInfoResponse(key, existingValue, user.getId());
   }
 
+  @ApiOperation(value = "Update a user’s info", tags = {"Users"},  nickname = "updateUserInfo")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the user was found and the info has been updated."),
+      @ApiResponse(code = 400, message = "Indicates the value was missing from the request body."),
+      @ApiResponse(code = 404, message = "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error.")
+  })
   @RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.PUT, produces = "application/json")
-  public UserInfoResponse setUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, @RequestBody UserInfoRequest userRequest, HttpServletRequest request) {
+  public UserInfoResponse setUserInfo(@ApiParam(name = "userId", value="The id of the user to update the info for.") @PathVariable("userId") String userId,@ApiParam(name = "key", value="The key of the user info to update.") @PathVariable("key") String key, @RequestBody UserInfoRequest userRequest, HttpServletRequest request) {
 
     User user = getUserFromRequest(userId);
     String validKey = getValidKeyFromRequest(user, key);
@@ -72,8 +91,13 @@ public class UserInfoResource extends BaseUserResource {
     return restResponseFactory.createUserInfoResponse(key, userRequest.getValue(), user.getId());
   }
 
+  @ApiOperation(value = "Delete a user’s info", tags = {"Users"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the user was found and the info for the given key has been deleted. Response body is left empty intentionally."),
+      @ApiResponse(code = 404, message = "Indicates the requested user was not found or the user doesn’t have info for the given key. Status description contains additional information about the error.")
+  })
   @RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.DELETE)
-  public void deleteUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, HttpServletResponse response) {
+  public void deleteUserInfo(@ApiParam(name = "userId", value="The id of the user to delete the info for.") @PathVariable("userId") String userId,@ApiParam(name = "key", value="The key of the user info to delete.") @PathVariable("key") String key, HttpServletResponse response) {
     User user = getUserFromRequest(userId);
     String validKey = getValidKeyFromRequest(user, key);
 

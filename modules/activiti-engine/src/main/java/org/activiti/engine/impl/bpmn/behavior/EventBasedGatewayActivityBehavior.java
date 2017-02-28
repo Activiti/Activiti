@@ -23,13 +23,4 @@ public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior 
   
   private static final long serialVersionUID = 1L;
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    
-    // The event based gateway simply leaves directly, in the default BPMN 2.0 way 
-    // (taking all sequence flow in parallel)
-    leave(execution);
-    
-  }
-
 }

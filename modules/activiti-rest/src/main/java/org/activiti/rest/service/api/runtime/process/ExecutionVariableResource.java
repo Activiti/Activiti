@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -39,21 +46,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Executions" }, description = "Manage Executions", authorizations = { @Authorization(value = "basicAuth") })
 public class ExecutionVariableResource extends BaseExecutionVariableResource {
 
   @Autowired
   protected ObjectMapper objectMapper;
 
+  @ApiOperation(value = "Get a variable for an execution", tags = {"Executions"}, nickname = "getExecutionVariable")
+  @ApiResponses(value ={
+      @ApiResponse(code = 200, message = "Indicates both the execution and variable were found and variable is returned."),
+      @ApiResponse(code = 400, message = "Indicates the request body is incomplete or contains illegal values. The status description contains additional information about the error."),
+      @ApiResponse(code = 404, message = "Indicates the requested execution was not found or the execution does not have a variable with the given name in the requested scope (in case scope-query parameter was omitted, variable doesn’t exist in local and global scope). Status description contains additional information about the error.")
+  })
   @RequestMapping(value = "/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.GET, produces = "application/json")
-  public RestVariable getVariable(@PathVariable("executionId") String executionId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
+  public RestVariable getVariable(@ApiParam(name = "executionId", value="The id of the execution to the variables for.") @PathVariable("executionId") String executionId,@ApiParam(name = "variableName", value="Name of the variable to get.") @PathVariable("variableName") String variableName,@ApiParam(name="scope", value="Either local or global. If omitted, local variable is returned (if exists). If not, a global variable is returned (if exists).") @RequestParam(value = "scope", required = false) String scope,
       HttpServletRequest request) {
 
     Execution execution = getExecutionFromRequest(executionId);
     return getVariableFromRequest(execution, variableName, scope, false);
   }
 
+  @ApiOperation(value = "Update a variable on an execution", tags = {"Executions"}, nickname = "updateExecutionVariable")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates both the process instance and variable were found and variable is updated."),
+      @ApiResponse(code = 404, message = "Indicates the requested process instance was not found or the process instance does not have a variable with the given name. Status description contains additional information about the error.")
+  })
   @RequestMapping(value = "/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.PUT, produces = "application/json")
-  public RestVariable updateVariable(@PathVariable("executionId") String executionId, @PathVariable("variableName") String variableName, HttpServletRequest request) {
+  public RestVariable updateVariable(@ApiParam(name = "executionId", value="The id of the execution to create the new variable for.") @PathVariable("executionId") String executionId,@ApiParam(name = "variableName", value="The name of the variable to update.") @PathVariable("variableName") String variableName, HttpServletRequest request) {
 
     Execution execution = getExecutionFromRequest(executionId);
 
@@ -87,8 +106,13 @@ public class ExecutionVariableResource extends BaseExecutionVariableResource {
     return result;
   }
 
+  @ApiOperation(value = "Delete a variable for an execution", tags = {"Executions"}, nickname = "deletedExecutionVariable")
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates both the execution and variable were found and variable has been deleted."),
+      @ApiResponse(code = 404, message = "Indicates the requested execution was not found or the execution does not have a variable with the given name in the requested scope. Status description contains additional information about the error.")
+  })
   @RequestMapping(value = "/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.DELETE)
-  public void deleteVariable(@PathVariable("executionId") String executionId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
+  public void deleteVariable(@ApiParam(name = "executionId") @PathVariable("executionId") String executionId, @ApiParam(name = "variableName") @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
       HttpServletResponse response) {
 
     Execution execution = getExecutionFromRequest(executionId);

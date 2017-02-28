@@ -25,8 +25,5 @@ public class AlfrescoStartEventXMLConverter extends StartEventXMLConverter {
     return AlfrescoStartEvent.class;
   }
 
-  @Override
-  protected String getXMLElementName() {
-    return ELEMENT_EVENT_START;
-  }
+
 }

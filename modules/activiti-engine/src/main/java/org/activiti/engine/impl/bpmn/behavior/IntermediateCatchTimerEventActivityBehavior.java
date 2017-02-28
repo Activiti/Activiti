@@ -61,8 +61,5 @@ public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCat
         DeleteReason.EVENT_BASED_GATEWAY_CANCEL, false);
   }
 
-  @Override
-  public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
-    leaveIntermediateCatchEvent(execution);
-  }
+
 }

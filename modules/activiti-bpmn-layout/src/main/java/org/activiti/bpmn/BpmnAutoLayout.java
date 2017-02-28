@@ -510,9 +510,11 @@ public class BpmnAutoLayout {
    * This method is to be called after fully layouting one process, since ALL elements need to have x and y.
    */
   protected void translateNestedSubprocesses(Process process) {
-    for (SubProcess nestedSubProcess : process.findFlowElementsOfType(SubProcess.class, false)) {
-      translateNestedSubprocessElements(nestedSubProcess);
-    }
+       for (FlowElement flowElement : process.getFlowElements()) {
+            if (flowElement instanceof SubProcess) {
+              translateNestedSubprocessElements((SubProcess) flowElement);
+            }
+       }
   }
 
   protected void translateNestedSubprocessElements(SubProcess subProcess) {

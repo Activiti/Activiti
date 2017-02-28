@@ -13,6 +13,15 @@
 
 package org.activiti.rest.service.api.repository;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Process Definitions" }, description = "Manage Process Definitions", authorizations = { @Authorization(value = "basicAuth") })
 public class ProcessDefinitionCollectionResource {
 
   private static final Map<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
@@ -54,8 +64,30 @@ public class ProcessDefinitionCollectionResource {
   @Autowired
   protected RepositoryService repositoryService;
 
+  @ApiOperation(value = "List of process definitions", tags = {"Process Definitions"})
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "version", dataType = "integer", value = "Only return process definitions with the given version.", paramType = "query"),
+    @ApiImplicitParam(name = "name", dataType = "string", value = "Only return process definitions with the given name.", paramType = "query"),
+    @ApiImplicitParam(name = "nameLike", dataType = "string", value = "Only return process definitions with a name like the given name.", paramType = "query"),
+    @ApiImplicitParam(name = "key", dataType = "string", value = "Only return process definitions with the given key.", paramType = "query"),
+    @ApiImplicitParam(name = "keyLike", dataType = "string", value = "Only return process definitions with a name like the given key.", paramType = "query"),
+    @ApiImplicitParam(name = "resourceName", dataType = "string", value = "Only return process definitions with the given resource name.", paramType = "query"),
+    @ApiImplicitParam(name = "resourceNameLike", dataType = "string", value = "Only return process definitions with a name like the given resource name.", paramType = "query"),
+    @ApiImplicitParam(name = "category", dataType = "string", value = "Only return process definitions with the given category.", paramType = "query"),
+    @ApiImplicitParam(name = "categoryLike", dataType = "string", value = "Only return process definitions with a category like the given name.", paramType = "query"),
+    @ApiImplicitParam(name = "categoryNotEquals", dataType = "string", value = "Only return process definitions which don’t have the given category.", paramType = "query"),
+    @ApiImplicitParam(name = "deploymentId", dataType = "string", value = "Only return process definitions with the given category.", paramType = "query"),
+    @ApiImplicitParam(name = "startableByUser", dataType = "string", value = "Only return process definitions which are part of a deployment with the given id.", paramType = "query"),
+    @ApiImplicitParam(name = "latest", dataType = "boolean", value = "Only return the latest process definition versions. Can only be used together with key and keyLike parameters, using any other parameter will result in a 400-response.", paramType = "query"),
+    @ApiImplicitParam(name = "suspended", dataType = "boolean", value = "If true, only returns process definitions which are suspended. If false, only active process definitions (which are not suspended) are returned.", paramType = "query"),
+    @ApiImplicitParam(name = "sort", dataType = "string", value = "Property to sort on, to be used together with the order.", allowableValues ="name,id,key,category,deploymentId,version", paramType = "query"),
+  })
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates request was successful and the process-definitions are returned"),
+      @ApiResponse(code = 400, message = "Indicates a parameter was passed in the wrong format or that latest is used with other parameters other than key and keyLike. The status-message contains additional information.")
+  })
   @RequestMapping(value = "/repository/process-definitions", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getProcessDefinitions(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+  public DataResponse getProcessDefinitions(@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
     ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery();
 
     // Populate filter-parameters

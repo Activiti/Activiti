@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,16 +39,30 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Process Instances" }, description = "Manage Process Instances", authorizations = { @Authorization(value = "basicAuth") })
 public class ProcessInstanceIdentityLinkCollectionResource extends BaseProcessInstanceResource {
 
+  @ApiOperation(value = "Get involved people for process instance", tags = { "Process Instances" }, nickname = "listProcessInstanceIdentityLinks",
+      notes = "Note that the groupId in Response Body will always be null, as it’s only possible to involve users with a process-instance.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the process instance was found and links are returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested process instance was not found.")
+  })
   @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
-  public List<RestIdentityLink> getIdentityLinks(@PathVariable String processInstanceId, HttpServletRequest request) {
+  public List<RestIdentityLink> getIdentityLinks(@ApiParam(name = "processInstanceId", value="The id of the process instance to the links for.") @PathVariable String processInstanceId, HttpServletRequest request) {
     ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
     return restResponseFactory.createRestIdentityLinks(runtimeService.getIdentityLinksForProcessInstance(processInstance.getId()));
   }
 
+  @ApiOperation(value = "Add an involved user to a process instance", tags = { "Process Instances" }, nickname = "createProcessInstanceIdentityLinks",
+      notes = "Note that the groupId in Response Body will always be null, as it’s only possible to involve users with a process-instance.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 201, message = "Indicates the process instance was found and the link is created."),
+      @ApiResponse(code = 400, message = "Indicates the requested body did not contain a userId or a type."),
+      @ApiResponse(code = 404, message = "Indicates the requested process instance was not found.")
+  })
   @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/identitylinks", method = RequestMethod.POST, produces = "application/json")
-  public RestIdentityLink createIdentityLink(@PathVariable String processInstanceId, @RequestBody RestIdentityLink identityLink, HttpServletRequest request, HttpServletResponse response) {
+  public RestIdentityLink createIdentityLink(@ApiParam(name = "processInstanceId", value="The id of the process instance to the links for.") @PathVariable String processInstanceId, @RequestBody RestIdentityLink identityLink, HttpServletRequest request, HttpServletResponse response) {
 
     ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 

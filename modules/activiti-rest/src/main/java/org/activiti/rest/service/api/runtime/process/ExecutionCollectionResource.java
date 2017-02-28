@@ -13,6 +13,15 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,10 +40,30 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Executions" }, description = "Manage Executions", authorizations = { @Authorization(value = "basicAuth") })
 public class ExecutionCollectionResource extends ExecutionBaseResource {
 
+  @ApiOperation(value = "List of executions", tags = {"Executions"}, nickname = "getExecutions")
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "id", dataType = "string", value = "Only return models with the given version.", paramType = "query"),
+    @ApiImplicitParam(name = "activityId", dataType = "string", value = "Only return executions with the given activity id.", paramType = "query"),
+    @ApiImplicitParam(name = "processDefinitionKey", dataType = "string", value = "Only return process instances with the given process definition key.", paramType = "query"),
+    @ApiImplicitParam(name = "processDefinitionId", dataType = "string", value = "Only return process instances with the given process definition id.", paramType = "query"),
+    @ApiImplicitParam(name = "processInstanceId", dataType = "string", value = "Only return executions which are part of the process instance with the given id.", paramType = "query"),
+    @ApiImplicitParam(name = "messageEventSubscriptionName", dataType = "string", value = "Only return executions which are subscribed to a message with the given name.", paramType = "query"),
+    @ApiImplicitParam(name = "signalEventSubscriptionName", dataType = "string", value = "Only return executions which are subscribed to a signal with the given name.", paramType = "query"),
+    @ApiImplicitParam(name = "parentId", dataType = "string", value = "Only return executions which are a direct child of the given execution.", paramType = "query"),
+    @ApiImplicitParam(name = "tenantId", dataType = "string", value = "Only return process instances with the given tenantId.", paramType = "query"),
+    @ApiImplicitParam(name = "tenantIdLike", dataType = "string", value = "Only return process instances with a tenantId like the given value.", paramType = "query"),
+    @ApiImplicitParam(name = "withoutTenantId", dataType = "boolean", value = "If true, only returns process instances without a tenantId set. If false, the withoutTenantId parameter is ignored.", paramType = "query"),
+    @ApiImplicitParam(name = "sort", dataType = "string", value = "Property to sort on, to be used together with the order.", allowableValues ="processInstanceId ,processDefinitionId,processDefinitionKey ,tenantId", paramType = "query"),
+  })
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates request was successful and the executions are returned"),
+      @ApiResponse(code = 404, message = "Indicates a parameter was passed in the wrong format . The status-message contains additional information.")
+  })
   @RequestMapping(value = "/runtime/executions", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getProcessInstances(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+  public DataResponse getProcessInstances(@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
     // Populate query based on request
     ExecutionQueryRequest queryRequest = new ExecutionQueryRequest();
 
@@ -91,6 +120,11 @@ public class ExecutionCollectionResource extends ExecutionBaseResource {
     return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/runtime/executions", ""));
   }
 
+  @ApiOperation(value = "Signal event received", tags = {"Executions"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates request was successful and the executions are returned"),
+      @ApiResponse(code = 404, message = "Indicates a parameter was passed in the wrong format . The status-message contains additional information.")
+  })
   @RequestMapping(value = "/runtime/executions", method = RequestMethod.PUT)
   public void executeExecutionAction(@RequestBody ExecutionActionRequest actionRequest, HttpServletResponse response) {
     if (!ExecutionActionRequest.ACTION_SIGNAL_EVENT_RECEIVED.equals(actionRequest.getAction())) {

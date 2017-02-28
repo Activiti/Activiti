@@ -180,7 +180,6 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         BpmnJsonConverterUtil.convertListenersToJson(((UserTask) activity).getTaskListeners(), false, propertiesNode);
       }
 
-      BpmnJsonConverterUtil.convertListenersToJson(activity.getExecutionListeners(), true, propertiesNode);
 
       if (CollectionUtils.isNotEmpty(activity.getDataInputAssociations())) {
         for (DataAssociation dataAssociation : activity.getDataInputAssociations()) {
@@ -199,6 +198,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         }
       }
     }
+    
+    if (baseElement instanceof FlowElement) {
+		BpmnJsonConverterUtil.convertListenersToJson(((FlowElement) baseElement).getExecutionListeners(), true, propertiesNode);
+	}
 
     for (Artifact artifact : container.getArtifacts()) {
       if (artifact instanceof Association) {

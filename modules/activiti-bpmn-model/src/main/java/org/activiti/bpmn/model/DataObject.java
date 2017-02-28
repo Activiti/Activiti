@@ -7,15 +7,7 @@ public class DataObject extends FlowElement {
 
   protected ItemDefinition itemSubjectRef;
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
-  public ItemDefinition getItemSubjectRef() {
+   public ItemDefinition getItemSubjectRef() {
     return itemSubjectRef;
   }
 
