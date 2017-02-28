@@ -654,10 +654,14 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   			} else {
   				
   				VariableScopeImpl parent = getParentVariableScope();
-  				if (parent != null) {
-  					parent.setVariable(variableName, value, sourceActivityExecution, fetchAllVariables);
-  					return;
-  				} 
+          if (parent != null) {
+            if (sourceActivityExecution == null) {
+              parent.setVariable(variableName, value, fetchAllVariables);
+            } else {
+              parent.setVariable(variableName, value, sourceActivityExecution, fetchAllVariables);
+            }
+            return;
+          }
 
   				variable = createVariableInstance(variableName, value, sourceActivityExecution);
   				usedVariablesCache.put(variableName, variable);

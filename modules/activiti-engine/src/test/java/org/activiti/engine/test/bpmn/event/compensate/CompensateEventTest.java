@@ -13,11 +13,15 @@
 
 package org.activiti.engine.test.bpmn.event.compensate;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate;
 
@@ -61,6 +65,43 @@ public class CompensateEventTest extends PluggableActivitiTestCase {
     
     runtimeService.signal(processInstance.getId());    
     assertProcessEnded(processInstance.getId());
+    
+  }
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/event/compensate/SubProcess1.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/event/compensate/SubProcess2.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/event/compensate/CompensateEventTest.testCompensateTwoSubprocesses.bpmn20.xml" })
+  public void testCompensateTwoSubprocesses() {
+    
+    Map<String, Object> initialVariables = new HashMap<String, Object>();
+    initialVariables.put("test", "begin");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("compensateProcess", initialVariables);
+
+    assertNotNull(processInstance);
+
+    // get task from first subprocess
+    Task task = taskService.createTaskQuery().singleResult();
+
+    Map<String, String> taskFormVariables = new HashMap<String, String>();
+    taskFormVariables.put("test", "begin");
+    formService.submitTaskFormData(task.getId(), new HashMap<String, String>());
+
+    // get task from second subprocess
+    task = taskService.createTaskQuery().singleResult();
+
+    formService.submitTaskFormData(task.getId(), new HashMap<String, String>());
+
+    // get first task from main process
+    task = taskService.createTaskQuery().singleResult();
+    
+
+    Object testVariable2 = runtimeService.getVariable(processInstance.getId(), "test2");
+    assertNotNull(testVariable2);
+    assertEquals("compensated2", testVariable2.toString());
+
+    Object testVariable1 = runtimeService.getVariable(processInstance.getId(), "test1");
+    assertNotNull(testVariable1);
+    assertEquals("compensated1", testVariable1.toString());
     
   }
   

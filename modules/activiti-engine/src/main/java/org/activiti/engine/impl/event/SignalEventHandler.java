@@ -55,7 +55,10 @@ public class SignalEventHandler extends AbstractEventHandler {
   		if (processDefinition == null) {
   			throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
   		}
- 
+  		if (processDefinition.isSuspended()) {
+  			throw new ActivitiException("Could not handle signal: process definition with id: " + processDefinitionId + " is suspended");
+  		}
+  		
   		ActivityImpl startActivity = processDefinition.findActivity(eventSubscription.getActivityId());
   		if (startActivity == null) {
   			throw new ActivitiException("Could no handle signal: no start activity found with id " + eventSubscription.getActivityId());
