@@ -37,40 +37,6 @@ public class CancelCallActivityByMessageTest extends PluggableActivitiTestCase {
 
   protected EventLogger databaseEventLogger;
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    // Database event logger setup
-    databaseEventLogger = new EventLogger(processEngineConfiguration.getClock(),
-        processEngineConfiguration.getObjectMapper());
-    runtimeService.addEventListener(databaseEventLogger);
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    if (listener != null) {
-      listener.clearEventsReceived();
-      processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
-    }
-
-    // Remove entries
-    for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
-      managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
-    }
-
-    // Database event logger teardown
-    runtimeService.removeEventListener(databaseEventLogger);
-    super.tearDown();
-  }
-
-  @Override
-  protected void initializeServices() {
-    super.initializeServices();
-    listener = new CallActivityByMessageEventListener();
-    processEngineConfiguration.getEventDispatcher().addEventListener(listener);
-  }
-
   @Deployment(resources = {
       "org/activiti/engine/test/api/event/CancelCallActivityByMessageTest.testActivityMessageBoundaryEventsOnCallActivity.bpmn20.xml",
       "org/activiti/engine/test/api/event/CancelCallActivityByMessageTest.testActivityMessageBoundaryEventsExternalSubProcess.bpmn20.xml" })
@@ -195,6 +161,40 @@ public class CancelCallActivityByMessageTest extends PluggableActivitiTestCase {
     assertEquals("Sample User Task1", taskEntity.getName());
     
     assertEquals(20, myEventListener.getEventsReceived().size());
+  }
+  
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+
+    // Database event logger setup
+    databaseEventLogger = new EventLogger(processEngineConfiguration.getClock(),
+        processEngineConfiguration.getObjectMapper());
+    runtimeService.addEventListener(databaseEventLogger);
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    if (listener != null) {
+      listener.clearEventsReceived();
+      processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+    }
+
+    // Remove entries
+    for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
+      managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
+    }
+
+    // Database event logger teardown
+    runtimeService.removeEventListener(databaseEventLogger);
+    super.tearDown();
+  }
+
+  @Override
+  protected void initializeServices() {
+    super.initializeServices();
+    listener = new CallActivityByMessageEventListener();
+    processEngineConfiguration.getEventDispatcher().addEventListener(listener);
   }
 
   class CallActivityByMessageEventListener implements ActivitiEventListener {
