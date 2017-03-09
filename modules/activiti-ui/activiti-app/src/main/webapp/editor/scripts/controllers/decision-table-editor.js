@@ -691,7 +691,7 @@ angular.module('activitiModeler')
         // condition input options
         $scope.popup = {
             selectedExpressionVariableType: '',
-            selectedExpressionLabel: $scope.model.selectedExpression.label ? $scope.model.selectedExpression.label : '',
+            selectedExpressionLabel: '',
             selectedExpressionNewVariableType: $scope.availableVariableTypes[0]
         };
 
