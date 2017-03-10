@@ -30,176 +30,176 @@ import org.junit.Test;
 
 public class DeploymentTest extends AbstractActivitiDmnTest {
 
-  @Test
-  @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
-  public void deploySingleDecision() {
-    DecisionTable decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .singleResult();
-    assertNotNull(decision);
-    assertEquals("decision", decision.getKey());
-  }
-
-  @Test
-  @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
-  public void deploySingleDecisionAndValidateCache() {
-    DecisionTable decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .singleResult();
-    assertNotNull(decision);
-    assertEquals("decision", decision.getKey());
-
-    assertTrue(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
-    dmnEngineConfiguration.getDeploymentManager().getDecisionCache().clear();
-    assertFalse(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
-
-    decision = repositoryService.getDecisionTable(decision.getId());
-    assertNotNull(decision);
-    assertEquals("decision", decision.getKey());
-  }
-
-  @Test
-  @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
-  public void deploySingleDecisionAndValidateVersioning() {
-    DecisionTable decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .singleResult();
-
-    assertEquals(1, decision.getVersion());
-
-    repositoryService.createDeployment().name("secondDeployment")
-    .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
-    .deploy();
-
-    decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .singleResult();
-
-    assertEquals(2, decision.getVersion());
-  }
-
-  @Test
-  public void deploySingleDecisionInTenantAndValidateCache() throws Exception {
-    repositoryService.createDeployment().name("secondDeployment")
-    .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
-    .tenantId("testTenant")
-    .deploy();
-
-    DecisionTable decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .decisionTableTenantId("testTenant")
-        .singleResult();
-    assertNotNull(decision);
-    assertEquals("decision", decision.getKey());
-    assertEquals("testTenant", decision.getTenantId());
-    assertEquals(1, decision.getVersion());
-
-    assertTrue(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
-    dmnEngineConfiguration.getDeploymentManager().getDecisionCache().clear();
-    assertFalse(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
-
-    decision = repositoryService.getDecisionTable(decision.getId());
-    assertNotNull(decision);
-    assertEquals("decision", decision.getKey());
-
-    deleteDeployments();
-  }
-
-  @Test
-  public void deploySingleDecisionInTenantAndValidateVersioning() throws Exception {
-    repositoryService.createDeployment().name("secondDeployment")
-    .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
-    .tenantId("testTenant")
-    .deploy();
-
-    DecisionTable decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .decisionTableTenantId("testTenant")
-        .singleResult();
-
-    assertEquals(1, decision.getVersion());
-
-    repositoryService.createDeployment().name("secondDeployment")
-    .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
-    .tenantId("testTenant")
-    .deploy();
-
-    decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .decisionTableTenantId("testTenant")
-        .singleResult();
-
-    assertEquals(2, decision.getVersion());
-
-    deleteDeployments();
-  }
-
-  @Test
-  public void numberTest1() {
-    BigDecimal bigDecimal1 = new BigDecimal("3");
-    BigDecimal bigDecimal2 = bigDecimal1.divide(new BigDecimal("2")).setScale(0, BigDecimal.ROUND_HALF_UP);
-    System.out.println(bigDecimal2);
-
-    BigDecimal bigDecimal3 = new BigDecimal("3");
-    BigDecimal bigDecimal4 = new BigDecimal("1.5");
-  }
-
-  @Test
-  @DmnDeploymentAnnotation(resources="org/activiti/dmn/engine/test/deployment/multiple_dmndecisions.dmn")
-  public void deployMultipleDmnDecisions() throws Exception{
-
-    DecisionTable decision = null;
-
-    decision = repositoryService.createDecisionTableQuery().latestVersion().decisionTableKey("decision").singleResult();
-    assertNotNull(decision);
-    assertEquals("decision", decision.getKey());
-
-    assertTrue(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
-    dmnEngineConfiguration.getDeploymentManager().getDecisionCache().clear();
-    assertFalse(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
-
-    decision = repositoryService.getDecisionTable(decision.getId());
-    assertNotNull(decision);
-    assertEquals("decision", decision.getKey());
-
-    DecisionTable decision2 = repositoryService.createDecisionTableQuery().latestVersion().decisionTableKey("decision2").singleResult();
-    assertNotNull(decision2);
-    assertEquals("decision2", decision2.getKey());
-
-    assertTrue(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision2.getId()));
-    dmnEngineConfiguration.getDeploymentManager().getDecisionCache().clear();
-    assertFalse(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision2.getId()));
-
-    decision2 = repositoryService.getDecisionTable(decision2.getId());
-    assertNotNull(decision2);
-    assertEquals("decision2", decision2.getKey());
-
-    DecisionTable decision3 = repositoryService.createDecisionTableQuery().latestVersion().decisionTableKey("decision3").singleResult();
-    assertNotNull(decision3);
-    assertEquals("decision3", decision3.getKey());
-
-    assertTrue(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision3.getId()));
-    dmnEngineConfiguration.getDeploymentManager().getDecisionCache().clear();
-    assertFalse(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision3.getId()));
-
-    decision3 = repositoryService.getDecisionTable(decision3.getId());
-    assertNotNull(decision3);
-    assertEquals("decision3", decision3.getKey());
-
-  }
-
-
-  protected void deleteDeployments() {
-    List<DmnDeployment> deployments = repositoryService.createDeploymentQuery().list();
-    for (DmnDeployment deployment : deployments) {
-      repositoryService.deleteDeployment(deployment.getId());
+    @Test
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+    public void deploySingleDecision() {
+        DecisionTable decision = repositoryService.createDecisionTableQuery()
+                .latestVersion()
+                .decisionTableKey("decision")
+                .singleResult();
+        assertNotNull(decision);
+        assertEquals("decision", decision.getKey());
     }
-  }
+
+    @Test
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+    public void deploySingleDecisionAndValidateCache() {
+        DecisionTable decision = repositoryService.createDecisionTableQuery()
+                .latestVersion()
+                .decisionTableKey("decision")
+                .singleResult();
+        assertNotNull(decision);
+        assertEquals("decision", decision.getKey());
+
+        assertTrue(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
+        dmnEngineConfiguration.getDeploymentManager().getDecisionCache().clear();
+        assertFalse(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
+
+        decision = repositoryService.getDecisionTable(decision.getId());
+        assertNotNull(decision);
+        assertEquals("decision", decision.getKey());
+    }
+
+    @Test
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+    public void deploySingleDecisionAndValidateVersioning() {
+        DecisionTable decision = repositoryService.createDecisionTableQuery()
+                .latestVersion()
+                .decisionTableKey("decision")
+                .singleResult();
+
+        assertEquals(1, decision.getVersion());
+
+        repositoryService.createDeployment().name("secondDeployment")
+        .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+        .deploy();
+
+        decision = repositoryService.createDecisionTableQuery()
+                .latestVersion()
+                .decisionTableKey("decision")
+                .singleResult();
+
+        assertEquals(2, decision.getVersion());
+    }
+
+    @Test
+    public void deploySingleDecisionInTenantAndValidateCache() throws Exception {
+        repositoryService.createDeployment().name("secondDeployment")
+        .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+        .tenantId("testTenant")
+        .deploy();
+
+        DecisionTable decision = repositoryService.createDecisionTableQuery()
+                .latestVersion()
+                .decisionTableKey("decision")
+                .decisionTableTenantId("testTenant")
+                .singleResult();
+        assertNotNull(decision);
+        assertEquals("decision", decision.getKey());
+        assertEquals("testTenant", decision.getTenantId());
+        assertEquals(1, decision.getVersion());
+
+        assertTrue(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
+        dmnEngineConfiguration.getDeploymentManager().getDecisionCache().clear();
+        assertFalse(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
+
+        decision = repositoryService.getDecisionTable(decision.getId());
+        assertNotNull(decision);
+        assertEquals("decision", decision.getKey());
+
+        deleteDeployments();
+    }
+
+    @Test
+    public void deploySingleDecisionInTenantAndValidateVersioning() throws Exception {
+        repositoryService.createDeployment().name("secondDeployment")
+        .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+        .tenantId("testTenant")
+        .deploy();
+
+        DecisionTable decision = repositoryService.createDecisionTableQuery()
+                .latestVersion()
+                .decisionTableKey("decision")
+                .decisionTableTenantId("testTenant")
+                .singleResult();
+
+        assertEquals(1, decision.getVersion());
+
+        repositoryService.createDeployment().name("secondDeployment")
+        .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+        .tenantId("testTenant")
+        .deploy();
+
+        decision = repositoryService.createDecisionTableQuery()
+                .latestVersion()
+                .decisionTableKey("decision")
+                .decisionTableTenantId("testTenant")
+                .singleResult();
+
+        assertEquals(2, decision.getVersion());
+
+        deleteDeployments();
+    }
+
+    @Test
+    public void numberTest1() {
+        BigDecimal bigDecimal1 = new BigDecimal("3");
+        BigDecimal bigDecimal2 = bigDecimal1.divide(new BigDecimal("2")).setScale(0, BigDecimal.ROUND_HALF_UP);
+        System.out.println(bigDecimal2);
+
+        BigDecimal bigDecimal3 = new BigDecimal("3");
+        BigDecimal bigDecimal4 = new BigDecimal("1.5");
+    }
+
+    @Test
+    @DmnDeploymentAnnotation(resources="org/activiti/dmn/engine/test/deployment/multiple_dmndecisions.dmn")
+    public void deployMultipleDmnDecisions() throws Exception{
+
+        DecisionTable decision = null;
+
+        decision = repositoryService.createDecisionTableQuery().latestVersion().decisionTableKey("decision").singleResult();
+        assertNotNull(decision);
+        assertEquals("decision", decision.getKey());
+
+        assertTrue(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
+        dmnEngineConfiguration.getDeploymentManager().getDecisionCache().clear();
+        assertFalse(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision.getId()));
+
+        decision = repositoryService.getDecisionTable(decision.getId());
+        assertNotNull(decision);
+        assertEquals("decision", decision.getKey());
+
+        DecisionTable decision2 = repositoryService.createDecisionTableQuery().latestVersion().decisionTableKey("decision2").singleResult();
+        assertNotNull(decision2);
+        assertEquals("decision2", decision2.getKey());
+
+        assertTrue(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision2.getId()));
+        dmnEngineConfiguration.getDeploymentManager().getDecisionCache().clear();
+        assertFalse(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision2.getId()));
+
+        decision2 = repositoryService.getDecisionTable(decision2.getId());
+        assertNotNull(decision2);
+        assertEquals("decision2", decision2.getKey());
+
+        DecisionTable decision3 = repositoryService.createDecisionTableQuery().latestVersion().decisionTableKey("decision3").singleResult();
+        assertNotNull(decision3);
+        assertEquals("decision3", decision3.getKey());
+
+        assertTrue(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision3.getId()));
+        dmnEngineConfiguration.getDeploymentManager().getDecisionCache().clear();
+        assertFalse(dmnEngineConfiguration.getDeploymentManager().getDecisionCache().contains(decision3.getId()));
+
+        decision3 = repositoryService.getDecisionTable(decision3.getId());
+        assertNotNull(decision3);
+        assertEquals("decision3", decision3.getKey());
+
+    }
+
+
+    protected void deleteDeployments() {
+        List<DmnDeployment> deployments = repositoryService.createDeploymentQuery().list();
+        for (DmnDeployment deployment : deployments) {
+            repositoryService.deleteDeployment(deployment.getId());
+        }
+    }
 }
