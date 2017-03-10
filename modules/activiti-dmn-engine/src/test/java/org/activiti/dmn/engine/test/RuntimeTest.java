@@ -82,7 +82,8 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
         RuleEngineExecutionResult result = ruleService.executeDecisionByKey("decision", processVariablesInput);
         Assert.assertNotNull(result);
         Assert.assertSame(result.getResultVariables().get("output1").getClass(), String.class);
-        Assert.assertEquals(result.getResultVariables().get("output1"), "test2");
+        Assert.assertEquals(result.getResultVariables().get("output1"), "test1");
+        //Assert.assertEquals(result.getResultVariables().get("output1"), "test2");
     }
 
     @Test
@@ -210,7 +211,8 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
         RuleEngineExecutionResult result = ruleService.executeDecisionByKey("decision", processVariablesInput);
         Assert.assertNotNull(result);
         Assert.assertSame(result.getResultVariables().get("output1").getClass(), String.class);
-        Assert.assertEquals(result.getResultVariables().get("output1"), "test2");
+      //  Assert.assertEquals(result.getResultVariables().get("output1"), "test1");
+       Assert.assertEquals(result.getResultVariables().get("output1"), "test2");
     }
 
     @Test
