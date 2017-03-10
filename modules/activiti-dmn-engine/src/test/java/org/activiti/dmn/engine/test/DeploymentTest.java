@@ -71,8 +71,8 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
         assertEquals(1, decision.getVersion());
 
         repositoryService.createDeployment().name("secondDeployment")
-        .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
-        .deploy();
+                .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+                .deploy();
 
         decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
@@ -85,9 +85,9 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     @Test
     public void deploySingleDecisionInTenantAndValidateCache() throws Exception {
         repositoryService.createDeployment().name("secondDeployment")
-        .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
-        .tenantId("testTenant")
-        .deploy();
+                .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+                .tenantId("testTenant")
+                .deploy();
 
         DecisionTable decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
@@ -113,9 +113,9 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     @Test
     public void deploySingleDecisionInTenantAndValidateVersioning() throws Exception {
         repositoryService.createDeployment().name("secondDeployment")
-        .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
-        .tenantId("testTenant")
-        .deploy();
+                .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+                .tenantId("testTenant")
+                .deploy();
 
         DecisionTable decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
@@ -126,9 +126,9 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
         assertEquals(1, decision.getVersion());
 
         repositoryService.createDeployment().name("secondDeployment")
-        .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
-        .tenantId("testTenant")
-        .deploy();
+                .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+                .tenantId("testTenant")
+                .deploy();
 
         decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
