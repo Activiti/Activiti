@@ -34,9 +34,9 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
     public void deploySingleDecision() {
         DecisionTable decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .singleResult();
+                .latestVersion()
+                .decisionTableKey("decision")
+                .singleResult();
         assertNotNull(decision);
         assertEquals("decision", decision.getKey());
     }
@@ -45,9 +45,9 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
     public void deploySingleDecisionAndValidateCache() {
         DecisionTable decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .singleResult();
+                .latestVersion()
+                .decisionTableKey("decision")
+                .singleResult();
         assertNotNull(decision);
         assertEquals("decision", decision.getKey());
 
@@ -64,9 +64,9 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
     public void deploySingleDecisionAndValidateVersioning() {
         DecisionTable decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .singleResult();
+                .latestVersion()
+                .decisionTableKey("decision")
+                .singleResult();
 
         assertEquals(1, decision.getVersion());
 
@@ -75,9 +75,9 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
         .deploy();
 
         decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .singleResult();
+                .latestVersion()
+                .decisionTableKey("decision")
+                .singleResult();
 
         assertEquals(2, decision.getVersion());
     }
@@ -90,10 +90,10 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
         .deploy();
 
         DecisionTable decision = repositoryService.createDecisionTableQuery()
-        .latestVersion()
-        .decisionTableKey("decision")
-        .decisionTableTenantId("testTenant")
-        .singleResult();
+                .latestVersion()
+                .decisionTableKey("decision")
+                .decisionTableTenantId("testTenant")
+                .singleResult();
         assertNotNull(decision);
         assertEquals("decision", decision.getKey());
         assertEquals("testTenant", decision.getTenantId());
