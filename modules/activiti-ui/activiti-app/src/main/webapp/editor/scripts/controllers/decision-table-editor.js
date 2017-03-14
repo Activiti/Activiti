@@ -627,7 +627,7 @@ angular.module('activitiModeler')
         // condition input options
         $scope.popup = {
             selectedExpressionLabel: $scope.model.selectedExpression.label ? $scope.model.selectedExpression.label : '',
-            selectedExpressionVariable: previousVariableId ? $scope.getSelectedVariableModel(previousVariableId) : undefined
+            selectedExpressionVariable: {id: previousVariableId}
         };
 
         $scope.save = function () {
@@ -691,7 +691,7 @@ angular.module('activitiModeler')
         // condition input options
         $scope.popup = {
             selectedExpressionVariableType: '',
-            selectedExpressionLabel: '',
+            selectedExpressionLabel: $scope.model.selectedExpression.label ? $scope.model.selectedExpression.label : '',
             selectedExpressionNewVariableType: $scope.availableVariableTypes[0]
         };
 
