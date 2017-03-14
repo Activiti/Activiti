@@ -1,0 +1,34 @@
+
+<div class="modal" ng-controller="DuplicateDecisionTableCtrl">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header"><h2>{{'DECISION-TABLE.POPUP.DUPLICATE-TITLE' | translate}}</h2></div>
+			<div class="modal-body">
+				<p>{{'DECISION-TABLE.POPUP.DUPLICATE-DESCRIPTION' | translate}}</p>
+				<div class="form-group">
+				    <label for="newDecisionTableName">{{'DECISION-TABLE.NAME' | translate}}</label>
+				    <input ng-disabled="model.loading" type="text" class="form-control"
+			               id="newdecisionTableName" ng-model="model.decisionTable.name" ui-keypress="{13:'ok()'}" auto-focus editor-input-check>
+				</div>
+				<div class="form-group">
+				    <label for="newDecisionTableDescription">{{'DECISION-TABLE.DESCRIPTION' | translate}}</label>
+					<textarea ng-disabled="model.loading" class="form-control" id="newDecisionTableDescription" rows="5" ng-model="model.decisionTable.description"></textarea>
+				</div>
+			</div>
+			
+			<div class="modal-footer">
+				<div class="pull-right">
+					<button type="button" class="btn btn-sm btn-default" ng-click="cancel()" ng-disabled="model.loading">
+						{{'GENERAL.ACTION.CANCEL' | translate}}
+					</button>
+					<button type="button" class="btn btn-sm btn-default" ng-click="ok()"ng-disabled="model.loading || !model.decisionTable.name">
+						{{'DECISION-TABLE.ACTION.DUPLICATE-CONFIRM' | translate}}
+					</button>
+				</div>
+				<div class="loading pull-right" ng-show="model.loading">
+					<div class="l1"></div><div class="l2"></div><div class="l2"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
