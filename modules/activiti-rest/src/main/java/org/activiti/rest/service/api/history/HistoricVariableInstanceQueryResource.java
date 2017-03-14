@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.history;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,10 +35,19 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Tijs Rademakers
  */
 @RestController
+@Api(tags={"History"}, description="Manage History", authorizations = { @Authorization(value = "basicAuth") })
 public class HistoricVariableInstanceQueryResource extends HistoricVariableInstanceBaseResource {
 
+  @ApiOperation(value = "Query for historic variable instances", tags = { "History" },
+      notes = "All supported JSON parameter fields allowed are exactly the same as the parameters found for getting a collection of historic process instances,"
+          + " but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri’s that are too long. "
+          + "On top of that, the query allows for filtering based on process variables. "
+          + "The variables property is a JSON-array containing objects with the format as described here.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates request was successful and the tasks are returned"),
+      @ApiResponse(code = 400, message = "Indicates an parameter was passed in the wrong format. The status-message contains additional information.") })
   @RequestMapping(value = "/query/historic-variable-instances", method = RequestMethod.POST, produces = "application/json")
-  public DataResponse queryVariableInstances(@RequestBody HistoricVariableInstanceQueryRequest queryRequest, @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+  public DataResponse queryVariableInstances(@RequestBody HistoricVariableInstanceQueryRequest queryRequest,@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
 
     return getQueryResponse(queryRequest, allRequestParams);
   }

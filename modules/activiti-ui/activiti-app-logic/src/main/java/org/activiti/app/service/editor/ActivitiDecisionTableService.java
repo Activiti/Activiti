@@ -181,6 +181,7 @@ public class ActivitiDecisionTableService extends BaseActivitiModelService {
         editorJsonNode.remove("id");
 
         ModelRepresentation modelRepresentation = new ModelRepresentation();
+        modelRepresentation.setKey(dmnDefinition.getCurrentDecisionTable().getId());
         modelRepresentation.setName(dmnDefinition.getName());
         modelRepresentation.setDescription(dmnDefinition.getDescription());
         modelRepresentation.setModelType(AbstractModel.MODEL_TYPE_DECISION_TABLE);

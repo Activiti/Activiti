@@ -13,6 +13,15 @@
 
 package org.activiti.rest.service.api.identity;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.io.ByteArrayOutputStream;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,16 +47,24 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Users" }, description = "Manage Users", authorizations = { @Authorization(value = "basicAuth") })
 public class UserPictureResource extends BaseUserResource {
 
+  @ApiOperation(value = "Get a user’s picture", tags = {"Users"},
+      notes = "The response body contains the raw picture data, representing the user’s picture. The Content-type of the response corresponds to the mimeType that was set when creating the picture.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the user was found and has a picture, which is returned in the body."),
+      @ApiResponse(code = 404, message = "Indicates the requested user was not found or the user does not have a profile picture. Status-description contains additional information about the error.")
+  })
   @RequestMapping(value = "/identity/users/{userId}/picture", method = RequestMethod.GET)
-  public ResponseEntity<byte[]> getUserPicture(@PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
+  public ResponseEntity<byte[]> getUserPicture(@ApiParam(name = "userId", value="The id of the user to get the picture for.") @PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
     User user = getUserFromRequest(userId);
     Picture userPicture = identityService.getUserPicture(user.getId());
 
     if (userPicture == null) {
       throw new ActivitiObjectNotFoundException("The user with id '" + user.getId() + "' does not have a picture.", Picture.class);
     }
+
 
     HttpHeaders responseHeaders = new HttpHeaders();
     if (userPicture.getMimeType() != null) {
@@ -63,8 +80,16 @@ public class UserPictureResource extends BaseUserResource {
     }
   }
 
+  @ApiOperation(value = "Updating a user’s picture", tags = {"Users"}, consumes = "multipart/form-data",
+      notes = "The request should be of type multipart/form-data. There should be a single file-part included with the binary value of the picture. On top of that, the following additional form-fields can be present:\n"
+          + "\n"
+          + "mimeType: Optional mime-type for the uploaded picture. If omitted, the default of image/jpeg is used as a mime-type for the picture.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the user was found and the picture has been updated. The response-body is left empty intentionally."),
+      @ApiResponse(code = 404, message = "Indicates the requested user was not found.")
+  })
   @RequestMapping(value = "/identity/users/{userId}/picture", method = RequestMethod.PUT)
-  public void updateUserPicture(@PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
+  public void updateUserPicture(@ApiParam(name = "userId", value="The id of the user to get the picture for.") @PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
     User user = getUserFromRequest(userId);
 
     if (request instanceof MultipartHttpServletRequest == false) {

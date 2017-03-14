@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.management;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -31,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Database tables" }, description = "Manage Database tables", authorizations = { @Authorization(value = "basicAuth") })
 public class TableResource {
 
   @Autowired
@@ -39,8 +47,13 @@ public class TableResource {
   @Autowired
   protected ManagementService managementService;
 
+  @ApiOperation(value = "Get a single table", tags = {"Database tables"})
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the table exists and the table count is returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested table does not exist.")
+  })
   @RequestMapping(value = "/management/tables/{tableName}", method = RequestMethod.GET, produces = "application/json")
-  public TableResponse getTable(@PathVariable String tableName, HttpServletRequest request) {
+  public TableResponse getTable(@ApiParam(name = "tableName", value="The name of the table to get.") @PathVariable String tableName, HttpServletRequest request) {
     Map<String, Long> tableCounts = managementService.getTableCount();
 
     TableResponse response = null;

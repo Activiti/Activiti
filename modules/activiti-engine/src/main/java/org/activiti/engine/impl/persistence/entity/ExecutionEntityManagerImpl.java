@@ -215,6 +215,8 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     
     processInstanceExecution.setProcessDefinitionId(processDefinition.getId());
     processInstanceExecution.setProcessDefinitionKey(processDefinition.getKey());
+    processInstanceExecution.setProcessDefinitionName(processDefinition.getName());
+    processInstanceExecution.setProcessDefinitionVersion(processDefinition.getVersion());
     processInstanceExecution.setBusinessKey(businessKey);
     processInstanceExecution.setScope(true); // process instance is always a scope for all child executions
 

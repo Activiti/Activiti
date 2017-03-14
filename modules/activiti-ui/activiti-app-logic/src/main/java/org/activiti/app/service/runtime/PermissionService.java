@@ -42,7 +42,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Centralized service for all permission-checks.
- * 
+ *
  * @author Frederik Heremans
  */
 @Service
@@ -59,7 +59,7 @@ public class PermissionService {
 
   @Autowired
   protected HistoryService historyService;
-  
+
   @Autowired
   protected IdentityService identityService;
 
@@ -234,12 +234,8 @@ public class PermissionService {
   public boolean canDeleteProcessInstance(User currentUser, HistoricProcessInstance processInstance) {
     boolean canDelete = false;
     if (processInstance.getStartUserId() != null) {
-      try {
-        Long starterId = Long.parseLong(processInstance.getStartUserId());
-        canDelete = starterId.equals(currentUser.getId());
-      } catch (NumberFormatException nfe) {
-        // Ignore illegal starter id value
-      }
+  
+       canDelete = processInstance.getStartUserId().equals(currentUser.getId());
     }
 
     return canDelete;

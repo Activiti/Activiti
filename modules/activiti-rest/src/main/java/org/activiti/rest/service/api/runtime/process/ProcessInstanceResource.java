@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,15 +38,26 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Process Instances" }, description = "Manage Process Instances", authorizations = { @Authorization(value = "basicAuth") })
 public class ProcessInstanceResource extends BaseProcessInstanceResource {
 
+  @ApiOperation(value = "Get a process instance", tags = {"Process Instances"}, nickname = "getProcessInstance")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the process instance was found and returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested process instance was not found.")
+  })
   @RequestMapping(value = "/runtime/process-instances/{processInstanceId}", method = RequestMethod.GET, produces = "application/json")
-  public ProcessInstanceResponse getProcessInstance(@PathVariable String processInstanceId, HttpServletRequest request) {
+  public ProcessInstanceResponse getProcessInstance(@ApiParam(name = "processInstanceId", value="The id of the process instance to get.") @PathVariable String processInstanceId, HttpServletRequest request) {
     return restResponseFactory.createProcessInstanceResponse(getProcessInstanceFromRequest(processInstanceId));
   }
 
+  @ApiOperation(value = "Delete a process instance", tags = {"Process Instances"}, nickname = "deleteProcessInstance")
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the process instance was found and deleted. Response body is left empty intentionally."),
+      @ApiResponse(code = 404, message = "Indicates the requested process instance was not found.")
+  })
   @RequestMapping(value = "/runtime/process-instances/{processInstanceId}", method = RequestMethod.DELETE)
-  public void deleteProcessInstance(@PathVariable String processInstanceId, @RequestParam(value = "deleteReason", required = false) String deleteReason, HttpServletResponse response) {
+  public void deleteProcessInstance(@ApiParam(name = "processInstanceId", value="The id of the process instance to delete.") @PathVariable String processInstanceId, @RequestParam(value = "deleteReason", required = false) String deleteReason, HttpServletResponse response) {
 
     ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
@@ -47,8 +65,22 @@ public class ProcessInstanceResource extends BaseProcessInstanceResource {
     response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 
+  @ApiOperation(value = "Activate or suspend a process instance", tags = {"Process Instances"},
+      notes="## Activate a process instance\n\n"
+          + " ```JSON\n" + "{\n" + "  \"action\" : \"suspend\"\n" + "} ```"
+          + "\n\n\n"
+          + "## Suspend a process instance\n\n"
+          + " ```JSON\n" + "{\n" + "  \"action\" : \"activate\"\n" + "} ```"
+          + "\n\n\n"
+      )
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the process instance was found and action was executed."),
+      @ApiResponse(code = 400, message = "\t\n" + "Indicates an invalid action was supplied."),
+      @ApiResponse(code = 409, message = "Indicates the requested process instance action cannot be executed since the process-instance is already activated/suspended."),
+      @ApiResponse(code = 404, message = "Indicates the requested process instance was not found.")
+  })
   @RequestMapping(value = "/runtime/process-instances/{processInstanceId}", method = RequestMethod.PUT, produces = "application/json")
-  public ProcessInstanceResponse performProcessInstanceAction(@PathVariable String processInstanceId, @RequestBody ProcessInstanceActionRequest actionRequest, HttpServletRequest request) {
+  public ProcessInstanceResponse performProcessInstanceAction(@ApiParam(name = "processInstanceId", value="The id of the process instance to activate/suspend.") @PathVariable String processInstanceId, @RequestBody ProcessInstanceActionRequest actionRequest, HttpServletRequest request) {
 
     ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
@@ -60,6 +92,7 @@ public class ProcessInstanceResource extends BaseProcessInstanceResource {
     }
     throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
   }
+
 
   protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance) {
     if (!processInstance.isSuspended()) {

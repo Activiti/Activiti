@@ -52,10 +52,6 @@ public class UserEntityImpl extends AbstractEntity implements UserEntity, Serial
     return persistentState;
   }
 
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-
   public Picture getPicture() {
     if (pictureByteArrayRef != null && pictureByteArrayRef.getId() != null) {
       return new Picture(pictureByteArrayRef.getBytes(), pictureByteArrayRef.getName());

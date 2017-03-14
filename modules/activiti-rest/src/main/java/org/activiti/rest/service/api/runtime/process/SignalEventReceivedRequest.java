@@ -12,6 +12,8 @@
  */
 package org.activiti.rest.service.api.runtime.process;
 
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 import org.activiti.rest.service.api.engine.variable.RestVariable;
@@ -31,12 +33,14 @@ public class SignalEventReceivedRequest {
   public void setTenantId(String tenantId) {
     this.tenantId = tenantId;
   }
-
+  
+  @ApiModelProperty(value ="ID of the tenant that the signal event should be processed in")
   public String getTenantId() {
     return tenantId;
   }
 
   @JsonTypeInfo(use = Id.CLASS, defaultImpl = RestVariable.class)
+  @ApiModelProperty(value ="Array of variables (in the general variables format) to use as payload to pass along with the signal. Cannot be used in case async is set to true, this will result in an error.")
   public List<RestVariable> getVariables() {
     return variables;
   }
@@ -49,7 +53,8 @@ public class SignalEventReceivedRequest {
   public boolean isCustomTenantSet() {
     return tenantId != null && !StringUtils.isEmpty(tenantId);
   }
-
+  
+  @ApiModelProperty(value ="Name of the signal")
   public String getSignalName() {
     return signalName;
   }
@@ -61,7 +66,8 @@ public class SignalEventReceivedRequest {
   public void setAsync(boolean async) {
     this.async = async;
   }
-
+  @ApiModelProperty(value = "If true, handling of the signal will happen asynchronously. Return code will be 202 - Accepted to indicate the request is accepted but not yet executed. If false,\n"
+          + "                    handling the signal will be done immediately and result (200 - OK) will only return after this completed successfully. Defaults to false if omitted.")
   public boolean isAsync() {
     return async;
   }

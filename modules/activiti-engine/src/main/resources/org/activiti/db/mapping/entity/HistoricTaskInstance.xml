@@ -541,6 +541,13 @@
       <if test="taskAssigneeLikeIgnoreCase != null">
         and lower(RES.ASSIGNEE_) like #{taskAssigneeLikeIgnoreCase}${wildcardEscapeClause}
       </if>
+      <if test="taskAssigneeIds != null &amp;&amp; taskAssigneeIds.size() &gt; 0">
+        and RES.ASSIGNEE_ IN
+        <foreach item="assigneeId" index="index" collection="taskAssigneeIds" 
+                 open="(" separator="," close=")">
+          #{assigneeId}
+        </foreach>
+	  </if>
       <if test="taskPriority != null">
         and RES.PRIORITY_ = #{taskPriority}
       </if>
@@ -836,6 +843,13 @@
            <if test="orQueryObject.taskAssigneeLikeIgnoreCase != null">
             or RES.ASSIGNEE_ like #{orQueryObject.taskAssigneeLikeIgnoreCase}${wildcardEscapeClause}
           </if>
+          <if test="orQueryObject.taskAssigneeIds != null &amp;&amp; orQueryObject.taskAssigneeIds.size() &gt; 0">
+	        or RES.ASSIGNEE_ IN
+	        <foreach item="assigneeId" index="index" collection="orQueryObject.taskAssigneeIds" 
+	                 open="(" separator="," close=")">
+	          #{assigneeId}
+	        </foreach>
+		  </if>
           <if test="orQueryObject.taskPriority != null">
             or RES.PRIORITY_ = #{orQueryObject.taskPriority}
           </if>

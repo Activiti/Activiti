@@ -108,13 +108,6 @@ public class HistoricVariableInstanceEntityImpl extends AbstractEntity implement
     return variableType;
   }
 
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
 
   public String getName() {
     return name;

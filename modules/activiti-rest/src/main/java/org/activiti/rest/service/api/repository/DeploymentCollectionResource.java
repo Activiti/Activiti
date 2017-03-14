@@ -13,6 +13,15 @@
 
 package org.activiti.rest.service.api.repository;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
@@ -45,6 +54,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "Deployment" }, description = "Manage Deployment", authorizations = { @Authorization(value = "basicAuth") })
 public class DeploymentCollectionResource {
 
   protected static final String DEPRECATED_API_DEPLOYMENT_SEGMENT = "deployment";
@@ -64,8 +74,22 @@ public class DeploymentCollectionResource {
   @Autowired
   protected RepositoryService repositoryService;
 
+  @ApiOperation(value = "List of Deployments", tags = {"Deployment"})
+  @ApiImplicitParams({
+    @ApiImplicitParam(name = "name", dataType = "string", value = "Only return deployments with the given name.", paramType = "query"),
+    @ApiImplicitParam(name = "nameLike", dataType = "string", value = "Only return deployments with a name like the given name.", paramType = "query"),
+    @ApiImplicitParam(name = "category", dataType = "string", value = "Only return deployments with the given category.", paramType = "query"),
+    @ApiImplicitParam(name = "categoryNotEquals", dataType = "string", value = "Only return deployments which don’t have the given category.", paramType = "query"),
+    @ApiImplicitParam(name = "tenantId", dataType = "string", value = "Only return deployments with the given tenantId.", paramType = "query"),
+    @ApiImplicitParam(name = "tenantIdLike", dataType = "string", value = "Only return deployments with a tenantId like the given value.", paramType = "query"),
+    @ApiImplicitParam(name = "withoutTenantId", dataType = "string", value = "If true, only returns deployments without a tenantId set. If false, the withoutTenantId parameter is ignored.", paramType = "query"),
+    @ApiImplicitParam(name = "sort", dataType = "string", value = "Property to sort on, to be used together with the order.", allowableValues ="id,name,deployTime,tenantId", paramType = "query"),
+  })
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the request was successful."),
+  })
   @RequestMapping(value = "/repository/deployments", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getDeployments(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+  public DataResponse getDeployments(@ApiParam(hidden = true) @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
     DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
 
     // Apply filters
@@ -98,8 +122,16 @@ public class DeploymentCollectionResource {
     return response;
   }
 
+  @ApiOperation(value = "Create a new deployment", tags = {"Deployment"}, consumes = "multipart/form-data", produces = "application/json",
+      notes = "The request body should contain data of type multipart/form-data. There should be exactly one file in the request, any additional files will be ignored. If multiple resources need to be deployed in a single deployment, compress the resources in a zip and make sure the file-name ends with .bar or .zip.\n"
+          + "\n"
+          + "An additional parameter (form-field) can be passed in the request body with name tenantId. The value of this field will be used as the id of the tenant this deployment is done in.")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the deployment was created."),
+      @ApiResponse(code = 400, message = "Indicates there was no content present in the request body or the content mime-type is not supported for deployment. The status-description contains additional information.")
+  })
   @RequestMapping(value = "/repository/deployments", method = RequestMethod.POST, produces = "application/json")
-  public DeploymentResponse uploadDeployment(@RequestParam(value = "tenantId", required = false) String tenantId, HttpServletRequest request, HttpServletResponse response) {
+  public DeploymentResponse uploadDeployment(@ApiParam(name = "tenantId") @RequestParam(value = "tenantId", required = false) String tenantId, HttpServletRequest request, HttpServletResponse response) {
 
     if (request instanceof MultipartHttpServletRequest == false) {
       throw new ActivitiIllegalArgumentException("Multipart request is required");

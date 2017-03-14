@@ -257,9 +257,4 @@ public class DeploymentEntityManager extends AbstractManager {
     return (Long) getDbSqlSession().selectOne("selectDeploymentCountByNativeQuery", parameterMap);
   }
 
-  public void close() {
-  }
-
-  public void flush() {
-  }
 }

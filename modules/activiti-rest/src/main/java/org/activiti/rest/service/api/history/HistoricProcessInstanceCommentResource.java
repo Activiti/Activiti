@@ -13,6 +13,13 @@
 
 package org.activiti.rest.service.api.history;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.annotations.Authorization;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -34,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
+@Api(tags = { "History" }, description = "Manage History", authorizations = { @Authorization(value = "basicAuth") })
 public class HistoricProcessInstanceCommentResource {
 
   @Autowired
@@ -45,8 +53,12 @@ public class HistoricProcessInstanceCommentResource {
   @Autowired
   protected TaskService taskService;
 
+  @ApiOperation(value = "Get a comment on a historic process instance", tags = { "History" }, notes = "")
+  @ApiResponses(value = {
+      @ApiResponse(code = 200, message = "Indicates the historic process instance and comment were found and the comment is returned."),
+      @ApiResponse(code = 404, message = "Indicates the requested historic process instance was not found or the historic process instance doesn’t have a comment with the given ID.") })
   @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments/{commentId}", method = RequestMethod.GET, produces = "application/json")
-  public CommentResponse getComment(@PathVariable("processInstanceId") String processInstanceId, @PathVariable("commentId") String commentId, HttpServletRequest request) {
+  public CommentResponse getComment(@ApiParam(name="processInstanceId", value="The id of the historic process instance to get the comment for.") @PathVariable("processInstanceId") String processInstanceId,@ApiParam(name="commentId", value="The id of the comment.") @PathVariable("commentId") String commentId, HttpServletRequest request) {
 
     HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
@@ -58,8 +70,12 @@ public class HistoricProcessInstanceCommentResource {
     return restResponseFactory.createRestComment(comment);
   }
 
+  @ApiOperation(value = "Delete a comment on a historic process instance", tags = { "History" }, notes = "")
+  @ApiResponses(value = {
+      @ApiResponse(code = 204, message = "Indicates the historic process instance and comment were found and the comment is deleted. Response body is left empty intentionally."),
+      @ApiResponse(code = 404, message = "Indicates the requested historic process instance was not found or the historic process instance doesn’t have a comment with the given ID.") })
   @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments/{commentId}", method = RequestMethod.DELETE)
-  public void deleteComment(@PathVariable("processInstanceId") String processInstanceId, @PathVariable("commentId") String commentId, HttpServletRequest request, HttpServletResponse response) {
+  public void deleteComment(@ApiParam(name="processInstanceId", value="The id of the historic process instance to delete the comment for.") @PathVariable("processInstanceId") String processInstanceId, @ApiParam(name="commentId", value="The id of the comment.") @PathVariable("commentId") String commentId, HttpServletRequest request, HttpServletResponse response) {
 
     HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
