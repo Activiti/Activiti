@@ -10,7 +10,7 @@ var DECISION_TABLE_TOOLBAR_CONFIG = {
     "items" : [
         {
             "type" : "button",
-            "title" : "Save the Decision Table",
+            "title" : "DECISION_TABLE_TOOLBAR.ACTION.SAVE",
             "cssClass" : "editor-icon editor-icon-save",
             "action" : "DECISION_TABLE_TOOLBAR.ACTIONS.saveModel",
             "disableOnReadonly": true
@@ -20,7 +20,7 @@ var DECISION_TABLE_TOOLBAR_CONFIG = {
     "secondaryItems" : [
 		{
 		    "type" : "button",
-		    "title" : "Close",
+		    "title" : "DECISION_TABLE_TOOLBAR.ACTION.CLOSE",
 		    "cssClass" : "glyphicon glyphicon-remove",
 		    "action" : "DECISION_TABLE_TOOLBAR.ACTIONS.closeEditor"
 		}

@@ -1560,6 +1560,10 @@
     "FORM_TOOLBAR.ACTION.HELP": "Start the guided tour",
     "FORM_TOOLBAR.ACTION.FEEDBACK": "Provide feedback",
 
+    "DECISION_TABLE_TOOLBAR.ACTION.SAVE" : "Save the decision table",
+    "DECISION_TABLE_TOOLBAR.ACTION.VALIDATE" : "Validate the decision table",
+    "DECISION_TABLE_TOOLBAR.ACTION.CLOSE" : "Close",
+
     "APP_DEFINITION_TOOLBAR.ACTION.SAVE" : "Save the app definition",
     "APP_DEFINITION_TOOLBAR.ACTION.VALIDATE" : "Validate the app definition",
     "APP_DEFINITION_TOOLBAR.ACTION.HELP" : "Start the guided tour",
