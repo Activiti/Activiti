@@ -37,6 +37,9 @@ public class InputClauseXMLConverter extends BaseDmnXMLConverter {
     @Override
     protected DmnElement convertXMLToElement(XMLStreamReader xtr, DmnDefinition model) throws Exception {
         InputClause clause = new InputClause();
+        if(ELEMENT_INPUT_CLAUSE.equals(xtr.getLocalName())){
+            clause.setLabel(xtr.getAttributeValue(null, ATTRIBUTE_LABEL));
+        }
         parseChildElements(getXMLElementName(), clause, model, xtr);
         return clause;
     }

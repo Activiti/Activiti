@@ -108,7 +108,7 @@ public class DmnJsonConverter {
             ObjectNode inputExpressionNode = objectMapper.createObjectNode();
             inputExpressionNode.put("id", inputExpression.getId());
             inputExpressionNode.put("type", inputExpression.getTypeRef());
-            inputExpressionNode.put("label", inputExpression.getLabel());
+            inputExpressionNode.put("label", clause.getLabel());
             inputExpressionNode.put("variableId", inputExpression.getText());
 
             inputExpressionsNode.add(inputExpressionNode);
