@@ -15,6 +15,7 @@ package org.activiti.app.rest.idm;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import javax.servlet.ServletOutputStream;
@@ -31,6 +32,8 @@ import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
+import org.activiti.engine.impl.util.IoUtil;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -100,6 +103,15 @@ public class IdmProfileResource {
   public void getProfilePicture(HttpServletResponse response) {
     try {
       Picture picture = identityService.getUserPicture(SecurityUtils.getCurrentUserId());
+      if(picture==null){
+    	  try{
+    		  byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream("../../images/activiti-logo.png"), "default-logo");
+    		  picture=new Picture(pictureBytes,"image/png");
+    	  }
+    	  catch (Exception e) {
+    		  throw new InternalServerErrorException("Could not find default tenant logo");
+    	  }
+      }
       response.setContentType(picture.getMimeType());
       ServletOutputStream servletOutputStream = response.getOutputStream();
       BufferedInputStream in = new BufferedInputStream(  new ByteArrayInputStream(picture.getBytes()));
