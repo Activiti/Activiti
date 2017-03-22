@@ -19,6 +19,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,12 @@ public class TriggerTimerEventJobHandler implements JobHandler {
       if (execution.getCurrentFlowElement() instanceof FlowNode) {
         processedElements.add(execution.getCurrentActivityId());
         dispatchActivityTimeOut(timerEntity, (FlowNode) execution.getCurrentFlowElement(), execution, commandContext);
+        if (execution.getCurrentFlowElement() instanceof UserTask && !execution.isMultiInstanceRoot()) {
+        	List<TaskEntity> tasks = execution.getTasks();
+        	if (tasks.size() > 0) {
+        		tasks.get(0).setCanceled(true);
+        	}
+        }
       }
 
       // subprocesses

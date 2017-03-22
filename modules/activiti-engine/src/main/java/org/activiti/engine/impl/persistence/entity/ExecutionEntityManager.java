@@ -90,7 +90,7 @@ public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
   void deleteProcessInstance(String processInstanceId, String deleteReason, boolean cascade);
   
   void deleteProcessInstanceExecutionEntity(String processInstanceId, String currentFlowElementId, 
-      String deleteReason, boolean cascade, boolean cancel, boolean fireEvent);
+      String deleteReason, boolean cascade, boolean cancel);
   
   void deleteChildExecutions(ExecutionEntity executionEntity, String deleteReason, boolean cancel);
   
