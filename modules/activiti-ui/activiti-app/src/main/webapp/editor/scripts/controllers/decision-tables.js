@@ -191,59 +191,74 @@ angular.module('activitiModeler')
 }]);
 
 angular.module('activitiModeler')
-	.controller('DuplicateDecisionTableCtrl', ['$rootScope', '$scope', '$http',
-		function ($rootScope, $scope, $http) {
+.controller('DuplicateDecisionTableCtrl', ['$rootScope', '$scope', '$http',
+                                           function ($rootScope, $scope, $http) {
 
-			$scope.model = {
-				loading: false,
-                decisionTable: {
-					id: '',
-					name: '',
-					description: '',
-                    modelType: null
-				}
-			};
+	$scope.model = {
+			loading: false,
+			decisionTable: {
+				id: '',
+				name: '',
+				description: '',
+				modelType: '',
+				key: '',
+				createdBy: '',
+				lastUpdatedBy: '',
+				lastUpdated: '',
+				latestVersion: '',
+				version: '',
+				comment: ''
 
-			if ($scope.originalModel) {
-				//clone the model
-				$scope.model.decisionTable.name = $scope.originalModel.decisionTable.name;
-				$scope.model.decisionTable.description = $scope.originalModel.decisionTable.description;
-				$scope.model.decisionTable.modelType = $scope.originalModel.decisionTable.modelType;
-				$scope.model.decisionTable.id = $scope.originalModel.decisionTable.id;
-			}	
-			
-			$scope.ok = function () {
+			}
+	};
 
-				if (!$scope.model.decisionTable.name || $scope.model.decisionTable.name.length == 0) {
-					return;
-				}
+	if ($scope.originalModel) {
+		//clone the model
+		$scope.model.decisionTable.name = $scope.originalModel.decisionTable.name;
+		$scope.model.decisionTable.description = $scope.originalModel.decisionTable.description;
+		$scope.model.decisionTable.key = $scope.originalModel.decisionTable.key;
+		$scope.model.decisionTable.createdBy = $scope.originalModel.decisionTable.createdBy;
+		$scope.model.decisionTable.lastUpdatedBy = $scope.originalModel.decisionTable.lastUpdatedBy;
+		$scope.model.decisionTable.lastUpdated = $scope.originalModel.decisionTable.lastUpdated;
+		$scope.model.decisionTable.latestVersion = $scope.originalModel.decisionTable.latestVersion;
+		$scope.model.decisionTable.version = $scope.originalModel.decisionTable.version;
+		$scope.model.decisionTable.comment = $scope.originalModel.decisionTable.comment;
+		$scope.model.decisionTable.modelType = $scope.originalModel.decisionTable.modelType;
+		$scope.model.decisionTable.id = $scope.originalModel.decisionTable.id;
+	}
 
-				$scope.model.loading = true;
+	$scope.ok = function () {
 
-				$http({method: 'POST', url: ACTIVITI.CONFIG.contextRoot + '/app/rest/models/'+$scope.model.decisionTable.id+'/clone', data: $scope.model.decisionTable}).
-					success(function(data, status, headers, config) {
-						$scope.$hide();
-						$scope.model.loading = false;
+		if (!$scope.model.decisionTable.name || $scope.model.decisionTable.name.length == 0) {
+			return;
+		}
 
-                        
-						if ($scope.duplicateDecisionTableCallback) {
-							$scope.duplicateDecisionTableCallback(data);
-							$scope.duplicateDecisionTableCallback = undefined;
-						}
+		$scope.model.loading = true;
 
-					}).
-					error(function(data, status, headers, config) {
-						$scope.model.loading = false;
-						$scope.$hide();
-					});
-			};
+		$http({ method: 'POST', url: ACTIVITI.CONFIG.contextRoot + '/app/rest/models/' + $scope.model.decisionTable.id + '/clone', data: $scope.model.decisionTable }).
+		success(function (data, status, headers, config) {
+			$scope.$hide();
+			$scope.model.loading = false;
 
-			$scope.cancel = function () {
-				if(!$scope.model.loading) {
-					$scope.$hide();
-				}
-			};
-		}]);
+
+			if ($scope.duplicateDecisionTableCallback) {
+				$scope.duplicateDecisionTableCallback(data);
+				$scope.duplicateDecisionTableCallback = undefined;
+			}
+
+		}).
+		error(function (data, status, headers, config) {
+			$scope.model.loading = false;
+			$scope.$hide();
+		});
+	};
+
+	$scope.cancel = function () {
+		if (!$scope.model.loading) {
+			$scope.$hide();
+		}
+	};
+}]);
 
 angular.module('activitiModeler')
 .controller('ImportDecisionTableModelCtrl', ['$rootScope', '$scope', '$http', 'Upload', '$location', function ($rootScope, $scope, $http, Upload, $location ) {

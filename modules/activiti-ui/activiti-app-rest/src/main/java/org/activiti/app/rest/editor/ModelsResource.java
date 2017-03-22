@@ -179,13 +179,30 @@ public class ModelsResource extends AbstractModelsResource {
     }
 
     if (modelRepresentation.getModelType() != null && modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_FORM)) {
-      // noting to do special for forms (just clone the json)
+    	// nothing to do special for forms (just clone the json)
     } else if (modelRepresentation.getModelType() != null && modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_APP)) {
-      // noting to do special for applications (just clone the json)
-    } else {
-      // BPMN model
-      ObjectNode editorNode = null;
-      try {
+    	// nothing to do special for applications (just clone the json)
+    }  else if (modelRepresentation.getModelType() != null && modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_DECISION_TABLE)) {
+    	// Decision Table model
+    	ObjectNode editorNode = null;
+
+    	try {
+
+    		editorNode = (ObjectNode) objectMapper.readTree(json);
+
+    		json = objectMapper.writeValueAsString(editorNode);
+
+
+    	} catch (Exception e) {
+    		logger.error("Error creating decision table model", e);
+    		throw new InternalServerErrorException("Error creating decision table");
+    	}
+
+
+    }else {
+    	// BPMN model
+    	ObjectNode editorNode = null;
+    	try {
         ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(json);
 
         editorNode = deleteEmbededReferencesFromBPMNModel(editorJsonNode);
