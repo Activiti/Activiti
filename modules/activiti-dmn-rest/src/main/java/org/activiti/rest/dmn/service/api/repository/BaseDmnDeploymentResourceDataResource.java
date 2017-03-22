@@ -38,13 +38,13 @@ public class BaseDmnDeploymentResourceDataResource {
   @Autowired
   protected DmnRepositoryService dmnRepositoryService;
 
-  protected byte[] getDmnDeploymentResourceData(String deploymentId, String resourceId, HttpServletResponse response) {
+  protected byte[] getDmnDeploymentResourceData(String deploymentId, String resourceName, HttpServletResponse response) {
 
     if (deploymentId == null) {
       throw new ActivitiDmnIllegalArgumentException("No deployment id provided");
     }
-    if (resourceId == null) {
-      throw new ActivitiDmnIllegalArgumentException("No resource id provided");
+    if (resourceName == null) {
+      throw new ActivitiDmnIllegalArgumentException("No resource name provided");
     }
 
     // Check if deployment exists
@@ -55,10 +55,10 @@ public class BaseDmnDeploymentResourceDataResource {
 
     List<String> resourceList = dmnRepositoryService.getDeploymentResourceNames(deploymentId);
 
-    if (resourceList.contains(resourceId)) {
-      final InputStream resourceStream = dmnRepositoryService.getResourceAsStream(deploymentId, resourceId);
+    if (resourceList.contains(resourceName)) {
+      final InputStream resourceStream = dmnRepositoryService.getResourceAsStream(deploymentId, resourceName);
 
-      String contentType = contentTypeResolver.resolveContentType(resourceId);
+      String contentType = contentTypeResolver.resolveContentType(resourceName);
       response.setContentType(contentType);
       try {
         return IOUtils.toByteArray(resourceStream);
@@ -67,7 +67,7 @@ public class BaseDmnDeploymentResourceDataResource {
       }
     } else {
       // Resource not found in deployment
-      throw new ActivitiDmnObjectNotFoundException("Could not find a resource with id '" + resourceId + "' in deployment '" + deploymentId);
+      throw new ActivitiDmnObjectNotFoundException("Could not find a resource with name '" + resourceName + "' in deployment '" + deploymentId);
     }
   }
 }
