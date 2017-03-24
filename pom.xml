@@ -186,6 +186,13 @@
 				<scope>test</scope>
 			</dependency>
 			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<!-- using version 2.x because version 3.x requires Java 8 -->
+				<version>2.6.0</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>5.1.27</version>
