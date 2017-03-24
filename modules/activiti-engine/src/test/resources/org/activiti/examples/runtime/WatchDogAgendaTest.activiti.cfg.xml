@@ -7,7 +7,7 @@
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
     <property name="databaseSchemaUpdate" value="true"/>
 
-    <property name="agendaFactory" ref="&amp;watchDogAgenda"/>
+    <property name="engineAgendaFactory" ref="watchDogAgenda"/>
   </bean>
 
   <bean id="watchDogAgenda" class="org.activiti.examples.runtime.WatchDogAgendaFactory"/>

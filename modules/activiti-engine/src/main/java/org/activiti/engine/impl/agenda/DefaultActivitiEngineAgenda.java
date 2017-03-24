@@ -12,25 +12,29 @@
  */
 package org.activiti.engine.impl.agenda;
 
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.ActivitiEngineAgenda;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.runtime.ActivitiAgenda;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 
-import static org.activiti.engine.impl.context.Context.getCommandContext;
 
 /**
  * @author Joram Barrez
  * @author martin.grofcik
  */
-public class DefaultActivitiAgenda implements ActivitiAgenda {
+public class DefaultActivitiEngineAgenda implements ActivitiEngineAgenda {
 
-    private static final Logger logger = LoggerFactory.getLogger(DefaultActivitiAgenda.class);
+    private static final Logger logger = LoggerFactory.getLogger(DefaultActivitiEngineAgenda.class);
 
     protected LinkedList<Runnable> operations = new LinkedList<Runnable>();
+    protected CommandContext commandContext;
+    
+    public DefaultActivitiEngineAgenda(CommandContext commandContext) {
+      this.commandContext = commandContext;
+    }
 
     @Override
     public boolean isEmpty() {
@@ -57,53 +61,53 @@ public class DefaultActivitiAgenda implements ActivitiAgenda {
     public void planOperation(Runnable operation, ExecutionEntity executionEntity) {
         operations.add(operation);
         if (executionEntity != null) {
-            Context.getCommandContext().addInvolvedExecution(executionEntity);
+          commandContext.addInvolvedExecution(executionEntity);
         }
         logger.debug("Operation {} added to agenda", operation.getClass());
     }
 
     @Override
     public void planContinueProcessOperation(ExecutionEntity execution) {
-        planOperation(new ContinueProcessOperation(getCommandContext(), execution));
+        planOperation(new ContinueProcessOperation(commandContext, execution));
     }
 
     @Override
     public void planContinueProcessSynchronousOperation(ExecutionEntity execution) {
-        planOperation(new ContinueProcessOperation(getCommandContext(), execution, true, false));
+        planOperation(new ContinueProcessOperation(commandContext, execution, true, false));
     }
 
     @Override
     public void planContinueProcessInCompensation(ExecutionEntity execution) {
-        planOperation(new ContinueProcessOperation(getCommandContext(), execution, false, true));
+        planOperation(new ContinueProcessOperation(commandContext, execution, false, true));
     }
 
     @Override
     public void planContinueMultiInstanceOperation(ExecutionEntity execution) {
-        planOperation(new ContinueMultiInstanceOperation(getCommandContext(), execution));
+        planOperation(new ContinueMultiInstanceOperation(commandContext, execution));
     }
 
     @Override
     public void planTakeOutgoingSequenceFlowsOperation(ExecutionEntity execution, boolean evaluateConditions) {
-        planOperation(new TakeOutgoingSequenceFlowsOperation(getCommandContext(), execution, evaluateConditions));
+        planOperation(new TakeOutgoingSequenceFlowsOperation(commandContext, execution, evaluateConditions));
     }
 
     @Override
     public void planEndExecutionOperation(ExecutionEntity execution) {
-        planOperation(new EndExecutionOperation(getCommandContext(), execution));
+        planOperation(new EndExecutionOperation(commandContext, execution));
     }
 
     @Override
     public void planTriggerExecutionOperation(ExecutionEntity execution) {
-        planOperation(new TriggerExecutionOperation(getCommandContext(), execution));
+        planOperation(new TriggerExecutionOperation(commandContext, execution));
     }
 
     @Override
     public void planDestroyScopeOperation(ExecutionEntity execution) {
-        planOperation(new DestroyScopeOperation(getCommandContext(), execution));
+        planOperation(new DestroyScopeOperation(commandContext, execution));
     }
 
     @Override
     public void planExecuteInactiveBehaviorsOperation() {
-        planOperation(new ExecuteInactiveBehaviorsOperation(getCommandContext()));
+        planOperation(new ExecuteInactiveBehaviorsOperation(commandContext));
     }
 }
