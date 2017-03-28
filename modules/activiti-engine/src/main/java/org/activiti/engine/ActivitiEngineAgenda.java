@@ -19,8 +19,6 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public interface ActivitiEngineAgenda extends Agenda {
 
-    void planOperation(Runnable operation, ExecutionEntity executionEntity);
-
     void planContinueProcessOperation(ExecutionEntity execution);
 
     void planContinueProcessSynchronousOperation(ExecutionEntity execution);

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine;
 
+import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.Command;
@@ -36,6 +37,6 @@ public interface Agenda {
   /**
    * Generic method to plan a {@link Runnable}.
    */
-  void planOperation(Runnable operation);
+  void planOperation(AbstractOperation operation);
 
 }

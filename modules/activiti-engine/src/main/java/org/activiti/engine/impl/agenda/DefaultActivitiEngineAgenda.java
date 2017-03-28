@@ -47,22 +47,17 @@ public class DefaultActivitiEngineAgenda implements ActivitiEngineAgenda {
     }
 
     /**
-     * Generic method to plan a {@link Runnable} execution.
-     */
-    @Override
-    public void planOperation(Runnable operation) {
-        planOperation(operation, null);
-    }
-
-    /**
      * Generic method to plan a {@link Runnable}.
      */
     @Override
-    public void planOperation(Runnable operation, ExecutionEntity executionEntity) {
+    public void planOperation(AbstractOperation operation) {
         operations.add(operation);
-        if (executionEntity != null) {
-          commandContext.addInvolvedExecution(executionEntity);
+
+        ExecutionEntity execution = operation.getExecution();
+        if (execution != null) {
+          commandContext.addInvolvedExecution(execution);
         }
+
         logger.debug("Operation {} added to agenda", operation.getClass());
     }
 

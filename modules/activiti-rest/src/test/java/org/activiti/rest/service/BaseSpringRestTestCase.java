@@ -73,7 +73,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import junit.framework.AssertionFailedError;
 
-public class BaseSpringRestTestCase extends AbstractTestCase {
+public abstract class BaseSpringRestTestCase extends AbstractTestCase {
 
   private static Logger log = LoggerFactory.getLogger(BaseSpringRestTestCase.class);
   
