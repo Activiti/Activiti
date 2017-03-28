@@ -19,7 +19,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.runtime.Agenda;
+import org.activiti.engine.Agenda;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
@@ -110,7 +110,7 @@ public abstract class AbstractOperation implements Runnable {
     return agenda;
   }
 
-  public void setAgenda(DefaultActivitiAgenda agenda) {
+  public void setAgenda(DefaultActivitiEngineAgenda agenda) {
     this.agenda = agenda;
   }
 

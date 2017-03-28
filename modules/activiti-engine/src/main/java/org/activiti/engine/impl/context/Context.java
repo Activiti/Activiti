@@ -14,12 +14,13 @@
 package org.activiti.engine.impl.context;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObject;
-import org.activiti.engine.impl.runtime.ActivitiAgenda;
 
 import java.util.*;
 
@@ -49,7 +50,7 @@ public class Context {
     return stack.peek();
   }
 
-  public static ActivitiAgenda getAgenda() {
+  public static ActivitiEngineAgenda getAgenda() {
     return getCommandContext().getAgenda();
   }
 
