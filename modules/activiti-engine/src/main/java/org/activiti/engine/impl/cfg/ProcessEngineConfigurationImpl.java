@@ -88,7 +88,6 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-//import org.springframework.beans.factory.FactoryBean;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -3837,7 +3836,5 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.asyncExecutorMessageQueueMode = asyncExecutorMessageQueueMode;
     return this;
   }
-
-
 
 }
