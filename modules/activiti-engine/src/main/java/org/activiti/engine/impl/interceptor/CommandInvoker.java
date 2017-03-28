@@ -31,7 +31,7 @@ public class CommandInvoker extends AbstractCommandInterceptor {
 
     // Execute the command.
     // This will produce operations that will be put on the agenda.
-    commandContext.getAgenda().planOperation(new AbstractOperation(commandContext, null) {
+    commandContext.getAgenda().planOperation(new Runnable() {
       @Override
       public void run() {
         commandContext.setResult(command.execute(commandContext));

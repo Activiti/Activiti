@@ -12,13 +12,13 @@
  */
 package org.activiti.engine.impl.agenda;
 
+import java.util.LinkedList;
+
 import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.LinkedList;
 
 
 /**
@@ -50,12 +50,14 @@ public class DefaultActivitiEngineAgenda implements ActivitiEngineAgenda {
      * Generic method to plan a {@link Runnable}.
      */
     @Override
-    public void planOperation(AbstractOperation operation) {
+    public void planOperation(Runnable operation) {
         operations.add(operation);
 
-        ExecutionEntity execution = operation.getExecution();
-        if (execution != null) {
-          commandContext.addInvolvedExecution(execution);
+        if (operation instanceof AbstractOperation) {
+            ExecutionEntity execution = ((AbstractOperation) operation).getExecution();
+            if (execution != null) {
+                commandContext.addInvolvedExecution(execution);
+            }
         }
 
         logger.debug("Operation {} added to agenda", operation.getClass());

@@ -16,7 +16,6 @@ package org.activiti.examples.runtime;
 import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.ActivitiEngineAgendaFactory;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.activiti.engine.impl.agenda.DefaultActivitiEngineAgenda;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -57,7 +56,7 @@ public class WatchDogAgendaFactory implements ActivitiEngineAgendaFactory {
     }
 
     @Override
-    public void planOperation(AbstractOperation operation) {
+    public void planOperation(Runnable operation) {
       agenda.planOperation(operation);
     }
 
