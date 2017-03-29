@@ -775,7 +775,7 @@ public class DefaultProcessDiagramCanvas {
         if (!layouts.isEmpty()) {
           layouts.remove(layouts.size() - 1);
           
-          if(lastLine.length() >= 4) {
+          if(lastLine != null && lastLine.length() >= 4) {
             lastLine = lastLine.substring(0, lastLine.length() - 4) + "...";
           }
           layouts.add(new TextLayout(lastLine, g.getFont(), g.getFontRenderContext()));
