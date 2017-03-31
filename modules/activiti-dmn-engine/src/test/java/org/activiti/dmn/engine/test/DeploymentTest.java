@@ -26,6 +26,7 @@ import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntity;
 import org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntity;
 
 
+import org.activiti.dmn.model.DecisionTable;
 import org.junit.Test;
 
 public class DeploymentTest extends AbstractActivitiDmnTest {
@@ -155,7 +156,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     @DmnDeploymentAnnotation(resources="org/activiti/dmn/engine/test/deployment/multiple_dmndecisions.dmn")
     public void deployMultipleDmnDecisions() throws Exception{
 
-        DecisionTable decision = null;
+        DmnDecisionTable  decision = null;
 
         decision = repositoryService.createDecisionTableQuery().latestVersion().decisionTableKey("decision").singleResult();
         assertNotNull(decision);
@@ -169,7 +170,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
         assertNotNull(decision);
         assertEquals("decision", decision.getKey());
 
-        DecisionTable decision2 = repositoryService.createDecisionTableQuery().latestVersion().decisionTableKey("decision2").singleResult();
+        DmnDecisionTable decision2 = repositoryService.createDecisionTableQuery().latestVersion().decisionTableKey("decision2").singleResult();
         assertNotNull(decision2);
         assertEquals("decision2", decision2.getKey());
 
@@ -181,7 +182,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
         assertNotNull(decision2);
         assertEquals("decision2", decision2.getKey());
 
-        DecisionTable decision3 = repositoryService.createDecisionTableQuery().latestVersion().decisionTableKey("decision3").singleResult();
+        DmnDecisionTable decision3 = repositoryService.createDecisionTableQuery().latestVersion().decisionTableKey("decision3").singleResult();
         assertNotNull(decision3);
         assertEquals("decision3", decision3.getKey());
 

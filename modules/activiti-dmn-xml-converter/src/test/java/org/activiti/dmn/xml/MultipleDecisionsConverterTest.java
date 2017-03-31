@@ -34,10 +34,10 @@ public class MultipleDecisionsConverterTest extends AbstractConverterTest {
 	}
 
 	private void validateModel(DmnDefinition model) {
-		List<Decision> decisions = model.getDrgElements();
+		List<Decision> decisions = model.getDecisions();
 		assertEquals(3, decisions.size());
 
-		DecisionTable decisionTable1 = (DecisionTable) decisions.get(0).getDecisionTable();
+		DecisionTable decisionTable1 = (DecisionTable) decisions.get(0).getExpression();
 		assertNotNull(decisionTable1);
 
 		List<InputClause> inputClauses1 = decisionTable1.getInputs();
@@ -49,7 +49,7 @@ public class MultipleDecisionsConverterTest extends AbstractConverterTest {
 		List<DecisionRule> rules1 = decisionTable1.getRules();
 		assertEquals(2, rules1.size());
 
-		DecisionTable decisionTable2 = (DecisionTable) decisions.get(1).getDecisionTable();
+		DecisionTable decisionTable2 = (DecisionTable) decisions.get(1).getExpression();
 		assertNotNull(decisionTable2);
 
 		List<InputClause> inputClauses2 = decisionTable2.getInputs();
@@ -61,7 +61,7 @@ public class MultipleDecisionsConverterTest extends AbstractConverterTest {
 		List<DecisionRule> rules2 = decisionTable2.getRules();
 		assertEquals(2, rules2.size());
 		
-		DecisionTable decisionTable3 = (DecisionTable) decisions.get(1).getDecisionTable();
+		DecisionTable decisionTable3 = (DecisionTable) decisions.get(1).getExpression();
 		assertNotNull(decisionTable3);
 
 		List<InputClause> inputClauses3 = decisionTable3.getInputs();

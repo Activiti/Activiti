@@ -12,19 +12,22 @@
  */
 package org.activiti.dmn.api;
 
+
 import java.util.Map;
 
 /**
+ * Service for executing DMN decisions (decision tables)
+ * 
  * @author Tijs Rademakers
  * @author Yvo Swillens
  */
 public interface DmnRuleService {
 
-  RuleEngineExecutionResult executeDecisionByKey(String decisionKey, Map<String, Object> processVariables);
+  RuleEngineExecutionResult executeDecisionByKey(String decisionKey, Map<String, Object> inputVariables);
 
-  RuleEngineExecutionResult executeDecisionByKeyAndTenantId(String decisionKey, Map<String, Object> processVariables, String tenantId);
+  RuleEngineExecutionResult executeDecisionByKeyAndTenantId(String decisionKey, Map<String, Object> inputVariables, String tenantId);
 
-  RuleEngineExecutionResult executeDecisionByKeyAndParentDeploymentId(String decisionKey, String parentDeploymentId, Map<String, Object> variables);
+  RuleEngineExecutionResult executeDecisionByKeyAndParentDeploymentId(String decisionKey, String parentDeploymentId, Map<String, Object> inputVariables);
 
-  RuleEngineExecutionResult executeDecisionByKeyParentDeploymentIdAndTenantId(String decisionKey, String parentDeploymentId, Map<String, Object> variables, String tenantId);
+  RuleEngineExecutionResult executeDecisionByKeyParentDeploymentIdAndTenantId(String decisionKey, String parentDeploymentId, Map<String, Object> inputVariables, String tenantId);
 }
