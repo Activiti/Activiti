@@ -14,7 +14,7 @@ package org.activiti.rest.dmn.service.api.repository;
 
 import java.util.List;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.api.DmnDeployment;
 import org.activiti.rest.dmn.service.api.BaseSpringDmnRestTestCase;
 import org.activiti.rest.dmn.service.api.DmnRestUrls;
@@ -36,11 +36,11 @@ public class DecisionTableCollectionResourceTest extends BaseSpringDmnRestTestCa
       DmnDeployment secondDeployment = dmnRepositoryService.createDeployment().name("Deployment 2").addClasspathResource("org/activiti/rest/dmn/service/api/repository/simple.dmn").category("cat two")
           .addClasspathResource("org/activiti/rest/dmn/service/api/repository/simple-2.dmn").deploy();
 
-      DecisionTable firstDecision = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decision").deploymentId(firstDeployment.getId()).singleResult();
+      DmnDecisionTable firstDecision = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decision").deploymentId(firstDeployment.getId()).singleResult();
 
-      DecisionTable latestDecision = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decision").deploymentId(secondDeployment.getId()).singleResult();
+      DmnDecisionTable latestDecision = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decision").deploymentId(secondDeployment.getId()).singleResult();
 
-      DecisionTable decisionTwo = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decisionTwo").deploymentId(secondDeployment.getId()).singleResult();
+      DmnDecisionTable decisionTwo = dmnRepositoryService.createDecisionTableQuery().decisionTableKey("decisionTwo").deploymentId(secondDeployment.getId()).singleResult();
 
       String baseUrl = DmnRestUrls.createRelativeResourceUrl(DmnRestUrls.URL_DECISION_TABLE_COLLETION);
       assertResultsPresentInDataResponse(baseUrl, firstDecision.getId(), decisionTwo.getId(), latestDecision.getId());

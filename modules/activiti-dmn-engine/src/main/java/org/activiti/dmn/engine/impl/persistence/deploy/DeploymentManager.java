@@ -15,7 +15,7 @@ package org.activiti.dmn.engine.impl.persistence.deploy;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
@@ -134,7 +134,7 @@ public class DeploymentManager {
    * Resolving the decision will fetch the DMN, parse it and store the
    * {@link DmnDefinition} in memory.
    */
-  public DecisionTableCacheEntry resolveDecisionTable(DecisionTable decision) {
+  public DecisionTableCacheEntry resolveDecisionTable(DmnDecisionTable decision) {
     String decisionId = decision.getId();
     String deploymentId = decision.getDeploymentId();
 
@@ -166,12 +166,12 @@ public class DeploymentManager {
     }
 
     // Remove any process definition from the cache
-    List<DecisionTable> decisionTables = new DecisionTableQueryImpl().deploymentId(deploymentId).list();
+    List<DmnDecisionTable> decisionTables = new DecisionTableQueryImpl().deploymentId(deploymentId).list();
     
     // Delete data
     deploymentEntityManager.deleteDeployment(deploymentId);
 
-    for (DecisionTable decisionTable : decisionTables) {
+    for (DmnDecisionTable decisionTable : decisionTables) {
       decisionCache.remove(decisionTable.getId());
     }
   }

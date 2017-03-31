@@ -12,7 +12,7 @@
  */
 package org.activiti.rest.dmn.service.api.repository;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.model.DmnDefinition;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +27,7 @@ public class DecisionTableModelResource extends BaseDecisionTableResource {
 
   @RequestMapping(value = "/dmn-repository/decision-tables/{decisionTableId}/model", method = RequestMethod.GET, produces = "application/json")
   public DmnDefinition getModelResource(@PathVariable String decisionTableId) {
-    DecisionTable decisionTable = geDecisionTableFromRequest(decisionTableId);
+    DmnDecisionTable decisionTable = geDecisionTableFromRequest(decisionTableId);
     return dmnRepositoryService.getDmnDefinition(decisionTable.getId());
   }
 }

@@ -14,7 +14,7 @@ package org.activiti.rest.dmn.service.api.repository;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,7 +28,7 @@ public class DecisionTableResource extends BaseDecisionTableResource {
 
   @RequestMapping(value = "/dmn-repository/decision-tables/{decisionTableId}", method = RequestMethod.GET, produces = "application/json")
   public DecisionTableResponse getDecisionTable(@PathVariable String decisionTableId, HttpServletRequest request) {
-    DecisionTable decisionTable = geDecisionTableFromRequest(decisionTableId);
+    DmnDecisionTable decisionTable = geDecisionTableFromRequest(decisionTableId);
 
     return dmnRestResponseFactory.createDecisionTableResponse(decisionTable);
   }

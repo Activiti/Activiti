@@ -17,7 +17,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.api.DmnDeployment;
 import org.activiti.dmn.api.DmnRepositoryService;
 import org.activiti.dmn.engine.ActivitiDmnException;
@@ -45,10 +45,10 @@ public class BaseDecisionTableResource {
   protected DmnRepositoryService dmnRepositoryService;
 
   /**
-   * Returns the {@link DecisionTable} that is requested. Throws the right exceptions when bad request was made or decision table is not found.
+   * Returns the {@link DmnDecisionTable} that is requested. Throws the right exceptions when bad request was made or decision table is not found.
    */
-  protected DecisionTable geDecisionTableFromRequest(String decisionTableId) {
-    DecisionTable decisionTable = dmnRepositoryService.getDecisionTable(decisionTableId);
+  protected DmnDecisionTable geDecisionTableFromRequest(String decisionTableId) {
+    DmnDecisionTable decisionTable = dmnRepositoryService.getDecisionTable(decisionTableId);
 
     if (decisionTable == null) {
       throw new ActivitiDmnObjectNotFoundException("Could not find a decision table with id '" + decisionTableId);

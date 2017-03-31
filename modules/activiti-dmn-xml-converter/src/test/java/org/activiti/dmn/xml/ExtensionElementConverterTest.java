@@ -91,10 +91,10 @@ public class ExtensionElementConverterTest extends AbstractConverterTest {
         assertEquals("leifn-2", localization.getLabeledEntityIdForName());
         assertEquals("leifd-2", localization.getLabeledEntityIdForDescription());
         
-        List<Decision> decisions = model.getDrgElements();
+        List<Decision> decisions = model.getDecisions();
         assertEquals(1, decisions.size());
         
-        DecisionTable decisionTable = decisions.get(0).getDecisionTable();
+        DecisionTable decisionTable = (DecisionTable) decisions.get(0).getExpression();
         assertNotNull(decisionTable);
         
         assertEquals("Decision table description", decisionTable.getDescription());

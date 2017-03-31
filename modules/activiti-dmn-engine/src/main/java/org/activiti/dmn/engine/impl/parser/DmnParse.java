@@ -82,8 +82,8 @@ public class DmnParse implements DmnXMLConstants {
         dmnDefinition = converter.convertToDmnModel(streamSource, validateSchema, enableSafeDmnXml);
       }
 
-      if (dmnDefinition != null && dmnDefinition.getDrgElements() != null) {
-        for (Decision decision : dmnDefinition.getDrgElements()) {
+      if (dmnDefinition != null && dmnDefinition.getDecisions() != null) {
+        for (Decision decision : dmnDefinition.getDecisions()) {
           DecisionTableEntity decisionTableEntity = Context.getDmnEngineConfiguration().getDecisionTableEntityManager().create();
           decisionTableEntity.setKey(decision.getId());
           decisionTableEntity.setName(decision.getName());

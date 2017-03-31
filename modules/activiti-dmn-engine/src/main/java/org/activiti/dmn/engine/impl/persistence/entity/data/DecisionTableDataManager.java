@@ -15,7 +15,7 @@ package org.activiti.dmn.engine.impl.persistence.entity.data;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.engine.impl.DecisionTableQueryImpl;
 import org.activiti.dmn.engine.impl.Page;
 import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntity;
@@ -36,7 +36,7 @@ public interface DecisionTableDataManager extends DataManager<DecisionTableEntit
 
   void deleteDecisionTablesByDeploymentId(String deploymentId);
 
-  List<DecisionTable> findDecisionTablesByQueryCriteria(DecisionTableQueryImpl decisionTableQuery, Page page);
+  List<DmnDecisionTable> findDecisionTablesByQueryCriteria(DecisionTableQueryImpl decisionTableQuery, Page page);
 
   long findDecisionTableCountByQueryCriteria(DecisionTableQueryImpl decisionTableQuery);
 
@@ -48,7 +48,7 @@ public interface DecisionTableDataManager extends DataManager<DecisionTableEntit
   
   DecisionTableEntity findDecisionTableByKeyAndVersionAndTenantId(String decisionTableKey, Integer decisionTableVersion, String tenantId);
 
-  List<DecisionTable> findDecisionTablesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+  List<DmnDecisionTable> findDecisionTablesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
   long findDecisionTableCountByNativeQuery(Map<String, Object> parameterMap);
 

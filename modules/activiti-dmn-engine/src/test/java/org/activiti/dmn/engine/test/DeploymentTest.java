@@ -20,7 +20,7 @@ import static org.junit.Assert.assertTrue;
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.api.DmnDeployment;
 import org.junit.Test;
 
@@ -29,7 +29,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     @Test
     @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
     public void deploySingleDecision() {
-        DecisionTable decision = repositoryService.createDecisionTableQuery()
+        DmnDecisionTable decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
                 .decisionTableKey("decision")
                 .singleResult();
@@ -40,7 +40,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     @Test
     @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
     public void deploySingleDecisionAndValidateCache() {
-        DecisionTable decision = repositoryService.createDecisionTableQuery()
+        DmnDecisionTable decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
                 .decisionTableKey("decision")
                 .singleResult();
@@ -59,7 +59,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     @Test
     @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
     public void deploySingleDecisionAndValidateVersioning() {
-        DecisionTable decision = repositoryService.createDecisionTableQuery()
+        DmnDecisionTable decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
                 .decisionTableKey("decision")
                 .singleResult();
@@ -85,7 +85,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
                 .tenantId("testTenant")
                 .deploy();
 
-        DecisionTable decision = repositoryService.createDecisionTableQuery()
+        DmnDecisionTable decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
                 .decisionTableKey("decision")
                 .decisionTableTenantId("testTenant")
@@ -113,7 +113,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
                 .tenantId("testTenant")
                 .deploy();
 
-        DecisionTable decision = repositoryService.createDecisionTableQuery()
+        DmnDecisionTable decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
                 .decisionTableKey("decision")
                 .decisionTableTenantId("testTenant")

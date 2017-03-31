@@ -16,7 +16,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.activiti.dmn.api.RuleEngineExecutionResult;
-import org.activiti.dmn.model.DmnDefinition;
+import org.activiti.dmn.model.Decision;
 import org.mvel2.integration.PropertyHandler;
 
 /**
@@ -24,6 +24,6 @@ import org.mvel2.integration.PropertyHandler;
  */
 public interface RuleEngineExecutor {
 
-  RuleEngineExecutionResult execute(DmnDefinition decisionDefinition, Map<String, Object> executionVariables,
+  RuleEngineExecutionResult execute(Decision decision, Map<String, Object> inputVariables,
       Map<String, Method> customExpressionFunctions, Map<Class<?>, PropertyHandler> propertyHandlers);
 }

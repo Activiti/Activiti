@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.dmn.engine.impl.audit.DecisionExecutionAuditUtil;
+import org.activiti.dmn.model.Decision;
+import org.activiti.dmn.model.DecisionTable;
 import org.activiti.dmn.model.DmnDefinition;
 import org.activiti.dmn.model.InputClause;
 import org.activiti.dmn.model.OutputClause;
@@ -33,13 +35,13 @@ public class MvelExecutionContextBuilder {
 
   private static final Logger logger = LoggerFactory.getLogger(MvelExecutionContextBuilder.class);
 
-  public static MvelExecutionContext build(DmnDefinition definition, Map<String, Object> inputVariables,
+  public static MvelExecutionContext build(Decision decision, Map<String, Object> inputVariables,
       Map<String, Method> customExpressionFunctions, Map<Class<?>, PropertyHandler> propertyHandlers) {
 
     MvelExecutionContext executionContext = new MvelExecutionContext();
 
     // initialize audit trail
-    executionContext.setAuditContainer(DecisionExecutionAuditUtil.initializeRuleExecutionAudit(definition, inputVariables));
+    executionContext.setAuditContainer(DecisionExecutionAuditUtil.initializeRuleExecutionAudit(decision, inputVariables));
 
     ParserContext parserContext = new ParserContext();
 
@@ -57,8 +59,10 @@ public class MvelExecutionContextBuilder {
         executionContext.addPropertyHandler(variableClass, propertyHandlers.get(variableClass));
       }
     }
-
-    preProcessInputVariables(definition, inputVariables);
+    
+    DecisionTable decisionTable = (DecisionTable) decision.getExpression();
+    
+    preProcessInputVariables(decisionTable, inputVariables);
 
     executionContext.setStackVariables(inputVariables);
 
@@ -67,15 +71,15 @@ public class MvelExecutionContextBuilder {
     return executionContext;
   }
 
-  protected static void preProcessInputVariables(DmnDefinition definition, Map<String, Object> inputVariables) {
+  protected static void preProcessInputVariables(DecisionTable decisionTable, Map<String, Object> inputVariables) {
 
     if (inputVariables == null) {
-      inputVariables = new HashMap<String, Object>();
+      inputVariables = new HashMap<>();
     }
 
     // check if there are input expressions that refer to none existing input variables
     // that need special handling
-    for (InputClause inputClause : definition.getCurrentDecisionTable().getInputs()) {
+    for (InputClause inputClause : decisionTable.getInputs()) {
 
       if (!inputVariables.containsKey(inputClause.getInputExpression().getText()) && "boolean".equals(inputClause.getInputExpression().getTypeRef())) {
 
@@ -85,7 +89,7 @@ public class MvelExecutionContextBuilder {
 
     // check if there are output expressions that refer to none existing input variables
     // in that case create them with default values
-    for (OutputClause outputClause : definition.getCurrentDecisionTable().getOutputs()) {
+    for (OutputClause outputClause : decisionTable.getOutputs()) {
 
       if (!inputVariables.containsKey(outputClause.getName()) || inputVariables.get(outputClause.getName()) == null) {
 

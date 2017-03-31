@@ -15,7 +15,8 @@ package org.activiti.dmn.engine.impl.audit;
 import java.util.Map;
 
 import org.activiti.dmn.api.DecisionExecutionAuditContainer;
-import org.activiti.dmn.model.DmnDefinition;
+import org.activiti.dmn.model.Decision;
+import org.activiti.dmn.model.DecisionTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,24 +27,25 @@ public class DecisionExecutionAuditUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(DecisionExecutionAuditUtil.class);
 
-    public static DecisionExecutionAuditContainer initializeRuleExecutionAudit(DmnDefinition definition, Map<String, Object> inputVariables) {
+    public static DecisionExecutionAuditContainer initializeRuleExecutionAudit(Decision decision, Map<String, Object> inputVariables) {
 
-        if (definition == null || definition.getDrgElements() == null || definition.getDrgElements().get(0) == null
-                || definition.getDrgElements().get(0).getId() == null) {
+        if (decision == null || decision.getId() == null) {
 
-            logger.error("DMN definition does not contain decision key");
-            throw new IllegalArgumentException("DMN definition does not contain decision key");
+            logger.error("decision does not contain key");
+            throw new IllegalArgumentException("decision does not contain key");
         }
-
-        if (definition.getCurrentDecisionTable().getHitPolicy() == null) {
+        
+        DecisionTable decisionTable = (DecisionTable) decision.getExpression();
+        
+        if (decisionTable.getHitPolicy() == null) {
             logger.error("decision table does not contain a hit policy");
             throw new IllegalArgumentException("decision table does not contain a hit policy");
         }
 
-        String definitionKey = definition.getDrgElements().get(0).getId();
-        String definitionName = definition.getDrgElements().get(0).getName();
+        String decisionKey  = decision.getId();
+        String decisionName  = decision.getName();
 
-        return new DecisionExecutionAuditContainer(definitionKey, definitionName, definition.getCurrentDecisionTable().getHitPolicy(), inputVariables);
+        return new DecisionExecutionAuditContainer(decisionKey, decisionName, decisionTable.getHitPolicy(), inputVariables);
     }
 
 }

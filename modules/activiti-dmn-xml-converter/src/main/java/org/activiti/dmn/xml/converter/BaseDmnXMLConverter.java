@@ -21,6 +21,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.dmn.converter.child.BaseChildElementParser;
 import org.activiti.dmn.converter.util.DmnXMLUtil;
 import org.activiti.dmn.model.DecisionRule;
+import org.activiti.dmn.model.DecisionTable;
 import org.activiti.dmn.model.DmnDefinition;
 import org.activiti.dmn.model.DmnElement;
 import org.activiti.dmn.model.InputClause;
@@ -38,21 +39,21 @@ public abstract class BaseDmnXMLConverter implements DmnXMLConstants {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(BaseDmnXMLConverter.class);
 
-    public void convertToDmnModel(XMLStreamReader xtr, DmnDefinition model) throws Exception {
+    public void convertToDmnModel(XMLStreamReader xtr, DmnDefinition model, DecisionTable decisionTable) throws Exception {
 
         String elementId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
         String elementName = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
 
-        DmnElement parsedElement = convertXMLToElement(xtr, model);
+        DmnElement parsedElement = convertXMLToElement(xtr, model, decisionTable);
 //    parsedElement.setId(elementId);
 //    parsedElement.setName(elementName);
 
         if (parsedElement instanceof InputClause) {
-            model.getCurrentDecisionTable().addInput((InputClause) parsedElement);
+            decisionTable.addInput((InputClause) parsedElement);
         } else if (parsedElement instanceof OutputClause) {
-            model.getCurrentDecisionTable().addOutput((OutputClause) parsedElement);
+            decisionTable.addOutput((OutputClause) parsedElement);
         } else if (parsedElement instanceof DecisionRule) {
-            model.getCurrentDecisionTable().addRule((DecisionRule) parsedElement);
+            decisionTable.addRule((DecisionRule) parsedElement);
         } else if (parsedElement instanceof ItemDefinition) {
             model.addItemDefinition((ItemDefinition) parsedElement);
         }
@@ -73,7 +74,7 @@ public abstract class BaseDmnXMLConverter implements DmnXMLConstants {
 
     protected abstract Class<? extends DmnElement> getDmnElementType();
 
-    protected abstract DmnElement convertXMLToElement(XMLStreamReader xtr, DmnDefinition model) throws Exception;
+    protected abstract DmnElement convertXMLToElement(XMLStreamReader xtr, DmnDefinition model, DecisionTable decisionTable) throws Exception;
 
     protected abstract String getXMLElementName();
 
@@ -83,17 +84,17 @@ public abstract class BaseDmnXMLConverter implements DmnXMLConstants {
 
     // To BpmnModel converter convenience methods
 
-    protected void parseChildElements(String elementName, DmnElement parentElement, DmnDefinition model, XMLStreamReader xtr) throws Exception {
-        parseChildElements(elementName, parentElement, null, model, xtr);
+    protected void parseChildElements(String elementName, DmnElement parentElement, DecisionTable decisionTable, XMLStreamReader xtr) throws Exception {
+        parseChildElements(elementName, parentElement, null, decisionTable, xtr);
     }
 
-    protected void parseChildElements(String elementName, DmnElement parentElement, Map<String, BaseChildElementParser> additionalParsers, DmnDefinition model, XMLStreamReader xtr) throws Exception {
+    protected void parseChildElements(String elementName, DmnElement parentElement, Map<String, BaseChildElementParser> additionalParsers, DecisionTable decisionTable, XMLStreamReader xtr) throws Exception {
 
         Map<String, BaseChildElementParser> childParsers = new HashMap<String, BaseChildElementParser>();
         if (additionalParsers != null) {
             childParsers.putAll(additionalParsers);
         }
-        DmnXMLUtil.parseChildElements(elementName, parentElement, xtr, childParsers, model);
+        DmnXMLUtil.parseChildElements(elementName, parentElement, xtr, childParsers, decisionTable);
     }
 
     // To XML converter convenience methods

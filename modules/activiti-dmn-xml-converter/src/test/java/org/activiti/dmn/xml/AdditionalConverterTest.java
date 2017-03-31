@@ -45,10 +45,10 @@ public class AdditionalConverterTest extends AbstractConverterTest {
     }
 
     private void validateModel(DmnDefinition model) {
-        List<Decision> decisions = model.getDrgElements();
+        List<Decision> decisions = model.getDecisions();
         assertEquals(1, decisions.size());
         
-        DecisionTable decisionTable = decisions.get(0).getDecisionTable();
+        DecisionTable decisionTable = (DecisionTable) decisions.get(0).getExpression();
         assertNotNull(decisionTable);
         
         List<InputClause> inputClauses = decisionTable.getInputs();

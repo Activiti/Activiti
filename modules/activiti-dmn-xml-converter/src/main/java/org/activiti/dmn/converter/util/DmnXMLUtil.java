@@ -26,6 +26,7 @@ import org.activiti.dmn.converter.child.InputEntryParser;
 import org.activiti.dmn.converter.child.InputExpressionParser;
 import org.activiti.dmn.converter.child.OutputClauseParser;
 import org.activiti.dmn.converter.child.OutputEntryParser;
+import org.activiti.dmn.model.DecisionTable;
 import org.activiti.dmn.model.DmnDefinition;
 import org.activiti.dmn.model.DmnElement;
 import org.activiti.dmn.model.DmnExtensionAttribute;
@@ -60,12 +61,12 @@ public class DmnXMLUtil implements DmnXMLConstants {
         //element.setXmlColumnNumber(location.getColumnNumber());
     }
 
-    public static void parseChildElements(String elementName, DmnElement parentElement, XMLStreamReader xtr, DmnDefinition model) throws Exception {
-        parseChildElements(elementName, parentElement, xtr, null, model);
-    }
+//    public static void parseChildElements(String elementName, DmnElement parentElement, XMLStreamReader xtr, DecisionTable decisionTable) throws Exception {
+//        parseChildElements(elementName, parentElement, xtr, null, decisionTable);
+//    }
 
     public static void parseChildElements(String elementName, DmnElement parentElement, XMLStreamReader xtr,
-                                          Map<String, BaseChildElementParser> childParsers, DmnDefinition model) throws Exception {
+                                          Map<String, BaseChildElementParser> childParsers, DecisionTable decisionTable) throws Exception {
 
         Map<String, BaseChildElementParser> localParserMap =
                 new HashMap<String, BaseChildElementParser>(genericChildParserMap);
@@ -90,7 +91,7 @@ public class DmnXMLUtil implements DmnXMLConstants {
                     parentElement.addExtensionElement(extensionElement);
                     continue;
                   }
-                  localParserMap.get(xtr.getLocalName()).parseChildElement(xtr, parentElement, model);
+                  localParserMap.get(xtr.getLocalName()).parseChildElement(xtr, parentElement, decisionTable);
                 } else if (inExtensionElements) {
                     DmnExtensionElement extensionElement = parseExtensionElement(xtr);
                   parentElement.addExtensionElement(extensionElement);

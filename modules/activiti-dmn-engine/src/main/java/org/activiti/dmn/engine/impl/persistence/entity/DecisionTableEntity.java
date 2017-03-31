@@ -12,14 +12,14 @@
  */
 package org.activiti.dmn.engine.impl.persistence.entity;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.engine.impl.db.Entity;
 
 /**
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
-public interface DecisionTableEntity extends DecisionTable, Entity {
+public interface DecisionTableEntity extends DmnDecisionTable, Entity {
 
   void setKey(String key);
 

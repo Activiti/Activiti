@@ -14,6 +14,7 @@ package org.activiti.dmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.dmn.model.DecisionTable;
 import org.activiti.dmn.model.DmnDefinition;
 import org.activiti.dmn.model.DmnElement;
 import org.activiti.dmn.xml.constants.DmnXMLConstants;
@@ -30,15 +31,15 @@ public abstract class BaseChildElementParser implements DmnXMLConstants {
 
     public abstract String getElementName();
 
-    public abstract void parseChildElement(XMLStreamReader xtr, DmnElement parentElement, DmnDefinition model) throws Exception;
+    public abstract void parseChildElement(XMLStreamReader xtr, DmnElement parentElement, DecisionTable decisionTable) throws Exception;
 
-    protected void parseChildElements(XMLStreamReader xtr, DmnElement parentElement, DmnDefinition model, BaseChildElementParser parser) throws Exception {
+    protected void parseChildElements(XMLStreamReader xtr, DmnElement parentElement, DecisionTable decisionTable, BaseChildElementParser parser) throws Exception {
         boolean readyWithChildElements = false;
         while (readyWithChildElements == false && xtr.hasNext()) {
             xtr.next();
             if (xtr.isStartElement()) {
                 if (parser.getElementName().equals(xtr.getLocalName())) {
-                    parser.parseChildElement(xtr, parentElement, model);
+                    parser.parseChildElement(xtr, parentElement, decisionTable);
                 }
 
             } else if (xtr.isEndElement() && getElementName().equalsIgnoreCase(xtr.getLocalName())) {
