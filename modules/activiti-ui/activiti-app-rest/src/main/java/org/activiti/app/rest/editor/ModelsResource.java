@@ -179,23 +179,40 @@ public class ModelsResource extends AbstractModelsResource {
     }
 
     if (modelRepresentation.getModelType() != null && modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_FORM)) {
-      // noting to do special for forms (just clone the json)
+    	// nothing to do special for forms (just clone the json)
     } else if (modelRepresentation.getModelType() != null && modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_APP)) {
-      // noting to do special for applications (just clone the json)
-    } else {
-      // BPMN model
-      ObjectNode editorNode = null;
-      try {
+    	// nothing to do special for applications (just clone the json)
+    }  else if (modelRepresentation.getModelType() != null && modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_DECISION_TABLE)) {
+    	// Decision Table model
+    	ObjectNode editorNode = null;
+
+    	try {
+
+    		editorNode = (ObjectNode) objectMapper.readTree(json);
+
+    		json = objectMapper.writeValueAsString(editorNode);
+
+
+    	} catch (Exception e) {
+    		logger.error("Error creating decision table model", e);
+    		throw new InternalServerErrorException("Error creating decision table");
+    	}
+
+
+    }else {
+    	// BPMN model
+    	ObjectNode editorNode = null;
+    	try {
         ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(json);
 
         editorNode = deleteEmbededReferencesFromBPMNModel(editorJsonNode);
 
         ObjectNode propertiesNode = (ObjectNode) editorNode.get("properties");
-        String processId = model.getName().replaceAll(" ", "");
+        String processId = modelRepresentation.getName().replaceAll(" ", "");
         propertiesNode.put("process_id", processId);
-        propertiesNode.put("name", model.getName());
-        if (StringUtils.isNotEmpty(model.getDescription())) {
-          propertiesNode.put("documentation", model.getDescription());
+        propertiesNode.put("name", modelRepresentation.getName());
+        if (StringUtils.isNotEmpty(modelRepresentation.getDescription())) {
+          propertiesNode.put("documentation", modelRepresentation.getDescription());
         }
         editorNode.put("properties", propertiesNode);
 

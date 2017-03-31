@@ -10,7 +10,7 @@
           <output id="output1" label="Output 1" name="output1" typeRef="string" />
           <rule>
             <inputEntry id="inputEntry1">
-              <text><![CDATA[< fn_subtractDate(fn_now(),1,2,3)]]></text>
+              <text><![CDATA[< fn_subtractDate(fn_now(),10,2,3)]]></text>
             </inputEntry>
             <outputEntry id="outputEntry1">
               <text>'test1'</text>
@@ -18,7 +18,7 @@
           </rule>
           <rule>
             <inputEntry id="inputEntry2">
-              <text><![CDATA[> fn_subtractDate(fn_now(),1,2,3)]]></text>
+              <text><![CDATA[> fn_subtractDate(fn_now(),10,2,3)]]></text>
             </inputEntry>
             <outputEntry id="outputEntry2">
               <text>'test2'</text>

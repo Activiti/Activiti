@@ -74,7 +74,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 import junit.framework.AssertionFailedError;
 
-public class BaseJPARestTestCase extends AbstractTestCase {
+public abstract class BaseJPARestTestCase extends AbstractTestCase {
 
   private static Logger log = LoggerFactory.getLogger(BaseJPARestTestCase.class);
 

@@ -40,10 +40,10 @@ public class DeploymentResourceDataResource extends BaseDeploymentResourceDataRe
       @ApiResponse(code = 404, message = "Indicates the requested deployment was not found or there is no resource with the given id present in the deployment. The status-description contains additional information.")})
   @ApiOperation(value = "Get a deployment resource content", tags = {"Deployment"}, nickname = "getDeploymentResourceData",
   notes = "The response body will contain the binary resource-content for the requested resource. The response content-type will be the same as the type returned in the resources mimeType property. Also, a content-disposition header is set, allowing browsers to download the file instead of displaying it.")
-  @RequestMapping(value = "/repository/deployments/{deploymentId}/resourcedata/{resourceId}", method = RequestMethod.GET)
+  @RequestMapping(value = "/repository/deployments/{deploymentId}/resourcedata/{resourceName}", method = RequestMethod.GET)
   public @ResponseBody
-  byte[] getDeploymentResource(@ApiParam(name = "deploymentId", value="The id of the deployment the requested resource is part of.") @PathVariable("deploymentId") String deploymentId,@ApiParam(name = "resourceId", value = "The id of the resource to get the data for. Make sure you URL-encode the resourceId in case it contains forward slashes. Eg: use diagrams%2Fmy-process.bpmn20.xml instead of diagrams/Fmy-process.bpmn20.xml.")  @PathVariable("resourceId") String resourceId, HttpServletResponse response) {
+  byte[] getDeploymentResource(@ApiParam(name = "deploymentId", value="The id of the deployment the requested resource is part of.") @PathVariable("deploymentId") String deploymentId,@ApiParam(name = "resourceName", value = "The name of the resource to get the data for. Make sure you URL-encode the resourceName in case it contains forward slashes. Eg: use diagrams%2Fmy-process.bpmn20.xml instead of diagrams/Fmy-process.bpmn20.xml.")  @PathVariable("resourceName") String resourceName, HttpServletResponse response) {
 
-    return getDeploymentResourceData(deploymentId, resourceId, response);
+    return getDeploymentResourceData(deploymentId, resourceName, response);
   }
 }

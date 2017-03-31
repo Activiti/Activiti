@@ -198,7 +198,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
                     && callActivityExecutionIds.contains(childExecution.getSuperExecutionId())) {
 
                   executionEntityManager.deleteProcessInstanceExecutionEntity(childExecution.getId(), activity.getId(),
-                      "call activity completion condition met", true, false, true);
+                      "call activity completion condition met", true, false);
                 }
               }
 

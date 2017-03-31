@@ -38,13 +38,13 @@ public class BaseDeploymentResourceDataResource {
   @Autowired
   protected RepositoryService repositoryService;
 
-  protected byte[] getDeploymentResourceData(String deploymentId, String resourceId, HttpServletResponse response) {
+  protected byte[] getDeploymentResourceData(String deploymentId, String resourceName, HttpServletResponse response) {
 
     if (deploymentId == null) {
       throw new ActivitiIllegalArgumentException("No deployment id provided");
     }
-    if (resourceId == null) {
-      throw new ActivitiIllegalArgumentException("No resource id provided");
+    if (resourceName == null) {
+      throw new ActivitiIllegalArgumentException("No resource name provided");
     }
 
     // Check if deployment exists
@@ -55,10 +55,10 @@ public class BaseDeploymentResourceDataResource {
 
     List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
 
-    if (resourceList.contains(resourceId)) {
-      final InputStream resourceStream = repositoryService.getResourceAsStream(deploymentId, resourceId);
+    if (resourceList.contains(resourceName)) {
+      final InputStream resourceStream = repositoryService.getResourceAsStream(deploymentId, resourceName);
 
-      String contentType = contentTypeResolver.resolveContentType(resourceId);
+      String contentType = contentTypeResolver.resolveContentType(resourceName);
       response.setContentType(contentType);
       try {
         return IOUtils.toByteArray(resourceStream);
@@ -67,7 +67,7 @@ public class BaseDeploymentResourceDataResource {
       }
     } else {
       // Resource not found in deployment
-      throw new ActivitiObjectNotFoundException("Could not find a resource with id '" + resourceId + "' in deployment '" + deploymentId + "'.", String.class);
+      throw new ActivitiObjectNotFoundException("Could not find a resource with name '" + resourceName + "' in deployment '" + deploymentId + "'.", String.class);
     }
   }
 }

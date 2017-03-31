@@ -10,7 +10,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.cfg;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +26,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventDispatcherImpl;
 import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.impl.*;
-import org.activiti.engine.impl.agenda.DefaultActivitiAgenda;
+import org.activiti.engine.impl.agenda.DefaultActivitiEngineAgendaFactory;
 import org.activiti.engine.impl.asyncexecutor.*;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.*;
@@ -64,8 +63,6 @@ import org.activiti.engine.impl.persistence.deploy.*;
 import org.activiti.engine.impl.persistence.entity.*;
 import org.activiti.engine.impl.persistence.entity.data.*;
 import org.activiti.engine.impl.persistence.entity.data.impl.*;
-import org.activiti.engine.impl.runtime.ActivitiAgenda;
-import org.activiti.engine.impl.runtime.Agenda;
 import org.activiti.engine.impl.scripting.*;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.impl.util.IoUtil;
@@ -91,7 +88,6 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.FactoryBean;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -1673,23 +1669,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 
   public void initAgendaFactory() {
-    if (agendaFactory == null) {
-      agendaFactory = new FactoryBean<ActivitiAgenda>() {
-        @Override
-        public ActivitiAgenda getObject() throws Exception {
-          return new DefaultActivitiAgenda();
-        }
-
-        @Override
-        public Class<?> getObjectType() {
-          return DefaultActivitiAgenda.class;
-        }
-
-        @Override
-        public boolean isSingleton() {
-          return false;
-        }
-      };
+    if (this.engineAgendaFactory == null) {
+      this.engineAgendaFactory = new DefaultActivitiEngineAgendaFactory();
     }
   }
 
@@ -3855,7 +3836,5 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.asyncExecutorMessageQueueMode = asyncExecutorMessageQueueMode;
     return this;
   }
-
-
 
 }

@@ -10,7 +10,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine;
 
 import org.activiti.engine.cfg.MailServerInfo;
@@ -19,11 +18,8 @@ import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.runtime.ActivitiAgenda;
-import org.activiti.engine.impl.runtime.Agenda;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.image.ProcessDiagramGenerator;
-import org.springframework.beans.factory.FactoryBean;
 
 import javax.sql.DataSource;
 import java.io.InputStream;
@@ -213,7 +209,7 @@ public abstract class ProcessEngineConfiguration {
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
 
   protected boolean enableProcessDefinitionInfoCache = false;
-  protected FactoryBean<ActivitiAgenda> agendaFactory;
+  protected ActivitiEngineAgendaFactory engineAgendaFactory;
 
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
@@ -813,16 +809,12 @@ public abstract class ProcessEngineConfiguration {
     return this;
   }
 
-  public ActivitiAgenda createAgenda() {
-    try {
-      return agendaFactory.getObject();
-    } catch (Exception e) {
-      throw new ActivitiException("Unable to create agenda.", e);
-    }
+  public void setEngineAgendaFactory(ActivitiEngineAgendaFactory engineAgendaFactory) {
+    this.engineAgendaFactory = engineAgendaFactory;
   }
-
-  public void setAgendaFactory(FactoryBean<ActivitiAgenda> agendaFactory) {
-    this.agendaFactory = agendaFactory;
+  
+  public ActivitiEngineAgendaFactory getEngineAgendaFactory() {
+    return engineAgendaFactory;
   }
 
 }

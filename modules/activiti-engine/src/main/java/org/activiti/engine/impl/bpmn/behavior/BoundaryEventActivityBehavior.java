@@ -150,7 +150,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
       ExecutionEntity subProcessExecution = executionEntityManager.findSubProcessInstanceBySuperExecutionId(parentExecution.getId());
       if (subProcessExecution != null) {
         executionEntityManager.deleteProcessInstanceExecutionEntity(subProcessExecution.getId(),
-            subProcessExecution.getCurrentActivityId(), deleteReason, true, false, true);
+            subProcessExecution.getCurrentActivityId(), deleteReason, true, true);
       }
     }
 
