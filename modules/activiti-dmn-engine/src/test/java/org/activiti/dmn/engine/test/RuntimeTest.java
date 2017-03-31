@@ -28,7 +28,7 @@ import org.junit.Test;
 public class RuntimeTest extends AbstractActivitiDmnTest {
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/multiple_conclusions.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
     public void executeDecision_multiple_conclusions() {
         Map<String, Object> processVariablesInput = new HashMap<String, Object>();
         processVariablesInput.put("input1", 10);
@@ -41,7 +41,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/dates_1.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/dates_1.dmn")
     public void executeDecision_static_dates() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -56,7 +56,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/dates_2.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/dates_2.dmn")
     public void executeDecision_dynamic_dates_add() {
         Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -71,7 +71,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/dates_3.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/dates_3.dmn")
     public void executeDecision_dynamic_dates_subtract() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -86,7 +86,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/strings_1.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/strings_1.dmn")
     public void executeDecision_String_on_input() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -98,7 +98,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/strings_2.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/strings_2.dmn")
     public void executeDecision_empty_strings() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -112,7 +112,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/outcome_expression_1.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/outcome_expression_1.dmn")
     public void executeDecision_conlusion_expression_double() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -124,7 +124,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/outcome_expression_2.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/outcome_expression_2.dmn")
     public void executeDecision_conclusion_expression_cast_exception() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -135,7 +135,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/outcome_expression_2.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/outcome_expression_2.dmn")
     public void executeDecision_failed_state_missing_input_variable() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -145,7 +145,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/outcome_expression_3.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/outcome_expression_3.dmn")
     public void executeDecision_missing_input_variable_boolean() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -155,7 +155,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/outcome_expression_4.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/outcome_expression_4.dmn")
     public void executeDecision_failed_state_unknown_function_outcome_expression() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -166,7 +166,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/outcome_expression_2.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/outcome_expression_2.dmn")
     public void executeDecision_failed_state_could_not_create_outcome() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -177,7 +177,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/empty_expressions.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/empty_expressions.dmn")
     public void executeDecision_empty_expressions() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -188,7 +188,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/dates_4.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/dates_4.dmn")
     public void executeDecision_input_null() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
         processVariablesInput.put("input1", null);
@@ -199,7 +199,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/reservered_word.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/reservered_word.dmn")
     public void executeDecision_reserved_word() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -214,7 +214,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/stack_update.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/stack_update.dmn")
     public void executeDecision_stack_update() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -227,7 +227,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/refer_new_var.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/refer_new_var.dmn")
     public void executeDecision_variable_references() {
         
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
@@ -240,7 +240,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/null_value_variables.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/null_value_variables.dmn")
     public void executeDecision_outcome_null_variables() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
@@ -254,7 +254,7 @@ public class RuntimeTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/null_value_variables.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/null_value_variables.dmn")
     public void executeDecision_outcome_null_variables_not_on_execution_context() {
       Map<String, Object> processVariablesInput = new HashMap<String, Object>();
 
