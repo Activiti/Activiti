@@ -97,7 +97,7 @@ public class DatabaseConfiguration {
         acquireIncrement = 5;
       }
 
-      String preferredTestQuery = env.getProperty("datasource.preferred-test-query");
+      String preferredTestQuery = env.getProperty("datasource.preferred-org.activiti.dmn.engine.test.runtime-query");
 
       Boolean testConnectionOnCheckin = env.getProperty("datasource.test-connection-on-checkin", Boolean.class);
       if (testConnectionOnCheckin == null) {

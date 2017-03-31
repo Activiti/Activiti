@@ -46,7 +46,7 @@ import org.junit.runners.model.Statement;
  * </pre>
  * 
  * <p>
- * The DmnEngine and the services will be made available to the test class
+ * The DmnEngine and the services will be made available to the org.activiti.dmn.engine.test.runtime class
  * through the getters of the activitiRule. The dmnEngine will be initialized by
  * default with the activiti.dmn.cfg.xml resource on the classpath. To specify a
  * different configuration file, pass the resource location in
@@ -69,7 +69,7 @@ import org.junit.runners.model.Statement;
  * control the exact time that is used by the engine in order to verify e.g.
  * e.g. due dates of timers. Or start, end and duration times in the history
  * service. In the tearDown, the internal clock will automatically be reset to
- * use the current system time rather then the time that was set during a test
+ * use the current system time rather then the time that was set during a org.activiti.dmn.engine.test.runtime
  * method.
  * </p>
  * 
@@ -165,19 +165,19 @@ public class ActivitiDmnRule implements TestRule {
     }
 
     /**
-     * Invoked when a test succeeds
+     * Invoked when a org.activiti.dmn.engine.test.runtime succeeds
      */
     protected void succeeded(Description description) {
     }
 
     /**
-     * Invoked when a test fails
+     * Invoked when a org.activiti.dmn.engine.test.runtime fails
      */
     protected void failed(Throwable e, Description description) {
     }
 
     /**
-     * Invoked when a test is skipped due to a failed assumption.
+     * Invoked when a org.activiti.dmn.engine.test.runtime is skipped due to a failed assumption.
      */
     protected void skipped(AssumptionViolatedException e, Description description) {
     }
@@ -215,7 +215,7 @@ public class ActivitiDmnRule implements TestRule {
 
     protected void finished(Description description) {
 
-        // Remove the test deployment
+        // Remove the org.activiti.dmn.engine.test.runtime deployment
         try {
             DmnTestHelper.annotationDeploymentTearDown(dmnEngine, deploymentId, Class.forName(description.getClassName()), description.getMethodName());
         } catch (ClassNotFoundException e) {

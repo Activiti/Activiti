@@ -42,7 +42,7 @@ public class DbScriptUtil {
     
     protected static DatabaseConnection createDbConnection() throws Exception {
         Properties properties = new Properties();
-        properties.load(DbScriptUtil.class.getClassLoader().getResourceAsStream("META-INF/activiti-app-test/TEST-db.properties"));
+        properties.load(DbScriptUtil.class.getClassLoader().getResourceAsStream("META-INF/activiti-app-org.activiti.dmn.engine.test.runtime/TEST-db.properties"));
         Connection connection = DriverManager.getConnection(properties.getProperty("datasource.url"), 
                 properties.getProperty("datasource.username"), properties.getProperty("datasource.password"));
         DatabaseConnection databaseConnection = new JdbcConnection(connection);

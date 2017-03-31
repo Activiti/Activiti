@@ -74,7 +74,7 @@ public class DmnDeploymentCollectionResourceTest extends BaseSpringDmnRestTestCa
       assertEquals("simple.dmn", resources.get(0));
       assertEquals(1L, dmnRepositoryService.createDeploymentQuery().deploymentId(deploymentId).count());
     } finally {
-      // Always cleanup any created deployments, even if the test failed
+      // Always cleanup any created deployments, even if the org.activiti.dmn.engine.test.runtime failed
       List<DmnDeployment> deployments = dmnRepositoryService.createDeploymentQuery().list();
       for (DmnDeployment deployment : deployments) {
         dmnRepositoryService.deleteDeployment(deployment.getId());
@@ -173,7 +173,7 @@ public class DmnDeploymentCollectionResourceTest extends BaseSpringDmnRestTestCa
       assertEquals(1L, responseNode.get("size").longValue());
 
     } finally {
-      // Always cleanup any created deployments, even if the test failed
+      // Always cleanup any created deployments, even if the org.activiti.dmn.engine.test.runtime failed
       List<DmnDeployment> deployments = dmnRepositoryService.createDeploymentQuery().list();
       for (DmnDeployment deployment : deployments) {
         dmnRepositoryService.deleteDeployment(deployment.getId());

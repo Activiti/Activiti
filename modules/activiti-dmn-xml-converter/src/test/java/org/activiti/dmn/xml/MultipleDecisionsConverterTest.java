@@ -44,7 +44,7 @@ public class MultipleDecisionsConverterTest extends AbstractConverterTest {
 		assertEquals(2, inputClauses1.size());
 
 		List<OutputClause> outputClauses1 = decisionTable1.getOutputs();
-		assertEquals(1, outputClauses1.size());
+		assertEquals(2, outputClauses1.size());
 
 		List<DecisionRule> rules1 = decisionTable1.getRules();
 		assertEquals(2, rules1.size());
@@ -53,15 +53,15 @@ public class MultipleDecisionsConverterTest extends AbstractConverterTest {
 		assertNotNull(decisionTable2);
 
 		List<InputClause> inputClauses2 = decisionTable2.getInputs();
-		assertEquals(2, inputClauses2.size());
+		assertEquals(1, inputClauses2.size());
 
 		List<OutputClause> outputClauses2 = decisionTable2.getOutputs();
-		assertEquals(1, outputClauses2.size());
+		assertEquals(2, outputClauses2.size());
 
 		List<DecisionRule> rules2 = decisionTable2.getRules();
 		assertEquals(2, rules2.size());
 		
-		DecisionTable decisionTable3 = (DecisionTable) decisions.get(1).getExpression();
+		DecisionTable decisionTable3 = (DecisionTable) decisions.get(2).getExpression();
 		assertNotNull(decisionTable3);
 
 		List<InputClause> inputClauses3 = decisionTable3.getInputs();

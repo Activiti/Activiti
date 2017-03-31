@@ -32,7 +32,7 @@ import org.junit.Test;
 public class DeploymentTest extends AbstractActivitiDmnTest {
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/multiple_conclusions.dmn")
     public void deploySingleDecision() {
         DmnDecisionTable decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
@@ -43,7 +43,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/multiple_conclusions.dmn")
     public void deploySingleDecisionAndValidateCache() {
         DmnDecisionTable decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
@@ -62,7 +62,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/multiple_conclusions.dmn")
     public void deploySingleDecisionAndValidateVersioning() {
         DmnDecisionTable decision = repositoryService.createDecisionTableQuery()
                 .latestVersion()
@@ -72,7 +72,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
         assertEquals(1, decision.getVersion());
 
         repositoryService.createDeployment().name("secondDeployment")
-                .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+                .addClasspathResource("org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/multiple_conclusions.dmn")
                 .deploy();
 
         decision = repositoryService.createDecisionTableQuery()
@@ -86,7 +86,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     @Test
     public void deploySingleDecisionInTenantAndValidateCache() throws Exception {
         repositoryService.createDeployment().name("secondDeployment")
-                .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+                .addClasspathResource("org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/multiple_conclusions.dmn")
                 .tenantId("testTenant")
                 .deploy();
 
@@ -114,7 +114,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     @Test
     public void deploySingleDecisionInTenantAndValidateVersioning() throws Exception {
         repositoryService.createDeployment().name("secondDeployment")
-                .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+                .addClasspathResource("org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/multiple_conclusions.dmn")
                 .tenantId("testTenant")
                 .deploy();
 
@@ -127,7 +127,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
         assertEquals(1, decision.getVersion());
 
         repositoryService.createDeployment().name("secondDeployment")
-                .addClasspathResource("org/activiti/dmn/engine/test/deployment/multiple_conclusions.dmn")
+                .addClasspathResource("org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/multiple_conclusions.dmn")
                 .tenantId("testTenant")
                 .deploy();
 
@@ -153,7 +153,7 @@ public class DeploymentTest extends AbstractActivitiDmnTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources="org/activiti/dmn/engine/test/deployment/multiple_dmndecisions.dmn")
+    @DmnDeploymentAnnotation(resources="org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/multiple_dmndecisions.dmn")
     public void deployMultipleDmnDecisions() throws Exception{
 
         DmnDecisionTable  decision = null;

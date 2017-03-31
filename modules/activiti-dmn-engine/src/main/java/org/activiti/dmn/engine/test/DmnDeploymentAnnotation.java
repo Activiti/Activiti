@@ -16,7 +16,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotation for a test method to create and delete a deployment around a test method.
+ * Annotation for a org.activiti.dmn.engine.test.runtime method to create and delete a deployment around a org.activiti.dmn.engine.test.runtime method.
  * 
  * <p>
  * Usage:
