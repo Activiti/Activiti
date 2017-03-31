@@ -22,11 +22,6 @@ import java.util.List;
 
 import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.api.DmnDeployment;
-import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntity;
-import org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntity;
-
-
-import org.activiti.dmn.model.DecisionTable;
 import org.junit.Test;
 
 public class DeploymentTest extends AbstractActivitiDmnTest {

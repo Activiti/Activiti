@@ -21,10 +21,10 @@
           <text>== 'inputval1'</text>
         </inputEntry>
         <outputEntry id="outputEntry_1_1">
-          <text>== 'outputval1'</text>
+          <text>'outputval1'</text>
         </outputEntry>
         <outputEntry id="outputEntry_2_1">
-          <text>== 'result1'</text>
+          <text>'result1'</text>
         </outputEntry>
       </rule>
       <rule>
@@ -35,10 +35,10 @@
           <text>== 'inputval2'</text>
         </inputEntry>
         <outputEntry id="outputEntry_1_2">
-          <text>== 'outputval2'</text>
+          <text>'outputval2'</text>
         </outputEntry>
         <outputEntry id="outputEntry_2_2">
-          <text>== 'result2'</text>
+          <text>'result2'</text>
         </outputEntry>
       </rule>
     </decisionTable>
@@ -57,10 +57,10 @@
             <text>== 'inputval1'</text>
           </inputEntry>
           <outputEntry id="outputEntry2_1">
-            <text>== 'outputval1'</text>
+            <text>'outputval1'</text>
           </outputEntry>
            <outputEntry id="outputEntry2_2">
-            <text>== 'result1'</text>
+            <text>'result1'</text>
           </outputEntry>
         </rule>
         <rule>
@@ -68,10 +68,10 @@
             <text>!= 'inputval2'</text>
           </inputEntry>
           <outputEntry id="outputEntry2_3">
-            <text>== 'outputval2'</text>
+            <text>'outputval2'</text>
           </outputEntry>
            <outputEntry id="outputEntry2_4">
-            <text>== 'result1'</text>
+            <text>'result1'</text>
           </outputEntry>
         </rule>
       </decisionTable>
@@ -97,7 +97,7 @@
             <text>== 'inputval1'</text>
           </inputEntry>
           <outputEntry id="outputEntry3_1">
-            <text>== 'outputval1'</text>
+            <text>'outputval1'</text>
           </outputEntry>
         </rule>
         <rule>
@@ -108,7 +108,7 @@
             <text>== 'inputval2'</text>
           </inputEntry>
           <outputEntry id="outputEntry3_2">
-            <text>== 'outputval2'</text>
+            <text>'outputval2'</text>
           </outputEntry>
         </rule>
       </decisionTable>
