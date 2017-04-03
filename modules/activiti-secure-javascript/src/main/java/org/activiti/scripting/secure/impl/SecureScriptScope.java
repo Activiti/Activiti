@@ -12,6 +12,8 @@
  */
 package org.activiti.scripting.secure.impl;
 
+import java.util.Map;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.VariableScope;
@@ -19,6 +21,7 @@ import org.mozilla.javascript.Scriptable;
 
 /**
  * @author Joram Barrez
+ * @author Bassam Al-Sarori
  */
 public class SecureScriptScope implements Scriptable {
 
@@ -26,10 +29,11 @@ public class SecureScriptScope implements Scriptable {
     private static final String KEYWORD_TASK = "task";
 
     protected VariableScope variableScope;
+    protected Map<Object, Object> beans;
 
-    public SecureScriptScope(VariableScope variableScope) {
-        super();
+    public SecureScriptScope(VariableScope variableScope, Map<Object, Object> beans) {
         this.variableScope = variableScope;
+        this.beans = beans;
     }
 
     @Override
@@ -45,6 +49,8 @@ public class SecureScriptScope implements Scriptable {
           return variableScope;
         } else if (variableScope.hasVariable(s)) {
             return variableScope.getVariable(s);
+        } else if (beans != null) {
+            return beans.get(s);
         }
         return null;
     }
@@ -66,7 +72,6 @@ public class SecureScriptScope implements Scriptable {
 
     @Override
     public void put(String s, Scriptable scriptable, Object o) {
-        System.out.println("Putting " + s);
     }
 
     @Override

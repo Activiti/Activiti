@@ -10,4 +10,4 @@ Activiti is a light-weight workflow and Business Process Management (BPM) Platfo
 
 Activiti JIRA: https://activiti.atlassian.net
 
-Activiti QA: http://ec2-54-217-5-246.eu-west-1.compute.amazonaws.com:8080/jenkins/
+Activiti QA: http://54.78.67.148:8080
