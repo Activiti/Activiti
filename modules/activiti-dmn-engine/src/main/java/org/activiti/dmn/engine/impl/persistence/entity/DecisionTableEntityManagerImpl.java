@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
-import org.activiti.dmn.engine.impl.DecisionTableQueryImpl;
+import org.activiti.dmn.engine.impl.DmnDecisionTableQueryImpl;
 import org.activiti.dmn.engine.impl.Page;
 import org.activiti.dmn.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.dmn.engine.impl.persistence.entity.data.DecisionTableDataManager;
@@ -69,12 +69,12 @@ public class DecisionTableEntityManagerImpl extends AbstractEntityManager<Decisi
   }
   
   @Override
-  public List<DmnDecisionTable> findDecisionTablesByQueryCriteria(DecisionTableQueryImpl decisionTableQuery, Page page) {
+  public List<DmnDecisionTable> findDecisionTablesByQueryCriteria(DmnDecisionTableQueryImpl decisionTableQuery, Page page) {
    return decisionTableDataManager.findDecisionTablesByQueryCriteria(decisionTableQuery, page);
   }
 
   @Override
-  public long findDecisionTableCountByQueryCriteria(DecisionTableQueryImpl decisionTableQuery) {
+  public long findDecisionTableCountByQueryCriteria(DmnDecisionTableQueryImpl decisionTableQuery) {
     return decisionTableDataManager.findDecisionTableCountByQueryCriteria(decisionTableQuery);
   }
 

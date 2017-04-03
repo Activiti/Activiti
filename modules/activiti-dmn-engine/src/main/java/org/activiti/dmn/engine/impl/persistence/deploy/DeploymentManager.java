@@ -19,7 +19,7 @@ import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
-import org.activiti.dmn.engine.impl.DecisionTableQueryImpl;
+import org.activiti.dmn.engine.impl.DmnDecisionTableQueryImpl;
 import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntity;
 import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntityManager;
 import org.activiti.dmn.engine.impl.persistence.entity.DmnDeploymentEntity;
@@ -166,7 +166,7 @@ public class DeploymentManager {
     }
 
     // Remove any process definition from the cache
-    List<DmnDecisionTable> decisionTables = new DecisionTableQueryImpl().deploymentId(deploymentId).list();
+    List<DmnDecisionTable> decisionTables = new DmnDecisionTableQueryImpl().deploymentId(deploymentId).list();
     
     // Delete data
     deploymentEntityManager.deleteDeployment(deploymentId);

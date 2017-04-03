@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.dmn.api.DmnDecisionTable;
-import org.activiti.dmn.engine.impl.DecisionTableQueryImpl;
+import org.activiti.dmn.engine.impl.DmnDecisionTableQueryImpl;
 import org.activiti.dmn.engine.impl.Page;
 import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntity;
 
@@ -36,9 +36,9 @@ public interface DecisionTableDataManager extends DataManager<DecisionTableEntit
 
   void deleteDecisionTablesByDeploymentId(String deploymentId);
 
-  List<DmnDecisionTable> findDecisionTablesByQueryCriteria(DecisionTableQueryImpl decisionTableQuery, Page page);
+  List<DmnDecisionTable> findDecisionTablesByQueryCriteria(DmnDecisionTableQueryImpl decisionTableQuery, Page page);
 
-  long findDecisionTableCountByQueryCriteria(DecisionTableQueryImpl decisionTableQuery);
+  long findDecisionTableCountByQueryCriteria(DmnDecisionTableQueryImpl decisionTableQuery);
 
   DecisionTableEntity findDecisionTableByDeploymentAndKey(String deploymentId, String decisionTableKey);
 

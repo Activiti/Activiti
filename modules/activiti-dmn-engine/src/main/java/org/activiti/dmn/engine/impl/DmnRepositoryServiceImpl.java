@@ -61,7 +61,7 @@ public class DmnRepositoryServiceImpl extends ServiceImpl implements DmnReposito
     }
     
     public DmnDecisionTableQuery createDecisionTableQuery() {
-      return new DecisionTableQueryImpl(commandExecutor);
+      return new DmnDecisionTableQueryImpl(commandExecutor);
     }
 
     public NativeDecisionTableQuery createNativeDecisionTableQuery() {

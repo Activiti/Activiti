@@ -23,11 +23,55 @@ import java.util.Map;
  */
 public interface DmnRuleService {
 
+/**
+  * Execute a decision identified by it's key.
+  *
+  * @param decisionKey
+  *            the decision key, cannot be null
+  * @param input
+  *            map with input variables
+  * @return the {@link RuleEngineExecutionResult} for this execution
+  */    
   RuleEngineExecutionResult executeDecisionByKey(String decisionKey, Map<String, Object> input);
-
+  
+/**
+  * Execute a decision identified by it's key and tenant id.
+  *
+  * @param decisionKey
+  *            the decision key, cannot be null
+  * @param input
+  *            map with input variables
+  * @param tenantId
+  *            the tenant id
+  * @return the {@link RuleEngineExecutionResult} for this execution
+  */
   RuleEngineExecutionResult executeDecisionByKeyAndTenantId(String decisionKey, Map<String, Object> input, String tenantId);
-
+  
+/**
+  * Execute a decision identified by it's key and parent deployment id.
+  *
+  * @param decisionKey
+  *            the decision key, cannot be null
+  * @param parentDeploymentId
+  *            the parent deployment id
+  * @param input
+  *            map with input variables
+  * @return the {@link RuleEngineExecutionResult} for this execution
+  */
   RuleEngineExecutionResult executeDecisionByKeyAndParentDeploymentId(String decisionKey, String parentDeploymentId, Map<String, Object> input);
-
+  
+/**
+  * Execute a decision identified by it's key and parent deployment id.
+  *
+  * @param decisionKey
+  *            the decision key, cannot be null
+  * @param parentDeploymentId
+  *            the parent deployment id
+  * @param input
+  *            map with input variables
+  * @param tenantId
+  *            the tenant id
+  * @return the {@link RuleEngineExecutionResult} for this execution
+  */
   RuleEngineExecutionResult executeDecisionByKeyParentDeploymentIdAndTenantId(String decisionKey, String parentDeploymentId, Map<String, Object> input, String tenantId);
 }
