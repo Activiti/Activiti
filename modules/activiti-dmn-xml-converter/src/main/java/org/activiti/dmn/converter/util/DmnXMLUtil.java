@@ -61,9 +61,6 @@ public class DmnXMLUtil implements DmnXMLConstants {
         //element.setXmlColumnNumber(location.getColumnNumber());
     }
 
-//    public static void parseChildElements(String elementName, DmnElement parentElement, XMLStreamReader xtr, DecisionTable decisionTable) throws Exception {
-//        parseChildElements(elementName, parentElement, xtr, null, decisionTable);
-//    }
 
     public static void parseChildElements(String elementName, DmnElement parentElement, XMLStreamReader xtr,
                                           Map<String, BaseChildElementParser> childParsers, DecisionTable decisionTable) throws Exception {
