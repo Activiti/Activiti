@@ -17,8 +17,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.Context;
@@ -96,10 +94,7 @@ public class ScopeUtil {
 
       // copy local variables to eventScopeExecution by value. This way,
       // the eventScopeExecution references a 'snapshot' of the local variables
-      Map<String, Object> variables = subProcessExecution.getVariablesLocal();
-      for (Entry<String, Object> variable : variables.entrySet()) {
-        eventScopeExecution.setVariableLocal(variable.getKey(), variable.getValue());
-      }
+      new SubProcessVariableSnapshotter().setVariablesSnapshots(subProcessExecution, eventScopeExecution);
 
       // set event subscriptions to the event scope execution:
       for (CompensateEventSubscriptionEntity eventSubscriptionEntity : compensateEventSubscriptions) {
