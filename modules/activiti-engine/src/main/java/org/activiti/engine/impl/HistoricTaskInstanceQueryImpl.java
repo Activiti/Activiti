@@ -80,6 +80,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String candidateGroup;
   private List<String> candidateGroups;
   protected String involvedUser;
+  protected List<String> involvedGroups;
   protected Integer taskPriority;
   protected Integer taskMinPriority;
   protected Integer taskMaxPriority;
@@ -879,7 +880,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
     return this;
   }
-  
+
   public HistoricTaskInstanceQuery taskDueAfter(Date dueAfter) {
     if (inOrStatement) {
       this.currentOrQueryObject.dueAfter = dueAfter;
@@ -1031,6 +1032,20 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
 
+  @Override
+  public HistoricTaskInstanceQuery taskInvolvedGroups(List<String> involvedGroups) {
+    if (involvedGroups == null || involvedGroups.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Involved groups list is null or empty.");
+    }
+
+    if (inOrStatement) {
+      this.currentOrQueryObject.involvedGroups = involvedGroups;
+    } else {
+      this.involvedGroups = involvedGroups;
+    }
+    return this;
+  }
+
   public HistoricTaskInstanceQuery taskTenantId(String tenantId) {
   	if (tenantId == null) {
   		throw new ActivitiIllegalArgumentException("task tenant id is null");
@@ -1113,12 +1128,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     currentOrQueryObject = null;
     return this;
   }
-  
+
   protected void localize(HistoricTaskInstance task) {
     HistoricTaskInstanceEntity taskEntity = (HistoricTaskInstanceEntity) task;
     taskEntity.setLocalizedName(null);
     taskEntity.setLocalizedDescription(null);
-    
+
     if (locale != null) {
       String processDefinitionId = task.getProcessDefinitionId();
       if (processDefinitionId != null) {
@@ -1128,7 +1143,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
           if (languageNameNode != null && languageNameNode.isNull() == false) {
             taskEntity.setLocalizedName(languageNameNode.asText());
           }
-          
+
           JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
           if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
             taskEntity.setLocalizedDescription(languageDescriptionNode.asText());
@@ -1478,7 +1493,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public String getTaskDeleteReasonLike() {
     return taskDeleteReasonLike;
   }
-  
+
   public List<String> getTaskAssigneeIds() {
 	    return taskAssigneeIds;
 	}
@@ -1526,31 +1541,33 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public String getInvolvedUser() {
     return involvedUser;
   }
-  
+  public List<String> getInvolvedGroups() {
+    return involvedGroups;
+  }
 	public String getProcessDefinitionKeyLikeIgnoreCase() {
 		return processDefinitionKeyLikeIgnoreCase;
 	}
-	
+
 	public String getProcessInstanceBusinessKeyLikeIgnoreCase() {
 		return processInstanceBusinessKeyLikeIgnoreCase;
 	}
-	
+
 	public String getTaskNameLikeIgnoreCase() {
 		return taskNameLikeIgnoreCase;
 	}
-	
+
 	public String getTaskDescriptionLikeIgnoreCase() {
 		return taskDescriptionLikeIgnoreCase;
 	}
-	
+
 	public String getTaskOwnerLikeIgnoreCase() {
 		return taskOwnerLikeIgnoreCase;
 	}
-	
+
 	public String getTaskAssigneeLikeIgnoreCase() {
 		return taskAssigneeLikeIgnoreCase;
 	}
-	
+
 	public String getLocale() {
     return locale;
   }
