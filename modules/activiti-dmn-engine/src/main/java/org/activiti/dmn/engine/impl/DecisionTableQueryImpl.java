@@ -26,7 +26,7 @@ import org.activiti.dmn.engine.impl.interceptor.CommandExecutor;
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
-public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQuery, DmnDecisionTable> implements DmnDecisionTableQuery {
+public class DecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQuery, DmnDecisionTable> implements DmnDecisionTableQuery {
 
   private static final long serialVersionUID = 1L;
   protected String id;
@@ -55,18 +55,18 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
   protected String tenantIdLike;
   protected boolean withoutTenantId;
 
-  public DmnDecisionTableQueryImpl() {
+  public DecisionTableQueryImpl() {
   }
 
-  public DmnDecisionTableQueryImpl(CommandContext commandContext) {
+  public DecisionTableQueryImpl(CommandContext commandContext) {
     super(commandContext);
   }
 
-  public DmnDecisionTableQueryImpl(CommandExecutor commandExecutor) {
+  public DecisionTableQueryImpl(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
 
-  public DmnDecisionTableQueryImpl decisionTableId(String decisionTableId) {
+  public DecisionTableQueryImpl decisionTableId(String decisionTableId) {
     this.id = decisionTableId;
     return this;
   }
@@ -77,7 +77,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
   	return this;
   }
   
-  public DmnDecisionTableQueryImpl decisionTableCategory(String category) {
+  public DecisionTableQueryImpl decisionTableCategory(String category) {
     if (category == null) {
       throw new ActivitiDmnIllegalArgumentException("category is null");
     }
@@ -85,7 +85,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
 
-  public DmnDecisionTableQueryImpl decisionTableCategoryLike(String categoryLike) {
+  public DecisionTableQueryImpl decisionTableCategoryLike(String categoryLike) {
     if (categoryLike == null) {
       throw new ActivitiDmnIllegalArgumentException("categoryLike is null");
     }
@@ -93,7 +93,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
 
-  public DmnDecisionTableQueryImpl decisionTableCategoryNotEquals(String categoryNotEquals) {
+  public DecisionTableQueryImpl decisionTableCategoryNotEquals(String categoryNotEquals) {
     if (categoryNotEquals == null) {
       throw new ActivitiDmnIllegalArgumentException("categoryNotEquals is null");
     }
@@ -101,7 +101,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
 
-  public DmnDecisionTableQueryImpl decisionTableName(String name) {
+  public DecisionTableQueryImpl decisionTableName(String name) {
     if (name == null) {
       throw new ActivitiDmnIllegalArgumentException("name is null");
     }
@@ -109,7 +109,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
 
-  public DmnDecisionTableQueryImpl decisionTableNameLike(String nameLike) {
+  public DecisionTableQueryImpl decisionTableNameLike(String nameLike) {
     if (nameLike == null) {
       throw new ActivitiDmnIllegalArgumentException("nameLike is null");
     }
@@ -117,7 +117,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
 
-  public DmnDecisionTableQueryImpl deploymentId(String deploymentId) {
+  public DecisionTableQueryImpl deploymentId(String deploymentId) {
     if (deploymentId == null) {
       throw new ActivitiDmnIllegalArgumentException("id is null");
     }
@@ -125,7 +125,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
 
-  public DmnDecisionTableQueryImpl deploymentIds(Set<String> deploymentIds) {
+  public DecisionTableQueryImpl deploymentIds(Set<String> deploymentIds) {
     if (deploymentIds == null) {
       throw new ActivitiDmnIllegalArgumentException("ids are null");
     }
@@ -133,7 +133,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
   
-  public DmnDecisionTableQueryImpl parentDeploymentId(String parentDeploymentId) {
+  public DecisionTableQueryImpl parentDeploymentId(String parentDeploymentId) {
     if (parentDeploymentId == null) {
       throw new ActivitiDmnIllegalArgumentException("parentDeploymentId is null");
     }
@@ -141,7 +141,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
   
-  public DmnDecisionTableQueryImpl parentDeploymentIdLike(String parentDeploymentIdLike) {
+  public DecisionTableQueryImpl parentDeploymentIdLike(String parentDeploymentIdLike) {
     if (parentDeploymentIdLike == null) {
       throw new ActivitiDmnIllegalArgumentException("parentDeploymentIdLike is null");
     }
@@ -149,7 +149,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
 
-  public DmnDecisionTableQueryImpl decisionTableKey(String key) {
+  public DecisionTableQueryImpl decisionTableKey(String key) {
     if (key == null) {
       throw new ActivitiDmnIllegalArgumentException("key is null");
     }
@@ -157,7 +157,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
 
-  public DmnDecisionTableQueryImpl decisionTableKeyLike(String keyLike) {
+  public DecisionTableQueryImpl decisionTableKeyLike(String keyLike) {
     if (keyLike == null) {
       throw new ActivitiDmnIllegalArgumentException("keyLike is null");
     }
@@ -165,7 +165,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
 
-  public DmnDecisionTableQueryImpl decisionTableResourceName(String resourceName) {
+  public DecisionTableQueryImpl decisionTableResourceName(String resourceName) {
     if (resourceName == null) {
       throw new ActivitiDmnIllegalArgumentException("resourceName is null");
     }
@@ -173,7 +173,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
 
-  public DmnDecisionTableQueryImpl decisionTableResourceNameLike(String resourceNameLike) {
+  public DecisionTableQueryImpl decisionTableResourceNameLike(String resourceNameLike) {
     if (resourceNameLike == null) {
       throw new ActivitiDmnIllegalArgumentException("resourceNameLike is null");
     }
@@ -181,7 +181,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     return this;
   }
 
-  public DmnDecisionTableQueryImpl decisionTableVersion(Integer version) {
+  public DecisionTableQueryImpl decisionTableVersion(Integer version) {
     checkVersion(version);
     this.version = version;
     return this;
@@ -219,7 +219,7 @@ public class DmnDecisionTableQueryImpl extends AbstractQuery<DmnDecisionTableQue
     }
   }
 
-  public DmnDecisionTableQueryImpl latestVersion() {
+  public DecisionTableQueryImpl latestVersion() {
     this.latest = true;
     return this;
   }

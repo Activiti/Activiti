@@ -66,7 +66,7 @@
     select * from ${prefix}ACT_DMN_DECISION_TABLE where ID_ = #{decisionTableId}
   </select>
 
-  <select id="selectDecisionTablesByQueryCriteria" parameterType="org.activiti.dmn.engine.impl.DmnDecisionTableQueryImpl" resultMap="decisionTableResultMap">
+  <select id="selectDecisionTablesByQueryCriteria" parameterType="org.activiti.dmn.engine.impl.DecisionTableQueryImpl" resultMap="decisionTableResultMap">
   	${limitBefore}
     select RES.* ${limitBetween}
     <include refid="selectDecisionTablesByQueryCriteriaSql"/>
@@ -74,7 +74,7 @@
     ${limitAfter}
   </select>
 
-  <select id="selectDecisionTableCountByQueryCriteria" parameterType="org.activiti.dmn.engine.impl.DmnDecisionTableQueryImpl" resultType="long">
+  <select id="selectDecisionTableCountByQueryCriteria" parameterType="org.activiti.dmn.engine.impl.DecisionTableQueryImpl" resultType="long">
     select count(RES.ID_)
     <include refid="selectDecisionTablesByQueryCriteriaSql"/>
   </select>
@@ -248,7 +248,7 @@
   </select>
   
   <!-- mysql specific sql -->
-  <select id="selectDecisionTablesByQueryCriteria" databaseId="mysql" parameterType="org.activiti.dmn.engine.impl.DmnDecisionTableQueryImpl" resultMap="decisionTableResultMap">
+  <select id="selectDecisionTablesByQueryCriteria" databaseId="mysql" parameterType="org.activiti.dmn.engine.impl.DecisionTableQueryImpl" resultMap="decisionTableResultMap">
   	${limitBefore}
     select distinct RES.* ${limitBetween}
     <include refid="selectDecisionTablesByQueryCriteriaSql"/>
@@ -257,7 +257,7 @@
   </select>
 
   <!-- mysql specific sql -->
-  <select id="selectDecisionTableCountByQueryCriteria" databaseId="mysql" parameterType="org.activiti.dmn.engine.impl.DmnDecisionTableQueryImpl" resultType="long">
+  <select id="selectDecisionTableCountByQueryCriteria" databaseId="mysql" parameterType="org.activiti.dmn.engine.impl.DecisionTableQueryImpl" resultType="long">
     select distinct count(RES.ID_)
     <include refid="selectDecisionTablesByQueryCriteriaSql"/>
   </select>

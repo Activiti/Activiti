@@ -19,7 +19,7 @@ import java.util.Map;
 import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.engine.ActivitiDmnException;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
-import org.activiti.dmn.engine.impl.DmnDecisionTableQueryImpl;
+import org.activiti.dmn.engine.impl.DecisionTableQueryImpl;
 import org.activiti.dmn.engine.impl.Page;
 import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntity;
 import org.activiti.dmn.engine.impl.persistence.entity.DecisionTableEntityImpl;
@@ -82,12 +82,12 @@ public class MybatisDecisionTableDataManager extends AbstractDataManager<Decisio
 
   @Override
   @SuppressWarnings("unchecked")
-  public List<DmnDecisionTable> findDecisionTablesByQueryCriteria(DmnDecisionTableQueryImpl decisionTableQuery, Page page) {
+  public List<DmnDecisionTable> findDecisionTablesByQueryCriteria(DecisionTableQueryImpl decisionTableQuery, Page page) {
     return getDbSqlSession().selectList("selectDecisionTablesByQueryCriteria", decisionTableQuery, page);
   }
 
   @Override
-  public long findDecisionTableCountByQueryCriteria(DmnDecisionTableQueryImpl decisionTableQuery) {
+  public long findDecisionTableCountByQueryCriteria(DecisionTableQueryImpl decisionTableQuery) {
     return (Long) getDbSqlSession().selectOne("selectDecisionTableCountByQueryCriteria", decisionTableQuery);
   }
 
