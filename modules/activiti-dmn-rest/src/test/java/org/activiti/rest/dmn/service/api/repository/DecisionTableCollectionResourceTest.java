@@ -89,7 +89,7 @@ public class DecisionTableCollectionResourceTest extends BaseSpringDmnRestTestCa
       url = baseUrl + "?deploymentId=" + secondDeployment.getId();
       assertResultsPresentInDataResponse(url, latestDecision.getId(), decisionTwo.getId());
     } finally {
-      // Always cleanup any created deployments, even if the org.activiti.dmn.engine.test.runtime failed
+      // Always cleanup any created deployments, even if the test failed
       List<DmnDeployment> deployments = dmnRepositoryService.createDeploymentQuery().list();
       for (DmnDeployment deployment : deployments) {
         dmnRepositoryService.deleteDeployment(deployment.getId());

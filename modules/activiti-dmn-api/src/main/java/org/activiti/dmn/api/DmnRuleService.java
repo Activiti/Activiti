@@ -23,11 +23,11 @@ import java.util.Map;
  */
 public interface DmnRuleService {
 
-  RuleEngineExecutionResult executeDecisionByKey(String decisionKey, Map<String, Object> inputVariables);
+  RuleEngineExecutionResult executeDecisionByKey(String decisionKey, Map<String, Object> input);
 
-  RuleEngineExecutionResult executeDecisionByKeyAndTenantId(String decisionKey, Map<String, Object> inputVariables, String tenantId);
+  RuleEngineExecutionResult executeDecisionByKeyAndTenantId(String decisionKey, Map<String, Object> input, String tenantId);
 
-  RuleEngineExecutionResult executeDecisionByKeyAndParentDeploymentId(String decisionKey, String parentDeploymentId, Map<String, Object> inputVariables);
+  RuleEngineExecutionResult executeDecisionByKeyAndParentDeploymentId(String decisionKey, String parentDeploymentId, Map<String, Object> input);
 
-  RuleEngineExecutionResult executeDecisionByKeyParentDeploymentIdAndTenantId(String decisionKey, String parentDeploymentId, Map<String, Object> inputVariables, String tenantId);
+  RuleEngineExecutionResult executeDecisionByKeyParentDeploymentIdAndTenantId(String decisionKey, String parentDeploymentId, Map<String, Object> input, String tenantId);
 }

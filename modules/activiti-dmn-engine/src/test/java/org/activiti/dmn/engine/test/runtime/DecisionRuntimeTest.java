@@ -38,11 +38,11 @@ public class DecisionRuntimeTest {
       DmnEngine dmnEngine = activitiDmnRule.getDmnEngine();
       DmnRuleService dmnRuleService = dmnEngine.getDmnRuleService();
     
-      Map<String, Object> inputVariables = new HashMap<>();
-      inputVariables.put("inputVariable1", 2);
-      inputVariables.put("inputVariable2", "inputval2");
+      Map<String, Object> inputMap = new HashMap<>();
+      inputMap.put("inputVariable1", 2);
+      inputMap.put("inputVariable2", "inputval2");
     
-      RuleEngineExecutionResult result = dmnRuleService.executeDecisionByKey("decision1", inputVariables);
+      RuleEngineExecutionResult result = dmnRuleService.executeDecisionByKey("decision1", inputMap);
     
       Assert.assertEquals("outputval2", result.getResultVariables().get("outputVariable1"));
       Assert.assertEquals("result2", result.getResultVariables().get("outputVariable2"));

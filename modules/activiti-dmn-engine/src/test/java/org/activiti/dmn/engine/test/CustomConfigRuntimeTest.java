@@ -45,7 +45,7 @@ public class CustomConfigRuntimeTest {
     public ActivitiDmnRule activitiRule2 = new ActivitiDmnRule(ENGINE_CONFIG_2);
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/post_custom_expression_function_expression_1.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/post_custom_expression_function_expression_1.dmn")
     public void executeDecision_post_custom_expression_function() {
 
         DmnEngine dmnEngine = activitiRule1.getDmnEngine();
@@ -64,7 +64,7 @@ public class CustomConfigRuntimeTest {
     }
 
     @Test
-    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/org.activiti.dmn.engine.test.runtime/deployment/post_custom_expression_function_expression_1.dmn")
+    @DmnDeploymentAnnotation(resources = "org/activiti/dmn/engine/test/deployment/post_custom_expression_function_expression_1.dmn")
     public void executeDecision_custom_expression_function_missing_default_function() {
 
         DmnEngine dmnEngine = activitiRule2.getDmnEngine();

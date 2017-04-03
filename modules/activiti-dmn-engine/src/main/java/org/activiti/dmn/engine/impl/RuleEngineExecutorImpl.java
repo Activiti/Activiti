@@ -51,12 +51,12 @@ public class RuleEngineExecutorImpl implements RuleEngineExecutor {
    *
    * @param decision
    *          the DMN decision 
-   * @param inputVariables
+   * @param input
    *          map with input variables
    * @return updated execution variables map
    */
   @Override
-  public RuleEngineExecutionResult execute(Decision decision, Map<String, Object> inputVariables,
+  public RuleEngineExecutionResult execute(Decision decision, Map<String, Object> input,
       Map<String, Method> customExpressionFunctions, Map<Class<?>, PropertyHandler> propertyHandlers) {
 
     if (decision  == null) {
@@ -70,7 +70,7 @@ public class RuleEngineExecutorImpl implements RuleEngineExecutor {
     DecisionTable currentDecisionTable = (DecisionTable) decision.getExpression();
 
     // create execution context and audit trail
-    MvelExecutionContext executionContext = MvelExecutionContextBuilder.build(decision, inputVariables, 
+    MvelExecutionContext executionContext = MvelExecutionContextBuilder.build(decision, input, 
         customExpressionFunctions, propertyHandlers);
 
     // evaluate decision table

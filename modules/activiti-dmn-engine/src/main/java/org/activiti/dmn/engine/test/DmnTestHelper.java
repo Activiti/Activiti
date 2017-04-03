@@ -79,7 +79,7 @@ public abstract class DmnTestHelper {
             try {
                 dmnEngine.getDmnRepositoryService().deleteDeployment(deploymentId);
             } catch (ActivitiDmnObjectNotFoundException e) {
-                // Deployment was already deleted by the org.activiti.dmn.engine.test.runtime case. Ignore.
+                // Deployment was already deleted by the test case. Ignore.
             }
         }
     }
@@ -126,13 +126,13 @@ public abstract class DmnTestHelper {
     }
 
     /**
-     * Each org.activiti.dmn.engine.test.runtime is assumed to clean up all DB content it entered. After a org.activiti.dmn.engine.test.runtime
+     * Each test is assumed to clean up all DB content it entered. After a test
      * method executed, this method scans all tables to see if the DB is
      * completely clean. It throws AssertionFailed in case the DB is not clean.
      * If the DB is not clean, it is cleaned by performing a create a drop.
      */
     public static void assertAndEnsureCleanDb(DmnEngine dmnEngine) {
-        log.debug("verifying that db is clean after org.activiti.dmn.engine.test.runtime");
+        log.debug("verifying that db is clean after test");
         DmnRepositoryService repositoryService = dmnEngine.getDmnEngineConfiguration().getDmnRepositoryService();
         List<DmnDeployment> deployments = repositoryService.createDeploymentQuery().list();
         if (deployments != null && deployments.isEmpty() == false) {
