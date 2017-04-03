@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20170214181846278" modeler:modelId="3003" modeler:modelVersion="2" modeler:modelLastUpdated="1487091437920">
+  <process id="secureScripting" name="StuckProcess" isExecutable="true">
+    <startEvent id="startEvent1" />
+    <scriptTask id="sid-8CF77EC5-2837-4A56-8A64-ED6851B4B96D" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[execution.setVariable("supportMessage", "working");
+]]></script>
+    </scriptTask>
+    <userTask id="sid-080EF968-F2DC-462B-BD22-63EB6851CDCE" />
+    <endEvent id="sid-9A9CB1B4-D53C-46F1-8E0B-C4322CA5F2CE" />
+    <sequenceFlow id="sid-BC03F99F-55B4-44F3-8DB3-DC51306F0FDD" sourceRef="startEvent1" targetRef="sid-8CF77EC5-2837-4A56-8A64-ED6851B4B96D">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-BC03F99F-55B4-44F3-8DB3-DC51306F0FDD]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="sid-12889FC0-FD92-4136-9BC0-3404C5E75863" sourceRef="sid-8CF77EC5-2837-4A56-8A64-ED6851B4B96D" targetRef="sid-080EF968-F2DC-462B-BD22-63EB6851CDCE">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-12889FC0-FD92-4136-9BC0-3404C5E75863]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="sid-71C602AC-5F46-4B75-AA66-202DDE815274" sourceRef="sid-080EF968-F2DC-462B-BD22-63EB6851CDCE" targetRef="sid-9A9CB1B4-D53C-46F1-8E0B-C4322CA5F2CE">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-71C602AC-5F46-4B75-AA66-202DDE815274]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_StuckProcess">
+    <bpmndi:BPMNPlane bpmnElement="StuckProcess" id="BPMNPlane_StuckProcess">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="124.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-8CF77EC5-2837-4A56-8A64-ED6851B4B96D" id="BPMNShape_sid-8CF77EC5-2837-4A56-8A64-ED6851B4B96D">
+        <omgdc:Bounds height="80.0" width="100.0" x="215.0" y="99.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-080EF968-F2DC-462B-BD22-63EB6851CDCE" id="BPMNShape_sid-080EF968-F2DC-462B-BD22-63EB6851CDCE">
+        <omgdc:Bounds height="80.0" width="100.0" x="405.0" y="99.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-9A9CB1B4-D53C-46F1-8E0B-C4322CA5F2CE" id="BPMNShape_sid-9A9CB1B4-D53C-46F1-8E0B-C4322CA5F2CE">
+        <omgdc:Bounds height="28.0" width="28.0" x="615.0" y="125.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-BC03F99F-55B4-44F3-8DB3-DC51306F0FDD" id="BPMNEdge_sid-BC03F99F-55B4-44F3-8DB3-DC51306F0FDD">
+        <omgdi:waypoint x="130.0" y="139.0"/>
+        <omgdi:waypoint x="215.0" y="139.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-12889FC0-FD92-4136-9BC0-3404C5E75863" id="BPMNEdge_sid-12889FC0-FD92-4136-9BC0-3404C5E75863">
+        <omgdi:waypoint x="315.0" y="139.0"/>
+        <omgdi:waypoint x="405.0" y="139.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-71C602AC-5F46-4B75-AA66-202DDE815274" id="BPMNEdge_sid-71C602AC-5F46-4B75-AA66-202DDE815274">
+        <omgdi:waypoint x="505.0" y="139.0"/>
+        <omgdi:waypoint x="615.0" y="139.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

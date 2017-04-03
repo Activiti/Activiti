@@ -12,14 +12,30 @@
  */
 package org.activiti.scripting.secure.behavior;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.DynamicBpmnConstants;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.ScriptTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.scripting.secure.impl.SecureJavascriptUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Joram Barrez
+ * @author Bassam Al-Sarori
  */
 public class SecureJavascriptTaskActivityBehavior extends ScriptTaskActivityBehavior {
+
+    private static final long serialVersionUID = 1L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SecureJavascriptTaskActivityBehavior.class);
 
     public SecureJavascriptTaskActivityBehavior(String scriptTaskId, String script,
                                             String language, String resultVariable, boolean storeScriptVariables) {
@@ -28,7 +44,41 @@ public class SecureJavascriptTaskActivityBehavior extends ScriptTaskActivityBeha
 
     @Override
     public void execute(DelegateExecution execution) {
-      SecureJavascriptUtil.evaluateScript(execution, script);
+      ProcessEngineConfigurationImpl config = (ProcessEngineConfigurationImpl) Context.getProcessEngineConfiguration();
+
+        if (Context.getProcessEngineConfiguration().isEnableProcessDefinitionInfoCache()) {
+            ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(scriptTaskId, execution.getProcessDefinitionId());
+            if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SCRIPT_TASK_SCRIPT)) {
+                String overrideScript = taskElementProperties.get(DynamicBpmnConstants.SCRIPT_TASK_SCRIPT).asText();
+                if (StringUtils.isNotEmpty(overrideScript) && overrideScript.equals(script) == false) {
+                    script = overrideScript;
+                }
+            }
+        }
+
+      boolean noErrors = true;
+      try {
+    	Object result = SecureJavascriptUtil.evaluateScript(execution, script, config.getBeans());
+        if (resultVariable != null) {
+          execution.setVariable(resultVariable, result);
+        }
+
+      } catch (ActivitiException e) {
+
+        LOGGER.warn("Exception while executing " + execution.getCurrentActivityId() + " : " + e.getMessage());
+
+        noErrors = false;
+        Throwable rootCause = ExceptionUtils.getRootCause(e);
+        if (rootCause instanceof BpmnError) {
+          ErrorPropagation.propagateError((BpmnError) rootCause, execution);
+        } else {
+          throw e;
+        }
+      }
+
+      if (noErrors) {
+        leave(execution);
+      }
     }
 
 }
