@@ -44,6 +44,7 @@
 		<module>activiti-app-logic</module>
 		<module>activiti-app-rest</module>
 		<module>activiti-app-conf</module>
+		<module>activiti-app</module>
 	</modules>
 
 	<dependencyManagement>
