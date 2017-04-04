@@ -342,7 +342,7 @@
   </sql>
   
   <sql id="commonSelectTaskByQueryCriteriaSql">
-    <if test="candidateUser != null || candidateGroups != null || bothCandidateAndAssigned">
+    <if test="candidateUser != null || candidateGroups != null || bothCandidateAndAssigned || involvedGroups != null">
       <choose>
         <when test="bothCandidateAndAssigned">left</when>
         <otherwise>inner</otherwise>
@@ -360,9 +360,9 @@
       </choose>       
     </foreach>
     <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
-      <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null || orQueryObject.bothCandidateAndAssigned">
+      <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null || orQueryObject.bothCandidateAndAssigned || orQueryObject.involvedGroups != null">
         <choose>
-          <when test="orQueryObject.bothCandidateAndAssigned">left</when>
+          <when test="orQueryObject.bothCandidateAndAssigned || orQueryObject.involvedGroups != null">left</when>
           <otherwise>inner</otherwise>
         </choose>
         join ${prefix}ACT_RU_IDENTITYLINK I_OR${orIndex} on I_OR${orIndex}.TASK_ID_ = RES.ID_
@@ -605,11 +605,23 @@
         )
       </if>
       <if test="involvedUser != null">
-        and (
+        and
+        (
           exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.TASK_ID_ = RES.ID_)
           or RES.ASSIGNEE_ = #{involvedUser}
           or RES.OWNER_ = #{involvedUser}
-          )
+        )
+      </if>
+      <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+        and
+        (
+          I.TYPE_ = 'participant'
+          and
+          I.GROUP_ID_ IN
+          <foreach item="group" index="index" collection="involvedGroups" open="(" separator="," close=")">
+            #{group}
+          </foreach>
+        )
       </if>
       <foreach item="var" collection="queryVariableValues" index="index">
         <if test="!var.local">
@@ -927,11 +939,23 @@
               ))
             </if>
             <if test="orQueryObject.involvedUser != null">
-              or (
-                exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where USER_ID_ = #{orQueryObject.involvedUser} and LINK.TASK_ID_ = RES.ID_)
-                or RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
-                or RES.OWNER_ = #{orQueryObject.involvedUser}
+              or
+                (
+                  exists(select LINK.USER_ID_ from ${prefix}ACT_RU_IDENTITYLINK LINK where USER_ID_ =
+                  #{orQueryObject.involvedUser} and LINK.TASK_ID_ = RES.ID_)
+                  or RES.ASSIGNEE_ = #{orQueryObject.involvedUser}
+                  or RES.OWNER_ = #{orQueryObject.involvedUser}
                 )
+            </if>
+            <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+              or (
+                I_OR${orIndex}.TYPE_ = 'participant'
+                and
+                I_OR${orIndex}.GROUP_ID_ IN
+                <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+                  #{group}
+                </foreach>
+              )
             </if>
             <foreach item="var" collection="orQueryObject.queryVariableValues" index="index">
               or 

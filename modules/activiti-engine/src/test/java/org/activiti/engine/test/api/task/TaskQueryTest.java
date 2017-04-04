@@ -30,6 +30,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
@@ -562,30 +563,30 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 	    assertEquals(0, query.count());
 	    assertEquals(0, query.list().size());
 	    assertNull(query.singleResult());
-	    
+
 	    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
 	      // History
 	      assertEquals(1, historyService.createHistoricTaskInstanceQuery().taskAssigneeIds(Arrays.asList("gonzo", "kermit")).count());
 	      assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskAssigneeIds(Arrays.asList("kermit", "kermit2")).count());
 	    }
-	    
+
 	    Task adhocTask = taskService.newTask();
 	    adhocTask.setName("test");
 	    adhocTask.setAssignee("testAssignee");
 	    taskService.saveTask(adhocTask);
-	    
+
 	    query = taskService.createTaskQuery().taskAssigneeIds(Arrays.asList("gonzo", "testAssignee"));
 	    assertEquals(2, query.count());
 	    assertEquals(2, query.list().size());
-	    
+
 	    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
 	      // History
 	      assertEquals(2, historyService.createHistoricTaskInstanceQuery().taskAssigneeIds(Arrays.asList("gonzo", "testAssignee")).count());
 	    }
-	    
+
 	    taskService.deleteTask(adhocTask.getId(), true);
 	  }
-	  
+
 	  public void testQueryByAssigneeIdsOr() {
 	    TaskQuery query = taskService.createTaskQuery().or().taskId("invalid").taskAssigneeIds(Arrays.asList("gonzo", "kermit"));
 	    assertEquals(1, query.count());
@@ -596,25 +597,25 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
 	    assertEquals(0, query.count());
 	    assertEquals(0, query.list().size());
 	    assertNull(query.singleResult());
-	    
+
 	    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
 	      assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().taskId("invalid").taskAssigneeIds(Arrays.asList("gonzo", "kermit")).count());
 	      assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskId("invalid").taskAssigneeIds(Arrays.asList("kermit", "kermit2")).count());
 	    }
-	    
+
 	    Task adhocTask = taskService.newTask();
 	    adhocTask.setName("test");
 	    adhocTask.setAssignee("testAssignee");
 	    taskService.saveTask(adhocTask);
-	    
+
 	    query = taskService.createTaskQuery().or().taskId("invalid").taskAssigneeIds(Arrays.asList("gonzo", "testAssignee"));
 	    assertEquals(2, query.count());
 	    assertEquals(2, query.list().size());
-	    
+
 	    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
 	      assertEquals(2, historyService.createHistoricTaskInstanceQuery().or().taskId("invalid").taskAssigneeIds(Arrays.asList("gonzo", "testAssignee")).count());
 	    }
-	    
+
 	    taskService.deleteTask(adhocTask.getId(), true);
 	}
 
@@ -632,6 +633,33 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
       assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("kermit").count());
       assertEquals(1, taskService.createTaskQuery().taskId(adhocTask.getId()).taskInvolvedUser("fozzie").count());
 
+    } finally {
+      List<Task> allTasks = taskService.createTaskQuery().list();
+      for(Task task : allTasks) {
+        if(task.getExecutionId() == null) {
+          taskService.deleteTask(task.getId());
+          if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            historyService.deleteHistoricTaskInstance(task.getId());
+          }
+        }
+      }
+    }
+  }
+
+  public void testQueryByInvolvedGroup() {
+    try {
+      Task adhocTask = taskService.newTask();
+      adhocTask.setAssignee("kermit");
+      adhocTask.setOwner("fozzie");
+      taskService.saveTask(adhocTask);
+      taskService.addGroupIdentityLink(adhocTask.getId(), "group1", IdentityLinkType.PARTICIPANT);
+
+      List<String> groups = new ArrayList<String>();
+      groups.add("group1");
+
+      assertEquals(3, taskService.getIdentityLinksForTask(adhocTask.getId()).size());
+      assertEquals(1, taskService.createTaskQuery()
+          .taskId(adhocTask.getId()).taskInvolvedGroupsIn(groups).count());
     } finally {
       List<Task> allTasks = taskService.createTaskQuery().list();
       for (Task task : allTasks) {

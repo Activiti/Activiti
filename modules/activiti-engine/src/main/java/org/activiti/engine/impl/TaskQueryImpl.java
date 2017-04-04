@@ -59,6 +59,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String assigneeLikeIgnoreCase;
   protected List<String> assigneeIds;
   protected String involvedUser;
+  protected List<String> involvedGroups;
   protected String owner;
   protected String ownerLike;
   protected String ownerLikeIgnoreCase;
@@ -392,7 +393,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
 		}
 		return this;
 	}
-  
+
 	public TaskQueryImpl taskOwner(String owner) {
 		if (owner == null) {
 			throw new ActivitiIllegalArgumentException("Owner is null");
@@ -478,6 +479,20 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     } else {
       this.involvedUser = involvedUser;
     }
+    return this;
+  }
+
+  public TaskQueryImpl taskInvolvedGroupsIn(List<String> involvedGroups) {
+    if (involvedGroups == null || involvedGroups.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Involved groups list is null or empty.");
+    }
+
+    if (orActive) {
+      currentOrQueryObject.involvedGroups = involvedGroups;
+    } else {
+      this.involvedGroups = involvedGroups;
+    }
+
     return this;
   }
 
@@ -1144,7 +1159,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     
     } else if (candidateUser != null) {
       return getGroupsForCandidateUser(candidateUser);
-      
+
     } else if (userIdForCandidateAndAssignee != null) {
       return getGroupsForCandidateUser(userIdForCandidateAndAssignee);
     }
@@ -1306,7 +1321,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     checkQueryOk();
     return commandContext.getTaskEntityManager().findTaskCountByQueryCriteria(this);
   }
-  
+
   protected void localize(Task task) {
     task.setLocalizedName(null);
     task.setLocalizedDescription(null);
@@ -1479,13 +1494,17 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public String getAssigneeLike() {
     return assigneeLike;
   }
-  
+
   public List<String> getAssigneeIds() {
 	    return assigneeIds;
 	}
 
   public String getInvolvedUser() {
     return involvedUser;
+  }
+
+  public List<String> getInvolvedGroups() {
+    return involvedGroups;
   }
 
   public String getOwner() {
@@ -1587,7 +1606,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public String getProcessDefinitionKeyLikeIgnoreCase() {
     return processDefinitionKeyLikeIgnoreCase;
   }
-  
+
   public String getLocale() {
     return locale;
   }
