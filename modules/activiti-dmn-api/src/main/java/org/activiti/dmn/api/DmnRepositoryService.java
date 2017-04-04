@@ -29,7 +29,7 @@ public interface DmnRepositoryService {
 
   void deleteDeployment(String deploymentId);
 
-  DecisionTableQuery createDecisionTableQuery();
+  DmnDecisionTableQuery createDecisionTableQuery();
 
   NativeDecisionTableQuery createNativeDecisionTableQuery();
 
@@ -45,7 +45,7 @@ public interface DmnRepositoryService {
 
   NativeDmnDeploymentQuery createNativeDeploymentQuery();
 
-  DecisionTable getDecisionTable(String decisionTableId);
+  DmnDecisionTable getDecisionTable(String decisionTableId);
 
   InputStream getDmnResource(String decisionTableId);
 

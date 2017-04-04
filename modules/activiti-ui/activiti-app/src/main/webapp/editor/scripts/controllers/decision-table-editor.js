@@ -627,10 +627,12 @@ angular.module('activitiModeler')
         // condition input options
         $scope.popup = {
             selectedExpressionLabel: $scope.model.selectedExpression.label ? $scope.model.selectedExpression.label : '',
-            selectedExpressionVariable: previousVariableId ? $scope.getSelectedVariableModel(previousVariableId) : undefined
+            selectedExpressionVariable: {id: previousVariableId}
         };
 
         $scope.save = function () {
+        	$scope.model.selectedExpression.label = $scope.popup.selectedExpressionLabel;
+        	
             if (previousVariableId !== $scope.popup.selectedExpressionVariable.id) {
 
                 var newInputExpression = {
@@ -646,7 +648,7 @@ angular.module('activitiModeler')
                 }
 
             } else {
-                $scope.model.selectedColumn.displayName = $scope.popup.selectedExpressionLabel;
+                $scope.model.selectedColumn.displayName = $scope.model.selectedExpression.label;
             }
 
             $scope.close();
@@ -691,7 +693,7 @@ angular.module('activitiModeler')
         // condition input options
         $scope.popup = {
             selectedExpressionVariableType: '',
-            selectedExpressionLabel: '',
+            selectedExpressionLabel: $scope.model.selectedExpression.label ? $scope.model.selectedExpression.label : '',
             selectedExpressionNewVariableType: $scope.availableVariableTypes[0]
         };
 

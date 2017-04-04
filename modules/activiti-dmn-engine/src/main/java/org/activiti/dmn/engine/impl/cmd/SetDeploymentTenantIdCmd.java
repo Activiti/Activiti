@@ -15,7 +15,7 @@ package org.activiti.dmn.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.List;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
 import org.activiti.dmn.engine.impl.DecisionTableQueryImpl;
@@ -57,8 +57,8 @@ public class SetDeploymentTenantIdCmd implements Command<Void>, Serializable {
     commandContext.getDecisionTableEntityManager().updateDecisionTableTenantIdForDeployment(deploymentId, newTenantId);
 
     // Doing decision tables in memory, cause we need to clear the decision table cache
-    List<DecisionTable> decisionTables = new DecisionTableQueryImpl().deploymentId(deploymentId).list();
-    for (DecisionTable decisionTable : decisionTables) {
+    List<DmnDecisionTable> decisionTables = new DecisionTableQueryImpl().deploymentId(deploymentId).list();
+    for (DmnDecisionTable decisionTable : decisionTables) {
       commandContext.getDmnEngineConfiguration().getDecisionCache().remove(decisionTable.getId());
     }
     

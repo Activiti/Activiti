@@ -12,7 +12,7 @@
  */
 package org.activiti.rest.dmn.service.api.repository;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.engine.test.DmnDeploymentAnnotation;
 import org.activiti.rest.dmn.service.api.BaseSpringDmnRestTestCase;
 import org.activiti.rest.dmn.service.api.DmnRestUrls;
@@ -30,7 +30,7 @@ public class DecisionTableResourceTest extends BaseSpringDmnRestTestCase {
   @DmnDeploymentAnnotation(resources = { "org/activiti/rest/dmn/service/api/repository/simple.dmn" })
   public void testGetDecisionTable() throws Exception {
 
-    DecisionTable decisionTable = dmnRepositoryService.createDecisionTableQuery().singleResult();
+    DmnDecisionTable decisionTable = dmnRepositoryService.createDecisionTableQuery().singleResult();
 
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + DmnRestUrls.createRelativeResourceUrl(DmnRestUrls.URL_DECISION_TABLE, decisionTable.getId()));
     CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
