@@ -30,13 +30,14 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
                     .endOr()
                     .count());
 
-
-            assertEquals(1,historyService.createHistoricTaskInstanceQuery()
-                     .or()
-                    .taskInvolvedUser("involvedUser")
-                    .taskInvolvedGroupsIn(groups)
-                    .endOr()
-                    .count());
+            if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+                assertEquals(1, historyService.createHistoricTaskInstanceQuery()
+                        .or()
+                        .taskInvolvedUser("involvedUser")
+                        .taskInvolvedGroupsIn(groups)
+                        .endOr()
+                        .count());
+            }
 
         } finally {
             List<Task> allTasks = taskService.createTaskQuery().list();
@@ -72,13 +73,15 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
                     .endOr()
                     .count());
 
-            assertEquals(1,historyService.createHistoricTaskInstanceQuery()
-                    .or().taskCategory("j").taskPriority(10).endOr()
-                    .or()
-                    .taskInvolvedUser("involvedUser")
-                    .taskInvolvedGroupsIn(groups)
-                    .endOr()
-                    .count());
+            if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+                assertEquals(1, historyService.createHistoricTaskInstanceQuery()
+                        .or().taskCategory("j").taskPriority(10).endOr()
+                        .or()
+                        .taskInvolvedUser("involvedUser")
+                        .taskInvolvedGroupsIn(groups)
+                        .endOr()
+                        .count());
+            }
         } finally {
             List<Task> allTasks = taskService.createTaskQuery().list();
             for(Task task : allTasks) {
@@ -174,12 +177,14 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
 
                     .count());
 
-            assertEquals(0, historyService.createHistoricTaskInstanceQuery()
+            if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+                assertEquals(0, historyService.createHistoricTaskInstanceQuery()
 
-                    .taskInvolvedUser("involvedUser")
-                    .taskInvolvedGroupsIn(groups)
+                        .taskInvolvedUser("involvedUser")
+                        .taskInvolvedGroupsIn(groups)
 
-                    .count());
+                        .count());
+            }
 
         } finally {
             List<Task> allTasks = taskService.createTaskQuery().list();
@@ -229,7 +234,7 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             taskService.addGroupIdentityLink(taskUser1Group1and3.getId(), "group3", IdentityLinkType.PARTICIPANT);
 
 
-             Task taskUser1Group1and4 = taskService.newTask();
+            Task taskUser1Group1and4 = taskService.newTask();
             taskUser1Group1and4.setAssignee("kermit");
             taskUser1Group1and4.setOwner("user1");
             taskUser1Group1and4.setPriority(10);
@@ -363,36 +368,26 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
                     .taskInvolvedGroupsIn(andGroup)
 
                     .or()
-                        .taskInvolvedGroupsIn(orGroup)
-                        .taskInvolvedUser("user2")
-                    .endOr()
-
-                    .count());
-
-
-            historyService.createHistoricTaskInstanceQuery()
-
-                    .taskInvolvedUser("user1")
-                    .taskInvolvedGroupsIn(andGroup)
-
-                    .or()
                     .taskInvolvedGroupsIn(orGroup)
                     .taskInvolvedUser("user2")
                     .endOr()
 
-                    .list();
+                    .count());
 
-            assertEquals(4, historyService.createHistoricTaskInstanceQuery()
+            if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
 
-                    .taskInvolvedUser("user1")
-                    .taskInvolvedGroupsIn(andGroup)
+                assertEquals(4, historyService.createHistoricTaskInstanceQuery()
 
-                    .or()
+                        .taskInvolvedUser("user1")
+                        .taskInvolvedGroupsIn(andGroup)
+
+                        .or()
                         .taskInvolvedGroupsIn(orGroup)
                         .taskInvolvedUser("user2")
-                    .endOr()
+                        .endOr()
 
-                    .count());
+                        .count());
+            }
 
 
 
