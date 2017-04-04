@@ -1196,7 +1196,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testGetVariableByHistoricActivityInstance() {
-    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
       assertNotNull(processInstance);
       Task task = taskService.createTaskQuery().singleResult();
