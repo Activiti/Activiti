@@ -12,6 +12,6 @@
  */
 package org.activiti.dmn.api;
 
-public interface NativeDecisionTableQuery extends NativeQuery<NativeDecisionTableQuery, DecisionTable> {
+public interface NativeDecisionTableQuery extends NativeQuery<NativeDecisionTableQuery, DmnDecisionTable> {
 
 }

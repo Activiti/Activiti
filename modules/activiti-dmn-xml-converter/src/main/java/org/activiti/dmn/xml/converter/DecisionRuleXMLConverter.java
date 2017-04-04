@@ -16,6 +16,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.dmn.model.DecisionRule;
+import org.activiti.dmn.model.DecisionTable;
 import org.activiti.dmn.model.DmnDefinition;
 import org.activiti.dmn.model.DmnElement;
 
@@ -35,9 +36,9 @@ public class DecisionRuleXMLConverter extends BaseDmnXMLConverter {
     }
 
     @Override
-    protected DmnElement convertXMLToElement(XMLStreamReader xtr, DmnDefinition model) throws Exception {
+    protected DmnElement convertXMLToElement(XMLStreamReader xtr, DmnDefinition model, DecisionTable decisionTable) throws Exception {
         DecisionRule rule = new DecisionRule();
-        parseChildElements(getXMLElementName(), rule, model, xtr);
+        parseChildElements(getXMLElementName(), rule, decisionTable, xtr);
         return rule;
     }
 

@@ -1,0 +1,46 @@
+<definitions xmlns="http://www.omg.org/spec/DMN/20151130" id="full" name="Full" namespace="http://www.activiti.org/dmn">
+  <decision id="decision1" name="Full Decision">
+    <decisionTable id="decisionTable" hitPolicy="FIRST">
+      <input label="Input 1">
+        <inputExpression id="inputExpression_1" typeRef="double">
+          <text>inputVariable1</text>
+        </inputExpression>
+      </input>
+      <input label="Input 2">
+        <inputExpression id="inputExpression_22" typeRef="string">
+          <text>inputVariable2</text>
+        </inputExpression>
+      </input>
+      <output id="outputExpression_1" label="Output 1" name="outputVariable1" typeRef="string"></output>
+      <output id="outputExpression_2" label="Output 2" name="outputVariable2" typeRef="string"></output>
+      <rule>
+        <inputEntry id="inputEntry_1_1">
+          <text>== 5</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_1">
+          <text>== 'inputval1'</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_1_1">
+          <text>'outputval1'</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_2_1">
+          <text>'result1'</text>
+        </outputEntry>
+      </rule>
+      <rule>
+        <inputEntry id="inputEntry_1_2">
+          <text>!= 5</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_2">
+          <text>== 'inputval2'</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_1_2">
+          <text>'outputval2'</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_2_2">
+          <text>'result2'</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

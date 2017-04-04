@@ -75,7 +75,7 @@ public class ParsedDeployment {
   public Decision getDecisionForDecisionTable(DecisionTableEntity decisionTable) {
     DmnDefinition dmnDefinition = getDmnDefinitionForDecisionTable(decisionTable);
 
-    return (dmnDefinition == null ? null : dmnDefinition.getDrgElementById(decisionTable.getKey()));
+    return (dmnDefinition == null ? null : dmnDefinition.getDecisionById(decisionTable.getKey()));
   }
   
 }

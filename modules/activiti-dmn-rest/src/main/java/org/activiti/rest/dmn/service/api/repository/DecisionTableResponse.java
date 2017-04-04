@@ -12,7 +12,7 @@
  */
 package org.activiti.rest.dmn.service.api.repository;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 
 /**
  * @author Yvo Swillens
@@ -30,7 +30,7 @@ public class DecisionTableResponse {
   protected String deploymentId;
   protected String tenantId;
 
-  public DecisionTableResponse(DecisionTable decisionTable) {
+  public DecisionTableResponse(DmnDecisionTable decisionTable) {
     setId(decisionTable.getId());
     setCategory(decisionTable.getCategory());
     setName(decisionTable.getName());

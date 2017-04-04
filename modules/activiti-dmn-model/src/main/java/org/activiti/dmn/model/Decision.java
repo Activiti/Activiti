@@ -19,7 +19,7 @@ public class Decision extends NamedElement {
 
     protected String question;
     protected String allowedAnswers;
-    protected DecisionTable decisionTable;
+    protected Expression expression;
 
     public String getQuestion() {
         return question;
@@ -37,11 +37,12 @@ public class Decision extends NamedElement {
         this.allowedAnswers = allowedAnswers;
     }
 
-    public DecisionTable getDecisionTable() {
-        return decisionTable;
+    public Expression getExpression() {
+        return expression;
     }
 
-    public void setDecisionTable(DecisionTable decisionTable) {
-        this.decisionTable = decisionTable;
+    public void setExpression(Expression expression) {
+        this.expression = expression;
     }
+
 }

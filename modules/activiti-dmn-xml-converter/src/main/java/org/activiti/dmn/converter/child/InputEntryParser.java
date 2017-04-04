@@ -15,6 +15,7 @@ package org.activiti.dmn.converter.child;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.dmn.model.DecisionRule;
+import org.activiti.dmn.model.DecisionTable;
 import org.activiti.dmn.model.DmnDefinition;
 import org.activiti.dmn.model.DmnElement;
 import org.activiti.dmn.model.InputClause;
@@ -31,7 +32,7 @@ public class InputEntryParser extends BaseChildElementParser {
         return ELEMENT_INPUT_ENTRY;
     }
 
-    public void parseChildElement(XMLStreamReader xtr, DmnElement parentElement, DmnDefinition model) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, DmnElement parentElement, DecisionTable decisionTable) throws Exception {
         if (parentElement instanceof DecisionRule == false)
             return;
 
@@ -57,14 +58,14 @@ public class InputEntryParser extends BaseChildElementParser {
 
         // determine corresponding input clause based on position
         InputClause inputClause = null;
-        if (model.getCurrentDecisionTable().getInputs() != null) {
-            if (model.getCurrentDecisionTable().getInputs().get(rule.getInputEntries().size()) != null) {
-                inputClause = model.getCurrentDecisionTable().getInputs().get(rule.getInputEntries().size());
+        if (decisionTable.getInputs() != null) {
+            if (decisionTable.getInputs().get(rule.getInputEntries().size()) != null) {
+                inputClause = decisionTable.getInputs().get(rule.getInputEntries().size());
             }
         }
 
         if (inputClause == null) {
-            LOGGER.warn("Error determine output clause for position: " + model.getCurrentDecisionTable().getInputs());
+            LOGGER.warn("Error determine output clause for position: " + decisionTable.getInputs());
         }
 
         RuleInputClauseContainer ruleInputClauseContainer = new RuleInputClauseContainer();

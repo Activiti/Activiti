@@ -17,7 +17,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.activiti.dmn.api.DecisionTableQuery;
+import org.activiti.dmn.api.DmnDecisionTableQuery;
 import org.activiti.dmn.api.DmnRepositoryService;
 import org.activiti.dmn.api.QueryProperty;
 import org.activiti.dmn.engine.impl.DecisionTableQueryProperty;
@@ -55,7 +55,7 @@ public class DecisionTableCollectionResource {
 
   @RequestMapping(value = "/dmn-repository/decision-tables", method = RequestMethod.GET, produces = "application/json")
   public DataResponse getDecisionTables(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
-    DecisionTableQuery decisionTableQuery = dmnRepositoryService.createDecisionTableQuery();
+    DmnDecisionTableQuery decisionTableQuery = dmnRepositoryService.createDecisionTableQuery();
 
     // Populate filter-parameters
     if (allRequestParams.containsKey("category")) {

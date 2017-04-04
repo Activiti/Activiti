@@ -14,6 +14,7 @@ package org.activiti.dmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.activiti.dmn.model.DecisionTable;
 import org.activiti.dmn.model.DmnDefinition;
 import org.activiti.dmn.model.DmnElement;
 import org.activiti.dmn.model.InputClause;
@@ -28,7 +29,7 @@ public class InputExpressionParser extends BaseChildElementParser {
         return ELEMENT_INPUT_EXPRESSION;
     }
 
-    public void parseChildElement(XMLStreamReader xtr, DmnElement parentElement, DmnDefinition model) throws Exception {
+    public void parseChildElement(XMLStreamReader xtr, DmnElement parentElement, DecisionTable decisionTable) throws Exception {
         if (parentElement instanceof InputClause == false)
             return;
 

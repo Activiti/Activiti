@@ -16,7 +16,7 @@ package org.activiti.dmn.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.api.DmnDeployment;
 import org.activiti.dmn.engine.DmnEngineConfiguration;
 import org.activiti.dmn.engine.impl.DmnDeploymentQueryImpl;
@@ -63,7 +63,7 @@ public class DmnDeploymentEntityManagerImpl extends AbstractEntityManager<DmnDep
     getDecisionTableEntityManager().deleteDecisionTablesByDeploymentId(deploymentId);
   }
   
-  protected DecisionTableEntity findLatestDecisionTable(DecisionTable decisionTable) {
+  protected DecisionTableEntity findLatestDecisionTable(DmnDecisionTable decisionTable) {
     DecisionTableEntity latestDecisionTable = null;
     if (decisionTable.getTenantId() != null && !DmnEngineConfiguration.NO_TENANT_ID.equals(decisionTable.getTenantId())) {
       latestDecisionTable = getDecisionTableEntityManager()

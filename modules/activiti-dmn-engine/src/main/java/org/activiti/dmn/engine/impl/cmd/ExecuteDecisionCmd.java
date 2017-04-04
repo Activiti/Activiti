@@ -15,7 +15,7 @@ package org.activiti.dmn.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.api.RuleEngineExecutionResult;
 import org.activiti.dmn.engine.ActivitiDmnIllegalArgumentException;
 import org.activiti.dmn.engine.ActivitiDmnObjectNotFoundException;
@@ -24,7 +24,7 @@ import org.activiti.dmn.engine.impl.interceptor.Command;
 import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.persistence.deploy.DecisionTableCacheEntry;
 import org.activiti.dmn.engine.impl.persistence.deploy.DeploymentManager;
-import org.activiti.dmn.model.DmnDefinition;
+import org.activiti.dmn.model.Decision;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -61,7 +61,7 @@ public class ExecuteDecisionCmd implements Command<RuleEngineExecutionResult>, S
 
     DmnEngineConfiguration dmnEngineConfiguration = commandContext.getDmnEngineConfiguration();
     DeploymentManager deploymentManager = dmnEngineConfiguration.getDeploymentManager();
-    DecisionTable decisionTable = null;
+    DmnDecisionTable decisionTable = null;
 
     if (StringUtils.isNotEmpty(decisionKey) && StringUtils.isNotEmpty(parentDeploymentId) && StringUtils.isNotEmpty(tenantId)) {
       decisionTable = deploymentManager.findDeployedLatestDecisionByKeyParentDeploymentIdAndTenantId(decisionKey, parentDeploymentId, tenantId);
@@ -95,9 +95,9 @@ public class ExecuteDecisionCmd implements Command<RuleEngineExecutionResult>, S
     }
 
     DecisionTableCacheEntry decisionTableCacheEntry = deploymentManager.resolveDecisionTable(decisionTable);
-    DmnDefinition dmnDefinition = decisionTableCacheEntry.getDmnDefinition();
+    Decision decision = decisionTableCacheEntry.getDecision();
 
-    RuleEngineExecutionResult executionResult = dmnEngineConfiguration.getRuleEngineExecutor().execute(dmnDefinition, variables, 
+    RuleEngineExecutionResult executionResult = dmnEngineConfiguration.getRuleEngineExecutor().execute(decision, variables, 
         dmnEngineConfiguration.getCustomExpressionFunctions(), dmnEngineConfiguration.getCustomPropertyHandlers());
 
     if (executionResult != null && executionResult.getAuditTrail() != null) {

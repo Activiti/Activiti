@@ -15,12 +15,12 @@ package org.activiti.dmn.engine.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.dmn.api.DecisionTable;
+import org.activiti.dmn.api.DmnDecisionTable;
 import org.activiti.dmn.api.NativeDecisionTableQuery;
 import org.activiti.dmn.engine.impl.interceptor.CommandContext;
 import org.activiti.dmn.engine.impl.interceptor.CommandExecutor;
 
-public class NativeDecisionTableQueryImpl extends AbstractNativeQuery<NativeDecisionTableQuery, DecisionTable> implements NativeDecisionTableQuery {
+public class NativeDecisionTableQueryImpl extends AbstractNativeQuery<NativeDecisionTableQuery, DmnDecisionTable> implements NativeDecisionTableQuery {
 
   private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public class NativeDecisionTableQueryImpl extends AbstractNativeQuery<NativeDeci
 
   // results ////////////////////////////////////////////////////////////////
 
-  public List<DecisionTable> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
+  public List<DmnDecisionTable> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
     return commandContext.getDecisionTableEntityManager().findDecisionTablesByNativeQuery(parameterMap, firstResult, maxResults);
   }
 
