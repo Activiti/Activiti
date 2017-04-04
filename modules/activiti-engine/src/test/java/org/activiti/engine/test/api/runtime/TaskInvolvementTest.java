@@ -27,7 +27,7 @@ public class TaskInvolvementTest  extends PluggableActivitiTestCase {
             assertEquals(1, taskService.createTaskQuery()
                     .or()
                     .taskInvolvedUser("involvedUser")
-                    .taskInvolvedGroupsIn(groups)
+                    .taskInvolvedGroups(groups)
                     .endOr()
                     .count());
 
