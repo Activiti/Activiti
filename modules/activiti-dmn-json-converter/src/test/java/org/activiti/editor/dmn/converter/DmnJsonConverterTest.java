@@ -59,12 +59,12 @@ public class DmnJsonConverterTest {
     public void testConvertJsonToDmn_OK() throws Exception {
 
         JsonNode testJsonResource = parseJson(JSON_RESOURCE_1);
-        DmnDefinition dmnDefinition = new DmnJsonConverter().convertToDmn(testJsonResource, 1l, 1, new Date());
+        DmnDefinition dmnDefinition = new DmnJsonConverter().convertToDmn(testJsonResource, "xyz", 1, new Date());
 
         Assert.assertNotNull(dmnDefinition);
         Assert.assertEquals(DmnJsonConverter.MODEL_NAMESPACE, dmnDefinition.getNamespace());
         Assert.assertEquals(DmnJsonConverter.URI_JSON, dmnDefinition.getTypeLanguage());
-        Assert.assertEquals("definition_1", dmnDefinition.getId());
+        Assert.assertEquals("definition_xyz", dmnDefinition.getId());
         Assert.assertEquals("decisionTableRule1", dmnDefinition.getName());
 
         Assert.assertNotNull(dmnDefinition.getDecisions());
@@ -174,11 +174,11 @@ public class DmnJsonConverterTest {
     public void testConvertJsonToDmn_no_rules() throws Exception {
 
         JsonNode testJsonResource = parseJson(JSON_RESOURCE_2);
-        DmnDefinition dmnDefinition = new DmnJsonConverter().convertToDmn(testJsonResource, 1l, 1, new Date());
+        DmnDefinition dmnDefinition = new DmnJsonConverter().convertToDmn(testJsonResource, "xyz", 1, new Date());
 
         Assert.assertNotNull(dmnDefinition);
         Assert.assertEquals(DmnJsonConverter.MODEL_NAMESPACE, dmnDefinition.getNamespace());
-        Assert.assertEquals("definition_1", dmnDefinition.getId());
+        Assert.assertEquals("definition_xyz", dmnDefinition.getId());
         Assert.assertEquals("decisionTableRule1", dmnDefinition.getName());
         Assert.assertEquals(DmnJsonConverter.URI_JSON, dmnDefinition.getTypeLanguage());
 
@@ -231,7 +231,7 @@ public class DmnJsonConverterTest {
     public void testConvertJsonToDmn2_OK() throws Exception {
 
         JsonNode testJsonResource = parseJson(JSON_RESOURCE_3);
-        DmnDefinition dmnDefinition = new DmnJsonConverter().convertToDmn(testJsonResource, 1l, 1, new Date());
+        DmnDefinition dmnDefinition = new DmnJsonConverter().convertToDmn(testJsonResource, "xyz", 1, new Date());
 
         Assert.assertNotNull(dmnDefinition);
     }
@@ -240,7 +240,7 @@ public class DmnJsonConverterTest {
     public void testConvertJsonToDmn_empty_expressions() throws Exception {
 
         JsonNode testJsonResource = parseJson(JSON_RESOURCE_4);
-        DmnDefinition dmnDefinition = new DmnJsonConverter().convertToDmn(testJsonResource, 1l, 1, new Date());
+        DmnDefinition dmnDefinition = new DmnJsonConverter().convertToDmn(testJsonResource, "xyz", 1, new Date());
 
         Assert.assertNotNull(dmnDefinition);
     }
@@ -250,7 +250,7 @@ public class DmnJsonConverterTest {
         // Test that editor json, which contains the rules in the incorrect order in the rule object,
         // is converted to a dmn model where the rule columns are in the same order as the input/output clauses
         JsonNode testJsonResource = parseJson(JSON_RESOURCE_5);
-        DmnDefinition dmnDefinition = new DmnJsonConverter().convertToDmn(testJsonResource, 1l, 1, new Date());
+        DmnDefinition dmnDefinition = new DmnJsonConverter().convertToDmn(testJsonResource, "xyz", 1, new Date());
 
         Assert.assertNotNull(dmnDefinition);
 

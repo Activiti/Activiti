@@ -57,7 +57,7 @@ public class AppDefinitionServiceImpl implements AppDefinitionService {
 
   @Override
   public List<AppDefinitionServiceRepresentation> getAppDefinitions() {
-    Map<Long, AbstractModel> modelMap = new HashMap<Long, AbstractModel>();
+    Map<String, AbstractModel> modelMap = new HashMap<String, AbstractModel>();
     List<AppDefinitionServiceRepresentation> resultList = new ArrayList<AppDefinitionServiceRepresentation>();
 
     User user = SecurityUtils.getCurrentUserObject();
@@ -81,7 +81,7 @@ public class AppDefinitionServiceImpl implements AppDefinitionService {
    */
   @Override
   public List<AppDefinitionServiceRepresentation> getDeployableAppDefinitions(User user) {
-    Map<Long, ModelHistory> modelMap = new HashMap<Long, ModelHistory>();
+    Map<String, ModelHistory> modelMap = new HashMap<String, ModelHistory>();
     List<AppDefinitionServiceRepresentation> resultList = new ArrayList<AppDefinitionServiceRepresentation>();
 
     List<ModelHistory> createdByModels = modelHistoryRepository.findByCreatedByAndModelTypeAndRemovalDateIsNull(user.getId(), AbstractModel.MODEL_TYPE_APP);
@@ -130,7 +130,7 @@ public class AppDefinitionServiceImpl implements AppDefinitionService {
       resultInfo.setIcon(appDefinition.getIcon());
       List<AppModelDefinition> models = appDefinition.getModels();
       if (CollectionUtils.isNotEmpty(models)) {
-        List<Long> modelIds = new ArrayList<Long>();
+        List<String> modelIds = new ArrayList<String>();
         for (AppModelDefinition appModelDef : models) {
           modelIds.add(appModelDef.getId());
         }

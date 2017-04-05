@@ -33,10 +33,10 @@ public class ModelRelation {
   @GeneratedValue(strategy = GenerationType.TABLE, generator = "modelRelationIdGenerator")
   @TableGenerator(name = "modelRelationIdGenerator", allocationSize = IdBlockSize.DEFAULT_ALLOCATION_SIZE)
   @Column(name = "id")
-  private Long id;
+  private String id;
 
   @Column(name = "parent_model_id")
-  private Long parentModelId;
+  private String parentModelId;
 
   // Only needed for HQL queries. Not using it!
   @ManyToOne(fetch = FetchType.LAZY)
@@ -44,7 +44,7 @@ public class ModelRelation {
   private Model parentModel;
 
   @Column(name = "model_id")
-  private Long modelId;
+  private String modelId;
 
   // Only needed for HQL queries. Not using it!
   @ManyToOne(fetch = FetchType.LAZY)
@@ -58,17 +58,17 @@ public class ModelRelation {
 
   }
 
-  public ModelRelation(Long parentModelId, Long modelId, String type) {
+  public ModelRelation(String parentModelId, String modelId, String type) {
     this.parentModelId = parentModelId;
     this.modelId = modelId;
     this.type = type;
   }
 
-  public Long getParentModelId() {
+  public String getParentModelId() {
     return parentModelId;
   }
 
-  public void setParentModelId(Long parentModelId) {
+  public void setParentModelId(String parentModelId) {
     this.parentModelId = parentModelId;
   }
 
@@ -80,11 +80,11 @@ public class ModelRelation {
     this.parentModel = parentModel;
   }
 
-  public Long getModelId() {
+  public String getModelId() {
     return modelId;
   }
 
-  public void setModelId(Long modelId) {
+  public void setModelId(String modelId) {
     this.modelId = modelId;
   }
 

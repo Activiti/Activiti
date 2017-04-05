@@ -37,7 +37,7 @@ public class AbstractModel {
   @GeneratedValue(strategy = GenerationType.TABLE, generator = "modelIdGenerator")
   @TableGenerator(name = "modelIdGenerator", allocationSize = IdBlockSize.DEFAULT_ALLOCATION_SIZE)
   @Column(name = "id")
-  protected Long id;
+  protected String id;
 
   @Column(name = "name")
   protected String name;
@@ -78,11 +78,11 @@ public class AbstractModel {
     this.created = new Date();
   }
 
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 

@@ -90,8 +90,8 @@ public class DeploymentServiceImpl implements DeploymentService {
           .name(appDefinitionModel.getName())
           .key(appDefinitionModel.getKey());
       
-      Map<Long, Model> formMap = new HashMap<Long, Model>();
-      Map<Long, Model> decisionTableMap = new HashMap<Long, Model>();
+      Map<String, Model> formMap = new HashMap<String, Model>();
+      Map<String, Model> decisionTableMap = new HashMap<String, Model>();
 
       for (AppModelDefinition appModelDef : appDefinition.getModels()) {
 
@@ -123,14 +123,14 @@ public class DeploymentServiceImpl implements DeploymentService {
       }
       
       if (formMap.size() > 0) {
-        for (Long formId : formMap.keySet()) {
+        for (String formId : formMap.keySet()) {
           Model formInfo = formMap.get(formId);
           deploymentBuilder.addString("form-" + formInfo.getKey() + ".form", formInfo.getModelEditorJson());
         }
       }
       
       if (decisionTableMap.size() > 0) {
-        for (Long decisionTableId : decisionTableMap.keySet()) {
+        for (String decisionTableId : decisionTableMap.keySet()) {
           Model decisionTableInfo = decisionTableMap.get(decisionTableId);
           try {
             JsonNode decisionTableNode = objectMapper.readTree(decisionTableInfo.getModelEditorJson());

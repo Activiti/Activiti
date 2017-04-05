@@ -22,7 +22,7 @@ import org.activiti.app.model.common.AbstractRepresentation;
  */
 public class DecisionTableRepresentation extends AbstractRepresentation {
 
-  protected Long id;
+  protected String id;
   protected String name;
   protected String key;
   protected String description;
@@ -44,11 +44,11 @@ public class DecisionTableRepresentation extends AbstractRepresentation {
   public DecisionTableRepresentation() {
   }
 
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 

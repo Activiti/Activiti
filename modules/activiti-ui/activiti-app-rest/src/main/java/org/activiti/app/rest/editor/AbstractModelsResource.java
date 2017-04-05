@@ -105,7 +105,7 @@ public class AbstractModelsResource {
     }
 
     if (CollectionUtils.isNotEmpty(models)) {
-      List<Long> addedModelIds = new ArrayList<Long>();
+      List<String> addedModelIds = new ArrayList<String>();
       for (Model model : models) {
         if (addedModelIds.contains(model.getId()) == false) {
           addedModelIds.add(model.getId());
@@ -125,7 +125,7 @@ public class AbstractModelsResource {
 
     User user = SecurityUtils.getCurrentUserObject();
 
-    List<Long> addedModelIds = new ArrayList<Long>();
+    List<String> addedModelIds = new ArrayList<String>();
 
     List<Model> models = modelRepository.findModelsCreatedBy(user.getId(), 0, getSort(null, false));
 

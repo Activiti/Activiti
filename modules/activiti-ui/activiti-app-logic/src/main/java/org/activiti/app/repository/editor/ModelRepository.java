@@ -45,11 +45,16 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
   Long countByModelTypeAndUser(@Param("modelType") int modelType, @Param("user") String user);
   
   @Query("select m from ModelRelation mr inner join mr.model m where mr.parentModelId = :parentModelId")
-  List<Model> findModelsByParentModelId(@Param("parentModelId") Long parentModelId);
+  List<Model> findModelsByParentModelId(@Param("parentModelId") String parentModelId);
   
   @Query("select m from ModelRelation mr inner join mr.model m where mr.parentModelId = :parentModelId and m.modelType = :modelType")
-  List<Model> findModelsByParentModelIdAndType(@Param("parentModelId") Long parentModelId, @Param("modelType") Integer modelType);
+  List<Model> findModelsByParentModelIdAndType(@Param("parentModelId") String parentModelId, @Param("modelType") Integer modelType);
   
   @Query("select m.id, m.name, m.modelType from ModelRelation mr inner join mr.parentModel m where mr.modelId = :modelId")
-  List<Model> findModelsByChildModelId(@Param("modelId") Long modelId);
+  List<Model> findModelsByChildModelId(@Param("modelId") String modelId);
+
+  boolean exists(String id);
+
+  Model findOne(String id);
+  
 }

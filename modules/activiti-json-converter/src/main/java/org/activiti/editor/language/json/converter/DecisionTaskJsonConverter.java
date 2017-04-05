@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements DecisionTableAwareConverter {
 
-  protected Map<Long, String> decisionTableMap;
+  protected Map<String, String> decisionTableMap;
 
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
       Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -78,7 +78,7 @@ public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements 
   }
   
   @Override
-  public void setDecisionTableMap(Map<Long, String> decisionTableMap) {
+  public void setDecisionTableMap(Map<String, String> decisionTableMap) {
     this.decisionTableMap = decisionTableMap;
   }
 

@@ -30,17 +30,17 @@ import org.springframework.web.bind.annotation.RestController;
 public class ModelHistoryResource extends AbstractModelHistoryResource {
 
   @RequestMapping(value = "/rest/models/{modelId}/history", method = RequestMethod.GET, produces = "application/json")
-  public ResultListDataRepresentation getModelHistoryCollection(@PathVariable Long modelId, @RequestParam(value = "includeLatestVersion", required = false) Boolean includeLatestVersion) {
+  public ResultListDataRepresentation getModelHistoryCollection(@PathVariable String modelId, @RequestParam(value = "includeLatestVersion", required = false) Boolean includeLatestVersion) {
     return super.getModelHistoryCollection(modelId, includeLatestVersion);
   }
 
   @RequestMapping(value = "/rest/models/{modelId}/history/{modelHistoryId}", method = RequestMethod.GET, produces = "application/json")
-  public ModelRepresentation getProcessModelHistory(@PathVariable Long modelId, @PathVariable Long modelHistoryId) {
+  public ModelRepresentation getProcessModelHistory(@PathVariable String modelId, @PathVariable String modelHistoryId) {
     return super.getProcessModelHistory(modelId, modelHistoryId);
   }
 
   @RequestMapping(value = "/rest/models/{modelId}/history/{modelHistoryId}", method = RequestMethod.POST, produces = "application/json")
-  public ReviveModelResultRepresentation executeProcessModelHistoryAction(@PathVariable Long modelId, @PathVariable Long modelHistoryId,
+  public ReviveModelResultRepresentation executeProcessModelHistoryAction(@PathVariable String modelId, @PathVariable String modelHistoryId,
       @RequestBody(required = true) BaseRestActionRepresentation action) {
 
     // In order to execute actions on a historic process model, write permission is needed

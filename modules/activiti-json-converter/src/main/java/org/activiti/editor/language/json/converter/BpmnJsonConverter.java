@@ -429,7 +429,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     return convertToBpmnModel(modelNode, null, null);
   }
 
-  public BpmnModel convertToBpmnModel(JsonNode modelNode, Map<Long, String> formKeyMap, Map<Long, String> decisionTableKeyMap) {
+  public BpmnModel convertToBpmnModel(JsonNode modelNode, Map<String, String> formKeyMap, Map<String, String> decisionTableKeyMap) {
 
     BpmnModel bpmnModel = new BpmnModel();
 
@@ -623,7 +623,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
   }
 
   public void processJsonElements(JsonNode shapesArrayNode, JsonNode modelNode, BaseElement parentElement, Map<String, JsonNode> shapeMap, 
-      Map<Long, String> formMap, Map<Long, String> decisionTableMap, BpmnModel bpmnModel) {
+      Map<String, String> formMap, Map<String, String> decisionTableMap, BpmnModel bpmnModel) {
 
     for (JsonNode shapeNode : shapesArrayNode) {
       String stencilId = BpmnJsonConverterUtil.getStencilId(shapeNode);

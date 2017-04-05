@@ -150,9 +150,9 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
     return result;
   }
   
-  public static Set<Long> getAppModelReferencedModelIds(JsonNode appModelJson) {
+  public static Set<String> getAppModelReferencedModelIds(JsonNode appModelJson) {
     if (appModelJson.has("models")) {
-      return JsonConverterUtil.gatherLongPropertyFromJsonNodes(appModelJson.get("models"), "id");
+      return JsonConverterUtil.gatherStringPropertyFromJsonNodes(appModelJson.get("models"), "id");
     }
     return Collections.emptySet();
   }
@@ -170,6 +170,19 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
       if (node.has(propertyName)) {
         Long propertyValue = node.get(propertyName).asLong();
         if (propertyValue > 0) { // Just to be safe
+          result.add(propertyValue);
+        }
+      }
+    }
+    return result;
+  }
+  
+  public static Set<String> gatherStringPropertyFromJsonNodes(Iterable<JsonNode> jsonNodes, String propertyName) {
+    Set<String> result = new HashSet<String>(); // Using a Set to filter out doubles
+    for (JsonNode node : jsonNodes) {
+      if (node.has(propertyName)) {
+        String propertyValue = node.get(propertyName).asText();
+        if (propertyValue != null) { // Just to be safe
           result.add(propertyValue);
         }
       }

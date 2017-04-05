@@ -43,7 +43,7 @@ public class BaseActivitiModelService {
   @Autowired
   protected IdentityService identityService;
 
-  protected Model getModel(Long modelId, boolean checkRead, boolean checkEdit) {
+  protected Model getModel(String modelId, boolean checkRead, boolean checkEdit) {
     Model model = modelRepository.findOne(modelId);
 
     if (model == null) {
@@ -55,7 +55,7 @@ public class BaseActivitiModelService {
     return model;
   }
 
-  protected ModelHistory getModelHistory(Long modelId, Long modelHistoryId, boolean checkRead, boolean checkEdit) {
+  protected ModelHistory getModelHistory(String modelId, String modelHistoryId, boolean checkRead, boolean checkEdit) {
     // Check if the user has read-rights on the process-model in order to fetch history
     Model model = getModel(modelId, checkRead, checkEdit);
     ModelHistory modelHistory = modelHistoryRepository.findOne(modelHistoryId);

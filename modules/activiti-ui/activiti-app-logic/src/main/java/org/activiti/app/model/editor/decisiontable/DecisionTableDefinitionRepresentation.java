@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(Include.NON_NULL)
 public class DecisionTableDefinitionRepresentation {
 
-    protected Long id;
+    protected String id;
     protected String name;
     protected String key;
     protected String description;
@@ -34,11 +34,11 @@ public class DecisionTableDefinitionRepresentation {
     protected List<DecisionTableExpressionRepresentation> outputExpressions;
     protected List<Map<String,Object>> rules;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -24,7 +24,7 @@ import org.activiti.app.model.common.AbstractRepresentation;
  */
 public class AppDefinitionRepresentation extends AbstractRepresentation {
 
-  private Long id;
+  private String id;
   private String name;
   private String key;
   private String description;
@@ -45,11 +45,11 @@ public class AppDefinitionRepresentation extends AbstractRepresentation {
     this.created = model.getCreated();
   }
 
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 

@@ -48,7 +48,7 @@ public class AppDefinitionExportService {
   
   protected BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
 
-  public void exportAppDefinition(HttpServletResponse response, Long modelId) throws IOException {
+  public void exportAppDefinition(HttpServletResponse response, String modelId) throws IOException {
 
     if (modelId == null) {
       throw new BadRequestException("No application definition id provided");
@@ -72,8 +72,8 @@ public class AppDefinitionExportService {
 
       List<AppModelDefinition> modelDefinitions = appDefinition.getDefinition().getModels();
       if (CollectionUtils.isNotEmpty(modelDefinitions)) {
-        Map<Long, Model> formMap = new HashMap<Long, Model>();
-        Map<Long, Model> decisionTableMap = new HashMap<Long, Model>();
+        Map<String, Model> formMap = new HashMap<String, Model>();
+        Map<String, Model> decisionTableMap = new HashMap<String, Model>();
 
         for (AppModelDefinition modelDef : modelDefinitions) {
           Model model = modelService.getModel(modelDef.getId());

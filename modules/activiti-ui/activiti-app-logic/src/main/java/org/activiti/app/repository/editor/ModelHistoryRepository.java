@@ -24,8 +24,10 @@ public interface ModelHistoryRepository extends JpaRepository<ModelHistory, Long
 
 	List<ModelHistory> findByCreatedByAndModelTypeAndRemovalDateIsNull(String createdBy, Integer modelType);
 	
-	List<ModelHistory> findByModelIdAndRemovalDateIsNullOrderByVersionDesc(Long modelId);
+	List<ModelHistory> findByModelIdAndRemovalDateIsNullOrderByVersionDesc(String modelId);
 	
 	List<ModelHistory> findByModelIdOrderByVersionDesc(Long modelId);
+
+    ModelHistory findOne(String id);
 	
 }

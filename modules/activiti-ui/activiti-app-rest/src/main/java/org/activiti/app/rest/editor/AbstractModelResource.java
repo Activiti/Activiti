@@ -48,14 +48,14 @@ public class AbstractModelResource {
 
   protected BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
 
-  public ModelRepresentation getModel(Long modelId) {
+  public ModelRepresentation getModel(String modelId) {
     Model model = modelService.getModel(modelId);
     ModelRepresentation result = new ModelRepresentation(model);
 
     return result;
   }
 
-  public byte[] getModelThumbnail(Long modelId) {
+  public byte[] getModelThumbnail(String modelId) {
     Model model = modelService.getModel(modelId);
 
     if (model == null) {
@@ -65,7 +65,7 @@ public class AbstractModelResource {
     return model.getThumbnail();
   }
 
-  public ModelRepresentation importNewVersion(Long modelId, MultipartFile file) {
+  public ModelRepresentation importNewVersion(String modelId, MultipartFile file) {
 
     Model processModel = modelService.getModel(modelId);
     User currentUser = SecurityUtils.getCurrentUserObject();

@@ -14,21 +14,21 @@ package org.activiti.editor.language.json.model;
 
 public class ModelInfo {
 
-  protected Long id;
+  protected String id;
   protected String name;
   protected String key;
   
-  public ModelInfo(Long id, String name, String key) {
+  public ModelInfo(String id, String name, String key) {
     this.id = id;
     this.name = name;
     this.key = key;
   }
   
-  public Long getId() {
+  public String getId() {
     return id;
   }
   
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
   

@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class StartEventJsonConverter extends BaseBpmnJsonConverter implements FormAwareConverter, FormKeyAwareConverter {
 
-  protected Map<Long, String> formMap;
+  protected Map<String, String> formMap;
   protected Map<String, ModelInfo> formKeyMap;
 
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -138,7 +138,7 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter implements Fo
   }
 
   @Override
-  public void setFormMap(Map<Long, String> formMap) {
+  public void setFormMap(Map<String, String> formMap) {
     this.formMap = formMap;
   }
   

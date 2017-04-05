@@ -37,7 +37,7 @@ public class FormResource {
   protected ActivitiFormService formService;
 
   @RequestMapping(value = "/{formId}", method = RequestMethod.GET, produces = "application/json")
-  public FormRepresentation getForm(@PathVariable Long formId) {
+  public FormRepresentation getForm(@PathVariable String formId) {
     return formService.getForm(formId);
   }
 
@@ -48,12 +48,12 @@ public class FormResource {
   }
 
   @RequestMapping(value = "/{formId}/history/{formHistoryId}", method = RequestMethod.GET, produces = "application/json")
-  public FormRepresentation getFormHistory(@PathVariable Long formId, @PathVariable Long formHistoryId) {
+  public FormRepresentation getFormHistory(@PathVariable String formId, @PathVariable String formHistoryId) {
     return formService.getFormHistory(formId, formHistoryId);
   }
 
   @RequestMapping(value = "/{formId}", method = RequestMethod.PUT, produces = "application/json")
-  public FormRepresentation saveForm(@PathVariable Long formId, @RequestBody FormSaveRepresentation saveRepresentation) {
+  public FormRepresentation saveForm(@PathVariable String formId, @RequestBody FormSaveRepresentation saveRepresentation) {
     return formService.saveForm(formId, saveRepresentation);
   }
 }

@@ -77,7 +77,7 @@ public class ActivitiDecisionTableService extends BaseActivitiModelService {
   public List<DecisionTableRepresentation> getDecisionTables(String[] decisionTableIds) {
     List<DecisionTableRepresentation> decisionTableRepresentations = new ArrayList<>();
     for (String decisionTableId : decisionTableIds) {
-      Model model = getModel(Long.valueOf(decisionTableId), true, false);
+      Model model = getModel(decisionTableId, true, false);
       DecisionTableRepresentation decisionTableRepresentation = createDecisionTableRepresentation(model);
       decisionTableRepresentations.add(decisionTableRepresentation);
     }
@@ -107,11 +107,11 @@ public class ActivitiDecisionTableService extends BaseActivitiModelService {
     return result;
   }
 
-  public void exportDecisionTable(HttpServletResponse response, Long decisionTableId) {
+  public void exportDecisionTable(HttpServletResponse response, String decisionTableId) {
     exportDecisionTable(response, getModel(decisionTableId, true, false));
   }
 
-  public void exportHistoricDecisionTable(HttpServletResponse response, Long modelHistoryId) {
+  public void exportHistoricDecisionTable(HttpServletResponse response, String modelHistoryId) {
     // Get the historic model
     ModelHistory modelHistory = modelHistoryRepository.findOne(modelHistoryId);
 
@@ -121,7 +121,7 @@ public class ActivitiDecisionTableService extends BaseActivitiModelService {
     exportDecisionTable(response, modelHistory);
   }
 
-  public void exportDecisionTableHistory(HttpServletResponse response, Long decisionTableId) {
+  public void exportDecisionTableHistory(HttpServletResponse response, String decisionTableId) {
     exportDecisionTable(response, getModel(decisionTableId, true, false));
   }
 
@@ -210,11 +210,11 @@ public class ActivitiDecisionTableService extends BaseActivitiModelService {
     return validFilter;
   }
 
-  public Model getDecisionTableModel(Long decisionTableId) {
+  public Model getDecisionTableModel(String decisionTableId) {
     return getModel(decisionTableId, true, false);
   }
 
-  public DecisionTableRepresentation getDecisionTable(Long decisionTableId) {
+  public DecisionTableRepresentation getDecisionTable(String decisionTableId) {
     return createDecisionTableRepresentation(getDecisionTableModel(decisionTableId));
   }
 
@@ -222,7 +222,7 @@ public class ActivitiDecisionTableService extends BaseActivitiModelService {
     return createDecisionTableRepresentation(decisionTableModel);
   }
 
-  public DecisionTableRepresentation getHistoricDecisionTable(Long modelHistoryId) {
+  public DecisionTableRepresentation getHistoricDecisionTable(String modelHistoryId) {
     // Get the historic model
     ModelHistory modelHistory = modelHistoryRepository.findOne(modelHistoryId);
 
@@ -245,7 +245,7 @@ public class ActivitiDecisionTableService extends BaseActivitiModelService {
     return result;
   }
 
-  public DecisionTableRepresentation saveDecisionTable(Long decisionTableId, DecisionTableSaveRepresentation saveRepresentation) {
+  public DecisionTableRepresentation saveDecisionTable(String decisionTableId, DecisionTableSaveRepresentation saveRepresentation) {
 
     User user = SecurityUtils.getCurrentUserObject();
     Model model = getModel(decisionTableId, false, false);
