@@ -107,7 +107,6 @@ public class IdmProfileResource {
     		  picture=new Picture(pictureBytes,"image/png");
     	  }
     	  catch (Exception e) {
-    		  e.printStackTrace();
     		  throw new InternalServerErrorException("Could not find default tenant logo");
     	  }
       }
