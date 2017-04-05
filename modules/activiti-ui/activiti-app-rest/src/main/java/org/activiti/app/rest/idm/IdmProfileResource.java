@@ -104,7 +104,6 @@ public class IdmProfileResource {
       if(picture==null){
     	  try{
     		  byte[] pictureBytes = IoUtil.readInputStream(this.getClass().getClassLoader().getResourceAsStream("activiti-logo.png"), "default-logo");
-    		  System.out.println("pictureBytes "+pictureBytes);
     		  picture=new Picture(pictureBytes,"image/png");
     	  }
     	  catch (Exception e) {
