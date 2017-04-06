@@ -300,13 +300,14 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
     assertEquals("startVar", historicVariableInstances.get(0).getVariableName());
     assertEquals("hello", historicVariableInstances.get(0).getValue());
     
-    historicVariableInstances = historyService.createHistoricVariableInstanceQuery().executionIds(processInstanceIds).list();
+    historicVariableInstances = historyService.createHistoricVariableInstanceQuery().executionIds(processInstanceIds).orderByVariableName().asc().list();
+    assertEquals(3, historicVariableInstances.size());
     assertEquals("startVar", historicVariableInstances.get(0).getVariableName());
     assertEquals("hello", historicVariableInstances.get(0).getValue());
-    assertEquals("startVar2", historicVariableInstances.get(1).getVariableName());
-    assertEquals("hello2", historicVariableInstances.get(1).getValue());
-    assertEquals("startVar", historicVariableInstances.get(2).getVariableName());
-    assertEquals("hello", historicVariableInstances.get(2).getValue());
+    assertEquals("startVar", historicVariableInstances.get(1).getVariableName());
+    assertEquals("hello", historicVariableInstances.get(1).getValue());
+    assertEquals("startVar2", historicVariableInstances.get(2).getVariableName());
+    assertEquals("hello2", historicVariableInstances.get(2).getValue());
   }
 
   @Deployment(resources={
