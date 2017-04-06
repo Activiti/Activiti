@@ -13,6 +13,9 @@
 
 package org.activiti.engine.test.history;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.groups.Tuple.tuple;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -272,10 +275,10 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
    assertEquals("taskVar1", historicVariableInstances.get(0).getVariableName());  
    
   }
-  
+
   public void testHistoricVariableQueryByExecutionIds() {
     deployTwoTasksTestProcess();
-    
+
     Set<String> processInstanceIds = new HashSet<String>();
     Set<String> testProcessInstanceIds = new HashSet<String>();
     for (int i = 0; i < 3; i++){
@@ -293,21 +296,25 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       }
     }
 
-    assertEquals(2, historyService.createHistoricVariableInstanceQuery().executionIds(testProcessInstanceIds).count());
-    assertEquals(2, historyService.createHistoricVariableInstanceQuery().executionIds(testProcessInstanceIds).list().size());
+    assertThat(historyService.createHistoricVariableInstanceQuery().executionIds(testProcessInstanceIds).list().size())
+            .isEqualTo((int) historyService.createHistoricVariableInstanceQuery().executionIds(testProcessInstanceIds).count())
+            .isEqualTo(2);
 
     List<HistoricVariableInstance> historicVariableInstances = historyService.createHistoricVariableInstanceQuery().executionIds(testProcessInstanceIds).list();
-    assertEquals("startVar", historicVariableInstances.get(0).getVariableName());
-    assertEquals("hello", historicVariableInstances.get(0).getValue());
-    
-    historicVariableInstances = historyService.createHistoricVariableInstanceQuery().executionIds(processInstanceIds).orderByVariableName().asc().list();
-    assertEquals(3, historicVariableInstances.size());
-    assertEquals("startVar", historicVariableInstances.get(0).getVariableName());
-    assertEquals("hello", historicVariableInstances.get(0).getValue());
-    assertEquals("startVar", historicVariableInstances.get(1).getVariableName());
-    assertEquals("hello", historicVariableInstances.get(1).getValue());
-    assertEquals("startVar2", historicVariableInstances.get(2).getVariableName());
-    assertEquals("hello2", historicVariableInstances.get(2).getValue());
+    assertThat(historicVariableInstances).hasSize(2)
+            .extracting("name", "value")
+            .containsExactly(
+                    tuple("startVar", "hello"),
+                    tuple("startVar", "hello"));
+
+    historicVariableInstances = historyService.createHistoricVariableInstanceQuery().executionIds(processInstanceIds).list();
+
+    assertThat(historicVariableInstances).hasSize(3)
+            .extracting("name", "value")
+            .containsExactlyInAnyOrder(
+                    tuple("startVar", "hello"),
+                    tuple("startVar", "hello"),
+                    tuple("startVar2", "hello2"));
   }
 
   @Deployment(resources={
