@@ -179,14 +179,8 @@
 			<fileset dir="../modules/activiti-spring-boot/spring-boot-starters/activiti-spring-boot-starter-security/target">
 				<include name="activiti-spring-boot-starter-security-*.jar" />
 			</fileset>
-			<fileset dir="../modules/activiti-ui/activiti-app-data/target">
-				<include name="activiti-app-data-*.jar" />
-			</fileset>
 			<fileset dir="../modules/activiti-ui/activiti-app-logic/target">
 				<include name="activiti-app-logic-*.jar" />
-			</fileset>
-			<fileset dir="../modules/activiti-ui/activiti-app-model/target">
-				<include name="activiti-app-model-*.jar" />
 			</fileset>
 			<fileset dir="../modules/activiti-ui/activiti-app-rest/target">
 				<include name="activiti-app-rest-*.jar" />
