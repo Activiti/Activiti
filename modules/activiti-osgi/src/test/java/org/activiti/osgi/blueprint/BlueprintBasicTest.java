@@ -98,7 +98,7 @@ public class BlueprintBasicTest {
         mavenBundle().groupId("log4j").artifactId("log4j").version("1.2.17"),
         mavenBundle().groupId("joda-time").artifactId("joda-time").version("2.6"),
         mavenBundle().groupId("com.h2database").artifactId("h2").version("1.3.176"),
-        mavenBundle().groupId("org.mybatis").artifactId("mybatis").version("3.3.0"),
+        mavenBundle().groupId("org.mybatis").artifactId("mybatis").version("3.4.2"),
         mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").version("1.7.6"),
         mavenBundle().groupId("org.slf4j").artifactId("slf4j-log4j12").version("1.7.6").noStart(),
         mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").version("3.5.4"),
