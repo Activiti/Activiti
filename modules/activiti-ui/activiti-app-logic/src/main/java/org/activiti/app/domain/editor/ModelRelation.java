@@ -24,15 +24,16 @@ import javax.persistence.Table;
 import javax.persistence.TableGenerator;
 
 import org.activiti.app.domain.common.IdBlockSize;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "ACT_DE_MODEL_RELATION")
 public class ModelRelation {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.TABLE, generator = "modelRelationIdGenerator")
-  @TableGenerator(name = "modelRelationIdGenerator", allocationSize = IdBlockSize.DEFAULT_ALLOCATION_SIZE)
-  @Column(name = "id")
+  @GeneratedValue(generator = "modelRelationIdGenerator")
+  @GenericGenerator(name = "modelRelationIdGenerator", strategy = "uuid2")
+  @Column(name = "id", unique = true)
   private String id;
 
   @Column(name = "parent_model_id")

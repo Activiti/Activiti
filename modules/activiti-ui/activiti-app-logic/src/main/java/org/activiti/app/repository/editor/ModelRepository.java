@@ -23,7 +23,7 @@ import org.springframework.data.repository.query.Param;
 /**
  * Spring Data JPA repository for the Model entity.
  */
-public interface ModelRepository extends JpaRepository<Model, Long> {
+public interface ModelRepository extends JpaRepository<Model, String> {
 
   @Query("from Model as model where model.createdBy = :user and model.modelType = :modelType")
   List<Model> findModelsCreatedBy(@Param("user") String createdBy, @Param("modelType") Integer modelType, Sort sort);
@@ -53,8 +53,5 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
   @Query("select m.id, m.name, m.modelType from ModelRelation mr inner join mr.parentModel m where mr.modelId = :modelId")
   List<Model> findModelsByChildModelId(@Param("modelId") String modelId);
 
-  boolean exists(String id);
 
-  Model findOne(String id);
-  
 }
