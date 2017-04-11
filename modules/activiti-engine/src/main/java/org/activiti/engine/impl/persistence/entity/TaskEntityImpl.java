@@ -30,6 +30,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.CountingTaskEntity;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -40,7 +41,7 @@ import org.activiti.engine.task.IdentityLinkType;
  * @author Falko Menge
  * @author Tijs Rademakers
  */
-public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Serializable, BulkDeleteable {
+public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, CountingTaskEntity, Serializable, BulkDeleteable {
 
   public static final String DELETE_REASON_COMPLETED = "completed";
   public static final String DELETE_REASON_DELETED = "deleted";
@@ -81,6 +82,9 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   protected boolean isDeleted;
   protected boolean isCanceled;
+  private boolean isCountEnabled;
+  private int variableCount;
+  private int identityLinkCount;
   protected String eventName;
   protected ActivitiListener currentActivitiListener;
 
@@ -133,6 +137,9 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     if (claimTime != null) {
       persistentState.put("claimTime", this.claimTime);
     }
+    
+    persistentState.put("variableCount", this.variableCount);
+    persistentState.put("identityLinkCount", this.identityLinkCount);
 
     return persistentState;
   }
@@ -602,6 +609,30 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public String toString() {
     return "Task[id=" + id + ", name=" + name + "]";
+  }
+
+  public boolean isCountEnabled() {
+	return isCountEnabled;
+  }
+
+  public void setCountEnabled(boolean isCountEnabled) {
+	this.isCountEnabled = isCountEnabled;
+  }
+
+  public int getVariableCount() {
+	return variableCount;
+  }
+
+  public void setVariableCount(int variableCount) {
+	this.variableCount = variableCount;
+  }
+
+  public int getIdentityLinkCount() {
+	return identityLinkCount;
+  }
+
+  public void setIdentityLinkCount(int identityLinkCount) {
+	this.identityLinkCount = identityLinkCount;
   }
 
 }

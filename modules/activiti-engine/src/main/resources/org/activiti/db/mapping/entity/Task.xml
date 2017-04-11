@@ -23,7 +23,7 @@
   
   <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     insert into ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
-                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_)
+                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, IS_COUNT_ENABLED_, VAR_COUNT_, ID_LINK_COUNT_)
     values (#{id, jdbcType=VARCHAR},
             1,
             #{name, jdbcType=VARCHAR},
@@ -43,13 +43,16 @@
             #{suspensionState, jdbcType=INTEGER},
             #{tenantId, jdbcType=VARCHAR},
             #{formKey, jdbcType=VARCHAR},
-            #{claimTime, jdbcType=TIMESTAMP}
+            #{claimTime, jdbcType=TIMESTAMP},
+            #{isCountEnabled, jdbcType=BOOLEAN},
+			#{variableCount, jdbcType=INTEGER},
+    		#{identityLinkCount, jdbcType=INTEGER}
            )
   </insert>
 
   <insert id="bulkInsertTask" parameterType="java.util.List">
     INSERT INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
-                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_)
+                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, IS_COUNT_ENABLED_, VAR_COUNT_, ID_LINK_COUNT_)
     VALUES 
       <foreach collection="list" item="task" index="index" separator=","> 
         (#{task.id, jdbcType=VARCHAR},
@@ -71,7 +74,11 @@
          #{task.suspensionState, jdbcType=INTEGER},
          #{task.tenantId, jdbcType=VARCHAR},
          #{task.formKey, jdbcType=VARCHAR},
-         #{task.claimTime, jdbcType=TIMESTAMP})
+         #{task.claimTime, jdbcType=TIMESTAMP},
+         #{task.isCountEnabled, jdbcType=BOOLEAN},
+		 #{task.variableCount, jdbcType=INTEGER},
+    	 #{task.identityLinkCount, jdbcType=INTEGER}
+        )
     </foreach>
   </insert>
 
@@ -80,7 +87,7 @@
       <foreach collection="list" item="task" index="index">
         INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
              ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_,
-             SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_) VALUES
+             SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, IS_COUNT_ENABLED_, VAR_COUNT_, ID_LINK_COUNT_) VALUES
         (#{task.id, jdbcType=VARCHAR},
          1,
          #{task.name, jdbcType=VARCHAR},
@@ -100,7 +107,11 @@
          #{task.suspensionState, jdbcType=INTEGER},
          #{task.tenantId, jdbcType=VARCHAR},
          #{task.formKey, jdbcType=VARCHAR},
-         #{task.claimTime, jdbcType=TIMESTAMP})
+         #{task.claimTime, jdbcType=TIMESTAMP},
+         #{task.isCountEnabled, jdbcType=BOOLEAN},
+		 #{task.variableCount, jdbcType=INTEGER},
+    	 #{task.identityLinkCount, jdbcType=INTEGER}
+        )
     </foreach>
     SELECT * FROM dual
   </insert>
@@ -125,7 +136,10 @@
       CATEGORY_ = #{category, jdbcType=VARCHAR},
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
       FORM_KEY_ = #{formKey, jdbcType=INTEGER},
-      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP}
+      CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
+      IS_COUNT_ENABLED_ = #{isCountEnabled, jdbcType=BOOLEAN},
+	  VAR_COUNT_ = #{variableCount, jdbcType=INTEGER},
+	  ID_LINK_COUNT_ = #{identityLinkCount, jdbcType=INTEGER}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
@@ -164,6 +178,11 @@
     )
   </update>
   
+  <update id="updateTaskRelatedEntityCountEnabled" parameterType="boolean">
+    update ${prefix}ACT_RU_TASK 
+    set IS_COUNT_ENABLED_ = #{parameter, jdbcType=BOOLEAN}
+  </update>
+  
   <!-- TASK DELETE -->
   <delete id="deleteTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     delete from ${prefix}ACT_RU_TASK where ID_ = #{id} and REV_ = #{revision}
@@ -199,6 +218,9 @@
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
+    <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
+	<result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
+    <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
   </resultMap>
   
   <resultMap id="taskAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
@@ -222,6 +244,9 @@
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
+    <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
+	<result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
+    <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
     <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -304,6 +329,7 @@
     TEMPRES_FORM_KEY_ as FORM_KEY_, TEMPRES_CLAIM_TIME_ as CLAIM_TIME_, TEMPRES_EXECUTION_ID_ as EXECUTION_ID_,
     TEMPRES_PROC_INST_ID_ as PROC_INST_ID_, TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_, TEMPRES_TASK_DEF_KEY_ as TASK_DEF_KEY_,
     TEMPRES_DUE_DATE_ as DUE_DATE_, TEMPRES_SUSPENSION_STATE_ as SUSPENSION_STATE_, TEMPRES_CATEGORY_ as CATEGORY_,
+    TEMPRES_IS_COUNT_ENABLED_ as IS_COUNT_ENABLED_,	TEMPRES_VAR_COUNT_ as VAR_COUNT_, TEMPRES_ID_LINK_COUNT_ as ID_LINK_COUNT_,
     TEMPVAR_ID_ as VAR_ID_, TEMPVAR_NAME_ as VAR_NAME_, TEMPVAR_TYPE_ as VAR_TYPE_, TEMPVAR_REV_ as VAR_REV_,
     TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_, TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_, TEMPVAR_TASK_ID_ as VAR_TASK_ID_,
     TEMPVAR_BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, TEMPVAR_DOUBLE_ as VAR_DOUBLE_, 
@@ -316,6 +342,7 @@
     RES.FORM_KEY_ as TEMPRES_FORM_KEY_, RES.CLAIM_TIME_ as TEMPRES_CLAIM_TIME_, RES.EXECUTION_ID_ as TEMPRES_EXECUTION_ID_,
     RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, RES.TASK_DEF_KEY_ as TEMPRES_TASK_DEF_KEY_,
     RES.DUE_DATE_ as TEMPRES_DUE_DATE_, RES.SUSPENSION_STATE_ as TEMPRES_SUSPENSION_STATE_, RES.CATEGORY_ as TEMPRES_CATEGORY_,
+    RES.IS_COUNT_ENABLED_ as TEMPRES_IS_COUNT_ENABLED_, RES.VAR_COUNT_ as TEMPRES_VAR_COUNT_, RES.ID_LINK_COUNT_ as TEMPRES_ID_LINK_COUNT_,
     VAR.ID_ as TEMPVAR_ID_, VAR.NAME_ as TEMPVAR_NAME_, VAR.TYPE_ as TEMPVAR_TYPE_, VAR.REV_ as TEMPVAR_REV_,
     VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, VAR.TASK_ID_ as TEMPVAR_TASK_ID_,
     VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, VAR.DOUBLE_ as TEMPVAR_DOUBLE_, 

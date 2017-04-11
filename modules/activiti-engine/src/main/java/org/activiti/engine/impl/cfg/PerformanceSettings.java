@@ -39,9 +39,20 @@ public class PerformanceSettings {
   protected boolean enableExecutionRelationshipCounts;
   
   /**
+   * Similar to <code>enableExecutionRelationshipCounts</code>, but on the task level.
+   * Keeps count of how many variables and identity links the task has.
+   */
+  protected boolean enableTaskRelationshipCounts;
+  
+  /**
    * If false, no check will be done on boot.
    */
   protected boolean validateExecutionRelationshipCountConfigOnBoot = true;
+  
+  /**
+   * If false, no validation will be done on boot.
+   */
+  protected boolean validateTaskRelationshipCountConfigOnBoot = true;
   
   /**
    * Experimental setting: in certain places in the engine (execution/process instance/historic process instance/
@@ -69,6 +80,15 @@ public class PerformanceSettings {
   public boolean isValidateExecutionRelationshipCountConfigOnBoot() {
     return validateExecutionRelationshipCountConfigOnBoot;
   }
+  
+  public boolean isEnableTaskRelationshipCounts() {
+	return enableTaskRelationshipCounts;
+  }
+  
+  public void setEnableTaskRelationshipCounts(boolean enableTaskRelationshipCounts) {
+    this.enableTaskRelationshipCounts = enableTaskRelationshipCounts;
+  }
+
 
   public void setValidateExecutionRelationshipCountConfigOnBoot(boolean validateExecutionRelationshipCountConfigOnBoot) {
     this.validateExecutionRelationshipCountConfigOnBoot = validateExecutionRelationshipCountConfigOnBoot;
@@ -76,6 +96,14 @@ public class PerformanceSettings {
 
   public boolean isEnableLocalization() {
     return enableLocalization;
+  }
+  
+  public boolean isValidateTaskRelationshipCountConfigOnBoot() {
+	return validateTaskRelationshipCountConfigOnBoot;
+  }
+
+  public void setValidateTaskRelationshipCountConfigOnBoot(boolean validateTaskRelationshipCountConfigOnBoot) {
+	this.validateTaskRelationshipCountConfigOnBoot = validateTaskRelationshipCountConfigOnBoot;
   }
 
   public void setEnableLocalization(boolean enableLocalization) {

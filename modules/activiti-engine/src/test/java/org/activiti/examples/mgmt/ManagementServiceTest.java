@@ -32,7 +32,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
 
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
 
-    assertEquals(new Long(4), tableCount.get(tablePrefix + "ACT_GE_PROPERTY"));
+    assertEquals(new Long(5), tableCount.get(tablePrefix + "ACT_GE_PROPERTY"));
     assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_GE_BYTEARRAY"));
     assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RE_DEPLOYMENT"));
     assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_EXECUTION"));
@@ -50,7 +50,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     
     TableMetaData tableMetaData = managementService.getTableMetaData(tablePrefix+"ACT_RU_TASK");
     assertEquals(tableMetaData.getColumnNames().size(), tableMetaData.getColumnTypes().size());
-    assertEquals(20, tableMetaData.getColumnNames().size());
+    assertEquals(23, tableMetaData.getColumnNames().size());
 
     int assigneeIndex = tableMetaData.getColumnNames().indexOf("ASSIGNEE_");
     int createTimeIndex = tableMetaData.getColumnNames().indexOf("CREATE_TIME_");

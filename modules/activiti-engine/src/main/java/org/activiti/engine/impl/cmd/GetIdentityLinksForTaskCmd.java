@@ -67,7 +67,7 @@ public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>>, 
       identityLinks.add(identityLink);
     }
 
-    return (List) task.getIdentityLinks();
+    return identityLinks;
   }
 
 }

@@ -18,6 +18,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
+import org.activiti.engine.impl.persistence.CountingTaskEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 
 /**
@@ -104,11 +105,22 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity> extends A
     return processEngineConfiguration.getPerformanceSettings().isEnableExecutionRelationshipCounts();
   }
   
+  protected boolean isTaskRelatedEntityCountEnabledGlobally() {
+	return processEngineConfiguration.getPerformanceSettings().isEnableTaskRelationshipCounts();
+  }
+  
   protected boolean isExecutionRelatedEntityCountEnabled(ExecutionEntity executionEntity) {
     if (executionEntity instanceof CountingExecutionEntity) {
       return isExecutionRelatedEntityCountEnabled((CountingExecutionEntity) executionEntity);
     }
     return false;
+  }
+  
+  protected boolean isTaskRelatedEntityCountEnabled(TaskEntity taskEntity) {
+	if (taskEntity instanceof CountingTaskEntity) {
+	  return isTaskRelatedEntityCountEnabled((CountingTaskEntity) taskEntity);
+	}
+	return false;
   }
   
   protected boolean isExecutionRelatedEntityCountEnabled(CountingExecutionEntity executionEntity) {
@@ -132,5 +144,8 @@ public abstract class AbstractEntityManager<EntityImpl extends Entity> extends A
     return isExecutionRelatedEntityCountEnabledGlobally() && executionEntity.isCountEnabled();
   }
   
+  protected boolean isTaskRelatedEntityCountEnabled(CountingTaskEntity taskEntity) {
+    return isTaskRelatedEntityCountEnabledGlobally() && taskEntity.isCountEnabled();
+  }  
 
 }
