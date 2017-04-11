@@ -236,7 +236,7 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
         "HistoricProcessInstanceEntityImpl", 1L);
     assertNoUpdatesAndDeletes("StartProcessInstanceCmd");
     
-    // Query the task
+    // Task Query
     assertDatabaseSelects("org.activiti.engine.impl.TaskQueryImpl", 
         "selectTaskByQueryCriteria", 1L);
     assertNoInserts("org.activiti.engine.impl.TaskQueryImpl");
@@ -267,85 +267,83 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
   
   public void testRemovingTaskVariables() {
     deployStartProcessInstanceAndProfile("process-usertask-01.bpmn20.xml", "process-usertask-01", false);
-	Task task = taskService.createTaskQuery().singleResult();
+    Task task = taskService.createTaskQuery().singleResult();
 
-	long variableCount = 3;
+    long variableCount = 3;
 
-	Map<String, Object> vars = createVariables(variableCount, "local");
+    Map<String, Object> vars = createVariables(variableCount, "local");
 
-	taskService.setVariablesLocal(task.getId(), vars);
-	    
-	vars.put("someRandVar", "someRandVal");
+    taskService.setVariablesLocal(task.getId(), vars);
+        
+    vars.put("someRandVar", "someRandVal");
 
-	taskService.removeVariablesLocal(task.getId(), vars.keySet());
+    taskService.removeVariablesLocal(task.getId(), vars.keySet());
 
-	taskService.removeVariablesLocal(task.getId(), vars.keySet());
-	taskService.removeVariablesLocal(task.getId(), vars.keySet());
+    taskService.removeVariablesLocal(task.getId(), vars.keySet());
+    taskService.removeVariablesLocal(task.getId(), vars.keySet());
     taskService.complete(task.getId());
     stopProfiling();
 
     assertExecutedCommands("StartProcessInstanceCmd", "org.activiti.engine.impl.TaskQueryImpl", "SetTaskVariablesCmd", "RemoveTaskVariablesCmd",
-	         "CompleteTaskCmd");
+      "CompleteTaskCmd");
+    assertDatabaseInserts("SetTaskVariablesCmd", "HistoricVariableInstanceEntityImpl-bulk-with-3", 1L, "VariableInstanceEntityImpl-bulk-with-3", 1L);
 
-	assertDatabaseInserts("SetTaskVariablesCmd", "HistoricVariableInstanceEntityImpl-bulk-with-3", 1L, "VariableInstanceEntityImpl-bulk-with-3", 1L);
-
-	assertDatabaseDeletes("RemoveTaskVariablesCmd", "VariableInstanceEntityImpl", variableCount, "HistoricVariableInstanceEntityImpl", variableCount);
+    assertDatabaseDeletes("RemoveTaskVariablesCmd", "VariableInstanceEntityImpl", variableCount, "HistoricVariableInstanceEntityImpl", variableCount);
   }
 	  
   public void testClaimingTask() {
-	deployStartProcessInstanceAndProfile("process-usertask-01.bpmn20.xml", "process-usertask-01", false);
-	Task task = taskService.createTaskQuery().singleResult();
+    deployStartProcessInstanceAndProfile("process-usertask-01.bpmn20.xml", "process-usertask-01", false);
+    Task task = taskService.createTaskQuery().singleResult();
+    
+    taskService.claim(task.getId(), "user1");
+    taskService.unclaim(task.getId());
+            
+    taskService.complete(task.getId());
+    stopProfiling();
 
-	taskService.claim(task.getId(), "user1");
-	taskService.unclaim(task.getId());
-	        
-	taskService.complete(task.getId());
-	stopProfiling();
-
-	assertExecutedCommands("StartProcessInstanceCmd", "org.activiti.engine.impl.TaskQueryImpl", "ClaimTaskCmd" ,"CompleteTaskCmd");
-	    
-	assertNoDeletes("ClaimTaskCmd");
-	  assertDatabaseInserts("ClaimTaskCmd", "IdentityLinkEntityImpl", 1L, "HistoricIdentityLinkEntityImpl", 1L);    
+    assertExecutedCommands("StartProcessInstanceCmd", "org.activiti.engine.impl.TaskQueryImpl", "ClaimTaskCmd" ,"CompleteTaskCmd");
+        
+    assertNoDeletes("ClaimTaskCmd");
+    assertDatabaseInserts("ClaimTaskCmd", "IdentityLinkEntityImpl", 1L, "HistoricIdentityLinkEntityImpl", 1L);    
 	}
 	  
   public void testTaskCandidateUsers() {
     deployStartProcessInstanceAndProfile("process-usertask-01.bpmn20.xml", "process-usertask-01", false);
-	Task task = taskService.createTaskQuery().singleResult();
+    Task task = taskService.createTaskQuery().singleResult();
     taskService.addCandidateUser(task.getId(), "user1");
-	taskService.addCandidateUser(task.getId(), "user2");
-	
-	taskService.deleteCandidateUser(task.getId(), "user1");
-	taskService.deleteCandidateUser(task.getId(), "user2");
+    taskService.addCandidateUser(task.getId(), "user2");
+    
+    taskService.deleteCandidateUser(task.getId(), "user1");
+    taskService.deleteCandidateUser(task.getId(), "user2");
 
-	taskService.deleteCandidateUser(task.getId(), "user2");
-	taskService.deleteCandidateUser(task.getId(), "user3");
-	taskService.deleteCandidateUser(task.getId(), "user4");
-	   
-	taskService.complete(task.getId());
-	stopProfiling();
+    taskService.deleteCandidateUser(task.getId(), "user2");
+    taskService.deleteCandidateUser(task.getId(), "user3");
+    taskService.deleteCandidateUser(task.getId(), "user4");
+       
+    taskService.complete(task.getId());
+    stopProfiling();
 	  
-	assertExecutedCommands("StartProcessInstanceCmd", "org.activiti.engine.impl.TaskQueryImpl", "AddIdentityLinkCmd", "DeleteIdentityLinkCmd",
-	     "CompleteTaskCmd");
+    assertExecutedCommands("StartProcessInstanceCmd", "org.activiti.engine.impl.TaskQueryImpl", "AddIdentityLinkCmd", "DeleteIdentityLinkCmd",
+      "CompleteTaskCmd");
 
-	assertNoDeletes("AddIdentityLinkCmd");
-	assertDatabaseInserts("AddIdentityLinkCmd", "CommentEntityImpl", 2L, "HistoricIdentityLinkEntityImpl-bulk-with-2", 2L, "IdentityLinkEntityImpl-bulk-with-2",
-	       2l);
-	assertDatabaseSelects("AddIdentityLinkCmd", "selectById org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 2L, "selectIdentityLinksByTask", 2L,
-	       "selectExecutionsWithSameRootProcessInstanceId", 2L, "selectIdentityLinksByProcessInstance", 2L);
-	assertDatabaseUpdates("AddIdentityLinkCmd", "org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 2L,
-	        "org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl", 2L);
+    assertNoDeletes("AddIdentityLinkCmd");
+    assertDatabaseInserts("AddIdentityLinkCmd", "CommentEntityImpl", 2L, "HistoricIdentityLinkEntityImpl-bulk-with-2", 2L, "IdentityLinkEntityImpl-bulk-with-2",2l);
+    assertDatabaseSelects("AddIdentityLinkCmd", "selectById org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 2L, "selectIdentityLinksByTask", 2L,
+      "selectExecutionsWithSameRootProcessInstanceId", 2L, "selectIdentityLinksByProcessInstance", 2L);
+    assertDatabaseUpdates("AddIdentityLinkCmd", "org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 2L,
+      "org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl", 2L);
 
-	assertDatabaseDeletes("DeleteIdentityLinkCmd", "IdentityLinkEntityImpl", 2L, "HistoricIdentityLinkEntityImpl", 2L);
-	assertDatabaseInserts("DeleteIdentityLinkCmd", "CommentEntityImpl", 5L);
-	assertDatabaseSelects("DeleteIdentityLinkCmd", "selectById org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 5L,
-	       "selectIdentityLinkByTaskUserGroupAndType", 5L, "selectById org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl", 2L,
-	       "selectIdentityLinksByTask", 5L);
-	assertDatabaseUpdates("DeleteIdentityLinkCmd", "org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 2L);
+    assertDatabaseDeletes("DeleteIdentityLinkCmd", "IdentityLinkEntityImpl", 2L, "HistoricIdentityLinkEntityImpl", 2L);
+    assertDatabaseInserts("DeleteIdentityLinkCmd", "CommentEntityImpl", 5L);
+    assertDatabaseSelects("DeleteIdentityLinkCmd", "selectById org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 5L,
+      "selectIdentityLinkByTaskUserGroupAndType", 5L, "selectById org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl", 2L,
+      "selectIdentityLinksByTask", 5L);
+    assertDatabaseUpdates("DeleteIdentityLinkCmd", "org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 2L);
   }
 
   public void testTaskCandidateGroups() {
-	deployStartProcessInstanceAndProfile("process-usertask-01.bpmn20.xml", "process-usertask-01", false);
-	Task task = taskService.createTaskQuery().singleResult();
+    deployStartProcessInstanceAndProfile("process-usertask-01.bpmn20.xml", "process-usertask-01", false);
+    Task task = taskService.createTaskQuery().singleResult();
     taskService.addCandidateGroup(task.getId(), "group1");
     taskService.addCandidateGroup(task.getId(), "group2");   
 	    
@@ -368,20 +366,20 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
     assertDatabaseSelects("AddIdentityLinkCmd", "selectById org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 2L, "selectIdentityLinksByTask", 2L);
     assertDatabaseUpdates("AddIdentityLinkCmd", "org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 2L);
 
-	assertDatabaseDeletes("DeleteIdentityLinkCmd", "IdentityLinkEntityImpl", 2L, "HistoricIdentityLinkEntityImpl", 2L);
-	assertDatabaseInserts("DeleteIdentityLinkCmd", "CommentEntityImpl", 5L);
-	assertDatabaseSelects("DeleteIdentityLinkCmd", "selectById org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 5L,
-	       "selectIdentityLinkByTaskUserGroupAndType", 5L, "selectById org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl", 2L,
-	       "selectIdentityLinksByTask", 5L);
-	assertDatabaseUpdates("DeleteIdentityLinkCmd", "org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 2L);
+    assertDatabaseDeletes("DeleteIdentityLinkCmd", "IdentityLinkEntityImpl", 2L, "HistoricIdentityLinkEntityImpl", 2L);
+    assertDatabaseInserts("DeleteIdentityLinkCmd", "CommentEntityImpl", 5L);
+    assertDatabaseSelects("DeleteIdentityLinkCmd", "selectById org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 5L,
+	  "selectIdentityLinkByTaskUserGroupAndType", 5L, "selectById org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityImpl", 2L,
+	  "selectIdentityLinksByTask", 5L);
+    assertDatabaseUpdates("DeleteIdentityLinkCmd", "org.activiti.engine.impl.persistence.entity.TaskEntityImpl", 2L);
   }
 
   private Map<String, Object> createVariables(long count, String prefix) {
-	Map<String, Object> vars = new HashMap<String, Object>();
-	for (int i = 0; i < count; i++) {
-	  vars.put(prefix + "_var0" + i, prefix + "+values0" + i);
-	}
-	  return vars;
+    Map<String, Object> vars = new HashMap<String, Object>();
+    for (int i = 0; i < count; i++) {
+      vars.put(prefix + "_var0" + i, prefix + "+values0" + i);
+    }
+    return vars;
   }
   
   
@@ -437,14 +435,14 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
   
   protected void assertDatabaseUpdates(String commandClass, Object... expectedUpdates) {
     CommandStats stats = getStats(commandClass);
-	Assert.assertEquals("Unexpected number of database updates for " + commandClass + ". ", expectedUpdates.length / 2, stats.getDbUpdates().size());
+    Assert.assertEquals("Unexpected number of database updates for " + commandClass + ". ", expectedUpdates.length / 2, stats.getDbUpdates().size());
 
-	for (int i = 0; i < expectedUpdates.length; i += 2) {
-	  String dbUpdate = (String) expectedUpdates[i];
-	  Long count = (Long) expectedUpdates[i + 1];
+    for (int i = 0; i < expectedUpdates.length; i += 2) {
+      String dbUpdate = (String) expectedUpdates[i];
+      Long count = (Long) expectedUpdates[i + 1];
 
-	  Assert.assertEquals("Wrong update count for " + dbUpdate, count, stats.getDbUpdates().get(dbUpdate));
-	}
+      Assert.assertEquals("Wrong update count for " + dbUpdate, count, stats.getDbUpdates().get(dbUpdate));
+    }
   }
   
   protected void assertDatabaseDeletes(String commandClass,  Object ... expectedDeletes) {

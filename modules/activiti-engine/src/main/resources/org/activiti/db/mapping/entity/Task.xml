@@ -45,8 +45,8 @@
             #{formKey, jdbcType=VARCHAR},
             #{claimTime, jdbcType=TIMESTAMP},
             #{isCountEnabled, jdbcType=BOOLEAN},
-			#{variableCount, jdbcType=INTEGER},
-    		#{identityLinkCount, jdbcType=INTEGER}
+            #{variableCount, jdbcType=INTEGER},
+            #{identityLinkCount, jdbcType=INTEGER}
            )
   </insert>
 
@@ -76,8 +76,8 @@
          #{task.formKey, jdbcType=VARCHAR},
          #{task.claimTime, jdbcType=TIMESTAMP},
          #{task.isCountEnabled, jdbcType=BOOLEAN},
-		 #{task.variableCount, jdbcType=INTEGER},
-    	 #{task.identityLinkCount, jdbcType=INTEGER}
+         #{task.variableCount, jdbcType=INTEGER},
+         #{task.identityLinkCount, jdbcType=INTEGER}
         )
     </foreach>
   </insert>
@@ -109,8 +109,8 @@
          #{task.formKey, jdbcType=VARCHAR},
          #{task.claimTime, jdbcType=TIMESTAMP},
          #{task.isCountEnabled, jdbcType=BOOLEAN},
-		 #{task.variableCount, jdbcType=INTEGER},
-    	 #{task.identityLinkCount, jdbcType=INTEGER}
+         #{task.variableCount, jdbcType=INTEGER},
+         #{task.identityLinkCount, jdbcType=INTEGER}
         )
     </foreach>
     SELECT * FROM dual
@@ -138,8 +138,8 @@
       FORM_KEY_ = #{formKey, jdbcType=INTEGER},
       CLAIM_TIME_ = #{claimTime, jdbcType=TIMESTAMP},
       IS_COUNT_ENABLED_ = #{isCountEnabled, jdbcType=BOOLEAN},
-	  VAR_COUNT_ = #{variableCount, jdbcType=INTEGER},
-	  ID_LINK_COUNT_ = #{identityLinkCount, jdbcType=INTEGER}
+      VAR_COUNT_ = #{variableCount, jdbcType=INTEGER},
+      ID_LINK_COUNT_ = #{identityLinkCount, jdbcType=INTEGER}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
@@ -219,7 +219,7 @@
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
     <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
-	<result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
+    <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
   </resultMap>
   
@@ -245,7 +245,7 @@
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
     <result property="isCountEnabled" column="IS_COUNT_ENABLED_" jdbcType="BOOLEAN" />
-	<result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
+    <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
     <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>

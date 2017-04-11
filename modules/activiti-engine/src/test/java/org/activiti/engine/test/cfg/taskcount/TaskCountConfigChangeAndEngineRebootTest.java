@@ -61,23 +61,20 @@ public class TaskCountConfigChangeAndEngineRebootTest extends ResourceActivitiTe
   public void testTaskCountSettingChangeAndEngineReboot() {
 	    
     rebootFlagNotChanged(true);
-	 
-	rebootFlagNotChanged(false);
-
-	checkEnableFlagBetweenTasks();
-	    
-	checkDisableFlagBetweenTasks();
+    rebootFlagNotChanged(false);
+    checkEnableFlagBetweenTasks();
+    checkDisableFlagBetweenTasks();
 	    
   }
 
   private void checkEnableFlagBetweenTasks() {
-	rebootEngine(false);
-	assertConfigProperty(false);
+    rebootEngine(false);
+    assertConfigProperty(false);
 	    
-	// Start a new process
-	ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksProcess");
-	Task userTask1 = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-	assertTaskCountFlag(userTask1, false);
+    // Start a new process
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("twoTasksProcess");
+    Task userTask1 = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertTaskCountFlag(userTask1, false);
     // Reboot, enabling the config property. however, the task won't get the flag now
     rebootEngine(true);
     assertConfigProperty(true);
