@@ -212,7 +212,7 @@
 		<!-- MODEL RELATION -->
 		
 		 <createTable tableName="ACT_DE_MODEL_RELATION">
-		 	<column name="id" type="varchar(32)">
+		 	<column name="id" type="varchar(255)">
                 <constraints primaryKey="true" nullable="false" />
             </column>
             <column name="parent_model_id" type="varchar(255)" />
