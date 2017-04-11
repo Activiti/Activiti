@@ -33,15 +33,6 @@ public class MembershipEntityImpl extends AbstractEntityNoRevision implements Me
     // membership is not updatable
     return MembershipEntityImpl.class;
   }
-
-  public String getId() {
-    // membership doesn't have an id
-    return null;
-  }
-
-  public void setId(String id) {
-    // membership doesn't have an id
-  }
   
   public String getUserId() {
     return userId;

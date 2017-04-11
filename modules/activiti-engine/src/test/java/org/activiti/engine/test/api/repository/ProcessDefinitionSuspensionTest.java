@@ -342,10 +342,18 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     nrOfProcessInstances = nrOfProcessInstances + 1;
     assertEquals(nrOfProcessInstances, runtimeService.createProcessInstanceQuery().count());
 
+    // verify there is a job created
+    assertEquals(1, managementService.createTimerJobQuery().processDefinitionId(processDefinition.getId()).count());
+
     // Move clock 9 days further and let job executor run
     long eightDaysSinceStartTime = oneWeekFromStartTime + (2 * 24 * 60 * 60 * 1000);
     processEngineConfiguration.getClock().setCurrentTime(new Date(eightDaysSinceStartTime));
-    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    waitForJobExecutorToProcessAllJobs(30000L, 50L);
+
+    // verify job is now removed
+    assertEquals(0, managementService.createJobQuery().processDefinitionId(processDefinition.getId()).count());
+    assertEquals(0, managementService.createTimerJobQuery().processDefinitionId(processDefinition.getId()).count());
+
 
     // Try to start process instance. It should fail now.
     try {
@@ -483,7 +491,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
 
     // Move time 3 hours and run job executor
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (3 * hourInMs)));
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(5000L, 100L);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(30000L, 100L);
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().suspended().count());
@@ -498,7 +506,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
 
     // Move time 6 hours and run job executor
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (6 * hourInMs)));
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(10000L, 100L);
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(60000L, 100L);
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());

@@ -46,11 +46,15 @@
 		</condition>
 		<exec executable="${mvn.executable}" dir=".." failonerror="true">
 			<env key="MAVEN_OPTS" value="-Xmx1024m -Xms512m -XX:MaxPermSize=256M" />
-			<arg line="-Pdistro${nodocs.profile}${usingJdk8OrHigher} clean install -Dmaven.test.skip=true" />
+			<arg line="-Pdistro${nodocs.profile}${usingJdk8OrHigher} clean install -DskipTests" />
 		</exec>
 		<exec executable="${mvn.executable}" dir="../modules/activiti-ui/activiti-app" failonerror="true">
 			<env key="MAVEN_OPTS" value="-Xmx1024m -Xms512m -XX:MaxPermSize=256M" />
-			<arg line="clean install" />
+			<arg line="-Pdistro${usingJdk8OrHigher} -DskipTests clean install" />
+		</exec>
+		<exec executable="${mvn.executable}" dir="../modules/activiti-admin" failonerror="true">
+			<env key="MAVEN_OPTS" value="-Xmx1024m -Xms512m -XX:MaxPermSize=256M" />
+			<arg line="-Pdistro${usingJdk8OrHigher} -DskipTests clean install" />
 		</exec>
 	</target>
 
@@ -179,14 +183,8 @@
 			<fileset dir="../modules/activiti-spring-boot/spring-boot-starters/activiti-spring-boot-starter-security/target">
 				<include name="activiti-spring-boot-starter-security-*.jar" />
 			</fileset>
-			<fileset dir="../modules/activiti-ui/activiti-app-data/target">
-				<include name="activiti-app-data-*.jar" />
-			</fileset>
 			<fileset dir="../modules/activiti-ui/activiti-app-logic/target">
 				<include name="activiti-app-logic-*.jar" />
-			</fileset>
-			<fileset dir="../modules/activiti-ui/activiti-app-model/target">
-				<include name="activiti-app-model-*.jar" />
 			</fileset>
 			<fileset dir="../modules/activiti-ui/activiti-app-rest/target">
 				<include name="activiti-app-rest-*.jar" />
@@ -221,6 +219,9 @@
 			</fileset>
 			<fileset dir="../modules/activiti-webapp-rest2/target">
 				<include name="activiti-webapp-rest*.war" />
+			</fileset>
+			<fileset dir="../modules/activiti-admin/target">
+				<include name="activiti-admin.war" />
 			</fileset>
 		</copy>
 		<move file="${target.distro.root}/wars/activiti-app.war" tofile="${target.distro.root}/wars/activiti-app.war"/>
