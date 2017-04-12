@@ -29,7 +29,7 @@
     </sequenceFlow>
     <sequenceFlow id="cloudsequenceflow3" isImmediate="false" sourceRef="cloudformtask2" targetRef="cloudendnoneevent1">
     </sequenceFlow>
-    <sequenceFlow id="cloudsequenceflow4" isImmediate="false" sourceRef="subProcess" targetRef="cloudendnoneevent2">
+    <sequenceFlow id="cloudsequenceflow4" isImmediate="false" sourceRef="subProcess" targetRef="cloudformtask2">
     </sequenceFlow>
   </process>
 </definitions>

@@ -138,6 +138,13 @@ public enum ActivitiEventType {
    * {@link #ACTIVITY_COMPLETE} for the involved activity, if the message was delivered successfully.
    */
   ACTIVITY_MESSAGE_RECEIVED,
+  
+  /**
+   * A intermediate, boundary or subprocess start message catching event for which a message event subscription 
+   * was created is cancelled.
+   * Hence, receiving the message will not trigger this particular message anymore.
+   */
+  ACTIVITY_MESSAGE_CANCELLED,
 
   /**
    * An activity has received an error event. Dispatched before the actual error has been received by the activity. This event will be either followed by a {@link #ACTIVITY_SIGNALLED} event or
