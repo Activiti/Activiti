@@ -12,6 +12,7 @@
  */
 package org.activiti.scripting.secure.impl;
 
+import org.activiti.tasks.secure.impl.SecureScriptClassShutter;
 import org.mozilla.javascript.Callable;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextFactory;

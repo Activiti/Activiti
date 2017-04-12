@@ -198,6 +198,11 @@
 				<version>5.1.27</version>
 				<scope>test</scope>
 			</dependency>
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-secure-tasks</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>com.ibm.db2.jcc</groupId>
 				<artifactId>db2jcc4</artifactId>
@@ -840,7 +845,9 @@
 				<module>modules/activiti-image-generator</module>
 				<module>modules/activiti-bpmn-converter</module>
 				<module>modules/activiti-engine</module>
-				<module>modules/activiti-secure-javascript</module>
+                <module>modules/activiti-secure-tasks</module>
+                <module>modules/activiti-secure-javascript</module>
+                <module>modules/activiti-secure-service-tasks</module>
 				<module>modules/activiti-bpmn-layout</module>
 				<module>modules/activiti-json-converter</module>
 				<module>modules/activiti-dmn-model</module>

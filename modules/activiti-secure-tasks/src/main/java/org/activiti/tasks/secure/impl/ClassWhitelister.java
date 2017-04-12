@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.scripting.secure;
+package org.activiti.tasks.secure.impl;
 
 /**
  * @author Bassam Al-Sarori
