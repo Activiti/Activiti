@@ -192,6 +192,13 @@
         <artifactId>activiti-engine</artifactId>
         <version>${project.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-secure-tasks</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring</artifactId>
@@ -756,7 +763,9 @@
         <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
+        <module>modules/activiti-secure-tasks</module>
         <module>modules/activiti-secure-javascript</module>
+        <module>modules/activiti-secure-service-tasks</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-simple-workflow</module>
@@ -839,7 +848,9 @@
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
+        <module>modules/activiti-secure-tasks</module>
         <module>modules/activiti-secure-javascript</module>
+        <module>modules/activiti-secure-service-tasks</module>
       </modules>
     </profile>
     <profile>
@@ -861,7 +872,9 @@
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
+        <module>modules/activiti-secure-tasks</module>
         <module>modules/activiti-secure-javascript</module>
+        <module>modules/activiti-secure-service-tasks</module>
       </modules>
     </profile>
     <profile>
@@ -917,7 +930,9 @@
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-secure-tasks</module>
         <module>modules/activiti-secure-javascript</module>
+        <module>modules/activiti-secure-service-tasks</module>
         <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-spring-boot</module>
@@ -980,7 +995,9 @@
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
+        <module>modules/activiti-secure-tasks</module>
         <module>modules/activiti-secure-javascript</module>
+        <module>modules/activiti-secure-service-tasks</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-explorer</module>
         <module>modules/activiti-common-rest</module>
@@ -1022,7 +1039,9 @@
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
+        <module>modules/activiti-secure-tasks</module>
         <module>modules/activiti-secure-javascript</module>
+        <module>modules/activiti-secure-service-tasks</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-rest</module>

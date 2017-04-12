@@ -10,11 +10,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.scripting.secure.impl;
+package org.activiti.tasks.secure.impl;
 
 import java.util.Set;
 
-import org.activiti.scripting.secure.ClassWhitelister;
 import org.mozilla.javascript.ClassShutter;
 
 /**
