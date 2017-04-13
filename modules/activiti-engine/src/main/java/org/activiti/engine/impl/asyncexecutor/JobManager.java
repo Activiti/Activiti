@@ -55,6 +55,11 @@ public interface JobManager {
    * Schedules a timer, meaning it will be inserted in the datastore.
    */
   void scheduleTimerJob(TimerJobEntity timerJob);
+  
+  /**
+   *  Reschedules a timer by deleting the old timer job and creating a new one with the specified definition.
+   */
+  TimerJobEntity rescheduleTimerJob(String timerJobId, TimerEventDefinition timerEventDefinition);
 
   /**
    * Moves a {@link TimerJobEntity} to become an async {@link JobEntity}. 

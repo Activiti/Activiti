@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+    
+  <process id="rescheduleTimer" name="Reschedule intermediate timer event example">
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="timer"/>
+
+    <intermediateCatchEvent id="timer">
+      <timerEventDefinition>
+        <timeDate>${startDate}</timeDate>
+      </timerEventDefinition>
+    </intermediateCatchEvent>
+
+    <sequenceFlow id="flow2" sourceRef="timer" targetRef="usertask"/>
+    <userTask id="usertask" name="Task 1"/>
+    <sequenceFlow id="flow3" sourceRef="usertask" targetRef="theEnd"/>
+
+    <endEvent id="theEnd"/>
+  </process>
+</definitions>

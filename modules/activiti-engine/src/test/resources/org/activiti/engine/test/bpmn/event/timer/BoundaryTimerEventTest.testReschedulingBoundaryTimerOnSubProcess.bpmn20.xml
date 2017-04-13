@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+    
+  <process id="rescheduleTimer" name="Reschedule intermediate timer event example">
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess1"/>
+
+    <subProcess id="subprocess1" name="SubProcess">          
+      <startEvent id="startevent2" name="Start"></startEvent>
+      <endEvent id="endevent2" name="End"></endEvent>
+      <userTask id="usertask1" name="Task 1"/>
+      <sequenceFlow id="Start2" sourceRef="startevent2" targetRef="usertask1"/>
+      <sequenceFlow id="Done2" sourceRef="usertask1" targetRef="endevent2"/>
+    </subProcess>
+		
+    <boundaryEvent id="boundaryTimer" cancelActivity="true" attachedToRef="subprocess1">
+      <timerEventDefinition>
+        <timeDate>${startDate}</timeDate>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <userTask id="usertask2" name="Task 2"/>
+    <userTask id="usertask3" name="Task 3"/>
+		
+    <sequenceFlow id="flow2" sourceRef="subprocess1" targetRef="usertask2"/><adHocSubProcess>
+    </adHocSubProcess><sequenceFlow id="flow3" sourceRef="boundaryTimer" targetRef="usertask3"/>
+    <sequenceFlow id="flow5" sourceRef="usertask2" targetRef="theEnd"/>
+    <sequenceFlow id="flow6" sourceRef="usertask3" targetRef="theEnd"/>
+
+    <endEvent id="theEnd"/>
+  </process>
+</definitions>

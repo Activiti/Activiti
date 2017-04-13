@@ -7,6 +7,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
@@ -108,6 +110,30 @@ public class DefaultJobManager implements JobManager {
     if (eventDispatcher.isEnabled()) {
       eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_SCHEDULED, timerJob));
     }
+  }
+  
+  @Override
+  public TimerJobEntity rescheduleTimerJob(String timerJobId, TimerEventDefinition timerEventDefinition) {
+    TimerJobEntityManager jobManager = processEngineConfiguration.getTimerJobEntityManager();
+    TimerJobEntity timerJob = jobManager.findById(timerJobId);
+    if (timerJob != null) {
+      processEngineConfiguration.getTimerJobEntityManager().delete(timerJob);
+      
+      BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(timerJob.getProcessDefinitionId());
+      Event eventElement = (Event) bpmnModel.getFlowElement(TimerEventHandler.getActivityIdFromConfiguration(timerJob.getJobHandlerConfiguration()));
+      boolean isInterruptingTimer = false;
+      if (eventElement instanceof BoundaryEvent) {
+        isInterruptingTimer = ((BoundaryEvent) eventElement).isCancelActivity();
+      }
+      
+      ExecutionEntity execution = processEngineConfiguration.getExecutionEntityManager().findById(timerJob.getExecutionId());
+      TimerJobEntity rescheduledTimerJob = TimerUtil.createTimerEntityForTimerEventDefinition(timerEventDefinition, isInterruptingTimer, execution, 
+              timerJob.getJobHandlerType(), timerJob.getJobHandlerConfiguration());
+      
+      scheduleTimerJob(rescheduledTimerJob);
+      return rescheduledTimerJob;
+    }
+    return null;
   }
   
   @Override

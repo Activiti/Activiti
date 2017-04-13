@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+
+  <process id="rescheduleTimer" name="Reschedule repeat boundary timer event example">
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="usertask1"/>
+
+    <userTask id="usertask1" name="Task 1"/>
+
+    <boundaryEvent id="boundaryTimer" cancelActivity="true" attachedToRef="usertask1">
+      <timerEventDefinition>
+        <timeCycle>R/PT1H</timeCycle>
+      </timerEventDefinition>
+    </boundaryEvent>
+
+    <userTask id="usertask2" name="Task 2"/>
+    <userTask id="usertask3" name="Task 3"/>
+
+    <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="usertask2"/>
+    <sequenceFlow id="flow3" sourceRef="boundaryTimer" targetRef="usertask3"/>
+    <sequenceFlow id="flow5" sourceRef="usertask2" targetRef="theEnd"/>
+    <sequenceFlow id="flow6" sourceRef="usertask3" targetRef="theEnd"/>
+
+    <endEvent id="theEnd"/>
+  </process>
+</definitions>

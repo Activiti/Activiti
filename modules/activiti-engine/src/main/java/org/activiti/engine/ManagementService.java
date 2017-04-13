@@ -125,6 +125,53 @@ public interface ManagementService {
    *           when there is no job with the given id.
    */
   Job moveDeadLetterJobToExecutableJob(String jobId, int retries);
+  
+  /**
+   * Reschedule a timer job with a time & date with new time & date.
+   * @param jobId
+   *          id of the timer job to be rescheduled. Must not be null.
+   * @param timeDate
+   *          A fixed date in ISO 8601 format, when timer job will be fired.
+   */
+  Job rescheduleTimeDateTimerJob(String jobId, String timeDate);
+  
+  /**
+   * Reschedule a timer job with a time duration with new time duration.
+   * @param jobId
+   *          id of the timer job to be rescheduled. Must not be null.
+   * @param timeDuration
+   *          How long the timer should run before it is fired in ISO 8601 format.
+   *          For instance, PT5M means the timer will run for 5 minutes before it gets fired.
+   */
+  Job rescheduleTimeDurationTimerJob(String jobId, String timeDuration);
+  
+  /**
+   * Reschedule a timer job with a time cycle with new time cycle.
+   * @param jobId
+   *          id of the timer job to be rescheduled. Must not be null.
+   * @param timeCycle
+   *          Specifies a repeating interval at which the timer will fire in ISO 8601 format.
+   *          For instance, R5/PT10M means the timer will fire 5 timers in intervals of 10 minutes.
+   */
+  Job rescheduleTimeCycleTimerJob(String jobId, String timeCycle);
+  
+  /**
+   * Reschedule a timer job.
+   * 
+   * @param jobId
+   *          id of the timer job to be rescheduled. Must not be null.
+   * @param timeDate
+   *          A fixed date in ISO 8601 format, when job will get fired
+   * @param timeDuration
+   *          How long the timer should run before it gets fired in ISO 8601 format. For instance, PT5M means the timer will run for 5 minutes before it gets fired.
+   * @param timeCycle
+   *          Specifies a repeating interval at which the timer will fire in ISO 8601 format. For instance, R5/PT10M means the timer will fire 5 timers in intervals of 10 minutes.
+   * @param endDate
+   *          The date at which the application will stop creating additional jobs. The value should be provided in ISO8601 format. For example "2017-01-26T19:45:11+00:00". 
+   * @param calendarName
+   *          The name of a business calendar defined in the process engine configuration. If null then the default business calendar will be used.
+   */
+  Job rescheduleTimerJob(String jobId, String timeDate, String timeDuration, String timeCycle, String endDate, String calendarName);
 
   /**
    * Delete the job with the provided id.
