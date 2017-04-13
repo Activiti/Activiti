@@ -1,21 +1,24 @@
 package org.activiti.serviceTasks.secure;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.cfg.security.ExecutorContext;
 import org.activiti.engine.cfg.security.CommandExecutorFactory;
+import org.activiti.engine.cfg.security.ExecutorContext;
 import org.activiti.engine.impl.util.ShellCommandExecutor;
 import org.activiti.engine.impl.util.ShellExecutorContext;
 
+/**
+ * @author Vasile Dirla
+ */
 public class ShellCommandExecutorFactory implements CommandExecutorFactory {
-    private HashSet<String> whiteListedCommands;
+    private Set<String> whiteListedCommands;
 
-    public void setWhiteListedCommands(HashSet<String> whiteListedCommands) {
+    public void setWhiteListedCommands(Set<String> whiteListedCommands) {
         this.whiteListedCommands = whiteListedCommands;
     }
 
-    public HashSet<String> getWhiteListedCommands() {
+    public Set<String> getWhiteListedCommands() {
         return whiteListedCommands;
     }
 
@@ -23,7 +26,7 @@ public class ShellCommandExecutorFactory implements CommandExecutorFactory {
     public ShellCommandExecutor createExecutor(ExecutorContext context) {
         if (context instanceof ShellExecutorContext) {
             return new SecureShellCommandExecutor((ShellExecutorContext) context, whiteListedCommands);
-        } else{
+        } else {
             throw new ActivitiException("Invalid context: ExecutorContext !");
         }
     }
