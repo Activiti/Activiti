@@ -12,7 +12,7 @@
  */
 package org.activiti.serviceTasks.secure;
 
-import java.util.HashSet;
+import java.util.Set;
 
 import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
 import org.activiti.engine.cfg.security.CommandExecutorContext;
@@ -56,13 +56,13 @@ public class SecureServiceTaskConfigurator extends AbstractProcessEngineConfigur
         CommandExecutorContext.setShellExecutorContextFactory(shellCommandExecutorFactory);
     }
 
-    private HashSet<String> whiteListedShellCommands;
+    private Set<String> whiteListedShellCommands;
 
-    public HashSet<String> getWhiteListedShellCommands() {
+    public Set<String> getWhiteListedShellCommands() {
         return whiteListedShellCommands;
     }
 
-    public SecureServiceTaskConfigurator setWhiteListedShellCommands(HashSet<String> whiteListedShellCommands) {
+    public SecureServiceTaskConfigurator setWhiteListedShellCommands(Set<String> whiteListedShellCommands) {
         this.whiteListedShellCommands = whiteListedShellCommands;
         return this;
     }
