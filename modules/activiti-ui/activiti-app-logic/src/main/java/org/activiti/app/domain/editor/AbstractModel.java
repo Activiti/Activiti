@@ -175,5 +175,4 @@ public class AbstractModel {
   public void setModelType(Integer modelType) {
     this.modelType = modelType;
   }
-
 }
