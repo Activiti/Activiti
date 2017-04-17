@@ -302,8 +302,8 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
       JsonNode formReferenceNode = getProperty(PROPERTY_FORM_REFERENCE, elementNode);
       if (formReferenceNode != null && formReferenceNode.get("id") != null) {
         
-        if (formMap != null && formMap.containsKey(formReferenceNode.get("id").asLong())) {
-          task.setFormKey(formMap.get(formReferenceNode.get("id").asLong()));
+        if (formMap != null && formMap.containsKey(formReferenceNode.get("id").asText())) {
+          task.setFormKey(formMap.get(formReferenceNode.get("id").asText()));
         }
       }
     }

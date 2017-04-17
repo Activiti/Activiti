@@ -109,8 +109,8 @@ public class StartEventJsonConverter extends BaseBpmnJsonConverter implements Fo
         JsonNode formReferenceNode = getProperty(PROPERTY_FORM_REFERENCE, elementNode);
         if (formReferenceNode != null && formReferenceNode.get("id") != null) {
 
-          if (formMap != null && formMap.containsKey(formReferenceNode.get("id").asLong())) {
-            startEvent.setFormKey(formMap.get(formReferenceNode.get("id").asLong()));
+          if (formMap != null && formMap.containsKey(formReferenceNode.get("id").asText())) {
+            startEvent.setFormKey(formMap.get(formReferenceNode.get("id").asText()));
           }
         }
       }
