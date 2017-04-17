@@ -104,5 +104,4 @@ public class ModelRelation {
   public void setType(String type) {
     this.type = type;
   }
-
 }
