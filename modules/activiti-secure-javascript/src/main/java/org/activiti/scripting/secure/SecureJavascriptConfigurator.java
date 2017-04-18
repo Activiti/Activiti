@@ -21,10 +21,10 @@ import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.scripting.secure.behavior.SecureJavascriptTaskParseHandler;
+import org.activiti.scripting.secure.impl.SecureScriptClassShutter;
 import org.activiti.scripting.secure.impl.SecureScriptContextFactory;
 import org.activiti.tasks.secure.impl.ClassWhitelister;
 import org.activiti.tasks.secure.impl.DefaultClassWhitelister;
-import org.activiti.tasks.secure.impl.SecureScriptClassShutter;
 import org.mozilla.javascript.ContextFactory;
 
 /**
