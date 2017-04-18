@@ -938,7 +938,9 @@
 				<module>modules/activiti-rest</module>
 				<module>modules/activiti-webapp-rest2</module>
 				<module>modules/activiti-cxf</module>
+				<module>modules/activiti-secure-tasks</module>
 				<module>modules/activiti-secure-javascript</module>
+				<module>modules/activiti-secure-service-tasks</module>
 				<module>modules/activiti-form-json-converter</module>
 				<module>modules/activiti-form-engine</module>
 				<module>modules/activiti-form-engine-configurator</module>
@@ -966,7 +968,9 @@
 				<module>modules/activiti-rest</module>
 				<module>modules/activiti-webapp-rest2</module>
 				<module>modules/activiti-cxf</module>
+				<module>modules/activiti-secure-tasks</module>
 				<module>modules/activiti-secure-javascript</module>
+				<module>modules/activiti-secure-service-tasks</module>
 			</modules>
 		</profile>
 		<profile>
@@ -1016,7 +1020,9 @@
 				<module>modules/activiti-bpmn-converter</module>
 				<module>modules/activiti-bpmn-layout</module>
 				<module>modules/activiti-json-converter</module>
+				<module>modules/activiti-secure-tasks</module>
 				<module>modules/activiti-secure-javascript</module>
+				<module>modules/activiti-secure-service-tasks</module>
 				<module>modules/activiti-dmn-model</module>
 				<module>modules/activiti-dmn-json-converter</module>
 				<module>modules/activiti-dmn-xml-converter</module>
@@ -1121,7 +1127,9 @@
 				<module>modules/activiti-process-validation</module>
 				<module>modules/activiti-image-generator</module>
 				<module>modules/activiti-json-converter</module>
+				<module>modules/activiti-secure-tasks</module>
 				<module>modules/activiti-secure-javascript</module>
+				<module>modules/activiti-secure-service-tasks</module>
 				<module>modules/activiti-bpmn-converter</module>
 				<module>modules/activiti-engine</module>
 				<module>modules/activiti-spring</module>

@@ -9,14 +9,14 @@
     <inceptionYear>2016</inceptionYear>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-admin</artifactId>
-    <version>6.0.0.RC1-SNAPSHOT</version>
+    <version>6.0.0.RC1</version>
 	<packaging>war</packaging>
-	
+
     <parent>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-root</artifactId>
       <relativePath>../..</relativePath>
-      <version>6.0.0.RC1-SNAPSHOT</version>
+      <version>6.0.0.RC1</version>
     </parent>
 
     <properties>
@@ -25,14 +25,14 @@
   		<java.version>1.7</java.version>
 
   		<!-- Libraries versions -->
-  		<activiti.version>6.0.0.RC1-SNAPSHOT</activiti.version>
+  		<activiti.version>6.0.0.RC1</activiti.version>
   	    <spring.version>4.1.6.RELEASE</spring.version>
   		<spring.security.version>4.0.1.RELEASE</spring.security.version>
   		<hibernate.version>4.2.16.Final</hibernate.version>
   		<jackson.version>2.3.3</jackson.version>
   		<batik.version>1.7</batik.version>
   		<jetty.version>9.1.3.v20140225</jetty.version>
-		
+
   		<!-- Web container version -->
   		<tomcat.version>7.0.53</tomcat.version>
     </properties>
