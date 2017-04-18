@@ -56,6 +56,17 @@ public class SecureServiceTaskConfigurator extends AbstractProcessEngineConfigur
         CommandExecutorContext.setShellExecutorContextFactory(shellCommandExecutorFactory);
     }
 
+    private Set<String> whitelistedClasses;
+
+    public Set<String> getWhitelistedClasses() {
+        return whitelistedClasses;
+    }
+
+    public SecureServiceTaskConfigurator setWhitelistedClasses(Set<String> whitelistedClasses) {
+        this.whitelistedClasses = whitelistedClasses;
+        return this;
+    }
+
     private Set<String> whiteListedShellCommands;
 
     public Set<String> getWhiteListedShellCommands() {
