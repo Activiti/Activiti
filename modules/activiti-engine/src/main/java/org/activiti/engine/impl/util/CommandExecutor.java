@@ -10,28 +10,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.cfg;
+package org.activiti.engine.impl.util;
 
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
- * @author jbarrez
+ * @author Vasile Dirla
  */
-public abstract class AbstractProcessEngineConfigurator implements ProcessEngineConfigurator {
-	
-	public static int DEFAULT_CONFIGURATOR_PRIORITY = 10000;
-	
-	@Override
-	public int getPriority() {
-		return DEFAULT_CONFIGURATOR_PRIORITY;
-	}
-	
-	public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    
-  }
-	
-	public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
-	  
-	}
-
+public interface CommandExecutor {
+    void executeCommand(ActivityExecution execution) throws Exception;
 }

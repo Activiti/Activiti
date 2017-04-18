@@ -1,0 +1,26 @@
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+	<process id="shellCommand">
+
+		<startEvent id="theStart" />
+		<sequenceFlow sourceRef="theStart" targetRef="shellCommandTask" />
+
+		<serviceTask id="shellCommandTask" activiti:type="shell">
+			<extensionElements>
+				<activiti:field name="command" stringValue="ls" />
+				<activiti:field name="arg1" stringValue="." />
+				<activiti:field name="outputVariable"  stringValue="resultVar" />
+			</extensionElements>
+		</serviceTask>
+		
+		<sequenceFlow sourceRef="shellCommandTask" targetRef="theTask" />
+	    <userTask id="theTask" name="keep-alive task" />
+		<sequenceFlow sourceRef="theTask" targetRef="theEnd" />
+
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>

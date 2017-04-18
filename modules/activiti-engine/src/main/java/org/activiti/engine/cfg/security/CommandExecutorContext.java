@@ -10,28 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.cfg;
+package org.activiti.engine.cfg.security;
 
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+public class CommandExecutorContext {
 
-/**
- * @author jbarrez
- */
-public abstract class AbstractProcessEngineConfigurator implements ProcessEngineConfigurator {
-	
-	public static int DEFAULT_CONFIGURATOR_PRIORITY = 10000;
-	
-	@Override
-	public int getPriority() {
-		return DEFAULT_CONFIGURATOR_PRIORITY;
-	}
-	
-	public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    
-  }
-	
-	public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
-	  
-	}
+    private static CommandExecutorFactory shellCommandExecutorFactory;
 
+    public static void setShellExecutorContextFactory(CommandExecutorFactory shellCommandExecutorFactory) {
+        CommandExecutorContext.shellCommandExecutorFactory = shellCommandExecutorFactory;
+    }
+
+    public static CommandExecutorFactory getShellCommandExecutorFactory() {
+        return shellCommandExecutorFactory;
+    }
 }

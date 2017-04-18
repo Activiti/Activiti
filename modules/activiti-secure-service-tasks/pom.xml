@@ -3,8 +3,8 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>Activiti - Secure Scripting</name>
-	<artifactId>activiti-secure-javascript</artifactId>
+	<name>Activiti - Secure Service Tasks</name>
+	<artifactId>activiti-secure-service-tasks</artifactId>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -43,12 +43,6 @@
 			<artifactId>junit</artifactId>
 		</dependency>
 
-		<!-- Specific to this module -->
-		<dependency>
-			<groupId>org.mozilla</groupId>
-			<artifactId>rhino</artifactId>
-			<version>1.7.7.1</version>
-		</dependency>
 	</dependencies>
 
 </project>
