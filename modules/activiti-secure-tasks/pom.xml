@@ -36,13 +36,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 		</dependency>
-
-		<!-- Specific to this module -->
-		<dependency>
-			<groupId>org.mozilla</groupId>
-			<artifactId>rhino</artifactId>
-			<version>1.7.7.1</version>
-		</dependency>
 	</dependencies>
 
 </project>
