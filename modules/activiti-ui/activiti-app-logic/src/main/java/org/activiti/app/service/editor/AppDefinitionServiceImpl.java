@@ -54,6 +54,12 @@ public class AppDefinitionServiceImpl implements AppDefinitionService {
 
   @Autowired
   protected ObjectMapper objectMapper;
+  
+  @Override
+  public String getDefinitionIdForModelAndUser(final Long modelId, final User user) {
+    	String appDefinitionId = this.modelRepository.appDefinitionIdByModelAndUser(modelId, user.getId());
+      return appDefinitionId;
+  }
 
   @Override
   public List<AppDefinitionServiceRepresentation> getAppDefinitions() {

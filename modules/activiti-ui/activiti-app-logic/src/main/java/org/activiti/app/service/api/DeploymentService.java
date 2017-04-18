@@ -23,6 +23,6 @@ public interface DeploymentService {
     Deployment updateAppDefinition(Model appDefinition, User user);
 
     @Transactional
-    void deleteAppDefinition(Long appDefinitionId);
+    void deleteAppDefinition(String appDefinitionKey);
 
 }

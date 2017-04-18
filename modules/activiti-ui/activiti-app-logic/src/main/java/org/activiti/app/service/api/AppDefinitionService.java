@@ -18,6 +18,8 @@ import org.activiti.engine.identity.User;
 
 public interface AppDefinitionService {
 
+    String getDefinitionIdForModelAndUser(final Long p0, final User p1);
+    
 	List<AppDefinitionServiceRepresentation> getAppDefinitions();
 	
 	List<AppDefinitionServiceRepresentation> getDeployableAppDefinitions(User user);

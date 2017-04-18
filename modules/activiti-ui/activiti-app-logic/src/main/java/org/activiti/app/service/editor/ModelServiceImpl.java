@@ -35,6 +35,8 @@ import org.activiti.app.model.editor.ReviveModelResultRepresentation.UnresolveMo
 import org.activiti.app.repository.editor.ModelHistoryRepository;
 import org.activiti.app.repository.editor.ModelRelationRepository;
 import org.activiti.app.repository.editor.ModelRepository;
+import org.activiti.app.security.SecurityUtils;
+import org.activiti.app.service.api.AppDefinitionService;
 import org.activiti.app.service.api.DeploymentService;
 import org.activiti.app.service.api.ModelService;
 import org.activiti.app.service.api.UserCache;
@@ -89,6 +91,9 @@ public class ModelServiceImpl implements ModelService {
 
   @Autowired
   protected UserCache userCache;
+  
+  @Autowired
+  protected AppDefinitionService appDefinitionService;
 
   protected BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
 
@@ -295,10 +300,10 @@ public class ModelServiceImpl implements ModelService {
 
     // if the model is an app definition and the runtime app needs to be deleted, remove it now
     if (deleteRuntimeApp && model.getModelType() == Model.MODEL_TYPE_APP) {
-      /*Long appDefinitionId = runtimeAppDefinitionService.getDefinitionIdForModelAndUser(model.getId(), SecurityUtils.getCurrentUserObject());
+      String appDefinitionId = appDefinitionService.getDefinitionIdForModelAndUser(model.getId(), SecurityUtils.getCurrentUserObject());
       if (appDefinitionId != null) {
         deploymentService.deleteAppDefinition(appDefinitionId);
-      }*/
+      }
 
     } else {
       // Move model to history and mark removed

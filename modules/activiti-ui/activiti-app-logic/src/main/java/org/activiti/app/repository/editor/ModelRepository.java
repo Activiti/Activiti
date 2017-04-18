@@ -15,6 +15,7 @@ package org.activiti.app.repository.editor;
 import java.util.List;
 
 import org.activiti.app.domain.editor.Model;
+import org.activiti.engine.identity.User;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -52,4 +53,7 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
   
   @Query("select m.id, m.name, m.modelType from ModelRelation mr inner join mr.parentModel m where mr.modelId = :modelId")
   List<Model> findModelsByChildModelId(@Param("modelId") Long modelId);
+  
+  @Query("select model.key from Model as model where model.id = :modelId and model.createdBy = :user")
+  String appDefinitionIdByModelAndUser(@Param("modelId") Long modelId, @Param("user") String user);
 }
