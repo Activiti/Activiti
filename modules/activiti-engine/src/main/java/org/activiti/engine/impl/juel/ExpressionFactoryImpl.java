@@ -254,7 +254,9 @@ public class ExpressionFactoryImpl extends ExpressionFactory {
 				throw new ELException("Cannot read default EL properties", e);
 			} finally {
 				try {
-					input.close();
+					if(input!=null) {
+						input.close();
+					}
 				} catch (IOException e) {
 					// ignore...
 				}
