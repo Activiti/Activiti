@@ -18,10 +18,10 @@ import org.activiti.engine.identity.User;
 
 public interface AppDefinitionService {
 
-	String getDefinitionIdForModelAndUser(final Long modelId, final User user);
-
 	List<AppDefinitionServiceRepresentation> getAppDefinitions();
-
+	
 	List<AppDefinitionServiceRepresentation> getDeployableAppDefinitions(User user);
+	
+	String getDefinitionIdForModelAndUser(final Long modelId, final User user);
 
 }
