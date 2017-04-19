@@ -1931,8 +1931,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (eventHandlers == null) {
       eventHandlers = new HashMap<String, EventHandler>();
 
-      SignalEventHandler signalEventHander = new SignalEventHandler();
-      eventHandlers.put(signalEventHander.getEventHandlerType(), signalEventHander);
+      SignalEventHandler signalEventHandler = new SignalEventHandler();
+      eventHandlers.put(signalEventHandler.getEventHandlerType(), signalEventHandler);
 
       CompensationEventHandler compensationEventHandler = new CompensationEventHandler();
       eventHandlers.put(compensationEventHandler.getEventHandlerType(), compensationEventHandler);
@@ -2401,8 +2401,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       return this.wsOverridenEndpointAddresses;
   }
 
-  public ProcessEngineConfiguration setWsOverridenEndpointAddresses(final ConcurrentMap<QName, URL> wsOverridenEndpointAdress) {
-    this.wsOverridenEndpointAddresses.putAll(wsOverridenEndpointAdress);
+  public ProcessEngineConfiguration setWsOverridenEndpointAddresses(final ConcurrentMap<QName, URL> wsOverridenEndpointAddress) {
+    this.wsOverridenEndpointAddresses.putAll(wsOverridenEndpointAddress);
     return this;
   }
 

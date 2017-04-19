@@ -8,7 +8,7 @@ import org.junit.Test;
 public class EmptyModelTest extends AbstractConverterTest {
 
   @Test
-  public void connvertXMLToModel() throws Exception {
+  public void convertXMLToModel() throws Exception {
     try {
       readXMLFile();
       fail("Expected xml exception");

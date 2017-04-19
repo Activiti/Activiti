@@ -66,7 +66,7 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
   }
 
   @Test
-  public void connvertXMLToModel() throws Exception {
+  public void convertXMLToModel() throws Exception {
     resourceName = "mapException/mapExceptionModel.bpmn";
 
     BpmnModel bpmnModel = readXMLFile();
