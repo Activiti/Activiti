@@ -51,13 +51,16 @@ public class IoUtil {
   public static String readFileAsString(String filePath) {
     byte[] buffer = new byte[(int) getFile(filePath).length()];
     BufferedInputStream inputStream = null;
+    FileInputStream fileInputStream = null;
     try {
-      inputStream = new BufferedInputStream(new FileInputStream(getFile(filePath)));
+      fileInputStream = new FileInputStream(getFile(filePath));
+      inputStream = new BufferedInputStream(fileInputStream);
       inputStream.read(buffer);
     } catch(Exception e) {
       throw new ActivitiException("Couldn't read file " + filePath + ": " + e.getMessage());
     } finally {
       IoUtil.closeSilently(inputStream);
+      IoUtil.closeSilently(fileInputStream);
     }
     return new String(buffer);
   }
@@ -73,14 +76,17 @@ public class IoUtil {
   
   public static void writeStringToFile(String content, String filePath) {
     BufferedOutputStream outputStream = null;
+    FileOutputStream fileOutputStream = null;
     try {
-      outputStream = new BufferedOutputStream(new FileOutputStream(getFile(filePath)));
+      fileOutputStream = new FileOutputStream(getFile(filePath));
+      outputStream = new BufferedOutputStream(fileOutputStream);
       outputStream.write(content.getBytes());
       outputStream.flush();
     } catch(Exception e) {
       throw new ActivitiException("Couldn't write file " + filePath, e);
     } finally {
       IoUtil.closeSilently(outputStream);
+      IoUtil.closeSilently(fileOutputStream);
     }
   }
 

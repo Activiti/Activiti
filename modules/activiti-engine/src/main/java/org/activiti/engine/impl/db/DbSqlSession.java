@@ -1304,9 +1304,10 @@ public class DbSqlSession implements Session {
             } else {
               sqlStatement = addSqlStatementPiece(sqlStatement, line.substring(0, line.length()-1));
             }
-            
-            Statement jdbcStatement = connection.createStatement();
+
+            Statement jdbcStatement = null;
             try {
+              jdbcStatement = connection.createStatement();
               // no logging needed as the connection will log it
               log.debug("SQL: {}", sqlStatement);
               jdbcStatement.execute(sqlStatement);
@@ -1318,7 +1319,10 @@ public class DbSqlSession implements Session {
               }
               log.error("problem during schema {}, statement {}", operation, sqlStatement, e);
             } finally {
-              sqlStatement = null; 
+              try{
+                jdbcStatement.close();
+              } catch (Exception ex){ /* ignored */ }
+              sqlStatement = null;
             }
           } else {
             sqlStatement = addSqlStatementPiece(sqlStatement, line);
