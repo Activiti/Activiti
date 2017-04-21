@@ -56,19 +56,18 @@ public class AttachmentEntityManager extends AbstractManager {
               processDefinitionId = processInstance.getProcessDefinitionId();
               executionId = processInstance.getId();
           }
-      }
-
-      for (AttachmentEntity attachment : attachments) {
-          if (attachment.getTaskId() != null) {
-              continue;
-          }
-          String contentId = attachment.getContentId();
-          if (contentId != null) {
-              getByteArrayManager().deleteByteArrayById(contentId);
-          }
-          getDbSqlSession().delete(attachment);
-          if (dispatchEvents) {
-              getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, executionId, processInstanceId, processDefinitionId));
+          for (AttachmentEntity attachment : attachments) {
+              if (attachment.getTaskId() != null) {
+                  continue;
+              }
+              String contentId = attachment.getContentId();
+              if (contentId != null) {
+                  getByteArrayManager().deleteByteArrayById(contentId);
+              }
+              getDbSqlSession().delete(attachment);
+              if (dispatchEvents) {
+                  getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, executionId, processInstanceId, processDefinitionId));
+              }
           }
       }
   }

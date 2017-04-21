@@ -93,8 +93,9 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       }
       
     } catch (Throwable exception) {
-      failedJobListener.setException(exception);
-      
+        if(failedJobListener!=null) {
+            failedJobListener.setException(exception);
+        }
       // Dispatch an event, indicating job execution failed in a try-catch block, to prevent the original
       // exception to be swallowed
       if (commandContext.getEventDispatcher().isEnabled()) {

@@ -85,7 +85,7 @@ public abstract class BaseElement implements HasExtensionAttributes {
     if (attributes != null && !attributes.isEmpty()) {
       for (ExtensionAttribute attribute : attributes) {
         if ( (namespace == null && attribute.getNamespace() == null)
-            || namespace.equals(attribute.getNamespace()) )
+            || (namespace!=null && namespace.equals(attribute.getNamespace())) )
           return attribute.getValue();
       }
     }
