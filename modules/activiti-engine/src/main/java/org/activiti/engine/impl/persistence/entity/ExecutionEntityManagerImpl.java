@@ -439,7 +439,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     
     // Call activities
     for (ExecutionEntity subExecutionEntity : processInstanceEntity.getExecutions()) {
-      if (subExecutionEntity.getSubProcessInstance() != null) {
+      if (subExecutionEntity.getSubProcessInstance() != null &&  !subExecutionEntity.isEnded()) {
         deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, cascade);
       }
     }
