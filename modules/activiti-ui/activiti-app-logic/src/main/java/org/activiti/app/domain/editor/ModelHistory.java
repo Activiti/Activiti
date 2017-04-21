@@ -25,7 +25,7 @@ import javax.persistence.TemporalType;
 public class ModelHistory extends AbstractModel {
 
 	@Column(name="model_id")
-	protected Long modelId;
+	protected String modelId;
 	
 	@Column(name="removal_date")
     @Temporal(TemporalType.TIMESTAMP)
@@ -35,11 +35,11 @@ public class ModelHistory extends AbstractModel {
 		super();
 	}
 
-	public Long getModelId() {
+	public String getModelId() {
 		return modelId;
 	}
 
-	public void setModelId(Long modelId) {
+	public void setModelId(String modelId) {
 		this.modelId = modelId;
 	}
 	

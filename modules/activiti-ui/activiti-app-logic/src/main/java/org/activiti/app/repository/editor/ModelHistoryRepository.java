@@ -20,12 +20,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * Spring Data JPA repository for the ModelHistory entity.
  */
-public interface ModelHistoryRepository extends JpaRepository<ModelHistory, Long> {
+public interface ModelHistoryRepository extends JpaRepository<ModelHistory, String> {
 
 	List<ModelHistory> findByCreatedByAndModelTypeAndRemovalDateIsNull(String createdBy, Integer modelType);
 	
-	List<ModelHistory> findByModelIdAndRemovalDateIsNullOrderByVersionDesc(Long modelId);
+	List<ModelHistory> findByModelIdAndRemovalDateIsNullOrderByVersionDesc(String modelId);
 	
 	List<ModelHistory> findByModelIdOrderByVersionDesc(Long modelId);
+
 	
 }

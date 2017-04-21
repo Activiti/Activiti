@@ -134,11 +134,11 @@ public class DeleteReasonTest extends PluggableActivitiTestCase {
       assertEquals(DeleteReason.PROCESS_INSTANCE_DELETED, historyService.createHistoricProcessInstanceQuery()
           .processInstanceId(processInstance.getId()).singleResult().getDeleteReason());
       
-      List<HistoricActivityInstance> historicActiviyInstances = historyService.createHistoricActivityInstanceQuery()
+      List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery()
           .activityId("A").processInstanceId(processInstance.getId()).list();
-      assertEquals(1, historicActiviyInstances.size());
+      assertEquals(1, historicActivityInstances.size());
       
-      for (HistoricActivityInstance historicActivityInstance : historicActiviyInstances) {
+      for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
         assertEquals(DeleteReason.PROCESS_INSTANCE_DELETED, historicActivityInstance.getDeleteReason());
       }
     }

@@ -95,7 +95,7 @@ public class ModelServiceImpl implements ModelService {
   protected BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
   
   @Override
-  public Model getModel(Long modelId) {
+  public Model getModel(String modelId) {
     Model model = modelRepository.findOne(modelId);
 
     if (model == null) {
@@ -113,7 +113,7 @@ public class ModelServiceImpl implements ModelService {
   }
   
   @Override
-  public ModelHistory getModelHistory(Long modelId, Long modelHistoryId) {
+  public ModelHistory getModelHistory(String modelId, String modelHistoryId) {
     // Check if the user has read-rights on the process-model in order to fetch history
     Model model = getModel(modelId);
     ModelHistory modelHistory = modelHistoryRepository.findOne(modelHistoryId);
@@ -236,7 +236,7 @@ public class ModelServiceImpl implements ModelService {
 
   @Override
   @Transactional
-  public Model saveModel(long modelId, String name, String key, String description, String editorJson, 
+  public Model saveModel(String modelId, String name, String key, String description, String editorJson, 
       boolean newVersion, String newVersionComment, User updatedBy) {
 
     Model modelObject = modelRepository.findOne(modelId);
@@ -283,7 +283,7 @@ public class ModelServiceImpl implements ModelService {
 
   @Override
   @Transactional
-  public void deleteModel(long modelId, boolean cascadeHistory, boolean deleteRuntimeApp) {
+  public void deleteModel(String modelId, boolean cascadeHistory, boolean deleteRuntimeApp) {
 
     Model model = modelRepository.findOne(modelId);
     if (model == null) {
@@ -390,8 +390,8 @@ public class ModelServiceImpl implements ModelService {
   public BpmnModel getBpmnModel(AbstractModel model) {
     BpmnModel bpmnModel = null;
     try {
-      Map<Long, Model> formMap = new HashMap<Long, Model>();
-      Map<Long, Model> decisionTableMap = new HashMap<Long, Model>();
+      Map<String, Model> formMap = new HashMap<String, Model>();
+      Map<String, Model> decisionTableMap = new HashMap<String, Model>();
       
       List<Model> referencedModels = modelRepository.findModelsByParentModelId(model.getId());
       for (Model childModel : referencedModels) {
@@ -414,15 +414,15 @@ public class ModelServiceImpl implements ModelService {
   }
   
   @Override
-  public BpmnModel getBpmnModel(AbstractModel model, Map<Long, Model> formMap, Map<Long, Model> decisionTableMap) {
+  public BpmnModel getBpmnModel(AbstractModel model, Map<String, Model> formMap, Map<String, Model> decisionTableMap) {
     try {
       ObjectNode editorJsonNode = (ObjectNode) objectMapper.readTree(model.getModelEditorJson());
-      Map<Long, String> formKeyMap = new HashMap<Long, String>();
+      Map<String, String> formKeyMap = new HashMap<String, String>();
       for (Model formModel : formMap.values()) {
         formKeyMap.put(formModel.getId(), formModel.getKey());
       }
       
-      Map<Long, String> decisionTableKeyMap = new HashMap<Long, String>();
+      Map<String, String> decisionTableKeyMap = new HashMap<String, String>();
       for (Model decisionTableModel : decisionTableMap.values()) {
         decisionTableKeyMap.put(decisionTableModel.getId(), decisionTableModel.getKey());
       }
@@ -504,27 +504,27 @@ public class ModelServiceImpl implements ModelService {
 
   protected void handleBpmnProcessFormModelRelations(AbstractModel bpmnProcessModel, ObjectNode editorJsonNode) {
     List<JsonNode> formReferenceNodes = JsonConverterUtil.filterOutJsonNodes(JsonConverterUtil.getBpmnProcessModelFormReferences(editorJsonNode));
-    Set<Long> formIds = JsonConverterUtil.gatherLongPropertyFromJsonNodes(formReferenceNodes, "id");
+    Set<String> formIds = JsonConverterUtil.gatherStringPropertyFromJsonNodes(formReferenceNodes, "id");
     
     handleModelRelations(bpmnProcessModel, formIds, ModelRelationTypes.TYPE_FORM_MODEL_CHILD);
   }
   
   protected void handleBpmnProcessDecisionTaskModelRelations(AbstractModel bpmnProcessModel, ObjectNode editorJsonNode) {
     List<JsonNode> decisionTableNodes = JsonConverterUtil.filterOutJsonNodes(JsonConverterUtil.getBpmnProcessModelDecisionTableReferences(editorJsonNode));
-    Set<Long> decisionTableIds = JsonConverterUtil.gatherLongPropertyFromJsonNodes(decisionTableNodes, "id");
+    Set<String> decisionTableIds = JsonConverterUtil.gatherStringPropertyFromJsonNodes(decisionTableNodes, "id");
 
     handleModelRelations(bpmnProcessModel, decisionTableIds, ModelRelationTypes.TYPE_DECISION_TABLE_MODEL_CHILD);
   }
 
   protected void handleAppModelProcessRelations(AbstractModel appModel, ObjectNode appModelJsonNode) {
-    Set<Long> processModelIds = JsonConverterUtil.getAppModelReferencedModelIds(appModelJsonNode);
+    Set<String> processModelIds = JsonConverterUtil.getAppModelReferencedModelIds(appModelJsonNode);
     handleModelRelations(appModel, processModelIds, ModelRelationTypes.TYPE_PROCESS_MODEL);
   }
 
   /**
    * Generic handling of model relations: deleting/adding where needed.
    */
-  protected void handleModelRelations(AbstractModel bpmnProcessModel, Set<Long> idsReferencedInJson, String relationshipType) {
+  protected void handleModelRelations(AbstractModel bpmnProcessModel, Set<String> idsReferencedInJson, String relationshipType) {
 
     // Find existing persisted relations
     List<ModelRelation> persistedModelRelations = modelRelationRepository.findByParentModelIdAndType(bpmnProcessModel.getId(), relationshipType);
@@ -535,7 +535,7 @@ public class ModelServiceImpl implements ModelService {
       return;
     }
 
-    Set<Long> alreadyPersistedModelIds = new HashSet<Long>(persistedModelRelations.size());
+    Set<String> alreadyPersistedModelIds = new HashSet<String>(persistedModelRelations.size());
     for (ModelRelation persistedModelRelation : persistedModelRelations) {
       if (!idsReferencedInJson.contains(persistedModelRelation.getModelId())) {
         // model used to be referenced, but not anymore. Delete it.
@@ -546,7 +546,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     // Loop over all referenced ids and see which one are new
-    for (Long idReferencedInJson : idsReferencedInJson) {
+    for (String idReferencedInJson : idsReferencedInJson) {
       
       // if model is referenced, but it is not yet persisted = create it
       if (!alreadyPersistedModelIds.contains(idReferencedInJson)) {

@@ -49,13 +49,13 @@ public class ActivitiFormService {
   @Autowired
   protected ObjectMapper objectMapper;
 
-  public FormRepresentation getForm(Long formId) {
+  public FormRepresentation getForm(String formId) {
     Model model = modelService.getModel(formId);
     FormRepresentation form = createFormRepresentation(model);
     return form;
   }
   
-  public FormRepresentation getFormHistory(Long formId, Long formHistoryId) {
+  public FormRepresentation getFormHistory(String formId, String formHistoryId) {
     ModelHistory model = modelService.getModelHistory(formId, formHistoryId);
     FormRepresentation form = createFormRepresentation(model);
     return form;
@@ -69,7 +69,7 @@ public class ActivitiFormService {
     }
 
     for (String formId : formIds) {
-      Model model = modelService.getModel(Long.valueOf(formId));
+      Model model = modelService.getModel(formId);
 
       FormRepresentation form = createFormRepresentation(model);
       formRepresentations.add(form);
@@ -78,7 +78,7 @@ public class ActivitiFormService {
     return formRepresentations;
   }
   
-  public FormRepresentation saveForm(Long formId, FormSaveRepresentation saveRepresentation) {
+  public FormRepresentation saveForm(String formId, FormSaveRepresentation saveRepresentation) {
     User user = SecurityUtils.getCurrentUserObject();
     Model model = modelService.getModel(formId);
     

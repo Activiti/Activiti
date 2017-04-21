@@ -14,6 +14,7 @@ package org.activiti.app.repository.editor;
 
 import java.util.List;
 
+import org.activiti.app.domain.editor.ModelInformation;
 import org.activiti.app.domain.editor.ModelRelation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -26,25 +27,25 @@ import org.springframework.data.repository.query.Param;
 public interface ModelRelationRepository extends JpaRepository<ModelRelation, Long> {
 	
 	@Query("from ModelRelation mr where mr.parentModelId = :parentModelId")
-	List<ModelRelation> findByParentModelId(@Param("parentModelId") Long parentModelId);
+	List<ModelRelation> findByParentModelId(@Param("parentModelId") String parentModelId);
 	
 	@Query("from ModelRelation mr where mr.parentModelId = :parentModelId and mr.type = :type")
-	List<ModelRelation> findByParentModelIdAndType(@Param("parentModelId") Long parentModelId, @Param("type") String type);
+	List<ModelRelation> findByParentModelIdAndType(@Param("parentModelId") String parentModelId, @Param("type") String type);
 	
 	@Query("from ModelRelation mr where mr.modelId = :modelId")
-	List<ModelRelation> findByChildModelId(@Param("modelId") Long modelId);
+	List<ModelRelation> findByChildModelId(@Param("modelId") String modelId);
 	
 	@Query("from ModelRelation mr where mr.modelId = :modelId and mr.type = :type")
-	List<ModelRelation> findByChildModelIdAndType(@Param("modelId") Long modelId, @Param("type") String type);
+	List<ModelRelation> findByChildModelIdAndType(@Param("modelId") String modelId, @Param("type") String type);
 	
 	@Query("select m.id, m.name, m.modelType from ModelRelation mr inner join mr.model m where mr.parentModelId = :parentModelId")
-	List<Object[]> findModelInformationByParentModelId(@Param("parentModelId") Long parentModelId);
+	List<ModelInformation> findModelInformationByParentModelId(@Param("parentModelId") String parentModelId);
 	
 	@Query("select m.id, m.name, m.modelType from ModelRelation mr inner join mr.parentModel m where mr.modelId = :modelId")
-	List<Object[]> findModelInformationByChildModelId(@Param("modelId") Long modelId);
+	List<ModelInformation> findModelInformationByChildModelId(@Param("modelId") String modelId);
 	
 	@Modifying
 	@Query("delete from ModelRelation mr where mr.parentModelId = :parentModelId")
-	void deleteModelRelationsForParentModel(@Param("parentModelId") Long parentModelId);
+	void deleteModelRelationsForParentModel(@Param("parentModelId") String parentModelId);
 
 }

@@ -31,7 +31,7 @@ public class ModelRelationResource extends AbstractModelResource {
   private ModelRelationService modelRelationService;
 
   @RequestMapping(value = "/rest/models/{modelId}/parent-relations", method = RequestMethod.GET, produces = "application/json")
-  public List<ModelInformation> getModelRelations(@PathVariable Long modelId) {
+  public List<ModelInformation> getModelRelations(@PathVariable String modelId) {
     Model model = modelService.getModel(modelId);
     if (model == null) {
       throw new NotFoundException();

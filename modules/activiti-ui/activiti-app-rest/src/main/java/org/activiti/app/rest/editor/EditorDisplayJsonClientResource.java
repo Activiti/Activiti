@@ -39,7 +39,7 @@ public class EditorDisplayJsonClientResource {
 	protected ObjectMapper objectMapper = new ObjectMapper();
 	
 	@RequestMapping(value = "/rest/models/{processModelId}/model-json", method = RequestMethod.GET, produces = "application/json")
-	public JsonNode getModelJSON(@PathVariable Long processModelId) {
+	public JsonNode getModelJSON(@PathVariable String processModelId) {
 		ObjectNode displayNode = objectMapper.createObjectNode();
 		Model model = modelService.getModel(processModelId);
 		bpmnDisplayJsonConverter.processProcessElements(model, displayNode, new GraphicInfo());
@@ -47,7 +47,7 @@ public class EditorDisplayJsonClientResource {
 	}
 	
 	@RequestMapping(value = "/rest/models/{processModelId}/history/{processModelHistoryId}/model-json", method = RequestMethod.GET, produces = "application/json")
-    public JsonNode getModelHistoryJSON(@PathVariable Long processModelId, @PathVariable Long processModelHistoryId) {
+    public JsonNode getModelHistoryJSON(@PathVariable String processModelId, @PathVariable String processModelHistoryId) {
 	    ObjectNode displayNode = objectMapper.createObjectNode();
         ModelHistory model = modelService.getModelHistory(processModelId, processModelHistoryId);
         bpmnDisplayJsonConverter.processProcessElements(model, displayNode, new GraphicInfo());

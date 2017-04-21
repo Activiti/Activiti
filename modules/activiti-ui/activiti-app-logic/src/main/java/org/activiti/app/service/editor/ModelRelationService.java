@@ -42,8 +42,8 @@ public class ModelRelationService {
 	 * 
 	 * ie modelId here is the parent of the relation.
 	 */
-	public List<ModelInformation> findReferencedModels(Long modelId) {
-		return convert(modelRelationRepository.findModelInformationByParentModelId(modelId));
+	public List<ModelInformation> findReferencedModels(String modelId) {
+		return modelRelationRepository.findModelInformationByParentModelId(modelId);
 	}
 	
 	/**
@@ -52,16 +52,9 @@ public class ModelRelationService {
 	 * 
 	 * ie modelId is the child of the relation
 	 */
-	public List<ModelInformation> findParentModels(Long modelId) {
-		return convert(modelRelationRepository.findModelInformationByChildModelId(modelId));
+	public List<ModelInformation> findParentModels(String modelId) {
+		return modelRelationRepository.findModelInformationByChildModelId(modelId);
 	}
 	
-	protected List<ModelInformation> convert(List<Object[]> rawResults) {
-		List<ModelInformation> result = new ArrayList<ModelInformation>(rawResults.size());
-		for (Object[] rawResult : rawResults) {
-			result.add(new ModelInformation(((Number) rawResult[0]).longValue(), (String) rawResult[1], (Integer) rawResult[2]));
-		}
-		return result;
-	}
 
 }

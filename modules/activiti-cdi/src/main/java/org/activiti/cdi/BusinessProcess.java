@@ -513,7 +513,7 @@ public class BusinessProcess implements Serializable {
 
   protected void assertAssociated() {
     if (associationManager.getExecution() == null) {
-      throw new ActivitiCdiException("No execution associated. Call busniessProcess.associateExecutionById() or businessProcess.startTask() first.");
+      throw new ActivitiCdiException("No execution associated. Call businessProcess.associateExecutionById() or businessProcess.startTask() first.");
     }
   }
 

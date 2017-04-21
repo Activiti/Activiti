@@ -19,7 +19,7 @@ import java.util.Date;
  */
 public class AppModelDefinition {
 
-  protected Long id;
+  protected String id;
   protected String name;
   protected Integer version;
   protected Integer modelType;
@@ -29,11 +29,11 @@ public class AppModelDefinition {
   protected String lastUpdatedBy;
   protected Date lastUpdated;
 
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 
