@@ -139,5 +139,12 @@ public class AppDefinitionServiceImpl implements AppDefinitionService {
     }
     return resultInfo;
   }
+  
+  
+  @Override
+  public String getDefinitionIdForModelAndUser(String modelId, final User user) {
+	String appDefinitionId = this.modelRepository.appDefinitionIdByModelAndUser(modelId, user.getId());
+	return appDefinitionId;
+  }
 
 }

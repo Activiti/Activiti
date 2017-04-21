@@ -21,5 +21,7 @@ public interface AppDefinitionService {
 	List<AppDefinitionServiceRepresentation> getAppDefinitions();
 	
 	List<AppDefinitionServiceRepresentation> getDeployableAppDefinitions(User user);
+	
+	String getDefinitionIdForModelAndUser(String modelId, User user);
 
 }
