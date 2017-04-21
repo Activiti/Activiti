@@ -52,6 +52,9 @@ public interface ModelRepository extends JpaRepository<Model, String> {
   
   @Query("select m.id, m.name, m.modelType from ModelRelation mr inner join mr.parentModel m where mr.modelId = :modelId")
   List<Model> findModelsByChildModelId(@Param("modelId") String modelId);
+  
+  @Query("select model.key from Model as model where model.id = :modelId and model.createdBy = :user")
+  String appDefinitionIdByModelAndUser(@Param("modelId") String modelId, @Param("user") String user);
 
 
 }

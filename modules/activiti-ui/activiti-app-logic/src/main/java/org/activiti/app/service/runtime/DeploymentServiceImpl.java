@@ -154,7 +154,7 @@ public class DeploymentServiceImpl implements DeploymentService {
 
   @Override
   @Transactional
-  public void deleteAppDefinition(Long appDefinitionId) {
+  public void deleteAppDefinition(String appDefinitionId) {
     // First test if deployment is still there, otherwhise the transaction will be rolled back
     List<Deployment> deployments = repositoryService.createDeploymentQuery().deploymentKey(String.valueOf(appDefinitionId)).list();
     if (deployments != null) {
