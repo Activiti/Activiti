@@ -142,7 +142,7 @@ public class AppDefinitionServiceImpl implements AppDefinitionService {
   
   
   @Override
-  public String getDefinitionIdForModelAndUser(String modelId, final User user) {
+  public String getDefinitionIdForModelAndUser(String modelId, User user) {
 	String appDefinitionId = this.modelRepository.appDefinitionIdByModelAndUser(modelId, user.getId());
 	return appDefinitionId;
   }
