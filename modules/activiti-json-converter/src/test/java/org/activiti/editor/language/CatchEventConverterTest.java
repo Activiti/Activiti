@@ -14,7 +14,7 @@ import org.junit.Test;
 public class CatchEventConverterTest extends AbstractConverterTest {
 
   @Test
-  public void connvertJsonToModel() throws Exception {
+  public void convertJsonToModel() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
     validateModel(bpmnModel);
   }

@@ -21,8 +21,12 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.hamcrest.CoreMatchers;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -208,6 +212,42 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
     assertEquals("variable", event.getVariableName());
     assertEquals(456, event.getVariableValue());
   }
+  
+  
+  @Deployment
+  public void testProcessInstanceVariableEventsOnCallActivity() throws Exception {
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("callVariableProcess",
+              Collections.<String, Object>singletonMap("parentVar1", "parentVar1Value"));
+      assertNotNull(processInstance);
+
+      assertEquals(6, listener.getEventsReceived().size());
+      List<String> variableList=new ArrayList<String>();
+      variableList.add("parentVar1");
+      variableList.add("subVar1");
+      variableList.add("parentVar2");
+      
+      ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
+      assertEquals(ActivitiEventType.VARIABLE_CREATED, event.getType());
+      assertTrue(variableList.contains(event.getVariableName()));
+      event = (ActivitiVariableEvent) listener.getEventsReceived().get(1);
+      assertEquals(ActivitiEventType.VARIABLE_CREATED, event.getType());
+      assertTrue(variableList.contains(event.getVariableName()));
+      event = (ActivitiVariableEvent) listener.getEventsReceived().get(2);
+      assertEquals(ActivitiEventType.VARIABLE_CREATED, event.getType());
+      assertTrue(variableList.contains(event.getVariableName()));
+      event = (ActivitiVariableEvent) listener.getEventsReceived().get(3);
+      assertEquals(ActivitiEventType.VARIABLE_DELETED, event.getType());
+      variableList.remove(event.getVariableName());
+      event = (ActivitiVariableEvent) listener.getEventsReceived().get(4);
+      assertEquals(ActivitiEventType.VARIABLE_DELETED, event.getType());
+      variableList.remove(event.getVariableName());
+      event = (ActivitiVariableEvent) listener.getEventsReceived().get(5);
+      assertEquals(ActivitiEventType.VARIABLE_DELETED, event.getType());
+      variableList.remove(event.getVariableName());
+      
+      assertEquals(0, variableList.size());
+  }
+
 
   /**
    * Test create, update and delete of task-local variables.

@@ -45,11 +45,11 @@ public class DmnJsonConverter {
 
     protected ObjectMapper objectMapper = new ObjectMapper();
 
-    public DmnDefinition convertToDmn(JsonNode modelNode, Long modelId, int modelVersion, Date lastUpdated) {
+    public DmnDefinition convertToDmn(JsonNode modelNode, String modelId, int modelVersion, Date lastUpdated) {
 
         DmnDefinition definition = new DmnDefinition();
 
-        definition.setId("definition_"+String.valueOf(modelId));
+        definition.setId("definition_"+modelId);
         definition.setName(DmnJsonConverterUtil.getValueAsString("name", modelNode));
         definition.setNamespace(MODEL_NAMESPACE);
         definition.setTypeLanguage(URI_JSON);

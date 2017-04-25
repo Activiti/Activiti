@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements DecisionTableAwareConverter {
 
-  protected Map<Long, String> decisionTableMap;
+  protected Map<String, String> decisionTableMap;
 
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
       Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -58,7 +58,7 @@ public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements 
     JsonNode decisionTableReferenceNode = getProperty(PROPERTY_DECISIONTABLE_REFERENCE, elementNode);
     if (decisionTableReferenceNode != null && decisionTableReferenceNode.has("id") && decisionTableReferenceNode.get("id").isNull() == false) {
 
-      Long decisionTableId = decisionTableReferenceNode.get("id").asLong();
+      String decisionTableId = decisionTableReferenceNode.get("id").asText();
       if (decisionTableMap != null) {
         String decisionTableKey = decisionTableMap.get(decisionTableId);
 
@@ -78,7 +78,7 @@ public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements 
   }
   
   @Override
-  public void setDecisionTableMap(Map<Long, String> decisionTableMap) {
+  public void setDecisionTableMap(Map<String, String> decisionTableMap) {
     this.decisionTableMap = decisionTableMap;
   }
 

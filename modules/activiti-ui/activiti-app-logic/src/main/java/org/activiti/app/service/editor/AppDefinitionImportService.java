@@ -68,7 +68,7 @@ public class AppDefinitionImportService {
     }
   }
 
-  public AppDefinitionRepresentation importAppDefinitionNewVersion(HttpServletRequest request, MultipartFile file, Long appDefId) {
+  public AppDefinitionRepresentation importAppDefinitionNewVersion(HttpServletRequest request, MultipartFile file, String appDefId) {
     try {
       InputStream is = file.getInputStream();
       String fileName = file.getOriginalFilename();
@@ -119,9 +119,9 @@ public class AppDefinitionImportService {
       Model appDefinitionModel = readZipFile(is, formMap, decisionTableMap, bpmnModelMap, thumbnailMap);
       if (StringUtils.isNotEmpty(appDefinitionModel.getKey()) && StringUtils.isNotEmpty(appDefinitionModel.getModelEditorJson())) {
 
-        Map<Long, Model> formKeyAndModelMap = importForms(formMap, thumbnailMap, existingFormModelMap);
-        Map<Long, Model> decisionTableKeyAndModelMap = importDecisionTables(decisionTableMap, thumbnailMap, existingDecisionTableModelMap);
-        Map<Long, Model> bpmnModelIdAndModelMap = importBpmnModels(bpmnModelMap, formKeyAndModelMap, decisionTableKeyAndModelMap, 
+        Map<String, Model> formKeyAndModelMap = importForms(formMap, thumbnailMap, existingFormModelMap);
+        Map<String, Model> decisionTableKeyAndModelMap = importDecisionTables(decisionTableMap, thumbnailMap, existingDecisionTableModelMap);
+        Map<String, Model> bpmnModelIdAndModelMap = importBpmnModels(bpmnModelMap, formKeyAndModelMap, decisionTableKeyAndModelMap, 
             thumbnailMap, existingProcessModelMap);
 
         AppDefinitionRepresentation result = importAppDefinitionModel(appDefinitionModel, existingAppModel, bpmnModelIdAndModelMap);
@@ -136,7 +136,7 @@ public class AppDefinitionImportService {
     }
   }
 
-  public AppDefinitionUpdateResultRepresentation publishAppDefinition(Long modelId, AppDefinitionPublishRepresentation publishModel) {
+  public AppDefinitionUpdateResultRepresentation publishAppDefinition(String modelId, AppDefinitionPublishRepresentation publishModel) {
 
     User user = SecurityUtils.getCurrentUserObject();
     Model appModel = modelService.getModel(modelId);
@@ -229,14 +229,14 @@ public class AppDefinitionImportService {
     return appDefinitionModel;
   }
 
-  protected Map<Long, Model> importForms(Map<String, String> formMap, Map<String, byte[]> thumbnailMap, Map<String, Model> existingFormModelMap) {
+  protected Map<String, Model> importForms(Map<String, String> formMap, Map<String, byte[]> thumbnailMap, Map<String, Model> existingFormModelMap) {
 
-    Map<Long, Model> oldFormIdAndModelMap = new HashMap<Long, Model>();
+    Map<String, Model> oldFormIdAndModelMap = new HashMap<String, Model>();
 
     for (String formKey : formMap.keySet()) {
 
       Model formModel = createModelObject(formMap.get(formKey), Model.MODEL_TYPE_FORM);
-      Long oldFormId = formModel.getId();
+      String oldFormId = formModel.getId();
 
       Model existingModel = null;
       if (existingFormModelMap != null && existingFormModelMap.containsKey(formModel.getKey())) {
@@ -268,15 +268,15 @@ public class AppDefinitionImportService {
     return oldFormIdAndModelMap;
   }
   
-  protected Map<Long, Model> importDecisionTables(Map<String, String> decisionTableMap, Map<String, byte[]> thumbnailMap, 
+  protected Map<String, Model> importDecisionTables(Map<String, String> decisionTableMap, Map<String, byte[]> thumbnailMap, 
       Map<String, Model> existingDecisionTableMap) {
 
-    Map<Long, Model> oldDecisionTableIdAndModelMap = new HashMap<Long, Model>();
+    Map<String, Model> oldDecisionTableIdAndModelMap = new HashMap<String, Model>();
 
     for (String decisionTableKey : decisionTableMap.keySet()) {
 
       Model decisionTableModel = createModelObject(decisionTableMap.get(decisionTableKey), Model.MODEL_TYPE_DECISION_TABLE);
-      Long oldDecisionTableId = decisionTableModel.getId();
+      String oldDecisionTableId = decisionTableModel.getId();
 
       Model existingModel = null;
       if (existingDecisionTableMap != null && existingDecisionTableMap.containsKey(decisionTableModel.getKey())) {
@@ -308,10 +308,10 @@ public class AppDefinitionImportService {
     return oldDecisionTableIdAndModelMap;
   }
 
-  protected Map<Long, Model> importBpmnModels(Map<String, String> bpmnModelMap, Map<Long, Model> formKeyAndModelMap,
-      Map<Long, Model> decisionTableKeyAndModelMap, Map<String, byte[]> thumbnailMap, Map<String, Model> existingProcessModelMap) {
+  protected Map<String, Model> importBpmnModels(Map<String, String> bpmnModelMap, Map<String, Model> formKeyAndModelMap,
+      Map<String, Model> decisionTableKeyAndModelMap, Map<String, byte[]> thumbnailMap, Map<String, Model> existingProcessModelMap) {
 
-    Map<Long, Model> bpmnModelIdAndModelMap = new HashMap<Long, Model>();
+    Map<String, Model> bpmnModelIdAndModelMap = new HashMap<String, Model>();
     for (String bpmnModelKey : bpmnModelMap.keySet()) {
       
       Model existingModel = null;
@@ -321,7 +321,7 @@ public class AppDefinitionImportService {
 
       String bpmnModelJson = bpmnModelMap.get(bpmnModelKey);
       Model bpmnModelObject = createModelObject(bpmnModelJson, Model.MODEL_TYPE_BPMN);
-      Long oldBpmnModelId = bpmnModelObject.getId();
+      String oldBpmnModelId = bpmnModelObject.getId();
       
       JsonNode bpmnModelNode = null;
       try {
@@ -331,17 +331,17 @@ public class AppDefinitionImportService {
         throw new InternalServerErrorException("Error reading BPMN json for " + bpmnModelKey);
       }
       
-      Map<Long, String> oldFormIdFormKeyMap = new HashMap<Long, String>();
+      Map<String, String> oldFormIdFormKeyMap = new HashMap<String, String>();
       Map<String, ModelInfo> formKeyModelIdMap = new HashMap<String, ModelInfo>();
-      for (Long oldFormId : formKeyAndModelMap.keySet()) {
+      for (String oldFormId : formKeyAndModelMap.keySet()) {
         Model formModel = formKeyAndModelMap.get(oldFormId);
         oldFormIdFormKeyMap.put(oldFormId, formModel.getKey());
         formKeyModelIdMap.put(formModel.getKey(), new ModelInfo(formModel.getId(), formModel.getName(), formModel.getKey()));
       }
       
-      Map<Long, String> oldDecisionTableIdDecisionTableKeyMap = new HashMap<Long, String>();
+      Map<String, String> oldDecisionTableIdDecisionTableKeyMap = new HashMap<String, String>();
       Map<String, ModelInfo> decisionTableKeyModelIdMap = new HashMap<String, ModelInfo>();
-      for (Long oldDecisionTableId : decisionTableKeyAndModelMap.keySet()) {
+      for (String oldDecisionTableId : decisionTableKeyAndModelMap.keySet()) {
         Model decisionTableModel = decisionTableKeyAndModelMap.get(oldDecisionTableId);
         oldDecisionTableIdDecisionTableKeyMap.put(oldDecisionTableId, decisionTableModel.getKey());
         decisionTableKeyModelIdMap.put(decisionTableModel.getKey(), new ModelInfo(decisionTableModel.getId(), 
@@ -379,7 +379,7 @@ public class AppDefinitionImportService {
     return bpmnModelIdAndModelMap;
   }
 
-  protected AppDefinitionRepresentation importAppDefinitionModel(Model appDefinitionModel, Model existingAppModel, Map<Long, Model> bpmnModelIdAndModelMap) {
+  protected AppDefinitionRepresentation importAppDefinitionModel(Model appDefinitionModel, Model existingAppModel, Map<String, Model> bpmnModelIdAndModelMap) {
     
     AppDefinition appDefinition = null;
     try {
@@ -426,7 +426,7 @@ public class AppDefinitionImportService {
     try {
       JsonNode modelNode = objectMapper.readTree(modelJson);
       Model model = new Model();
-      model.setId(modelNode.get("id").asLong());
+      model.setId(modelNode.get("id").asText());
       model.setName(modelNode.get("name").asText());
       model.setKey(modelNode.get("key").asText());
       

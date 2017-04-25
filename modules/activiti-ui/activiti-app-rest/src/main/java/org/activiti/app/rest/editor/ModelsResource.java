@@ -165,7 +165,7 @@ public class ModelsResource extends AbstractModelsResource {
   }
 
   @RequestMapping(value = "/rest/models/{modelId}/clone", method = RequestMethod.POST, produces = "application/json")
-  public ModelRepresentation duplicateModel(@PathVariable Long modelId, @RequestBody ModelRepresentation modelRepresentation) {
+  public ModelRepresentation duplicateModel(@PathVariable String modelId, @RequestBody ModelRepresentation modelRepresentation) {
 
     String json = null;
     Model model = null;

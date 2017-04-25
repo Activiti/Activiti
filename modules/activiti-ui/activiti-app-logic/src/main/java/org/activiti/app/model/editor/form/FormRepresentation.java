@@ -20,7 +20,7 @@ import org.activiti.form.model.FormDefinition;
 
 public class FormRepresentation extends AbstractRepresentation {
 
-  protected Long id;
+  protected String id;
   protected String name;
   protected String key;
   protected String description;
@@ -42,11 +42,11 @@ public class FormRepresentation extends AbstractRepresentation {
   public FormRepresentation() {
   }
 
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 

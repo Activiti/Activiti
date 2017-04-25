@@ -119,15 +119,15 @@ angular.module('activitiModeler')
 
     $scope.deleteApp = function() {
         // User is owner of the app definition and the app definition is deployed
-        /*_internalCreateModal({
+        _internalCreateModal({
             template: 'views/popup/app-definition-delete.html?version=' + Date.now(),
             scope: $scope
-        }, $modal, $scope);*/
+        }, $modal, $scope);
 
-      	_internalCreateModal({
+      	/*_internalCreateModal({
             template: 'views/popup/model-delete.html?version=' + Date.now(),
             scope: $scope
-        }, $modal, $scope);
+        }, $modal, $scope);*/
     };
 
     $scope.publish = function() {

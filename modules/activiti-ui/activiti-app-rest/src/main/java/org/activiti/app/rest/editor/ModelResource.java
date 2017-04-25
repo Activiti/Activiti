@@ -72,7 +72,7 @@ public class ModelResource extends AbstractModelResource {
    * GET /rest/models/{modelId} -> Get process model
    */
   @RequestMapping(value = "/rest/models/{modelId}", method = RequestMethod.GET, produces = "application/json")
-  public ModelRepresentation getModel(@PathVariable Long modelId) {
+  public ModelRepresentation getModel(@PathVariable String modelId) {
     return super.getModel(modelId);
   }
 
@@ -80,7 +80,7 @@ public class ModelResource extends AbstractModelResource {
    * GET /rest/models/{modelId}/thumbnail -> Get process model thumbnail
    */
   @RequestMapping(value = "/rest/models/{modelId}/thumbnail", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
-  public byte[] getModelThumbnail(@PathVariable Long modelId) {
+  public byte[] getModelThumbnail(@PathVariable String modelId) {
     return super.getModelThumbnail(modelId);
   }
 
@@ -88,7 +88,7 @@ public class ModelResource extends AbstractModelResource {
    * PUT /rest/models/{modelId} -> update process model properties
    */
   @RequestMapping(value = "/rest/models/{modelId}", method = RequestMethod.PUT)
-  public ModelRepresentation updateModel(@PathVariable Long modelId, @RequestBody ModelRepresentation updatedModel) {
+  public ModelRepresentation updateModel(@PathVariable String modelId, @RequestBody ModelRepresentation updatedModel) {
     // Get model, write-permission required if not a favorite-update
     Model model = modelService.getModel(modelId);
     
@@ -114,7 +114,7 @@ public class ModelResource extends AbstractModelResource {
    */
   @ResponseStatus(value = HttpStatus.OK)
   @RequestMapping(value = "/rest/models/{modelId}", method = RequestMethod.DELETE)
-  public void deleteModel(@PathVariable Long modelId, @RequestParam(required = false) Boolean cascade, @RequestParam(required = false) Boolean deleteRuntimeApp) {
+  public void deleteModel(@PathVariable String modelId, @RequestParam(required = false) Boolean cascade, @RequestParam(required = false) Boolean deleteRuntimeApp) {
 
     // Get model to check if it exists, read-permission required for delete (in case user is not owner, only share info
     // will be deleted
@@ -137,7 +137,7 @@ public class ModelResource extends AbstractModelResource {
    * GET /rest/models/{modelId}/editor/json -> get the JSON model
    */
   @RequestMapping(value = "/rest/models/{modelId}/editor/json", method = RequestMethod.GET, produces = "application/json")
-  public ObjectNode getModelJSON(@PathVariable Long modelId) {
+  public ObjectNode getModelJSON(@PathVariable String modelId) {
     Model model = modelService.getModel(modelId);
     ObjectNode modelNode = objectMapper.createObjectNode();
     modelNode.put("modelId", model.getId());
@@ -172,7 +172,7 @@ public class ModelResource extends AbstractModelResource {
    * POST /rest/models/{modelId}/editor/json -> save the JSON model
    */
   @RequestMapping(value = "/rest/models/{modelId}/editor/json", method = RequestMethod.POST)
-  public ModelRepresentation saveModel(@PathVariable Long modelId, @RequestBody MultiValueMap<String, String> values) {
+  public ModelRepresentation saveModel(@PathVariable String modelId, @RequestBody MultiValueMap<String, String> values) {
 
     // Validation: see if there was another update in the meantime
     long lastUpdated = -1L;
@@ -232,7 +232,7 @@ public class ModelResource extends AbstractModelResource {
    * POST /rest/models/{modelId}/editor/newversion -> create a new model version
    */
   @RequestMapping(value = "/rest/models/{modelId}/newversion", method = RequestMethod.POST)
-  public ModelRepresentation importNewVersion(@PathVariable Long modelId, @RequestParam("file") MultipartFile file) {
+  public ModelRepresentation importNewVersion(@PathVariable String modelId, @RequestParam("file") MultipartFile file) {
     return super.importNewVersion(modelId, file);
   }
   

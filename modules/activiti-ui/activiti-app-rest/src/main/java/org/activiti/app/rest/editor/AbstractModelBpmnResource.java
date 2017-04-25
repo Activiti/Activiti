@@ -41,7 +41,7 @@ public class AbstractModelBpmnResource {
   @Autowired
   protected ModelService modelService;
 
-  public void getProcessModelBpmn20Xml(HttpServletResponse response, Long processModelId) throws IOException {
+  public void getProcessModelBpmn20Xml(HttpServletResponse response, String processModelId) throws IOException {
 
     if (processModelId == null) {
       throw new BadRequestException("No process model id provided");
@@ -51,7 +51,7 @@ public class AbstractModelBpmnResource {
     generateBpmn20Xml(response, model);
   }
 
-  public void getHistoricProcessModelBpmn20Xml(HttpServletResponse response, Long processModelId, Long processModelHistoryId) throws IOException {
+  public void getHistoricProcessModelBpmn20Xml(HttpServletResponse response, String processModelId, String processModelHistoryId) throws IOException {
 
     if (processModelId == null) {
       throw new BadRequestException("No process model id provided");

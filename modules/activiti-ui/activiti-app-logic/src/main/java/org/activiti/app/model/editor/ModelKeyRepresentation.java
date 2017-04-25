@@ -23,7 +23,7 @@ public class ModelKeyRepresentation extends AbstractRepresentation {
 
   protected boolean keyAlreadyExists;
   protected String key;
-  protected Long id;
+  protected String id;
   protected String name;
   
   public boolean isKeyAlreadyExists() {
@@ -42,11 +42,11 @@ public class ModelKeyRepresentation extends AbstractRepresentation {
     this.key = key;
   }
   
-  public Long getId() {
+  public String getId() {
     return id;
   }
   
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
   

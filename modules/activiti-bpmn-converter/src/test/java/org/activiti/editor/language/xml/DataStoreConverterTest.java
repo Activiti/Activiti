@@ -14,7 +14,7 @@ import org.junit.Test;
 public class DataStoreConverterTest extends AbstractConverterTest {
 
   @Test
-  public void connvertXMLToModel() throws Exception {
+  public void convertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }

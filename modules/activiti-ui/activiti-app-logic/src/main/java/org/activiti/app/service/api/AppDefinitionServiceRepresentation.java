@@ -19,19 +19,19 @@ import org.activiti.app.model.common.AbstractRepresentation;
 
 public class AppDefinitionServiceRepresentation extends AbstractRepresentation {
 
-    protected Long id;
+    protected String id;
     protected String name;
     protected String description;
     protected Integer version;
     protected String icon;
     protected String theme;
-    protected List<Long> models;
+    protected List<String> models;
     protected String definition;
     
-    public Long getId() {
+    public String getId() {
         return id;
     }
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
     public String getName() {
@@ -64,10 +64,10 @@ public class AppDefinitionServiceRepresentation extends AbstractRepresentation {
     public void setTheme(String theme) {
         this.theme = theme;
     }
-    public List<Long> getModels() {
+    public List<String> getModels() {
         return models;
     }
-    public void setModels(List<Long> models) {
+    public void setModels(List<String> models) {
         this.models = models;
     }
     public String getDefinition() {

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+  <process id="callVariableProcess">
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="callSubprocess" />
+
+    <callActivity id="callSubprocess" calledElement="subProcess">
+      <extensionElements>
+        <activiti:in source="parentVar1" target="subVar1"/>
+        <activiti:out source="subVar1" target="parentVar2"/>
+      </extensionElements>
+    </callActivity>
+
+    <sequenceFlow sourceRef="callSubprocess" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+  </process>
+
+  <process id="subProcess">
+    <startEvent id="subProcessStart"/>
+    <sequenceFlow sourceRef="subProcessStart" targetRef="subProcessEnd"/>
+    <endEvent id="subProcessEnd"/>
+  </process>
+
+
+</definitions>

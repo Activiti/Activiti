@@ -24,6 +24,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.activiti.app.domain.common.IdBlockSize;
+import org.hibernate.annotations.GenericGenerator;
 
 @MappedSuperclass
 public class AbstractModel {
@@ -33,11 +34,12 @@ public class AbstractModel {
   public static final int MODEL_TYPE_APP = 3;
   public static final int MODEL_TYPE_DECISION_TABLE = 4;
 
+
   @Id
-  @GeneratedValue(strategy = GenerationType.TABLE, generator = "modelIdGenerator")
-  @TableGenerator(name = "modelIdGenerator", allocationSize = IdBlockSize.DEFAULT_ALLOCATION_SIZE)
-  @Column(name = "id")
-  protected Long id;
+  @GeneratedValue(generator = "modelIdGenerator")
+  @GenericGenerator(name = "modelIdGenerator", strategy = "uuid2")
+  @Column(name = "id", unique = true)
+  protected String id;
 
   @Column(name = "name")
   protected String name;
@@ -78,11 +80,11 @@ public class AbstractModel {
     this.created = new Date();
   }
 
-  public Long getId() {
+  public String getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -173,5 +175,4 @@ public class AbstractModel {
   public void setModelType(Integer modelType) {
     this.modelType = modelType;
   }
-
 }

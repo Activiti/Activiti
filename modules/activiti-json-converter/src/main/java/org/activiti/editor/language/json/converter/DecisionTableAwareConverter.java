@@ -19,5 +19,5 @@ import java.util.Map;
  */
 public interface DecisionTableAwareConverter {
 
-    public void setDecisionTableMap(Map<Long, String> decisionTableMap);
+    public void setDecisionTableMap(Map<String, String> decisionTableMap);
 }

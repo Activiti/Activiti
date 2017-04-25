@@ -62,12 +62,12 @@ public class DecisionTableResource {
   }
 
   @RequestMapping(value = "/{decisionTableId}", method = RequestMethod.GET, produces = "application/json")
-  public DecisionTableRepresentation getDecisionTable(@PathVariable Long decisionTableId) {
+  public DecisionTableRepresentation getDecisionTable(@PathVariable String decisionTableId) {
     return decisionTableService.getDecisionTable(decisionTableId);
   }
 
   @RequestMapping(value = "/{decisionTableId}/export", method = RequestMethod.GET)
-  public void exportDecisionTable(HttpServletResponse response, @PathVariable Long decisionTableId) {
+  public void exportDecisionTable(HttpServletResponse response, @PathVariable String decisionTableId) {
     decisionTableService.exportDecisionTable(response, decisionTableId);
   }
 
@@ -90,17 +90,17 @@ public class DecisionTableResource {
   }
 
   @RequestMapping(value = "/history/{historyModelId}", method = RequestMethod.GET, produces = "application/json")
-  public DecisionTableRepresentation getHistoricDecisionTable(@PathVariable Long historyModelId) {
+  public DecisionTableRepresentation getHistoricDecisionTable(@PathVariable String historyModelId) {
     return decisionTableService.getHistoricDecisionTable(historyModelId);
   }
 
   @RequestMapping(value = "/history/{historyModelId}/export", method = RequestMethod.GET)
-  public void exportHistoricDecisionTable(HttpServletResponse response, @PathVariable Long historyModelId) {
+  public void exportHistoricDecisionTable(HttpServletResponse response, @PathVariable String historyModelId) {
     decisionTableService.exportHistoricDecisionTable(response, historyModelId);
   }
 
   @RequestMapping(value = "/{decisionTableId}", method = RequestMethod.PUT, produces = "application/json")
-  public DecisionTableRepresentation saveDecisionTable(@PathVariable Long decisionTableId, @RequestBody DecisionTableSaveRepresentation saveRepresentation) {
+  public DecisionTableRepresentation saveDecisionTable(@PathVariable String decisionTableId, @RequestBody DecisionTableSaveRepresentation saveRepresentation) {
     return decisionTableService.saveDecisionTable(decisionTableId, saveRepresentation);
   }
 }

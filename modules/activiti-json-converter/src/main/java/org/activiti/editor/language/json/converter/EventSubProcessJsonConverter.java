@@ -31,9 +31,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class EventSubProcessJsonConverter extends BaseBpmnJsonConverter implements FormAwareConverter, FormKeyAwareConverter, 
     DecisionTableAwareConverter, DecisionTableKeyAwareConverter {
   
-  protected Map<Long, String> formMap;
+  protected Map<String, String> formMap;
   protected Map<String, ModelInfo> formKeyMap;
-  protected Map<Long, String> decisionTableMap;
+  protected Map<String, String> decisionTableMap;
   protected Map<String, ModelInfo> decisionTableKeyMap;
 
   public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, 
@@ -74,7 +74,7 @@ public class EventSubProcessJsonConverter extends BaseBpmnJsonConverter implemen
   }
   
   @Override
-  public void setFormMap(Map<Long, String> formMap) {
+  public void setFormMap(Map<String, String> formMap) {
     this.formMap = formMap;
   }
   
@@ -84,7 +84,7 @@ public class EventSubProcessJsonConverter extends BaseBpmnJsonConverter implemen
   }
   
   @Override
-  public void setDecisionTableMap(Map<Long, String> decisionTableMap) {
+  public void setDecisionTableMap(Map<String, String> decisionTableMap) {
     this.decisionTableMap = decisionTableMap;
   }
   

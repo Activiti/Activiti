@@ -15,7 +15,7 @@ import org.junit.Test;
 public class PoolsConverterTest extends AbstractConverterTest {
 
   @Test
-  public void connvertXMLToModel() throws Exception {
+  public void convertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
