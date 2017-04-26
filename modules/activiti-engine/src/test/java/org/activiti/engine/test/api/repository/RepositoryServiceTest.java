@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.bpmn.model.BpmnModel;
@@ -144,6 +145,14 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testDeploymentWithDelayedProcessDefinitionActivation() {
+    // Clean DB
+    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+      repositoryService.deleteDeployment(deployment.getId(), true);
+    }
+
+    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setTimerLockTimeInMillis(1000);
+    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setAsyncJobLockTimeInMillis(1000);
+    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setResetExpiredJobsInterval(2000);
 
     Date startTime = new Date();
     processEngineConfiguration.getClock().setCurrentTime(startTime);
@@ -168,9 +177,18 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
 
     // Move time four days forward, the timer will fire and the process
     // definitions will be active
-    Date inFourDays = new Date(startTime.getTime() + (4 * 24 * 60 * 60 * 1000));
+    final Date inFourDays = new Date(startTime.getTime() + (4 * 24 * 60 * 60 * 1000));
     processEngineConfiguration.getClock().setCurrentTime(inFourDays);
-    waitForJobExecutorToProcessAllJobs(5000L, 50L);
+    final long startDelta = new Date().getTime();
+    waitForJobExecutorToProcessAllJobs(60000L, 100L, new Callable() {
+      @Override
+      public Object call() throws Exception {
+        long endDelta = new Date().getTime();
+        long delta = endDelta - startDelta;
+        processEngineConfiguration.getClock().setCurrentTime(new Date(inFourDays.getTime()+delta));
+        return null;
+      }
+    });
 
     assertEquals(1, repositoryService.createDeploymentQuery().count());
     assertEquals(2, repositoryService.createProcessDefinitionQuery().count());

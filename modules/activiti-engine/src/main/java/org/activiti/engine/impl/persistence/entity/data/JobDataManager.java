@@ -27,7 +27,11 @@ public interface JobDataManager extends DataManager<JobEntity> {
   List<JobEntity> findJobsToExecute(Page page);
 
   List<JobEntity> findJobsByExecutionId(final String executionId);
-  
+
+  List<JobEntity> findJobsByProcessDefinitionId(final String processDefinitionId);
+
+  List<JobEntity> findJobsByTypeAndProcessDefinitionId(final String jobTypeTimer, final String id);
+
   List<JobEntity> findJobsByProcessInstanceId(final String processInstanceId);
 
   List<JobEntity> findExpiredJobs(Page page);

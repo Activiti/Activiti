@@ -25,6 +25,7 @@ import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.test.JobTestHelper;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.h2.command.dml.Call;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -308,11 +309,15 @@ public class AsyncExecutorTest {
   }
 
   private void waitForAllJobsBeingExecuted(ProcessEngine processEngine) {
-    waitForAllJobsBeingExecuted(processEngine, 10000L);
+    waitForAllJobsBeingExecuted(processEngine, 10000L,null);
   }
 
-  private void waitForAllJobsBeingExecuted(ProcessEngine processEngine, long maxWaitTime) {
-    JobTestHelper.waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngine.getProcessEngineConfiguration(), processEngine.getManagementService(), maxWaitTime, 1000L, false);
+  private void waitForAllJobsBeingExecuted(ProcessEngine processEngine, long maxWaitTime ) {
+      waitForAllJobsBeingExecuted( processEngine,  maxWaitTime, null);
+    }
+
+  private void waitForAllJobsBeingExecuted(ProcessEngine processEngine, long maxWaitTime, Callable callback) {
+    JobTestHelper.waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngine.getProcessEngineConfiguration(), processEngine.getManagementService(), maxWaitTime, 1000L, false, callback);
   }
 
   private int getAsyncExecutorJobCount(ProcessEngine processEngine) {
