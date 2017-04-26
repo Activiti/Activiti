@@ -23,23 +23,23 @@ import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 
 /**
  * @author Vasile Dirla
  */
 public class ShellCommandExecutor implements CommandExecutor {
     private Boolean waitFlag;
-    private final Boolean cleanEnvBoolan;
+    private final Boolean cleanEnvBoolean;
     private final Boolean redirectErrorFlag;
     private final String directoryStr;
     private final String resultVariableStr;
     private final String errorCodeVariableStr;
     private final List<String> argList;
 
-    public ShellCommandExecutor(Boolean waitFlag, Boolean cleanEnvBoolan, Boolean redirectErrorFlag, String directoryStr, String resultVariableStr, String errorCodeVariableStr, List<String> argList) {
+    public ShellCommandExecutor(Boolean waitFlag, Boolean cleanEnvBoolean, Boolean redirectErrorFlag, String directoryStr, String resultVariableStr, String errorCodeVariableStr, List<String> argList) {
         this.waitFlag = waitFlag;
-        this.cleanEnvBoolan = cleanEnvBoolan;
+        this.cleanEnvBoolean = cleanEnvBoolean;
         this.redirectErrorFlag = redirectErrorFlag;
         this.directoryStr = directoryStr;
         this.resultVariableStr = resultVariableStr;
@@ -58,11 +58,11 @@ public class ShellCommandExecutor implements CommandExecutor {
     }
 
 
-    public void executeCommand(ActivityExecution execution) throws Exception {
+    public void executeCommand(DelegateExecution execution) throws Exception {
         if (argList != null && argList.size() > 0) {
             ProcessBuilder processBuilder = new ProcessBuilder(argList);
             processBuilder.redirectErrorStream(getRedirectErrorFlag());
-            if (getCleanEnvBoolan()) {
+            if (getCleanEnvBoolean()) {
                 Map<String, String> env = processBuilder.environment();
                 env.clear();
             }
@@ -117,8 +117,8 @@ public class ShellCommandExecutor implements CommandExecutor {
         this.waitFlag = waitFlag;
     }
 
-    public Boolean getCleanEnvBoolan() {
-        return cleanEnvBoolan;
+    public Boolean getCleanEnvBoolean() {
+        return cleanEnvBoolean;
     }
 
     public Boolean getRedirectErrorFlag() {

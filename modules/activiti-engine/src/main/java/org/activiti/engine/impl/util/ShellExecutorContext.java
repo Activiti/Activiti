@@ -28,9 +28,9 @@ public class ShellExecutorContext implements ExecutorContext {
     private final String errorCodeVariableStr;
     private List<String> argList;
 
-    public ShellExecutorContext(Boolean waitFlag, Boolean cleanEnvBoolan, Boolean redirectErrorFlag, String directoryStr, String resultVariableStr, String errorCodeVariableStr, List<String> argList) {
+    public ShellExecutorContext(Boolean waitFlag, Boolean cleanEnvBoolean, Boolean redirectErrorFlag, String directoryStr, String resultVariableStr, String errorCodeVariableStr, List<String> argList) {
         this.waitFlag = waitFlag;
-        this.cleanEnvBoolan = cleanEnvBoolan;
+        this.cleanEnvBoolan = cleanEnvBoolean;
         this.redirectErrorFlag = redirectErrorFlag;
         this.directoryStr = directoryStr;
         this.resultVariableStr = resultVariableStr;

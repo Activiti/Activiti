@@ -15,7 +15,7 @@ package org.activiti.serviceTasks.secure;
 import java.util.List;
 import java.util.Set;
 
-import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.util.ShellCommandExecutor;
 import org.activiti.engine.impl.util.ShellExecutorContext;
 
@@ -37,7 +37,7 @@ public class SecureShellCommandExecutor extends ShellCommandExecutor {
     }
 
     @Override
-    public void executeCommand(ActivityExecution execution) throws Exception {
+    public void executeCommand(DelegateExecution execution) throws Exception {
         if (getArgList() != null && getArgList().size() > 0) {
             String command = getArgList().get(0);
             if (allowedCommands != null && allowedCommands.contains(command)) {
