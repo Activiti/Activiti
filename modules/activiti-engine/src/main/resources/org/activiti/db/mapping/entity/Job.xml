@@ -46,7 +46,7 @@
       	select
       	RES.* ${limitBetween} 
       	from ${prefix}ACT_RU_JOB RES
-    	where LOCK_EXP_TIME_ is not null and LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP} 
+    	where RES.LOCK_EXP_TIME_ is not null and RES.LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP}
     	${limitAfter}
   </select>
 
@@ -73,6 +73,20 @@
 		from ${prefix}ACT_RU_JOB J
 		where J.PROCESS_INSTANCE_ID_ = #{parameter}
 	</select>
+
+	<select id="selectJobByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+		select J.*
+		from ${prefix}ACT_RU_JOB J
+		where J.TYPE_ = #{parameter.handlerType}
+		and J.PROC_DEF_ID_ = #{parameter.processDefinitionId}
+	</select>
+
+	<select id="selectJobByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+		select J.*
+		from ${prefix}ACT_RU_JOB J
+		where J.PROC_DEF_ID_ = #{parameter.processDefinitionId}
+	</select>
+
 
 	<select id="selectJobByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultMap="jobResultMap">
 		${limitBefore}
