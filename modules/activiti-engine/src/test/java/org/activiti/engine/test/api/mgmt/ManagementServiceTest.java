@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,22 +13,22 @@
 
 package org.activiti.engine.test.api.mgmt;
 
-import java.util.Date;
-
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.JobNotFoundException;
+import org.activiti.engine.*;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.test.JobTestHelper;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
+
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Callable;
 
 
 /**
@@ -43,7 +43,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     TableMetaData metaData = managementService.getTableMetaData("unexistingtable");
     assertNull(metaData);
   }
-  
+
   public void testGetMetaDataNullTableName() {
     try {
       managementService.getTableMetaData(null);
@@ -52,7 +52,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       assertTextPresent("tableName is null", re.getMessage());
     }
   }
-  
+
   public void testExecuteJobNullJobId() {
     try {
       managementService.executeJob(null);
@@ -61,7 +61,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       assertTextPresent("jobId and job is null", re.getMessage());
     }
   }
-  
+
   public void testExecuteJobUnexistingJob() {
     try {
       managementService.executeJob("unexistingjob");
@@ -71,42 +71,42 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       assertEquals(Job.class, jnfe.getObjectClass());
     }
   }
-  
-  
+
+
   @Deployment
   public void testGetJobExceptionStacktrace() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
-    
+
     // The execution is waiting in the first usertask. This contains a boundry
     // timer event which we will execute manual for testing purposes.
     Job timerJob = managementService.createJobQuery()
       .processInstanceId(processInstance.getId())
       .singleResult();
-    
+
     assertNotNull("No job found for process instance", timerJob);
-    
+
     try {
       managementService.executeJob(timerJob.getId());
       fail("RuntimeException from within the script task expected");
     } catch(RuntimeException re) {
       assertTextPresent("This is an exception thrown from scriptTask", re.getCause().getMessage());
     }
-    
+
     // Fetch the task to see that the exception that occurred is persisted
     timerJob = managementService.createJobQuery()
     .processInstanceId(processInstance.getId())
     .singleResult();
-    
+
     assertNotNull(timerJob);
     assertNotNull(timerJob.getExceptionMessage());
     assertTextPresent("This is an exception thrown from scriptTask", timerJob.getExceptionMessage());
-    
+
     // Get the full stacktrace using the managementService
     String exceptionStack = managementService.getJobExceptionStacktrace(timerJob.getId());
     assertNotNull(exceptionStack);
-    assertTextPresent("This is an exception thrown from scriptTask", exceptionStack);    
+    assertTextPresent("This is an exception thrown from scriptTask", exceptionStack);
   }
-  
+
   public void testgetJobExceptionStacktraceUnexistingJobId() {
     try {
       managementService.getJobExceptionStacktrace("unexistingjob");
@@ -116,7 +116,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       assertEquals(Job.class, re.getObjectClass());
     }
   }
-  
+
   public void testgetJobExceptionStacktraceNullJobId() {
     try {
       managementService.getJobExceptionStacktrace(null);
@@ -125,7 +125,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       assertTextPresent("jobId is null", re.getMessage());
     }
   }
-  
+
   @Deployment(resources = {"org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml"})
   public void testSetJobRetries() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
@@ -149,7 +149,53 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     assertEquals(5, timerJob.getRetries());
     assertEquals(duedate, timerJob.getDuedate());
   }
-  
+
+  @Deployment(resources = {"org/activiti/engine/test/jobexecutor/AsyncExecutorTest.testAsyncFailingScript.bpmn20.xml"})
+  public void testSetJobRetriesOnFailedJob() {
+      // There is a back off mechanism for the retry, so need a bit of time
+      // But to be sure, we make the wait time small
+      processEngine.getProcessEngineConfiguration().setAsyncFailedJobWaitTime(1);
+
+      // Start process instance. Wait for all jobs to be done.
+      ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
+
+
+    final ProcessEngine processEngineCopy = processEngine;
+    JobTestHelper.waitForJobExecutorOnCondition(processEngine.getProcessEngineConfiguration(), 30000L, 2000L, new Callable<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+          List<Job> failedJobs = processEngineCopy.getManagementService().createJobQuery().withRetriesLeft().list();
+          if (failedJobs.isEmpty()) {
+              return true;
+          }
+        return false;
+      }
+    });
+
+    Job failedJob = managementService.createJobQuery()
+      .processInstanceId(processInstance.getId())
+      .noRetriesLeft()
+            .singleResult();
+
+    assertNotNull("No job found for process instance", failedJob);
+    assertEquals(0, failedJob.getRetries());
+
+      managementService.setJobRetries(failedJob.getId(), 1);
+
+      failedJob = managementService.createJobQuery()
+      .processInstanceId(processInstance.getId())
+      .singleResult();
+      assertEquals(1, failedJob.getRetries());
+
+    // wait to execute the failing process again
+      JobTestHelper.waitForJobExecutorOnCondition(processEngine.getProcessEngineConfiguration(), 30000L, 2000L, new Callable<Boolean>() {
+          @Override
+          public Boolean call() throws Exception {
+              return processEngineCopy.getManagementService().createJobQuery().withRetriesLeft().count() == 0;
+          }
+      });
+  }
+
   public void testSetJobRetriesUnexistingJobId() {
     try {
       managementService.setJobRetries("unexistingjob", 5);
@@ -159,7 +205,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       assertEquals(Job.class, re.getObjectClass());
     }
   }
-  
+
   public void testSetJobRetriesEmptyJobId() {
     try {
       managementService.setJobRetries("", 5);
@@ -168,7 +214,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       assertTextPresent("The job id is mandatory, but '' has been provided.", re.getMessage());
     }
   }
-  
+
   public void testSetJobRetriesJobIdNull() {
     try {
       managementService.setJobRetries(null, 5);
@@ -213,18 +259,18 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
 
     assertNotNull("Task timer should be there", timerJob);
     managementService.deleteJob(timerJob.getId());
-    
+
     timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNull("There should be no job now. It was deleted", timerJob);
   }
-  
+
   @Deployment(resources = { "org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml" })
   public void testDeleteJobThatWasAlreadyAcquired() {
     processEngineConfiguration.getClock().setCurrentTime(new Date());
-    
+
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerOnTask");
     Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
-    
+
     // We need to move time at least one hour to make the timer executable
     processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 7200000L));
 
@@ -233,7 +279,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     AcquireTimerJobsCmd acquireJobsCmd = new AcquireTimerJobsCmd("testLockOwner", 60000, 5);
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     commandExecutor.execute(acquireJobsCmd);
-    
+
     // Try to delete the job. This should fail.
     try {
       managementService.deleteJob(timerJob.getId());
@@ -241,11 +287,11 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     } catch (ActivitiException e) {
       // Exception is expected
     }
-    
+
     // Clean up
     managementService.executeJob(timerJob.getId());
   }
-  
+
   // https://activiti.atlassian.net/browse/ACT-1816:
   // ManagementService doesn't seem to give actual table Name for EventSubscriptionEntity.class
   public void testGetTableName() {
