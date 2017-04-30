@@ -1,13 +1,8 @@
 package org.activiti.bpmn.model;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.apache.commons.lang3.StringUtils;
-
-public class ExtensionElement extends BaseElement {
+public class ExtensionElement extends BaseElement implements Extension{
 
   protected String name;
   protected String namespacePrefix;
@@ -43,17 +38,11 @@ public class ExtensionElement extends BaseElement {
     return childElements;
   }
   public void addChildElement(ExtensionElement childElement) {
-    if (childElement != null && StringUtils.isNotEmpty(childElement.getName())) {
-      List<ExtensionElement> elementList = null;
-      if (this.childElements.containsKey(childElement.getName()) == false) {
-        elementList = new ArrayList<ExtensionElement>();
-        this.childElements.put(childElement.getName(), elementList);
-      }
-      this.childElements.get(childElement.getName()).add(childElement);
+    if (isInvalidExtension(childElement)) {
+      return;
     }
-  }
-  public void setChildElements(Map<String, List<ExtensionElement>> childElements) {
-    this.childElements = childElements;
+    addKeyToMapIfNotExists(this.childElements, childElement);
+    this.childElements.get(childElement.getName()).add(childElement);
   }
   
   public ExtensionElement clone() {
@@ -67,20 +56,17 @@ public class ExtensionElement extends BaseElement {
     setNamespacePrefix(otherElement.getNamespacePrefix());
     setNamespace(otherElement.getNamespace());
     setElementText(otherElement.getElementText());
-    setAttributes(otherElement.getAttributes());
-    
-    childElements = new LinkedHashMap<String, List<ExtensionElement>>();
-    if (otherElement.getChildElements() != null && !otherElement.getChildElements().isEmpty()) {
-      for (String key : otherElement.getChildElements().keySet()) {
-        List<ExtensionElement> otherElementList = otherElement.getChildElements().get(key);
-        if (otherElementList != null && !otherElementList.isEmpty()) {
-          List<ExtensionElement> elementList = new ArrayList<ExtensionElement>();
-          for (ExtensionElement extensionElement : otherElementList) {
-            elementList.add(extensionElement.clone());
-          }
-          childElements.put(key, elementList);
-        }
-      }
+    setAttributes(cloneMapAttributes(otherElement.getAttributes()));
+    childElements = clonedMapWithoutEmptyKeys(otherElement.getChildElements());
+  }
+
+  private Map<String,List<ExtensionAttribute>> cloneMapAttributes(Map<String, List<ExtensionAttribute>> attributes) {
+    Map<String, List<ExtensionAttribute>> clonedMapAttributes =
+            new HashMap<String, List<ExtensionAttribute>>(attributes.size());
+
+    for (String key : attributes.keySet()) {
+      clonedMapAttributes.put(key, getClonedExtensions(attributes.get(key)));
     }
+    return clonedMapAttributes;
   }
 }
