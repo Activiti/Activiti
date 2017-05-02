@@ -48,8 +48,7 @@ public class ExplorerLoginForm extends LoginForm {
   // Hack-alert !! See explanation at http://vaadin.com/book/-/page/components.loginform.html
   protected byte[] getLoginHTML() {
     // Application URI needed for submitting form
-    String appUri = getApplication().getURL().toString()
-            + getWindow().getName() + "/";
+    String appUri = getWindow().getName() + "/";
 
     // omitting the protocol (scheme) in order to preserve the one of the current page
     // getURL() returns "http" scheme when SSL is provided by e.g. load-balancer
