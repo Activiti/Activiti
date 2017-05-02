@@ -29,6 +29,12 @@ The following Activiti software libraries are distributed under the Apache Licen
  * activiti-osgi-<version>.jar
  * activiti-rest-<version>-sources.jar
  * activiti-rest-<version>.jar
+ * activiti-secure-tasks-<version>-sources.jar
+ * activiti-secure-tasks-<version>.jar
+ * activiti-secure-javascript-<version>-sources.jar
+ * activiti-secure-javascript-<version>.jar
+ * activiti-secure-service-tasks-<version>-sources.jar
+ * activiti-secure-service-tasks-<version>.jar
  * activiti-simple-workflow-<version>-sources.jar
  * activiti-simple-workflow-<version>.jar
  * activiti-spring-<version>-sources.jar
