@@ -878,6 +878,7 @@
 				<module>modules/activiti-ldap</module>
 				<module>modules/activiti-jmx</module>
 				<module>modules/activiti-jms-spring-executor</module>
+				<module>modules/activiti-admin</module>
 				<module>tooling/archetypes/activiti-archetype-unittest</module>
 			</modules>
 			<build>
@@ -1052,6 +1053,7 @@
 				<module>modules/activiti-jmx</module>
 				<module>modules/activiti-jms-spring-executor</module>
 				<module>modules/activiti-crystalball</module>
+				<module>modules/activiti-admin</module>
 				<module>tooling/archetypes/activiti-archetype-unittest</module>
 			</modules>
 		</profile>
