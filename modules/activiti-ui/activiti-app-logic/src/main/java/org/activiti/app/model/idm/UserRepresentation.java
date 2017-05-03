@@ -35,11 +35,13 @@ public class UserRepresentation extends AbstractRepresentation {
   }
   
   public UserRepresentation(User user) {
-    setId(user.getId());
-    setFirstName(user.getFirstName());
-    setLastName(user.getLastName());
-    setFullName( (user.getFirstName() != null ? user.getFirstName() : "") + " " + (user.getLastName() != null ? user.getLastName() : ""));
-    setEmail(user.getEmail());
+  	if(user!=null){
+  		setId(user.getId());
+  		setFirstName(user.getFirstName());
+  		setLastName(user.getLastName());
+  		setFullName( (user.getFirstName() != null ? user.getFirstName() : "") + " " + (user.getLastName() != null ? user.getLastName() : ""));
+  		setEmail(user.getEmail());
+  	}
   }
   
   public String getId() {

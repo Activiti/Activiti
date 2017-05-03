@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.app.model.idm.GroupRepresentation;
+import org.activiti.app.model.idm.UserRepresentation;
 import org.activiti.app.model.runtime.TaskRepresentation;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionElement;
@@ -26,6 +28,7 @@ import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.identity.Group;
@@ -48,7 +51,7 @@ public class TaskUtil {
 
       HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(task.getProcessInstanceId()).singleResult();
 
-      if (historicProcessInstance != null && StringUtils.isNotEmpty(historicProcessInstance.getStartUserId())) {
+      if (historicProcessInstance != null ) {
         processInstanceStartUserId = historicProcessInstance.getStartUserId();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(task.getProcessDefinitionId());
         FlowElement flowElement = bpmnModel.getFlowElement(task.getTaskDefinitionKey());
@@ -141,6 +144,31 @@ public class TaskUtil {
             }
           }
         }
+        
+        if (!isMemberOfCandidateGroup && !isMemberOfCandidateUsers) {
+          List<String> candidateGroupIds = new ArrayList<String>();
+          List<HistoricIdentityLink> links = (List<HistoricIdentityLink>)historyService.getHistoricIdentityLinksForTask(task.getId());
+          for (HistoricIdentityLink historicIdentityLink : links) {
+              if (!isMemberOfCandidateUsers && StringUtils.isNotEmpty((CharSequence)historicIdentityLink.getUserId()) && String.valueOf(currentUser.getId()).equals(historicIdentityLink.getUserId()) && "candidate".equalsIgnoreCase(historicIdentityLink.getType())) {
+                  isMemberOfCandidateUsers = true;
+              }
+              else {
+                  if (!StringUtils.isNotEmpty((CharSequence)historicIdentityLink.getGroupId()) || !"candidate".equalsIgnoreCase(historicIdentityLink.getType())) {
+                      continue;
+                  }
+                  candidateGroupIds.add(historicIdentityLink.getGroupId());
+              }
+          }
+          List<GroupRepresentation> groups2 = (List<GroupRepresentation>)new UserRepresentation(currentUser).getGroups();
+          if (groups2 != null) {
+              for (GroupRepresentation group3 : groups2) {
+                  if (candidateGroupIds.contains(group3.getId().toString())) {
+                      isMemberOfCandidateGroup = true;
+                      break;
+                  }
+              }
+          }
+      }
       }
     }
 
