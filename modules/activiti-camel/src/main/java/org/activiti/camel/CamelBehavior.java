@@ -213,7 +213,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
       }
       
       //Get the CamelContext object and set the super's member variable.
-      Object ctx = springConfiguration.getApplicationContext().getBean(camelContextValue);
+      Object ctx = springConfiguration.getBeans().get(camelContextValue);
       if (ctx == null || ctx instanceof CamelContext == false) {
         throw new ActivitiException("Could not find CamelContext named " + camelContextValue + ".");
       }
