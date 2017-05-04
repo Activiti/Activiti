@@ -39,9 +39,8 @@ public class MessageConverterTest extends AbstractConverterTest {
       if(startEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition){
         MessageEventDefinition messageEventDefinition = (MessageEventDefinition) startEvent.getEventDefinitions().get(0);
         assertNotNull("Attribute messageRef of messageEventDefinition can't be null.", messageEventDefinition.getMessageRef());
-        if(!(message.getId().equals(message.getName())) && messageEventDefinition.getMessageRef() != null){
-          assertTrue("MessageRef attribute of messageEventDefinition of start event should be equal to messageId.", (messageEventDefinition.getMessageRef()).equals(message.getId()));
-        }
+        //if messageEventDefinition is not null test messageRef stores messageId 
+        assertTrue("MessageRef attribute of messageEventDefinition of start event should be equal to messageId.", (messageEventDefinition.getMessageRef()).equals(message.getId()));
       }
     }
 
