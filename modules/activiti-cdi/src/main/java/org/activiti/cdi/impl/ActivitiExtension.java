@@ -74,39 +74,23 @@ public class ActivitiExtension implements Extension {
     }
   }
 
-  protected ProcessEngine lookupProcessEngine(BeanManager beanManager) {    
-    ServiceLoader<ProcessEngineLookup> processEngineServiceLoader = ServiceLoader.load(ProcessEngineLookup.class);
-    Iterator<ProcessEngineLookup> serviceIterator = processEngineServiceLoader.iterator();
-    List<ProcessEngineLookup> discoveredLookups = new ArrayList<ProcessEngineLookup>();
-    while (serviceIterator.hasNext()) {
-      ProcessEngineLookup serviceInstance = (ProcessEngineLookup) serviceIterator.next();
-      discoveredLookups.add(serviceInstance);
-    }
+  protected ProcessEngine lookupProcessEngine(BeanManager beanManager) {
+	  
+	this.processEngineLookup = ProgrammaticBeanLookup.lookup(ProcessEngineLookup.class, beanManager);
     
-    Collections.sort(discoveredLookups, new Comparator<ProcessEngineLookup>() {
-      public int compare(ProcessEngineLookup o1, ProcessEngineLookup o2) {       
-        return (-1)*((Integer)o1.getPrecedence()).compareTo(o2.getPrecedence());
-      }      
-    });
-    
-    ProcessEngine processEngine = null;
-    
-    for (ProcessEngineLookup processEngineLookup : discoveredLookups) {
-      processEngine = processEngineLookup.getProcessEngine();
-      if(processEngine != null) {
-        this.processEngineLookup = processEngineLookup;
-        logger.debug("ProcessEngineLookup service {} returned process engine.", processEngineLookup.getClass());
-        break;
-      } else {
-        logger.debug("ProcessEngineLookup service {} retuned 'null' value.", processEngineLookup.getClass());
+	if(this.processEngineLookup == null) {
+        throw new ActivitiException("Could not find an implementation of the org.activiti.cdi.spi.ProcessEngineLookup service " +
+        		"returning a non-null processEngine. Giving up.");
       }
-    }
     
-    if(processEngineLookup == null) {
-      throw new ActivitiException("Could not find an implementation of the org.activiti.cdi.spi.ProcessEngineLookup service " +
-      		"returning a non-null processEngine. Giving up.");
-    }
+	ProcessEngine processEngine = this.processEngineLookup.getProcessEngine();
     
+	if(processEngine != null) {
+        logger.debug("ProcessEngineLookup service {} returned process engine.", processEngineLookup.getClass());
+    } else {
+        logger.debug("ProcessEngineLookup service {} retuned 'null' value.", processEngineLookup.getClass());
+    }
+
     ActivitiServices activitiServices = ProgrammaticBeanLookup.lookup(ActivitiServices.class, beanManager);
     activitiServices.setProcessEngine(processEngine);
     
