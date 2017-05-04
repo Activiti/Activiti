@@ -117,8 +117,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
       public void draw(DefaultProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode) {
         GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
         IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) flowNode;
-        if (intermediateCatchEvent.getEventDefinitions() != null && !intermediateCatchEvent.getEventDefinitions()
-                                                                                           .isEmpty()) {
+        if (intermediateCatchEvent.getEventDefinitions() != null && !intermediateCatchEvent.getEventDefinitions().isEmpty()) {
           if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
             processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(), graphicInfo, true, scaleFactor);
           } else if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
@@ -292,13 +291,9 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         BoundaryEvent boundaryEvent = (BoundaryEvent) flowNode;
         if (boundaryEvent.getEventDefinitions() != null && !boundaryEvent.getEventDefinitions().isEmpty()) {
           if (boundaryEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
-            
             processDiagramCanvas.drawCatchingTimerEvent(flowNode.getName(), graphicInfo, boundaryEvent.isCancelActivity(), scaleFactor);
-            
           } else if (boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
-            
             processDiagramCanvas.drawCatchingErrorEvent(graphicInfo, boundaryEvent.isCancelActivity(), scaleFactor);
-            
           } else if (boundaryEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
             processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(), graphicInfo, boundaryEvent.isCancelActivity(), scaleFactor);
 
@@ -309,7 +304,6 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
             processDiagramCanvas.drawCatchingCompensateEvent(graphicInfo, boundaryEvent.isCancelActivity(), scaleFactor);
           }
         }
-        
       }
     });
 

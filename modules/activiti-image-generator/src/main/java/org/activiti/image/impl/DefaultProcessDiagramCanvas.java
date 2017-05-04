@@ -688,7 +688,7 @@ public class DefaultProcessDiagramCanvas {
       Font theDerivedFont = currentFont.deriveFont(transformation);
       g.setFont(theDerivedFont);
       
-      String truncated = fitTextToWidth(name, availableTextSpace);
+      String truncated = fitTextToWidth(name, availableTextSpace, false);
       int realWidth = fontMetrics.stringWidth(truncated);
       
       g.drawString(truncated, x + 2 + fontMetrics.getHeight(), 3 + y + availableTextSpace - (availableTextSpace - realWidth) / 2);
@@ -728,7 +728,7 @@ public class DefaultProcessDiagramCanvas {
     // text
     if (name != null && name.length() > 0) {
       int boxWidth = width - (2 * TEXT_PADDING);
-      int boxHeight = height - 16 - ICON_PADDING - ICON_PADDING - MARKER_WIDTH - 2 - 2;
+      int boxHeight = height - ICON_PADDING - ICON_PADDING - MARKER_WIDTH - 2 - 2;
       int boxX = x + width/2 - boxWidth/2;
       int boxY = y + height/2 - boxHeight/2 + ICON_PADDING + ICON_PADDING - 2 - 2;
       
@@ -774,10 +774,7 @@ public class DefaultProcessDiagramCanvas {
         // to indicate more text is truncated
         if (!layouts.isEmpty()) {
           layouts.remove(layouts.size() - 1);
-          
-          if(lastLine.length() >= 4) {
-            lastLine = lastLine.substring(0, lastLine.length() - 4) + "...";
-          }
+          lastLine = fitTextToWidth(lastLine, boxWidth, true);
           layouts.add(new TextLayout(lastLine, g.getFont(), g.getFontRenderContext()));
         }
         break;
@@ -805,9 +802,13 @@ public class DefaultProcessDiagramCanvas {
   }
   
 
-  protected String fitTextToWidth(String original, int width) {
+  protected String fitTextToWidth(String original, int width, boolean forceAdd) {
+    if (fontMetrics.stringWidth(original) <= width && !forceAdd) {
+      // if it fits already and we don't need to add "...", return original
+      return original;
+    }
+    
     String text = original;
-
     // remove length for "..."
     int maxWidth = width - 10;
 
@@ -815,7 +816,7 @@ public class DefaultProcessDiagramCanvas {
       text = text.substring(0, text.length() - 1);
     }
 
-    if (!text.equals(original)) {
+    if (!text.equals(original) || forceAdd) {
       text = text + "...";
     }
 
@@ -878,7 +879,7 @@ public class DefaultProcessDiagramCanvas {
     }
 
     if (scaleFactor == 1.0 && name != null && !name.isEmpty()) {
-      String text = fitTextToWidth(name, (int) graphicInfo.getWidth());
+      String text = fitTextToWidth(name, (int) graphicInfo.getWidth(), false);
       g.drawString(text, (int) graphicInfo.getX() + 10, (int) graphicInfo.getY() + 15);
     }
   }
