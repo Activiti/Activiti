@@ -103,4 +103,8 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior imple
     this.resultVariable = resultVariableName;
   }
   
+    public Set<Expression> getRulesDefined(){
+    return rulesExpressions;
+  }
+  
 }
