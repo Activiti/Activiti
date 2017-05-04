@@ -86,9 +86,9 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     // Claim the task
     taskService.claim(task.getId(), KERMIT);
 
-    // The task must now be gone from the candidate task list
+    // ACT-1395: Allow to fetch tasks that are in a candidateGroup and that are already assigned
     tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT).list();
-    assertTrue(tasks.isEmpty());
+    assertFalse(tasks.isEmpty());
 
     // The task will be visible on the personal task list
     tasks = taskService
@@ -139,10 +139,10 @@ public class TaskCandidateTest extends PluggableActivitiTestCase {
     assertEquals("Approve expenses", task.getName());
     taskService.claim(task.getId(), GONZO);
 
-    // The task must now be gone from the candidate task lists
-    assertTrue(taskService.createTaskQuery().taskCandidateUser(KERMIT).list().isEmpty());
-    assertTrue(taskService.createTaskQuery().taskCandidateUser(GONZO).list().isEmpty());
-    assertEquals(0, taskService.createTaskQuery().taskCandidateGroup("management").count());
+    // ACT-1395: Allow to fetch tasks that are in a candidateGroup and that are already assigned
+    assertFalse(taskService.createTaskQuery().taskCandidateUser(KERMIT).list().isEmpty());
+    assertFalse(taskService.createTaskQuery().taskCandidateUser(GONZO).list().isEmpty());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
 
     // The task will be visible on the personal task list of Gonzo
     assertEquals(1, taskService
