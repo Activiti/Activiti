@@ -1392,7 +1392,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void ensureTasksInitialized() {
-    if(tasks == null) {    
+    if(tasks == null || tasks.isEmpty()) {    
       tasks = (List)Context.getCommandContext()
         .getTaskEntityManager()
         .findTasksByExecutionId(id);      
