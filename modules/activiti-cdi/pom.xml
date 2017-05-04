@@ -118,6 +118,10 @@
       <artifactId>activiti-engine</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>
       <artifactId>arquillian-junit-container</artifactId>
       <scope>test</scope>
