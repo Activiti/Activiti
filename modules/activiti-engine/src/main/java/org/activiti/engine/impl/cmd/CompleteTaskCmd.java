@@ -14,8 +14,10 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -39,6 +41,11 @@ public class CompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
   }
   
   protected Void execute(CommandContext commandContext, TaskEntity task) {
+    String authenticatedUserId = Authentication.getAuthenticatedUserId();
+    if (!StringUtils.equals(authenticatedUserId, task.getAssignee())) {
+      throw new ActivitiException("Task '" + taskId + "' is already assigned to someone else.");
+    }
+
     if (variables!=null) {
     	if (localScope) {
     		task.setVariablesLocal(variables);
