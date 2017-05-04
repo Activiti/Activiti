@@ -16,11 +16,16 @@ package org.activiti.engine.impl.variable;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -132,6 +137,35 @@ public class JPAEntityMappings {
       throw new ActivitiException("Entity does not exist: " + entityClass.getName() + " - " + primaryKey);
     }
     return entity;
+  }
+
+  public List<Object> getJPAEntities(String className, Collection<String> ids) {
+    if(ids == null || ids.isEmpty()) {
+      return Collections.emptyList();
+    }
+
+    Class<?> entityClass = ReflectUtil.loadClass(className);
+
+    EntityMetaData metaData = getEntityMetaData(entityClass);
+    if(metaData == null) {
+      throw new ActivitiIllegalArgumentException("Class is not a JPA-entity: " + className);
+    }
+
+    EntityManager em = Context
+            .getCommandContext()
+            .getSession(EntityManagerSession.class)
+            .getEntityManager();
+
+    List<Object> params = new ArrayList<Object>();
+    for (String id : ids) {
+      params.add(createId(metaData, id));
+    }
+
+    String jpql = String.format("select e from %s e where e.%s in (:ids)", className, metaData.getIdPropertyName());
+    Query query = em.createQuery(jpql);
+    query.setParameter("ids", params);
+
+    return query.getResultList();
   }
 
   public Object createId(EntityMetaData metaData, String string) {

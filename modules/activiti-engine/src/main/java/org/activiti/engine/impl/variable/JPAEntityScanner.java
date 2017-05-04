@@ -76,6 +76,14 @@ public class JPAEntityScanner {
         break;
       }
     }
+    if(idMethod == null) {
+        // Check superClass for methods with @Id annotation
+        Class<?> superClass = clazz.getSuperclass();
+        if(superClass != null && !superClass.equals(Object.class)) {
+            // Recursively go up class hierarchy
+            idMethod = getIdMethod(superClass);
+        }
+    }
     return idMethod;
   }
 
@@ -104,6 +112,11 @@ public class JPAEntityScanner {
   }
 
   private boolean isEntityAnnotationPresent(Class<?> clazz) {
-    return (clazz.getAnnotation(Entity.class) != null);
+    // if entity is enhanced then need to test for super classes annotations
+    while(clazz != null) {
+      if(clazz.getAnnotation(Entity.class) != null) return true;
+      clazz = clazz.getSuperclass();
+    }
+    return false;
   }
 }
