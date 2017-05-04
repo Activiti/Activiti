@@ -87,7 +87,6 @@ public class EventSubscriptionManager {
     Message message = null;
     if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
       message = bpmnModel.getMessage(messageEventDefinition.getMessageRef());
-      //messageEventDefinition.setMessageRef(message.getName());
     }
 
     // look for subscriptions for the same name in db:
