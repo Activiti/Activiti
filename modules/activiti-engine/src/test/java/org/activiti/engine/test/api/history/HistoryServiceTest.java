@@ -725,7 +725,11 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
     taskService.complete(taskService.createTaskQuery().processInstanceId(processInstance1.getId()).singleResult().getId());    
 
-    Date date2 = Calendar.getInstance().getTime();
+    // Fix for Faster Computer
+    Calendar date2Calendar = Calendar.getInstance();
+    date2Calendar.add(Calendar.MILLISECOND, 1);
+    
+    Date date2 = date2Calendar.getTime();
     vars = new HashMap<String, Object>();
     vars.put("dateVar", date1);
     vars.put("dateVar2", date2);

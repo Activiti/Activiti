@@ -280,7 +280,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   }
   
   @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
-  public void testHistoricProcessInstanceSorting() {
+  public void testHistoricProcessInstanceSorting() throws InterruptedException {
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceId().asc().list().size());
@@ -317,6 +317,9 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     for (Task task : taskService.createTaskQuery().processInstanceId(processInstance2.getId()).list()) {
     	taskService.complete(task.getId());
     }
+    
+    // Fix for Faster Computer
+    Thread.sleep(1);
     
     // Then process instance 1
     for (Task task : taskService.createTaskQuery().processInstanceId(processInstance1.getId()).list()) {

@@ -1393,7 +1393,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
    // Test for https://activiti.atlassian.net/browse/ACT-2186
    @Deployment(resources={
    	"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
-   public void testHistoricVariableRemovedWhenRuntimeVariableIsRemoved() {
+   public void testHistoricVariableRemovedWhenRuntimeVariableIsRemoved() throws InterruptedException {
    	 Map<String, Object> vars = new HashMap<String, Object>();
       vars.put("var1", "Hello");
       vars.put("var2", "World");
@@ -1415,6 +1415,9 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
       for (HistoricDetail historicDetail : details) {
       	assertNotNull( ((HistoricVariableUpdate) historicDetail).getValue());
       }
+      
+      // Fix for Faster Computer
+      Thread.sleep(1);
       
       // Remove one variable
       runtimeService.removeVariable(processInstance.getId(), "var2");
