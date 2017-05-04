@@ -7,5 +7,6 @@ target
 .project
 .settings
 .DS_Store
+.gitignore
 *.bpmn/
 /userguide/src/en/index.html
