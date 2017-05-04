@@ -90,7 +90,7 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
     
     // Task listeners
     for (ActivitiListener taskListener : userTask.getTaskListeners()) {
-      taskDefinition.addTaskListener(taskListener.getEvent(), createTaskListener(bpmnParse, taskListener, userTask.getId()));
+      taskDefinition.addTaskListener(taskListener.getEvent(), createTaskListener(bpmnParse, taskListener));
     }
 
     // Due date
@@ -144,7 +144,7 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
     return taskDefinition;
   }
   
-  protected TaskListener createTaskListener(BpmnParse bpmnParse, ActivitiListener activitiListener, String taskId) {
+  protected TaskListener createTaskListener(BpmnParse bpmnParse, ActivitiListener activitiListenerc) {
     TaskListener taskListener = null;
 
     if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
