@@ -119,7 +119,7 @@ public class JobRetryCmd implements Command<Object> {
     			ActivitiEventType.JOB_RETRIES_DECREMENTED, job));
     }
     
-    if (processEngineConfig.isAsyncExecutorEnabled() == false) {
+    if (processEngineConfig.isAsyncExecutorEnabled() == false && processEngineConfig.isJobExecutorActivate()) {
       JobExecutor jobExecutor = processEngineConfig.getJobExecutor();
       JobAddedNotification messageAddedNotification = new JobAddedNotification(jobExecutor);
       TransactionContext transactionContext = commandContext.getTransactionContext();
