@@ -1,25 +1,21 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.cfg.security.CommandExecutorContext;
+import org.activiti.engine.cfg.security.CommandExecutorFactory;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.util.CommandExecutor;
+import org.activiti.engine.impl.util.ShellCommandExecutor;
+import org.activiti.engine.impl.util.ShellExecutorContext;
 
 public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
 
   private static final long serialVersionUID = 1L;
-  
+
   protected Expression command;
   protected Expression wait;
   protected Expression arg1;
@@ -70,76 +66,52 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
 
   public void execute(DelegateExecution execution) {
 
-    readFields(execution);
+        readFields(execution);
 
-    List<String> argList = new ArrayList<String>();
-    argList.add(commandStr);
+        List<String> argList = new ArrayList<String>();
+        argList.add(commandStr);
 
-    if (arg1Str != null)
-      argList.add(arg1Str);
-    if (arg2Str != null)
-      argList.add(arg2Str);
-    if (arg3Str != null)
-      argList.add(arg3Str);
-    if (arg4Str != null)
-      argList.add(arg4Str);
-    if (arg5Str != null)
-      argList.add(arg5Str);
+        if (arg1Str != null)
+            argList.add(arg1Str);
+        if (arg2Str != null)
+            argList.add(arg2Str);
+        if (arg3Str != null)
+            argList.add(arg3Str);
+        if (arg4Str != null)
+            argList.add(arg4Str);
+        if (arg5Str != null)
+            argList.add(arg5Str);
 
-    ProcessBuilder processBuilder = new ProcessBuilder(argList);
+        ShellExecutorContext executorContext = new ShellExecutorContext(
+                waitFlag,
+                cleanEnvBoolean,
+                redirectErrorFlag,
+                directoryStr,
+                resultVariableStr,
+                errorCodeVariableStr,
+                argList);
 
-    try {
-      processBuilder.redirectErrorStream(redirectErrorFlag);
-      if (cleanEnvBoolean) {
-        Map<String, String> env = processBuilder.environment();
-        env.clear();
-      }
-      if (directoryStr != null && directoryStr.length() > 0)
-        processBuilder.directory(new File(directoryStr));
+        CommandExecutor commandExecutor =  null;
 
-      Process process = processBuilder.start();
+        CommandExecutorFactory shellCommandExecutorFactory = CommandExecutorContext.getShellCommandExecutorFactory();
 
-      if (waitFlag) {
-        int errorCode = process.waitFor();
-
-        if (resultVariableStr != null) {
-          String result = convertStreamToStr(process.getInputStream());
-          execution.setVariable(resultVariableStr, result);
+        if (shellCommandExecutorFactory != null) {
+            // if there is a ShellExecutorFactoryProvided
+            // then it will be used to create a desired shell command executor.
+            commandExecutor = shellCommandExecutorFactory.createExecutor(executorContext);
+        } else {
+            // default Shell executor (if the shell security is OFF)
+            commandExecutor = new ShellCommandExecutor(executorContext);
         }
 
-        if (errorCodeVariableStr != null) {
-          execution.setVariable(errorCodeVariableStr, Integer.toString(errorCode));
-
+        try {
+            commandExecutor.executeCommand(execution);
+        } catch (Exception e) {
+            throw new ActivitiException("Could not execute shell command ", e);
         }
 
-      }
-    } catch (Exception e) {
-      throw new ActivitiException("Could not execute shell command ", e);
+        leave(execution);
     }
-
-    leave(execution);
-  }
-
-  public static String convertStreamToStr(InputStream is) throws IOException {
-
-    if (is != null) {
-      Writer writer = new StringWriter();
-
-      char[] buffer = new char[1024];
-      try {
-        Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-        int n;
-        while ((n = reader.read(buffer)) != -1) {
-          writer.write(buffer, 0, n);
-        }
-      } finally {
-        is.close();
-      }
-      return writer.toString();
-    } else {
-      return "";
-    }
-  }
 
   protected String getStringFromField(Expression expression, DelegateExecution execution) {
     if (expression != null) {

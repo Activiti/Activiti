@@ -91,6 +91,10 @@
 
   <!-- PROCESSDEFINITION DELETE -->
 
+    <delete id="deleteProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl">
+        delete from ${prefix}ACT_RE_PROCDEF where ID_ = #{id} and REV_ = #{revision}
+    </delete>
+
   <delete id="deleteProcessDefinitionsByDeploymentId" parameterType="string">
     delete from ${prefix}ACT_RE_PROCDEF where DEPLOYMENT_ID_ = #{deploymenId} 
   </delete>

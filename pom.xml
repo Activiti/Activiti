@@ -14,7 +14,7 @@
 	</parent>
 
 	<packaging>pom</packaging>
-	<version>6.0.0.RC1-SNAPSHOT</version>
+	<version>6.0.0-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.framework.version>4.2.5.RELEASE</spring.framework.version>
@@ -198,6 +198,11 @@
 				<version>5.1.27</version>
 				<scope>test</scope>
 			</dependency>
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-secure-tasks</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 			<dependency>
 				<groupId>com.ibm.db2.jcc</groupId>
 				<artifactId>db2jcc4</artifactId>
@@ -840,7 +845,9 @@
 				<module>modules/activiti-image-generator</module>
 				<module>modules/activiti-bpmn-converter</module>
 				<module>modules/activiti-engine</module>
-				<module>modules/activiti-secure-javascript</module>
+                <module>modules/activiti-secure-tasks</module>
+                <module>modules/activiti-secure-javascript</module>
+                <module>modules/activiti-secure-service-tasks</module>
 				<module>modules/activiti-bpmn-layout</module>
 				<module>modules/activiti-json-converter</module>
 				<module>modules/activiti-dmn-model</module>
@@ -871,6 +878,7 @@
 				<module>modules/activiti-ldap</module>
 				<module>modules/activiti-jmx</module>
 				<module>modules/activiti-jms-spring-executor</module>
+				<module>modules/activiti-admin</module>
 				<module>tooling/archetypes/activiti-archetype-unittest</module>
 			</modules>
 			<build>
@@ -931,7 +939,9 @@
 				<module>modules/activiti-rest</module>
 				<module>modules/activiti-webapp-rest2</module>
 				<module>modules/activiti-cxf</module>
+				<module>modules/activiti-secure-tasks</module>
 				<module>modules/activiti-secure-javascript</module>
+				<module>modules/activiti-secure-service-tasks</module>
 				<module>modules/activiti-form-json-converter</module>
 				<module>modules/activiti-form-engine</module>
 				<module>modules/activiti-form-engine-configurator</module>
@@ -959,7 +969,9 @@
 				<module>modules/activiti-rest</module>
 				<module>modules/activiti-webapp-rest2</module>
 				<module>modules/activiti-cxf</module>
+				<module>modules/activiti-secure-tasks</module>
 				<module>modules/activiti-secure-javascript</module>
+				<module>modules/activiti-secure-service-tasks</module>
 			</modules>
 		</profile>
 		<profile>
@@ -1009,7 +1021,9 @@
 				<module>modules/activiti-bpmn-converter</module>
 				<module>modules/activiti-bpmn-layout</module>
 				<module>modules/activiti-json-converter</module>
+				<module>modules/activiti-secure-tasks</module>
 				<module>modules/activiti-secure-javascript</module>
+				<module>modules/activiti-secure-service-tasks</module>
 				<module>modules/activiti-dmn-model</module>
 				<module>modules/activiti-dmn-json-converter</module>
 				<module>modules/activiti-dmn-xml-converter</module>
@@ -1039,6 +1053,7 @@
 				<module>modules/activiti-jmx</module>
 				<module>modules/activiti-jms-spring-executor</module>
 				<module>modules/activiti-crystalball</module>
+				<module>modules/activiti-admin</module>
 				<module>tooling/archetypes/activiti-archetype-unittest</module>
 			</modules>
 		</profile>
@@ -1114,7 +1129,9 @@
 				<module>modules/activiti-process-validation</module>
 				<module>modules/activiti-image-generator</module>
 				<module>modules/activiti-json-converter</module>
+				<module>modules/activiti-secure-tasks</module>
 				<module>modules/activiti-secure-javascript</module>
+				<module>modules/activiti-secure-service-tasks</module>
 				<module>modules/activiti-bpmn-converter</module>
 				<module>modules/activiti-engine</module>
 				<module>modules/activiti-spring</module>

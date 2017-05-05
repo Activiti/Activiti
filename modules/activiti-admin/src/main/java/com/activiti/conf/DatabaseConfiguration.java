@@ -64,11 +64,11 @@ public class DatabaseConfiguration {
 
         } else {
 
-            String dataSourceDriver = env.getProperty("datasource.driver", "com.mysql.jdbc.Driver");
-            String dataSourceUrl = env.getProperty("datasource.url", "jdbc:mysql://127.0.0.1:3306/activiti6admin?characterEncoding=UTF-8");
+            String dataSourceDriver = env.getProperty("datasource.driver", "org.h2.Driver");
+            String dataSourceUrl = env.getProperty("datasource.url", "jdbc:h2:mem:activitiadmin;DB_CLOSE_DELAY=-1");
 
-            String dataSourceUsername = env.getProperty("datasource.username", "alfresco");
-            String dataSourcePassword = env.getProperty("datasource.password", "alfresco");
+            String dataSourceUsername = env.getProperty("datasource.username", "sa");
+            String dataSourcePassword = env.getProperty("datasource.password", "");
 
             Integer minPoolSize = env.getProperty("datasource.min-pool-size", Integer.class);
             if (minPoolSize == null) {

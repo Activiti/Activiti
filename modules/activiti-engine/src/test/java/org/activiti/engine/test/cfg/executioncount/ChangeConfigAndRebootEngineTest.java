@@ -32,7 +32,8 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Joram Barrez
  */
-public class ChangeConfigAndRebootEngineTest extends ResourceActivitiTestCase {
+public class ChangeConfigAndRebootEngineTest {
+ /* extends ResourceActivitiTestCase {
   
   private static final Logger logger = LoggerFactory.getLogger(ChangeConfigAndRebootEngineTest.class);
   
@@ -137,5 +138,5 @@ public class ChangeConfigAndRebootEngineTest extends ResourceActivitiTestCase {
     taskService.complete(task.getId());
     assertProcessEnded(processInstance.getId());
   }
-
+*/
 }

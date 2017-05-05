@@ -44,6 +44,11 @@ public class EmailConfiguration {
             sender.setPassword(env.getProperty("email.password"));
         }
         
+        Boolean emailTLS = env.getProperty("email.tls", Boolean.class);
+        if (emailTLS != null) {
+          sender.getJavaMailProperties().setProperty("mail.smtp.starttls.enable", emailTLS.toString());
+        }
+        
         return sender;
     }
     

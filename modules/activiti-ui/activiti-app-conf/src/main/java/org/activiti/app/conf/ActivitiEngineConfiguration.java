@@ -104,6 +104,16 @@ public class ActivitiEngineConfiguration {
                 processEngineConfiguration.setMailServerUsername(environment.getProperty("email.username"));
                 processEngineConfiguration.setMailServerPassword(environment.getProperty("email.password"));
             }
+            
+            Boolean emailSSL = environment.getProperty("email.ssl", Boolean.class);
+            if (emailSSL != null) {
+              processEngineConfiguration.setMailServerUseSSL(emailSSL.booleanValue());
+            }
+            
+            Boolean emailTLS = environment.getProperty("email.tls", Boolean.class);
+            if (emailTLS != null) {
+              processEngineConfiguration.setMailServerUseTLS(emailTLS.booleanValue());
+            }
     	}
     	
     	// Limit process definition cache

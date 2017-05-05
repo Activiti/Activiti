@@ -9,7 +9,7 @@
 
         <span loading="model.loading"></span>
 
-        <div class="list-wrapper" ng-show="!model.loading" auto-height>
+        <div class="list-wrapper" ng-show="!model.loading">
 
             <ul class="full-list" offset-top="100">
                 <li ng-repeat="group in model.groups" ng-class="{'active': model.selectedGroup.id == group.id}" ng-click="selectGroup(group.id)">

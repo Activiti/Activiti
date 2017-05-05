@@ -14,7 +14,7 @@ package org.activiti.scripting.secure.impl;
 
 import java.util.Set;
 
-import org.activiti.scripting.secure.ClassWhitelister;
+import org.activiti.tasks.secure.impl.ClassWhitelister;
 import org.mozilla.javascript.ClassShutter;
 
 /**

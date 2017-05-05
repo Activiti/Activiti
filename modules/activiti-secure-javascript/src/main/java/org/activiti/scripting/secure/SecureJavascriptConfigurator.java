@@ -21,9 +21,10 @@ import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.scripting.secure.behavior.SecureJavascriptTaskParseHandler;
-import org.activiti.scripting.secure.impl.DefaultClassWhitelister;
 import org.activiti.scripting.secure.impl.SecureScriptClassShutter;
 import org.activiti.scripting.secure.impl.SecureScriptContextFactory;
+import org.activiti.tasks.secure.impl.ClassWhitelister;
+import org.activiti.tasks.secure.impl.DefaultClassWhitelister;
 import org.mozilla.javascript.ContextFactory;
 
 /**
@@ -33,8 +34,10 @@ import org.mozilla.javascript.ContextFactory;
 public class SecureJavascriptConfigurator extends AbstractProcessEngineConfigurator {
 
   /* Rhino's global context factory */
-  public static SecureScriptContextFactory secureScriptContextFactory;
   public static SecureScriptClassShutter secureScriptClassShutter;
+
+  /* Rhino's global context factory */
+  public static SecureScriptContextFactory secureScriptContextFactory;
 
   /**
    * When true, by default all classes will be blacklisted and all classes that

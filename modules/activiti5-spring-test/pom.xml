@@ -9,7 +9,7 @@
         <groupId>org.activiti</groupId>
         <artifactId>activiti-root</artifactId>
         <relativePath>../..</relativePath>
-        <version>6.0.0.RC1-SNAPSHOT</version>
+        <version>6.0.0-SNAPSHOT</version>
     </parent>
 
     <build>
@@ -148,7 +148,7 @@
         <dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti5-test</artifactId>
-			<version>6.0.0.RC1-SNAPSHOT</version>
+			<version>6.0.0-SNAPSHOT</version>
 		</dependency>
         <dependency>
             <groupId>com.h2database</groupId>
