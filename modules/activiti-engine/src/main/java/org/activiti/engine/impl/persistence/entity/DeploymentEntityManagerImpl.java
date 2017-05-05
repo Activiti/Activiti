@@ -34,6 +34,7 @@ import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.DeploymentDataManager;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -133,7 +134,35 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
       getExecutionEntityManager().deleteProcessInstancesByProcessDefinition(processDefinition.getId(), "deleted deployment", true);
     }
   }
-  
+
+  protected void removeRelatedJobs(ProcessDefinition processDefinition) {
+    List<JobEntity> timerJobs = getJobEntityManager()
+            .findJobsByProcessDefinitionId(processDefinition.getId());
+    if (timerJobs != null && timerJobs.size() > 0) {
+      for (JobEntity timerJob : timerJobs) {
+        if (getEventDispatcher().isEnabled()) {
+          getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerJob, null, null, processDefinition.getId()));
+        }
+
+        getJobEntityManager().delete(timerJob);
+      }
+    }
+  }
+
+  protected void removeTimerSuspendProcesDefJobs(ProcessDefinition processDefinition) {
+    List<JobEntity> timerJobs = getJobEntityManager()
+        .findJobsByTypeAndProcessDefinitionId(TimerSuspendProcessDefinitionHandler.TYPE, processDefinition.getId());
+    if (timerJobs != null && timerJobs.size() > 0) {
+      for (JobEntity timerJob : timerJobs) {
+        if (getEventDispatcher().isEnabled()) {
+          getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerJob, null, null, processDefinition.getId()));
+        }
+
+        getJobEntityManager().delete(timerJob);
+      }
+    }
+  }
+
   protected void removeTimerStartJobs(ProcessDefinition processDefinition) {
     List<TimerJobEntity> timerStartJobs = getTimerJobEntityManager()
         .findJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());

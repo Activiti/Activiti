@@ -60,7 +60,22 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
   public List<JobEntity> findJobsByExecutionId(final String executionId) {
     return getList("selectJobsByExecutionId", executionId, jobsByExecutionIdMatcher, true);
   }
-  
+
+  @Override
+  public List<JobEntity> findJobsByProcessDefinitionId(final String processDefinitionId) {
+    Map<String, String> params = new HashMap<String, String>(1);
+    params.put("processDefinitionId", processDefinitionId);
+    return getDbSqlSession().selectList("selectJobByProcessDefinitionId", params);
+  }
+
+  @Override
+  public List<JobEntity> findJobsByTypeAndProcessDefinitionId(final String jobHandlerType, final String processDefinitionId) {
+    Map<String, String> params = new HashMap<String, String>(2);
+    params.put("handlerType", jobHandlerType);
+    params.put("processDefinitionId", processDefinitionId);
+    return getDbSqlSession().selectList("selectJobByTypeAndProcessDefinitionId", params);
+  }
+
   @Override
   @SuppressWarnings("unchecked")
   public List<JobEntity> findJobsByProcessInstanceId(final String processInstanceId) {
