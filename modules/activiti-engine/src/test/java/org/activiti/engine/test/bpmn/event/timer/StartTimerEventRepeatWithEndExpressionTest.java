@@ -15,7 +15,6 @@ package org.activiti.engine.test.bpmn.event.timer;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -30,9 +29,7 @@ import org.activiti.engine.test.api.event.TestActivitiEntityEventListener;
 /**
  * @author Vasile Dirla
  */
-public class StartTimerEventRepeatWithEndExpressionTest {
-
- /*extends PluggableActivitiTestCase {
+public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivitiTestCase {
 
   private TestActivitiEntityEventListener listener;
 
@@ -52,15 +49,11 @@ public class StartTimerEventRepeatWithEndExpressionTest {
     }
   }
 
-  *//**
+  /**
    * Timer repetition
-   *//*
+   */
   public void testCycleDateStartTimerEvent() throws Exception {
     Clock previousClock = processEngineConfiguration.getClock();
-
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setAsyncJobLockTimeInMillis(2000);
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setTimerLockTimeInMillis(2000);
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setResetExpiredJobsInterval(2000);
 
     Clock testClock = new DefaultClockImpl();
 
@@ -99,17 +92,7 @@ public class StartTimerEventRepeatWithEndExpressionTest {
     // advance the clock to 11 dec -> the system will execute the pending
     // job and will create a new one
     moveByMinutes(60 * 24);
-    final long initialTime = processEngineConfiguration.getClock().getCurrentTime().getTime();
-    final long startDelta = new Date().getTime();
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(60000L, 100L, new Callable() {
-      @Override
-      public Object call() throws Exception {
-        long endDelta = new Date().getTime();
-        long delta = endDelta - startDelta;
-        processEngineConfiguration.getClock().setCurrentTime(new Date(initialTime+delta));
-        return null;
-      }
-    });
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000L, 200);
     
     // there must be a pending job because the endDate is not reached yet");
     assertEquals(1, managementService.createTimerJobQuery().count());
@@ -134,17 +117,7 @@ public class StartTimerEventRepeatWithEndExpressionTest {
     // ADVANCE THE CLOCK SO THE END DATE WILL BE REACHED
     // 12 dec (last execution)
     moveByMinutes(60 * 24);
-    final long initialTime1 = processEngineConfiguration.getClock().getCurrentTime().getTime();
-    final long startDelta1 = new Date().getTime();
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(60000L, 100L, new Callable() {
-      @Override
-      public Object call() throws Exception {
-        long endDelta = new Date().getTime();
-        long delta = endDelta - startDelta1;
-        processEngineConfiguration.getClock().setCurrentTime(new Date(initialTime1+delta));
-        return null;
-      }
-    });
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(2000, 200);
     
     // After the second startEvent Execution should have 2 process instances started
     // (since the first one was not completed)
@@ -226,6 +199,6 @@ public class StartTimerEventRepeatWithEndExpressionTest {
 
   private void moveByMinutes(int minutes) throws Exception {
     processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000))));
-  }*/
+  }
 
 }

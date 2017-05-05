@@ -27,7 +27,7 @@ import org.activiti.engine.management.TableMetaData;
  */
 public class ManagementServiceTest extends PluggableActivitiTestCase {
 
-/*  public void testTableCount() {
+  public void testTableCount() {
     Map<String, Long> tableCount = managementService.getTableCount();
 
     String tablePrefix = processEngineConfiguration.getDatabaseTablePrefix();
@@ -42,7 +42,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RE_PROCDEF"));
     assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_TASK"));
     assertEquals(new Long(0), tableCount.get(tablePrefix + "ACT_RU_IDENTITYLINK"));
-  }*/
+  }
 
   public void testGetTableMetaData() {
 
