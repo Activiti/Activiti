@@ -86,6 +86,14 @@ public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager
   }
 
   @Override
+  public HistoricTaskInstanceEntity findById(String taskId) {
+    if (getHistoryManager().isHistoryEnabled()) {
+      return historicTaskInstanceDataManager.findById(taskId);
+    }
+    return null;
+  }
+
+  @Override
   public void delete(String id) {
     if (getHistoryManager().isHistoryEnabled()) {
       HistoricTaskInstanceEntity historicTaskInstance = findById(id);
