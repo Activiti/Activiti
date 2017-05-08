@@ -12,7 +12,6 @@
  */
 package org.activiti5.engine.impl;
 
-import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
@@ -31,11 +30,8 @@ import org.activiti5.engine.impl.cmd.GetTableCountCmd;
 import org.activiti5.engine.impl.cmd.GetTableMetaDataCmd;
 import org.activiti5.engine.impl.cmd.GetTableNameCmd;
 import org.activiti5.engine.impl.cmd.SetJobRetriesCmd;
-import org.activiti5.engine.impl.db.DbSqlSession;
-import org.activiti5.engine.impl.db.DbSqlSessionFactory;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandConfig;
-import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.management.TableMetaData;
 import org.activiti5.engine.management.TablePageQuery;
 import org.activiti5.engine.runtime.JobQuery;
@@ -94,18 +90,6 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
     return commandExecutor.execute(new GetPropertiesCmd());
   }
 
-  public String databaseSchemaUpgrade(final Connection connection, final String catalog, final String schema) {
-    CommandConfig config = commandExecutor.getDefaultConfig().transactionNotSupported();
-    return commandExecutor.execute(config, new Command<String>(){
-      public String execute(CommandContext commandContext) {
-        DbSqlSessionFactory dbSqlSessionFactory = (DbSqlSessionFactory) commandContext.getSessionFactories().get(DbSqlSession.class);
-        DbSqlSession dbSqlSession = new DbSqlSession(dbSqlSessionFactory, connection, catalog, schema);
-        commandContext.getSessions().put(DbSqlSession.class, dbSqlSession);
-        return dbSqlSession.dbSchemaUpdate();
-      }
-    });
-  }
-  
   public <T> T executeCommand(Command<T> command) {
     if (command == null) {
       throw new ActivitiIllegalArgumentException("The command is null");

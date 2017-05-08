@@ -15,14 +15,10 @@ package org.activiti5.engine.impl.db;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,7 +35,6 @@ import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.ActivitiOptimisticLockingException;
 import org.activiti5.engine.ActivitiWrongDbException;
 import org.activiti5.engine.ProcessEngine;
-import org.activiti5.engine.ProcessEngineConfiguration;
 import org.activiti5.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti5.engine.impl.DeploymentQueryImpl;
 import org.activiti5.engine.impl.ExecutionQueryImpl;
@@ -56,14 +51,9 @@ import org.activiti5.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti5.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti5.engine.impl.TaskQueryImpl;
 import org.activiti5.engine.impl.UserQueryImpl;
-import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.context.Context;
-import org.activiti5.engine.impl.db.upgrade.DbUpgradeStep;
 import org.activiti5.engine.impl.interceptor.Session;
-import org.activiti5.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.activiti5.engine.impl.util.IoUtil;
-import org.activiti5.engine.impl.util.ReflectUtil;
 import org.activiti5.engine.impl.variable.DeserializedObject;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
@@ -84,40 +74,6 @@ public class DbSqlSession implements Session {
   protected static final Pattern CLEAN_VERSION_REGEX = Pattern.compile("\\d\\.\\d*");
   
   protected static final List<ActivitiVersion> ACTIVITI_VERSIONS = new ArrayList<ActivitiVersion>();
-  static {
-	  
-	  /* Previous */
-	  
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.7"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.8"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.9"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.10"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.11"));
-	  
-	  // 5.12.1 was a bugfix release on 5.12 and did NOT change the version in ACT_GE_PROPERTY
-	  // On top of that, DB2 create script for 5.12.1 was shipped with a 'T' suffix ...
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.12", Arrays.asList("5.12.1", "5.12T")));
-	  
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.13"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.14"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.15"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.15.1"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.1"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.2-SNAPSHOT"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.2"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.3.0"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.4.0"));
-
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.17.0.0"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.17.0.1"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.17.0.2"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.18.0.0"));
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.18.0.1"));
-	  
-	  /* Current */
-	  ACTIVITI_VERSIONS.add(new ActivitiVersion(ProcessEngine.VERSION));
-  }
 
   protected SqlSession sqlSession;
   protected DbSqlSessionFactory dbSqlSessionFactory;
@@ -1027,135 +983,9 @@ public class DbSqlSession implements Session {
     return (String) sqlSession.selectOne(selectSchemaVersionStatement);
   }
 
-  public void dbSchemaCreate() {
-    if (isEngineTablePresent()) {
-      String dbVersion = getDbVersion();
-      if (!ProcessEngine.VERSION.equals(dbVersion)) {
-        throw new ActivitiWrongDbException(ProcessEngine.VERSION, dbVersion);
-      }
-    } else {
-      dbSchemaCreateEngine();
-    }
-
-    if (dbSqlSessionFactory.isDbHistoryUsed()) {
-      dbSchemaCreateHistory();
-    }
-
-    if (dbSqlSessionFactory.isDbIdentityUsed()) {
-      dbSchemaCreateIdentity();
-    }
-  }
-
-  protected void dbSchemaCreateIdentity() {
-    executeMandatorySchemaResource("create", "identity");
-  }
-
-  protected void dbSchemaCreateHistory() {
-    executeMandatorySchemaResource("create", "history");
-  }
-
-  protected void dbSchemaCreateEngine() {
-    executeMandatorySchemaResource("create", "engine");
-  }
-
-  public void dbSchemaDrop() {
-    executeMandatorySchemaResource("drop", "engine");
-    if (dbSqlSessionFactory.isDbHistoryUsed()) {
-      executeMandatorySchemaResource("drop", "history");
-    }
-    if (dbSqlSessionFactory.isDbIdentityUsed()) {
-      executeMandatorySchemaResource("drop", "identity");
-    }
-  }
-
-  public void dbSchemaPrune() {
-    if (isHistoryTablePresent() && !dbSqlSessionFactory.isDbHistoryUsed()) {
-      executeMandatorySchemaResource("drop", "history");
-    }
-    if (isIdentityTablePresent() && dbSqlSessionFactory.isDbIdentityUsed()) {
-      executeMandatorySchemaResource("drop", "identity");
-    }
-  }
-
-  public void executeMandatorySchemaResource(String operation, String component) {
-    executeSchemaResource(operation, component, getResourceForDbOperation(operation, operation, component), false);
-  }
-
   public static String[] JDBC_METADATA_TABLE_TYPES = {"TABLE"};
 
-	public String dbSchemaUpdate() {
-
-		String feedback = null;
-		boolean isUpgradeNeeded = false;
-		int matchingVersionIndex = -1;
-
-		if (isEngineTablePresent()) {
-
-			PropertyEntity dbVersionProperty = selectById(PropertyEntity.class,"schema.version");
-			String dbVersion = dbVersionProperty.getValue();
-
-			// Determine index in the sequence of Activiti releases
-			int index = 0;
-			while (matchingVersionIndex < 0 && index < ACTIVITI_VERSIONS.size()) {
-				if (ACTIVITI_VERSIONS.get(index).matches(dbVersion)) {
-					matchingVersionIndex = index;
-				} else {
-					index++;
-				}
-			}
-
-			// Exception when no match was found: unknown/unsupported version
-			if (matchingVersionIndex < 0) {
-				throw new ActivitiException(
-				    "Could not update Activiti database schema: unknown version from database: '"
-				        + dbVersion + "'");
-			}
-
-			isUpgradeNeeded = (matchingVersionIndex != (ACTIVITI_VERSIONS.size() - 1));
-
-			if (isUpgradeNeeded) {
-				dbVersionProperty.setValue(ProcessEngine.VERSION);
-
-				PropertyEntity dbHistoryProperty;
-				if ("5.0".equals(dbVersion)) {
-					dbHistoryProperty = new PropertyEntity("schema.history", "create(5.0)");
-					insert(dbHistoryProperty);
-				} else {
-					dbHistoryProperty = selectById(PropertyEntity.class, "schema.history");
-				}
-
-				// Set upgrade history
-				String dbHistoryValue = dbHistoryProperty.getValue() + " upgrade(" + dbVersion + "->" + ProcessEngine.VERSION + ")";
-				dbHistoryProperty.setValue(dbHistoryValue);
-
-				// Engine upgrade
-				dbSchemaUpgrade("engine", matchingVersionIndex);
-				feedback = "upgraded Activiti from " + dbVersion + " to "+ ProcessEngine.VERSION;
-			}
-
-		} else {
-			dbSchemaCreateEngine();
-		}
-		if (isHistoryTablePresent()) {
-			if (isUpgradeNeeded) {
-				dbSchemaUpgrade("history", matchingVersionIndex);
-			}
-		} else if (dbSqlSessionFactory.isDbHistoryUsed()) {
-			dbSchemaCreateHistory();
-		}
-    
-    if (isIdentityTablePresent()) {
-      if (isUpgradeNeeded) {
-        dbSchemaUpgrade("identity", matchingVersionIndex);
-      }
-    } else if (dbSqlSessionFactory.isDbIdentityUsed()) {
-      dbSchemaCreateIdentity();
-    }
-    
-    return feedback;
-  }
-
-  public boolean isEngineTablePresent(){
+	public boolean isEngineTablePresent(){
     return isTablePresent("ACT_RU_EXECUTION");
   }
   public boolean isHistoryTablePresent(){
@@ -1255,178 +1085,9 @@ public class DbSqlSession implements Session {
     return dbSqlSessionFactory.getDatabaseTablePrefix() + tableName;    
   }
   
-  protected void dbSchemaUpgrade(final String component, final int currentDatabaseVersionsIndex) {
-  	ActivitiVersion activitiVersion = ACTIVITI_VERSIONS.get(currentDatabaseVersionsIndex);
-  	String dbVersion = activitiVersion.getMainVersion();
-    log.info("upgrading activiti {} schema from {} to {}", component, dbVersion, ProcessEngine.VERSION);
-    
-    // Actual execution of schema DDL SQL
-    for (int i=currentDatabaseVersionsIndex + 1; i<ACTIVITI_VERSIONS.size(); i++) {
-    	String nextVersion = ACTIVITI_VERSIONS.get(i).getMainVersion();
-    	
-    	// Taking care of -SNAPSHOT version in development
-      if (nextVersion.endsWith("-SNAPSHOT")) {
-      	nextVersion = nextVersion.substring(0, nextVersion.length()-"-SNAPSHOT".length());
-      }
-      
-      dbVersion = dbVersion.replace(".", "");
-      nextVersion = nextVersion.replace(".", "");
-      log.info("Upgrade needed: {} -> {}. Looking for schema update resource for component '{}'", dbVersion, nextVersion, component);
-    	executeSchemaResource("upgrade", component, getResourceForDbOperation("upgrade", "upgradestep." + dbVersion + ".to." + nextVersion, component), true);
-    	dbVersion = nextVersion;
-    }
-  }
-  
   public String getResourceForDbOperation(String directory, String operation, String component) {
     String databaseType = dbSqlSessionFactory.getDatabaseType();
     return "org/activiti/db/" + directory + "/activiti." + databaseType + "." + operation + "."+component+".sql";
-  }
-
-  public void executeSchemaResource(String operation, String component, String resourceName, boolean isOptional) {
-    InputStream inputStream = null;
-    try {
-      inputStream = ReflectUtil.getResourceAsStream(resourceName);
-      if (inputStream == null) {
-        if (isOptional) {
-          log.info("no schema resource {} for {}", resourceName, operation);
-        } else {
-          throw new ActivitiException("resource '" + resourceName + "' is not available");
-        }
-      } else {
-        executeSchemaResource(operation, component, resourceName, inputStream);
-      }
-
-    } finally {
-      IoUtil.closeSilently(inputStream);
-    }
-  }
-
-  private void executeSchemaResource(String operation, String component, String resourceName, InputStream inputStream) {
-    log.info("performing {} on {} with resource {}", operation, component, resourceName);
-    String sqlStatement = null;
-    String exceptionSqlStatement = null;
-    try {
-      Connection connection = sqlSession.getConnection();
-      Exception exception = null;
-      byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
-      String ddlStatements = new String(bytes);
-      String databaseType = dbSqlSessionFactory.getDatabaseType();
-      
-      // Special DDL handling for certain databases
-      try {
-	    	if ("mysql".equals(databaseType)) {
-	    	  DatabaseMetaData databaseMetaData = connection.getMetaData();
-	    	  int majorVersion = databaseMetaData.getDatabaseMajorVersion();
-	    	  int minorVersion = databaseMetaData.getDatabaseMinorVersion();
-	    	  log.info("Found MySQL: majorVersion=" + majorVersion + " minorVersion=" + minorVersion);
-		      
-	    	  // Special care for MySQL < 5.6
-	    	  if (majorVersion <= 5 && minorVersion < 6) {
-	    	    ddlStatements = updateDdlForMySqlVersionLowerThan56(ddlStatements);
-	    	  }
-	    	}
-      } catch (Exception e) {
-        log.info("Could not get database metadata", e);
-      }
-      
-      BufferedReader reader = new BufferedReader(new StringReader(ddlStatements));
-      String line = readNextTrimmedLine(reader);
-      boolean inOraclePlsqlBlock = false;
-      while (line != null) {
-        if (line.startsWith("# ")) {
-          log.debug(line.substring(2));
-          
-        } else if (line.startsWith("-- ")) {
-          log.debug(line.substring(3));
-          
-        } else if (line.startsWith("execute java ")) {
-          String upgradestepClassName = line.substring(13).trim();
-          DbUpgradeStep dbUpgradeStep = null;
-          try {
-            dbUpgradeStep = (DbUpgradeStep) ReflectUtil.instantiate(upgradestepClassName);
-          } catch (ActivitiException e) {
-            throw new ActivitiException("database update java class '"+upgradestepClassName+"' can't be instantiated: "+e.getMessage(), e);
-          }
-          try {
-            log.debug("executing upgrade step java class {}", upgradestepClassName);
-            dbUpgradeStep.execute(this);
-          } catch (Exception e) {
-            throw new ActivitiException("error while executing database update java class '"+upgradestepClassName+"': "+e.getMessage(), e);
-          }
-          
-        } else if (line.length()>0) {
-          
-          if ("oracle".equals(databaseType) && line.startsWith("begin")) {
-            inOraclePlsqlBlock = true;
-            sqlStatement = addSqlStatementPiece(sqlStatement, line);
-            
-          } else if ((line.endsWith(";") && inOraclePlsqlBlock == false) ||
-              (line.startsWith("/") && inOraclePlsqlBlock == true)) {
-            
-            if (inOraclePlsqlBlock) {
-              inOraclePlsqlBlock = false;
-            } else {
-              sqlStatement = addSqlStatementPiece(sqlStatement, line.substring(0, line.length()-1));
-            }
-            
-            Statement jdbcStatement = connection.createStatement();
-            try {
-              // no logging needed as the connection will log it
-              log.debug("SQL: {}", sqlStatement);
-              jdbcStatement.execute(sqlStatement);
-              jdbcStatement.close();
-            } catch (Exception e) {
-              if (exception == null) {
-                exception = e;
-                exceptionSqlStatement = sqlStatement;
-              }
-              log.error("problem during schema {}, statement {}", operation, sqlStatement, e);
-            } finally {
-              sqlStatement = null; 
-            }
-          } else {
-            sqlStatement = addSqlStatementPiece(sqlStatement, line);
-          }
-        }
-        
-        line = readNextTrimmedLine(reader);
-      }
-
-      if (exception != null) {
-        throw exception;
-      }
-      
-      log.debug("activiti db schema {} for component {} successful", operation, component);
-      
-    } catch (Exception e) {
-      throw new ActivitiException("couldn't "+operation+" db schema: "+exceptionSqlStatement, e);
-    }
-  }
-  
-  /**
-   * MySQL is funny when it comes to timestamps and dates.
-   *  
-   * More specifically, for a DDL statement like 'MYCOLUMN timestamp(3)':
-   *   - MySQL 5.6.4+ has support for timestamps/dates with millisecond (or smaller) precision. 
-   *     The DDL above works and the data in the table will have millisecond precision
-   *   - MySQL < 5.5.3 allows the DDL statement, but ignores it.
-   *     The DDL above works but the data won't have millisecond precision
-   *   - MySQL 5.5.3 < [version] < 5.6.4 gives and exception when using the DDL above.
-   *   
-   * Also, the 5.5 and 5.6 branches of MySQL are both actively developed and patched.
-   * 
-   * Hence, when doing auto-upgrade/creation of the Activiti tables, the default 
-   * MySQL DDL file is used and all timestamps/datetimes are converted to not use the 
-   * millisecond precision by string replacement done in the method below.
-   * 
-   * If using the DDL files directly (which is a sane choice in production env.),
-   * there is a distinction between MySQL version < 5.6.
-   */
-  protected String updateDdlForMySqlVersionLowerThan56(String ddlStatements) {
-	  return ddlStatements.replace("timestamp(3)", "timestamp")
-			  			  .replace("datetime(3)", "datetime")
-			  			  .replace("TIMESTAMP(3)", "TIMESTAMP")
-			  			  .replace("DATETIME(3)", "DATETIME");
   }
 
   protected String addSqlStatementPiece(String sqlStatement, String line) {
@@ -1464,37 +1125,7 @@ public class DbSqlSession implements Session {
     }
     return false;
   }
-  
-  public void performSchemaOperationsProcessEngineBuild() {
-    String databaseSchemaUpdate = Context.getProcessEngineConfiguration().getDatabaseSchemaUpdate();
-    if (ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)) {
-      try {
-        dbSchemaDrop();
-      } catch (RuntimeException e) {
-        // ignore
-      }
-    }
-    if ( org.activiti5.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate) 
-         || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_DROP_CREATE.equals(databaseSchemaUpdate)
-         || ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE.equals(databaseSchemaUpdate)
-       ) {
-      dbSchemaCreate();
-      
-    } else if (org.activiti5.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE.equals(databaseSchemaUpdate)) {
-      dbSchemaCheckVersion();
-      
-    } else if (ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE.equals(databaseSchemaUpdate)) {
-      dbSchemaUpdate();
-    }
-  }
 
-  public void performSchemaOperationsProcessEngineClose() {
-    String databaseSchemaUpdate = Context.getProcessEngineConfiguration().getDatabaseSchemaUpdate();
-    if (org.activiti5.engine.ProcessEngineConfiguration.DB_SCHEMA_UPDATE_CREATE_DROP.equals(databaseSchemaUpdate)) {
-      dbSchemaDrop();
-    }
-  }
-  
   public <T> T getCustomMapper(Class<T> type) {
 	  return sqlSession.getMapper(type);
   }

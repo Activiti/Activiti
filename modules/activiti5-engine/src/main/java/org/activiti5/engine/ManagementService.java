@@ -115,9 +115,6 @@ public interface ManagementService {
   /** get the list of properties. */
   Map<String, String> getProperties();
   
-  /** programmatic schema update on a given connection returning feedback about what happened */
-  String databaseSchemaUpgrade(Connection connection, String catalog, String schema);
-  
   /**
    * Executes a given command with the default {@link CommandConfig}.
    * @param command the command, cannot be null.
