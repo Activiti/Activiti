@@ -45,7 +45,8 @@ public class VariableScopeElResolver extends ELResolver {
   }
 
   public Object getValue(ELContext context, Object base, Object property)  {
-    
+    if (variableScope == null) return null;
+
     if (base == null) {
       String variable = (String) property; // according to javadoc, can only be a String
       

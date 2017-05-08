@@ -101,6 +101,10 @@ public class ExpressionManager {
     return elContext;
   }
 
+  public ELResolver createElResolver(){
+    return createElResolver(null);
+  }
+
   protected ActivitiElContext createElContext(VariableScope variableScope) {
     ELResolver elResolver = createElResolver(variableScope);
     return new ActivitiElContext(elResolver);
