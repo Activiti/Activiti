@@ -4,7 +4,7 @@
   	
   <property file="${user.home}/.activiti/build.properties" />
   <property file="../distro/src/setup/build.properties" />
-  <property name="activiti.version" value="5.16.1" />
+  <property name="activiti.version" value="6.0.0" />
   <property name="activiti.home" value="../distro/target/activiti-${activiti.version}" /> 
   <property name="macos.browser" value="/usr/bin/open" />
   <property name="windows.browser" value="C:/Program Files/Mozilla Firefox/firefox.exe" />
@@ -39,16 +39,6 @@
   <target name="test.upgrade" depends="build.clean.distro">
     <copy file="../distro/target/activiti-${activiti.version}.zip" todir="${downloads.dir}" />
   	<ant antfile="upgrade/build.xml" target="upgrade" inheritall="false" />
-  </target>
-  
-  <target name="build.userguide">
-    <ant antfile="../userguide/build.xml"
-         target="build.userguide"
-         inheritall="false">
-    </ant>
-    <sleep seconds="1"/>
-    <property name="url" value="file://${basedir}/../userguide/target/html/en/index.html" />
-    <antcall target="open.html.page"/>
   </target>
   
   <target name="test.demo.setup.refresh">
