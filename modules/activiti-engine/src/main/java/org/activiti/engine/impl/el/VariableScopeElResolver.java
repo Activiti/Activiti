@@ -75,7 +75,7 @@ public class VariableScopeElResolver extends ELResolver {
   }
 
   public boolean isReadOnly(ELContext context, Object base, Object property) {
-    if (base == null) {
+    if (base == null && variableScope != null) {
       String variable = (String) property;
       return !variableScope.hasVariable(variable);
     }
@@ -83,7 +83,7 @@ public class VariableScopeElResolver extends ELResolver {
   }
 
   public void setValue(ELContext context, Object base, Object property, Object value) {
-    if (base == null) {
+    if (base == null && variableScope != null) {
       String variable = (String) property;
       if (variableScope.hasVariable(variable)) {
         variableScope.setVariable(variable, value);
