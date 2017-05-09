@@ -84,11 +84,6 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testAsyncServiceMultiInstance() {
-
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setTimerLockTimeInMillis(1000);
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setAsyncJobLockTimeInMillis(1000);
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setResetExpiredJobsInterval(2000);
-
     INVOCATION = false;
     // start process
     runtimeService.startProcessInstanceByKey("asyncService");
@@ -97,7 +92,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // the service was not invoked:
     assertFalse(INVOCATION);
 
-    waitForJobExecutorToProcessAllJobs(10000L, 100L);
+    waitForJobExecutorToProcessAllJobs(5000L, 100L);
 
     // the service was invoked
     assertTrue(INVOCATION);
@@ -282,7 +277,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // now there should be one job in the database:
     assertEquals(1, managementService.createJobQuery().count());
 
-    waitForJobExecutorToProcessAllJobs(60000L, 250L);
+    waitForJobExecutorToProcessAllJobs(20000L, 250L);
 
     assertEquals(0, managementService.createJobQuery().count());
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());

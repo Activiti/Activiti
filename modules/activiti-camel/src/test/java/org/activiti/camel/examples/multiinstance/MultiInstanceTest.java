@@ -55,7 +55,7 @@ public class MultiInstanceTest extends SpringActivitiTestCase {
         .processInstanceId(processInstance.getId())
         .activityId("serviceTask1").count());
     
-    waitForJobExecutorToProcessAllJobs(30000, 500);
+    waitForJobExecutorToProcessAllJobs(3000, 500);
     int counter = 0;
     long processInstanceCount = 1;
     while (processInstanceCount == 1 && counter < 20) {

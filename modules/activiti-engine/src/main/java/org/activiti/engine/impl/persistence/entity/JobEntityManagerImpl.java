@@ -101,7 +101,7 @@ public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> imple
   public List<JobEntity> findJobsByTypeAndProcessDefinitionId(String jobTypeTimer, String id) {
     return jobDataManager.findJobsByTypeAndProcessDefinitionId(jobTypeTimer, id);
   }
-  
+
   @Override
   public List<JobEntity> findJobsByProcessInstanceId(String processInstanceId) {
     return jobDataManager.findJobsByProcessInstanceId(processInstanceId);

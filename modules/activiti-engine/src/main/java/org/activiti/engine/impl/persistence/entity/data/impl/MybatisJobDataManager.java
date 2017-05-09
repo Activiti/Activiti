@@ -75,7 +75,7 @@ public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implem
     params.put("processDefinitionId", processDefinitionId);
     return getDbSqlSession().selectList("selectJobByTypeAndProcessDefinitionId", params);
   }
-  
+
   @Override
   @SuppressWarnings("unchecked")
   public List<JobEntity> findJobsByProcessInstanceId(final String processInstanceId) {

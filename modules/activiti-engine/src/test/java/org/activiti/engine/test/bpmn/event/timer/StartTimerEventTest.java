@@ -37,9 +37,6 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testDurationStartTimerEvent() throws Exception {
-      processEngine.getProcessEngineConfiguration().getAsyncExecutor().setTimerLockTimeInMillis(1000);
-      processEngine.getProcessEngineConfiguration().getAsyncExecutor().setAsyncJobLockTimeInMillis(1000);
-      processEngine.getProcessEngineConfiguration().getAsyncExecutor().setResetExpiredJobsInterval(2000);
 
     // Set the clock fixed
     Date startTime = new Date();
@@ -49,19 +46,8 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobQuery.count());
 
     // After setting the clock to time '50 minutes and 5 seconds', the second timer should fire
-      final long initialTime = startTime.getTime() + ((50 * 60 * 1000) + 5000);
-
-    processEngineConfiguration.getClock().setCurrentTime(new Date(initialTime));
-       final long startDelta = new Date().getTime();
-      waitForJobExecutorToProcessAllJobs(60000L, 100L, new Callable() {
-          @Override
-          public Object call() throws Exception {
-              long endDelta = new Date().getTime();
-              long delta = endDelta - startDelta;
-              processEngineConfiguration.getClock().setCurrentTime(new Date(initialTime+delta));
-              return null;
-          }
-      });
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
+    waitForJobExecutorToProcessAllJobs(5000L, 200L);
 
     List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
     assertEquals(1, pi.size());
@@ -72,27 +58,12 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testFixedDateStartTimerEvent() throws Exception {
-
-      processEngine.getProcessEngineConfiguration().getAsyncExecutor().setTimerLockTimeInMillis(1000);
-	  processEngine.getProcessEngineConfiguration().getAsyncExecutor().setAsyncJobLockTimeInMillis(1000);
-	  processEngine.getProcessEngineConfiguration().getAsyncExecutor().setResetExpiredJobsInterval(2000);
-
     // After process start, there should be timer created
     TimerJobQuery jobQuery = managementService.createTimerJobQuery();
     assertEquals(1, jobQuery.count());
 
-    final Date startTime = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30");
-    processEngineConfiguration.getClock().setCurrentTime(startTime);
-      final long startDelta = new Date().getTime();
-      waitForJobExecutorToProcessAllJobs(60000L, 100L, new Callable() {
-          @Override
-          public Object call() throws Exception {
-              long endDelta = new Date().getTime();
-              long delta = endDelta - startDelta;
-              processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime()+delta));
-              return null;
-          }
-      });
+    processEngineConfiguration.getClock().setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
+    waitForJobExecutorToProcessAllJobs(5000L, 200L);
 
     List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
     assertEquals(1, pi.size());
@@ -102,7 +73,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
   // FIXME: This test likes to run in an endless loop when invoking the
   // waitForJobExecutorOnCondition method
- /* @Deployment
+  @Deployment
   public void testCycleDateStartTimerEvent() throws Exception {
     processEngineConfiguration.getClock().setCurrentTime(new Date());
 
@@ -131,7 +102,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobQuery.count());
     // have to manually delete pending timer
     cleanDB();
-  }*/
+  }
 
   private void moveByMinutes(int minutes) throws Exception {
     processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000) + 5000)));
@@ -160,25 +131,12 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testExpressionStartTimerEvent() throws Exception {
-      processEngine.getProcessEngineConfiguration().getAsyncExecutor().setTimerLockTimeInMillis(1000);
-      processEngine.getProcessEngineConfiguration().getAsyncExecutor().setAsyncJobLockTimeInMillis(1000);
-      processEngine.getProcessEngineConfiguration().getAsyncExecutor().setResetExpiredJobsInterval(2000);
-
-      // ACT-1415: fixed start-date is an expression
+    // ACT-1415: fixed start-date is an expression
     TimerJobQuery jobQuery = managementService.createTimerJobQuery();
     assertEquals(1, jobQuery.count());
-     final long  initialTime = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30").getTime();
-    processEngineConfiguration.getClock().setCurrentTime(new Date(initialTime));
-      final long startDelta = new Date().getTime();
-      waitForJobExecutorToProcessAllJobs(60000L, 100L, new Callable() {
-          @Override
-          public Object call() throws Exception {
-              long endDelta = new Date().getTime();
-              long delta = endDelta - startDelta;
-              processEngineConfiguration.getClock().setCurrentTime(new Date(initialTime+delta));
-              return null;
-          }
-      });
+
+    processEngineConfiguration.getClock().setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
+    waitForJobExecutorToProcessAllJobs(5000L, 200L);
 
     List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
     assertEquals(1, pi.size());
@@ -186,13 +144,9 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(0, jobQuery.count());
   }
 
-/*  @Deployment
+  @Deployment
   public void testVersionUpgradeShouldCancelJobs() throws Exception {
-      processEngine.getProcessEngineConfiguration().getAsyncExecutor().setTimerLockTimeInMillis(1000);
-      processEngine.getProcessEngineConfiguration().getAsyncExecutor().setAsyncJobLockTimeInMillis(1000);
-      processEngine.getProcessEngineConfiguration().getAsyncExecutor().setResetExpiredJobsInterval(2000);
-
-      processEngineConfiguration.getClock().setCurrentTime(new Date());
+    processEngineConfiguration.getClock().setCurrentTime(new Date());
 
     // After process start, there should be timer created
     TimerJobQuery jobQuery = managementService.createTimerJobQuery();
@@ -205,7 +159,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(1, jobQuery.count());
 
     moveByMinutes(5);
-    waitForJobExecutorOnCondition(60000, 500, new Callable<Boolean>() {
+    waitForJobExecutorOnCondition(10000, 500, new Callable<Boolean>() {
       public Boolean call() throws Exception {
         // we check that correct version was started
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").singleResult();
@@ -254,7 +208,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
 
     // No new jobs should have been created
     assertEquals(1, jobQuery.count());
-  }*/
+  }
 
   // Test for ACT-1533
   public void testTimerShouldNotBeRemovedWhenUndeployingOldVersion() throws Exception {

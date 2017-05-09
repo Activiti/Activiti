@@ -57,7 +57,7 @@ public interface JobEntityManager extends EntityManager<JobEntity> {
    * Returns all {@link JobEntity} instances related to on {@link ProcessDefinitionEntity}.
    */
   List<JobEntity> findJobsByTypeAndProcessDefinitionId(String jobTypeTimer, String id);
-  
+
   /**
    * Returns all {@link JobEntity} instances related to one process instance {@link ExecutionEntity}. 
    */

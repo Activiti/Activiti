@@ -15,7 +15,6 @@ package org.activiti.engine.test.api.repository;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -268,10 +267,6 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
   public void testDelayedSuspendProcessDefinition() {
 
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setTimerLockTimeInMillis(1000);
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setAsyncJobLockTimeInMillis(1000);
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setResetExpiredJobsInterval(2000);
-
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     Date startTime = new Date();
     processEngineConfiguration.getClock().setCurrentTime(startTime);
@@ -290,19 +285,9 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(1, managementService.createTimerJobQuery().processDefinitionId(processDefinition.getId()).count());
 
     // Move clock 8 days further and let job executor run
-    final long eightDaysSinceStartTime = oneWeekFromStartTime + (24 * 60 * 60 * 1000);
+    long eightDaysSinceStartTime = oneWeekFromStartTime + (24 * 60 * 60 * 1000);
     processEngineConfiguration.getClock().setCurrentTime(new Date(eightDaysSinceStartTime));
-    final long startDelta = new Date().getTime();
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(60000L, 100L, new Callable() {
-      @Override
-      public Object call() throws Exception {
-        long endDelta = new Date().getTime();
-        long delta = endDelta - startDelta;
-        processEngineConfiguration.getClock().setCurrentTime(new Date(eightDaysSinceStartTime+delta));
-        return null;
-      }
-    });
-
+    waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
     // verify job is now removed
     assertEquals(0, managementService.createJobQuery().processDefinitionId(processDefinition.getId()).count());
@@ -361,18 +346,9 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(1, managementService.createTimerJobQuery().processDefinitionId(processDefinition.getId()).count());
 
     // Move clock 9 days further and let job executor run
-    final long eightDaysSinceStartTime = oneWeekFromStartTime + (2 * 24 * 60 * 60 * 1000);
+    long eightDaysSinceStartTime = oneWeekFromStartTime + (2 * 24 * 60 * 60 * 1000);
     processEngineConfiguration.getClock().setCurrentTime(new Date(eightDaysSinceStartTime));
-    final long startDelta = new Date().getTime();
-    waitForJobExecutorToProcessAllJobs(60000L, 100L, new Callable() {
-      @Override
-      public Object call() throws Exception {
-        long endDelta = new Date().getTime();
-        long delta = endDelta - startDelta;
-        processEngineConfiguration.getClock().setCurrentTime(new Date(eightDaysSinceStartTime+delta));
-        return null;
-      }
-    });
+    waitForJobExecutorToProcessAllJobs(30000L, 50L);
 
     // verify job is now removed
     assertEquals(0, managementService.createJobQuery().processDefinitionId(processDefinition.getId()).count());
@@ -430,18 +406,9 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     repositoryService.activateProcessDefinitionById(processDefinition.getId(), false, new Date(oneDayFromStart));
 
     // Move clock two days and let job executor run
-    final long twoDaysFromStart = startTime.getTime() + (2 * 24 * 60 * 60 * 1000);
+    long twoDaysFromStart = startTime.getTime() + (2 * 24 * 60 * 60 * 1000);
     processEngineConfiguration.getClock().setCurrentTime(new Date(twoDaysFromStart));
-    final long startDelta = new Date().getTime();
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(60000L, 100L, new Callable() {
-      @Override
-      public Object call() throws Exception {
-        long endDelta = new Date().getTime();
-        long delta = endDelta - startDelta;
-        processEngineConfiguration.getClock().setCurrentTime(new Date(twoDaysFromStart+delta));
-        return null;
-      }
-    });
+    waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
     // Starting a process instance should now succeed
     runtimeService.startProcessInstanceById(processDefinition.getId());
@@ -492,16 +459,8 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
   }
 
   public void testDelayedSuspendMultipleProcessDefinitionsByKey() {
-    // Clean DB
-    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
-    }
 
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setTimerLockTimeInMillis(1000);
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setAsyncJobLockTimeInMillis(1000);
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setResetExpiredJobsInterval(2000);
-
-    final Date startTime = new Date();
+    Date startTime = new Date();
     processEngineConfiguration.getClock().setCurrentTime(startTime);
     final long hourInMs = 60 * 60 * 1000;
 
@@ -531,19 +490,8 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     }
 
     // Move time 3 hours and run job executor
-    final long initialDate = startTime.getTime() + (3 * hourInMs);
-    processEngineConfiguration.getClock().setCurrentTime(new Date(initialDate));
-    final long startDelta = new Date().getTime();
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(60000L, 100L, new Callable() {
-      @Override
-      public Object call() throws Exception {
-        long endDelta = new Date().getTime();
-        long delta = endDelta - startDelta;
-        processEngineConfiguration.getClock().setCurrentTime(new Date(initialDate+delta));
-        return null;
-      }
-    });
-
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (3 * hourInMs)));
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(30000L, 100L);
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().suspended().count());
@@ -557,18 +505,8 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createProcessInstanceQuery().suspended().count());
 
     // Move time 6 hours and run job executor
-    final long initialDate1 = startTime.getTime() + (6 * hourInMs);
-    processEngineConfiguration.getClock().setCurrentTime(new Date(initialDate1));
-    final long startDelta1 = new Date().getTime();
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(60000L, 100L,  new Callable() {
-      @Override
-      public Object call() throws Exception {
-        long endDelta = new Date().getTime();
-        long delta = endDelta - startDelta1;
-        processEngineConfiguration.getClock().setCurrentTime(new Date(initialDate1+delta));
-        return null;
-      }
-    });
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (6 * hourInMs)));
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(60000L, 100L);
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().suspended().count());

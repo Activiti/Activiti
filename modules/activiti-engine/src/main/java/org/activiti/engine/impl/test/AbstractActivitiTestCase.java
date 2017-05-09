@@ -293,11 +293,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
   }
 
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    waitForJobExecutorToProcessAllJobs( maxMillisToWait, intervalMillis, null);
-  }
-
-  public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis, Callable callback) {
-    JobTestHelper.waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, callback);
+    JobTestHelper.waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis);
   }
 
   public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
@@ -305,18 +301,11 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
   }
 
   public void executeJobExecutorForTime(long maxMillisToWait, long intervalMillis) {
-    executeJobExecutorForTime( maxMillisToWait,  intervalMillis, null);
-  }
-
-  public void executeJobExecutorForTime(long maxMillisToWait, long intervalMillis, Callable callback) {
-    JobTestHelper.executeJobExecutorForTime(processEngineConfiguration, maxMillisToWait, intervalMillis, callback);
+    JobTestHelper.executeJobExecutorForTime(processEngineConfiguration, maxMillisToWait, intervalMillis);
   }
   
   public void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(long maxMillisToWait, long intervalMillis) {
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(maxMillisToWait, intervalMillis, null);
-  }
-  public void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(long maxMillisToWait, long intervalMillis, Callable callback) {
-    JobTestHelper.waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, callback);
+    JobTestHelper.waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis);
   }
 
   /**

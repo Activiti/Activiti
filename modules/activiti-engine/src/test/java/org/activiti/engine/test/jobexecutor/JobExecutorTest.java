@@ -18,7 +18,6 @@ import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.Callable;
 
 import org.activiti.engine.impl.asyncexecutor.JobManager;
 import org.activiti.engine.impl.interceptor.Command;
@@ -32,14 +31,6 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
 public class JobExecutorTest extends JobExecutorTestCase {
 
   public void testBasicJobExecutorOperation() throws Exception {
-    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
-    }
-
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setTimerLockTimeInMillis(1000);
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setAsyncJobLockTimeInMillis(1000);
-    processEngine.getProcessEngineConfiguration().getAsyncExecutor().setResetExpiredJobsInterval(2000);
-
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     commandExecutor.execute(new Command<Void>() {
       public Void execute(CommandContext commandContext) {
@@ -59,20 +50,9 @@ public class JobExecutorTest extends JobExecutorTestCase {
 
     GregorianCalendar currentCal = new GregorianCalendar();
     currentCal.add(Calendar.MINUTE, 1);
+    processEngineConfiguration.getClock().setCurrentTime(currentCal.getTime());
 
-    final long initialDate1 = currentCal.getTime().getTime();
-    processEngineConfiguration.getClock().setCurrentTime(new Date(initialDate1));
-
-    final long startDelta1 = new Date().getTime();
-    waitForJobExecutorToProcessAllJobs(20000L, 200L, new Callable<Object>(){
-      @Override
-      public Object call() throws Exception {
-        long endDelta = new Date().getTime();
-        long delta = endDelta - startDelta1;
-        processEngineConfiguration.getClock().setCurrentTime(new Date(initialDate1+delta));
-        return null;
-      }
-    });
+    waitForJobExecutorToProcessAllJobs(8000L, 200L);
 
     Set<String> messages = new HashSet<String>(tweetHandler.getMessages());
     Set<String> expectedMessages = new HashSet<String>();
@@ -84,10 +64,5 @@ public class JobExecutorTest extends JobExecutorTestCase {
     expectedMessages.add("timer-two");
 
     assertEquals(new TreeSet<String>(expectedMessages), new TreeSet<String>(messages));
-
-    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
-    }
-
   }
 }

@@ -43,7 +43,6 @@ import org.activiti.engine.impl.util.TimerUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.Job;
 
 /**
  * @author Tom Baeyens
@@ -87,19 +86,17 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
       deleteProcessDefinitionIdentityLinks(processDefinition);
       deleteEventSubscriptions(processDefinition);
       deleteProcessDefinitionInfo(processDefinition.getId());
-
-      removeRelatedJobs(processDefinition);
+      
       removeTimerStartJobs(processDefinition);
-
+      
       // If previous process definition version has a timer/signal/message start event, it must be added
       // Only if the currently deleted process definition is the latest version, 
       // we fall back to the previous timer/signal/message start event
       
       restorePreviousStartEventsIfNeeded(processDefinition);
-      getProcessDefinitionEntityManager().delete((ProcessDefinitionEntity) processDefinition, false);
     }
 
-    //deleteProcessDefinitionForDeployment(deploymentId);
+    deleteProcessDefinitionForDeployment(deploymentId);
     getResourceEntityManager().deleteResourcesByDeploymentId(deploymentId);
     delete(findById(deploymentId), false);
   }

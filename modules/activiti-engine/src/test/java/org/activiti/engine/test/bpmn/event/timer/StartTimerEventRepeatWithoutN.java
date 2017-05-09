@@ -25,9 +25,7 @@ import org.activiti.engine.test.Deployment;
  * Test case for ACT-4066
  */
 
-public class StartTimerEventRepeatWithoutN {
-/*
-	extends PluggableActivitiTestCase {
+public class StartTimerEventRepeatWithoutN extends PluggableActivitiTestCase {
 
 	protected long counter = 0;
 	protected StartEventListener startEventListener;
@@ -77,6 +75,6 @@ public class StartTimerEventRepeatWithoutN {
 			assertTrue(e.getMessage().startsWith("time limit"));
 			assertTrue(counter >= 2);
 		}
-	}*/
+	}
 
 }

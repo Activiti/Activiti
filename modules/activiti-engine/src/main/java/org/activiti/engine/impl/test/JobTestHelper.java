@@ -38,15 +38,11 @@ public class JobTestHelper {
   }
 
   public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis) {
-   waitForJobExecutorToProcessAllJobs( processEngineConfiguration,  managementService,  maxMillisToWait,  intervalMillis, null);
-  }
-
-  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis, Callable callable) {
-    waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true, callable);
+    waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
   }
 
   public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis,
-      boolean shutdownExecutorWhenFinished, Callable callback) {
+      boolean shutdownExecutorWhenFinished) {
 
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
     asyncExecutor.start();
@@ -60,9 +56,6 @@ public class JobTestHelper {
         while (areJobsAvailable && !task.isTimeLimitExceeded()) {
           Thread.sleep(intervalMillis);
           try {
-            if (callback != null) {
-              callback.call();
-            }
             areJobsAvailable = areJobsAvailable(managementService);
           } catch (Throwable t) {
             // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when
@@ -85,12 +78,12 @@ public class JobTestHelper {
     }
   }
   
-  public static void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis, Callable callback) {
-    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true, callback);
+  public static void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis) {
+    waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
   }
   
   public static void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis,
-      boolean shutdownExecutorWhenFinished, Callable callback) {
+      boolean shutdownExecutorWhenFinished) {
 
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
     asyncExecutor.start();
@@ -105,9 +98,6 @@ public class JobTestHelper {
         while (areJobsAvailable && !task.isTimeLimitExceeded()) {
           Thread.sleep(intervalMillis);
           try {
-            if (callback != null) {
-              callback.call();
-            }
             areJobsAvailable = areJobsOrExecutableTimersAvailable(managementService);
           } catch (Throwable t) {
             // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when
@@ -171,10 +161,6 @@ public class JobTestHelper {
   }
 
   public static void executeJobExecutorForTime(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis) {
-    executeJobExecutorForTime( processEngineConfiguration,  maxMillisToWait,  intervalMillis,  null);
-    }
-
-  public static void executeJobExecutorForTime(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis, Callable callback) {
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
     asyncExecutor.start();
 
@@ -185,13 +171,6 @@ public class JobTestHelper {
       try {
         while (!task.isTimeLimitExceeded()) {
           Thread.sleep(intervalMillis);
-          if (callback !=null){
-            try {
-              callback.call();
-            } catch (Exception e) {
-              e.printStackTrace();
-            }
-          }
         }
       } catch (InterruptedException e) {
         // ignore
