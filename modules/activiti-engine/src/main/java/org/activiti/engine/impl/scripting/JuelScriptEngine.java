@@ -60,8 +60,8 @@ import org.activiti.engine.impl.util.ReflectUtil;
  */
 public class JuelScriptEngine extends AbstractScriptEngine implements Compilable {
 
-  private ScriptEngineFactory scriptEngineFactory;
-  private ExpressionFactory expressionFactory;
+  protected ScriptEngineFactory scriptEngineFactory;
+  protected ExpressionFactory expressionFactory;
 
   public JuelScriptEngine(ScriptEngineFactory scriptEngineFactory) {
     this.scriptEngineFactory = scriptEngineFactory;
@@ -105,7 +105,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
     return new SimpleBindings();
   }
 
-  private Object evaluateExpression(ValueExpression expr, ScriptContext ctx) throws ScriptException {
+  protected Object evaluateExpression(ValueExpression expr, ScriptContext ctx) throws ScriptException {
     try {
       return expr.getValue(createElContext(ctx));
     } catch (ELException elexp) {
@@ -113,7 +113,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
     }
   }
 
-  private ELResolver createElResolver() {
+  protected ELResolver createElResolver() {
     CompositeELResolver compositeResolver = new CompositeELResolver();
     compositeResolver.add(new ArrayELResolver());
     compositeResolver.add(new ListELResolver());
@@ -139,7 +139,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
     return strBuffer.toString();
   }
 
-  private ValueExpression parse(String script, ScriptContext scriptContext) throws ScriptException {
+  protected ValueExpression parse(String script, ScriptContext scriptContext) throws ScriptException {
     try {
       return expressionFactory.createValueExpression(createElContext(scriptContext), script, Object.class);
     } catch (ELException ele) {
@@ -147,7 +147,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
     }
   }
 
-  private ELContext createElContext(final ScriptContext scriptCtx) {
+  protected ELContext createElContext(final ScriptContext scriptCtx) {
     // Check if the ELContext is already stored on the ScriptContext
     Object existingELCtx = scriptCtx.getAttribute("elcontext");
     if (existingELCtx instanceof ELContext) {
