@@ -160,7 +160,7 @@ public class TableDataManager extends AbstractManager {
         String databaseTablePrefix = getDbSqlSession().getDbSqlSessionFactory().getDatabaseTablePrefix();
         String tableNameFilter = databaseTablePrefix+"ACT_%";
         if ("postgres".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
-          tableNameFilter = databaseTablePrefix+"act_%";
+          tableNameFilter = databaseTablePrefix+"act\\_%";
         }
         if ("oracle".equals(getDbSqlSession().getDbSqlSessionFactory().getDatabaseType())) {
           tableNameFilter = databaseTablePrefix+"ACT" + databaseMetaData.getSearchStringEscape() + "_%";
