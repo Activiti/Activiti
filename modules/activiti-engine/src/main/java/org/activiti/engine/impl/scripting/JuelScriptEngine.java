@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
 import javax.script.AbstractScriptEngine;
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -30,7 +29,9 @@ import javax.script.SimpleBindings;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionFactoryResolver;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.javax.el.ArrayELResolver;
 import org.activiti.engine.impl.javax.el.BeanELResolver;
 import org.activiti.engine.impl.javax.el.CompositeELResolver;
@@ -115,13 +116,23 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
 
   protected ELResolver createElResolver() {
     CompositeELResolver compositeResolver = new CompositeELResolver();
-    compositeResolver.add(new ArrayELResolver());
-    compositeResolver.add(new ListELResolver());
-    compositeResolver.add(new MapELResolver());
-    compositeResolver.add(new JsonNodeELResolver());
-    compositeResolver.add(new ResourceBundleELResolver());
-    compositeResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue"));
-    compositeResolver.add(new BeanELResolver());
+
+    ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
+    if (expressionManager != null) {
+      ELResolver elResolver = expressionManager.createElResolver();
+      compositeResolver.add(elResolver);
+      compositeResolver.add(new ResourceBundleELResolver());
+      compositeResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue"));
+    } else {
+      compositeResolver.add(new ArrayELResolver());
+      compositeResolver.add(new ListELResolver());
+      compositeResolver.add(new MapELResolver());
+      compositeResolver.add(new JsonNodeELResolver());
+      compositeResolver.add(new ResourceBundleELResolver());
+      compositeResolver.add(new DynamicBeanPropertyELResolver(ItemInstance.class, "getFieldValue", "setFieldValue"));
+      compositeResolver.add(new BeanELResolver());
+    }
+
     return new SimpleResolver(compositeResolver);
   }
 
