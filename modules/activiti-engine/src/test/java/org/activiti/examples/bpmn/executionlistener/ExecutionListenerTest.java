@@ -84,7 +84,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
   public void testExecutionListenersNotExecutedWhileDeletingDeployments() {
 
-    org.activiti.engine.repository.Deployment deployment = deployProcess("org/activiti/examples/bpmn/executionlistener/ExecutionListenersStartEndEvent.bpmn20.xml");
+    org.activiti.engine.repository.Deployment deployment = deployProcess("org/activiti/examples/bpmn/executionlistener/ExecutionListenersStartEndEventDeleteDeployment.bpmn20.xml");
 
     RecorderExecutionListener.clear();
 
