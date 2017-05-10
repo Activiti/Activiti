@@ -183,7 +183,7 @@ public interface HistoryManager extends Session {
 	public abstract void recordVariableCreate(VariableInstanceEntity variable);
 
 	/**
-	 * Record a variable has been created, if audit history is enabled.
+	 * Record a variable has been created, if FULL history is enabled.
 	 */
 	public abstract void recordHistoricDetailVariableCreate(
 			VariableInstanceEntity variable,
