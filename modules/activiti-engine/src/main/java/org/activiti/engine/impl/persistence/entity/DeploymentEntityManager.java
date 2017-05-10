@@ -74,7 +74,7 @@ public class DeploymentEntityManager extends AbstractManager {
       for (ProcessDefinition processDefinition: processDefinitions) {
         String processDefinitionId = processDefinition.getId();
         
-        getProcessInstanceManager().deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade);
+        getProcessInstanceManager().deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade, false);
       }
     }
 

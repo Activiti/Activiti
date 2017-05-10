@@ -987,7 +987,12 @@ public class ExecutionImpl implements
   public void disposeStartingExecution() {
     startingExecution = null;
   }
-  
+
+  @Override
+  public boolean shouldExecuteListeners() {
+    return true;
+  }
+
   public String updateProcessBusinessKey(String bzKey) {
     return getProcessInstance().updateProcessBusinessKey(bzKey);
   }

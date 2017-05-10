@@ -40,12 +40,12 @@ import org.activiti.engine.runtime.ProcessInstance;
 public class ExecutionEntityManager extends AbstractManager {
   
   @SuppressWarnings("unchecked")
-  public void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade) {
+  public void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade, Boolean executeListeners) {
     List<String> processInstanceIds = getDbSqlSession()
       .selectList("selectProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
   
     for (String processInstanceId: processInstanceIds) {
-      deleteProcessInstance(processInstanceId, deleteReason, cascade);
+      deleteProcessInstance(processInstanceId, deleteReason, cascade, executeListeners);
     }
     
     if (cascade) {
@@ -57,26 +57,26 @@ public class ExecutionEntityManager extends AbstractManager {
   }
 
   public void deleteProcessInstance(String processInstanceId, String deleteReason) {
-    deleteProcessInstance(processInstanceId, deleteReason, false);
+    deleteProcessInstance(processInstanceId, deleteReason, false, true);
   }
 
-  public void deleteProcessInstance(String processInstanceId, String deleteReason, boolean cascade) {
+  public void deleteProcessInstance(String processInstanceId, String deleteReason, boolean cascade, boolean executeListeners) {
     ExecutionEntity execution = findExecutionById(processInstanceId);
     
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
     }
 
-    deleteProcessInstanceCascade(execution, deleteReason, cascade);
+    deleteProcessInstanceCascade(execution, deleteReason, cascade, executeListeners);
   }
 
-  private void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory) {
+  private void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory, boolean executeListeners) {
     CommandContext commandContext = Context.getCommandContext();
     
     ProcessInstanceQueryImpl processInstanceQuery = new ProcessInstanceQueryImpl(commandContext);
     List<ProcessInstance> subProcesses = processInstanceQuery.superProcessInstanceId(execution.getProcessInstanceId()).list();
     for (ProcessInstance subProcess : subProcesses) {
-      deleteProcessInstanceCascade((ExecutionEntity) subProcess, deleteReason, deleteHistory);
+      deleteProcessInstanceCascade((ExecutionEntity) subProcess, deleteReason, deleteHistory, executeListeners);
     }
 
     commandContext
@@ -93,6 +93,10 @@ public class ExecutionEntityManager extends AbstractManager {
           ActivitiEventBuilder.createCancelledEvent(execution.getProcessInstanceId(), 
               execution.getProcessInstanceId(), execution.getProcessDefinitionId(), deleteReason));
     }
+
+
+    // mark the execution if should trigger the listeners or not.
+    execution.setExecuteListeners(executeListeners);
 
     // delete the execution BEFORE we delete the history, otherwise we will produce orphan HistoricVariableInstance instances
     execution.deleteCascade(deleteReason);

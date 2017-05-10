@@ -1,7 +1,4 @@
-<definitions 
-  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
-  xmlns:activiti="http://activiti.org/bpmn"
-  targetNamespace="Examples">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20170504115821617" modeler:modelId="2002" modeler:modelVersion="8" modeler:modelLastUpdated="1493887948897">
   
   <signal id="alertSignal" name="alert" />
   
@@ -37,7 +34,20 @@
         <signalEventDefinition signalRef="alertSignal" />     
 	</intermediateThrowEvent>
 
-    <sequenceFlow sourceRef="signalEvent" targetRef="theEnd" />
+    <sequenceFlow sourceRef="signalEvent" targetRef="userTask" />
+
+    <userTask id="userTask" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.FailingRecorderExecutionListener" event="end">
+          <activiti:field name="parameter" stringValue="User Task End Listener" />
+        </activiti:executionListener>
+         <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-8FC915AA-B175-464E-9771-1EBFEE444632]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+
+    <sequenceFlow sourceRef="userTask" targetRef="theEnd" />
 
     <endEvent id="theEnd" name="End Event">
       <extensionElements>
