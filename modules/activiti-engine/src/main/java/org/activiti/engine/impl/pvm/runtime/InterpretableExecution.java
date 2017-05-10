@@ -81,4 +81,6 @@ public interface InterpretableExecution extends ActivityExecution, ExecutionList
   StartingExecution getStartingExecution();
   
   void disposeStartingExecution();
+
+  boolean shouldExecuteListeners();
 }

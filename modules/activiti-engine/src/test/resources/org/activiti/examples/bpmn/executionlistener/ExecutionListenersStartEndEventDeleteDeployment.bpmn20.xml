@@ -34,7 +34,20 @@
         <signalEventDefinition signalRef="alertSignal" />     
 	</intermediateThrowEvent>
 
-    <sequenceFlow sourceRef="signalEvent" targetRef="theEnd" />
+    <sequenceFlow sourceRef="signalEvent" targetRef="userTask" />
+
+    <userTask id="userTask" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.FailingRecorderExecutionListener" event="end">
+          <activiti:field name="parameter" stringValue="User Task End Listener" />
+        </activiti:executionListener>
+         <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-8FC915AA-B175-464E-9771-1EBFEE444632]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+
+    <sequenceFlow sourceRef="userTask" targetRef="theEnd" />
 
     <endEvent id="theEnd" name="End Event">
       <extensionElements>

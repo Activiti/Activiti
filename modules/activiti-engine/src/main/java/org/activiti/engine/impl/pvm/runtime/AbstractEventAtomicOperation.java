@@ -24,7 +24,7 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
  * @author Tom Baeyens
  */
 public abstract class AbstractEventAtomicOperation implements AtomicOperation {
-  
+
   public boolean isAsync(InterpretableExecution execution) {
     return false;
   }
@@ -33,17 +33,19 @@ public abstract class AbstractEventAtomicOperation implements AtomicOperation {
     ScopeImpl scope = getScope(execution);
     List<ExecutionListener> exectionListeners = scope.getExecutionListeners(getEventName());
     int executionListenerIndex = execution.getExecutionListenerIndex();
-    
-    if (exectionListeners.size()>executionListenerIndex) {
+
+    if (exectionListeners.size() > executionListenerIndex) {
       execution.setEventName(getEventName());
       execution.setEventSource(scope);
-      ExecutionListener listener = exectionListeners.get(executionListenerIndex);
-      try {
-        listener.notify(execution);
-      } catch (RuntimeException e) {
-        throw e;
-      } catch (Exception e) {
-        throw new PvmException("couldn't execute event listener : "+e.getMessage(), e);
+      if (execution.shouldExecuteListeners()) {
+        ExecutionListener listener = exectionListeners.get(executionListenerIndex);
+        try {
+          listener.notify(execution);
+        } catch (RuntimeException e) {
+          throw e;
+        } catch (Exception e) {
+          throw new PvmException("couldn't execute event listener : " + e.getMessage(), e);
+        }
       }
       execution.setExecutionListenerIndex(executionListenerIndex+1);
       execution.performOperation(this);
@@ -52,7 +54,7 @@ public abstract class AbstractEventAtomicOperation implements AtomicOperation {
       execution.setExecutionListenerIndex(0);
       execution.setEventName(null);
       execution.setEventSource(null);
-      
+
       eventNotificationsCompleted(execution);
     }
   }

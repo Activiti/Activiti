@@ -13,11 +13,18 @@
 
 package org.activiti.examples.bpmn.executionlistener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -73,7 +80,83 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     
     assertProcessEnded(processInstance.getId());
   }
-  
+
+
+  public void testExecutionListenersNotExecutedWhileDeletingDeployments() {
+
+    org.activiti.engine.repository.Deployment deployment = deployProcess("org/activiti/examples/bpmn/executionlistener/ExecutionListenersStartEndEventDeleteDeployment.bpmn20.xml");
+
+    RecorderExecutionListener.clear();
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
+
+    Task tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+
+    try {
+      taskService.complete(tasks.getId());
+      fail("Expected to fail in the end listener");
+    }catch (ActivitiException ex){
+      // expected exception
+      assertTextPresent("Should not execute successfully", ex.getMessage());
+    }
+
+    List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
+    assertEquals(4, recordedEvents.size());
+
+    assertEquals("theStart", recordedEvents.get(0).getActivityId());
+    assertEquals("Start Event", recordedEvents.get(0).getActivityName());
+    assertEquals("Start Event Listener", recordedEvents.get(0).getParameter());
+    assertEquals("end", recordedEvents.get(0).getEventName());
+
+    assertEquals("noneEvent", recordedEvents.get(1).getActivityId());
+    assertEquals("None Event", recordedEvents.get(1).getActivityName());
+    assertEquals("Intermediate Catch Event Listener", recordedEvents.get(1).getParameter());
+    assertEquals("end", recordedEvents.get(1).getEventName());
+
+    assertEquals("signalEvent", recordedEvents.get(2).getActivityId());
+    assertEquals("Signal Event", recordedEvents.get(2).getActivityName());
+    assertEquals("Intermediate Throw Event Listener", recordedEvents.get(2).getParameter());
+    assertEquals("start", recordedEvents.get(2).getEventName());
+
+    assertEquals("userTask", recordedEvents.get(3).getActivityId());
+    assertEquals("User Task End Listener", recordedEvents.get(3).getParameter());
+    assertEquals("end", recordedEvents.get(3).getEventName());
+
+    RecorderExecutionListener.clear();
+
+    final List<ActivitiEvent> activitiEvents = new ArrayList<ActivitiEvent>();
+
+    runtimeService.addEventListener(new ActivitiEventListener() {
+      @Override
+      public void onEvent(ActivitiEvent event) {
+        activitiEvents.add(event);
+      }
+
+      @Override
+      public boolean isFailOnException() {
+        return false;
+      }
+    });
+
+    String pdid = processEngine.getRepositoryService().createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult().getId();
+
+    repositoryService.deleteDeployment(deployment.getId(), true);
+
+    deployment = processEngine.getRepositoryService().createDeploymentQuery().deploymentId(deployment.getId()).singleResult();
+
+    assertNull(deployment);
+
+    recordedEvents = RecorderExecutionListener.getRecordedEvents();
+    assertEquals(0, recordedEvents.size());
+
+    assertEquals(7, activitiEvents.size());
+
+    assertEquals(ActivitiEventType.ENTITY_DELETED, activitiEvents.get(0).getType());
+    assertEquals(pdid, activitiEvents.get(0).getProcessDefinitionId());
+
+
+  }
+
   @Deployment(resources = {"org/activiti/examples/bpmn/executionlistener/ExecutionListenersStartEndEvent.bpmn20.xml"})
   public void testExecutionListenersOnStartEndEvents() {
     RecorderExecutionListener.clear();
@@ -141,5 +224,21 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     
     assertEquals("theEnd", currentActivities.get(2).getActivityId());
     assertEquals("End Event", currentActivities.get(2).getActivityName());
+  }
+
+  /**
+   * Deploys a single process
+   *
+   * @return the processDefinitionId of the deployed process as returned by
+   *         {@link ProcessDefinition#getId()}
+   */
+  public org.activiti.engine.repository.Deployment deployProcess(String resourceName) {
+    // deploy processes as one deployment
+    DeploymentBuilder deploymentBuilder = processEngine.getRepositoryService().createDeployment();
+    deploymentBuilder.addClasspathResource(resourceName);
+    // deploy the processes
+    org.activiti.engine.repository.Deployment deployment = deploymentBuilder.deploy();
+    // retreive the processDefinitionId for this process
+    return deployment;
   }
 }
