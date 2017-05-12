@@ -68,6 +68,7 @@
           if(window.SwaggerTranslator) {
             window.SwaggerTranslator.translate();
           }
+          window.swaggerUi.api.setHost(getHost());
         },
         onFailure: function(data) {
           log("Unable to Load SwaggerUI");
@@ -87,6 +88,13 @@
           console.log.apply(console, arguments);
         }
       }
+      function getHost() {
+  	    var defaultPorts = {"http:":80,"https:":443};
+          return window.location.hostname
+                 + (((window.location.port)
+                 && (window.location.port != defaultPorts[window.location.protocol]))
+                 ? (":"+window.location.port) : "");
+        }
       
       
 
