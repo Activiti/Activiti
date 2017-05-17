@@ -106,9 +106,16 @@ public class ExpressionManager {
     return new ActivitiElContext(elResolver);
   }
 
+  public ELResolver createElResolver() {
+    return createElResolver(null);
+  }
+
   protected ELResolver createElResolver(VariableScope variableScope) {
     CompositeELResolver elResolver = new CompositeELResolver();
-    elResolver.add(new VariableScopeElResolver(variableScope));
+
+    if (variableScope != null) {
+      elResolver.add(new VariableScopeElResolver(variableScope));
+    }
     
     if(beans != null) {
       // ACT-1102: Also expose all beans in configuration when using standalone activiti, not
