@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <name>Activiti Admin</name>
     <organization>
-  	  <name>Alfresco</name>
+  	  <name>Activiti</name>
     </organization>
     <inceptionYear>2016</inceptionYear>
     <groupId>org.activiti</groupId>
