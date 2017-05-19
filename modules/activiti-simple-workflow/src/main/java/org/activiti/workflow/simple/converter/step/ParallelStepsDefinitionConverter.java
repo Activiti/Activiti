@@ -39,7 +39,7 @@ public class ParallelStepsDefinitionConverter extends BaseStepDefinitionConverte
   private static final long serialVersionUID = 1L;
   
 	private static final String PARALLEL_GATEWAY_PREFIX = "parallelGateway";
-
+	
   public Class< ? extends StepDefinition> getHandledClass() {
     return ParallelStepsDefinition.class;
   }
@@ -88,8 +88,15 @@ public class ParallelStepsDefinitionConverter extends BaseStepDefinitionConverte
     
     // Create sequence flow from all generated steps to the second gateway
     for (FlowElement endElement : endElements) {
-      addSequenceFlow(conversion, endElement.getId(), joinGateway.getId());
+        if (ParallelGateway.class.isAssignableFrom(endElement.getClass())) {
+            ParallelGateway join = ((ParallelGateway) endElement).getJoinGateway();
+            addSequenceFlow(conversion, join.getId(), joinGateway.getId());
+        } else {
+            addSequenceFlow(conversion, endElement.getId(), joinGateway.getId());
+        }
     }
+    
+    forkGateway.setJoinGateway(joinGateway);
     
     return forkGateway;
   }
