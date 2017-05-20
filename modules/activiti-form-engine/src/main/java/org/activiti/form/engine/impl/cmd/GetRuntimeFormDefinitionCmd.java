@@ -220,7 +220,6 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
       if (FormFieldTypes.DATE.equals(fieldType)) {
         try {
           if (StringUtils.isNotEmpty(fieldValue)) {
-        	  
             LocalDate dateValue = LocalDate.parse(fieldValue);
             variables.put(field.getId(), dateValue.toString("yyyy-M-d"));
           }
