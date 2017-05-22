@@ -672,7 +672,7 @@ angular.module('activitiApp')
                             
                         } else if (field.type === 'date' && field.value) {
                         	
-                            postData.values[field.id] = new Date(field.value).toISOString().slice(0, 10);
+                               postData.values[field.id] = new Date(field.value).toISOString().slice(0, 10);
 
                         } else {
                             postData.values[field.id] = field.value;
@@ -682,7 +682,6 @@ angular.module('activitiApp')
                 
                 return postData;
             };
-            
             // Place methods that are used by controls into an object which is pushed won the container hierarchy
             // Note that these callbacks must be mapped inside the formElement directive as well (workflow-directives.js)
             $scope.controlCallbacks = {
