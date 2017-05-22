@@ -22,8 +22,7 @@
         <label class="control-label"><i class="glyphicon glyphicon-calendar"></i> {{field.name}}</label>
         <span class="marker" ng-if="field.required">*</span>
         <span class="control-label" ng-if="field.acceptedFormat">({{field.acceptedFormat}})</span>
-        <input id="{{activitiFieldIdPrefix + field.id}}" name="{{field.id}}" type="text" class="form-control" placeholder="{{field.placeholder}}" ng-model="field.value" ng-change="onFieldValueChange(field)" bs-datepicker restrict-input template="{{appResourceRoot}}views/templates/date-picker-template.html" data-container="body" data-date-format="dd-M-yyyy" trigger="focus" autoclose="true" ng-required="field.required">
-        <div>{{field.value}}</div>
+        <input id="{{activitiFieldIdPrefix + field.id}}" name="{{field.id}}" type="text" class="form-control" placeholder="{{field.placeholder}}" ng-model="field.value" ng-change="onFieldValueChange(field)" bs-datepicker restrict-input template="{{appResourceRoot}}views/templates/date-picker-template.html" data-container="body" data-date-format="d-M-yyyy" trigger="focus" autoclose="true" ng-required="field.required">
     </div>
 
     <div ng-switch-when="boolean" class="form-group" ng-show="field.isVisible" ng-class="{'has-error': field.required && isEmpty(field)}">
