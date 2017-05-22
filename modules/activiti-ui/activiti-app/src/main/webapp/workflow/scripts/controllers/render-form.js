@@ -671,9 +671,7 @@ angular.module('activitiApp')
                             }
                             
                         } else if (field.type === 'date' && field.value) {
-                        	
                                postData.values[field.id] = new Date(field.value).toISOString().slice(0, 10);
-
                         } else {
                             postData.values[field.id] = field.value;
                         }
