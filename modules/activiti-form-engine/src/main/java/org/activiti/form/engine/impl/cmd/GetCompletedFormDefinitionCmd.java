@@ -242,7 +242,7 @@ public class GetCompletedFormDefinitionCmd implements Command<CompletedFormDefin
         
         try {
           JsonNode submittedNode = formEngineConfiguration.getObjectMapper().readTree(submittedForm.getFormValueBytes());
-          if (submittedNode == null || submittedNode.get("values") != null) {
+          if (submittedNode == null || submittedNode.get("values") == null) {
             continue;
           }
          

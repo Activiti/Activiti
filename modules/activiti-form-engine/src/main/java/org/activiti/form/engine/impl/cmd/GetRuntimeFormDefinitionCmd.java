@@ -181,7 +181,7 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
       for (SubmittedForm otherForm : submittedForms) {
         try {
           JsonNode submittedNode = formEngineConfiguration.getObjectMapper().readTree(otherForm.getFormValueBytes());
-          if (submittedNode == null || submittedNode.get("values") != null) {
+          if (submittedNode == null || submittedNode.get("values") == null) {
             continue;
           }
          

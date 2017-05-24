@@ -133,7 +133,7 @@ public class GetVariablesFromFormSubmissionCmd implements Command<Map<String, Ob
 
     } else if (formField.getType().equals(FormFieldTypes.UPLOAD)) {
       // We don't store the variable, the field-name will be referenced by the created related content entries
-      result = null;
+      result = (String) formFieldValue;
 
     } else if (formField.getType().equals(FormFieldTypes.PEOPLE) || formField.getType().equals(FormFieldTypes.FUNCTIONAL_GROUP)) {
       if (formFieldValue != null && formFieldValue instanceof Map<?, ?>) {
