@@ -278,7 +278,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
    */
   @Deployment
   public void testInterruptingSignalWithoutCallActiviti() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("InterruptingSignalWithoutCallActiviti");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("BoundarySingalInterruptingSubProcess");
     List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
    
     assertEquals(1, tasks.size());
