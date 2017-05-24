@@ -181,7 +181,7 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
       for (SubmittedForm otherForm : submittedForms) {
         try {
           JsonNode submittedNode = formEngineConfiguration.getObjectMapper().readTree(otherForm.getFormValueBytes());
-          if (submittedNode == null || submittedNode.get("values") == null) {
+          if (submittedNode == null || submittedNode.get("values") != null) {
             continue;
           }
          
@@ -221,7 +221,7 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
         try {
           if (StringUtils.isNotEmpty(fieldValue)) {
             LocalDate dateValue = LocalDate.parse(fieldValue);
-            variables.put(field.getId(), dateValue.toString("yyyy-M-d"));
+            variables.put(field.getId(), dateValue);
           }
         } catch (Exception e) {
           logger.error("Error parsing form date value for process instance " + processInstanceId + " with value " + fieldValue, e);
