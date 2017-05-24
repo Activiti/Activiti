@@ -200,12 +200,16 @@ public class ActivitiTaskFormService {
         if(FormFieldTypes.UPLOAD.equals(formField.getType())){
           String variableName = formField.getId();
           if(variables.containsKey(variableName)){
-            Page<RelatedContent> relatedContents = contentService.getFieldContentForProcessInstance(processInstanceId, variableName, 50, 0);
-            List<RelatedContent> relatedContentsList = new ArrayList<RelatedContent>(relatedContents.getSize());
-            for(RelatedContent relatedContent : relatedContents){
-              relatedContentsList.add(relatedContent);
+            String variableValue = (String) variables.get(variableName);
+            if (StringUtils.isNotEmpty(variableValue)) {
+              int numberOfRelatedContents = StringUtils.split(variableValue, ",").length;
+              Page<RelatedContent> relatedContents = contentService.getFieldContentForProcessInstance(processInstanceId, variableName, numberOfRelatedContents, 0);
+              List<RelatedContent> relatedContentsList = new ArrayList<RelatedContent>(relatedContents.getSize());
+              for(RelatedContent relatedContent : relatedContents){
+                relatedContentsList.add(relatedContent);
+              }
+              formField.setValue(relatedContentsList);
             }
-            formField.setValue(relatedContentsList);
           }
         }	
       }
