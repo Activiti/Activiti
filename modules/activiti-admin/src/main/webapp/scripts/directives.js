@@ -273,4 +273,3 @@ angular.module('activitiAdminApp')
             }
         };
     });
-    
