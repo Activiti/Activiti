@@ -19,6 +19,7 @@ import java.util.List;
 /**
  * @author Tijs Rademakers
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class FlowElement extends BaseElement implements HasExecutionListeners {
 
   protected String name;
