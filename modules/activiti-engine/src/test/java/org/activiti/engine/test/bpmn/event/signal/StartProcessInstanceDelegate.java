@@ -29,12 +29,12 @@ public class StartProcessInstanceDelegate implements JavaDelegate {
 
 
 	public void execute(DelegateExecution execution) {
-		final ProcessDefinition processDefinition = Context.getProcessEngineConfiguration()
+		ProcessDefinition processDefinition = Context.getProcessEngineConfiguration()
 				.getDeploymentManager()
 				.findDeployedLatestProcessDefinitionByKey("subProcessTask");
 
-		final Process subProcess = ProcessDefinitionUtil.getProcess(processDefinition.getId());
-		final FlowElement initialFlowElement = subProcess.getInitialFlowElement();
+		Process subProcess = ProcessDefinitionUtil.getProcess(processDefinition.getId());
+		FlowElement initialFlowElement = subProcess.getInitialFlowElement();
 		ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
 		ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
