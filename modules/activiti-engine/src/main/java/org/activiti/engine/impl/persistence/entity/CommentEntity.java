@@ -56,7 +56,7 @@ public class CommentEntity implements Comment, Event, PersistentObject, Serializ
   }
 
   public void setFullMessageBytes(byte[] fullMessageBytes) {
-    fullMessage = (fullMessageBytes!=null ? new String(fullMessageBytes) : null );
+    fullMessage = (fullMessageBytes!=null ? Arrays.toString(fullMessageBytes) : null );
   }
   
   public static String MESSAGE_PARTS_MARKER = "_|_";

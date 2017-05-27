@@ -1245,7 +1245,7 @@ public class DbSqlSession implements Session {
       Connection connection = sqlSession.getConnection();
       Exception exception = null;
       byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
-      String ddlStatements = new String(bytes);
+      String ddlStatements = Arrays.toString(bytes);
       String databaseType = dbSqlSessionFactory.getDatabaseType();
       
       // Special DDL handling for certain databases
