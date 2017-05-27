@@ -1475,6 +1475,37 @@ DELETE runtime/process-instances/{processInstanceId}
 |===============
 
 
+==== Update process definition version for a process instance
+
+----
+PUT runtime/process-instances/{processInstanceId}
+----
+
+
+*Body JSON:*
+
+[source,json,linenums]
+----
+{
+  "processDefinitionVersion" : "5"
+}
+----
+
+
+.Update process definition version for a process instance - Response codes
+[options="header"]
+|===============
+|Response code|Description
+|200|Indicates the process instance's process definition version was altered.
+|400|Indicates no process definition version was defined in the request body.
+|404|Indicates the requested process instance was not found.
+
+|===============
+
+*Success response body:* see response for +runtime/process-instances/{processInstanceId}+.
+
+
+
 ==== Activate or suspend a process instance
 
 
