@@ -17,16 +17,12 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 /**
  * @author Tom Baeyens
  */
 public class AtomicOperationProcessEnd extends AbstractEventAtomicOperation {
-  
-  private static Logger log = LoggerFactory.getLogger(AtomicOperationProcessEnd.class);
 
   @Override
   protected ScopeImpl getScope(InterpretableExecution execution) {
@@ -50,10 +46,8 @@ public class AtomicOperationProcessEnd extends AbstractEventAtomicOperation {
       try {
         subProcessActivityBehavior.completing(superExecution, execution);
       } catch (RuntimeException e) {
-          log.error("Error while completing sub process of execution {}", execution, e);
           throw e;    	  
       } catch (Exception e) {
-          log.error("Error while completing sub process of execution {}", execution, e);
           throw new ActivitiException("Error while completing sub process of execution " + execution, e);
       }
     }
@@ -67,10 +61,8 @@ public class AtomicOperationProcessEnd extends AbstractEventAtomicOperation {
       try {
           subProcessActivityBehavior.completed(superExecution);
       } catch (RuntimeException e) {
-          log.error("Error while completing sub process of execution {}", execution, e);
           throw e;
       } catch (Exception e) {
-          log.error("Error while completing sub process of execution {}", execution, e);
           throw new ActivitiException("Error while completing sub process of execution " + execution, e);
       }
     }
