@@ -641,6 +641,11 @@
     <module>modules/activiti-image-generator</module>
     <module>modules/activiti-bpmn-converter</module>
     <module>modules/activiti-engine</module>
+    <module>modules/activiti-common-rest</module>
+    <module>modules/activiti-simple-workflow</module>
+    <module>modules/activiti-spring</module>
+    <module>modules/activiti-spring-boot</module>
+    <module>modules/activiti-rest</module>
   </modules>
 
   <build>
