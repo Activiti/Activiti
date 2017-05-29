@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="catchErrorEvents" isExecutable="true">
+    <startEvent id="startCatchErrorEvent"></startEvent>
+    <subProcess id="catchErrorSubprocess" name="Sub Process">
+      <startEvent id="startSubprocess"></startEvent>
+      <endEvent id="endSubprocess"></endEvent>
+      <callActivity id="callActivitySubprocess" name="Call activity" calledElement="throwErrorEvent" activiti:inheritVariables="false"></callActivity>
+      <sequenceFlow id="flow2" sourceRef="startSubprocess" targetRef="callActivitySubprocess"></sequenceFlow>
+      <sequenceFlow id="flow3" sourceRef="callActivitySubprocess" targetRef="endSubprocess"></sequenceFlow>
+    </subProcess>
+    <sequenceFlow id="flow1" sourceRef="startCatchErrorEvent" targetRef="catchErrorSubprocess"></sequenceFlow>
+    <endEvent id="endCatchError"></endEvent>
+    <userTask id="otherErrorsTask" name="OtherErrorsTask"></userTask>
+    <userTask id="myErrorTask" name="MyErrorTask"></userTask>
+    <sequenceFlow id="flow5" sourceRef="boundaryCatchMyError" targetRef="myErrorTask"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="myErrorTask" targetRef="endCatchError"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="catchOtherErrors" targetRef="otherErrorsTask"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="otherErrorsTask" targetRef="endCatchError"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="catchErrorSubprocess" targetRef="endCatchError"></sequenceFlow>
+    <boundaryEvent id="catchOtherErrors" name="otherError" attachedToRef="catchErrorSubprocess">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <boundaryEvent id="boundaryCatchMyError" name="myError" attachedToRef="catchErrorSubprocess">
+      <errorEventDefinition errorRef="myError"></errorEventDefinition>
+    </boundaryEvent>
+  </process>
+</definitions>

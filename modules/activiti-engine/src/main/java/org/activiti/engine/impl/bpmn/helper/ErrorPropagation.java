@@ -108,15 +108,16 @@ public class ErrorPropagation {
     ExecutionEntity parentExecution = null;
 
     if (eventMap.containsKey(currentExecution.getActivityId())) {
-      matchingEvent = eventMap.get(currentExecution.getActivityId()).get(0);
-
+    	
       // Check for multi instance
       if (currentExecution.getParentId() != null && currentExecution.getParent().isMultiInstanceRoot()) {
         parentExecution = currentExecution.getParent();
       } else {
         parentExecution = currentExecution;
       }
-
+      
+      matchingEvent = getMatchedCatchEventFromList(eventMap.get(currentExecution.getActivityId()),parentExecution);
+      
     } else {
       parentExecution = currentExecution.getParent();
 
@@ -133,14 +134,14 @@ public class ErrorPropagation {
           List<Event> events = eventMap.get(refId);
           if (CollectionUtil.isNotEmpty(events) && events.get(0) instanceof StartEvent) {
             if (currentContainer.getFlowElement(refId) != null) {
-              matchingEvent = events.get(0);
+              matchingEvent = getMatchedCatchEventFromList(events, parentExecution);
             }
           }
         }
 
         if (matchingEvent == null) {
           if (eventMap.containsKey(parentExecution.getActivityId())) {
-            matchingEvent = eventMap.get(parentExecution.getActivityId()).get(0);
+        	matchingEvent = getMatchedCatchEventFromList(eventMap.get(parentExecution.getActivityId()), parentExecution);
 
             // Check for multi instance
             if (parentExecution.getParentId() != null && parentExecution.getParent().isMultiInstanceRoot()) {
@@ -329,4 +330,30 @@ public class ErrorPropagation {
     }
     return finalErrorCode;
   }
+  
+  protected static Event getMatchedCatchEventFromList(List<Event> events, ExecutionEntity parentExecution){
+	Event matchedEvent = null;
+    String matchedEventErrorCode = null;
+    String errorCode = null;
+	  
+	BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());  
+	for(Event event: events){
+		for (EventDefinition eventDefinition : event.getEventDefinitions()) {
+			if (eventDefinition instanceof ErrorEventDefinition) {
+				errorCode = ((ErrorEventDefinition) eventDefinition).getErrorCode();
+			}
+		}
+
+		if (bpmnModel != null) {
+			errorCode = retrieveErrorCode(bpmnModel, errorCode);
+		}
+
+		if (matchedEvent == null || (StringUtils.isNotEmpty(errorCode) && StringUtils.isEmpty(matchedEventErrorCode))) {
+			matchedEvent = event;
+			matchedEventErrorCode = errorCode;
+		}
+	}
+	return matchedEvent;
+  }
+  
 }
