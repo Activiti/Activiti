@@ -153,7 +153,7 @@
         <label class="control-label">{{field.name}}</label>
         <span ng-if="!field.value || field.value.length == 0" translate="FORM.MESSAGE.EMPTY"></span>
         <ul class="simple-list selectable content-list">
-            <li ng-repeat="content in field.value" title="{{content.name}}">
+            <li ng-repeat="content in model.uploads[field.id]" title="{{content.name}}">
                 <document-preview content="content" editable="field.params.documentsEditable" read-only="true"></document-preview>
             </li>
         </ul>

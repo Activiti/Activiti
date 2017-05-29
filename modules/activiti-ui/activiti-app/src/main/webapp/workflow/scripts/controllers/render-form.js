@@ -316,6 +316,7 @@ angular.module('activitiApp')
                             }
                             newUploadValue += field.value[j].id;
                         }
+                        field.value = newUploadValue;
 					}
                 }
             };

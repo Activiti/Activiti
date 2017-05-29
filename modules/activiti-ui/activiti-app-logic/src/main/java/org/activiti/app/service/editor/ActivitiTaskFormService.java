@@ -150,7 +150,7 @@ public class ActivitiTaskFormService {
         completeTaskFormRepresentation.getOutcome());
     
     //link uploads with task and process instances
-    linkRelatedContentsIfPresent(formDefinition, task.getId(), task.getProcessInstanceId(), completeTaskFormRepresentation.getValues());
+    linkRelatedContentsIfPresent(formDefinition, task.getId(), task.getProcessInstanceId(), variables);
     
     formService.storeSubmittedForm(variables, formDefinition, task.getId(), task.getProcessInstanceId());
     
@@ -175,6 +175,10 @@ public class ActivitiTaskFormService {
     return processInstanceVariableRepresenations;
   }
   
+  /*
+   * This method registers the respective task, process instance and field with the corresponding related content
+   * in related content table. 
+   * */
   protected void linkRelatedContentsIfPresent(FormDefinition formDefinition, String taskId, String processInstanceId, Map<String, Object> variables){
     if (formDefinition != null && formDefinition.getFields() != null) {
       for (FormField formField : formDefinition.getFields()) {
@@ -194,6 +198,10 @@ public class ActivitiTaskFormService {
     }
   }
   
+  /*
+   * This method fetches the related content from related content table and assigns them to the corresponding upload field, 
+   * if any is present in the form being fetched.
+   * */
   protected void fetchAndAssignRelatedContentsIfPresent(FormDefinition formDefinition, Map<String, Object> variables, String processInstanceId){
     if(formDefinition != null && formDefinition.getFields() != null && variables != null){
       for(FormField formField : formDefinition.getFields()){
