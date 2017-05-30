@@ -238,8 +238,7 @@ activitiApp
                 var activitiAppRoot = ACTIVITI.CONFIG.webContextRoot;
                 if (redirectUrl.slice(0, activitiAppRoot.length) === activitiAppRoot) {
                     var redirectPath = redirectUrl.slice(activitiAppRoot.length + 1);
-                    if (redirectPath.slice(0, 'analytics/'.length) === 'analytics/' ||
-                        redirectPath.slice(0, 'editor/'.length) === 'editor/' ||
+                    if (redirectPath.slice(0, 'editor/'.length) === 'editor/' ||
                         redirectPath.slice(0, 'idm/'.length) === 'idm/' ||
                         redirectPath.slice(0, 'workflow/'.length) === 'workflow/') {
 
