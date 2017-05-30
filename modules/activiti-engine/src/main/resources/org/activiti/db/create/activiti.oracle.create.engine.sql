@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '6.0.0.4', 1);
+values ('schema.version', '6.0.0.5', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(6.0.0.4)', 1);
+values ('schema.history', 'create(6.0.0.5)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -205,6 +205,9 @@ create table ACT_RU_TASK (
     TENANT_ID_ NVARCHAR2(255) DEFAULT '',
     FORM_KEY_ NVARCHAR2(255),
     CLAIM_TIME_ TIMESTAMP(6),
+    IS_COUNT_ENABLED_ NUMBER(1,0) CHECK (IS_COUNT_ENABLED_ IN (1,0)),
+    VAR_COUNT_ INTEGER,
+    ID_LINK_COUNT_ INTEGER,
     primary key (ID_)
 );
 

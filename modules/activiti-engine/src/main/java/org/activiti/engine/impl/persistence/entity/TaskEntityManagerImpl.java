@@ -24,6 +24,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
+import org.activiti.engine.impl.persistence.CountingTaskEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.TaskDataManager;
 import org.activiti.engine.impl.util.Activiti5Util;
@@ -52,6 +53,9 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   public TaskEntity create() {
     TaskEntity taskEntity = super.create();
     taskEntity.setCreateTime(getClock().getCurrentTime());
+    if (isTaskRelatedEntityCountEnabledGlobally()){
+      ((CountingTaskEntity)taskEntity).setCountEnabled(true);
+    }
     return taskEntity;
   }
   
@@ -193,9 +197,14 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       for (Task subTask : subTasks) {
         deleteTask((TaskEntity) subTask, deleteReason, cascade, cancel);
       }
-
-      getIdentityLinkEntityManager().deleteIdentityLinksByTaskId(taskId);
-      getVariableInstanceEntityManager().deleteVariableInstanceByTask(task);
+      boolean isTaskRelatedEntityCountEnabled = isTaskRelatedEntityCountEnabled(task);
+      
+      if (!isTaskRelatedEntityCountEnabled || (isTaskRelatedEntityCountEnabled && ((CountingTaskEntity) task).getIdentityLinkCount() > 0)) {
+        getIdentityLinkEntityManager().deleteIdentityLinksByTaskId(taskId);
+      }
+      if (!isTaskRelatedEntityCountEnabled || (isTaskRelatedEntityCountEnabled && ((CountingTaskEntity) task).getVariableCount() > 0)) {
+        getVariableInstanceEntityManager().deleteVariableInstanceByTask(task);
+      }
 
       if (cascade) {
         getHistoricTaskInstanceEntityManager().delete(taskId);

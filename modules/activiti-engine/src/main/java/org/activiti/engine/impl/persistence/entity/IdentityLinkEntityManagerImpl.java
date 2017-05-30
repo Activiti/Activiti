@@ -21,6 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
+import org.activiti.engine.impl.persistence.CountingTaskEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.IdentityLinkDataManager;
 import org.activiti.engine.task.IdentityLinkType;
@@ -49,11 +50,16 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
     super.insert(entity, fireCreateEvent);
     getHistoryManager().recordIdentityLinkCreated(entity);
     
-    if (entity.getProcessInstanceId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
-      CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getProcessInstanceId());
-      if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
-        executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() + 1);
+    if (entity.getTask() != null && isTaskRelatedEntityCountEnabledGlobally()) {
+      CountingTaskEntity countingTaskEntity = (CountingTaskEntity) entity.getTask();
+      if (isTaskRelatedEntityCountEnabled(countingTaskEntity)){
+        countingTaskEntity.setIdentityLinkCount(countingTaskEntity.getIdentityLinkCount() + 1);
       }
+    } else if (entity.getProcessInstanceId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
+        CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(entity.getProcessInstanceId());
+        if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
+          executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() + 1);
+        }
     }
   }
 
@@ -64,12 +70,17 @@ public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<Identit
       getHistoryManager().deleteHistoricIdentityLink(identityLink.getId());
     }
     
-    if (identityLink.getProcessInstanceId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
-      CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(identityLink.getProcessInstanceId());
-      if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
-        executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() -1);
+    if (identityLink.getTask() != null && isTaskRelatedEntityCountEnabledGlobally()) {      
+      CountingTaskEntity countingTaskEntity = (CountingTaskEntity) identityLink.getTask();
+      if (isTaskRelatedEntityCountEnabled(countingTaskEntity)){
+        countingTaskEntity.setIdentityLinkCount(countingTaskEntity.getIdentityLinkCount() - 1);
       }
-    }
+      } else if (identityLink.getProcessInstanceId() != null && isExecutionRelatedEntityCountEnabledGlobally()) {
+          CountingExecutionEntity executionEntity = (CountingExecutionEntity) getExecutionEntityManager().findById(identityLink.getProcessInstanceId());
+          if (isExecutionRelatedEntityCountEnabled(executionEntity)) {
+            executionEntity.setIdentityLinkCount(executionEntity.getIdentityLinkCount() -1);
+          }
+      }
 
     if (getEventDispatcher().isEnabled()) {
       getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, identityLink));

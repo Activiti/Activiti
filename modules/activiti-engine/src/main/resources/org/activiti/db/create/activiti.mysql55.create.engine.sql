@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '6.0.0.4', 1);
+values ('schema.version', '6.0.0.5', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(6.0.0.4)', 1);
+values ('schema.history', 'create(6.0.0.5)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -205,6 +205,9 @@ create table ACT_RU_TASK (
     TENANT_ID_ varchar(255) default '',
     FORM_KEY_ varchar(255),
     CLAIM_TIME_ datetime,
+    IS_COUNT_ENABLED_ TINYINT,
+    VAR_COUNT_ integer,
+    ID_LINK_COUNT_ integer,
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 

@@ -39,6 +39,7 @@ import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.calendar.*;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
 import org.activiti.engine.impl.cmd.ValidateExecutionRelatedEntityCountCfgCmd;
+import org.activiti.engine.impl.cmd.ValidateTaskRelatedEntityCountCfgCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
@@ -2053,6 +2054,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (performanceSettings.isValidateExecutionRelationshipCountConfigOnBoot()) {
       commandExecutor.execute(new ValidateExecutionRelatedEntityCountCfgCmd());
     }
+    
+    if (performanceSettings.isValidateTaskRelationshipCountConfigOnBoot()) {
+      commandExecutor.execute(new ValidateTaskRelatedEntityCountCfgCmd());
+    }
   }
 
   // getters and setters
@@ -2966,6 +2971,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngineConfigurationImpl setEnableExecutionRelationshipCounts(boolean enableExecutionRelationshipCounts) {
     this.performanceSettings.setEnableExecutionRelationshipCounts(enableExecutionRelationshipCounts);
     return this;
+  }
+  
+  public ProcessEngineConfigurationImpl setEnableTaskRelationshipCounts(boolean enableTaskRelationshipCounts) {
+	this.performanceSettings.setEnableTaskRelationshipCounts(enableTaskRelationshipCounts);
+	return this;
   }
 
   public PerformanceSettings getPerformanceSettings() {

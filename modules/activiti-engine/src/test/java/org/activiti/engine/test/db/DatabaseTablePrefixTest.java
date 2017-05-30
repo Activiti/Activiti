@@ -46,12 +46,14 @@ public class DatabaseTablePrefixTest extends TestCase {
         .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
     config1.setDatabaseTablePrefix("SCHEMA1.");
     config1.getPerformanceSettings().setValidateExecutionRelationshipCountConfigOnBoot(false);
+    config1.getPerformanceSettings().setValidateTaskRelationshipCountConfigOnBoot(false);
     ProcessEngine engine1 = config1.buildProcessEngine();
 
     ProcessEngineConfigurationImpl config2 = (ProcessEngineConfigurationImpl) ProcessEngineConfigurationImpl.createStandaloneInMemProcessEngineConfiguration().setDataSource(pooledDataSource)
         .setDatabaseSchemaUpdate("NO_CHECK"); // disable auto create/drop schema
     config2.setDatabaseTablePrefix("SCHEMA2.");
     config2.getPerformanceSettings().setValidateExecutionRelationshipCountConfigOnBoot(false);
+    config2.getPerformanceSettings().setValidateTaskRelationshipCountConfigOnBoot(false);
     ProcessEngine engine2 = config2.buildProcessEngine();
 
     // create the tables in SCHEMA1
