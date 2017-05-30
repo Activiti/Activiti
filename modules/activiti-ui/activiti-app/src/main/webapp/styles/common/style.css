@@ -113,7 +113,7 @@ body pre {
 }
 
 .simple-list li .actions {
-    visibility: hidden;
+    visibility: visible;
     position: absolute;
     top: 3px;
     right: 5px;
@@ -125,14 +125,6 @@ body pre {
 .simple-list li .actions a {
      padding: 4px 4px 0 4px;
  }
-
-.simple-list li .actions a:hover {
-    background-color: #ffffff;
-}
-
-.simple-list li:hover .actions {
-    visibility: visible;
-}
 
 .simple-list.grid li {
     border-bottom: 1px solid #eeeeee;
