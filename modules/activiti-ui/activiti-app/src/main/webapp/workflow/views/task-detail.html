@@ -50,12 +50,12 @@
     <div class="header" ng-show="model.task && !noSuchTask">
         <div class=" pull-right">
         
-            <button class="btn" ng-if="!model.task.formKey && !model.task.endDate && (model.task.assignee.id == account.id || (model.task.initiatorCanCompleteTask && model.task.processInstanceStartUserId == ('' + account.id)))"
+            <button class="btn" ng-if="!model.task.formKey && !model.task.endDate && model.task.assignee && (model.task.assignee.id == account.id || (model.task.initiatorCanCompleteTask && model.task.processInstanceStartUserId == ('' + account.id)))"
                     translate="TASK.ACTION.COMPLETE"
                     ng-disabled="model.completeButtonDisabled || model.uploadInProgress"
                     ng-click="completeTask()"></button>
 
-            <button class="btn" ng-if="(model.task.assignee == null || model.task.assignee == undefined) &&
+            <button class="btn" ng-if="!model.task.endDate && (model.task.assignee == null || model.task.assignee == undefined) &&
                 (model.task.memberOfCandidateGroup || model.task.memberOfCandidateUsers ||
                 (model.task.initiatorCanCompleteTask && model.task.processInstanceStartUserId == ('' + account.id)))"
                     translate="TASK.ACTION.CLAIM"
