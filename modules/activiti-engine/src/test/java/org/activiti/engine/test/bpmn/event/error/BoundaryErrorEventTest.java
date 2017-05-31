@@ -285,6 +285,18 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     assertProcessEnded(procId);
    }
+  
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorEventsOnMultipleCallActiviti.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorEventsOnMultipleCallActivitiS.bpmn20.xml" })
+  public void testCatchErrorEventsOnMultipleCallActivity() {
+    String procId = runtimeService.startProcessInstanceByKey("catchError3").getId();
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("myErrorTaskNested", task.getName());
+
+    // Completing the task will end the process instance
+    taskService.complete(task.getId());
+    assertProcessEnded(procId);
+ }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorThrownByCallActivityOnCallActivity.bpmn20.xml",
       "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess2ndLevel.bpmn20.xml", "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.subprocess.bpmn20.xml" })
