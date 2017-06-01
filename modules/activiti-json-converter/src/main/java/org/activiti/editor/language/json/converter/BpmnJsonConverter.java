@@ -739,37 +739,41 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         if (objectNode.get(EDITOR_CHILD_SHAPES) != null) {
             for (JsonNode jsonChildNode : objectNode.get(EDITOR_CHILD_SHAPES)) {
 
-                String stencilId = BpmnJsonConverterUtil.getStencilId(jsonChildNode);
-                if (STENCIL_SEQUENCE_FLOW.equals(stencilId) == false) {
+              String stencilId = BpmnJsonConverterUtil.getStencilId(jsonChildNode);
+              if (STENCIL_SEQUENCE_FLOW.equals(stencilId) == false) {
+                  GraphicInfo graphicInfo = new GraphicInfo();
+                  JsonNode boundsNode = jsonChildNode.get(EDITOR_BOUNDS);
+                  ObjectNode upperLeftNode = (ObjectNode) boundsNode.get(EDITOR_BOUNDS_UPPER_LEFT);
+                  ObjectNode lowerRightNode = (ObjectNode) boundsNode.get(EDITOR_BOUNDS_LOWER_RIGHT);
 
-                    GraphicInfo graphicInfo = new GraphicInfo();
+                  //a lane is a childshape of a pool but the bounds of the lane are the correct x,y
+                  if(STENCIL_LANE.equals(stencilId)){
+                      graphicInfo.setX(upperLeftNode.get(EDITOR_BOUNDS_X).asDouble());
+                      graphicInfo.setY(upperLeftNode.get(EDITOR_BOUNDS_Y).asDouble());
+                      graphicInfo.setWidth(lowerRightNode.get(EDITOR_BOUNDS_X).asDouble()-graphicInfo.getX());
+                      graphicInfo.setHeight(lowerRightNode.get(EDITOR_BOUNDS_Y).asDouble()-graphicInfo.getY());
+                  }else{
+                      graphicInfo.setX(upperLeftNode.get(EDITOR_BOUNDS_X).asDouble() + parentX);
+                      graphicInfo.setY(upperLeftNode.get(EDITOR_BOUNDS_Y).asDouble() + parentY);
+                      graphicInfo.setWidth(lowerRightNode.get(EDITOR_BOUNDS_X).asDouble() - graphicInfo.getX() + parentX);
+                      graphicInfo.setHeight(lowerRightNode.get(EDITOR_BOUNDS_Y).asDouble() - graphicInfo.getY() + parentY);
+                  }
 
-                    JsonNode boundsNode = jsonChildNode.get(EDITOR_BOUNDS);
-                    ObjectNode upperLeftNode = (ObjectNode) boundsNode.get(EDITOR_BOUNDS_UPPER_LEFT);
-                    graphicInfo.setX(upperLeftNode.get(EDITOR_BOUNDS_X).asDouble() + parentX);
-                    graphicInfo.setY(upperLeftNode.get(EDITOR_BOUNDS_Y).asDouble() + parentY);
+                  String childShapeId = jsonChildNode.get(EDITOR_SHAPE_ID).asText();
+                  bpmnModel.addGraphicInfo(BpmnJsonConverterUtil.getElementId(jsonChildNode), graphicInfo);
+                  shapeMap.put(childShapeId, jsonChildNode);
+                  ArrayNode outgoingNode = (ArrayNode) jsonChildNode.get("outgoing");
+                  if (outgoingNode != null && outgoingNode.size() > 0) {
+                      for (JsonNode outgoingChildNode : outgoingNode) {
+                          JsonNode resourceNode = outgoingChildNode.get(EDITOR_SHAPE_ID);
+                          if (resourceNode != null) {
+                              sourceRefMap.put(resourceNode.asText(), jsonChildNode);
+                          }
+                      }
+                  }
 
-                    ObjectNode lowerRightNode = (ObjectNode) boundsNode.get(EDITOR_BOUNDS_LOWER_RIGHT);
-                    graphicInfo.setWidth(lowerRightNode.get(EDITOR_BOUNDS_X).asDouble() - graphicInfo.getX() + parentX);
-                    graphicInfo.setHeight(lowerRightNode.get(EDITOR_BOUNDS_Y).asDouble() - graphicInfo.getY() + parentY);
-
-                    String childShapeId = jsonChildNode.get(EDITOR_SHAPE_ID).asText();
-                    bpmnModel.addGraphicInfo(BpmnJsonConverterUtil.getElementId(jsonChildNode), graphicInfo);
-
-                    shapeMap.put(childShapeId, jsonChildNode);
-
-                    ArrayNode outgoingNode = (ArrayNode) jsonChildNode.get("outgoing");
-                    if (outgoingNode != null && outgoingNode.size() > 0) {
-                        for (JsonNode outgoingChildNode : outgoingNode) {
-                            JsonNode resourceNode = outgoingChildNode.get(EDITOR_SHAPE_ID);
-                            if (resourceNode != null) {
-                                sourceRefMap.put(resourceNode.asText(), jsonChildNode);
-                            }
-                        }
-                    }
-
-                    readShapeDI(jsonChildNode, graphicInfo.getX(), graphicInfo.getY(), shapeMap, sourceRefMap, bpmnModel);
-                }
+                  readShapeDI(jsonChildNode, graphicInfo.getX(), graphicInfo.getY(), shapeMap, sourceRefMap, bpmnModel);
+              }
             }
         }
     }
@@ -796,6 +800,10 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                         sourceAndTargetMap.put(childEdgeId, sourceAndTargetList);
                     }
                     edgeMap.put(childEdgeId, childNode);
+                }else if (STENCIL_POOL.equals(stencilId)){
+                  filterAllEdges(childNode,edgeMap,sourceAndTargetMap,shapeMap,sourceRefMap);
+                } else if (STENCIL_LANE.equals(stencilId)){
+                  filterAllEdges(childNode,edgeMap,sourceAndTargetMap,shapeMap,sourceRefMap);
                 }
             }
         }
