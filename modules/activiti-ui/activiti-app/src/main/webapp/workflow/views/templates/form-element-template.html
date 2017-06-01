@@ -105,12 +105,9 @@
         <span class="marker" ng-if="field.required">*</span>
         <ul class="simple-list" ng-show="model.uploads[field.id].length > 0">
             <li ng-repeat="content in model.uploads[field.id]">
-            	 <i class="icon icon-{{content.simpleType}}"></i>
-            	 {{content.name}}
+            
+            	 <document-preview content="content" editable="field.params.documentsEditable" read-only="false"></document-preview>
                 <div class="actions">
-                	<a ng-show="content.contentAvailable && (!content.source)" target="_blank" download="{{content.name}}"
-       				   href="{{content.rawUrl}}" ng-click="$event.stopPropagation();"> <i
-            				class="icon icon-download"></i></a>
                     <a ng-click="removeContent(content, field)"><i class="icon icon-remove"></i></a>
                 </div>
             </li>
