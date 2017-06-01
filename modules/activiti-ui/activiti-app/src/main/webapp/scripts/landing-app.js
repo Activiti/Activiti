@@ -235,7 +235,19 @@ activitiApp
 
             var redirectUrl = $location.search().redirectUrl;
             if (redirectUrl !== null && redirectUrl !== undefined && redirectUrl.length > 0) {
-                $window.location.href = redirectUrl;
+                var activitiAppRoot = ACTIVITI.CONFIG.webContextRoot;
+                if (redirectUrl.slice(0, activitiAppRoot.length) === activitiAppRoot) {
+                    var redirectPath = redirectUrl.slice(activitiAppRoot.length + 1);
+                    if (redirectPath.slice(0, 'editor/'.length) === 'editor/' ||
+                        redirectPath.slice(0, 'idm/'.length) === 'idm/' ||
+                        redirectPath.slice(0, 'workflow/'.length) === 'workflow/') {
+
+                        $window.location.href = redirectUrl;
+                    }
+                }
+
+                $location.path('/');
+
             } else {
                 var locationPath = $location.path();
                 if (locationPath == '' || locationPath == '#' || locationPath == '/login'
