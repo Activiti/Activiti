@@ -16,31 +16,31 @@ package org.activiti.engine.impl.form;
 import java.text.Format;
 import java.text.ParseException;
 
+import org.activiti.bpmn.model.FormProperty;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.form.AbstractFormType;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 
-
 /**
  * @author Tom Baeyens
  */
-public class DateFormType extends AbstractFormType {
-  
+public class DateFormType extends AbstractFormType implements FormTypeSupport<DateFormType> {
+
   private static final long serialVersionUID = 1L;
-  
-  protected String datePattern; 
-  protected Format dateFormat; 
+
+  protected String datePattern;
+  protected Format dateFormat;
 
   public DateFormType(String datePattern) {
     this.datePattern = datePattern;
     this.dateFormat = FastDateFormat.getInstance(datePattern);
   }
-  
+
   public String getName() {
     return "date";
   }
-  
+
   public Object getInformation(String key) {
     if ("datePattern".equals(key)) {
       return datePattern;
@@ -55,7 +55,7 @@ public class DateFormType extends AbstractFormType {
     try {
       return dateFormat.parseObject(propertyValue);
     } catch (ParseException e) {
-      throw new ActivitiIllegalArgumentException("invalid date value "+propertyValue);
+      throw new ActivitiIllegalArgumentException("invalid date value " + propertyValue);
     }
   }
 
@@ -65,4 +65,13 @@ public class DateFormType extends AbstractFormType {
     }
     return dateFormat.format(modelValue);
   }
+
+  public DateFormType newInstance(FormProperty formProperty) {
+    String datePattern = formProperty.getDatePattern();
+    if (StringUtils.isEmpty(datePattern)) {
+      return null;
+    }
+    return new DateFormType(datePattern);
+  }
+
 }

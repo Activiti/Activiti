@@ -13,16 +13,16 @@
 
 package org.activiti.engine.impl.form;
 
+import static org.activiti.engine.impl.form.FormTypeSupport.CONSTRUCTOR_WITH_FORM_PROPERTY;
+
+import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.activiti.bpmn.model.FormProperty;
-import org.activiti.bpmn.model.FormValue;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.form.AbstractFormType;
 import org.apache.commons.lang3.StringUtils;
-
 
 /**
  * @author Tom Baeyens
@@ -36,25 +36,33 @@ public class FormTypes {
   }
 
   public AbstractFormType parseFormPropertyType(FormProperty formProperty) {
-    AbstractFormType formType = null;
-
-    if ("date".equals(formProperty.getType()) && StringUtils.isNotEmpty(formProperty.getDatePattern())) {
-      formType = new DateFormType(formProperty.getDatePattern());
-      
-    } else if ("enum".equals(formProperty.getType())) {
-      // ACT-1023: Using linked hashmap to preserve the order in which the entries are defined
-      Map<String, String> values = new LinkedHashMap<String, String>();
-      for (FormValue formValue: formProperty.getFormValues()) {
-        values.put(formValue.getId(), formValue.getName());
-      }
-      formType = new EnumFormType(values);
-      
-    } else if (StringUtils.isNotEmpty(formProperty.getType())) {
-      formType = formTypes.get(formProperty.getType());
-      if (formType == null) {
-        throw new ActivitiIllegalArgumentException("unknown type '" + formProperty.getType() + "' " + formProperty.getId());
-      }
+    if (StringUtils.isEmpty(formProperty.getType())) {
+      return null;
     }
-    return formType;
+    return getFormType(formProperty);
   }
+
+  private AbstractFormType getFormType(FormProperty formProperty) {
+    AbstractFormType formType = formTypes.get(formProperty.getType());
+    if (formType == null) {
+      throw new ActivitiIllegalArgumentException("unknown type '" + formProperty.getType() + "' " + formProperty.getId());
+    }
+    return getFormType(formProperty, formType);
+  }
+
+  private AbstractFormType getFormType(FormProperty formProperty, AbstractFormType formType) {
+    Method method;
+    try {
+      method = formType.getClass().getMethod(CONSTRUCTOR_WITH_FORM_PROPERTY, FormProperty.class);
+    } catch (Exception e) {
+      return formType;
+    }
+
+    try {
+      return (AbstractFormType) method.invoke(formType, formProperty);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
 }
