@@ -921,6 +921,11 @@
 							</execution>
 						</executions>
 					</plugin>
+					<plugin>
+				    <groupId>org.asciidoctor</groupId>
+				    <artifactId>asciidoctor-maven-plugin</artifactId>
+				    <version>1.5.3</version>
+				  </plugin>
 				</plugins>
 			</build>
 		</profile>
