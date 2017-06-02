@@ -1331,3 +1331,4 @@ activitiModule.
             }
         };
     });
+
