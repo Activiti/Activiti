@@ -17,6 +17,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
@@ -84,6 +86,11 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
       .deleteAttachmentsByProcessInstanceId(historicProcessInstanceId);
       
       getDbSqlSession().delete(historicProcessInstance);
+      
+      if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, historicProcessInstance));
+      }
       
       // Also delete any sub-processes that may be active (ACT-821)
       HistoricProcessInstanceQueryImpl subProcessesQueryImpl = new HistoricProcessInstanceQueryImpl();

@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
@@ -141,6 +143,11 @@ public class HistoricTaskInstanceEntityManager extends AbstractManager {
           .deleteHistoricIdentityLinksByTaskId(taskId);
       
         getDbSqlSession().delete(historicTaskInstance);
+        
+        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, historicTaskInstance));
+        }
       }
     }
   }
