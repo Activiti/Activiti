@@ -148,6 +148,11 @@
   
   <sql id="selectHistoricVariableInstanceByQueryCriteriaSql">
     from ${prefix}ACT_HI_VARINST RES
+    <if test="_databaseId == 'sqlserver' and ( 
+      (executionId != null and !executionId.isEmpty()) or 
+      (executionIds != null and !executionIds.isEmpty()))">
+      WITH(INDEX(ACT_IDX_HI_PROCVAR_EXEC_ID))
+    </if>
     <where>
       <if test="id != null">
         RES.ID_ = #{id}
