@@ -2,7 +2,7 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
 	xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
 
-	<process id="shellCommandStart">
+	<process id="shellCommandEcho">
 
 		<startEvent id="theStart" />
 		<sequenceFlow sourceRef="theStart" targetRef="shellStart" />
