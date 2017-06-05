@@ -159,6 +159,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         DI_CIRCLES.add(STENCIL_EVENT_END_ERROR);
         DI_CIRCLES.add(STENCIL_EVENT_END_CANCEL);
         DI_CIRCLES.add(STENCIL_EVENT_END_TERMINATE);
+        DI_CIRCLES.add(STENCIL_EVENT_THROW_COMPENSATION);
 
         DI_RECTANGLES.add(STENCIL_CALL_ACTIVITY);
         DI_RECTANGLES.add(STENCIL_SUB_PROCESS);
@@ -740,7 +741,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
             for (JsonNode jsonChildNode : objectNode.get(EDITOR_CHILD_SHAPES)) {
 
                 String stencilId = BpmnJsonConverterUtil.getStencilId(jsonChildNode);
-                if (STENCIL_SEQUENCE_FLOW.equals(stencilId) == false) {
+                if (STENCIL_SEQUENCE_FLOW.equals(stencilId) == false
+                        && STENCIL_ASSOCIATION.equals(stencilId) == false) {
 
                     GraphicInfo graphicInfo = new GraphicInfo();
 

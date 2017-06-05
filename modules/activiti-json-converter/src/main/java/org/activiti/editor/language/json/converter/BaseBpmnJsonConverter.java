@@ -22,6 +22,7 @@ import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.DataAssociation;
 import org.activiti.bpmn.model.DataStoreReference;
 import org.activiti.bpmn.model.ErrorEventDefinition;
@@ -40,7 +41,6 @@ import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.MessageFlow;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
-import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -49,6 +49,7 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.bpmn.model.Process;
 import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
 import org.activiti.editor.language.json.converter.util.CollectionUtils;
@@ -173,6 +174,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                     }
                 }
             }
+
+            propertiesNode.put(PROPERTY_ISFORCOMPENSATION, activity.isForCompensation());
 
             if (activity instanceof UserTask) {
                 BpmnJsonConverterUtil.convertListenersToJson(((UserTask) activity).getTaskListeners(), false, propertiesNode);
@@ -324,6 +327,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                     multiInstanceObject.setCompletionCondition(multiInstanceCondition);
                     activity.setLoopCharacteristics(multiInstanceObject);
                 }
+
+                activity.setForCompensation(getPropertyValueAsBoolean(PROPERTY_ISFORCOMPENSATION,elementNode));
                 
             } else if (baseElement instanceof Gateway) {
                 JsonNode flowOrderNode = getProperty(PROPERTY_SEQUENCEFLOW_ORDER, elementNode);
@@ -496,6 +501,12 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
             		TerminateEventDefinition terminateEventDefinition = (TerminateEventDefinition) eventDefinition;
             		propertiesNode.put(PROPERTY_TERMINATE_ALL, terminateEventDefinition.isTerminateAll());
             }
+            else if(eventDefinition instanceof CompensateEventDefinition){
+                CompensateEventDefinition compensateEventDefinition = (CompensateEventDefinition) eventDefinition;
+                if (StringUtils.isNotEmpty(compensateEventDefinition.getActivityRef())) {
+                    propertiesNode.put(PROPERTY_ACTIVITYREF, compensateEventDefinition.getActivityRef());
+                }
+            }
         }
     }
 
@@ -588,6 +599,13 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
         String signalRef = getPropertyValueAsString(PROPERTY_SIGNALREF, objectNode);
         SignalEventDefinition eventDefinition = new SignalEventDefinition();
         eventDefinition.setSignalRef(signalRef);
+        event.getEventDefinitions().add(eventDefinition);
+    }
+
+    protected void convertJsonToCompensationDefinition(JsonNode objectNode, Event event) {
+        CompensateEventDefinition eventDefinition = new CompensateEventDefinition();
+        String activityRef = getPropertyValueAsString(PROPERTY_ACTIVITYREF, objectNode);
+        eventDefinition.setActivityRef(activityRef);
         event.getEventDefinitions().add(eventDefinition);
     }
 
