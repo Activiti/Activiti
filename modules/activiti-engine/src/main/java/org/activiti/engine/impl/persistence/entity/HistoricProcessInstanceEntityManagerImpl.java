@@ -68,7 +68,7 @@ public class HistoricProcessInstanceEntityManagerImpl extends AbstractEntityMana
       getHistoricIdentityLinkEntityManager().deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
       getCommentEntityManager().deleteCommentsByProcessInstanceId(historicProcessInstanceId);
 
-      delete(historicProcessInstance, false);
+      delete(historicProcessInstance);
 
       // Also delete any sub-processes that may be active (ACT-821)
 
