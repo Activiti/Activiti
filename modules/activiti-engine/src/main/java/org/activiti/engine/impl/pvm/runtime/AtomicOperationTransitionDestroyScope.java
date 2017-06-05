@@ -15,6 +15,7 @@ package org.activiti.engine.impl.pvm.runtime;
 import java.util.List;
 
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -94,12 +95,16 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
         execution.destroy();
 		
         // GDH - fix for ACT-4263
-        List<Job> jobs = Context.getCommandContext()
-            .getJobEntityManager()
-            .findJobsByExecutionId(execution.getId());
-        for (Job job: jobs) {
-          ((JobEntity) job).delete();
-        }		
+        CommandContext commandContext = Context.getCommandContext();
+        if (commandContext != null) {
+          List<Job> jobs = Context.getCommandContext()
+              .getJobEntityManager()
+              .findJobsByExecutionId(execution.getId());
+          for (Job job: jobs) {
+            ((JobEntity) job).delete();
+          } 
+        }
+       	
         propagatingExecution = execution;
 
       } else {
