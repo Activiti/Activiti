@@ -28,7 +28,7 @@ public abstract class SecureServiceTaskBaseTest extends ServiceTaskBaseTest {
     @Override
     protected List<ProcessEngineConfigurator> getConfigurators() {
         ProcessEngineConfigurator configurator = new SecureServiceTaskConfigurator()
-                .setWhiteListedShellCommands(new HashSet<String>(Arrays.asList("ls", "pwd")));
+                .setWhiteListedShellCommands(new HashSet<String>(Arrays.asList("cmd","ls", "pwd")));
 
         return Arrays.asList(configurator);
     }

@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>6.0.0-SNAPSHOT</version>
+    <version>6.0.1-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -19,7 +19,7 @@
 		<java.version>1.7</java.version>
 
 		<!-- Libraries versions -->
-		<activiti.version>6.0.0-SNAPSHOT</activiti.version>
+		<activiti.version>6.0.1-SNAPSHOT</activiti.version>
 	    <spring.version>4.1.6.RELEASE </spring.version>
 		<spring.security.version>4.0.1.RELEASE</spring.security.version>
 		<hibernate.version>4.2.16.Final</hibernate.version>

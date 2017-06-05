@@ -85,7 +85,6 @@ body {
 	padding-top: 0px;
 	line-height: 40px;
     height: 40px;
-    background: url(../images/logo.png) no-repeat 10px center;
     width: 180px;
 }
 
@@ -756,7 +755,7 @@ body {
 
     .navbar-header .navbar-brand {
         background: url(../images/logo-2x.png) no-repeat 15px center;
-        background-size: 148px 25px;
+        background-size: 26px 26px;
         background-repeat: no-repeat;
     }
 }
