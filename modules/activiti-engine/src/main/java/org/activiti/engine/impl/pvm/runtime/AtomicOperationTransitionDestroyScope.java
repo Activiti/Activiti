@@ -89,6 +89,14 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
 
         // TODO!
         execution.destroy();
+		
+		// GDH - fix for ACT-4263
+		List<JobEntity> jobs = (List) Context.getCommandContext()
+		          .getJobEntityManager()
+		          .findJobsByExecutionId(execution.getId());
+		for (Job job: jobs) {
+		    ((JobEntity) job).delete();
+		}		
         propagatingExecution = execution;
         
       } else {
