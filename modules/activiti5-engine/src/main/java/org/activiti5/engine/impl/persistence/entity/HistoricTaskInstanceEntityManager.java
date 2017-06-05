@@ -142,9 +142,9 @@ public class HistoricTaskInstanceEntityManager extends AbstractManager {
         commandContext.getHistoricIdentityLinkEntityManager()
           .deleteHistoricIdentityLinksByTaskId(taskId);
       
-        getDbSqlSession().delete(historicTaskInstance);
+        boolean deleted = getDbSqlSession().delete(historicTaskInstance);
         
-        if (commandContext.getEventDispatcher().isEnabled()) {
+        if (deleted && commandContext.getEventDispatcher().isEnabled()) {
           	commandContext.getEventDispatcher().dispatchEvent(
           			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, historicTaskInstance));
           }
