@@ -671,8 +671,8 @@ angular.module('activitiApp')
                             }
                             
                         } else if (field.type === 'date' && field.value) {
-                        	   var postDate = new Date(field.value);
-                        	   postData.values[field.id] = postDate.getFullYear() +'-'+ (postDate.getMonth()+1) + '-' + postDate.getDate();
+                        	 var postDate = new Date(field.value);
+                        	 postData.values[field.id] = postDate.getFullYear() +'-'+ (postDate.getMonth()+1) + '-' + postDate.getDate();
                         } else {
                             postData.values[field.id] = field.value;
                         }
