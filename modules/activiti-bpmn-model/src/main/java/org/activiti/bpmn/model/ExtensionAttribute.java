@@ -2,7 +2,7 @@ package org.activiti.bpmn.model;
 
 
 
-public class ExtensionAttribute {
+public class ExtensionAttribute implements Extension{
 
   protected String name;
   protected String value;

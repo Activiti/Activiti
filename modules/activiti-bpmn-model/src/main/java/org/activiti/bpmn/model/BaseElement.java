@@ -12,12 +12,9 @@
  */
 package org.activiti.bpmn.model;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.apache.commons.lang3.StringUtils;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
  * @author Tijs Rademakers
@@ -60,14 +57,11 @@ public abstract class BaseElement implements HasExtensionAttributes {
   }
 
   public void addExtensionElement(ExtensionElement extensionElement) {
-    if (extensionElement != null && StringUtils.isNotEmpty(extensionElement.getName())) {
-      List<ExtensionElement> elementList = null;
-      if (this.extensionElements.containsKey(extensionElement.getName()) == false) {
-        elementList = new ArrayList<ExtensionElement>();
-        this.extensionElements.put(extensionElement.getName(), elementList);
-      }
-      this.extensionElements.get(extensionElement.getName()).add(extensionElement);
+    if (isInvalidExtension(extensionElement)) {
+      return;
     }
+    addKeyToMapIfNotExists(this.extensionElements, extensionElement);
+    this.extensionElements.get(extensionElement.getName()).add(extensionElement);
   }
 
   public void setExtensionElements(Map<String, List<ExtensionElement>> extensionElements) {
@@ -82,25 +76,43 @@ public abstract class BaseElement implements HasExtensionAttributes {
   @Override
   public String getAttributeValue(String namespace, String name) {
     List<ExtensionAttribute> attributes = getAttributes().get(name);
-    if (attributes != null && !attributes.isEmpty()) {
-      for (ExtensionAttribute attribute : attributes) {
-        if ( (namespace == null && attribute.getNamespace() == null)
-            || (namespace!=null && namespace.equals(attribute.getNamespace())) )
-          return attribute.getValue();
+    ExtensionAttribute attribute = findFirstAttributeByNamespace(attributes, namespace);
+    return attribute!=null ? attribute.getValue() : null;
+  }
+
+  private ExtensionAttribute findFirstAttributeByNamespace(List<ExtensionAttribute> attributes, String namespace) {
+    if (attributes == null || attributes.isEmpty()) {
+      return null;
+    }
+    for (ExtensionAttribute attribute : attributes) {
+      if (isSoughtAttribute(namespace, attribute)){
+        return attribute;
       }
     }
     return null;
   }
 
+  private boolean isSoughtAttribute(String namespace, ExtensionAttribute attribute) {
+    return (namespace == null && attribute.getNamespace() == null)
+            || (namespace!=null && namespace.equals(attribute.getNamespace()));
+  }
+
   @Override
   public void addAttribute(ExtensionAttribute attribute) {
-    if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
-      List<ExtensionAttribute> attributeList = null;
-      if (this.attributes.containsKey(attribute.getName()) == false) {
-        attributeList = new ArrayList<ExtensionAttribute>();
-        this.attributes.put(attribute.getName(), attributeList);
-      }
-      this.attributes.get(attribute.getName()).add(attribute);
+    if (isInvalidExtension(attribute)) {
+      return;
+    }
+    addKeyToMapIfNotExists(this.attributes, attribute);
+    this.attributes.get(attribute.getName()).add(attribute);
+  }
+
+  protected boolean isInvalidExtension(Extension extension) {
+    return extension == null || isEmpty(extension.getName());
+  }
+
+  protected  <T extends Extension> void addKeyToMapIfNotExists(Map<String, List<T>> map, Extension extension) {
+    if (!map.containsKey(extension.getName())) {
+      map.put(extension.getName(),new ArrayList<T>());
     }
   }
 
@@ -111,34 +123,32 @@ public abstract class BaseElement implements HasExtensionAttributes {
 
   public void setValues(BaseElement otherElement) {
     setId(otherElement.getId());
+    extensionElements = clonedMapWithoutEmptyKeys(otherElement.getExtensionElements());
+    attributes = clonedMapWithoutEmptyKeys(otherElement.getAttributes());
+  }
 
-    extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
-    if (otherElement.getExtensionElements() != null && !otherElement.getExtensionElements().isEmpty()) {
-      for (String key : otherElement.getExtensionElements().keySet()) {
-        List<ExtensionElement> otherElementList = otherElement.getExtensionElements().get(key);
-        if (otherElementList != null && !otherElementList.isEmpty()) {
-          List<ExtensionElement> elementList = new ArrayList<ExtensionElement>();
-          for (ExtensionElement extensionElement : otherElementList) {
-            elementList.add(extensionElement.clone());
-          }
-          extensionElements.put(key, elementList);
-        }
+
+  protected <T extends Extension> LinkedHashMap<String, List<T>> clonedMapWithoutEmptyKeys(Map<String, List<T>> mapExtensions) {
+    LinkedHashMap<String, List<T>> map = new LinkedHashMap<String, List<T>>();
+    for (String key : mapExtensions.keySet()) {
+      List<T> childreExtensionElements = getClonedExtensions(mapExtensions.get(key));
+      if (!childreExtensionElements.isEmpty()) {
+        map.put(key, childreExtensionElements);
       }
     }
+    return map;
+  }
 
-    attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
-    if (otherElement.getAttributes() != null && !otherElement.getAttributes().isEmpty()) {
-      for (String key : otherElement.getAttributes().keySet()) {
-        List<ExtensionAttribute> otherAttributeList = otherElement.getAttributes().get(key);
-        if (otherAttributeList != null && !otherAttributeList.isEmpty()) {
-          List<ExtensionAttribute> attributeList = new ArrayList<ExtensionAttribute>();
-          for (ExtensionAttribute extensionAttribute : otherAttributeList) {
-            attributeList.add(extensionAttribute.clone());
-          }
-          attributes.put(key, attributeList);
-        }
-      }
+  protected  <T extends Extension> List<T> getClonedExtensions(List<T> extensions) {
+    if (extensions == null || extensions.isEmpty()) {
+      return Collections.emptyList();
     }
+    List<T> clonedExtensions = new ArrayList<T>();
+    for (T extension : extensions) {
+      T cloned = extension.clone();
+      clonedExtensions.add(cloned);
+    }
+    return clonedExtensions;
   }
 
   public abstract BaseElement clone();
