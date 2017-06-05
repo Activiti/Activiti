@@ -38,7 +38,7 @@ public class SecureShellTaskTest extends SecureServiceTaskBaseTest {
         }
 
         try {
-            runtimeService.startProcessInstanceByKey("shellCommandStart");
+            runtimeService.startProcessInstanceByKey("shellCommandEcho");
             Assert.fail(); // Expecting exception
         } catch (Exception e) {
             e.printStackTrace();
