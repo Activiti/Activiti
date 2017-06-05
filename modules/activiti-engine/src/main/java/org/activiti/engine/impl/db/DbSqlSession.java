@@ -179,15 +179,16 @@ public class DbSqlSession implements Session {
     deleteOperations.add(new BulkDeleteOperation(statement, parameter));
   }
   
-  public void delete(PersistentObject persistentObject) {
+  public boolean delete(PersistentObject persistentObject) {
     for (DeleteOperation deleteOperation: deleteOperations) {
         if (deleteOperation.sameIdentity(persistentObject)) {
           log.debug("skipping redundant delete: {}", persistentObject);
-          return; // Skip this delete. It was already added.
+          return false; // Skip this delete. It was already added.
         }
     }
     
     deleteOperations.add(new CheckedDeleteOperation(persistentObject));
+    return true;
   }
 
   public interface DeleteOperation {

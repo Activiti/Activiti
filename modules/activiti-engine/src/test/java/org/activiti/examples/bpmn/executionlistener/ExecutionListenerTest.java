@@ -149,11 +149,10 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     recordedEvents = RecorderExecutionListener.getRecordedEvents();
     assertEquals(0, recordedEvents.size());
 
-    assertEquals(7, activitiEvents.size());
+    assertEquals(9, activitiEvents.size());
 
     assertEquals(ActivitiEventType.ENTITY_DELETED, activitiEvents.get(0).getType());
     assertEquals(pdid, activitiEvents.get(0).getProcessDefinitionId());
-
 
   }
 

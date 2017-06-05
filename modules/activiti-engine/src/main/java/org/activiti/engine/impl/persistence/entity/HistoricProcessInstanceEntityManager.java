@@ -85,10 +85,10 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
       .getAttachmentEntityManager()
       .deleteAttachmentsByProcessInstanceId(historicProcessInstanceId);
       
-      getDbSqlSession().delete(historicProcessInstance);
+      boolean deleted = getDbSqlSession().delete(historicProcessInstance);
       
-      if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+      if (deleted && commandContext.getEventDispatcher().isEnabled()) {
+        commandContext.getEventDispatcher().dispatchEvent(
               ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, historicProcessInstance));
       }
       
