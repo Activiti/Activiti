@@ -273,6 +273,35 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     assertEquals(1, tasks.size());
   }
 
+  /**
+   * TestCase to reproduce Issue ACT-4299
+   */
+  @Deployment
+  public void testInterruptingSignalWithoutCallActiviti() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("BoundarySingalInterruptingSubProcess");
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
+   
+    assertEquals(1, tasks.size());
+    Task currentTask = tasks.get(0);
+    assertEquals("Request", currentTask.getName());
+    
+    taskService.complete(taskService.createTaskQuery().taskName("Request").singleResult().getId());
+    
+    tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
+    assertEquals(1, tasks.size());
+    assertEquals(2, taskService.createTaskQuery().count());
+    assertEquals(1, taskService.createTaskQuery().taskName("Assign").count());  
+    
+    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).signalEventSubscriptionName("myAlert").singleResult();
+    runtimeService.signalEventReceived("myAlert", execution.getId());
+
+    
+    tasks = taskService.createTaskQuery().processInstanceId(pi.getProcessInstanceId()).list();
+    assertEquals(0, tasks.size());
+    // Check whether the child subprocess Instance created by service task is deleted 
+    assertEquals(0, taskService.createTaskQuery().count());
+  }
+  
   @Deployment
   public void testUseSignalForExceptionsBetweenParallelPaths() {
     runtimeService.startProcessInstanceByKey("processWithSignal");

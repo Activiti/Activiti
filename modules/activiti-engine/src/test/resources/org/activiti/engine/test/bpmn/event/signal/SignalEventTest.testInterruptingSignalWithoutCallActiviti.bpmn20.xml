@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+   <signal id="myAlertId" name="myAlert" activiti:scope="global"></signal>
+  <process id="BoundarySingalInterruptingSubProcess" name="BoundarySingalInterruptingSubProcess" isExecutable="true">
+    <startEvent id="startSubprocess"></startEvent>
+    <subProcess id="subProcessId" name="subProcess">
+      <startEvent id="startServiceTask"></startEvent>
+      <serviceTask id="serviceTaskId" name="startProcess" activiti:class="org.activiti.engine.test.bpmn.event.signal.StartProcessInstanceDelegate"></serviceTask>
+      <userTask id="userTaskId" name="Approve"></userTask>
+      <endEvent id="endSubProcId"></endEvent>
+      <userTask id="userReqTaskId" name="Request"></userTask>
+      <sequenceFlow id="sid-97F77F35-7C2D-4B56-A36E-379A2F228D3D" sourceRef="serviceTaskId" targetRef="userTaskId"></sequenceFlow>
+      <sequenceFlow id="sid-FFD195C2-EC39-4DC3-9798-2FFE3A7EEE43" sourceRef="userTaskId" targetRef="endSubProcId"></sequenceFlow>
+      <sequenceFlow id="sid-24B3F831-4341-4AEC-8770-4C01E2625F6D" sourceRef="startServiceTask" targetRef="userReqTaskId"></sequenceFlow>
+      <sequenceFlow id="sid-C6390B62-F8D1-48EE-B3A3-912CB810D668" sourceRef="userReqTaskId" targetRef="serviceTaskId"></sequenceFlow>
+    </subProcess>
+    <sequenceFlow id="sid-1EAA227F-2876-4E10-8AB6-40C03439BE39" sourceRef="startSubprocess" targetRef="subProcessId"></sequenceFlow>
+    <sequenceFlow id="sid-7E072161-DC68-4595-B157-445D398EECDF" sourceRef="subProcessId" targetRef="exeGateId"></sequenceFlow>
+    <endEvent id="endId"></endEvent>
+    <sequenceFlow id="sid-AB0960BD-21E7-470F-96ED-447B94CC9BC4" sourceRef="exeGateId" targetRef="endId"></sequenceFlow>
+    <exclusiveGateway id="exeGateId"></exclusiveGateway>
+    <sequenceFlow id="sid-D95E2DF1-DE77-4C5B-B0C4-07E98B448DE8" sourceRef="signalEventId" targetRef="exeGateId"></sequenceFlow>
+    <boundaryEvent id="signalEventId" attachedToRef="subProcessId" cancelActivity="true">
+      <signalEventDefinition signalRef="myAlertId"></signalEventDefinition>
+    </boundaryEvent>
+  </process>
+  
+   <process id="subProcessTask" name="subProcessTask" isExecutable="true">
+    <startEvent id="startEventId"></startEvent>
+    <userTask id="userAssignId" name="Assign"></userTask>
+    <endEvent id="endEventId"></endEvent>
+    <sequenceFlow id="sid-37AFEFBD-F089-4FCA-B034-5A3B6EFF60A0" sourceRef="userAssignId" targetRef="endEventId"></sequenceFlow>
+    <sequenceFlow id="sid-CA475BFB-E3EB-4DD2-B40E-5EA374D29BDD" sourceRef="startEventId" targetRef="userAssignId"></sequenceFlow>
+  </process>
+</definitions>
