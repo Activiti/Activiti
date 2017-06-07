@@ -351,7 +351,7 @@ public class DefaultProcessValidatorTest {
   }
 
   protected List<ValidationError> findErrors(List<ValidationError> errors, String validatorSetName, String problemName) {
-    List<ValidationError> results = new ArrayList<ValidationError>();
+    List<ValidationError> results = new ArrayList<>();
     for (ValidationError error : errors) {
       if (error.getValidatorSetName().equals(validatorSetName) && error.getProblem().equals(problemName)) {
         results.add(error);

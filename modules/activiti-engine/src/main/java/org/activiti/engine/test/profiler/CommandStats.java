@@ -12,13 +12,13 @@ public class CommandStats {
 
     protected long getTotalCommandTime = 0L;
     
-    protected List<Long> commandExecutionTimings = new ArrayList<Long>();
-    protected List<Long> databaseTimings = new ArrayList<Long>();
+    protected List<Long> commandExecutionTimings = new ArrayList<>();
+    protected List<Long> databaseTimings = new ArrayList<>();
     
-    protected Map<String, Long> dbSelects = new HashMap<String, Long>();
-    protected Map<String, Long> dbInserts = new HashMap<String, Long>();
-    protected Map<String, Long> dbUpdates = new HashMap<String, Long>();
-    protected Map<String, Long> dbDeletes = new HashMap<String, Long>();
+    protected Map<String, Long> dbSelects = new HashMap<>();
+    protected Map<String, Long> dbInserts = new HashMap<>();
+    protected Map<String, Long> dbUpdates = new HashMap<>();
+    protected Map<String, Long> dbDeletes = new HashMap<>();
 
     public CommandStats(List<CommandExecutionResult> executions) {
         for (CommandExecutionResult execution : executions) {

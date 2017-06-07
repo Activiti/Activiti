@@ -69,7 +69,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
           .list();
       assertEquals(3, historicActivities.size());
       
-      List<String> activityIds = new ArrayList<String>();
+      List<String> activityIds = new ArrayList<>();
       activityIds.add("theStart");
       activityIds.add("theTask");
       activityIds.add("theEnd");
@@ -151,7 +151,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
           .list();
       assertEquals(8, historicActivities.size());
       
-      List<String> activityIds = new ArrayList<String>();
+      List<String> activityIds = new ArrayList<>();
       activityIds.add("theStart");
       activityIds.add("theTask1");
       activityIds.add("subProcess");
@@ -258,7 +258,7 @@ public class Activiti6ExecutionTest extends PluggableActivitiTestCase {
           .list();
       assertEquals(8, historicActivities.size());
       
-      List<String> activityIds = new ArrayList<String>();
+      List<String> activityIds = new ArrayList<>();
       activityIds.add("theStart");
       activityIds.add("theTask1");
       activityIds.add("subProcess");

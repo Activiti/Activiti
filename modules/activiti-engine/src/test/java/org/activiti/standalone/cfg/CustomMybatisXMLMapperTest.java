@@ -73,7 +73,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     }
     createTask("Owned task", "kermit", null, 0);
 
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).unOwned().list();
+    List<CustomTask> tasks = new CustomTaskQuery<>(managementService).unOwned().list();
 
     assertEquals(5, tasks.size());
     assertEquals(5, new CustomTaskQuery(managementService).unOwned().count());
@@ -95,7 +95,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
     assertEquals("kermit", task.getOwner());
 
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).list();
+    List<CustomTask> tasks = new CustomTaskQuery<>(managementService).list();
     // Cleanup
     deleteCustomTasks(tasks);
   }
@@ -106,7 +106,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       createTask(i + "", null, null, 0);
     }
 
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).listPage(0, 10);
+    List<CustomTask> tasks = new CustomTaskQuery<>(managementService).listPage(0, 10);
 
     assertEquals(10, tasks.size());
 
@@ -122,7 +122,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       createTask(i + "", null, null, i * 20);
     }
 
-    List<CustomTask> tasks = new CustomTaskQuery(managementService).orderByTaskPriority().desc().list();
+    List<CustomTask> tasks = new CustomTaskQuery<>(managementService).orderByTaskPriority().desc().list();
 
     assertEquals(5, tasks.size());
 
@@ -166,7 +166,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     assertEquals("attachment1", new AttachmentQuery(managementService).attachmentName("attachment1").singleResult().getName());
 
     assertEquals(18, new AttachmentQuery(managementService).count());
-    List<Attachment> attachments = new AttachmentQuery(managementService).list();
+    List<Attachment> attachments = new AttachmentQuery<>(managementService).list();
     assertEquals(18, attachments.size());
 
     attachments = new AttachmentQuery(managementService).listPage(0, 10);

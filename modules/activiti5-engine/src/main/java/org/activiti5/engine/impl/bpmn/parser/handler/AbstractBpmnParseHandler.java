@@ -68,7 +68,7 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
   public static final String PROPERTYNAME_TIMER_DECLARATION = "timerDeclarations";
   
   public Set<Class< ? extends BaseElement>> getHandledTypes() {
-    Set<Class< ? extends BaseElement>> types = new HashSet<Class<? extends BaseElement>>();
+    Set<Class< ? extends BaseElement>> types = new HashSet<>();
     types.add(getHandledType());
     return types;
   }
@@ -245,7 +245,7 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
   }
   
   protected Map<String, Object> processDataObjects(BpmnParse bpmnParse, Collection<ValuedDataObject> dataObjects, ScopeImpl scope) {
-    Map<String, Object> variablesMap = new HashMap<String, Object>();
+    Map<String, Object> variablesMap = new HashMap<>();
     // convert data objects to process variables  
     if (dataObjects != null) {
       for (ValuedDataObject dataObject : dataObjects) {

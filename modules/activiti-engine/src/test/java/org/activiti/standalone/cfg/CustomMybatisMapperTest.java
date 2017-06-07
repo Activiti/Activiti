@@ -27,7 +27,7 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
     }
 
     // Fetch the columns we're interested in
-    CustomSqlExecution<MyTestMapper, List<Map<String, Object>>> customSqlExecution = new AbstractCustomSqlExecution<MyTestMapper, List<Map<String, Object>>>(MyTestMapper.class) {
+    CustomSqlExecution<MyTestMapper, List<Map<String, Object>>> customSqlExecution = new AbstractCustomSqlExecution<>(MyTestMapper.class) {
 
       public List<Map<String, Object>> execute(MyTestMapper customMapper) {
         return customMapper.selectTasks();
@@ -65,7 +65,7 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
     }
 
     // Fetch data with custom query
-    CustomSqlExecution<MyTestMapper, List<Map<String, Object>>> customSqlExecution = new AbstractCustomSqlExecution<MyTestMapper, List<Map<String, Object>>>(MyTestMapper.class) {
+    CustomSqlExecution<MyTestMapper, List<Map<String, Object>>> customSqlExecution = new AbstractCustomSqlExecution<>(MyTestMapper.class) {
 
       public List<Map<String, Object>> execute(MyTestMapper customMapper) {
         return customMapper.selectTaskWithSpecificVariable("myVar");

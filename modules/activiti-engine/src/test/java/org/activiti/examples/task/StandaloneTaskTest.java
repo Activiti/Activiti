@@ -155,12 +155,12 @@ public class StandaloneTaskTest extends PluggableActivitiTestCase {
   		taskService.saveTask(task);
   		 
   		// 2. set task variables
-  		Map<String, Object> taskVariables = new HashMap<String, Object>();
+  		Map<String, Object> taskVariables = new HashMap<>();
   		taskVariables.put("finishedAmount", 0);
   		taskService.setVariables(task.getId(), taskVariables);
   		 
   		// 3. complete this task with a new variable
-  		Map<String, Object> finishVariables = new HashMap<String, Object>();
+  		Map<String, Object> finishVariables = new HashMap<>();
   		finishVariables.put("finishedAmount", 40);
   		taskService.complete(task.getId(), finishVariables);
   		 

@@ -127,7 +127,7 @@ public abstract class AbstractDataManager<EntityImpl extends Entity> extends Abs
       
       if ( (cachedObjects != null && cachedObjects.size() > 0) || getManagedEntitySubClasses() != null) {
         
-        HashMap<String, EntityImpl> entityMap = new HashMap<String, EntityImpl>(result.size());
+        HashMap<String, EntityImpl> entityMap = new HashMap<>(result.size());
         
         // Database entities
         for (EntityImpl entity : result) {
@@ -182,7 +182,7 @@ public abstract class AbstractDataManager<EntityImpl extends Entity> extends Abs
     
     DbSqlSession dbSqlSession = getDbSqlSession();
     
-    List<EntityImpl> result = new ArrayList<EntityImpl>(cachedObjects.size());
+    List<EntityImpl> result = new ArrayList<>(cachedObjects.size());
     if (cachedObjects != null && entityMatcher != null) {
       for (CachedEntity cachedObject : cachedObjects) {
         EntityImpl cachedEntity = (EntityImpl) cachedObject.getEntity();
