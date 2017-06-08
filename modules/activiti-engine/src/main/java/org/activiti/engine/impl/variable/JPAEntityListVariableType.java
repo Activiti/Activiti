@@ -87,7 +87,7 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
 
     if (value instanceof List<?> && ((List<?>) value).size() > 0) {
       List<?> list = (List<?>) value;
-      List<String> ids = new ArrayList<String>();
+      List<String> ids = new ArrayList<>();
 
       String type = mappings.getJPAClassString(list.get(0));
       for (Object entry : list) {
@@ -113,7 +113,7 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
     if (valueFields.getTextValue() != null && bytes != null) {
       String entityClass = valueFields.getTextValue();
 
-      List<Object> result = new ArrayList<Object>();
+      List<Object> result = new ArrayList<>();
       String[] ids = deserializeIds(bytes);
 
       for (String id : ids) {

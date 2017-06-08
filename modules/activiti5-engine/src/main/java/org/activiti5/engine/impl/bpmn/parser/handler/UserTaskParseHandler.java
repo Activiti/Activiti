@@ -121,7 +121,7 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
 
     // CustomUserIdentityLinks
     for (String customUserIdentityLinkType : userTask.getCustomUserIdentityLinks().keySet()) {
-    	Set<Expression> userIdentityLinkExpression = new HashSet<Expression>();
+    	Set<Expression> userIdentityLinkExpression = new HashSet<>();
     	for (String userIdentityLink : userTask.getCustomUserIdentityLinks().get(customUserIdentityLinkType)) {
     		userIdentityLinkExpression.add(expressionManager.createExpression(userIdentityLink));
     	}
@@ -130,7 +130,7 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
     
     // CustomGroupIdentityLinks
     for (String customGroupIdentityLinkType : userTask.getCustomGroupIdentityLinks().keySet()) {
-    	Set<Expression> groupIdentityLinkExpression = new HashSet<Expression>();
+    	Set<Expression> groupIdentityLinkExpression = new HashSet<>();
     	for (String groupIdentityLink : userTask.getCustomGroupIdentityLinks().get(customGroupIdentityLinkType)) {
     		groupIdentityLinkExpression.add(expressionManager.createExpression(groupIdentityLink));
     	}

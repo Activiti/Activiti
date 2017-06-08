@@ -123,7 +123,7 @@ public class UserTaskTest extends PluggableActivitiTestCase {
     // Set variables
     Task task = taskService.createTaskQuery().singleResult();
     assertNotNull(task);
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     for (int i=0; i<20; i++) {
       vars.put("var" + i, i*2);
     }

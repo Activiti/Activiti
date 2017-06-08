@@ -62,7 +62,7 @@ public class DiagramLayout implements Serializable {
   }
 
   public List<DiagramNode> getNodes() {
-    List<DiagramNode> nodes = new ArrayList<DiagramNode>();
+    List<DiagramNode> nodes = new ArrayList<>();
     for (Entry<String, DiagramElement> entry : getElements().entrySet()) {
       DiagramElement element = entry.getValue();
       if (element instanceof DiagramNode) {

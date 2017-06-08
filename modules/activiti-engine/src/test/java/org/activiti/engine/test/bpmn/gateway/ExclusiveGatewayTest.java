@@ -42,7 +42,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
   @Deployment
   public void testSkipExpression() {
     for (int i = 1; i <= 3; i++) {
-      Map<String, Object> variables = new HashMap<String, Object>();
+      Map<String, Object> variables = new HashMap<>();
       variables.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
       variables.put("input", -i);
 
@@ -109,7 +109,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testDecideBasedOnListOrArrayOfBeans() {
-    List<ExclusiveGatewayTestOrder> orders = new ArrayList<ExclusiveGatewayTestOrder>();
+    List<ExclusiveGatewayTestOrder> orders = new ArrayList<>();
     orders.add(new ExclusiveGatewayTestOrder(50));
     orders.add(new ExclusiveGatewayTestOrder(300));
     orders.add(new ExclusiveGatewayTestOrder(175));
@@ -208,7 +208,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
   // From https://github.com/Activiti/Activiti/issues/796
   @Deployment
   public void testExclusiveDirectlyToEnd() {
-    Map<String, Object> variables = new HashMap<String, Object>();
+    Map<String, Object> variables = new HashMap<>();
     variables.put("input", 1);
     ProcessInstance startProcessInstanceByKey = runtimeService.startProcessInstanceByKey("exclusiveGateway", variables);
     long count = historyService.createHistoricActivityInstanceQuery()

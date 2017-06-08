@@ -35,7 +35,7 @@ public class CollectionUtil {
    * <String, Object> map.
    */
   public static Map<String, Object> singletonMap(String key, Object value) {
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     map.put(key, value);
     return map;
   }
@@ -52,7 +52,7 @@ public class CollectionUtil {
       throw new ActivitiIllegalArgumentException("The input should always be even since we expect a list of key-value pairs!");
     }
     
-    Map<String, Object> map = new HashMap<String, Object>();
+    Map<String, Object> map = new HashMap<>();
     for (int i = 0; i<objects.length; i+=2) {
       map.put((String) objects[i], objects[i+1]);
     }

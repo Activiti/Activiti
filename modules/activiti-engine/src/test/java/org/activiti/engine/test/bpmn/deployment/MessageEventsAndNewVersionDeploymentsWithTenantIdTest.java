@@ -469,7 +469,7 @@ public class MessageEventsAndNewVersionDeploymentsWithTenantIdTest extends Plugg
         query.orderByCreated().desc();
         List<EventSubscriptionEntity> eventSubscriptions = query.list();
         
-        List<String> executionIds = new ArrayList<String>();
+        List<String> executionIds = new ArrayList<>();
         for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
           executionIds.add(eventSubscription.getExecutionId());
         }

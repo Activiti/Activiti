@@ -69,13 +69,13 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
 
   public static final String CURRENT_MESSAGE = "org.activiti.engine.impl.bpmn.CURRENT_MESSAGE";
   
-  protected Map<String, XMLImporter> xmlImporterMap = new HashMap<String, XMLImporter>();
-  protected Map<String, WSOperation> wsOperationMap = new HashMap<String, WSOperation>();
-  protected Map<String, StructureDefinition> structureDefinitionMap = new HashMap<String, StructureDefinition>();
-  protected Map<String, WSService> wsServiceMap = new HashMap<String, WSService>();
-  protected Map<String, Operation> operationMap = new HashMap<String, Operation>();
-  protected Map<String, ItemDefinition> itemDefinitionMap = new HashMap<String, ItemDefinition>();
-  protected Map<String, MessageDefinition> messageDefinitionMap = new HashMap<String, MessageDefinition>();
+  protected Map<String, XMLImporter> xmlImporterMap = new HashMap<>();
+  protected Map<String, WSOperation> wsOperationMap = new HashMap<>();
+  protected Map<String, StructureDefinition> structureDefinitionMap = new HashMap<>();
+  protected Map<String, WSService> wsServiceMap = new HashMap<>();
+  protected Map<String, Operation> operationMap = new HashMap<>();
+  protected Map<String, ItemDefinition> itemDefinitionMap = new HashMap<>();
+  protected Map<String, MessageDefinition> messageDefinitionMap = new HashMap<>();
 
   public WebServiceActivityBehavior() {
     itemDefinitionMap.put("http://www.w3.org/2001/XMLSchema:string", new ItemDefinition("http://www.w3.org/2001/XMLSchema:string", new ClassStructureDefinition(String.class)));

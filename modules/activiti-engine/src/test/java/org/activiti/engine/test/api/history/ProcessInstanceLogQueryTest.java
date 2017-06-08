@@ -30,7 +30,7 @@ public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
     deployTwoTasksTestProcess();
 
     // Start process instance
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("var1", "Hello");
     vars.put("var2", 123);
     this.processInstanceId = runtimeService.startProcessInstanceByKey("twoTasksProcess", vars).getId();

@@ -14,7 +14,7 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testSetServiceResultToProcessVariables() {
-    Map<String, Object> variables = new HashMap<String, Object>();
+    Map<String, Object> variables = new HashMap<>();
     variables.put("okReturningService", new OkReturningService());
 
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariables", variables);
@@ -24,7 +24,7 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testSetServiceResultToProcessVariablesWithSkipExpression() {
-    Map<String, Object> variables = new HashMap<String, Object>();
+    Map<String, Object> variables = new HashMap<>();
     variables.put("okReturningService", new OkReturningService());
     variables.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", false);
 
@@ -32,7 +32,7 @@ public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
 
     assertEquals("ok", runtimeService.getVariable(pi.getId(), "result"));
 
-    Map<String, Object> variables2 = new HashMap<String, Object>();
+    Map<String, Object> variables2 = new HashMap<>();
     variables2.put("okReturningService", new OkReturningService());
     variables2.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
     variables2.put("skip", true);

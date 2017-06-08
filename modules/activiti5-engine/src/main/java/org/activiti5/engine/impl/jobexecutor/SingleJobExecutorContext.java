@@ -22,7 +22,7 @@ import org.activiti5.engine.impl.persistence.entity.JobEntity;
  */
 public class SingleJobExecutorContext implements JobExecutorContext {
 
-  protected List<JobEntity> currentProcessorJobQueue = new LinkedList<JobEntity>();
+  protected List<JobEntity> currentProcessorJobQueue = new LinkedList<>();
   protected JobEntity currentJob;
         
   public List<JobEntity> getCurrentProcessorJobQueue() {

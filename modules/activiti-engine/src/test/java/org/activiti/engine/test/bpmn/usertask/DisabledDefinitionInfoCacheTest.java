@@ -74,7 +74,7 @@ public class DisabledDefinitionInfoCacheTest extends AbstractActivitiTestCase {
   @Deployment
   public void testChangeClassName() {
     // first test without changing the class name
-    Map<String, Object> varMap = new HashMap<String, Object>();
+    Map<String, Object> varMap = new HashMap<>();
     varMap.put("count", 0);
     varMap.put("count2", 0);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("dynamicServiceTask", varMap);

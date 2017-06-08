@@ -31,7 +31,7 @@ public class BulkDeleteNoHistoryTest extends ResourceActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testLargeAmountOfVariableBulkDelete() throws Exception {
-    Map<String, Object> variables = new HashMap<String, Object>();
+    Map<String, Object> variables = new HashMap<>();
 
     // Do a bulk-update with a number higher than any DB's magic numbers
     for (int i = 0; i < 4001; i++) {

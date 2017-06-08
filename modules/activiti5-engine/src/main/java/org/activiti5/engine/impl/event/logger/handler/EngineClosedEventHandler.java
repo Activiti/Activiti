@@ -15,7 +15,7 @@ public class EngineClosedEventHandler extends AbstractDatabaseEventLoggerEventHa
 
 	@Override
 	public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
-		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<>();
 		try {
 	    data.put("ip", InetAddress.getLocalHost().getHostAddress()); // Note that this might give the wrong ip address in case of multiple network interfaces - but it's better than nothing.
     } catch (UnknownHostException e) {
