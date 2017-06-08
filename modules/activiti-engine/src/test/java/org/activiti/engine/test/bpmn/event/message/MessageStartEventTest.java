@@ -33,7 +33,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     String deploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
         .deploy().getId();
 
-    List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl<>(processEngineConfiguration.getCommandExecutor()).list();
+    List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
 
     assertEquals(1, eventSubscriptions.size());
 
@@ -68,7 +68,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     String deploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
         .deploy().getId();
 
-    List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl<>(processEngineConfiguration.getCommandExecutor()).list();
+    List<EventSubscriptionEntity> eventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
     List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
 
     assertEquals(1, eventSubscriptions.size());
@@ -77,7 +77,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     String newDeploymentId = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
         .deploy().getId();
 
-    List<EventSubscriptionEntity> newEventSubscriptions = new EventSubscriptionQueryImpl<>(processEngineConfiguration.getCommandExecutor()).list();
+    List<EventSubscriptionEntity> newEventSubscriptions = new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor()).list();
     List<ProcessDefinition> newProcessDefinitions = repositoryService.createProcessDefinitionQuery().list();
 
     assertEquals(1, newEventSubscriptions.size());

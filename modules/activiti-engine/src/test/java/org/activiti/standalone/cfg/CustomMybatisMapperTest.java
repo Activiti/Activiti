@@ -27,7 +27,7 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
     }
 
     // Fetch the columns we're interested in
-    CustomSqlExecution<MyTestMapper, List<Map<String, Object>>> customSqlExecution = new AbstractCustomSqlExecution<>(MyTestMapper.class) {
+    CustomSqlExecution<MyTestMapper, List<Map<String, Object>>> customSqlExecution = new AbstractCustomSqlExecution<MyTestMapper, List<Map<String, Object>>>(MyTestMapper.class) {
 
       public List<Map<String, Object>> execute(MyTestMapper customMapper) {
         return customMapper.selectTasks();
@@ -48,24 +48,24 @@ public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
     for (Task task : taskService.createTaskQuery().list()) {
       taskService.deleteTask(task.getId());
       historyService.deleteHistoricTaskInstance(task.getId());
-    }
+}
 
-  }
+}
 
-  public void testFetchTaskWithSpecificVariable() {
+public void testFetchTaskWithSpecificVariable() {
 
-    // Create test data
-    for (int i = 0; i < 5; i++) {
-      Task task = taskService.newTask();
-      task.setName(i + "");
-      taskService.saveTask(task);
+// Create test data
+for (int i = 0; i < 5; i++) {
+Task task = taskService.newTask();
+task.setName(i + "");
+taskService.saveTask(task);
 
-      taskService.setVariable(task.getId(), "myVar", Long.valueOf(task.getId()) * 2);
-      taskService.setVariable(task.getId(), "myVar2", "SomeOtherValue");
-    }
+taskService.setVariable(task.getId(), "myVar", Long.valueOf(task.getId()) * 2);
+taskService.setVariable(task.getId(), "myVar2", "SomeOtherValue");
+}
 
-    // Fetch data with custom query
-    CustomSqlExecution<MyTestMapper, List<Map<String, Object>>> customSqlExecution = new AbstractCustomSqlExecution<>(MyTestMapper.class) {
+// Fetch data with custom query
+CustomSqlExecution<MyTestMapper, List<Map<String, Object>>> customSqlExecution = new AbstractCustomSqlExecution<MyTestMapper, List<Map<String, Object>>>(MyTestMapper.class) {
 
       public List<Map<String, Object>> execute(MyTestMapper customMapper) {
         return customMapper.selectTaskWithSpecificVariable("myVar");
