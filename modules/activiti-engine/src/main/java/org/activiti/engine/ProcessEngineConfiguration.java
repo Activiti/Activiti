@@ -19,7 +19,6 @@ import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.runtime.Clock;
-import org.activiti.image.ProcessDiagramGenerator;
 
 import javax.sql.DataSource;
 import java.io.InputStream;
@@ -146,11 +145,6 @@ public abstract class ProcessEngineConfiguration {
   protected int defaultFailedJobWaitTime = 10;
   /** define the default wait time for a failed async job in seconds */
   protected int asyncFailedJobWaitTime = 10;
-
-  /**
-   * process diagram generator. Default value is DefaulProcessDiagramGenerator
-   */
-  protected ProcessDiagramGenerator processDiagramGenerator;
 
   /**
    * Allows configuring a database table prefix which is used for all runtime operations of the process engine. For example, if you specify a prefix named 'PRE1.', activiti will query for executions
@@ -755,14 +749,6 @@ public abstract class ProcessEngineConfiguration {
     return this;
   }
 
-  public ProcessDiagramGenerator getProcessDiagramGenerator() {
-    return this.processDiagramGenerator;
-  }
-
-  public ProcessEngineConfiguration setProcessDiagramGenerator(ProcessDiagramGenerator processDiagramGenerator) {
-    this.processDiagramGenerator = processDiagramGenerator;
-    return this;
-  }
 
   public AsyncExecutor getAsyncExecutor() {
     return asyncExecutor;

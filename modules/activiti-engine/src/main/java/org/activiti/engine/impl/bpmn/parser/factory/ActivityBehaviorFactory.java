@@ -139,10 +139,6 @@ public interface ActivityBehaviorFactory {
   public abstract ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask);
 
   public abstract ActivityBehavior createCamelActivityBehavior(SendTask sendTask);
-  
-  public abstract ActivityBehavior createDmnActivityBehavior(ServiceTask serviceTask);
-
-  public abstract ActivityBehavior createDmnActivityBehavior(SendTask sendTask);
 
   public abstract ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask);
 

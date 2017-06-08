@@ -6,12 +6,10 @@
 	<parent>
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-spring-boot-starters</artifactId>
-		<version>6.0.1-SNAPSHOT</version>
+		<version>6.1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>activiti-spring-boot-starter-basic</artifactId>
-	<!-- <properties> <spring.framework.version>4.1.4.RELEASE</spring.framework.version> 
-		</properties> -->
 
 	<dependencies>
 		<!-- Support for auto-completion support in Boot 1.2 -->
@@ -36,35 +34,6 @@
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 
-		<!-- rest api -->
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-rest</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-common-rest</artifactId>
-			<optional>true</optional>
-		</dependency>
-
-		<!-- integration -->
-		<dependency>
-			<groupId>org.springframework.integration</groupId>
-			<artifactId>spring-integration-java-dsl</artifactId>
-			<version>${spring-integration-java-dsl.version}</version>
-			<optional>true</optional>
-		</dependency>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy</artifactId>
@@ -73,11 +42,6 @@
 		</dependency>
 
 		<!-- actuator -->
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-image-generator</artifactId>
-			<optional>true</optional>
-		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-bpmn-model</artifactId>

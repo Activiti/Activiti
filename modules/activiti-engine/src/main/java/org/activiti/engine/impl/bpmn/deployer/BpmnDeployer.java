@@ -58,7 +58,6 @@ public class BpmnDeployer implements Deployer {
   protected ParsedDeploymentBuilderFactory parsedDeploymentBuilderFactory;
   protected BpmnDeploymentHelper bpmnDeploymentHelper;
   protected CachingAndArtifactsManager cachingAndArtifactsManager;
-  protected ProcessDefinitionDiagramHelper processDefinitionDiagramHelper;
 
   @Override
   public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
@@ -76,7 +75,7 @@ public class BpmnDeployer implements Deployer {
         parsedDeployment.getDeployment(), parsedDeployment.getAllProcessDefinitions());
     bpmnDeploymentHelper.setResourceNamesOnProcessDefinitions(parsedDeployment);
     
-    createAndPersistNewDiagramsIfNeeded(parsedDeployment);
+//    createAndPersistNewDiagramsIfNeeded(parsedDeployment);
     setProcessDefinitionDiagramNames(parsedDeployment);
     
     if (deployment.isNew()) {
@@ -97,32 +96,32 @@ public class BpmnDeployer implements Deployer {
       createLocalizationValues(processDefinition.getId(), bpmnModel.getProcessById(processDefinition.getKey()));
     }
   }
-
-  /**
-   * Creates new diagrams for process definitions if the deployment is new, the process definition in
-   * question supports it, and the engine is configured to make new diagrams.  
-   * 
-   * When this method creates a new diagram, it also persists it via the ResourceEntityManager 
-   * and adds it to the resources of the deployment.
-   */
-  protected void createAndPersistNewDiagramsIfNeeded(ParsedDeployment parsedDeployment) {
-    
-    final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-    final DeploymentEntity deploymentEntity = parsedDeployment.getDeployment();
-    
-    final ResourceEntityManager resourceEntityManager = processEngineConfiguration.getResourceEntityManager();
-    
-    for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
-      if (processDefinitionDiagramHelper.shouldCreateDiagram(processDefinition, deploymentEntity)) {
-        ResourceEntity resource = processDefinitionDiagramHelper.createDiagramForProcessDefinition(
-            processDefinition, parsedDeployment.getBpmnParseForProcessDefinition(processDefinition));
-        if (resource != null) {
-          resourceEntityManager.insert(resource, false);
-          deploymentEntity.addResource(resource);  // now we'll find it if we look for the diagram name later.
-        }
-      }
-    }
-  }
+//
+//  /**
+//   * Creates new diagrams for process definitions if the deployment is new, the process definition in
+//   * question supports it, and the engine is configured to make new diagrams.
+//   *
+//   * When this method creates a new diagram, it also persists it via the ResourceEntityManager
+//   * and adds it to the resources of the deployment.
+//   */
+//  protected void createAndPersistNewDiagramsIfNeeded(ParsedDeployment parsedDeployment) {
+//
+//    final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+//    final DeploymentEntity deploymentEntity = parsedDeployment.getDeployment();
+//
+//    final ResourceEntityManager resourceEntityManager = processEngineConfiguration.getResourceEntityManager();
+//
+//    for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+//      if (processDefinitionDiagramHelper.shouldCreateDiagram(processDefinition, deploymentEntity)) {
+//        ResourceEntity resource = processDefinitionDiagramHelper.createDiagramForProcessDefinition(
+//            processDefinition, parsedDeployment.getBpmnParseForProcessDefinition(processDefinition));
+//        if (resource != null) {
+//          resourceEntityManager.insert(resource, false);
+//          deploymentEntity.addResource(resource);  // now we'll find it if we look for the diagram name later.
+//        }
+//      }
+//    }
+//  }
   
   /**
    * Updates all the process definition entities to have the correct diagram resource name.  Must
@@ -440,11 +439,4 @@ public class BpmnDeployer implements Deployer {
     this.cachingAndArtifactsManager = manager;
   }
 
-  public ProcessDefinitionDiagramHelper getProcessDefinitionDiagramHelper() {
-    return processDefinitionDiagramHelper;
-  }
-
-  public void setProcessDefinitionDiagramHelper(ProcessDefinitionDiagramHelper processDefinitionDiagramHelper) {
-    this.processDefinitionDiagramHelper = processDefinitionDiagramHelper;
-  }
 }

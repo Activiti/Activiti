@@ -7,7 +7,7 @@
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot</artifactId>
         <relativePath>../</relativePath>
-        <version>6.0.1-SNAPSHOT</version>
+        <version>6.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>activiti-spring-boot-samples</artifactId>
@@ -17,7 +17,7 @@
         <module>spring-boot-sample-basic</module>
         <module>spring-boot-sample-jpa</module>
         <module>spring-boot-sample-security</module>
-        <module>spring-boot-sample-rest-api</module>      
+        <module>spring-boot-sample-rest-api</module>
 		  <module>spring-boot-sample-rest-api-security</module>
         <module>spring-boot-sample-actuator</module>
         <module>spring-boot-sample-integration</module>
@@ -34,7 +34,7 @@
             <artifactId>h2</artifactId>
         </dependency>
     </dependencies>
-    
+
      <build>
             <plugins>
                 <plugin>

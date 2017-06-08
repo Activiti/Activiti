@@ -18,8 +18,6 @@ import org.activiti.bpmn.BpmnAutoLayout;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.image.ProcessDiagramGenerator;
-import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
@@ -52,27 +50,27 @@ public class ProcessEngineMvcEndpoint extends EndpointMvcAdapter {
      * this is <A href="http://localhost:8080/activiti/processes/fulfillmentProcess">process-diagram for</A>
      * a process definition named {@code fulfillmentProcess}.
      */
-    @RequestMapping(value = "/processes/{processDefinitionKey:.*}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
-    @ResponseBody
-    public ResponseEntity processDefinitionDiagram(@PathVariable String processDefinitionKey) {
-      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-              .processDefinitionKey(processDefinitionKey)
-              .latestVersion()
-              .singleResult();
-      if (processDefinition == null) {
-          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-      }
-
-      ProcessDiagramGenerator processDiagramGenerator = new DefaultProcessDiagramGenerator();
-      BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
-
-      if (bpmnModel.getLocationMap().size() == 0) {
-          BpmnAutoLayout autoLayout = new BpmnAutoLayout(bpmnModel);
-          autoLayout.execute();
-      }
-
-      InputStream is = processDiagramGenerator.generateJpgDiagram(bpmnModel);
-      return ResponseEntity.ok(new InputStreamResource(is));
-  }
+//    @RequestMapping(value = "/processes/{processDefinitionKey:.*}", method = RequestMethod.GET, produces = MediaType.IMAGE_JPEG_VALUE)
+//    @ResponseBody
+//    public ResponseEntity processDefinitionDiagram(@PathVariable String processDefinitionKey) {
+//      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+//              .processDefinitionKey(processDefinitionKey)
+//              .latestVersion()
+//              .singleResult();
+//      if (processDefinition == null) {
+//          return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//      }
+//
+//      ProcessDiagramGenerator processDiagramGenerator = new DefaultProcessDiagramGenerator();
+//      BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
+//
+//      if (bpmnModel.getLocationMap().size() == 0) {
+//          BpmnAutoLayout autoLayout = new BpmnAutoLayout(bpmnModel);
+//          autoLayout.execute();
+//      }
+//
+//      InputStream is = processDiagramGenerator.generateJpgDiagram(bpmnModel);
+//      return ResponseEntity.ok(new InputStreamResource(is));
+//  }
 
 }

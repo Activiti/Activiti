@@ -13,8 +13,6 @@
 package org.activiti.engine.impl.cfg;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.dmn.api.DmnRepositoryService;
-import org.activiti.dmn.api.DmnRuleService;
 import org.activiti.engine.*;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
@@ -71,8 +69,6 @@ import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.variable.*;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.engine.runtime.Clock;
-import org.activiti.form.api.FormRepositoryService;
-import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
@@ -134,16 +130,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected FormService formService = new FormServiceImpl();
   protected ManagementService managementService = new ManagementServiceImpl();
   protected DynamicBpmnService dynamicBpmnService = new DynamicBpmnServiceImpl(this);
-
-  // FORM ENGINE SERVICES /////////////////////////////////////////////////////
-  protected boolean formEngineInitialized;
-  protected FormRepositoryService formEngineRepositoryService;
-  protected org.activiti.form.api.FormService formEngineFormService;
-
-  // FORM ENGINE SERVICES /////////////////////////////////////////////////////
-  protected boolean dmnEngineInitialized;
-  protected DmnRepositoryService dmnEngineRepositoryService;
-  protected DmnRuleService dmnEngineRuleService;
 
   // COMMAND EXECUTORS ////////////////////////////////////////////////////////
 
@@ -258,7 +244,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected EventSubscriptionManager eventSubscriptionManager;
   protected BpmnDeploymentHelper bpmnDeploymentHelper;
   protected CachingAndArtifactsManager cachingAndArtifactsManager;
-  protected ProcessDefinitionDiagramHelper processDefinitionDiagramHelper;
   protected List<Deployer> customPreDeployers;
   protected List<Deployer> customPostDeployers;
   protected List<Deployer> deployers;
@@ -559,7 +544,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected FailedJobCommandFactory failedJobCommandFactory;
 
   /**
-   * Set this to true if you want to have extra checks on the BPMN xml that is parsed.
+   * Set this to true if you want to have extra checks on the BPMN xml that is parsed. See http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml -can-bring-down-your-server/
    *
    * Unfortunately, this feature is not available on some platforms (JDK 6, JBoss), hence the reason why it is disabled by default. If your platform allows the use of StaxSource during XML parsing, do
    * enable it.
@@ -664,11 +649,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     init();
     ProcessEngineImpl processEngine = new ProcessEngineImpl(this);
 
-    // trigger build of Activiti 5 Engine
-    if (isActiviti5CompatibilityEnabled && activiti5CompatibilityHandler != null) {
-      Context.setProcessEngineConfiguration(processEngine.getProcessEngineConfiguration());
-      activiti5CompatibilityHandler.getRawProcessEngine();
-    }
+//    // trigger build of Activiti 5 Engine
+//    if (isActiviti5CompatibilityEnabled && activiti5CompatibilityHandler != null) {
+//      Context.setProcessEngineConfiguration(processEngine.getProcessEngineConfiguration());
+//      activiti5CompatibilityHandler.getRawProcessEngine();
+//    }
 
     postProcessEngineInitialisation();
 
@@ -681,7 +666,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void init() {
     initConfigurators();
     configuratorsBeforeInit();
-    initProcessDiagramGenerator();
     initHistoryLevel();
     initExpressionManager();
 
@@ -1516,9 +1500,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       cachingAndArtifactsManager = new CachingAndArtifactsManager();
     }
 
-    if (processDefinitionDiagramHelper == null) {
-      processDefinitionDiagramHelper = new ProcessDefinitionDiagramHelper();
-    }
   }
 
   public Collection<? extends Deployer> getDefaultDeployers() {
@@ -1534,7 +1515,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     bpmnDeployer.setParsedDeploymentBuilderFactory(parsedDeploymentBuilderFactory);
     bpmnDeployer.setBpmnDeploymentHelper(bpmnDeploymentHelper);
     bpmnDeployer.setCachingAndArtifactsManager(cachingAndArtifactsManager);
-    bpmnDeployer.setProcessDefinitionDiagramHelper(processDefinitionDiagramHelper);
 
     defaultDeployers.add(bpmnDeployer);
     return defaultDeployers;
@@ -1662,11 +1642,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  public void initProcessDiagramGenerator() {
-    if (processDiagramGenerator == null) {
-      processDiagramGenerator = new DefaultProcessDiagramGenerator();
-    }
-  }
 
   public void initAgendaFactory() {
     if (this.engineAgendaFactory == null) {
@@ -2194,60 +2169,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public boolean isFormEngineInitialized() {
-    return formEngineInitialized;
-  }
-
-  public ProcessEngineConfigurationImpl setFormEngineInitialized(boolean formEngineInitialized) {
-    this.formEngineInitialized = formEngineInitialized;
-    return this;
-  }
-
-  public FormRepositoryService getFormEngineRepositoryService() {
-    return formEngineRepositoryService;
-  }
-
-  public ProcessEngineConfigurationImpl setFormEngineRepositoryService(FormRepositoryService formEngineRepositoryService) {
-    this.formEngineRepositoryService = formEngineRepositoryService;
-    return this;
-  }
-
-  public org.activiti.form.api.FormService getFormEngineFormService() {
-    return formEngineFormService;
-  }
-
-  public ProcessEngineConfigurationImpl setFormEngineFormService(org.activiti.form.api.FormService formEngineFormService) {
-    this.formEngineFormService = formEngineFormService;
-    return this;
-  }
-
-  public boolean isDmnEngineInitialized() {
-    return dmnEngineInitialized;
-  }
-
-  public ProcessEngineConfigurationImpl setDmnEngineInitialized(boolean dmnEngineInitialized) {
-    this.dmnEngineInitialized = dmnEngineInitialized;
-    return this;
-  }
-
-  public DmnRepositoryService getDmnEngineRepositoryService() {
-    return dmnEngineRepositoryService;
-  }
-
-  public ProcessEngineConfigurationImpl setDmnEngineRepositoryService(DmnRepositoryService dmnEngineRepositoryService) {
-    this.dmnEngineRepositoryService = dmnEngineRepositoryService;
-    return this;
-  }
-
-  public DmnRuleService getDmnEngineRuleService() {
-    return dmnEngineRuleService;
-  }
-
-  public ProcessEngineConfigurationImpl setDmnEngineRuleService(DmnRuleService dmnEngineRuleService) {
-    this.dmnEngineRuleService = dmnEngineRuleService;
-    return this;
-  }
-
   public Map<Class<?>, SessionFactory> getSessionFactories() {
     return sessionFactories;
   }
@@ -2342,14 +2263,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.cachingAndArtifactsManager = cachingAndArtifactsManager;
   }
 
-  public ProcessDefinitionDiagramHelper getProcessDefinitionDiagramHelper() {
-    return processDefinitionDiagramHelper;
-  }
-
-  public ProcessEngineConfigurationImpl setProcessDefinitionDiagramHelper(ProcessDefinitionDiagramHelper processDefinitionDiagramHelper) {
-    this.processDefinitionDiagramHelper = processDefinitionDiagramHelper;
-    return this;
-  }
 
   public List<Deployer> getDeployers() {
     return deployers;

@@ -146,11 +146,13 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     }
 
     String deleteReason = DeleteReason.BOUNDARY_EVENT_INTERRUPTING + " (" + notToDeleteExecution.getCurrentActivityId() + ")";
+    if (parentExecution.getCurrentFlowElement() instanceof CallActivity) {
       ExecutionEntity subProcessExecution = executionEntityManager.findSubProcessInstanceBySuperExecutionId(parentExecution.getId());
       if (subProcessExecution != null) {
         executionEntityManager.deleteProcessInstanceExecutionEntity(subProcessExecution.getId(),
             subProcessExecution.getCurrentActivityId(), deleteReason, true, true);
       }
+    }
 
     executionEntityManager.deleteExecutionAndRelatedData(parentExecution, deleteReason, false);
   }

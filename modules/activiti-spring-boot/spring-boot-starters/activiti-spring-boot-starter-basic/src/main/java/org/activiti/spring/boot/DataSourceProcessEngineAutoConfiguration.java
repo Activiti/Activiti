@@ -37,7 +37,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class DataSourceProcessEngineAutoConfiguration {
 
   @Configuration
-  @ConditionalOnMissingClass(name= "javax.persistence.EntityManagerFactory")
+  @ConditionalOnMissingClass("javax.persistence.EntityManagerFactory")
   @EnableConfigurationProperties(ActivitiProperties.class)
   public static class DataSourceProcessEngineConfiguration extends AbstractProcessEngineAutoConfiguration {
 

@@ -8,13 +8,15 @@ import org.activiti.spring.boot.RestApiAutoConfiguration;
 import org.activiti.spring.boot.SecurityAutoConfiguration;
 import org.junit.After;
 import org.junit.Test;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
+//import org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration;
+//import org.springframework.boot.autoconfigure.web.MultipartAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
-import org.springframework.boot.autoconfigure.web.ServerPropertiesAutoConfiguration;
-import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
+//import org.springframework.boot.autoconfigure.web.ServerPropertiesAutoConfiguration;
+//import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
+import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -30,9 +32,11 @@ import org.springframework.web.client.RestTemplate;
 public class RestApiAutoConfigurationTest {
 
   @Configuration
-  @Import({EmbeddedServletContainerAutoConfiguration.class,
-          MultipartAutoConfiguration.class,
-          ServerPropertiesAutoConfiguration.class,
+  @Import({
+          //EmbeddedServletContainerAutoConfiguration.class,
+          //MultipartAutoConfiguration.class,
+          //ServerPropertiesAutoConfiguration.class,
+          EnableAutoConfiguration.class,
           DataSourceAutoConfiguration.class,
           DataSourceProcessEngineAutoConfiguration.DataSourceProcessEngineConfiguration.class,
           SecurityAutoConfiguration.class,
@@ -79,18 +83,18 @@ public class RestApiAutoConfigurationTest {
     }
   }
 
-  private AnnotationConfigEmbeddedWebApplicationContext context;
+  private AnnotationConfigServletWebServerApplicationContext context;
 
   @Test
   public void testRestApiIntegration() throws Throwable {
 
-    this.context = new AnnotationConfigEmbeddedWebApplicationContext();
+    this.context = new AnnotationConfigServletWebServerApplicationContext();
     this.context.register(BaseConfiguration.class);
     this.context.refresh();
     
     RestTemplate restTemplate = this.context.getBean(RestTemplate.class) ;
 
-    String authenticationChallenge = "http://localhost:" + this.context.getEmbeddedServletContainer().getPort() + 
+    String authenticationChallenge = "http://localhost:" + this.context.getWebServer().getPort() +
         "/repository/process-definitions" ;
 
     final AtomicBoolean received401 = new AtomicBoolean();

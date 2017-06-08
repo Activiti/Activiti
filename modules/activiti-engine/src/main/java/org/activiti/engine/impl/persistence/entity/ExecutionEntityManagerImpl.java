@@ -566,14 +566,12 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
         (enableExecutionRelationshipCounts && ((CountingExecutionEntity) executionEntity).getVariableCount() > 0)) {
       Collection<VariableInstance> executionVariables = executionEntity.getVariableInstancesLocal().values();
       for (VariableInstance variableInstance : executionVariables) {
-        if (variableInstance instanceof VariableInstanceEntity) {
-          VariableInstanceEntity variableInstanceEntity = (VariableInstanceEntity) variableInstance;
-          
-          VariableInstanceEntityManager variableInstanceEntityManager = getVariableInstanceEntityManager();
-          variableInstanceEntityManager.delete(variableInstanceEntity);
-          if (variableInstanceEntity.getByteArrayRef() != null && variableInstanceEntity.getByteArrayRef().getId() != null) {
-            getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayRef().getId());
-          }
+        VariableInstanceEntity variableInstanceEntity = (VariableInstanceEntity) variableInstance;
+        
+        VariableInstanceEntityManager variableInstanceEntityManager = getVariableInstanceEntityManager();
+        variableInstanceEntityManager.delete(variableInstanceEntity);
+        if (variableInstanceEntity.getByteArrayRef() != null && variableInstanceEntity.getByteArrayRef().getId() != null) {
+          getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayRef().getId());
         }
       }
     }

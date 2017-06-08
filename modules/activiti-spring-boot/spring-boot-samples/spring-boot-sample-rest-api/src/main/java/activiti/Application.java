@@ -6,6 +6,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Bean;
  * Demonstrates the <A href="http://localhost:8080/">REST API</A>
  */
 @SpringBootApplication
+@EnableAutoConfiguration
 public class Application {
 
     @Bean

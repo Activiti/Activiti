@@ -27,8 +27,8 @@
         <property name="dataSource" ref="dataSource"/>
         <property name="persistenceXmlLocation" value="classpath:/org/activiti/spring/test/jpa/custom-persistence.xml"/>
         <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter">
-                <property name="databasePlatform" value="org.apache.openjpa.jdbc.sql.H2Dictionary"/>
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="databasePlatform" value="org.hibernate.dialect.H2Dialect"/>
             </bean>
         </property>
     </bean>

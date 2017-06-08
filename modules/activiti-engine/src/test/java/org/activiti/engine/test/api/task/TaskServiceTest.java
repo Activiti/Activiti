@@ -13,8 +13,6 @@
 
 package org.activiti.engine.test.api.task;
 
-import static com.googlecode.catchexception.CatchException.catchException;
-import static com.googlecode.catchexception.CatchException.caughtException;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -50,12 +48,17 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
+
+import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 /**
  * @author Frederik Heremans
  * @author Joram Barrez
  * @author Falko Menge
  */
+
 public class TaskServiceTest extends PluggableActivitiTestCase {
 
   public void testSaveTaskUpdate() throws Exception {
@@ -1557,11 +1560,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     taskService.setVariableLocal(currentTask.getId(), "variable1", "value1");
 
-    catchException(taskService).getVariableLocal(currentTask.getId(), "variable1", Boolean.class);
-
-    Exception e = caughtException();
-    assertNotNull(e);
-    assertTrue(e instanceof ClassCastException);
+    try{
+      taskService.getVariableLocal(currentTask.getId(), "variable1", Boolean.class);
+      failBecauseExceptionWasNotThrown(ClassCastException.class);
+    }catch(ClassCastException e){
+      // do nothing
+    }
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
@@ -1596,11 +1600,13 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     taskService.setVariable(currentTask.getId(), "variable1", "value1");
 
-    catchException(taskService).getVariable(currentTask.getId(), "variable1", Boolean.class);
+    try{
+      taskService.getVariable(currentTask.getId(), "variable1", Boolean.class);
+      failBecauseExceptionWasNotThrown(ClassCastException.class);
+    }catch(ClassCastException e){
+      // do nothing
+    }
 
-    Exception e = caughtException();
-    assertNotNull(e);
-    assertTrue(e instanceof ClassCastException);
   }
 
   public void testClaimTime() {

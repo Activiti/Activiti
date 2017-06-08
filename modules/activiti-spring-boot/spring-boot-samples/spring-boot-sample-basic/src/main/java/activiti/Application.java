@@ -3,6 +3,7 @@ package activiti;
 import org.activiti.engine.RuntimeService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
@@ -12,6 +13,7 @@ import java.util.Collections;
  *
  */
 @SpringBootApplication
+@EnableAutoConfiguration
 public class Application {
 
     //  establish that it's detected the processes and that we can deploy one.

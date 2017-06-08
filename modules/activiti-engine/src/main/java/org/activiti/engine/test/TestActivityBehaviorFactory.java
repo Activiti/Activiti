@@ -204,16 +204,6 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   public MailActivityBehavior createMailActivityBehavior(SendTask sendTask) {
     return wrappedActivityBehaviorFactory.createMailActivityBehavior(sendTask);
   }
-  
-  @Override
-  public ActivityBehavior createDmnActivityBehavior(ServiceTask serviceTask) {
-    return wrappedActivityBehaviorFactory.createDmnActivityBehavior(serviceTask);
-  }
-
-  @Override
-  public ActivityBehavior createDmnActivityBehavior(SendTask sendTask) {
-    return wrappedActivityBehaviorFactory.createDmnActivityBehavior(sendTask);
-  }
 
   @Override
   public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask) {
