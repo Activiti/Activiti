@@ -125,7 +125,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
     int maxCount = 3210; // You can make this as big as you want (as long as
                          // it still fits within transaction timeouts). Go
                          // on, try it!
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("counter", new Integer(0));
     vars.put("maxCount", maxCount);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testLongServiceTaskLoop", vars);
@@ -144,7 +144,7 @@ public class Activiti6Test extends PluggableActivitiTestCase {
   @Test
   @org.activiti.engine.test.Deployment
   public void testScriptTask() {
-    Map<String, Object> variableMap = new HashMap<String, Object>();
+    Map<String, Object> variableMap = new HashMap<>();
     variableMap.put("a", 1);
     variableMap.put("b", 2);
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variableMap);

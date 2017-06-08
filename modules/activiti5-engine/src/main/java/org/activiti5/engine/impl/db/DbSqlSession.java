@@ -73,14 +73,14 @@ public class DbSqlSession implements Session {
   
   protected static final Pattern CLEAN_VERSION_REGEX = Pattern.compile("\\d\\.\\d*");
   
-  protected static final List<ActivitiVersion> ACTIVITI_VERSIONS = new ArrayList<ActivitiVersion>();
+  protected static final List<ActivitiVersion> ACTIVITI_VERSIONS = new ArrayList<>();
 
   protected SqlSession sqlSession;
   protected DbSqlSessionFactory dbSqlSessionFactory;
-  protected Map<Class<? extends PersistentObject>, List<PersistentObject>> insertedObjects = new HashMap<Class<? extends PersistentObject>, List<PersistentObject>>();
-  protected Map<Class<?>, Map<String, CachedObject>> cachedObjects = new HashMap<Class<?>, Map<String,CachedObject>>();
-  protected List<DeleteOperation> deleteOperations = new ArrayList<DeleteOperation>();
-  protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
+  protected Map<Class<? extends PersistentObject>, List<PersistentObject>> insertedObjects = new HashMap<>();
+  protected Map<Class<?>, Map<String, CachedObject>> cachedObjects = new HashMap<>();
+  protected List<DeleteOperation> deleteOperations = new ArrayList<>();
+  protected List<DeserializedObject> deserializedObjects = new ArrayList<>();
   protected String connectionMetadataDefaultCatalog;
   protected String connectionMetadataDefaultSchema;
   
@@ -274,7 +274,7 @@ public class DbSqlSession implements Session {
   public class BulkCheckedDeleteOperation implements DeleteOperation {
   	
   	protected Class<? extends PersistentObject> persistentObjectClass;
-    protected List<PersistentObject> persistentObjects = new ArrayList<PersistentObject>();
+    protected List<PersistentObject> persistentObjects = new ArrayList<>();
     
     public BulkCheckedDeleteOperation(Class<? extends PersistentObject> persistentObjectClass) {
     	this.persistentObjectClass = persistentObjectClass;
@@ -445,7 +445,7 @@ public class DbSqlSession implements Session {
       return loadedObjects;
     }
     
-    List<PersistentObject> filteredObjects = new ArrayList<PersistentObject>(loadedObjects.size());
+    List<PersistentObject> filteredObjects = new ArrayList<>(loadedObjects.size());
     for (Object loadedObject: loadedObjects) {
       PersistentObject cachedPersistentObject = cacheFilter((PersistentObject) loadedObject);
       filteredObjects.add(cachedPersistentObject);
@@ -501,7 +501,7 @@ public class DbSqlSession implements Session {
   public <T> List<T> findInCache(Class<T> entityClass) {
     Map<String, CachedObject> classCache = cachedObjects.get(entityClass);
     if (classCache!=null) {
-      List<T> entities = new ArrayList<T>(classCache.size());
+      List<T> entities = new ArrayList<>(classCache.size());
       for (CachedObject cachedObject: classCache.values()) {
         entities.add((T) cachedObject.getPersistentObject());
       }
@@ -580,7 +580,7 @@ public class DbSqlSession implements Session {
    * and removes inserts and deletes that cancel each other.
    */
   protected List<DeleteOperation> removeUnnecessaryOperations() {
-    List<DeleteOperation> removedDeleteOperations = new ArrayList<DeleteOperation>();
+    List<DeleteOperation> removedDeleteOperations = new ArrayList<>();
 
     for (Iterator<DeleteOperation> deleteIterator = deleteOperations.iterator(); deleteIterator.hasNext();) {
     	
@@ -698,7 +698,7 @@ public class DbSqlSession implements Session {
   }
 
   public List<PersistentObject> getUpdatedObjects() {
-    List<PersistentObject> updatedObjects = new ArrayList<PersistentObject>();
+    List<PersistentObject> updatedObjects = new ArrayList<>();
     for (Class<?> clazz: cachedObjects.keySet()) {
       
       Map<String, CachedObject> classCache = cachedObjects.get(clazz);
@@ -731,7 +731,7 @@ public class DbSqlSession implements Session {
   }
   
   public <T extends PersistentObject> List<T> pruneDeletedEntities(List<T> listToPrune) {
-    List<T> prunedList = new ArrayList<T>(listToPrune);
+    List<T> prunedList = new ArrayList<>(listToPrune);
     for (T potentiallyDeleted : listToPrune) {
       for (DeleteOperation deleteOperation: deleteOperations) {
           

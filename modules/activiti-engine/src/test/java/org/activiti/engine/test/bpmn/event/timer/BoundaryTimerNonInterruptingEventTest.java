@@ -246,7 +246,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
    */
   public void testReceiveTaskWithBoundaryTimer() {
     // Set the clock fixed
-    HashMap<String, Object> variables = new HashMap<String, Object>();
+    HashMap<String, Object> variables = new HashMap<>();
     variables.put("timeCycle", "R/PT1H");
 
     // After process start, there should be a timer created

@@ -40,7 +40,7 @@ public class HistoricActivityInstanceEntityManager extends AbstractManager {
   }
 
   public HistoricActivityInstanceEntity findHistoricActivityInstance(String activityId, String processInstanceId) {
-    Map<String, String> parameters = new HashMap<String, String>();
+    Map<String, String> parameters = new HashMap<>();
     parameters.put("activityId", activityId);
     parameters.put("processInstanceId", processInstanceId);
   

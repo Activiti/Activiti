@@ -30,7 +30,7 @@ public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
         .deploy();
 
     HashSet<String> processDefinitionNames = getProcessDefinitionNames(repositoryService.createProcessDefinitionQuery().processDefinitionCategoryNotEquals("one").list());
-    HashSet<String> expectedProcessDefinitionNames = new HashSet<String>();
+    HashSet<String> expectedProcessDefinitionNames = new HashSet<>();
     expectedProcessDefinitionNames.add("processTwo");
     expectedProcessDefinitionNames.add("processThree");
     assertEquals(expectedProcessDefinitionNames, processDefinitionNames);
@@ -45,7 +45,7 @@ public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
   }
 
   private HashSet<String> getProcessDefinitionNames(List<ProcessDefinition> processDefinitions) {
-    HashSet<String> processDefinitionNames = new HashSet<String>();
+    HashSet<String> processDefinitionNames = new HashSet<>();
     for (ProcessDefinition processDefinition : processDefinitions) {
       processDefinitionNames.add(processDefinition.getKey());
     }

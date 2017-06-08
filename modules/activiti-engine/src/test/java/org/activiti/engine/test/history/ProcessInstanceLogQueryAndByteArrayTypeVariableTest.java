@@ -50,7 +50,7 @@ public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest extends Pluggab
 	  deployTwoTasksTestProcess();
 	  
 	  // Start process instance
-	  Map<String, Object> vars = new HashMap<String, Object>();
+	  Map<String, Object> vars = new HashMap<>();
 	  // ByteArrayType Variable
 	  vars.put("var", LARGE_STRING_VALUE);
 	  this.processInstanceId = runtimeService.startProcessInstanceByKey("twoTasksProcess", vars).getId();

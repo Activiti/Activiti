@@ -33,7 +33,7 @@ public class RecorderExecutionListener implements ExecutionListener {
 
   private FixedValue parameter;
 
-  private static List<RecorderExecutionListener.RecordedEvent> recordedEvents = new ArrayList<RecorderExecutionListener.RecordedEvent>();
+  private static List<RecorderExecutionListener.RecordedEvent> recordedEvents = new ArrayList<>();
 
   public static class RecordedEvent {
     private final String activityId;

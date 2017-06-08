@@ -16,7 +16,7 @@ public class SequenceFlowTakenEventHandler extends AbstractDatabaseEventLoggerEv
 	public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
 		ActivitiSequenceFlowTakenEvent sequenceFlowTakenEvent = (ActivitiSequenceFlowTakenEvent) event;
 		
-		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<>();
 		putInMapIfNotNull(data, Fields.ID, sequenceFlowTakenEvent.getId());
 		
 		putInMapIfNotNull(data, Fields.SOURCE_ACTIVITY_ID, sequenceFlowTakenEvent.getSourceActivityId());

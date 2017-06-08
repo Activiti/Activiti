@@ -155,7 +155,7 @@ public class MultiTenantProcessEngineTest {
           .deploy();
     System.out.println("Process deployed! Deployment id is " + deployment.getId());
     
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("data", "Hello from " + userId);
     
     ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("oneTaskProcess", vars);

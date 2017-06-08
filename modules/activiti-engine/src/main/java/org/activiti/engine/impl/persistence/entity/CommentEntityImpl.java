@@ -77,7 +77,7 @@ public class CommentEntityImpl extends AbstractEntityNoRevision implements Comme
     if (message == null) {
       return null;
     }
-    List<String> messageParts = new ArrayList<String>();
+    List<String> messageParts = new ArrayList<>();
 
     String[] parts = MESSAGE_PARTS_MARKER_REGEX.split(message);
     for (String part : parts) {

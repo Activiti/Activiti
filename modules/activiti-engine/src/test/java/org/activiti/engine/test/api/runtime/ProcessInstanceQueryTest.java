@@ -355,7 +355,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryByDeploymentIdIn() {
-    List<String> deploymentIds = new ArrayList<String>();
+    List<String> deploymentIds = new ArrayList<>();
     deploymentIds.add(deployment.getId());
     List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().deploymentIdIn(deploymentIds).list();
     assertEquals(PROCESS_DEPLOY_COUNT, instances.size());
@@ -428,7 +428,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testOrQueryByDeploymentIdIn() {
-    List<String> deploymentIds = new ArrayList<String>();
+    List<String> deploymentIds = new ArrayList<>();
     deploymentIds.add(deployment.getId());
     List<ProcessInstance> instances = runtimeService.createProcessInstanceQuery().or().deploymentIdIn(deploymentIds).processDefinitionId("undefined").endOr().list();
     assertEquals(PROCESS_DEPLOY_COUNT, instances.size());
@@ -599,7 +599,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryStringVariable() {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("stringVar", "abcdef");
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
 
@@ -645,7 +645,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     processInstances = runtimeService.createProcessInstanceQuery().variableValueLessThan("stringVar", "abcdeg").list();
     assertEquals(2, processInstances.size());
     List<String> expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    List<String> ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    List<String> ids = new ArrayList<>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expecedIds);
     assertTrue(ids.isEmpty());
 
@@ -701,7 +701,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryLongVariable() {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("longVar", 12345L);
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
 
@@ -759,7 +759,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals(2, processInstances.size());
 
     List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    List<String> ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    List<String> ids = new ArrayList<>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
@@ -794,7 +794,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryDoubleVariable() {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("doubleVar", 12345.6789);
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
 
@@ -852,7 +852,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals(2, processInstances.size());
 
     List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    List<String> ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    List<String> ids = new ArrayList<>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
@@ -887,7 +887,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryIntegerVariable() {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("integerVar", 12345);
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
 
@@ -945,7 +945,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals(2, processInstances.size());
 
     List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    List<String> ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    List<String> ids = new ArrayList<>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
@@ -980,7 +980,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testOrQueryIntegerVariable() {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("integerVar", 12345);
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
 
@@ -1064,7 +1064,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals(2, processInstances.size());
 
     List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    List<String> ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    List<String> ids = new ArrayList<>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
@@ -1099,7 +1099,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryShortVariable() {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     short shortVar = 1234;
     vars.put("shortVar", shortVar);
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
@@ -1160,7 +1160,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals(2, processInstances.size());
 
     List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    List<String> ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    List<String> ids = new ArrayList<>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
@@ -1195,7 +1195,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryDateVariable() throws Exception {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     Date date1 = Calendar.getInstance().getTime();
     vars.put("dateVar", date1);
 
@@ -1271,7 +1271,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals(2, processInstances.size());
 
     List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
-    List<String> ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
+    List<String> ids = new ArrayList<>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
     ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
@@ -1308,7 +1308,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   public void testBooleanVariable() throws Exception {
 
     // TEST EQUALS
-    HashMap<String, Object> vars = new HashMap<String, Object>();
+    HashMap<String, Object> vars = new HashMap<>();
     vars.put("booleanVar", true);
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
 
@@ -1388,7 +1388,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryVariablesUpdatedToNullValue() {
     // Start process instance with different types of variables
-    Map<String, Object> variables = new HashMap<String, Object>();
+    Map<String, Object> variables = new HashMap<>();
     variables.put("longVar", 928374L);
     variables.put("shortVar", (short) 123);
     variables.put("integerVar", 1234);
@@ -1424,7 +1424,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryNullVariable() throws Exception {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("nullVar", null);
     ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
 
@@ -1510,7 +1510,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryEqualsIgnoreCase() {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("mixed", "AbCdEfG");
     vars.put("upper", "ABCDEFG");
     vars.put("lower", "abcdefg");
@@ -1579,7 +1579,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   
   @Deployment(resources={"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testQueryLikeIgnoreCase() {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("mixed", "AbCdEfG");
     vars.put("upper", "ABCDEFG");
     vars.put("lower", "abcdefg");
@@ -1622,7 +1622,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   @Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testQueryInvalidTypes() throws Exception {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("bytesVar", "test".getBytes());
     vars.put("serializableVar", new DummySerializable());
 
@@ -1692,7 +1692,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryAllVariableTypes() throws Exception {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("nullVar", null);
     vars.put("stringVar", "string");
     vars.put("longVar", 10L);
@@ -1716,12 +1716,12 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testClashingValues() throws Exception {
-    Map<String, Object> vars = new HashMap<String, Object>();
+    Map<String, Object> vars = new HashMap<>();
     vars.put("var", 1234L);
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
 
-    Map<String, Object> vars2 = new HashMap<String, Object>();
+    Map<String, Object> vars2 = new HashMap<>();
     vars2.put("var", 1234);
 
     ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars2);
@@ -1736,7 +1736,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   }
 
   public void testQueryByProcessInstanceIds() {
-    Set<String> processInstanceIds = new HashSet<String>(this.processInstanceIds);
+    Set<String> processInstanceIds = new HashSet<>(this.processInstanceIds);
 
     // start an instance that will not be part of the query
     runtimeService.startProcessInstanceByKey("oneTaskProcess2", "2");
