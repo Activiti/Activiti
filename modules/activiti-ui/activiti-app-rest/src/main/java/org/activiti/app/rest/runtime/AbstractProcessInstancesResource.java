@@ -42,6 +42,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.form.api.FormRepositoryService;
 import org.activiti.form.api.FormService;
 import org.activiti.form.model.FormDefinition;
+import org.activiti.form.model.FormField;
+import org.activiti.form.model.FormFieldTypes;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -107,20 +109,23 @@ public abstract class AbstractProcessInstancesResource {
     
     ProcessInstance processInstance = activitiService.startProcessInstance(startRequest.getProcessDefinitionId(), variables, startRequest.getName());
 
-    // Mark any content created as part of the form-submission connected to the process instance
-    /*if (formSubmission != null) {
-      if (formSubmission.hasContent()) {
-        ObjectNode contentNode = objectMapper.createObjectNode();
-        submittedFormValuesJson.put("content", contentNode);
-        for (Entry<String, List<RelatedContent>> entry : formSubmission.getVariableContent().entrySet()) {
-          ArrayNode contentArray = objectMapper.createArrayNode();
-          for (RelatedContent content : entry.getValue()) {
-            relatedContentService.setContentField(content.getId(), entry.getKey(), processInstance.getId(), null);
-            contentArray.add(content.getId());
+    // Mark any content created as part of the form-submission connected to the process instance and field
+    if (formDefinition != null) {
+      for (FormField formField : formDefinition.getFields()) {
+        if (FormFieldTypes.UPLOAD.equals(formField.getType())) {
+          String variableName = formField.getId();
+          if (variables.containsKey(variableName)) {
+            String variableValue = (String) variables.get(variableName);
+            if (StringUtils.isNotEmpty(variableValue)) {
+              String[] relatedContentIds = StringUtils.split(variableValue, ",");
+              for (String id : relatedContentIds) {
+                relatedContentService.setContentField(Long.parseLong(id), formField.getId(), processInstance.getId(), null);
+              }
+            }
           }
-          contentNode.put(entry.getKey(), contentArray);
         }
-      }*/
+      }
+    }
 
     HistoricProcessInstance historicProcess = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
 

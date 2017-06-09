@@ -12,8 +12,12 @@
  */
 package org.activiti.app.rest.runtime;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.app.domain.runtime.RelatedContent;
 import org.activiti.app.model.runtime.ProcessInstanceRepresentation;
 import org.activiti.app.security.SecurityUtils;
 import org.activiti.app.service.api.UserCache;
@@ -21,6 +25,7 @@ import org.activiti.app.service.api.UserCache.CachedUser;
 import org.activiti.app.service.exception.NotFoundException;
 import org.activiti.app.service.runtime.PermissionService;
 import org.activiti.app.service.runtime.ProcessInstanceService;
+import org.activiti.app.service.runtime.RelatedContentService;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
@@ -34,10 +39,13 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.form.api.FormRepositoryService;
 import org.activiti.form.api.FormService;
 import org.activiti.form.model.FormDefinition;
+import org.activiti.form.model.FormField;
+import org.activiti.form.model.FormFieldTypes;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 
 public abstract class AbstractProcessInstanceResource {
 
@@ -60,6 +68,9 @@ public abstract class AbstractProcessInstanceResource {
 
   @Autowired
   protected PermissionService permissionService;
+  
+  @Autowired
+  protected RelatedContentService relatedContentService;
 
   @Autowired
   protected ProcessInstanceService processInstanceService;
@@ -148,7 +159,31 @@ public abstract class AbstractProcessInstanceResource {
       }
     }
     
+    fetchAndAssignRelatedContentIfPresent(formDefinition, processInstanceId);
+    
     return formDefinition;
   }
-
+  
+  /*
+   * This method fetches the related content from related content table and assigns them to the corresponding upload field, 
+   * if any is present in the start form definition.
+   * */
+  protected void fetchAndAssignRelatedContentIfPresent(FormDefinition formDefinition, String processInstanceId){
+    if(formDefinition != null && formDefinition.getFields() != null){
+      for(FormField formField : formDefinition.getFields()){
+        if(FormFieldTypes.UPLOAD.equals(formField.getType())){
+          String fieldValue = (String)formField.getValue();
+          if (StringUtils.isNotEmpty(fieldValue)) {
+            int numberOfRelatedContents = StringUtils.split(fieldValue, ",").length;
+            Page<RelatedContent> relatedContents = relatedContentService.getFieldContentForProcessInstance(processInstanceId, formField.getId(), numberOfRelatedContents, 0);
+            List<RelatedContent> relatedContentsList = new ArrayList<RelatedContent>(relatedContents.getSize());
+            for(RelatedContent relatedContent : relatedContents){
+              relatedContentsList.add(relatedContent);
+            }
+            formField.setValue(relatedContentsList);
+          }
+        }	
+      }
+    }
+  }
 }
