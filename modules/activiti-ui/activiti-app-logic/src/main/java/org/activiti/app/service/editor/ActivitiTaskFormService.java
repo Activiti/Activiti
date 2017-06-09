@@ -200,24 +200,26 @@ public class ActivitiTaskFormService {
   
   /*
    * This method fetches the related content from related content table and assigns them to the corresponding upload field, 
-   * if any is present in the form definition.
+   * if any is present in the form being fetched.
    * */
   protected void fetchAndAssignRelatedContentsIfPresent(FormDefinition formDefinition, Map<String, Object> variables, String processInstanceId){
     if(formDefinition != null && formDefinition.getFields() != null && variables != null){
       for(FormField formField : formDefinition.getFields()){
         if(FormFieldTypes.UPLOAD.equals(formField.getType())){
-          String fieldValue = (String)formField.getValue();
-          if (StringUtils.isNotEmpty(fieldValue)) {
-            int numberOfRelatedContents = StringUtils.split(fieldValue, ",").length;
-            Page<RelatedContent> relatedContents = contentService.getFieldContentForProcessInstance(processInstanceId, formField.getId(), numberOfRelatedContents, 0);
-            List<RelatedContent> relatedContentsList = new ArrayList<RelatedContent>(relatedContents.getSize());
-            for(RelatedContent relatedContent : relatedContents){
-              relatedContentsList.add(relatedContent);
+          String variableName = formField.getId();
+          if(variables.containsKey(variableName)){
+            String variableValue = (String) variables.get(variableName);
+            if (StringUtils.isNotEmpty(variableValue)) {
+              String relatedContentIds[] = StringUtils.split(variableValue, ",");
+              List<RelatedContent> relatedContents = new ArrayList<>();
+              for(String relatedContentId : relatedContentIds){
+                relatedContents.add(contentService.getRelatedContent(Long.parseLong(relatedContentId), false));
+              }
+              formField.setValue(relatedContents);
             }
-            formField.setValue(relatedContentsList);
           }
-        }
-      }	
+        }	
+      }
     }
   }
 }
