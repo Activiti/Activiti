@@ -105,6 +105,8 @@ public interface StencilConstants {
   final String PROPERTY_SIGNALREF = "signalref";
 
   final String PROPERTY_ERRORREF = "errorref";
+  
+  final String PROPERTY_INTERRUPTING = "interrupting";
 
   final String PROPERTY_CANCEL_ACTIVITY = "cancelactivity";
 

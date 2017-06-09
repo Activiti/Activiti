@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.intra-mart.jp/im_bpm">
+  <message id="eventmsg1" name="eventmsg1"></message>
+  <message id="eventmsg2" name="eventmsg2"></message>
+  <message id="eventmsg3" name="eventmsg3"></message>
+  <process id="messageventsubprocessid1" name="Messag Event Sub-Process" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <endEvent id="endevent1" name="End"></endEvent>
+    <subProcess id="eventsubprocess1" name="Event sub Process" triggeredByEvent="true">
+      <startEvent id="messagestartevent1" name="Message start" activiti:isInterrupting="true">
+        <messageEventDefinition messageRef="eventmsg3"></messageEventDefinition>
+      </startEvent>
+      <userTask id="usertask2" name="ESP task" activiti:candidateUsers="admin">
+        <extensionElements>
+          <modeler:user-info-email-admin xmlns:modeler="http://activiti.com/modeler"><![CDATA[admin]]></modeler:user-info-email-admin>
+          <modeler:user-info-lastname-admin xmlns:modeler="http://activiti.com/modeler"><![CDATA[Administrator]]></modeler:user-info-lastname-admin>
+          <modeler:activiti-idm-candidate-user xmlns:modeler="http://activiti.com/modeler"><![CDATA[true]]></modeler:activiti-idm-candidate-user>
+          <modeler:initiator-can-complete xmlns:modeler="http://activiti.com/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+        </extensionElements>
+      </userTask>
+      <endEvent id="endevent3" name="End"></endEvent>
+      <sequenceFlow id="flow5" sourceRef="messagestartevent1" targetRef="usertask2"></sequenceFlow>
+      <sequenceFlow id="flow6" sourceRef="usertask2" targetRef="endevent3"></sequenceFlow>
+    </subProcess>
+    <callActivity id="callactivity1" name="Call activity" calledElement="msgEventSubProcessChild" activiti:inheritVariables="false"></callActivity>
+    <sequenceFlow id="flow7" sourceRef="startevent1" targetRef="callactivity1"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="callactivity1" targetRef="endevent1"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_messageventsubprocessid1">
+    <bpmndi:BPMNPlane bpmnElement="messageventsubprocessid1" id="BPMNPlane_messageventsubprocessid1">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="80.0" y="97.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="560.0" y="97.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="eventsubprocess1" id="BPMNShape_eventsubprocess1">
+        <omgdc:Bounds height="205.0" width="355.0" x="96.0" y="234.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="messagestartevent1" id="BPMNShape_messagestartevent1">
+        <omgdc:Bounds height="30.0" width="30.5" x="105.0" y="321.5"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
+        <omgdc:Bounds height="75.0" width="105.0" x="180.0" y="300.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
+        <omgdc:Bounds height="28.0" width="28.0" x="336.0" y="324.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="callactivity1" id="BPMNShape_callactivity1">
+        <omgdc:Bounds height="55.0" width="105.0" x="270.0" y="83.5"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="135.5" y="336.5"></omgdi:waypoint>
+        <omgdi:waypoint x="157.75" y="336.5"></omgdi:waypoint>
+        <omgdi:waypoint x="157.75" y="337.5"></omgdi:waypoint>
+        <omgdi:waypoint x="180.0" y="337.5"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="109.99985509206483" y="111.93406657102389"></omgdi:waypoint>
+        <omgdi:waypoint x="270.0" y="111.23076923076923"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="285.0" y="337.72340425531917"></omgdi:waypoint>
+        <omgdi:waypoint x="336.00012675246603" y="337.9404260712871"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow8" id="BPMNEdge_flow8">
+        <omgdi:waypoint x="375.0" y="111.0"></omgdi:waypoint>
+        <omgdi:waypoint x="560.0" y="111.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

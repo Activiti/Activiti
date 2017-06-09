@@ -418,8 +418,12 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
   
   @Override
   public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
-    getHistoryManager().recordActivityEnd(executionEntity, deleteReason);
-    deleteDataForExecution(executionEntity, deleteReason, cancel);
+	  if(executionEntity.isProcessInstanceType()){
+		  getHistoryManager().recordProcessInstanceEnd(executionEntity.getProcessInstanceId(), deleteReason, executionEntity.getActivityId());
+	  } else {
+	     getHistoryManager().recordActivityEnd(executionEntity, deleteReason);
+	  }
+	deleteDataForExecution(executionEntity, deleteReason, cancel);
     delete(executionEntity);
   }
   
