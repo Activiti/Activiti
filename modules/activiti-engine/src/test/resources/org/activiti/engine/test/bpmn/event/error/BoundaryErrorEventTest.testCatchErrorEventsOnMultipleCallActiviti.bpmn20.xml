@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="catchError2" isExecutable="true">
+    <startEvent id="startCatchError"></startEvent>
+    <subProcess id="subprocessCatchError" name="Sub Process">
+      <startEvent id="startSubprocess"></startEvent>
+      <endEvent id="endSubprocess"></endEvent>
+      <callActivity id="callActivitySubprocess" name="Call activity" calledElement="throwError2" activiti:inheritVariables="false"></callActivity>
+      <sequenceFlow id="flow2" sourceRef="startSubprocess" targetRef="callActivitySubprocess"></sequenceFlow>
+      <sequenceFlow id="flow3" sourceRef="callActivitySubprocess" targetRef="endSubprocess"></sequenceFlow>
+    </subProcess>
+    <sequenceFlow id="flow1" sourceRef="startCatchError" targetRef="subprocessCatchError"></sequenceFlow>
+    <endEvent id="endCatchError"></endEvent>
+    <sequenceFlow id="flow4" sourceRef="subprocessCatchError" targetRef="endCatchError"></sequenceFlow>
+    <boundaryEvent id="catchOtherErrors" name="otherErrors" attachedToRef="subprocessCatchError">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <boundaryEvent id="boundaryCatchMyError" name="myError" attachedToRef="subprocessCatchError">
+      <errorEventDefinition errorRef="myError"></errorEventDefinition>
+    </boundaryEvent>
+    <userTask id="otherErrorsTaskNested" name="otherErrorsTaskNested"></userTask>
+    <userTask id="myErrorTaskNested" name="myErrorTaskNested"></userTask>
+    <sequenceFlow id="flow5" sourceRef="boundaryCatchMyError" targetRef="myErrorTaskNested"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="myErrorTaskNested" targetRef="endCatchError"></sequenceFlow>
+    <sequenceFlow id="flow7" sourceRef="catchOtherErrors" targetRef="otherErrorsTaskNested"></sequenceFlow>
+    <sequenceFlow id="flow8" sourceRef="otherErrorsTaskNested" targetRef="endCatchError"></sequenceFlow>
+  </process>
+  <process id="throwError2" isExecutable="true">
+    <startEvent id="startThrowError"></startEvent>
+    <endEvent id="errorEndThrowError" name="ErrorEnd">
+      <errorEventDefinition errorRef="myError"></errorEventDefinition>
+    </endEvent>
+    <sequenceFlow id="flow9" sourceRef="startThrowError" targetRef="scriptTaskThrowError"></sequenceFlow>
+    <scriptTask id="scriptTaskThrowError" name="Script Task" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script><![CDATA[print("Hello")]]></script>
+    </scriptTask>
+    <sequenceFlow id="flow10" sourceRef="scriptTaskThrowError" targetRef="errorEndThrowError"></sequenceFlow>
+    <boundaryEvent id="catchScriptError" name="Error" attachedToRef="scriptTaskThrowError">
+      <errorEventDefinition></errorEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="flow11" sourceRef="catchScriptError" targetRef="errorEndThrowError"></sequenceFlow>
+  </process>
+</definitions>
