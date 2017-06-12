@@ -11,7 +11,6 @@
     <a ng-show="!readOnly" ng-click="deleteContent(content); $event.preventDefault(); $event.stopPropagation();"><i
               class="icon icon-remove"></i></a>
   </div>
-  <div class="subtle">{{'TASK.MESSAGE.CONTENT-UPLOADED-BY' | translate}} <span
-          user-name="content.createdBy"></span> , {{content.created | dateformat}}
+  <div class="subtle">{{'TASK.MESSAGE.CONTENT-UPLOADED-BY' | translate}} {{content.createdBy}} , {{content.created | dateformat}}
   </div>
 </div>

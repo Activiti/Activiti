@@ -17,12 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.app.domain.runtime.RelatedContent;
 import org.activiti.app.model.runtime.CompleteFormRepresentation;
 import org.activiti.app.model.runtime.ProcessInstanceVariableRepresentation;
 import org.activiti.app.security.SecurityUtils;
 import org.activiti.app.service.exception.NotFoundException;
 import org.activiti.app.service.exception.NotPermittedException;
 import org.activiti.app.service.runtime.PermissionService;
+import org.activiti.app.service.runtime.RelatedContentService;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.RepositoryService;
@@ -35,16 +37,20 @@ import org.activiti.engine.task.Task;
 import org.activiti.form.api.FormRepositoryService;
 import org.activiti.form.api.FormService;
 import org.activiti.form.model.FormDefinition;
+import org.activiti.form.model.FormField;
+import org.activiti.form.model.FormFieldTypes;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * @author Tijs Rademakers
+ * @author Purvendra Kumar
  */
 @Service
 public class ActivitiTaskFormService {
@@ -56,6 +62,9 @@ public class ActivitiTaskFormService {
   
   @Autowired
   protected RepositoryService repositoryService;
+  
+  @Autowired
+  protected RelatedContentService contentService;
   
   @Autowired
   protected HistoryService historyService;
@@ -106,6 +115,8 @@ public class ActivitiTaskFormService {
       formDefinition = formService.getTaskFormDefinitionByKeyAndParentDeploymentId(task.getFormKey(), parentDeploymentId, 
           task.getProcessInstanceId(), variables, task.getTenantId());
     }
+    //fetch and assign related contents to the upload fields if any exists
+    fetchAndAssignRelatedContentsIfPresent(formDefinition, variables, task.getProcessInstanceId());
 
     // If form does not exists, we don't want to leak out this info to just anyone
     if (formDefinition == null) {
@@ -137,7 +148,10 @@ public class ActivitiTaskFormService {
     // Extract raw variables and complete the task
     Map<String, Object> variables = formService.getVariablesFromFormSubmission(formDefinition, completeTaskFormRepresentation.getValues(),
         completeTaskFormRepresentation.getOutcome());
-
+    
+    //link uploads with task and process instances
+    linkRelatedContentsIfPresent(formDefinition, task.getId(), task.getProcessInstanceId(), variables);
+    
     formService.storeSubmittedForm(variables, formDefinition, task.getId(), task.getProcessInstanceId());
     
     taskService.complete(taskId, variables);
@@ -159,5 +173,53 @@ public class ActivitiTaskFormService {
     List<ProcessInstanceVariableRepresentation> processInstanceVariableRepresenations = 
         new ArrayList<ProcessInstanceVariableRepresentation>(processInstanceVariables.values());
     return processInstanceVariableRepresenations;
+  }
+  
+  /*
+   * This method registers the respective task, process instance and field with the corresponding related content
+   * in related content table. 
+   * */
+  protected void linkRelatedContentsIfPresent(FormDefinition formDefinition, String taskId, String processInstanceId, Map<String, Object> variables){
+    if (formDefinition != null && formDefinition.getFields() != null) {
+      for (FormField formField : formDefinition.getFields()) {
+        if (FormFieldTypes.UPLOAD.equals(formField.getType())) {
+          String variableName = formField.getId();
+          if (variables.containsKey(variableName)) {
+            String variableValue = (String) variables.get(variableName);
+            if (StringUtils.isNotEmpty(variableValue)) {
+              String[] relatedContentIds = StringUtils.split(variableValue, ",");
+              for (String id : relatedContentIds) {
+                contentService.setContentField(Long.parseLong(id), formField.getId(), processInstanceId, taskId);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  /*
+   * This method fetches the related content from related content table and assigns them to the corresponding upload field, 
+   * if any is present in the form being fetched.
+   * */
+  protected void fetchAndAssignRelatedContentsIfPresent(FormDefinition formDefinition, Map<String, Object> variables, String processInstanceId){
+    if(formDefinition != null && formDefinition.getFields() != null && variables != null){
+      for(FormField formField : formDefinition.getFields()){
+        if(FormFieldTypes.UPLOAD.equals(formField.getType())){
+          String variableName = formField.getId();
+          if(variables.containsKey(variableName)){
+            String variableValue = (String) variables.get(variableName);
+            if (StringUtils.isNotEmpty(variableValue)) {
+              String relatedContentIds[] = StringUtils.split(variableValue, ",");
+              List<RelatedContent> relatedContents = new ArrayList<>();
+              for(String relatedContentId : relatedContentIds){
+                relatedContents.add(contentService.getRelatedContent(Long.parseLong(relatedContentId), false));
+              }
+              formField.setValue(relatedContents);
+            }
+          }
+        }	
+      }
+    }
   }
 }
