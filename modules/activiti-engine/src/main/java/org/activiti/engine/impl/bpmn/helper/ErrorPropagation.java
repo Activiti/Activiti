@@ -89,7 +89,7 @@ public class ErrorPropagation {
         parentExecution = currentExecution;
       }
       
-      matchingEvent = getMatchedCatchEventFromList(eventMap.get(currentExecution.getActivityId()),parentExecution);
+      matchingEvent = getMatchedCatchEventFromList(eventMap.get(currentExecution.getActivityId()), parentExecution, errorId);
       
     } else {
       parentExecution = currentExecution.getParent();
@@ -108,7 +108,7 @@ public class ErrorPropagation {
                 List<Event> events = eventMap.get(refId);
                 if (CollectionUtil.isNotEmpty(events) && events.get(0) instanceof StartEvent) {
                     if (currentContainer.getFlowElement(refId) != null) {
-                        matchingEvent = getMatchedCatchEventFromList(events, parentExecution);
+                        matchingEvent = getMatchedCatchEventFromList(events, parentExecution, errorId);
                     }
                 }
             }
@@ -116,7 +116,7 @@ public class ErrorPropagation {
 
         if (matchingEvent == null) {
           if (eventMap.containsKey(parentExecution.getActivityId())) {
-        	matchingEvent = getMatchedCatchEventFromList(eventMap.get(parentExecution.getActivityId()), parentExecution);
+        	matchingEvent = getMatchedCatchEventFromList(eventMap.get(parentExecution.getActivityId()), parentExecution, errorId);
 
             // Check for multi instance
             if (parentExecution.getParentId() != null && parentExecution.getParent().isMultiInstanceRoot()) {
@@ -146,8 +146,7 @@ public class ErrorPropagation {
             // Delete
             executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceEntity.getId(),
             	currentExecution.getCurrentFlowElement() != null ? currentExecution.getCurrentFlowElement().getId() : null,
-                "ERROR_EVENT " + errorId,
-                false, false);
+                "ERROR_EVENT " + errorId, false, false);
 
             // Event
             if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
@@ -328,7 +327,7 @@ public class ErrorPropagation {
     return finalErrorCode;
   }
   
-  protected static Event getMatchedCatchEventFromList(List<Event> events, ExecutionEntity parentExecution){
+  protected static Event getMatchedCatchEventFromList(List<Event> events, ExecutionEntity parentExecution, String errorId){
 	Event matchedEvent = null;
     String matchedEventErrorCode = null;
     String errorCode = null;
@@ -345,9 +344,13 @@ public class ErrorPropagation {
 			errorCode = retrieveErrorCode(bpmnModel, errorCode);
 		}
 
-		if (matchedEvent == null || (StringUtils.isNotEmpty(errorCode) && StringUtils.isEmpty(matchedEventErrorCode))) {
-			matchedEvent = event;
-			matchedEventErrorCode = errorCode;
+		if(errorId == null && errorCode == null){
+		   matchedEvent = event;
+		   break;
+		} else if (matchedEvent == null || (StringUtils.isNotEmpty(errorCode) && StringUtils.isEmpty(matchedEventErrorCode))) {
+				  matchedEvent = event;
+				  matchedEventErrorCode = errorCode;
+		 	
 		}
 	}
 	return matchedEvent;
