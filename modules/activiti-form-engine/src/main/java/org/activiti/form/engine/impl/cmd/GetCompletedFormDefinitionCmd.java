@@ -99,10 +99,16 @@ public class GetCompletedFormDefinitionCmd implements Command<CompletedFormDefin
     this.tenantId = tenantId;
     this.taskId = taskId;
     this.processInstanceId = processInstanceId;
+    this.variables = new HashMap<String, Object>();
     if (variables != null) {
-      this.variables = variables;
-    } else {
-      this.variables = new HashMap<String, Object>();
+    	for (String variableName: variables.keySet()) {
+    		Object variable = variables.get(variableName);
+    		if (variable instanceof LocalDate) { // fix ACT-4308
+				this.variables.put(variableName, variable.toString());
+			} else {
+				this.variables.put(variableName, variable);
+			}
+    	}
     }
   }
 

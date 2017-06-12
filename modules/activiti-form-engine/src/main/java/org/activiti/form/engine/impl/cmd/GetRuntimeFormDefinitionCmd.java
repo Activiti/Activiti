@@ -87,16 +87,14 @@ public class GetRuntimeFormDefinitionCmd implements Command<FormDefinition>, Ser
     this.tenantId = tenantId;
     this.variables = new HashMap<String, Object>();
     if (variables != null) {
-      for (String variableName: variables.keySet()) {
-    	  Object variable = variables.get(variableName);
-    	  if (variable != null) {
-    		  if (variable instanceof LocalDate) { // fix ACT-4308
-    			  this.variables.put(variableName, variable.toString());
-    		  } else {
-        		  this.variables.put(variableName, variable);
-        	  }
-    	  } 
-      }
+    	for (String variableName: variables.keySet()) {
+    		Object variable = variables.get(variableName);
+    		if (variable instanceof LocalDate) { // fix ACT-4308
+				this.variables.put(variableName, variable.toString());
+			} else {
+				this.variables.put(variableName, variable);
+			}
+    	}
     } 
   }
 
