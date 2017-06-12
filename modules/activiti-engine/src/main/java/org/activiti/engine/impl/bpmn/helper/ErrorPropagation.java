@@ -45,56 +45,29 @@ public class ErrorPropagation {
   }
 
   public static void propagateError(String errorCode, DelegateExecution execution) {
-    Map<String, List<Event>> eventMap = findCatchingEventsForProcess(execution.getProcessDefinitionId(), errorCode);
+    Map<String, List<Event>> eventMap = new HashMap<>();
+   
+    if (!execution.getProcessInstanceId().equals(execution.getRootProcessInstanceId())) { // Call activity
+    	ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+    	ExecutionEntity processInstanceExecution = executionEntityManager.findById(execution.getProcessInstanceId());
+        if (processInstanceExecution != null) {
+    	    ExecutionEntity parentExecution = (ExecutionEntity) execution;
+            while (parentExecution.getParentId() != null || parentExecution.getSuperExecutionId() != null) {
+               if (parentExecution.getParentId() != null) {
+        	       parentExecution = parentExecution.getParent();
+               } else {
+                   parentExecution = parentExecution.getSuperExecution();
+                   eventMap.putAll(findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorCode));  
+               }
+           }
+        } 
+     }
+    
+    eventMap.putAll(findCatchingEventsForProcess(execution.getProcessDefinitionId(), errorCode));
+    
     if (eventMap.size() > 0) {
+    	  
       executeCatch(eventMap, execution, errorCode);
-    } else if (!execution.getProcessInstanceId().equals(execution.getRootProcessInstanceId())) { // Call activity
-
-      ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
-      ExecutionEntity processInstanceExecution = executionEntityManager.findById(execution.getProcessInstanceId());
-      if (processInstanceExecution != null) {
-
-        ExecutionEntity parentExecution = processInstanceExecution.getSuperExecution();
-
-        Set<String> toDeleteProcessInstanceIds = new HashSet<String>();
-        toDeleteProcessInstanceIds.add(execution.getProcessInstanceId());
-
-        while (parentExecution != null && eventMap.size() == 0) {
-          eventMap = findCatchingEventsForProcess(parentExecution.getProcessDefinitionId(), errorCode);
-          if (eventMap.size() > 0) {
-
-            for (String processInstanceId : toDeleteProcessInstanceIds) {
-              ExecutionEntity processInstanceEntity = executionEntityManager.findById(processInstanceId);
-
-              // Delete
-              executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceEntity.getId(),
-                  execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null,
-                  "ERROR_EVENT " + errorCode,
-                  false, false);
-
-              // Event
-              if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                Context.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED_WITH_ERROR_END_EVENT, processInstanceEntity));
-              }
-            }
-            executeCatch(eventMap, parentExecution, errorCode);
-
-          } else {
-            toDeleteProcessInstanceIds.add(parentExecution.getProcessInstanceId());
-            ExecutionEntity superExecution = parentExecution.getSuperExecution();
-            if (superExecution != null) {
-              parentExecution = superExecution;
-            } else if (!parentExecution.getId().equals(parentExecution.getRootProcessInstanceId())) { // stop at the root
-                parentExecution = parentExecution.getProcessInstance();
-            } else {
-              parentExecution = null;
-            }
-          }
-        }
-
-      }
-
     }
 
     if (eventMap.size() == 0) {
@@ -106,17 +79,18 @@ public class ErrorPropagation {
     Event matchingEvent = null;
     ExecutionEntity currentExecution = (ExecutionEntity) delegateExecution;
     ExecutionEntity parentExecution = null;
-
+    Set<String> toDeleteProcessInstanceIds = new HashSet<String>();
     if (eventMap.containsKey(currentExecution.getActivityId())) {
-      matchingEvent = eventMap.get(currentExecution.getActivityId()).get(0);
-
+    	
       // Check for multi instance
       if (currentExecution.getParentId() != null && currentExecution.getParent().isMultiInstanceRoot()) {
         parentExecution = currentExecution.getParent();
       } else {
         parentExecution = currentExecution;
       }
-
+      
+      matchingEvent = getMatchedCatchEventFromList(eventMap.get(currentExecution.getActivityId()), parentExecution, errorId);
+      
     } else {
       parentExecution = currentExecution.getParent();
 
@@ -129,34 +103,57 @@ public class ErrorPropagation {
           currentContainer = ProcessDefinitionUtil.getProcess(parentExecution.getProcessDefinitionId());
         }
 
-        for (String refId : eventMap.keySet()) {
-          List<Event> events = eventMap.get(refId);
-          if (CollectionUtil.isNotEmpty(events) && events.get(0) instanceof StartEvent) {
-            if (currentContainer.getFlowElement(refId) != null) {
-              matchingEvent = events.get(0);
+        if(currentContainer!= null){
+           for (String refId : eventMap.keySet()) {
+                List<Event> events = eventMap.get(refId);
+                if (CollectionUtil.isNotEmpty(events) && events.get(0) instanceof StartEvent) {
+                    if (currentContainer.getFlowElement(refId) != null) {
+                        matchingEvent = getMatchedCatchEventFromList(events, parentExecution, errorId);
+                    }
+                }
             }
-          }
         }
 
         if (matchingEvent == null) {
           if (eventMap.containsKey(parentExecution.getActivityId())) {
-            matchingEvent = eventMap.get(parentExecution.getActivityId()).get(0);
+        	matchingEvent = getMatchedCatchEventFromList(eventMap.get(parentExecution.getActivityId()), parentExecution, errorId);
 
             // Check for multi instance
             if (parentExecution.getParentId() != null && parentExecution.getParent().isMultiInstanceRoot()) {
               parentExecution = parentExecution.getParent();
             }
 
-          } else if (StringUtils.isNotEmpty(parentExecution.getParentId())) {
-            parentExecution = parentExecution.getParent();
-          } else {
-            parentExecution = null;
-          }
-        }
-      }
-    }
+            } else if (StringUtils.isNotEmpty(parentExecution.getParentId())) {
+                 parentExecution = parentExecution.getParent();
+            } else {
+        	     if (!parentExecution.getProcessInstanceId().equals(parentExecution.getRootProcessInstanceId())) {
+        		    toDeleteProcessInstanceIds.add(parentExecution.getProcessInstanceId());
+                    parentExecution = parentExecution.getSuperExecution();
+                  
+                 }else {
+                     parentExecution = null;
+                 }
+            }
+         }
+       }
+     }
 
     if (matchingEvent != null && parentExecution != null) {
+    	for (String processInstanceId : toDeleteProcessInstanceIds) {
+    		ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+            ExecutionEntity processInstanceEntity = executionEntityManager.findById(processInstanceId);
+
+            // Delete
+            executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceEntity.getId(),
+            	currentExecution.getCurrentFlowElement() != null ? currentExecution.getCurrentFlowElement().getId() : null,
+                "ERROR_EVENT " + errorId, false, false);
+
+            // Event
+            if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+              Context.getProcessEngineConfiguration().getEventDispatcher()
+                  .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED_WITH_ERROR_END_EVENT, processInstanceEntity));
+            }
+          }
       executeEventHandler(matchingEvent, parentExecution, currentExecution, errorId);
     } else {
       throw new ActivitiException("No matching parent execution for error code " + errorId + " found");
@@ -182,10 +179,12 @@ public class ErrorPropagation {
     if (event instanceof StartEvent) {
       ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
 
-      if (currentExecution.getParentId().equals(parentExecution.getId()) == false) {
-        Context.getAgenda().planDestroyScopeOperation(currentExecution);
+      if (parentExecution.isProcessInstanceType()){
+    	  executionEntityManager.deleteChildExecutions(parentExecution, null, true);
+      } else if (currentExecution.getParentId().equals(parentExecution.getId()) == false) {
+          Context.getAgenda().planDestroyScopeOperation(currentExecution);
       } else {
-        executionEntityManager.deleteExecutionAndRelatedData(currentExecution, null, false);
+          executionEntityManager.deleteExecutionAndRelatedData(currentExecution, null, false);
       }
 
       ExecutionEntity eventSubProcessExecution = executionEntityManager.createChildExecution(parentExecution);
@@ -233,23 +232,21 @@ public class ErrorPropagation {
 
     List<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
-      if (boundaryEvent.getAttachedToRefId() != null && CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) && boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
-
-        ErrorEventDefinition errorEventDef = (ErrorEventDefinition) boundaryEvent.getEventDefinitions().get(0);
-        String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorCode());
-
-        if (eventErrorCode == null || compareErrorCode == null || eventErrorCode.equals(compareErrorCode)) {
-          List<Event> elementBoundaryEvents = null;
-          if (eventMap.containsKey(boundaryEvent.getAttachedToRefId()) == false) {
-            elementBoundaryEvents = new ArrayList<Event>();
-            eventMap.put(boundaryEvent.getAttachedToRefId(), elementBoundaryEvents);
-          } else {
-            elementBoundaryEvents = eventMap.get(boundaryEvent.getAttachedToRefId());
-          }
-          elementBoundaryEvents.add(boundaryEvent);
-        }
+        if (boundaryEvent.getAttachedToRefId() != null && CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) && boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+      	  ErrorEventDefinition errorEventDef = (ErrorEventDefinition) boundaryEvent.getEventDefinitions().get(0);
+      	  String eventErrorCode = retrieveErrorCode(bpmnModel, errorEventDef.getErrorCode());
+      	  if (eventErrorCode == null || eventErrorCode.equals(compareErrorCode)) {
+      		  List<Event> elementBoundaryEvents = null;
+      		  if (eventMap.containsKey(boundaryEvent.getAttachedToRefId()) == false) {
+      		      elementBoundaryEvents = new ArrayList<Event>();
+      			  eventMap.put(boundaryEvent.getAttachedToRefId(), elementBoundaryEvents);
+      		  } else {
+      			  elementBoundaryEvents = eventMap.get(boundaryEvent.getAttachedToRefId());
+      		  }
+      			  elementBoundaryEvents.add(boundaryEvent);
+      	  }
+         }
       }
-    }
     return eventMap;
   }
 
@@ -329,4 +326,34 @@ public class ErrorPropagation {
     }
     return finalErrorCode;
   }
+  
+  protected static Event getMatchedCatchEventFromList(List<Event> events, ExecutionEntity parentExecution, String errorId){
+	Event matchedEvent = null;
+    String matchedEventErrorCode = null;
+    String errorCode = null;
+	  
+	BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());  
+	for(Event event: events){
+		for (EventDefinition eventDefinition : event.getEventDefinitions()) {
+			if (eventDefinition instanceof ErrorEventDefinition) {
+				errorCode = ((ErrorEventDefinition) eventDefinition).getErrorCode();
+			}
+		}
+
+		if (bpmnModel != null) {
+			errorCode = retrieveErrorCode(bpmnModel, errorCode);
+		}
+
+		if(errorId == null && errorCode == null){
+		   matchedEvent = event;
+		   break;
+		} else if (matchedEvent == null || (StringUtils.isNotEmpty(errorCode) && StringUtils.isEmpty(matchedEventErrorCode))) {
+				  matchedEvent = event;
+				  matchedEventErrorCode = errorCode;
+		 	
+		}
+	}
+	return matchedEvent;
+  }
+  
 }
