@@ -18,9 +18,7 @@
     </properties>
     <modules>
         <module>activiti-spring-boot-starter-basic</module>
-        <module>activiti-spring-boot-starter-rest-api</module>
-	<module>activiti-spring-boot-starter-modern-rest-api</module>
-        <module>activiti-spring-boot-starter-integration</module>
+	      <module>activiti-spring-boot-starter-modern-rest-api</module>
         <module>activiti-spring-boot-starter-actuator</module>
         <module>activiti-spring-boot-starter-security</module>
         <module>activiti-spring-boot-starter-jpa</module>

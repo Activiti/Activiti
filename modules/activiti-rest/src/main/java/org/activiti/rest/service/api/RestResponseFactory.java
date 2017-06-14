@@ -62,9 +62,9 @@ import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableSc
 import org.activiti.rest.service.api.engine.variable.RestVariableConverter;
 import org.activiti.rest.service.api.engine.variable.ShortRestVariableConverter;
 import org.activiti.rest.service.api.engine.variable.StringRestVariableConverter;
-import org.activiti.rest.service.api.form.FormDataResponse;
-import org.activiti.rest.service.api.form.RestEnumFormProperty;
-import org.activiti.rest.service.api.form.RestFormProperty;
+//import org.activiti.rest.service.api.form.FormDataResponse;
+//import org.activiti.rest.service.api.form.RestEnumFormProperty;
+//import org.activiti.rest.service.api.form.RestFormProperty;
 import org.activiti.rest.service.api.history.HistoricActivityInstanceResponse;
 import org.activiti.rest.service.api.history.HistoricDetailResponse;
 import org.activiti.rest.service.api.history.HistoricIdentityLinkResponse;
@@ -659,56 +659,56 @@ public class RestResponseFactory {
     return result;
   }
 
-  public FormDataResponse createFormDataResponse(FormData formData) {
-    FormDataResponse result = new FormDataResponse();
-    result.setDeploymentId(formData.getDeploymentId());
-    result.setFormKey(formData.getFormKey());
-    if (formData.getFormProperties() != null) {
-      for (FormProperty formProp : formData.getFormProperties()) {
-        RestFormProperty restFormProp = new RestFormProperty();
-        restFormProp.setId(formProp.getId());
-        restFormProp.setName(formProp.getName());
-        if (formProp.getType() != null) {
-          restFormProp.setType(formProp.getType().getName());
-        }
-        restFormProp.setValue(formProp.getValue());
-        restFormProp.setReadable(formProp.isReadable());
-        restFormProp.setRequired(formProp.isRequired());
-        restFormProp.setWritable(formProp.isWritable());
-        if ("enum".equals(restFormProp.getType())) {
-          Object values = formProp.getType().getInformation("values");
-          if (values != null) {
-            @SuppressWarnings("unchecked")
-            Map<String, String> enumValues = (Map<String, String>) values;
-            for (String enumId : enumValues.keySet()) {
-              RestEnumFormProperty enumProperty = new RestEnumFormProperty();
-              enumProperty.setId(enumId);
-              enumProperty.setName(enumValues.get(enumId));
-              restFormProp.addEnumValue(enumProperty);
-            }
-          }
-        } else if ("date".equals(restFormProp.getType())) {
-          restFormProp.setDatePattern((String) formProp.getType().getInformation("datePattern"));
-        }
-        result.addFormProperty(restFormProp);
-      }
-    }
-    RestUrlBuilder urlBuilder = createUrlBuilder();
-    if (formData instanceof StartFormData) {
-      StartFormData startFormData = (StartFormData) formData;
-      if (startFormData.getProcessDefinition() != null) {
-        result.setProcessDefinitionId(startFormData.getProcessDefinition().getId());
-        result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, startFormData.getProcessDefinition().getId()));
-      }
-    } else if (formData instanceof TaskFormData) {
-      TaskFormData taskFormData = (TaskFormData) formData;
-      if (taskFormData.getTask() != null) {
-        result.setTaskId(taskFormData.getTask().getId());
-        result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_TASK, taskFormData.getTask().getId()));
-      }
-    }
-    return result;
-  }
+//  public FormDataResponse createFormDataResponse(FormData formData) {
+//    FormDataResponse result = new FormDataResponse();
+//    result.setDeploymentId(formData.getDeploymentId());
+//    result.setFormKey(formData.getFormKey());
+//    if (formData.getFormProperties() != null) {
+//      for (FormProperty formProp : formData.getFormProperties()) {
+//        RestFormProperty restFormProp = new RestFormProperty();
+//        restFormProp.setId(formProp.getId());
+//        restFormProp.setName(formProp.getName());
+//        if (formProp.getType() != null) {
+//          restFormProp.setType(formProp.getType().getName());
+//        }
+//        restFormProp.setValue(formProp.getValue());
+//        restFormProp.setReadable(formProp.isReadable());
+//        restFormProp.setRequired(formProp.isRequired());
+//        restFormProp.setWritable(formProp.isWritable());
+//        if ("enum".equals(restFormProp.getType())) {
+//          Object values = formProp.getType().getInformation("values");
+//          if (values != null) {
+//            @SuppressWarnings("unchecked")
+//            Map<String, String> enumValues = (Map<String, String>) values;
+//            for (String enumId : enumValues.keySet()) {
+//              RestEnumFormProperty enumProperty = new RestEnumFormProperty();
+//              enumProperty.setId(enumId);
+//              enumProperty.setName(enumValues.get(enumId));
+//              restFormProp.addEnumValue(enumProperty);
+//            }
+//          }
+//        } else if ("date".equals(restFormProp.getType())) {
+//          restFormProp.setDatePattern((String) formProp.getType().getInformation("datePattern"));
+//        }
+//        result.addFormProperty(restFormProp);
+//      }
+//    }
+//    RestUrlBuilder urlBuilder = createUrlBuilder();
+//    if (formData instanceof StartFormData) {
+//      StartFormData startFormData = (StartFormData) formData;
+//      if (startFormData.getProcessDefinition() != null) {
+//        result.setProcessDefinitionId(startFormData.getProcessDefinition().getId());
+//        result.setProcessDefinitionUrl(urlBuilder.buildUrl(RestUrls.URL_PROCESS_DEFINITION, startFormData.getProcessDefinition().getId()));
+//      }
+//    } else if (formData instanceof TaskFormData) {
+//      TaskFormData taskFormData = (TaskFormData) formData;
+//      if (taskFormData.getTask() != null) {
+//        result.setTaskId(taskFormData.getTask().getId());
+//        result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_TASK, taskFormData.getTask().getId()));
+//      }
+//    }
+//    return result;
+//  }
 
   public List<HistoricProcessInstanceResponse> createHistoricProcessInstanceResponseList(List<HistoricProcessInstance> processInstances) {
     RestUrlBuilder urlBuilder = createUrlBuilder();
