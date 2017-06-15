@@ -385,16 +385,16 @@
 	</dependencyManagement>
 
 	<modules>
-		<module>modules/activiti-bpmn-model</module>
-		<module>modules/activiti-process-validation</module>
-		<module>modules/activiti-bpmn-layout</module>
-		<module>modules/activiti-common-rest</module>
-		<module>modules/activiti-rest</module>
-		<module>modules/activiti-json-converter</module>
-		<module>modules/activiti-bpmn-converter</module>
-		<module>modules/activiti-engine</module>
-		<module>modules/activiti-spring</module>
-		<module>modules/activiti-spring-boot</module>
+		<module>activiti-bpmn-model</module>
+		<module>activiti-process-validation</module>
+		<module>activiti-bpmn-layout</module>
+		<module>activiti-common-rest</module>
+		<module>activiti-rest</module>
+		<module>activiti-json-converter</module>
+		<module>activiti-bpmn-converter</module>
+		<module>activiti-engine</module>
+		<module>activiti-spring</module>
+		<module>activiti-spring-boot</module>
 	</modules>
 
 	<build>
@@ -481,71 +481,6 @@
 		<name>Alfresco</name>
 		<url>http://www.alfresco.com</url>
 	</organization>
-	<developers>
-		<developer>
-			<name>Tijs Rademakers</name>
-			<organization>Alfresco</organization>
-			<url>http://www.alfresco.com</url>
-		</developer>
-		<developer>
-			<name>Joram Barrez</name>
-			<organization>Alfresco</organization>
-			<url>http://www.alfresco.com</url>
-		</developer>
-		<developer>
-			<name>Frederik Heremans</name>
-			<organization>Alfresco</organization>
-			<url>http://www.alfresco.com</url>
-		</developer>
-		<developer>
-			<name>Erik Winlöf</name>
-			<organization>Alfresco</organization>
-			<url>http://www.alfresco.com</url>
-		</developer>
-		<developer>
-			<name>Yvo Swillens</name>
-			<organization>Alfresco</organization>
-			<url>http://www.alfresco.com</url>
-		</developer>
-		<developer>
-			<name>Josh Long</name>
-			<organization>Pivotal</organization>
-			<url>http://www.pivotal.com</url>
-		</developer>
-		<developer>
-			<name>Etienne Studer</name>
-			<organization>Edorasware</organization>
-			<url>http://www.edorasware.com</url>
-		</developer>
-		<developer>
-			<name>José Antonio Álvarez</name>
-			<organization>Edorasware</organization>
-			<url>http://www.edorasware.com</url>
-		</developer>
-		<developer>
-			<name>Guy Brand</name>
-			<organization>Edorasware</organization>
-			<url>http://www.edorasware.com</url>
-		</developer>
-		<developer>
-			<name>Martin Grofcik</name>
-			<organization>Edorasware</organization>
-			<url>http://www.edorasware.com</url>
-		</developer>
-		<developer>
-			<name>Christian Muelder</name>
-			<organization>Next Level Integration</organization>
-			<url>http://next-level-integration.com/</url>
-		</developer>
-		<developer>
-			<name>Christian Stettler</name>
-		</developer>
-		<developer>
-			<name>Saeid Mirzaei</name>
-			<organization>Atos worldline</organization>
-			<url>http://www.worldline.com/</url>
-		</developer>
-	</developers>
 	<issueManagement>
 		<system>JIRA</system>
 		<url>https://activiti.atlassian.net/browse/ACT</url>
