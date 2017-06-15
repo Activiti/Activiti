@@ -1,7 +1,18 @@
 Activiti
 ========
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.activiti/activiti-engine/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.activiti/activiti-engine)
+
+<p>
+  <a title='Maven Central' href="https://maven-badges.herokuapp.com/maven-central/org.activiti/activiti-engine">
+    <img src='https://maven-badges.herokuapp.com/maven-central/org.activiti/activiti-engine/badge.svg' alt = 'Activiti Maven central'
+  </a>
+  <a title='Build Status Travis' href="https://travis-ci.org/Activiti/Activiti">
+    <img src='https://travis-ci.org/Activiti/Activiti.svg?branch=development'  alt='Travis Status' />
+  </a>
+  <a href='https://codecov.io/gh/Activiti/Activiti'>
+    <img src='http://img.shields.io/codecov/c/github/Activiti/Activiti/development.svg?maxAge=2592000' alt='Coverage Status' />
+  </a>
+</p>
 
 Homepage: http://activiti.org/
 
