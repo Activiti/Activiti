@@ -521,6 +521,7 @@
 
 										</regexIgnoredClasses>
 										<suppressTypesFromJavaRuntime>true</suppressTypesFromJavaRuntime>
+										<useClassesFromLastBuild>true</useClassesFromLastBuild>
 									</illegalTransitiveDependencyCheck>
 								</rules>
 							</configuration>
