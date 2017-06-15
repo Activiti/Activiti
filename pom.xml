@@ -21,7 +21,8 @@
         <mockito.version>2.7.22</mockito.version>
 		<!-- JVM params for test execution -->
 		<argLine>-Duser.language=en</argLine>
-	</properties>
+        <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
+    </properties>
 
 	<repositories>
     <repository>
@@ -422,6 +423,25 @@
 					<runOrder>alphabetical</runOrder>
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.maven.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
 		</plugins>
 		<pluginManagement>
