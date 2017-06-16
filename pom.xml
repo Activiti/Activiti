@@ -14,16 +14,22 @@
 	</parent>
 
 	<packaging>pom</packaging>
-	<version>6.1.0-SNAPSHOT</version>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.boot.version>2.0.0.M1</spring.boot.version>
+    <version>6.1.0-SNAPSHOT</version>
+    <properties>
+        <!--configuration properties-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+        <!-- JVM params for test execution -->
+        <argLine>-Duser.language=en</argLine>
+
+        <spring.boot.version>2.0.0.M1</spring.boot.version>
         <mockito.version>2.7.22</mockito.version>
         <assertj.version>3.8.0</assertj.version>
-		<!-- JVM params for test execution -->
-		<argLine>-Duser.language=en</argLine>
+
+        <!-- plugins -->
+        <maven.enforcer.plugin.version>1.4.1</maven.enforcer.plugin.version>
         <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
-		<enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+
     </properties>
 
 	<repositories>
@@ -477,6 +483,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven.enforcer.plugin.version}</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.codehaus.mojo</groupId>
