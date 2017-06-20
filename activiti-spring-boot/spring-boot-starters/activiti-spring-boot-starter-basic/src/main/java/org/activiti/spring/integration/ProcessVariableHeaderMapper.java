@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
- * @author Josh Long
+
  */
 public class ProcessVariableHeaderMapper implements HeaderMapper<Map<String, Object>> {
 

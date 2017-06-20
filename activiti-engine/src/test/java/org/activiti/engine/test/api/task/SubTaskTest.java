@@ -25,8 +25,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
- * @author Tijs Rademakers
+
+
  */
 public class SubTaskTest extends PluggableActivitiTestCase {
 

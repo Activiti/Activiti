@@ -18,8 +18,8 @@ import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class CancelEventDefinitionParseHandler extends AbstractBpmnParseHandler<CancelEventDefinition> {
 

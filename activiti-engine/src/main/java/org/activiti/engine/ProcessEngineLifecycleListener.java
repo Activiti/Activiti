@@ -16,7 +16,7 @@ package org.activiti.engine;
 /**
  * Interface describing a listener that gets notified when certain event occurs, related to the process-engine lifecycle it is attached to.
  * 
- * @author Frederik Heremans
+
  */
 public interface ProcessEngineLifecycleListener {
 

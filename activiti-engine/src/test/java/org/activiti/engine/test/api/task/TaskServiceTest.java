@@ -54,9 +54,9 @@ import org.junit.rules.ExpectedException;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 /**
- * @author Frederik Heremans
- * @author Joram Barrez
- * @author Falko Menge
+
+
+
  */
 
 public class TaskServiceTest extends PluggableActivitiTestCase {

@@ -17,8 +17,7 @@ import java.util.List;
 
 /**
  * Interface indicating an element has execution-listeners
- * 
- * @author Frederik Heremans
+ *
  */
 public interface HasExecutionListeners {
 

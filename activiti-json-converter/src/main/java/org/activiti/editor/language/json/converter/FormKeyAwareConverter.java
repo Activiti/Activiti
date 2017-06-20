@@ -17,7 +17,7 @@ import java.util.Map;
 import org.activiti.editor.language.json.model.ModelInfo;
 
 /**
- * @author Tijs Rademakers
+
  */
 public interface FormKeyAwareConverter {
 

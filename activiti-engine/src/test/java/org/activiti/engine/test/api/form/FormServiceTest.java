@@ -35,10 +35,10 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
- * @author Frederik Heremans
- * @author Tom Baeyens
- * @author Falko Menge (camunda)
+
+
+
+
  */
 public class FormServiceTest extends PluggableActivitiTestCase {
 

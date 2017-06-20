@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * Command that removes an event-listener to the Activiti engine.
  * 
- * @author Frederik Heremans
+
  */
 public class RemoveEventListenerCommand implements Command<Void> {
 

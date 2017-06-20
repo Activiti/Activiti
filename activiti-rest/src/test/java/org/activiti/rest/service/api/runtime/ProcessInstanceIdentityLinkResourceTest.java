@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to a identity links on a Process instance resource.
  * 
- * @author Frederik Heremans
+
  */
 public class ProcessInstanceIdentityLinkResourceTest extends BaseSpringRestTestCase {
 

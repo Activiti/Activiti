@@ -55,7 +55,7 @@ import de.odysseus.el.util.SimpleResolver;
  * 
  * Uses EL 1.1 if available, to resolve expressions. Otherwise it reverts to EL 1.0, using {@link ExpressionFactoryResolver}.
  * 
- * @author Frederik Heremans
+
  */
 public class JuelScriptEngine extends AbstractScriptEngine implements Compilable {
 
@@ -237,7 +237,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
   /**
    * Class representing a compiled script using JUEL.
    * 
-   * @author Frederik Heremans
+
    */
   private class JuelCompiledScript extends CompiledScript {
 
@@ -260,7 +260,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
   /**
    * ValueMapper that uses the ScriptContext to get variable values or value expressions.
    * 
-   * @author Frederik Heremans
+
    */
   private class ScriptContextVariableMapper extends VariableMapper {
 
@@ -297,7 +297,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
   /**
    * FunctionMapper that uses the ScriptContext to resolve functions in EL.
    * 
-   * @author Frederik Heremans
+
    */
   private class ScriptContextFunctionMapper extends FunctionMapper {
 

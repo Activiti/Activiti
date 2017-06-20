@@ -19,7 +19,7 @@ import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 /**
  * Extends the default {@link AcquireTimerJobsRunnable} by setting the 'tenant' context before executing.
  * 
- * @author Joram Barrez
+
  */
 public class TenantAwareAcquireTimerJobsRunnable extends AcquireTimerJobsRunnable {
 

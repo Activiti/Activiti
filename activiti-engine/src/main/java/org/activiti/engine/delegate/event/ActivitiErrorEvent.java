@@ -15,7 +15,7 @@ package org.activiti.engine.delegate.event;
 /**
  * An {@link ActivitiEvent} related to an error being sent to an activity.
  * 
- * @author Frederik Heremans
+
  */
 public interface ActivitiErrorEvent extends ActivitiActivityEvent {
 

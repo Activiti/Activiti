@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Test for JPA enhancement support
  * 
- * @author <a href="mailto:eugene.khrustalev@gmail.com">Eugene Khrustalev</a>
+
  */
 public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
 

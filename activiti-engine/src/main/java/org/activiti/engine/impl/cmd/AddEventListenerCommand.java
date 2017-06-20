@@ -21,7 +21,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * Command that adds an event-listener to the Activiti engine.
  * 
- * @author Frederik Heremans
+
  */
 public class AddEventListenerCommand implements Command<Void> {
 

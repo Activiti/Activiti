@@ -22,8 +22,8 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentQuery;
 
 /**
- * @author Tom Baeyens
- * @author Tijs Rademakers
+
+
  */
 public class DeploymentCategoryTest extends PluggableActivitiTestCase {
 

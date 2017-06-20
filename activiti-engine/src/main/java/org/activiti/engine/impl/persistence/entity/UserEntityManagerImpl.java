@@ -28,9 +28,9 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.UserDataManager;
 
 /**
- * @author Tom Baeyens
- * @author Saeid Mirzaei
- * @author Joram Barrez
+
+
+
  */
 public class UserEntityManagerImpl extends AbstractEntityManager<UserEntity> implements UserEntityManager {
   

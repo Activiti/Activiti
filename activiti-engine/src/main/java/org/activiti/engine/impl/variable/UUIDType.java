@@ -15,7 +15,7 @@ package org.activiti.engine.impl.variable;
 import java.util.UUID;
 
 /**
- * @author Birger Zimmermann
+
  */
 public class UUIDType implements VariableType {
 

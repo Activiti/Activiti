@@ -30,7 +30,7 @@ import org.junit.Test;
  * 
  * So this test can be included in the regular test suite without problems.
  * 
- * @author Joram Barrez
+
  */
 public class ActivitiRuleJunit4Test {
 

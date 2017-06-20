@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to a identity links on a Task resource.
  * 
- * @author Frederik Heremans
+
  */
 public class TaskIdentityLinkResourceTest extends BaseSpringRestTestCase {
 

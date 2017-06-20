@@ -24,7 +24,7 @@ import java.util.zip.ZipInputStream;
 /**
  * Implementation of {@link AutoDeploymentStrategy} that performs a separate deployment for each resource by name.
  * 
- * @author Tiese Barrell
+
  */
 public class SingleResourceAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 

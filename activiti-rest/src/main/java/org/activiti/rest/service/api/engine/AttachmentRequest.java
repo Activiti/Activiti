@@ -14,7 +14,7 @@
 package org.activiti.rest.service.api.engine;
 
 /**
- * @author Frederik Heremans
+
  */
 public class AttachmentRequest {
 

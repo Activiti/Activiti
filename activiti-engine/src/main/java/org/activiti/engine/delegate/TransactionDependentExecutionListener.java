@@ -18,7 +18,7 @@ import org.activiti.bpmn.model.FlowElement;
 import java.util.Map;
 
 /**
- * @author Yvo Swillens
+
  */
 public interface TransactionDependentExecutionListener extends BaseExecutionListener {
 

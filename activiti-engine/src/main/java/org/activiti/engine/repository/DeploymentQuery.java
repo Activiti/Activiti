@@ -24,8 +24,8 @@ import org.activiti.engine.query.Query;
  * To retrieve the actual bytes of a deployment resource use the operations on the {@link RepositoryService#getDeploymentResourceNames(String)} and
  * {@link RepositoryService#getResourceAsStream(String, String)}
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface DeploymentQuery extends Query<DeploymentQuery, Deployment> {
 

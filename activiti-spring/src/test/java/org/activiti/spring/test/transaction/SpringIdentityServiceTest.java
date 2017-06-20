@@ -20,7 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 
 /**
- * @author Ravi Tadela
+
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/transaction/SpringIdentityServiceTest-context.xml")
 public class SpringIdentityServiceTest extends SpringActivitiTestCase {

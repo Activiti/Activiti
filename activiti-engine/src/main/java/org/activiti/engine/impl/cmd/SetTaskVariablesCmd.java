@@ -21,8 +21,8 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class SetTaskVariablesCmd extends NeedsActiveTaskCmd<Object> {
 

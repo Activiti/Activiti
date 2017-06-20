@@ -17,7 +17,7 @@ import java.util.List;
 import org.activiti.engine.event.EventLogEntry;
 
 /**
- * @author Joram Barrez
+
  */
 public interface EventLogEntryEntityManager extends EntityManager<EventLogEntryEntity> {
 

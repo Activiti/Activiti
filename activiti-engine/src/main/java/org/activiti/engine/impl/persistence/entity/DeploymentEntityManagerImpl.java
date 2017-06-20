@@ -45,8 +45,8 @@ import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class DeploymentEntityManagerImpl extends AbstractEntityManager<DeploymentEntity> implements DeploymentEntityManager {
 

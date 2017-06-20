@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
- * @author Tijs Rademakers
+
  */
 public class JsonType implements VariableType {
   

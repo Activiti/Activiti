@@ -47,7 +47,7 @@ import org.activiti.engine.runtime.ProcessInstance;
  * race condition.
  * 
  * @see http://forums.activiti.org/en/viewtopic.php?t=2918
- * @author Falko Menge
+
  */
 public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializable {
 

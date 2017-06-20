@@ -7,7 +7,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class VariableDeletedEventHandler extends VariableEventHandler {
 

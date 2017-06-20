@@ -20,8 +20,8 @@ import org.activiti.engine.task.TaskInfoQuery;
 /**
  * Allows programmatic querying for {@link HistoricTaskInstance}s.
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface HistoricTaskInstanceQuery extends TaskInfoQuery<HistoricTaskInstanceQuery, HistoricTaskInstance> {
 

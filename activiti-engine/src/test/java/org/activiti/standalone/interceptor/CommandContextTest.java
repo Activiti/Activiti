@@ -19,7 +19,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**
- * @author Tom Baeyens
+
  */
 public class CommandContextTest extends PluggableActivitiTestCase {
 

@@ -31,7 +31,7 @@ import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
+
  */
 public class StartTimerEventTest extends PluggableActivitiTestCase {
 

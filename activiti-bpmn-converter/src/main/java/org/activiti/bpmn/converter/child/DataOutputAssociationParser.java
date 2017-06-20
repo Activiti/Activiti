@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataAssociation;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class DataOutputAssociationParser extends BaseChildElementParser {
 

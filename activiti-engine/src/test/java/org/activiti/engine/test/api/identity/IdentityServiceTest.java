@@ -25,7 +25,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**
- * @author Frederik Heremans
+
  */
 public class IdentityServiceTest extends PluggableActivitiTestCase {
 

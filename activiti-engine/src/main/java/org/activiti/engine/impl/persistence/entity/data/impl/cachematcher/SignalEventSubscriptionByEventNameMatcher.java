@@ -21,7 +21,7 @@ import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Joram Barrez
+
  */
 public class SignalEventSubscriptionByEventNameMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
   

@@ -26,7 +26,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
 
 /**
- * @author Tom Baeyens
+
  */
 public class JobExecutorTest extends JobExecutorTestCase {
 

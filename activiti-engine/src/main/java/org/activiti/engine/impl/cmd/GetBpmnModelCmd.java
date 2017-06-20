@@ -21,7 +21,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
- * @author Joram Barrez
+
  */
 public class GetBpmnModelCmd implements Command<BpmnModel>, Serializable {
 

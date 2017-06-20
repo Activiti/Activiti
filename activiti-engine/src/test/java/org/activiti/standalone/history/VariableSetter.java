@@ -23,7 +23,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.test.history.SerializableVariable;
 
 /**
- * @author Tom Baeyens
+
  */
 public class VariableSetter implements JavaDelegate {
 

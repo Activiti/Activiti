@@ -17,7 +17,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Saeid Mirzaei
+
  */
 public class FailingDelegate implements JavaDelegate {
 

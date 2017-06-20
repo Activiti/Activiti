@@ -18,7 +18,7 @@ import java.text.DecimalFormat;
 /**
  * Transforms a {@link BigDecimal} to a {@link String}
  * 
- * @author Esteban Robles Luna
+
  */
 public class BigDecimalToString extends AbstractTransformer {
 

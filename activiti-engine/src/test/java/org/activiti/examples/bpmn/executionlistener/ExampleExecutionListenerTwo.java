@@ -19,7 +19,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 /**
  * Simple {@link ExecutionListener} that sets 2 variables on the execution.
  * 
- * @author Frederik Heremans
+
  */
 public class ExampleExecutionListenerTwo implements ExecutionListener {
 

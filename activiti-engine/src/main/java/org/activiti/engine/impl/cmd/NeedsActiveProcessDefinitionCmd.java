@@ -23,7 +23,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Joram Barrez
+
  */
 public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, Serializable {
 

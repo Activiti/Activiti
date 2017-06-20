@@ -11,7 +11,7 @@ import org.activiti.engine.impl.persistence.cache.EntityCache;
 import org.activiti.engine.impl.persistence.entity.Entity;
 
 /**
- * @author Joram Barrez
+
  */
 public class ProfilingDbSqlSession extends DbSqlSession {
 

@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Tom Baeyens
+
  */
 public class GroupEntityImpl extends AbstractEntity implements GroupEntity, Serializable {
 

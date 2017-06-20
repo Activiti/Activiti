@@ -20,7 +20,7 @@ import org.activiti.engine.impl.context.Context;
 /**
  * Contains a predefined set of states for process definitions and process instances
  * 
- * @author Daniel Meyer
+
  */
 public interface SuspensionState {
 

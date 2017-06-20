@@ -22,7 +22,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ProcessInstanceAndVariablesQueryTest extends PluggableActivitiTestCase {
 

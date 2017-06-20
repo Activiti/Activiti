@@ -20,9 +20,9 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
- * @author Falko Menge <falko.menge@camunda.com>
- * @author Frederik Heremans
+
+
+
  */
 public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
 

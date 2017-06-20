@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * An Interface defines a set of operations that are implemented by services external to the process.
  * 
- * @author Joram Barrez
+
  */
 public class BpmnInterface {
 

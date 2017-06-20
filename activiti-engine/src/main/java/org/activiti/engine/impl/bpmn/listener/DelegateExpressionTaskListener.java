@@ -25,7 +25,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.TaskListenerInvocation;
 
 /**
- * @author Joram Barrez
+
  */
 public class DelegateExpressionTaskListener implements TaskListener {
 

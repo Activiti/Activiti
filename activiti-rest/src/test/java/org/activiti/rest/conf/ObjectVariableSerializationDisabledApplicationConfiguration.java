@@ -18,7 +18,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 
 /**
- * @author Joram Barrez
+
  */
 @Configuration
 @ComponentScan(basePackages = {

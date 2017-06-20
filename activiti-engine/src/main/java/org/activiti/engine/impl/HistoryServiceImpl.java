@@ -35,9 +35,9 @@ import org.activiti.engine.impl.cmd.DeleteHistoricTaskInstanceCmd;
 import org.activiti.engine.impl.cmd.GetHistoricIdentityLinksForTaskCmd;
 
 /**
- * @author Tom Baeyens
- * @author Bernd Ruecker (camunda)
- * @author Christian Stettler
+
+
+
  */
 public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
 

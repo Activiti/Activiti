@@ -18,7 +18,7 @@ import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 
 /**
- * @author Joram Barrez
+
  */
 public class CustomActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 

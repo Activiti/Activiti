@@ -18,7 +18,7 @@ import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
- * @author Joram Barrez
+
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/taskassignment/taskassignment-context.xml")
 public class CustomTaskAssignmentTest extends SpringActivitiTestCase {

@@ -23,7 +23,7 @@ import org.activiti.engine.repository.DeploymentQuery;
 import java.util.List;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DeploymentQueryTest extends PluggableActivitiTestCase {
 

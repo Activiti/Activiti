@@ -12,9 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-/**
- * @author Tijs Rademakers
- */
 public class Signal extends BaseElement {
 
   public static final String SCOPE_GLOBAL = "global";

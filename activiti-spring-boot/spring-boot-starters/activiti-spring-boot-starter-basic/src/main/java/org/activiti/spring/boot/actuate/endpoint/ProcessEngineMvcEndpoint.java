@@ -33,8 +33,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  * This is duplicative of the functionality in the full REST API implementation.
  *
- * @author Joram Barrez
- * @author Josh Long
+
+
  */
 public class ProcessEngineMvcEndpoint extends EndpointMvcAdapter {
 

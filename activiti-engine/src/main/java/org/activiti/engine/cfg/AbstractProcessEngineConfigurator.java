@@ -15,7 +15,7 @@ package org.activiti.engine.cfg;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
- * @author jbarrez
+
  */
 public abstract class AbstractProcessEngineConfigurator implements ProcessEngineConfigurator {
 

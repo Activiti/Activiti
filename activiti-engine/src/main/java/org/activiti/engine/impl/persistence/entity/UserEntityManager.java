@@ -24,7 +24,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.UserQueryImpl;
 
 /**
- * @author Joram Barrez
+
  */
 public interface UserEntityManager extends EntityManager<UserEntity> {
 

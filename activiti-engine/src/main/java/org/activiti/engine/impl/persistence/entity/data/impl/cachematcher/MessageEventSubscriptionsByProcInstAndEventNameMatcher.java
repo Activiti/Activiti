@@ -19,7 +19,7 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class MessageEventSubscriptionsByProcInstAndEventNameMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
   

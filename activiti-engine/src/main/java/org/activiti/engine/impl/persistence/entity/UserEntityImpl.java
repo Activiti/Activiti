@@ -20,9 +20,9 @@ import org.activiti.engine.identity.Picture;
 import org.activiti.engine.impl.db.HasRevision;
 
 /**
- * @author Tom Baeyens
- * @author Arkadiy Gornovoy
- * @author Joram Barrez
+
+
+
  */
 public class UserEntityImpl extends AbstractEntity implements UserEntity, Serializable, HasRevision {
 

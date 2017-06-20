@@ -17,10 +17,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * @author Tijs Rademakers
- * @author Joram Barrez
- */
 public class SequenceFlow extends FlowElement {
 
   protected String conditionExpression;

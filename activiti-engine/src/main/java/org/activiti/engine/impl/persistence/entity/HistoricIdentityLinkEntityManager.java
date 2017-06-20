@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricIdentityLinkEntityManager extends EntityManager<HistoricIdentityLinkEntity> {
 

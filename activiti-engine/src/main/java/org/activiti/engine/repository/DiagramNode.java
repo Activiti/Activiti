@@ -16,7 +16,7 @@ package org.activiti.engine.repository;
 /**
  * Stores position and dimensions of a diagram node.
  * 
- * @author Falko Menge
+
  */
 public class DiagramNode extends DiagramElement {
 

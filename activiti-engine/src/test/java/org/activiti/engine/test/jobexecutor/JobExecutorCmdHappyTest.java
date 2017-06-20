@@ -26,7 +26,7 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tom Baeyens
+
  */
 public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 

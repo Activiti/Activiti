@@ -31,7 +31,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 /**
  * Denotes an 'activity' in the sense of BPMN 2.0: a parent class for all tasks, subprocess and callActivity.
  * 
- * @author Joram Barrez
+
  */
 public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
 

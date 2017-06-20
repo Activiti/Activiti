@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Allows enabling/disabling authentication on specific requests and allows authorisation of request after successful authentication.
  * 
- * @author Frederik Heremans
+
  */
 public interface RestAuthenticator {
 

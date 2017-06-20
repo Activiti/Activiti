@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.IdentityInfoDataManager;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisIdentityInfoDataManager extends AbstractDataManager<IdentityInfoEntity> implements IdentityInfoDataManager {
   

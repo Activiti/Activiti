@@ -56,7 +56,7 @@ import java.util.Map;
  * <li>Numbers may have the <code>0x-</code> <small>(hex)</small> prefix.</li>
  * </ul>
  * 
- * @author JSON.org
+
  * @version 2009-04-14
  */
 public class JSONArray {

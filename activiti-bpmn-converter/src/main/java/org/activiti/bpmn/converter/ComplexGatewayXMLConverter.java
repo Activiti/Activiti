@@ -22,7 +22,7 @@ import org.activiti.bpmn.model.ComplexGateway;
 import org.activiti.bpmn.model.ExclusiveGateway;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ComplexGatewayXMLConverter extends BaseBpmnXMLConverter {
 

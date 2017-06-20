@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 /**
  * A dynamic web service client that allows to perform synchronous calls to a specific web service.
  * 
- * @author Esteban Robles Luna
+
  */
 public interface SyncWebServiceClient {
 

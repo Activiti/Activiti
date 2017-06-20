@@ -19,7 +19,7 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class SignalEventSubscriptionByNameAndExecutionMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
   

@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 /**
  * An Operation is part of an {@link BpmnInterface} and it defines Messages that are consumed and (optionally) produced when the Operation is called.
  * 
- * @author Joram Barrez
+
  */
 public class Operation {
 

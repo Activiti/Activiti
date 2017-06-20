@@ -21,7 +21,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Attachment;
 
 /**
- * @author Tom Baeyens
+
  */
 public class GetTaskAttachmentsCmd implements Command<List<? extends Attachment>>, Serializable {
 

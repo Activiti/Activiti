@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * @author Tom Baeyens
+
  */
 public class TableDataManagerImpl extends AbstractManager implements TableDataManager {
 

@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.cache;
 import org.activiti.engine.impl.persistence.entity.Entity;
 
 /**
- * @author Joram Barrez
+
  */
 public class CachedEntity {
 

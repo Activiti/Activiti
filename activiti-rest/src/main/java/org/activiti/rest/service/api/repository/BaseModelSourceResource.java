@@ -17,7 +17,7 @@ import org.activiti.engine.ActivitiException;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * @author Tijs Rademakers
+
  */
 public abstract class BaseModelSourceResource extends BaseModelResource {
 

@@ -23,7 +23,7 @@ import org.activiti.rest.service.api.engine.variable.RestVariable;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class HistoricProcessInstanceResponse {
 

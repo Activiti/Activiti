@@ -29,9 +29,9 @@ import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataMana
 import org.activiti.engine.impl.variable.VariableType;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
- * @author Saeid Mirzaei
+
+
+
  */
 public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<VariableInstanceEntity> implements VariableInstanceEntityManager {
 

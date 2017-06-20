@@ -20,7 +20,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.context.Context;
 
 /**
- * @author Joram Barrez
+
  */
 public class CreateUserAndMembershipTestDelegate implements JavaDelegate {
 

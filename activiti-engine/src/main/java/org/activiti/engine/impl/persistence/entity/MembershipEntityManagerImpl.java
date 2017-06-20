@@ -20,8 +20,8 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.MembershipDataManager;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class MembershipEntityManagerImpl extends AbstractEntityManager<MembershipEntity> implements MembershipEntityManager {
 

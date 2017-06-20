@@ -21,7 +21,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Joram Barrez
+
  */
 public class TaskDueDateTest extends PluggableActivitiTestCase {
 

@@ -35,8 +35,8 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior {
 

@@ -22,7 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 /**
- * @author Joram Barrez
+
  */
 public class UserQueryImpl extends AbstractQuery<UserQuery, User> implements UserQuery {
 

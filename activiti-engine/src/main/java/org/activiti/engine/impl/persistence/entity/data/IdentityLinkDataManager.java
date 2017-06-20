@@ -17,7 +17,7 @@ import java.util.List;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface IdentityLinkDataManager extends DataManager<IdentityLinkEntity> {
   

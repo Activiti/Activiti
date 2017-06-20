@@ -20,7 +20,7 @@ import javax.persistence.Id;
 /**
  * Simple JPA entity, id is set on a property.
  * 
- * @author Frederik Heremans
+
  */
 @Entity(name = "JPA_ENTITY_P")
 public class PropertyAccessJPAEntity {

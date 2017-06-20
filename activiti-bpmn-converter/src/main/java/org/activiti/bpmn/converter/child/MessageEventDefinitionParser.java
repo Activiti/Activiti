@@ -22,7 +22,7 @@ import org.activiti.bpmn.model.MessageEventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class MessageEventDefinitionParser extends BaseChildElementParser {
 

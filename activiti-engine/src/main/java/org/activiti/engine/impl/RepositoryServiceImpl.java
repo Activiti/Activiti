@@ -67,9 +67,9 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.validation.ValidationError;
 
 /**
- * @author Tom Baeyens
- * @author Falko Menge
- * @author Joram Barrez
+
+
+
  */
 public class RepositoryServiceImpl extends ServiceImpl implements RepositoryService {
 

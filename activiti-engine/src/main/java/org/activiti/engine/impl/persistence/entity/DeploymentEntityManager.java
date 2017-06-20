@@ -20,7 +20,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.repository.Deployment;
 
 /**
- * @author Joram Barrez
+
  */
 public interface DeploymentEntityManager extends EntityManager<DeploymentEntity> {
 

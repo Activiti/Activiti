@@ -12,7 +12,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Attachment;
 
 /**
- * @author Bassam Al-Sarori
+
  * 
  */
 public class AttachmentQuery extends AbstractQuery<AttachmentQuery, Attachment> {

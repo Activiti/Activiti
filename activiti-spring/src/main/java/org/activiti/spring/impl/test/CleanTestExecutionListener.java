@@ -10,7 +10,7 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
  * <p>
  * Use this as follows in a Spring test:
  * 
- * @author jbarrez
+
  * @RunWith(SpringJUnit4ClassRunner.class)
  * @TestExecutionListeners(CleanTestExecutionListener.class)
  * @ContextConfiguration("...")

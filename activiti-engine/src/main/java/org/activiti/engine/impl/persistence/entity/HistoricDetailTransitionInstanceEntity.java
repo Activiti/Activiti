@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 /**
- * @author Tom Baeyens
+
  */
 public interface HistoricDetailTransitionInstanceEntity extends HistoricDetailEntity {
 }

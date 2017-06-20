@@ -16,7 +16,7 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.impl.db.HasRevision;
 
 /**
- * @author Joram Barrez
+
  */
 public interface GroupEntity extends Group, Entity, HasRevision {
 

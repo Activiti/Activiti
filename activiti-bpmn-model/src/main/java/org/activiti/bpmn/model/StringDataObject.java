@@ -1,8 +1,5 @@
 package org.activiti.bpmn.model;
 
-/**
- * @author Lori Small
- */
 public class StringDataObject extends ValuedDataObject {
 
   public void setValue(Object value) {

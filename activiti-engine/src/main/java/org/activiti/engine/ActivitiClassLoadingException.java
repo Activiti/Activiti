@@ -16,7 +16,7 @@ package org.activiti.engine;
 /**
  * Runtime exception indicating the requested class was not found or an error occurred while loading the class.
  * 
- * @author Frederik Heremans
+
  */
 public class ActivitiClassLoadingException extends ActivitiException {
 

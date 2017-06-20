@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tom Baeyens
+
  */
 public class GetDeploymentProcessDefinitionCmd implements Command<ProcessDefinition>, Serializable {
 

@@ -24,7 +24,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Testcase for the non-spec extensions to the task candidate use case.
  * 
- * @author Joram Barrez
+
  */
 public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
 

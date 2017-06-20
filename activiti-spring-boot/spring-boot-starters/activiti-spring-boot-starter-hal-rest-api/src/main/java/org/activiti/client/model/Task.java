@@ -18,7 +18,7 @@ package org.activiti.client.model;
 import java.util.Date;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 public class Task {
 

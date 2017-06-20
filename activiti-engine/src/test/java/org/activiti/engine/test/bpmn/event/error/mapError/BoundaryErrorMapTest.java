@@ -22,7 +22,7 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.standalone.testing.helpers.ServiceTaskTestMock;
 
 /**
- * @author Saeid Mirzaei
+
  */
 public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
 

@@ -17,7 +17,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 
 /**
- * @author Daniel Meyer
+
  */
 public class ErrorEventDefinition implements Serializable {
 

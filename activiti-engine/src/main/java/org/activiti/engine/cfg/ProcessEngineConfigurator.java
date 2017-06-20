@@ -17,7 +17,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 /**
  * Implementations of this class can be plugged into a {@link ProcessEngineConfigurationImpl}. Such implementations can configure the engine in any way programmatically possible.
  * 
- * @author Joram Barrez
+
  */
 public interface ProcessEngineConfigurator {
 

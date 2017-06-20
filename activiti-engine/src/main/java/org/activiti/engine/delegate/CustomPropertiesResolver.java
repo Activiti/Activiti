@@ -18,7 +18,7 @@ import java.util.Map;
  * Can be used to pass a custom properties {@link java.util.HashMap} to a {@link TransactionDependentExecutionListener}
  * or to a {@link TransactionDependentTaskListener}
  *
- * @author Yvo Swillens
+
  */
 public interface CustomPropertiesResolver {
 

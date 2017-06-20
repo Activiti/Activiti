@@ -17,7 +17,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.form.AbstractFormType;
 
 /**
- * @author Frederik Heremans
+
  */
 public class BooleanFormType extends AbstractFormType {
 

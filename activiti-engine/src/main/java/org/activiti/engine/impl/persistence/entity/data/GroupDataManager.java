@@ -21,7 +21,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface GroupDataManager extends DataManager<GroupEntity> {
   

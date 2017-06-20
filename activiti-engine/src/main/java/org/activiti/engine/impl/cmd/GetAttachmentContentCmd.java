@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 
 /**
- * @author Tom Baeyens
+
  */
 public class GetAttachmentContentCmd implements Command<InputStream>, Serializable {
 

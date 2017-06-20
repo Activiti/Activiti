@@ -34,8 +34,8 @@ import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 // Not Serializable
 public class CreateAttachmentCmd implements Command<Attachment> {

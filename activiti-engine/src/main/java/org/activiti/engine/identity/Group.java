@@ -19,7 +19,7 @@ import org.activiti.engine.IdentityService;
 /**
  * Represents a group, used in {@link IdentityService}.
  * 
- * @author Tom Baeyens
+
  */
 public interface Group extends Serializable {
 

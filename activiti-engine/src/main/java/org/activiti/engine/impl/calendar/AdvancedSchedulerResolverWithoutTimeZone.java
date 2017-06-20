@@ -8,7 +8,7 @@ import org.activiti.engine.runtime.ClockReader;
 /**
  * Resolves a due date using the original Activiti due date resolver. This does not take into account the passed time zone.
  * 
- * @author mseiden
+
  */
 public class AdvancedSchedulerResolverWithoutTimeZone implements AdvancedSchedulerResolver {
 

@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Tom Baeyens
+
  */
 public class BackwardsCompatibleExpressionDelegate implements JavaDelegate {
 

@@ -21,7 +21,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Joram Barrez
+
  */
 public class ProcessDefinitionFormType extends AbstractFormType {
 

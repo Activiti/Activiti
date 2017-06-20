@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * An {@link ActivitiEntityEvent} related to a single entity.
  * 
- * @author Tijs Rademakers
+
  */
 public interface ActivitiEntityWithVariablesEvent extends ActivitiEntityEvent {
 

@@ -20,7 +20,7 @@ import org.activiti.engine.ManagementService;
 /**
  * Represents one job (timer, async job, etc.).
  * 
- * @author Joram Barrez
+
  */
 public interface Job {
   

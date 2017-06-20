@@ -19,7 +19,7 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.task.Attachment;
 
 /**
- * @author Joram Barrez
+
  */
 public interface AttachmentEntity extends Attachment, Entity, HasRevision {
 

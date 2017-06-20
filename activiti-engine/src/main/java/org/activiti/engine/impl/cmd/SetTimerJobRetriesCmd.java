@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class SetTimerJobRetriesCmd implements Command<Void>, Serializable {
 

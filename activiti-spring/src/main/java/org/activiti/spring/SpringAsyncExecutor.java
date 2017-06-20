@@ -29,7 +29,7 @@ import org.springframework.core.task.TaskExecutor;
  * The use of unmanaged thread in application servers is discouraged by the Java EE spec.
  * </p>
  * 
- * @author Pablo Ganga
+
  */
 public class SpringAsyncExecutor extends DefaultAsyncJobExecutor {
 

@@ -18,7 +18,7 @@ import javax.el.ValueExpression;
 /**
  * Class responsible for handling Expression.getValue invocations
  * 
- * @author Daniel Meyer
+
  */
 public class ExpressionGetInvocation extends ExpressionInvocation {
 

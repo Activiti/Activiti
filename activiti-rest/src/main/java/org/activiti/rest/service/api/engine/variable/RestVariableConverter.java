@@ -14,7 +14,7 @@
 package org.activiti.rest.service.api.engine.variable;
 
 /**
- * @author Frederik Heremans
+
  */
 public interface RestVariableConverter {
 

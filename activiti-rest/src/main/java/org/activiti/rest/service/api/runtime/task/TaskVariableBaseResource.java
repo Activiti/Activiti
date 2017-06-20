@@ -36,7 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
- * @author Frederik Heremans
+
  */
 public class TaskVariableBaseResource extends TaskBaseResource {
 

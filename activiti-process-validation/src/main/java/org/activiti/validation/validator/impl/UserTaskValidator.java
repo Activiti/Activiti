@@ -23,7 +23,7 @@ import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ProcessLevelValidator;
 
 /**
- * @author jbarrez
+
  */
 public class UserTaskValidator extends ProcessLevelValidator {
 

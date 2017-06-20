@@ -30,7 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * @author Josh Long
+
  */
 public class EndpointAutoConfigurationTest {
 

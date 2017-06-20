@@ -19,7 +19,7 @@ import java.util.Set;
 import org.activiti.engine.impl.variable.VariableType;
 
 /**
- * @author Joram Barrez
+
  */
 public interface VariableInstanceEntityManager extends EntityManager<VariableInstanceEntity> {
 

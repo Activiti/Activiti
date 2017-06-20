@@ -21,7 +21,7 @@ import org.activiti.engine.test.api.event.TestActivitiEventListener;
 /**
  * Test to verify event-listeners, which are configured in the cfg.xml, are notified.
  * 
- * @author Frederik Heremans
+
  */
 public class EventListenersConfigurationTest extends ResourceActivitiTestCase {
 

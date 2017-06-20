@@ -24,7 +24,7 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
 /**
  * List that initialises binary variable values if command-context is active.
  * 
- * @author Frederik Heremans
+
  */
 public class HistoricVariableInitializingList extends ArrayList<HistoricVariableInstanceEntity> {
 

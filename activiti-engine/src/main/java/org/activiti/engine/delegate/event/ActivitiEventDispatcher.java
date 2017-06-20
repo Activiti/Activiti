@@ -15,7 +15,7 @@ package org.activiti.engine.delegate.event;
 /**
  * Dispatcher which allows for adding and removing {@link ActivitiEventListener} s to the Activiti Engine as well as dispatching {@link ActivitiEvent} to all the listeners registered.
  * 
- * @author Frederik Heremans
+
  */
 public interface ActivitiEventDispatcher {
 

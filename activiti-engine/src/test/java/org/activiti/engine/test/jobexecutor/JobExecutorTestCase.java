@@ -21,7 +21,7 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**
- * @author Tom Baeyens
+
  */
 public abstract class JobExecutorTestCase extends PluggableActivitiTestCase {
 

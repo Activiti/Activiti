@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.variable;
 
 /**
- * @author Frederik Heremans
+
  */
 public class BooleanType implements VariableType {
 

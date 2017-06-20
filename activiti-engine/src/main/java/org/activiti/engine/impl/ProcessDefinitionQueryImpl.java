@@ -28,10 +28,10 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
- * @author Daniel Meyer
- * @author Saeid Mirzaei
+
+
+
+
  */
 public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition> implements ProcessDefinitionQuery {
 

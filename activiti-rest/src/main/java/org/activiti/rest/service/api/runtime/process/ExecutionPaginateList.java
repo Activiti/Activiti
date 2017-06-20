@@ -19,7 +19,7 @@ import org.activiti.rest.common.api.AbstractPaginateList;
 import org.activiti.rest.service.api.RestResponseFactory;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ExecutionPaginateList extends AbstractPaginateList {
 

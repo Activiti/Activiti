@@ -22,7 +22,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
+
  */
 public class CallServiceInServiceTaskTest extends PluggableActivitiTestCase {
 

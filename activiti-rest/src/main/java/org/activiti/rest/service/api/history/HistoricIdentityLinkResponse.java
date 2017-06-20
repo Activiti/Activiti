@@ -14,7 +14,7 @@
 package org.activiti.rest.service.api.history;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class HistoricIdentityLinkResponse {
 

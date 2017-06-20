@@ -17,7 +17,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * @author Joram Barrez
+
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MockServiceTask {

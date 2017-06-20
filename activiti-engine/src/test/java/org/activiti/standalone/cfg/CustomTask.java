@@ -6,7 +6,7 @@ package org.activiti.standalone.cfg;
 import java.util.Date;
 
 /**
- * @author Bassam Al-Sarori
+
  * 
  */
 public class CustomTask {

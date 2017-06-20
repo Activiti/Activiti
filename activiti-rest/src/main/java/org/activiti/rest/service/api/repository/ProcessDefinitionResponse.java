@@ -14,7 +14,7 @@
 package org.activiti.rest.service.api.repository;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ProcessDefinitionResponse {
 

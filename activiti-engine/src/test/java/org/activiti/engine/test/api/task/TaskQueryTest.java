@@ -38,9 +38,9 @@ import org.activiti.engine.test.Deployment;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author Joram Barrez
- * @author Frederik Heremans
- * @author Falko Menge
+
+
+
  */
 public class TaskQueryTest extends PluggableActivitiTestCase {
 

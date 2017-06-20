@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
 /**
  * Class containing meta-data about Entity-classes.
  * 
- * @author Frederik Heremans
+
  */
 public class EntityMetaData {
 

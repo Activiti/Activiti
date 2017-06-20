@@ -20,7 +20,7 @@ import org.activiti.engine.impl.SuspendedJobQueryImpl;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tijs Rademakers
+
  */
 public interface SuspendedJobEntityManager extends EntityManager<SuspendedJobEntity> {
   

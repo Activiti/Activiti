@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author Joram Barrez
+
  */
 public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLoggerEventHandler {
 

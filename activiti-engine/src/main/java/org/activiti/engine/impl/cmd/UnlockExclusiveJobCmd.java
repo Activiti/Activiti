@@ -23,8 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public class UnlockExclusiveJobCmd implements Command<Object>, Serializable {
 

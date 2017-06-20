@@ -30,7 +30,7 @@ import org.springframework.messaging.support.MessageBuilder;
  * may ultimately return a reply message and that will signal the
  * execution.
  *
- * @author Josh Long
+
  */
 public class ActivitiInboundGateway extends MessagingGatewaySupport {
 

@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.data.DeploymentDataManager;
 import org.activiti.engine.repository.Deployment;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisDeploymentDataManager extends AbstractDataManager<DeploymentEntity> implements DeploymentDataManager {
 

@@ -16,7 +16,7 @@ package org.activiti.rest.common.api;
 import java.util.List;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class DefaultPaginateList extends AbstractPaginateList {
 

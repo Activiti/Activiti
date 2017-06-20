@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 /**
  * Base class for all {@link ActivitiEvent} implementations, represents an exception occurred, related to an entity.
  * 
- * @author Frederik Heremans
+
  */
 public class ActivitiEntityExceptionEventImpl extends ActivitiEventImpl implements ActivitiEntityEvent, ActivitiExceptionEvent {
 

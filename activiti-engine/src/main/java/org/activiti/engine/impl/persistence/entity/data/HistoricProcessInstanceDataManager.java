@@ -21,7 +21,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricProcessInstanceDataManager extends DataManager<HistoricProcessInstanceEntity> {
   

@@ -27,7 +27,7 @@ import org.activiti.engine.runtime.Execution;
 import java.io.Serializable;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ExecuteActivityForAdhocSubProcessCmd implements Command<Execution>, Serializable {
 

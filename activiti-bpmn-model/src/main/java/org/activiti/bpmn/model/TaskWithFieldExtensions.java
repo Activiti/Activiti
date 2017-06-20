@@ -15,9 +15,6 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Joram Barrez
- */
 public abstract class TaskWithFieldExtensions extends Task {
 
   protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();

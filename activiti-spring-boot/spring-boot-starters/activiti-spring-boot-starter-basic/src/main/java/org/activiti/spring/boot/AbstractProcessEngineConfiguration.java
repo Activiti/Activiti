@@ -38,7 +38,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 /**
  * Provides sane definitions for the various beans required to be productive with Activiti in Spring.
  *
- * @author Josh Long
+
  */
 public abstract class AbstractProcessEngineConfiguration {
 	

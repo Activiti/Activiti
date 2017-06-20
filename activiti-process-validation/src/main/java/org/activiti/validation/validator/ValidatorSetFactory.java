@@ -40,7 +40,7 @@ import org.activiti.validation.validator.impl.SubprocessValidator;
 import org.activiti.validation.validator.impl.UserTaskValidator;
 
 /**
- * @author jbarrez
+
  */
 public class ValidatorSetFactory {
 

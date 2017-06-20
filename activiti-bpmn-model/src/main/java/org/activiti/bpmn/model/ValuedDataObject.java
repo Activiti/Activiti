@@ -1,8 +1,5 @@
 package org.activiti.bpmn.model;
 
-/**
- * @author Lori Small
- */
 public abstract class ValuedDataObject extends DataObject {
 
   protected Object value;

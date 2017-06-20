@@ -19,7 +19,7 @@ import org.activiti.engine.IdentityService;
 /**
  * Represents a user, used in {@link IdentityService}.
  * 
- * @author Tom Baeyens
+
  */
 public interface User extends Serializable {
 

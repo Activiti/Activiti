@@ -26,8 +26,8 @@ import javax.script.SimpleScriptContext;
 import org.activiti.engine.delegate.VariableScope;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class ScriptBindings implements Bindings {
 

@@ -19,7 +19,7 @@ import org.activiti.engine.runtime.Execution;
 /**
  * Programmatic querying for {@link HistoricDetail}s.
  * 
- * @author Tom Baeyens
+
  */
 public interface HistoricDetailQuery extends Query<HistoricDetailQuery, HistoricDetail> {
 

@@ -19,7 +19,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Comment;
 
 /**
- * @author Sam Kim
+
  */
 public class GetTaskCommentsByTypeCmd extends GetTaskCommentsCmd {
 

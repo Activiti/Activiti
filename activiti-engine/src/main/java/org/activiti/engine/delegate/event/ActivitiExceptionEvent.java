@@ -15,7 +15,7 @@ package org.activiti.engine.delegate.event;
 /**
  * Indicates the {@link ActivitiEvent} also contains information about a {@link Throwable} that occurred, triggering the event.
  * 
- * @author Frederik heremans
+
  */
 public interface ActivitiExceptionEvent {
 

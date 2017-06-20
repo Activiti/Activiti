@@ -27,7 +27,7 @@ import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ProcessLevelValidator;
 
 /**
- * @author Joram Barrez
+
  */
 public class StartEventValidator extends ProcessLevelValidator {
 

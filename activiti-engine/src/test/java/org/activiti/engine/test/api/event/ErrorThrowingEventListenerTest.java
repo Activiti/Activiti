@@ -24,7 +24,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for all {@link ActivitiEventListener}s that throws an error BPMN event when an {@link ActivitiEvent} has been dispatched.
  * 
- * @author Frederik Heremans
+
  */
 public class ErrorThrowingEventListenerTest extends PluggableActivitiTestCase {
 

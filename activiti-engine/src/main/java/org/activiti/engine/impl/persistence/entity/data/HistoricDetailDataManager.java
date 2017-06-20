@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanc
 import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricDetailDataManager extends DataManager<HistoricDetailEntity> {
   

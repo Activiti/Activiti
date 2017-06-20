@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.db;
 
 /**
- * @author Daniel Meyer
+
  */
 public class ListQueryParameterObject {
 

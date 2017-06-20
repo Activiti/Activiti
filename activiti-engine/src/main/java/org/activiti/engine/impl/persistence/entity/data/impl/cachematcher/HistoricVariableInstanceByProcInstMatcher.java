@@ -16,7 +16,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class HistoricVariableInstanceByProcInstMatcher extends CachedEntityMatcherAdapter<HistoricVariableInstanceEntity> {
  

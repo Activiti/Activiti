@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Tom Baeyens
+
  */
 public class AttachmentEntityImpl extends AbstractEntity implements AttachmentEntity, Serializable {
 

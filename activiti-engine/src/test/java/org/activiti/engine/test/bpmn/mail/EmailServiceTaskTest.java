@@ -34,8 +34,8 @@ import org.activiti.engine.test.Deployment;
 import org.subethamail.wiser.WiserMessage;
 
 /**
- * @author Joram Barrez
- * @author Tim Stephenson
+
+
  */
 public class EmailServiceTaskTest extends EmailTestCase {
 

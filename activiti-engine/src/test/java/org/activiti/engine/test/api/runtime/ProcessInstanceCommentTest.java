@@ -22,7 +22,7 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
+
  */
 public class ProcessInstanceCommentTest extends PluggableActivitiTestCase {
 

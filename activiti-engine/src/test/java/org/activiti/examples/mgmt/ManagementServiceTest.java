@@ -22,8 +22,8 @@ import org.activiti.engine.management.TableMetaData;
 /**
  * Test case for the various operations of the {@link ManagementService}
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class ManagementServiceTest extends PluggableActivitiTestCase {
 

@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.Expression;
 /**
  * A simple data input association between a source and a target with assignments
  * 
- * @author Esteban Robles Luna
+
  */
 public class SimpleDataInputAssociation extends AbstractDataAssociation {
 

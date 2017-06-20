@@ -16,7 +16,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class JobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<JobEntity> {
  

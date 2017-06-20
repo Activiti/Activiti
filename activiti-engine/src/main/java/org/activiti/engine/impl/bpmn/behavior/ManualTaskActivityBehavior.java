@@ -18,7 +18,7 @@ package org.activiti.engine.impl.bpmn.behavior;
  * 
  * Given this definition, this activity will behave simply as a pass-though step in the process.
  * 
- * @author Joram Barrez
+
  */
 public class ManualTaskActivityBehavior extends TaskActivityBehavior {
 

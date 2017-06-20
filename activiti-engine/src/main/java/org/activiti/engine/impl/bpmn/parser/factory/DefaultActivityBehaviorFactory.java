@@ -102,7 +102,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Default implementation of the {@link ActivityBehaviorFactory}. Used when no custom {@link ActivityBehaviorFactory} is injected on the {@link ProcessEngineConfigurationImpl}.
  * 
- * @author Joram Barrez
+
  */
 public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
   private final ClassDelegateFactory classDelegateFactory;

@@ -16,7 +16,7 @@ import org.activiti.engine.impl.persistence.SingleCachedEntityMatcher;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class SubProcessInstanceExecutionBySuperExecutionIdMatcher implements SingleCachedEntityMatcher<ExecutionEntity> {
   

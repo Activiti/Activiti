@@ -17,7 +17,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.subethamail.wiser.Wiser;
 
 /**
- * @author Joram Barrez
+
  */
 public abstract class EmailTestCase extends PluggableActivitiTestCase {
 

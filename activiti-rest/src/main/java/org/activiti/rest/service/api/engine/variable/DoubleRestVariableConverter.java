@@ -16,7 +16,7 @@ package org.activiti.rest.service.api.engine.variable;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 
 /**
- * @author Frederik Heremans
+
  */
 public class DoubleRestVariableConverter implements RestVariableConverter {
 

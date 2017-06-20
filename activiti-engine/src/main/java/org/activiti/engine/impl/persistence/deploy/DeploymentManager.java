@@ -36,9 +36,9 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tom Baeyens
- * @author Falko Menge
- * @author Joram Barrez
+
+
+
  */
 public class DeploymentManager {
 

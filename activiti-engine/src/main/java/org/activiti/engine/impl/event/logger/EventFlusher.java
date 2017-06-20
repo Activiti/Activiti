@@ -6,7 +6,7 @@ import org.activiti.engine.impl.event.logger.handler.EventLoggerEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 
 /**
- * @author Joram Barrez
+
  */
 public interface EventFlusher extends CommandContextCloseListener {
 

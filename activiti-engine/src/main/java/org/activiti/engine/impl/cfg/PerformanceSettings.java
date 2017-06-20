@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.cfg;
 
 /**
- * @author Joram Barrez
+
  */
 public class PerformanceSettings {
   

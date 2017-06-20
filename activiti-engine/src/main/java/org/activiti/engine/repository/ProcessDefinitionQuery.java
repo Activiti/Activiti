@@ -21,10 +21,10 @@ import org.activiti.engine.query.Query;
 /**
  * Allows programmatic querying of {@link ProcessDefinition}s.
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
- * @author Daniel Meyer
- * @author Saeid Mirzaei
+
+
+
+
  */
 public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, ProcessDefinition> {
 

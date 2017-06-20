@@ -17,7 +17,7 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
- * @author Joram Barrez
+
  */
 public class SubProcessParseHandler extends AbstractActivityBpmnParseHandler<SubProcess> {
 

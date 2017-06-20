@@ -24,7 +24,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test for event-listeners that are registered on a process-definition scope, rather than on the global engine-wide scope.
  * 
- * @author Frederik Heremans
+
  */
 public class ProcessDefinitionScopedEventListenerTest extends PluggableActivitiTestCase {
 

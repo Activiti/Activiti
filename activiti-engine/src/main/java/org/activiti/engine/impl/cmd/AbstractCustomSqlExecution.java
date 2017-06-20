@@ -1,7 +1,7 @@
 package org.activiti.engine.impl.cmd;
 
 /**
- * @author jbarrez
+
  */
 public abstract class AbstractCustomSqlExecution<Mapper, ResultType> implements CustomSqlExecution<Mapper, ResultType> {
 

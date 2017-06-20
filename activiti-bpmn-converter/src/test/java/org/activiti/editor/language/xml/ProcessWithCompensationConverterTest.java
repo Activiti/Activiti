@@ -24,7 +24,7 @@ import java.io.InputStream;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Vasile Dirla
+
  */
 public class ProcessWithCompensationConverterTest {
 

@@ -34,8 +34,8 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentProperties;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class DeployCmd<T> implements Command<Deployment>, Serializable {
 

@@ -23,7 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 
 /**
- * @author Joram Barrez
+
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/fieldinjection/fieldInjectionSpringTest-context.xml")
 public class ListenerFieldInjectionTest extends SpringActivitiTestCase {

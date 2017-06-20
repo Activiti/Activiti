@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Saeid Mirzaei
+
  */
 public class ThrowCustomExceptionDelegate implements JavaDelegate {
 

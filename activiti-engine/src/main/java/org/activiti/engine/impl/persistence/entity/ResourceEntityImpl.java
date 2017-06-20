@@ -16,8 +16,8 @@ package org.activiti.engine.impl.persistence.entity;
 import java.io.Serializable;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class ResourceEntityImpl extends AbstractEntityNoRevision implements ResourceEntity, Serializable {
 

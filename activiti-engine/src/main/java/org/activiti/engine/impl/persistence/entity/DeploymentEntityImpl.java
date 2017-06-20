@@ -24,8 +24,8 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class DeploymentEntityImpl extends AbstractEntityNoRevision implements DeploymentEntity, Serializable {
 

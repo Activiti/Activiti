@@ -17,7 +17,7 @@ import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
- * @author Joram Barrez
+
  */
 public class ExclusiveGatewayParseHandler extends AbstractActivityBpmnParseHandler<ExclusiveGateway> {
 

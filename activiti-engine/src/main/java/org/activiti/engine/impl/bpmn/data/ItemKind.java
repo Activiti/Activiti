@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 /**
  * Implementation of the BPMN 2.0 'itemKind'
  * 
- * @author Esteban Robles Luna
+
  */
 public enum ItemKind {
 

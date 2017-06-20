@@ -15,7 +15,7 @@ package org.activiti.validation;
 import org.activiti.validation.validator.ValidatorSetFactory;
 
 /**
- * @author jbarrez
+
  */
 public class ProcessValidatorFactory {
 

@@ -18,7 +18,7 @@ import java.io.Serializable;
 import javax.persistence.Embeddable;
 
 /**
- * @author Frederik Heremans
+
  */
 @Embeddable
 public class EmbeddableCompoundId implements Serializable {

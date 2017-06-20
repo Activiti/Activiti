@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Attachment;
 
 /**
- * @author Tom Baeyens
+
  */
 public class GetAttachmentCmd implements Command<Attachment>, Serializable {
 

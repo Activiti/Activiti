@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 /**
  * An instance of {@link ItemDefinition}
  * 
- * @author Esteban Robles Luna
+
  */
 public class ItemInstance {
 

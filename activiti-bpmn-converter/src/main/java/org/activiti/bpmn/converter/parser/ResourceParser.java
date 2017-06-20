@@ -22,7 +22,7 @@ import org.activiti.bpmn.model.Resource;
 import org.activiti.bpmn.model.UserTask;
 
 /**
- * @author Tim Stephenson
+
  */
 public class ResourceParser implements BpmnXMLConstants {
   

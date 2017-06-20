@@ -9,7 +9,7 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.task.Task;
 
 /**
- * @author jbarrez
+
  */
 public class CustomMybatisMapperTest extends ResourceActivitiTestCase {
 

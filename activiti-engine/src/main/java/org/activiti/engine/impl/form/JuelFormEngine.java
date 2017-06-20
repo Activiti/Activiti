@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 
 /**
- * @author Tom Baeyens
+
  */
 public class JuelFormEngine implements FormEngine {
 

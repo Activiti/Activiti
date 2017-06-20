@@ -19,7 +19,7 @@ import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 /**
  * An {@link ActivitiSignalEvent} implementation.
  * 
- * @author Frederik Heremans
+
  */
 public class ActivitiMessageEventImpl extends ActivitiActivityEventImpl implements ActivitiMessageEvent {
 

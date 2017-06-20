@@ -21,7 +21,7 @@ import org.activiti.engine.repository.Model;
 /**
  * Test case for all {@link ActivitiEvent}s related to models.
  * 
- * @author Frederik Heremans
+
  */
 public class ModelEventsTest extends PluggableActivitiTestCase {
 

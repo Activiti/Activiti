@@ -27,7 +27,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
- * @author Tom Baeyens
+
  */
 public class ProcessEngineInitializationTest extends AbstractTestCase {
 

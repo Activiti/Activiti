@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Joram Barrez
+
  */
 public class ProcessDefinitionCacheEntry implements Serializable {
 

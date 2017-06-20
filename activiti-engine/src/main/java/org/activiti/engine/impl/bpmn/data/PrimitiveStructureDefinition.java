@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 /**
  * Represents a structure based on a primitive class
  * 
- * @author Esteban Robles Luna
+
  */
 public class PrimitiveStructureDefinition implements StructureDefinition {
 

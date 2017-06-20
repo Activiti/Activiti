@@ -17,7 +17,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 
 /**
- * @author Frederik Heremans
+
  */
 @Entity(name = "JPA_SUBCLASS_PROPERTY")
 public class SubclassPropertyAccessJPAEntity extends MappedSuperClassPropertyAccessJPAEntity {

@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * Dummy class that implements {@link Serializable}.
  * 
- * @author Frederik Heremans
+
  */
 public class DummySerializable implements Serializable {
 

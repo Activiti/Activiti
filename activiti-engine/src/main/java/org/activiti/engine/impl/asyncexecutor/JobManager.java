@@ -15,8 +15,8 @@ import org.activiti.engine.runtime.Job;
  * Contains methods that are not tied to any specific job type (async, timer, suspended or deadletter),
  * but which are generally applicable or are about going from one type to another.
  * 
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public interface JobManager {
   

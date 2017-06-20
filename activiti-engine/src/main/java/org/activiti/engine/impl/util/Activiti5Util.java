@@ -23,8 +23,8 @@ import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class Activiti5Util {
   

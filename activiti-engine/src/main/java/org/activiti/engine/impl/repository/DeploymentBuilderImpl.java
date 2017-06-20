@@ -36,8 +36,8 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
 

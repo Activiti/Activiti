@@ -26,7 +26,7 @@ import org.activiti.rest.service.api.engine.variable.RestVariable;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * @author Frederik Heremans
+
  */
 public class TaskResponse {
 

@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * An {@link CustomPropertiesResolver} that evaluates a {@link Expression} when notified.
  * 
- * @author Yvo Swillens
+
  */
 public class ExpressionCustomPropertiesResolver implements CustomPropertiesResolver {
 

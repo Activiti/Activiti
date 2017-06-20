@@ -20,7 +20,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Joram Barrez
+
  */
 public interface TaskDataManager extends DataManager<TaskEntity> {
   

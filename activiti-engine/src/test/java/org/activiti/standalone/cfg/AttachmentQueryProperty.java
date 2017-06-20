@@ -32,7 +32,7 @@ import java.util.Map;
 import org.activiti.engine.query.QueryProperty;
 
 /**
- * @author Bassam Al-Sarori
+
  */
 public class AttachmentQueryProperty implements QueryProperty {
 

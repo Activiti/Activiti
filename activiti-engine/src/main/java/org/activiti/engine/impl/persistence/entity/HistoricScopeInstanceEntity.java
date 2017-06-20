@@ -17,7 +17,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.Date;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricScopeInstanceEntity extends Entity {
 

@@ -20,7 +20,7 @@ import org.activiti.engine.test.Deployment;
 import java.util.List;
 
 /**
- * @author Joram Barrez
+
  */
 public class TaskListenerTest extends PluggableActivitiTestCase {
 

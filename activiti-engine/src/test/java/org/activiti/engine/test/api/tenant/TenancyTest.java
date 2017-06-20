@@ -20,7 +20,7 @@ import org.junit.Assert;
 /**
  * A test case for the various implications of the tenancy support (tenant id column to entities + query support)
  * 
- * @author jbarrez
+
  */
 public class TenancyTest extends PluggableActivitiTestCase {
 

@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.*;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class FormPropertyParser extends BaseChildElementParser {
 

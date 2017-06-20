@@ -27,7 +27,7 @@ import org.apache.http.client.methods.HttpGet;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ExecutionActiveActivitiesCollectionResourceTest extends BaseSpringRestTestCase {
 

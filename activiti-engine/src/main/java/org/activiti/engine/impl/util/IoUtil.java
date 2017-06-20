@@ -26,9 +26,9 @@ import java.net.URL;
 import org.activiti.engine.ActivitiException;
 
 /**
- * @author Tom Baeyens
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
+
  */
 public class IoUtil {
 

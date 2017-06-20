@@ -4,7 +4,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 
 /**
- * @author Joram Barrez
+
  */
 public class ActivitiSequenceFlowTakenEventImpl extends ActivitiEventImpl implements ActivitiSequenceFlowTakenEvent {
 

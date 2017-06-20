@@ -20,8 +20,8 @@ import java.util.HashMap;
 import org.activiti.engine.impl.context.Context;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public abstract class EventSubscriptionEntityImpl extends AbstractEntity implements EventSubscriptionEntity, Serializable {
 

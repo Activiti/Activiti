@@ -29,7 +29,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBehavior {
 

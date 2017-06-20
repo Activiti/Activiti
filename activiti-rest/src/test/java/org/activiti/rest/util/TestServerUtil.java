@@ -27,7 +27,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 /**
- * @author Joram Barrez
+
  */
 public class TestServerUtil {
 	

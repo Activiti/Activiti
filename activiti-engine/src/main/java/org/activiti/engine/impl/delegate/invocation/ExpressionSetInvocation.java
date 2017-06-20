@@ -18,7 +18,7 @@ import javax.el.ValueExpression;
 /**
  * Class responsible for handling Expression.setValue() invocations.
  * 
- * @author Daniel Meyer
+
  */
 public class ExpressionSetInvocation extends ExpressionInvocation {
 

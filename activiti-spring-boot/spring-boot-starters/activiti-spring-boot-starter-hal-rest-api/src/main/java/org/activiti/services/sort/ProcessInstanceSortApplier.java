@@ -22,7 +22,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 @Component
 public class ProcessInstanceSortApplier extends BaseSortApplier<ProcessInstanceQuery> {

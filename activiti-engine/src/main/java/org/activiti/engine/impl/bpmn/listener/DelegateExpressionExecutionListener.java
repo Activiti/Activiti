@@ -26,7 +26,7 @@ import org.activiti.engine.impl.delegate.invocation.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.invocation.JavaDelegateInvocation;
 
 /**
- * @author Joram Barrez
+
  */
 public class DelegateExpressionExecutionListener implements ExecutionListener {
 

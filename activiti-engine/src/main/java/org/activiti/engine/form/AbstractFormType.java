@@ -16,8 +16,8 @@ package org.activiti.engine.form;
 /**
  * Custom form types should extend this abstract class.
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public abstract class AbstractFormType implements FormType {
 

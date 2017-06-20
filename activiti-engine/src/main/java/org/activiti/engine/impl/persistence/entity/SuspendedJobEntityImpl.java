@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 /**
  * TimerJob entity, necessary for persistence.
  *
- * @author Tijs Rademakers
+
  */
 public class SuspendedJobEntityImpl extends AbstractJobEntityImpl implements SuspendedJobEntity {
 

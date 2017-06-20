@@ -20,7 +20,7 @@ import java.util.Map;
 /**
  * Callback interface to be notified of transaction events.
  *
- * @author Yvo Swillens
+
  */
 public interface TransactionDependentTaskListener extends BaseTaskListener {
 

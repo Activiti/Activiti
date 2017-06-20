@@ -18,7 +18,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Frederik Heremans
+
  */
 public class BoundaryTimerEventFullHistoryTest extends ResourceActivitiTestCase {
 

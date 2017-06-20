@@ -22,7 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 /**
- * @author Joram Barrez
+
  */
 public class GroupQueryImpl extends AbstractQuery<GroupQuery, Group> implements GroupQuery {
 

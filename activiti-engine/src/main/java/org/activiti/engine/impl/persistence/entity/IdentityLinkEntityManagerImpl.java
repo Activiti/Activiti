@@ -26,9 +26,9 @@ import org.activiti.engine.impl.persistence.entity.data.IdentityLinkDataManager;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
- * @author Tom Baeyens
- * @author Saeid Mirzaei
- * @author Joram Barrez
+
+
+
  */
 public class IdentityLinkEntityManagerImpl extends AbstractEntityManager<IdentityLinkEntity> implements IdentityLinkEntityManager {
   

@@ -19,7 +19,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class GetModelEditorSourceExtraCmd implements Command<byte[]>, Serializable {
 

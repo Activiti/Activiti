@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 import org.activiti.engine.impl.db.HasRevision;
 
 /**
- * @author Tijs Rademakers
+
  */
 public interface ProcessDefinitionInfoEntity extends Entity, HasRevision {
 

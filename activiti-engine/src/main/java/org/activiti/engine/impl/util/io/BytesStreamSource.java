@@ -16,7 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 /**
- * @author Joram Barrez
+
  */
 public class BytesStreamSource implements StreamSource {
 

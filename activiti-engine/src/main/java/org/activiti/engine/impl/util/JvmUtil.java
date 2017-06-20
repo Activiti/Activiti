@@ -1,7 +1,7 @@
 package org.activiti.engine.impl.util;
 
 /**
- * @author jbarrez
+
  */
 public class JvmUtil {
 

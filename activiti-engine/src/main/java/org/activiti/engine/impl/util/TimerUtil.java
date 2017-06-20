@@ -24,7 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 /**
- * @author Joram Barrez
+
  */
 public class TimerUtil {
 

@@ -10,7 +10,7 @@ import java.util.List;
  * 
  * Since sometimes in the past, a version is ambiguous (eg. 5.12 => 5.12, 5.12.1, 5.12T) this class act as a wrapper with a smarter matches() method.
  * 
- * @author jbarrez
+
  */
 public class ActivitiVersion {
 

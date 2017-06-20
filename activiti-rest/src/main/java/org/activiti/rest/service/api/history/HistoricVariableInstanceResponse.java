@@ -16,7 +16,7 @@ package org.activiti.rest.service.api.history;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class HistoricVariableInstanceResponse {
 

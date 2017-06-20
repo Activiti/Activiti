@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author Joram Barrez
+
  */
 @Configuration
 public class JacksonConfiguration {

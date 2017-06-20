@@ -15,7 +15,7 @@ package org.activiti.engine.impl.transformer;
 /**
  * 
  * 
- * @author Esteban Robles Luna
+
  */
 public class Identity extends AbstractTransformer {
 

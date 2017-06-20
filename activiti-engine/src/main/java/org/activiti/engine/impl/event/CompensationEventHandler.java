@@ -30,7 +30,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import java.util.List;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class CompensationEventHandler implements EventHandler {
 

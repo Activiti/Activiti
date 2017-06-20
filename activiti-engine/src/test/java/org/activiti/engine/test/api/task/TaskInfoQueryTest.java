@@ -22,7 +22,7 @@ import org.activiti.engine.task.TaskInfo;
 import org.activiti.engine.task.TaskInfoQueryWrapper;
 
 /**
- * @author Joram Barrez
+
  */
 public class TaskInfoQueryTest extends PluggableActivitiTestCase {
 

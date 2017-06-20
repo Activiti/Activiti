@@ -21,7 +21,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricVariableInstanceDataManager extends DataManager<HistoricVariableInstanceEntity> {
 

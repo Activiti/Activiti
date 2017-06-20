@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.DelegateExecution;
  * 
  * Currently, the only message that is supported is the external trigger, given by calling the {@link RuntimeService#signal(String)} operation.
  * 
- * @author Joram Barrez
+
  */
 public class ReceiveTaskActivityBehavior extends TaskActivityBehavior {
 

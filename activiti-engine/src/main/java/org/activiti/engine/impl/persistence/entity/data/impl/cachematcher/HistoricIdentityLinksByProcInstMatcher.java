@@ -16,7 +16,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class HistoricIdentityLinksByProcInstMatcher extends CachedEntityMatcherAdapter<HistoricIdentityLinkEntity> {
  

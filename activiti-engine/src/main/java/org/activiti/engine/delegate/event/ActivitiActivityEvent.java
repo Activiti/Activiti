@@ -15,8 +15,8 @@ package org.activiti.engine.delegate.event;
 /**
  * An {@link ActivitiEvent} related to an activity within an execution;
  * 
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public interface ActivitiActivityEvent extends ActivitiEvent {
 

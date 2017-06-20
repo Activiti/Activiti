@@ -16,7 +16,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class EventSubscriptionsByExecutionIdMatcher extends CachedEntityMatcherAdapter<EventSubscriptionEntity> {
   

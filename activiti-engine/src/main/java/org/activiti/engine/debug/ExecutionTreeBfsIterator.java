@@ -18,7 +18,7 @@ import java.util.LinkedList;
 /**
  * Iterates over an {@link ExecutionTree} using breadth-first search
  * 
- * @author Joram Barrez
+
  */
 public class ExecutionTreeBfsIterator implements Iterator<ExecutionTreeNode> {
 

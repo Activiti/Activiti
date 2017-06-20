@@ -15,7 +15,7 @@ package org.activiti.engine.impl.interceptor;
 /**
  * The command executor for internal usage.
  * 
- * @author Tom Baeyens
+
  */
 public interface CommandExecutor {
 

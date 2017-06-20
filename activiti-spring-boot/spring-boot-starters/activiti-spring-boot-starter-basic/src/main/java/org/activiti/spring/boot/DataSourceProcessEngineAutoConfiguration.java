@@ -29,8 +29,8 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 /**
- * @author Joram Barrez
- * @author Josh Long
+
+
  */
 @Configuration
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)

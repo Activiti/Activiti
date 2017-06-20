@@ -19,7 +19,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
  *
- * @author Tijs Rademakers
+
  */
 public class AsyncContinuationJobHandler implements JobHandler {
 

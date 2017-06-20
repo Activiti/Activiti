@@ -17,7 +17,7 @@ import java.util.List;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface ResourceDataManager extends DataManager<ResourceEntity> {
 

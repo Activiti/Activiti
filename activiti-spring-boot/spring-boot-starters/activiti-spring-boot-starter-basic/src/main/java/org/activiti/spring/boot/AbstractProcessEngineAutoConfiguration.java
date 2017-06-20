@@ -45,7 +45,7 @@ import org.springframework.util.StringUtils;
 /**
  * Provides sane definitions for the various beans required to be productive with Activiti in Spring.
  *
- * @author Josh Long
+
  */
 public abstract class AbstractProcessEngineAutoConfiguration
         extends AbstractProcessEngineConfiguration {

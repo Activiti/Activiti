@@ -21,7 +21,7 @@ import org.activiti.engine.identity.UserQuery;
  * 
  * For example: - a user can be an assignee (= identity link type) for a task - a group can be a candidate-group (= identity link type) for a task
  * 
- * @author Joram Barrez
+
  */
 public interface IdentityLink {
 

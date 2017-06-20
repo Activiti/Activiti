@@ -38,10 +38,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * @author Tom Baeyens
- * @author David Syer
- * @author Joram Barrez
- * @author Tiese Barrell
+
+
+
+
  */
 public class SpringProcessEngineConfiguration extends ProcessEngineConfigurationImpl implements ApplicationContextAware {
 

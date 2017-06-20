@@ -19,7 +19,7 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionInfoDataManager;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class MybatisProcessDefinitionInfoDataManager extends AbstractDataManager<ProcessDefinitionInfoEntity> implements ProcessDefinitionInfoDataManager {
   

@@ -24,7 +24,7 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.EventLogEntryDataManager;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisEventLogEntryDataManager extends AbstractDataManager<EventLogEntryEntity> implements EventLogEntryDataManager {
   

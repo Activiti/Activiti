@@ -24,7 +24,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
 /**
  * A {@link ELResolver} for dynamic bean properties
  * 
- * @author Esteban Robles Luna
+
  */
 public class DynamicBeanPropertyELResolver extends ELResolver {
 

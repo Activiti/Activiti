@@ -20,7 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.Session;
 
 /**
- * @author Frederik Heremans
+
  */
 public interface EntityManagerSession extends Session {
   /**

@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class GetModelCmd implements Command<ModelEntity>, Serializable {
 

@@ -27,7 +27,7 @@ import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tom Baeyens
+
  */
 public class GetStartFormCmd implements Command<StartFormData>, Serializable {
 

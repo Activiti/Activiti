@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricTaskInstanceDataManager extends DataManager<HistoricTaskInstanceEntity> {
   

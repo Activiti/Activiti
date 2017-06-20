@@ -38,7 +38,7 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
+
  */
 public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
 

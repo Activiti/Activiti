@@ -22,7 +22,7 @@ import org.activiti.engine.impl.GroupQueryImpl;
 import org.activiti.engine.impl.Page;
 
 /**
- * @author Joram Barrez
+
  */
 public interface GroupEntityManager extends EntityManager<GroupEntity> {
 

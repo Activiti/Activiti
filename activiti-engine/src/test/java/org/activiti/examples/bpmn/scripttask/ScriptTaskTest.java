@@ -26,8 +26,8 @@ import org.activiti.engine.test.Deployment;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author Joram Barrez
- * @author Christian Stettler
+
+
  */
 public class ScriptTaskTest extends PluggableActivitiTestCase {
 

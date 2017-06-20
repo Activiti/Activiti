@@ -53,10 +53,10 @@ import org.activiti.engine.runtime.SuspendedJobQuery;
 import org.activiti.engine.runtime.TimerJobQuery;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
- * @author Falko Menge
- * @author Saeid Mizaei
+
+
+
+
  */
 public class ManagementServiceImpl extends ServiceImpl implements ManagementService {
 

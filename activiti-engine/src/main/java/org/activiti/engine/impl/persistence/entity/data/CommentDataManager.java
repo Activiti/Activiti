@@ -19,7 +19,7 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
 /**
- * @author Joram Barrez
+
  */
 public interface CommentDataManager extends DataManager<CommentEntity> {
 

@@ -23,10 +23,10 @@ import org.activiti.engine.query.Query;
 /**
  * Allows programmatic querying of {@link ProcessInstance}s.
  * 
- * @author Joram Barrez
- * @author Tijs Rademakers
- * @author Frederik Heremans
- * @author Falko Menge
+
+
+
+
  */
 public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, ProcessInstance> {
 

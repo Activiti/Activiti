@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.repository.Deployment;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class SetDeploymentKeyCmd implements Command<Void> {
 

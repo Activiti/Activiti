@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.Entity;
 /**
  * This is a cache for {@link Entity} instances during the execution of one {@link Command}.
  * 
- * @author Joram Barrez
+
  */
 public interface EntityCache extends Session {
   

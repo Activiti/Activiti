@@ -29,7 +29,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Daniel Meyer
+
  */
 public class EventSubscriptionQueryTest extends PluggableActivitiTestCase {
 

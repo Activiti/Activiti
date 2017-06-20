@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class EndEventXMLConverter extends BaseBpmnXMLConverter {
 

@@ -29,8 +29,8 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.JobsBy
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class MybatisJobDataManager extends AbstractDataManager<JobEntity> implements JobDataManager {
   

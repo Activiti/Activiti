@@ -8,7 +8,7 @@ import org.activiti.engine.runtime.ClockReader;
 /**
  * Provides an interface for versioned due date resolvers.
  * 
- * @author mseiden
+
  */
 public interface AdvancedSchedulerResolver {
 

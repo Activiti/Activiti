@@ -20,8 +20,8 @@ import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<SignalEventDefinition> {
 

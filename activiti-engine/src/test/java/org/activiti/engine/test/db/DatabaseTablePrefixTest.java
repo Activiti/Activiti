@@ -23,7 +23,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
 /**
- * @author Daniel Meyer
+
  */
 public class DatabaseTablePrefixTest extends TestCase {
 

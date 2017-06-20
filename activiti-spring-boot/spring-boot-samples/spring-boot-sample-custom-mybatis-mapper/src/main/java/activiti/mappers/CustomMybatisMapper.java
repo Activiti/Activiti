@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 /**
- * @author Dominik Bartos
+
  */
 public interface CustomMybatisMapper {
 

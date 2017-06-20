@@ -20,7 +20,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
- * @author Joram Barrez
+
  */
 public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
 

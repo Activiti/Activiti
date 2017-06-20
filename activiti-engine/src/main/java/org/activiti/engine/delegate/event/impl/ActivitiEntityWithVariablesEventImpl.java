@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 /**
  * Base class for all {@link ActivitiEntityEvent} implementations, related to entities with variables.
  * 
- * @author Tijs Rademakers
+
  */
 @SuppressWarnings("rawtypes")
 public class ActivitiEntityWithVariablesEventImpl extends ActivitiEntityEventImpl implements ActivitiEntityWithVariablesEvent {

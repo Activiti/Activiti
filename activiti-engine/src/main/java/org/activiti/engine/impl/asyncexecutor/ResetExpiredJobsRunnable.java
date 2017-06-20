@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * 
  * This runnable will find such jobs and reset them, so they can be picked up again.
  * 
- * @author Joram Barrez
+
  */
 public class ResetExpiredJobsRunnable implements Runnable {
 

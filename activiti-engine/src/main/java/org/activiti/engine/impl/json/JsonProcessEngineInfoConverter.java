@@ -19,7 +19,7 @@ import org.activiti.engine.impl.ProcessEngineInfoImpl;
 import org.activiti.engine.impl.util.json.JSONObject;
 
 /**
- * @author Tom Baeyens
+
  */
 public class JsonProcessEngineInfoConverter extends JsonObjectConverter<ProcessEngineInfo> {
 

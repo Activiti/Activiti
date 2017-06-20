@@ -26,7 +26,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
- * @author Frederik Heremans
+
  */
 public class GetHistoricIdentityLinksForTaskCmd implements Command<List<HistoricIdentityLink>>, Serializable {
 

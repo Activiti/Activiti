@@ -18,7 +18,7 @@ package org.activiti.client.model;
 import java.util.Map;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 public class ExtendedProcessInstance extends ProcessInstance {
 

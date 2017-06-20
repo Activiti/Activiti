@@ -18,7 +18,7 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
 /**
- * @author Joram Barrez
+
  */
 public interface CommentEntityManager extends EntityManager<CommentEntity> {
 

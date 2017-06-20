@@ -20,7 +20,7 @@ import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Joram Barrez
+
  */
 public interface ProcessDefinitionEntityManager extends EntityManager<ProcessDefinitionEntity> {
 

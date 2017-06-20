@@ -33,7 +33,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for all {@link ActivitiEvent}s related to jobs.
  * 
- * @author Frederik Heremans
+
  */
 public class JobEventsTest extends PluggableActivitiTestCase {
 

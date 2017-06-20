@@ -18,7 +18,7 @@ import javax.el.VariableMapper;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
- * @author Tom Baeyens
+
  */
 public class TaskVariableMapper extends VariableMapper {
 

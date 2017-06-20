@@ -18,8 +18,8 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public interface AbstractJobEntity extends Job, Entity, HasRevision {
 

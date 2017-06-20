@@ -21,7 +21,7 @@ import org.activiti.engine.query.QueryProperty;
 /**
  * Contains the possible properties which can be used in a {@link HistoricProcessInstanceQueryProperty}.
  * 
- * @author Joram Barrez
+
  */
 public class HistoricProcessInstanceQueryProperty implements QueryProperty {
 

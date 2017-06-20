@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to single a Process Definition resource.
  * 
- * @author Frederik Heremans
+
  */
 public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
 

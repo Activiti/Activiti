@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * By default (if no VER key is included in the string), it assumes version 2. This can be changed by modifying the defaultScheduleVersion property.
  * <p>
  * 
- * @author mseiden
+
  */
 public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
 

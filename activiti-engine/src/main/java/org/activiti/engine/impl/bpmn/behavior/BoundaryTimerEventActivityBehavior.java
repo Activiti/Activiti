@@ -24,7 +24,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBehavior {
 

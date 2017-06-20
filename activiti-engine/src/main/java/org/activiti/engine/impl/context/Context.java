@@ -25,9 +25,9 @@ import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionInfoCacheObj
 import java.util.*;
 
 /**
- * @author Tom Baeyens
- * @author Daniel Meyer
- * @author Joram Barrez
+
+
+
  */
 public class Context {
 

@@ -28,7 +28,7 @@ import org.activiti.engine.task.IdentityLinkType;
 import java.util.Map;
 
 /**
- * @author Joram Barrez
+
  */
 public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
 

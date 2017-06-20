@@ -19,7 +19,7 @@ import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.slf4j.Logger;
 
 /**
- * @author jbarrez
+
  */
 public class DebugInfoOperationExecuted extends AbstractDebugInfo {
 

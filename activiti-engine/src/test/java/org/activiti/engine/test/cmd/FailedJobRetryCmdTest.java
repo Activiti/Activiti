@@ -20,7 +20,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Saeid Mirzaei
+
  */
 public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
 

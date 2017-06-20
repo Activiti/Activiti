@@ -27,7 +27,7 @@ import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
  * the {@link CommandContext#close()} is called and when all the sessions are flushed 
  * (including the {@link DbSqlSession} in the relational DB case (the data needs to be ready then). 
  * 
- * @author Joram Barrez
+
  */
 public class VerifyDeserializedObjectCommandContextCloseListener implements CommandContextCloseListener {
 

@@ -16,7 +16,7 @@ import org.activiti.engine.impl.persistence.entity.SuspensionState;
 
 /**
  * 
- * @author Daniel Meyer
+
  */
 public class SuspendProcessInstanceCmd extends AbstractSetProcessInstanceStateCmd {
 

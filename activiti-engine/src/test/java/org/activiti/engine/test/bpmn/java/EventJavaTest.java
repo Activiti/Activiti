@@ -30,7 +30,7 @@ import org.activiti.engine.impl.util.io.InputStreamSource;
 import org.activiti.engine.repository.Deployment;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class EventJavaTest extends PluggableActivitiTestCase {
 

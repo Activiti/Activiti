@@ -16,7 +16,7 @@ package org.activiti.engine;
 /**
  * An exception indicating that the object that is required or actioned on does not exist.
  * 
- * @author Frederik Heremans
+
  */
 public class ActivitiObjectNotFoundException extends ActivitiException {
 

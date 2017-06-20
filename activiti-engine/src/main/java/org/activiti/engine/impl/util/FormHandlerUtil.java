@@ -29,7 +29,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Joram Barrez
+
  */
 public class FormHandlerUtil {
   

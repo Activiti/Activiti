@@ -17,8 +17,8 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.db.HasRevision;
 
 /**
- * @author Tom Baeyens
- * @author Arkadiy Gornovoy
+
+
  */
 public interface UserEntity extends User, Entity, HasRevision {
 

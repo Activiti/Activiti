@@ -26,7 +26,7 @@ import org.activiti.engine.query.Query;
 /**
  * Abstract query class that adds methods to query for variable values.
  * 
- * @author Frederik Heremans
+
  */
 public abstract class AbstractVariableQueryImpl<T extends Query<?, ?>, U> extends AbstractQuery<T, U> {
 

@@ -29,7 +29,7 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityBehavior {
 

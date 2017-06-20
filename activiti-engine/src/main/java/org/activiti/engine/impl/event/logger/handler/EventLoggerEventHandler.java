@@ -9,7 +9,7 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author Joram Barrez
+
  */
 public interface EventLoggerEventHandler {
 

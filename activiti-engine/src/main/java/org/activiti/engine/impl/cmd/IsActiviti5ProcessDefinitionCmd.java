@@ -22,7 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tom Baeyens
+
  */
 public class IsActiviti5ProcessDefinitionCmd implements Command<Boolean>, Serializable {
 

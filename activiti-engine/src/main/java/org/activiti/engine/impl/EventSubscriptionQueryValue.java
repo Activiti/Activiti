@@ -16,7 +16,7 @@ package org.activiti.engine.impl;
 import java.io.Serializable;
 
 /**
- * @author Daniel Meyer
+
  */
 public class EventSubscriptionQueryValue implements Serializable {
 

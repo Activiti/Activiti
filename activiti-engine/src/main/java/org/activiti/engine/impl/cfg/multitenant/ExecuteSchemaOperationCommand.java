@@ -22,7 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  * {@link Command} that is used by the {@link MultiSchemaMultiTenantProcessEngineConfiguration} to 
  * make sure the 'databaseSchemaUpdate' setting is applied for each tenant datasource.
  * 
- * @author Joram Barrez
+
  */
 public class ExecuteSchemaOperationCommand implements Command<Void> {
   

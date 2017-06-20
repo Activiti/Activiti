@@ -24,8 +24,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public class DeleteIdentityLinkForProcessInstanceCmd implements Command<Object>, Serializable {
 

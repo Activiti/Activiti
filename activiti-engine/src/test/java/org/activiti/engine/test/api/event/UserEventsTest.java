@@ -21,7 +21,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 /**
  * Test case for all {@link ActivitiEvent}s related to users.
  * 
- * @author Frederik Heremans
+
  */
 public class UserEventsTest extends PluggableActivitiTestCase {
 

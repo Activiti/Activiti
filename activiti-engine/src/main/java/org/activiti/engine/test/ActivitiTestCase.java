@@ -47,7 +47,7 @@ import org.activiti.engine.test.mock.ActivitiMockSupport;
  * the time that was set during a test method.
  * </p>
  * 
- * @author Tom Baeyens
+
  */
 public abstract class ActivitiTestCase extends TestCase {
 

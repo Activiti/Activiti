@@ -66,7 +66,7 @@ import math.geom2d.line.Line2D;
 import math.geom2d.polygon.Polyline2D;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants, ActivityProcessor {
 

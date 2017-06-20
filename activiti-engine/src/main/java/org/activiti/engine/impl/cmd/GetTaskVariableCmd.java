@@ -23,8 +23,8 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class GetTaskVariableCmd implements Command<Object>, Serializable {
 

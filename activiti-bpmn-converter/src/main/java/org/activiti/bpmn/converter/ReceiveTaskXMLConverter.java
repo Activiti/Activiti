@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ReceiveTask;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ReceiveTaskXMLConverter extends BaseBpmnXMLConverter {
 

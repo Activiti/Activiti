@@ -15,7 +15,7 @@ package org.activiti.engine.impl.delegate;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
- * @author Joram Barrez
+
  */
 public interface TriggerableActivityBehavior extends ActivityBehavior {
 

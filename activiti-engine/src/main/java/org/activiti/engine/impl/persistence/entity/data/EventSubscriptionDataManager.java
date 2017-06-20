@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface EventSubscriptionDataManager extends DataManager<EventSubscriptionEntity> {
   

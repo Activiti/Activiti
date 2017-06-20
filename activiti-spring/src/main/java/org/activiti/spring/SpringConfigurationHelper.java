@@ -25,7 +25,7 @@ import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.io.UrlResource;
 
 /**
- * @author Tom Baeyens
+
  */
 public class SpringConfigurationHelper {
 

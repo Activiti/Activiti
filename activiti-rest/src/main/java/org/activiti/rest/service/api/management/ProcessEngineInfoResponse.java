@@ -14,7 +14,7 @@
 package org.activiti.rest.service.api.management;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ProcessEngineInfoResponse {
 

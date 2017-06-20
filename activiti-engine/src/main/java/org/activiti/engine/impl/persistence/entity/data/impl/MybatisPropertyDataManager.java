@@ -21,7 +21,7 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.PropertyDataManager;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisPropertyDataManager extends AbstractDataManager<PropertyEntity> implements PropertyDataManager {
   

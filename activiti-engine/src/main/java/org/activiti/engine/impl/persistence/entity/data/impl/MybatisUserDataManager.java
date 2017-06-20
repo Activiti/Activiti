@@ -26,7 +26,7 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.UserDataManager;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisUserDataManager extends AbstractDataManager<UserEntity> implements UserDataManager {
   

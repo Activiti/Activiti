@@ -18,7 +18,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.runtime.ClockReader;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DurationBusinessCalendar extends BusinessCalendarImpl {
 

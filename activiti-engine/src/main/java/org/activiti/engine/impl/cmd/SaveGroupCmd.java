@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.Entity;
 import org.activiti.engine.impl.persistence.entity.GroupEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class SaveGroupCmd implements Command<Void>, Serializable {
 

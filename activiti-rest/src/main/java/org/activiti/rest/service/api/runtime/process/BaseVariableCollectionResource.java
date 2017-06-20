@@ -34,7 +34,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class BaseVariableCollectionResource extends BaseExecutionVariableResource {
 

@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Yvo Swillens
+
  */
 public class ConditionalThrowExceptionDelegate implements JavaDelegate {
 

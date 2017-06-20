@@ -19,8 +19,8 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class ResourceStreamSource implements StreamSource {
 

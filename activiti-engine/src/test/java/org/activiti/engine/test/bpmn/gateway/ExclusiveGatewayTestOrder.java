@@ -16,7 +16,7 @@ package org.activiti.engine.test.bpmn.gateway;
 import java.io.Serializable;
 
 /**
- * @author Joram Barrez
+
  */
 public class ExclusiveGatewayTestOrder implements Serializable {
 

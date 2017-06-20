@@ -3,7 +3,7 @@ package org.activiti.engine.impl.bpmn.helper;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 public class SubProcessVariableSnapshotter {
 

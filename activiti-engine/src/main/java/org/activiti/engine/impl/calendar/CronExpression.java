@@ -149,9 +149,9 @@ import org.activiti.engine.runtime.ClockReader;
  * </p>
  * 
  * 
- * @author Sharada Jambula, James House
- * @author Contributions from Mads Henderson
- * @author Refactoring from CronTrigger to CronExpression by Aaron Craven
+
+
+
  */
 public class CronExpression implements Serializable, Cloneable {
 

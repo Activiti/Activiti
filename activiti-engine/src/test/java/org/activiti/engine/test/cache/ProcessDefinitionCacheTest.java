@@ -32,7 +32,7 @@ import org.activiti.engine.task.Task;
 /**
  * Test cases for testing functionality when the process engine is rebooted.
  * 
- * @author Joram Barrez
+
  */
 public class ProcessDefinitionCacheTest extends AbstractTestCase {
 

@@ -19,7 +19,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricProcessInstanceEntityManager extends EntityManager<HistoricProcessInstanceEntity> {
   

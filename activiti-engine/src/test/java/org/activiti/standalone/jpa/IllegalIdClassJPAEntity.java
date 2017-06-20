@@ -24,7 +24,7 @@ import javax.persistence.Id;
  * 
  * For testing purposes only.
  * 
- * @author Frederik Heremans
+
  */
 @Entity
 public class IllegalIdClassJPAEntity {

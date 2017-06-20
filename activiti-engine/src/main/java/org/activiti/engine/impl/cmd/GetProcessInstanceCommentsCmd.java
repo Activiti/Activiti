@@ -22,7 +22,7 @@ import org.activiti.engine.task.Comment;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tom Baeyens
+
  */
 public class GetProcessInstanceCommentsCmd implements Command<List<Comment>>, Serializable {
 

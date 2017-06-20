@@ -25,7 +25,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Falko Menge
+
  */
 public class DelegateTaskTest extends PluggableActivitiTestCase {
 

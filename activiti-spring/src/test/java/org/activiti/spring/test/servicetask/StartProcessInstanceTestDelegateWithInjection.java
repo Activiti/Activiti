@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * @author Joram Barrez
+
  */
 @Component("startProcessInstanceDelegate")
 public class StartProcessInstanceTestDelegateWithInjection {

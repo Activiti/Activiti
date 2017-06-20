@@ -15,7 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * Test for all REST-operations related to the Deployment collection.
  * 
- * @author Frederik Heremans
+
  */
 public class DeploymentCollectionResourceTest extends BaseSpringRestTestCase {
 

@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 /**
- * @author Tom Baeyens
+
  */
 public class Picture implements Serializable {
 

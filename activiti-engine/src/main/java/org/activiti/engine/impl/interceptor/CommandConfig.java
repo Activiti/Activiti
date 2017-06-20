@@ -7,7 +7,7 @@ import org.activiti.engine.impl.cfg.TransactionPropagation;
  * 
  * Instances of this class are immutable, and thus thread- and share-safe.
  * 
- * @author Marcus Klimstra (CGI)
+
  */
 public class CommandConfig {
 

@@ -13,7 +13,7 @@
 package org.activiti.engine.history;
 
 /**
- * @author Joram Barrez
+
  */
 public interface DeleteReason {
   

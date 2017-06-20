@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Represents a simple in memory structure
  * 
- * @author Esteban Robles Luna
+
  */
 public class SimpleStructureDefinition implements FieldBaseStructureDefinition {
 

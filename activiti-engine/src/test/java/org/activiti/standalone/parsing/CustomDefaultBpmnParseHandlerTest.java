@@ -16,8 +16,8 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public class CustomDefaultBpmnParseHandlerTest extends ResourceActivitiTestCase {
 

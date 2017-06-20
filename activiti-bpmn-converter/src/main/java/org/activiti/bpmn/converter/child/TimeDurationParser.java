@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TimerEventDefinition;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class TimeDurationParser extends BaseChildElementParser {
 

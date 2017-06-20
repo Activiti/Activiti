@@ -9,7 +9,7 @@ import com.fasterxml.uuid.impl.TimeBasedGenerator;
 /**
  * {@link IdGenerator} implementation based on the current time and the ethernet address of the machine it is running on.
  * 
- * @author Daniel Meyer
+
  */
 public class StrongUuidGenerator implements IdGenerator {
 

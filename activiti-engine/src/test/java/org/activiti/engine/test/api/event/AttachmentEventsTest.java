@@ -28,7 +28,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for all {@link ActivitiEvent}s related to attachments.
  * 
- * @author Frederik Heremans
+
  */
 public class AttachmentEventsTest extends PluggableActivitiTestCase {
 

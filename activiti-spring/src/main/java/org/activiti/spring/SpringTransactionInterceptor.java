@@ -24,8 +24,8 @@ import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /**
- * @author Dave Syer
- * @author Tom Baeyens
+
+
  */
 public class SpringTransactionInterceptor extends AbstractCommandInterceptor {
   private static final Logger LOGGER = LoggerFactory.getLogger(SpringTransactionInterceptor.class);

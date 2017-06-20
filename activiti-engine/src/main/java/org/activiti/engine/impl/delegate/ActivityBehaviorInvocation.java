@@ -18,7 +18,7 @@ import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
 
 /**
  * 
- * @author Daniel Meyer
+
  */
 public class ActivityBehaviorInvocation extends DelegateInvocation {
 

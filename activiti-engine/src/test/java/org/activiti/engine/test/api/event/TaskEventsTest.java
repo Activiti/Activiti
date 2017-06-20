@@ -28,7 +28,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for all {@link ActivitiEvent}s related to tasks.
  * 
- * @author Frederik Heremans
+
  */
 public class TaskEventsTest extends PluggableActivitiTestCase {
 

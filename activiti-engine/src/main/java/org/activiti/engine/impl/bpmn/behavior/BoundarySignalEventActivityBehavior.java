@@ -28,8 +28,8 @@ import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBehavior {
 

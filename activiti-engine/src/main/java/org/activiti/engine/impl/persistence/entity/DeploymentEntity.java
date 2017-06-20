@@ -20,8 +20,8 @@ import java.util.Map;
 import org.activiti.engine.repository.Deployment;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface DeploymentEntity extends Deployment, Entity {
 

@@ -17,7 +17,7 @@ import java.util.List;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface IdentityInfoDataManager extends DataManager<IdentityInfoEntity> {
 

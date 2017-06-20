@@ -27,8 +27,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
 

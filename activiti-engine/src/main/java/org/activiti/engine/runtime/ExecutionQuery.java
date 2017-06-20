@@ -22,8 +22,8 @@ import org.activiti.engine.query.Query;
 /**
  * Allows programmatic querying of {@link Execution}s.
  * 
- * @author Joram Barrez
- * @author Frederik Heremans
+
+
  */
 public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
 

@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author Joram Barrez
+
  */
 public class EventLogger implements ActivitiEventListener {
 	

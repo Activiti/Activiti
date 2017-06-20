@@ -53,7 +53,7 @@ import org.activiti.bpmn.model.TextAnnotation;
 /**
  * Auto layouts a {@link BpmnModel}.
  * 
- * @author Joram Barrez
+
  */
 public class BpmnAutoLayout {
 

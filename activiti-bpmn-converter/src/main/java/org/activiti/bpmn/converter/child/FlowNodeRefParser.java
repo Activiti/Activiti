@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Lane;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class FlowNodeRefParser extends BaseChildElementParser {
 

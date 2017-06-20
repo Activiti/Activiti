@@ -17,9 +17,9 @@ import java.util.List;
 /**
  * Allows programmatic querying of {@link Task}s;
  * 
- * @author Joram Barrez
- * @author Falko Menge
- * @author Tijs Rademakers
+
+
+
  */
 public interface TaskQuery extends TaskInfoQuery<TaskQuery, Task> {
 

@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to the Job collection and a single job resource.
  * 
- * @author Frederik Heremans
+
  */
 public class JobResourceTest extends BaseSpringRestTestCase {
 

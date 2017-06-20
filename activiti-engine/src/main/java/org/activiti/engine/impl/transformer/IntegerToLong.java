@@ -15,7 +15,7 @@ package org.activiti.engine.impl.transformer;
 /**
  * Transforms a {@link Integer} to a {@link Long}
  * 
- * @author Esteban Robles Luna
+
  */
 public class IntegerToLong extends AbstractTransformer {
 

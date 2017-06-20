@@ -18,7 +18,7 @@ import java.util.Map;
 import org.activiti.engine.impl.db.HasRevision;
 
 /**
- * @author Tom Baeyens
+
  */
 public interface IdentityInfoEntity extends Entity, HasRevision {
   

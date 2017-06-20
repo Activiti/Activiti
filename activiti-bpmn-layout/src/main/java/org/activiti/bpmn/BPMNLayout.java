@@ -14,7 +14,7 @@ import com.mxgraph.view.mxGraph;
 /**
  * BPMNLayout
  * 
- * @author Shi Yaoqiang(shi_yaoqiang@yahoo.com)
+
  */
 public class BPMNLayout extends mxGraphLayout {
 

@@ -20,8 +20,8 @@ import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
- * @author Daniel Meyer
- * @author Joram Barrez
+
+
  */
 public class SuspendProcessDefinitionCmd extends AbstractSetProcessDefinitionStateCmd {
 

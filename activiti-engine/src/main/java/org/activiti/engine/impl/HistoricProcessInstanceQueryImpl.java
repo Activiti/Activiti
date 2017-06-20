@@ -33,11 +33,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author Tom Baeyens
- * @author Tijs Rademakers
- * @author Falko Menge
- * @author Bernd Ruecker
- * @author Joram Barrez
+
+
+
+
+
  */
 public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
 

@@ -22,8 +22,8 @@ import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorImpl;
 
 /**
- * @author jbarrez
- * @author Erik Winlof
+
+
  */
 public class BpmnModelValidator extends ValidatorImpl {
 

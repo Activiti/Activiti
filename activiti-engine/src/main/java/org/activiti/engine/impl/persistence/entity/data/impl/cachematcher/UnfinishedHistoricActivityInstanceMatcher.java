@@ -18,7 +18,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class UnfinishedHistoricActivityInstanceMatcher extends CachedEntityMatcherAdapter<HistoricActivityInstanceEntity> {
  

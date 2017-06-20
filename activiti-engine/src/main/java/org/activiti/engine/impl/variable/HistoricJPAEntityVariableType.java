@@ -16,7 +16,7 @@ package org.activiti.engine.impl.variable;
 /**
  * Subclass of {@link JPAEntityVariableType} which is cacheable, unlike the super-class. This is used when fetching historic variables
  * 
- * @author Frederik Heremans
+
  */
 public class HistoricJPAEntityVariableType extends JPAEntityVariableType {
 

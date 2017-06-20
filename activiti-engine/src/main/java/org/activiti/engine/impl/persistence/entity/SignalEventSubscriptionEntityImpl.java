@@ -18,8 +18,8 @@ import java.text.MessageFormat;
 import org.activiti.bpmn.model.Signal;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class SignalEventSubscriptionEntityImpl extends EventSubscriptionEntityImpl implements SignalEventSubscriptionEntity {
 

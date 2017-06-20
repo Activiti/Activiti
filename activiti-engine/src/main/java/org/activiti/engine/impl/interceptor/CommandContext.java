@@ -32,9 +32,9 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /**
- * @author Tom Baeyens
- * @author Agim Emruli
- * @author Joram Barrez
+
+
+
  */
 public class CommandContext {
 

@@ -23,8 +23,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class VariableScopeResolver implements Resolver {
 

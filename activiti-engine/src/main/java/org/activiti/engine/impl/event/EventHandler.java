@@ -17,7 +17,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 /**
- * @author Daniel Meyer
+
  */
 public interface EventHandler {
 

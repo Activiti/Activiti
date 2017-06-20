@@ -32,7 +32,7 @@ import java.io.StringReader;
 /**
  * A JSONTokener takes a source string and extracts characters and tokens from it. It is used by the JSONObject and JSONArray constructors to parse JSON source strings.
  * 
- * @author JSON.org
+
  * @version 2010-02-02
  */
 public class JSONTokener {

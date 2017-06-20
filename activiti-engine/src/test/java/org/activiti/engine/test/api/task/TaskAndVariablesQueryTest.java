@@ -24,7 +24,7 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class TaskAndVariablesQueryTest extends PluggableActivitiTestCase {
 

@@ -15,7 +15,7 @@ package org.activiti.engine.delegate.event;
 /**
  * An event related to group memberships.
  * 
- * @author Frederik Heremans
+
  */
 public interface ActivitiMembershipEvent extends ActivitiEvent {
 

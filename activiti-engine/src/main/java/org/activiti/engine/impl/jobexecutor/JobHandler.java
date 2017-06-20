@@ -17,7 +17,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
- * @author Tom Baeyens
+
  */
 public interface JobHandler {
 

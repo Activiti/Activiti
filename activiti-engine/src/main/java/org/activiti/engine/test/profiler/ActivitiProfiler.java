@@ -9,7 +9,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 
 /**
- * @author Joram Barrez
+
  */
 public class ActivitiProfiler implements ProcessEngineConfigurator {
 

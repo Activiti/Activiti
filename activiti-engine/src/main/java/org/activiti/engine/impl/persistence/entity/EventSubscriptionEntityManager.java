@@ -19,7 +19,7 @@ import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
 
 /**
- * @author Joram Barrez
+
  */
 public interface EventSubscriptionEntityManager extends EntityManager<EventSubscriptionEntity> {
   

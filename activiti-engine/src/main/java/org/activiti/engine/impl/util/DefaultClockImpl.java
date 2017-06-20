@@ -18,7 +18,7 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
 /**
- * @author Joram Barrez
+
  */
 public class DefaultClockImpl implements org.activiti.engine.runtime.Clock {
 

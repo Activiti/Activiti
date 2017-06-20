@@ -15,7 +15,7 @@ package org.activiti.engine.delegate.event;
 /**
  * An {@link org.activiti.engine.delegate.event.ActivitiEvent} related to cancel event being sent to an activity.
  * 
- * @author martin.grofcik
+
  */
 public interface ActivitiActivityCancelledEvent extends ActivitiActivityEvent, ActivitiCancelledEvent {
 

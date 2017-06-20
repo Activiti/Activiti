@@ -24,7 +24,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Tom Baeyens
+
  */
 public class GroovyScriptTest extends PluggableActivitiTestCase {
 

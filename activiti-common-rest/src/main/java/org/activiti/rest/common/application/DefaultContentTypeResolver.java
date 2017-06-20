@@ -16,7 +16,7 @@ package org.activiti.rest.common.application;
 /**
  * Default implementation of a {@link ContentTypeResolver}, resolving a limited set of well-known content types used in the engine.
  * 
- * @author Tijs Rademakers
+
  */
 public class DefaultContentTypeResolver implements ContentTypeResolver {
 

@@ -24,7 +24,7 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.repository.Deployment;
 
 /**
- * @author Joram Barrez
+
  */
 public class GetDeploymentResourceCmd implements Command<InputStream>, Serializable {
 

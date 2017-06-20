@@ -32,10 +32,10 @@ import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
- * @author Tijs Rademakers
- * @author Saeid Mirzaei
+
+
+
+
  */
 public abstract class VariableScopeImpl extends AbstractEntity implements Serializable, VariableScope {
 

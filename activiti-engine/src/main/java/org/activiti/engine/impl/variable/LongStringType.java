@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.variable;
 
 /**
- * @author Martin Grofcik
+
  */
 public class LongStringType extends SerializableType {
 

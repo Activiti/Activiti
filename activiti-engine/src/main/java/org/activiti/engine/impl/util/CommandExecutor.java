@@ -16,7 +16,7 @@ package org.activiti.engine.impl.util;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
- * @author Vasile Dirla
+
  */
 public interface CommandExecutor {
     void executeCommand(DelegateExecution execution) throws Exception;

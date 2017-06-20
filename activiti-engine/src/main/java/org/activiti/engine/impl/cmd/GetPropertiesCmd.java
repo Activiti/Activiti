@@ -23,7 +23,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 
 /**
- * @author Tom Baeyens
+
  */
 public class GetPropertiesCmd implements Command<Map<String, String>>, Serializable {
 

@@ -19,7 +19,7 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tom Baeyens
+
  */
 public class ExecutionContext {
 

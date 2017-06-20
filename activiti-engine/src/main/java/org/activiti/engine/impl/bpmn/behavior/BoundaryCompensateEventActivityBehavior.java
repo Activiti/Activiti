@@ -31,7 +31,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivityBehavior {
 

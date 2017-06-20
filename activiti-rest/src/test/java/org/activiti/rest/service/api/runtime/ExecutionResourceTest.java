@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to a single execution resource.
  * 
- * @author Frederik Heremans
+
  */
 public class ExecutionResourceTest extends BaseSpringRestTestCase {
 

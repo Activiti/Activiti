@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Daniel Meyer
+
  */
 public class GetVariablesDelegate implements JavaDelegate {
 

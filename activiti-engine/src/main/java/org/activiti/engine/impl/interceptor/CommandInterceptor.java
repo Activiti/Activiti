@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.interceptor;
 
 /**
- * @author Tom Baeyens
+
  */
 public interface CommandInterceptor {
 

@@ -26,8 +26,8 @@ import org.activiti.engine.impl.util.Activiti5Util;
 
 
 /**
- * @author Marcus Klimstra
- * @author Joram Barrez
+
+
  */
 public class AddIdentityLinkForProcessInstanceCmd implements Command<Void>, Serializable {
 

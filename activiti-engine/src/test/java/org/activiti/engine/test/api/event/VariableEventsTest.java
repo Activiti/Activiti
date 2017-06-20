@@ -32,7 +32,7 @@ import java.util.Map;
 /**
  * Test case for all {@link ActivitiEvent}s related to variables.
  * 
- * @author Frederik Heremans
+
  */
 public class VariableEventsTest extends PluggableActivitiTestCase {
 

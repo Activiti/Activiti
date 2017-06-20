@@ -20,8 +20,8 @@ import org.activiti.engine.impl.history.HistoryLevel;
 /**
  * A single process variable containing the last value when its process instance has finished. It is only available when HISTORY_LEVEL is set >= VARIABLE
  * 
- * @author Christian Lipphardt (camunda)
- * @author ruecker
+
+
  */
 public interface HistoricVariableInstance extends HistoricData {
 

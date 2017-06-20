@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Applies a list of transformers to the input object
  * 
- * @author Esteban Robles Luna
+
  */
 public class ComposedTransformer extends AbstractTransformer {
 

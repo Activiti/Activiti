@@ -46,8 +46,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
 /**
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public class RuntimeServiceTest extends PluggableActivitiTestCase {
 

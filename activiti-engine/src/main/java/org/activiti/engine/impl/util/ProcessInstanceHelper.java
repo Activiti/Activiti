@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public class ProcessInstanceHelper {
 

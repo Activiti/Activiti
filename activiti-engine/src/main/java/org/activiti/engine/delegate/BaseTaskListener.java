@@ -16,7 +16,7 @@ package org.activiti.engine.delegate;
 import java.io.Serializable;
 
 /**
- * @author Yvo Swillens
+
  */
 public interface BaseTaskListener extends Serializable {
 

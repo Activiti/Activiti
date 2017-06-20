@@ -23,7 +23,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import java.util.List;
 
 /**
- * @author Joram Barrez
+
  */
 public class GroupQueryTest extends PluggableActivitiTestCase {
 

@@ -1,8 +1,5 @@
 package org.activiti.bpmn.model;
 
-/**
- * @author Lori Small
- */
 public class DataObject extends FlowElement {
 
   protected ItemDefinition itemSubjectRef;

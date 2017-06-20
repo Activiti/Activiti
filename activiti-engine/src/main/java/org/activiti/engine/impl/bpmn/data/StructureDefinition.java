@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 /**
  * Represents a definition of a structure used to exchange information
  * 
- * @author Esteban Robles Luna
+
  */
 public interface StructureDefinition {
 

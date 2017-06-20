@@ -15,7 +15,7 @@ package org.activiti.engine.test.impl.logger;
 import org.slf4j.Logger;
 
 /**
- * @author jbarrez
+
  */
 public interface DebugInfo {
 

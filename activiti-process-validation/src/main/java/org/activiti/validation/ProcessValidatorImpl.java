@@ -20,7 +20,7 @@ import org.activiti.validation.validator.Validator;
 import org.activiti.validation.validator.ValidatorSet;
 
 /**
- * @author jbarrez
+
  */
 public class ProcessValidatorImpl implements ProcessValidator {
 

@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to the Task collection resource.
  * 
- * @author Frederik Heremans
+
  */
 public class TaskQueryResourceTest extends BaseSpringRestTestCase {
 

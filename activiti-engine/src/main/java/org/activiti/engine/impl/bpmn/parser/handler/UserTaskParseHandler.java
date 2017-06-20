@@ -17,7 +17,7 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
- * @author Joram Barrez
+
  */
 public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserTask> {
 

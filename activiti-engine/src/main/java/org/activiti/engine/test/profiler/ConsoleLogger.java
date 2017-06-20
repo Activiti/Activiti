@@ -3,7 +3,7 @@ package org.activiti.engine.test.profiler;
 import java.util.Map;
 
 /**
- * @author Joram Barrez
+
  */
 public class ConsoleLogger {
 

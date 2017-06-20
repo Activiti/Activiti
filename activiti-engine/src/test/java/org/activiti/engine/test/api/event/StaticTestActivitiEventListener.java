@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 /**
  * Event listener that keeps a static list of all events received.
  * 
- * @author Frederik Heremans
+
  */
 public class StaticTestActivitiEventListener implements ActivitiEventListener {
 

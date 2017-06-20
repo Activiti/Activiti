@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Validates rules that apply to all events (start event, boundary event, etc.)
  * 
- * @author jbarrez
+
  */
 public class EventValidator extends ProcessLevelValidator {
 

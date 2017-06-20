@@ -25,7 +25,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DefaultStartFormHandler extends DefaultFormHandler implements StartFormHandler {
 

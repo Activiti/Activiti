@@ -22,7 +22,7 @@ import org.activiti.engine.query.Query;
 import org.activiti.engine.query.QueryProperty;
 
 /**
- * @author Tijs Rademakers
+
  */
 public abstract class AbstractPaginateList {
 

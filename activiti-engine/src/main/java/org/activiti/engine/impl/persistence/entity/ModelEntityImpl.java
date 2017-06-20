@@ -21,8 +21,8 @@ import java.util.Map;
 import org.activiti.engine.ProcessEngineConfiguration;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public class ModelEntityImpl extends AbstractEntity implements ModelEntity, Serializable {
 

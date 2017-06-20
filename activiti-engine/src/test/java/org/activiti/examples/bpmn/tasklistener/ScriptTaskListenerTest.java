@@ -20,7 +20,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Rich Kroll, Tijs Rademakers
+
  */
 public class ScriptTaskListenerTest extends PluggableActivitiTestCase {
 

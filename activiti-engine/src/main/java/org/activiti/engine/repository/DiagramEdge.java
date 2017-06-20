@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Stores waypoints of a diagram edge.
  * 
- * @author Falko Menge
+
  */
 public class DiagramEdge extends DiagramElement {
 

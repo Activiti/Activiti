@@ -27,7 +27,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
  * 
  * @see AbstractBpmnParseHandler
  * 
- * @author Joram Barrez
+
  */
 public interface BpmnParseHandler {
 

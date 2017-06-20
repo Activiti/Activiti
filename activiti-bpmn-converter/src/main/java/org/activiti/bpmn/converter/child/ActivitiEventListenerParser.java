@@ -23,7 +23,7 @@ import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ActivitiEventListenerParser extends BaseChildElementParser {
 

@@ -26,8 +26,8 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.Execution;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, Serializable {
 

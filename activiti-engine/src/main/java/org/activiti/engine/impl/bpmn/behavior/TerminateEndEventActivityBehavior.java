@@ -31,7 +31,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntit
 import java.util.List;
 
 /**
- * @author Joram Barrez
+
  */
 public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior {
 

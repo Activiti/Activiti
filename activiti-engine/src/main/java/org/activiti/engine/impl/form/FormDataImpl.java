@@ -21,7 +21,7 @@ import org.activiti.engine.form.FormData;
 import org.activiti.engine.form.FormProperty;
 
 /**
- * @author Tom Baeyens
+
  */
 public abstract class FormDataImpl implements FormData, Serializable {
 

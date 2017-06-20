@@ -25,7 +25,7 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import java.util.Collection;
 
 /**
- * @author Joram Barrez
+
  */
 public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 

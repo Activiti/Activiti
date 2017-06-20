@@ -25,8 +25,8 @@ import org.activiti.engine.impl.persistence.entity.VariableInstance;
  * Variable-scope only used to resolve variables when NO execution is active but expression-resolving is needed. This occurs eg. when start-form properties have default's defined. Even though
  * variables are not available yet, expressions should be resolved anyway.
  * 
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public class NoExecutionVariableScope implements VariableScope {
 

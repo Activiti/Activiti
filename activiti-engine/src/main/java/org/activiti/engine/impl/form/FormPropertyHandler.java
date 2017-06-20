@@ -24,7 +24,7 @@ import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
- * @author Tom Baeyens
+
  */
 public class FormPropertyHandler implements Serializable {
 

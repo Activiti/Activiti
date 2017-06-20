@@ -17,8 +17,8 @@ import java.util.Arrays;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class DeserializedObject {
   

@@ -13,7 +13,7 @@
 package org.activiti.validation.validator;
 
 /**
- * @author jbarrez
+
  */
 public interface Problems {
 

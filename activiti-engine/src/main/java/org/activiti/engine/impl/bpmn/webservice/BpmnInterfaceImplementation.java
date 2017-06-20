@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.webservice;
 /**
  * Represents an implementation of a {@link BpmnInterface}
  * 
- * @author Esteban Robles Luna
+
  */
 public interface BpmnInterfaceImplementation {
 

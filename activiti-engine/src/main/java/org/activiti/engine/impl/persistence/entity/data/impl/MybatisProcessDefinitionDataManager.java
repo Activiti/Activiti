@@ -27,7 +27,7 @@ import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionDataMan
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisProcessDefinitionDataManager extends AbstractDataManager<ProcessDefinitionEntity> implements ProcessDefinitionDataManager {
   

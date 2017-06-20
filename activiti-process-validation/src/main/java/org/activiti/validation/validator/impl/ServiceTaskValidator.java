@@ -25,7 +25,7 @@ import org.activiti.validation.validator.Problems;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author jbarrez
+
  */
 public class ServiceTaskValidator extends ExternalInvocationTaskValidator {
 

@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to the Table collection and a single table resource.
  * 
- * @author Frederik Heremans
+
  */
 public class TableResourceTest extends BaseSpringRestTestCase {
 

@@ -12,7 +12,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tom Baeyens
+
  */
 public class JobExecutorCmdExceptionTest extends PluggableActivitiTestCase {
 

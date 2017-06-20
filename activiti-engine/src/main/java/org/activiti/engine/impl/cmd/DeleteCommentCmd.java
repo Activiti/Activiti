@@ -27,7 +27,7 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Joram Barrez
+
  */
 public class DeleteCommentCmd implements Command<Void>, Serializable {
 

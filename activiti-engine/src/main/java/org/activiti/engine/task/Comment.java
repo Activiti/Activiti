@@ -21,8 +21,8 @@ import org.activiti.engine.history.HistoricData;
 /** User comments that form discussions around tasks.
  * 
  * @see {@link TaskService#getTaskComments(String)
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface Comment extends HistoricData {
 

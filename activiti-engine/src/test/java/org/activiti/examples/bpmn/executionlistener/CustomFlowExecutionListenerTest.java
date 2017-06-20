@@ -21,7 +21,7 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class CustomFlowExecutionListenerTest extends ResourceActivitiTestCase {
 

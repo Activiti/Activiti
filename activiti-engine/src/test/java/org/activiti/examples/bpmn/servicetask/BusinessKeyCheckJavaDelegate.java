@@ -19,7 +19,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 /**
  * Delegate that gets the business-key from the delegate-execution and puts the value in a variable.
  * 
- * @author Frederik Heremans
+
  */
 public class BusinessKeyCheckJavaDelegate implements JavaDelegate {
 

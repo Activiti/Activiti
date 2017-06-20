@@ -33,10 +33,10 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
- * @author Nils Preusker
- * @author Bernd Ruecker
- * @author Joram Barrez
+
+
+
+
  */
 public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
 

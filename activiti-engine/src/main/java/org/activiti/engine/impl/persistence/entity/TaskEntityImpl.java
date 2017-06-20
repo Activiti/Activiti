@@ -35,10 +35,10 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
- * @author Falko Menge
- * @author Tijs Rademakers
+
+
+
+
  */
 public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Serializable, BulkDeleteable {
 

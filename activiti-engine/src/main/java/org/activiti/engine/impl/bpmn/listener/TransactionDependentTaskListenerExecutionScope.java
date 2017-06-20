@@ -17,7 +17,7 @@ import java.util.Map;
 import org.activiti.bpmn.model.Task;
 
 /**
- * @author Yvo Swillens
+
  */
 public class TransactionDependentTaskListenerExecutionScope {
 

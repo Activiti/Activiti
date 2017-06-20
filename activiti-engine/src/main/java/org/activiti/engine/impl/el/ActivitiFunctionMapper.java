@@ -22,7 +22,7 @@ import javax.el.FunctionMapper;
  * 
  * A non-null implementation is required by the javax.el.* classes, hence the reason for this pretty useless class.
  * 
- * @author Joram Barrez
+
  */
 public class ActivitiFunctionMapper extends FunctionMapper {
 

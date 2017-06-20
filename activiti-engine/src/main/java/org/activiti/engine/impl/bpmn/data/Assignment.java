@@ -19,7 +19,7 @@ import org.activiti.engine.delegate.VariableScope;
 /**
  * Implementation of the BPMN 2.0 'assignment'
  * 
- * @author Esteban Robles Luna
+
  */
 public class Assignment {
 

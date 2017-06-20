@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to the execution collection.
  * 
- * @author Frederik Heremans
+
  */
 public class ExecutionCollectionResourceTest extends BaseSpringRestTestCase {
 

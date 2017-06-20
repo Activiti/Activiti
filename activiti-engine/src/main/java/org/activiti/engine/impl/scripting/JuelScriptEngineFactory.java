@@ -23,7 +23,7 @@ import javax.script.ScriptEngineFactory;
 /**
  * Factory to create {@link JuelScriptEngine}s.
  * 
- * @author Frederik Heremans
+
  */
 public class JuelScriptEngineFactory implements ScriptEngineFactory {
 

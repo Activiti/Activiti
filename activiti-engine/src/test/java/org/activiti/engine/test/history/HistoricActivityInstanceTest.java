@@ -28,8 +28,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
 

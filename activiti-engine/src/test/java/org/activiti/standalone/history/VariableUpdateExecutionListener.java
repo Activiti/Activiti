@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 
 /**
- * @author Frederik Heremans
+
  */
 public class VariableUpdateExecutionListener implements ExecutionListener {
 

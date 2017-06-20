@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  * An {@link AsyncExecutor} that has one {@link AsyncExecutor} per tenant.
  * So each tenant has its own acquiring threads and it's own threadpool for executing jobs.
  * 
- * @author Joram Barrez
+
  */
 public class ExecutorPerTenantAsyncExecutor implements TenantAwareAsyncExecutor {
   

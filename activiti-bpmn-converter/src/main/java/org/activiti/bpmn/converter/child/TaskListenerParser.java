@@ -17,7 +17,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.UserTask;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class TaskListenerParser extends ActivitiListenerParser {
 

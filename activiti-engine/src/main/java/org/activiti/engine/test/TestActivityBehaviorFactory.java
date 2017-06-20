@@ -98,7 +98,7 @@ import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.test.NoOpServiceTask;
 
 /**
- * @author Joram Barrez
+
  */
 public class TestActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
 

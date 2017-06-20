@@ -15,7 +15,7 @@ package org.activiti.engine.impl.variable;
 import org.joda.time.LocalDate;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class JodaDateType implements VariableType {
 

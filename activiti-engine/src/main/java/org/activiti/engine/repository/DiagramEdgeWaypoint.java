@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * Stores the position of a waypoint of a diagram edge.
  * 
- * @author Falko Menge
+
  */
 public class DiagramEdgeWaypoint implements Serializable {
 

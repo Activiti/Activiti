@@ -24,7 +24,7 @@ import org.activiti.engine.form.AbstractFormType;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tom Baeyens
+
  */
 public class FormTypes {
 

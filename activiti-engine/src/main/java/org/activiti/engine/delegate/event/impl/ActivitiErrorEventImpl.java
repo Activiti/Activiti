@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 /**
  * Implementation of an {@link ActivitiErrorEvent}.
  * 
- * @author Frederik Heremans
+
  */
 public class ActivitiErrorEventImpl extends ActivitiActivityEventImpl implements ActivitiErrorEvent {
 

@@ -19,7 +19,7 @@ import java.util.Map;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class AcquiredTimerJobEntities {
 

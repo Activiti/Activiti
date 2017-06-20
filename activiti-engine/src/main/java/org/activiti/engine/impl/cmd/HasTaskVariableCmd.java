@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Frederik Heremans
+
  */
 public class HasTaskVariableCmd implements Command<Boolean>, Serializable {
 

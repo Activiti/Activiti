@@ -47,7 +47,7 @@ import org.activiti.engine.impl.scripting.ResolverFactory;
  * <br>
  * or by any other means of creating configuration.
  * 
- * @author Emil Genov (http://www.emil-genov.info/)
+
  * 
  */
 public class MockResolverFactory implements ResolverFactory {

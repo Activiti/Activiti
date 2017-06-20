@@ -27,7 +27,7 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 /**
  * Send job cancelled event and delete job
  * 
- * @author Tom Baeyens
+
  */
 public class CancelJobsCmd implements Command<Void>, Serializable {
 

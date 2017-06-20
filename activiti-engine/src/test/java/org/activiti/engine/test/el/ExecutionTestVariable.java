@@ -20,7 +20,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 /**
  * Class used to test passing of execution in expressions/
  * 
- * @author Frederik Heremans
+
  */
 public class ExecutionTestVariable implements Serializable {
 

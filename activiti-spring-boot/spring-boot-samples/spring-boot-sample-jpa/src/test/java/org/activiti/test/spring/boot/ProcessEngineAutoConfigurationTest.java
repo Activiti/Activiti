@@ -13,7 +13,7 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
- * @author Josh Long
+
  */
 public class ProcessEngineAutoConfigurationTest {
 

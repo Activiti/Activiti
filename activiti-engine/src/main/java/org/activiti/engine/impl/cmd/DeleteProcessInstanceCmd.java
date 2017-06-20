@@ -24,7 +24,7 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
- * @author Joram Barrez
+
  */
 public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
 

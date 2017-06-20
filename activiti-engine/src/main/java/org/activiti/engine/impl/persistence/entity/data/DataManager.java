@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity.data;
 import org.activiti.engine.impl.persistence.entity.Entity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface DataManager<EntityImpl extends Entity> {
   

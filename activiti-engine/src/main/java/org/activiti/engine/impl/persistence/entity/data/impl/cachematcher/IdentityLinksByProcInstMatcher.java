@@ -16,7 +16,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class IdentityLinksByProcInstMatcher extends CachedEntityMatcherAdapter<IdentityLinkEntity> {
   

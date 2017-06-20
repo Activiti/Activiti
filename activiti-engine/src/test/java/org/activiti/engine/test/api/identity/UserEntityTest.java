@@ -8,7 +8,7 @@ import org.activiti.engine.impl.persistence.entity.UserEntityImpl;
 import org.junit.Test;
 
 /**
- * @author Arkadiy Gornovoy
+
  *
  */
 public class UserEntityTest {

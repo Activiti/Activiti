@@ -17,7 +17,7 @@ import org.activiti.engine.impl.db.HasRevision;
 /**
  * Abstract superclass for the common properties of all {@link Entity} implementations.
  * 
- * @author Joram Barrez
+
  */
 public abstract class AbstractEntity implements Entity, HasRevision {
 

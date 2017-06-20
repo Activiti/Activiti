@@ -20,7 +20,7 @@ import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricDetailEntityManager extends EntityManager<HistoricDetailEntity> {
 

@@ -19,7 +19,7 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
  * If such a bean is defined, it will be called when the process engine configuration is created 
  * and the default values have been set. 
  * 
- * @author Joram Barrez
+
  */
 public interface ProcessEngineConfigurationConfigurer {
 	

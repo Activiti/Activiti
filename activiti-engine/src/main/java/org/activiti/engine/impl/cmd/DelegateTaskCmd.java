@@ -18,8 +18,8 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.DelegationState;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class DelegateTaskCmd extends NeedsActiveTaskCmd<Object> {
 

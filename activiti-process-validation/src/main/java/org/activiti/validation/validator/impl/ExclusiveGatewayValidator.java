@@ -25,7 +25,7 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author jbarrez
+
  */
 public class ExclusiveGatewayValidator extends ProcessLevelValidator {
 

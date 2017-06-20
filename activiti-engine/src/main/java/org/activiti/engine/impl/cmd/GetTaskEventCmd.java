@@ -21,7 +21,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Event;
 
 /**
- * @author Frederik Heremans
+
  */
 public class GetTaskEventCmd implements Command<Event>, Serializable {
 

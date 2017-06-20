@@ -24,7 +24,7 @@ import org.activiti.engine.impl.util.Activiti5Util;
 /**
  * An {@link ActivitiEventListener} that throws a error event when an event is dispatched to it.
  * 
- * @author Frederik Heremans
+
  * 
  */
 public class ErrorThrowingEventListener extends BaseDelegateEventListener {

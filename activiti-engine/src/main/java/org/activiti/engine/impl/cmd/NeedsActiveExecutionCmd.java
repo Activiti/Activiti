@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
 /**
- * @author Joram Barrez
+
  */
 public abstract class NeedsActiveExecutionCmd<T> implements Command<T>, Serializable {
 

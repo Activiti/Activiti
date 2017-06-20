@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * Represents a diagram node.
  * 
- * @author Falko Menge
+
  */
 abstract public class DiagramElement implements Serializable {
 

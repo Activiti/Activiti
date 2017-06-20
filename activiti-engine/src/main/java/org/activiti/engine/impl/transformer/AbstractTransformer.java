@@ -17,7 +17,7 @@ import org.activiti.engine.ActivitiException;
 /**
  * A Transformer is responsible of transforming an object into a different object
  * 
- * @author Esteban Robles Luna
+
  */
 public abstract class AbstractTransformer implements Transformer {
 

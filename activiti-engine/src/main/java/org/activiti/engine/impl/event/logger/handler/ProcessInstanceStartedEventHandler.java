@@ -9,7 +9,7 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class ProcessInstanceStartedEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 

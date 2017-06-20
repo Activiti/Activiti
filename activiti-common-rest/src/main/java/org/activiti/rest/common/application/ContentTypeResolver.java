@@ -16,7 +16,7 @@ package org.activiti.rest.common.application;
 /**
  * Interface describing a class that is capable of resolving the content type of a resource/file based on the resource name.
  * 
- * @author Tijs Rademakers
+
  */
 public interface ContentTypeResolver {
 

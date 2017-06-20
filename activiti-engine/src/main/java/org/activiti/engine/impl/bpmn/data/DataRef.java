@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 /**
  * Implementation of the BPMN 2.0 'dataInputRef' and 'dataOutputRef'
  * 
- * @author Esteban Robles Luna
+
  */
 public class DataRef {
 

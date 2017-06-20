@@ -25,7 +25,7 @@ import org.activiti.engine.runtime.Clock;
  *  &lt;/bean&gt;
  * </pre>
  * 
- * @author mseiden
+
  * @see AdvancedCycleBusinessCalendar
  */
 public class SpringAdvancedBusinessCalendarManagerFactory {

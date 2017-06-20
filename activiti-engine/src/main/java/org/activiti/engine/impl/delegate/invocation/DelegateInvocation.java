@@ -17,7 +17,7 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
 /**
  * Provides context about the invocation of usercode and handles the actual invocation
  * 
- * @author Daniel Meyer
+
  * @see DelegateInterceptor
  */
 public abstract class DelegateInvocation {

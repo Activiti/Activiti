@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Contains all information for displaying a form and serves as base interface for {@link StartFormData} and {@link TaskFormData}
  * 
- * @author Tom Baeyens
+
  */
 public interface FormData {
 

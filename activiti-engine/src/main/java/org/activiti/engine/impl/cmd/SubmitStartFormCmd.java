@@ -27,8 +27,8 @@ import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessInstance> {
 

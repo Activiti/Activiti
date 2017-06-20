@@ -22,7 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import java.util.List;
 
 /**
- * @author Joram Barrez
+
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/servicetask/servicetaskSpringTest-context.xml")
 public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase {

@@ -17,7 +17,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author jbarrez
+
  */
 public class DeployNonExecutableProcessDefinitionTest extends PluggableActivitiTestCase {
 

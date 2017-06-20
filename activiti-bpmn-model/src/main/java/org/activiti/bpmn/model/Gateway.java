@@ -12,9 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-/**
- * @author Tijs Rademakers
- */
 public abstract class Gateway extends FlowNode {
 
   protected String defaultFlow;

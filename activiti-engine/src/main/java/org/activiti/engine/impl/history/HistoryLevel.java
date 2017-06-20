@@ -19,7 +19,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 /**
  * Enum that contains all possible history-levels.
  * 
- * @author Frederik Heremans
+
  */
 public enum HistoryLevel {
 

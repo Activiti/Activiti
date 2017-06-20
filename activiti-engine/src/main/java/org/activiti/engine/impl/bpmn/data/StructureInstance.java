@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 /**
  * An instance of {@link StructureDefinition}
  * 
- * @author Esteban Robles Luna
+
  */
 public interface StructureInstance {
 

@@ -18,7 +18,7 @@ import org.activiti.engine.query.Query;
 /**
  * Allows to programmatically query for {@link Group}s.
  * 
- * @author Joram Barrez
+
  */
 public interface GroupQuery extends Query<GroupQuery, Group> {
 

@@ -3,7 +3,7 @@ package org.activiti.engine.delegate.event;
 /**
  * An {@link org.activiti.engine.delegate.event.ActivitiEvent} related to cancel event being sent when activiti object is cancelled.
  * 
- * @author martin.grofcik
+
  */
 public interface ActivitiCancelledEvent extends ActivitiEvent {
   /**

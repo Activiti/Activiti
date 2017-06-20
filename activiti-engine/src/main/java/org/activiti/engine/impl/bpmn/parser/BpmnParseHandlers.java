@@ -24,7 +24,7 @@ import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
 
 /**
- * @author Joram Barrez
+
  */
 public class BpmnParseHandlers {
 

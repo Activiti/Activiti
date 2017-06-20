@@ -14,7 +14,7 @@
 package org.activiti.engine.cfg;
 
 /**
- * @author Tom Baeyens
+
  */
 public class MailServerInfo {
 

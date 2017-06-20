@@ -27,7 +27,7 @@ import java.util.Map;
 /**
  * Implementation of the BPMN 2.0 event subprocess start event.
  *
- * @author Tijs Rademakers
+
  */
 public class EventSubProcessErrorStartEventActivityBehavior extends AbstractBpmnActivityBehavior {
 

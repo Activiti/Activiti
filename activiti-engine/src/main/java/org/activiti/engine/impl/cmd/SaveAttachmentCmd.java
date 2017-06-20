@@ -26,7 +26,7 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.task.Attachment;
 
 /**
- * @author Tom Baeyens
+
  */
 public class SaveAttachmentCmd implements Command<Object>, Serializable {
 

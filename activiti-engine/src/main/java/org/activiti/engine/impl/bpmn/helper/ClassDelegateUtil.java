@@ -23,7 +23,7 @@ import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
- * @author Joram Barrez
+
  */
 public class ClassDelegateUtil {
 

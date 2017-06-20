@@ -11,7 +11,7 @@ package org.activiti.spring.test.expression.callactivity;
  * The NextProcessExecutionEvaluator class provides the name of the sub process to be executed next. This allows us to test dynamically wire in the calledElement in the callActivity task. In an actual
  * implementation there would be business logic here to determine which process to execute in the callActivity task.
  * 
- * @author Sang Venkatraman
+
  */
 public class NextProcessExecutionEvaluator {
 

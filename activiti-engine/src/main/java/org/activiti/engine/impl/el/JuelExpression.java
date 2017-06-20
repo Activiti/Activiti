@@ -29,8 +29,8 @@ import org.activiti.engine.impl.delegate.invocation.ExpressionSetInvocation;
 /**
  * Expression implementation backed by a JUEL {@link ValueExpression}.
  * 
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public class JuelExpression implements Expression {
 

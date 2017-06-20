@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.DelegateHelper;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 
 /**
- * @author Joram Barrez
+
  */
 public class ThrowsExceptionBehavior implements ActivityBehavior {
 

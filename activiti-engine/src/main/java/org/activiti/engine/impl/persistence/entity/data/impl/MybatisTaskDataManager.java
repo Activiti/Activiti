@@ -28,7 +28,7 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.TasksB
 import org.activiti.engine.task.Task;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisTaskDataManager extends AbstractDataManager<TaskEntity> implements TaskDataManager {
   

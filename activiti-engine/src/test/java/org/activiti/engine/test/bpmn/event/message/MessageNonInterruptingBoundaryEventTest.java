@@ -20,7 +20,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * 
- * @author Tijs Rademakers
+
  */
 public class MessageNonInterruptingBoundaryEventTest extends PluggableActivitiTestCase {
 

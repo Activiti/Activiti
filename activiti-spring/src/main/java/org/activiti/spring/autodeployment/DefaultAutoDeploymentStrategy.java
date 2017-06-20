@@ -24,7 +24,7 @@ import java.util.zip.ZipInputStream;
 /**
  * Default implementation of {@link AutoDeploymentStrategy} that groups all {@link Resource}s into a single deployment. This implementation is equivalent to the previously used implementation.
  * 
- * @author Tiese Barrell
+
  */
 public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 

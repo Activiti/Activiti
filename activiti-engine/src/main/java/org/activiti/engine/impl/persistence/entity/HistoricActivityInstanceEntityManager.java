@@ -20,7 +20,7 @@ import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricActivityInstanceEntityManager extends EntityManager<HistoricActivityInstanceEntity> {
   

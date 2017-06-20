@@ -20,7 +20,7 @@ import org.apache.ibatis.session.SqlSession;
  * is important to note there won't be any optimistic locking checks done for
  * these kind of delete operations!
  * 
- * @author Joram Barrez
+
  */
 public class BulkDeleteOperation  {
   

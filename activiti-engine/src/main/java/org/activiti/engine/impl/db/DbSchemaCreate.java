@@ -17,7 +17,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DbSchemaCreate {
 

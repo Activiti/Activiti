@@ -17,7 +17,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 /**
  * All tests that do not belong to any other test case, but test a supposedly working feature go here.
  * 
- * @author Joram Barrez
+
  */
 public class RegressionTest extends PluggableActivitiTestCase {
 

@@ -27,7 +27,7 @@ import org.activiti.bpmn.model.ScriptTask;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ScriptTaskXMLConverter extends BaseBpmnXMLConverter {
 

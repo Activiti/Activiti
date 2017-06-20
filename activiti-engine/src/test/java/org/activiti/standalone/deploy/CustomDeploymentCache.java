@@ -19,7 +19,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
  * Very simplistic cache implementation that only caches one process definition.
  * 
- * @author Joram Barrez
+
  */
 public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionCacheEntry> {
 

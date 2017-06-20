@@ -30,7 +30,7 @@ import java.util.zip.ZipInputStream;
  * Implementation of {@link AutoDeploymentStrategy} that performs a separate deployment for each set of {@link Resource}s that share the same parent folder. The namehint is used to prefix the names of
  * deployments. If the parent folder for a {@link Resource} cannot be determined, the resource's name is used.
  * 
- * @author Tiese Barrell
+
  */
 public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 

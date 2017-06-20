@@ -20,7 +20,7 @@ import org.activiti.engine.test.mock.NoOpServiceTasks;
 import org.activiti.standalone.testing.helpers.ServiceTaskTestMock;
 
 /**
- * @author Joram Barrez
+
  */
 public class MockSupportWithActivitiTestCaseTest extends ActivitiTestCase {
 

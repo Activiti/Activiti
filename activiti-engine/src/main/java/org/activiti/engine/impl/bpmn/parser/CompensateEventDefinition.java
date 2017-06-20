@@ -16,7 +16,7 @@ package org.activiti.engine.impl.bpmn.parser;
 import java.io.Serializable;
 
 /**
- * @author Daniel Meyer
+
  */
 public class CompensateEventDefinition implements Serializable {
 

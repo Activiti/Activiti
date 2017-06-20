@@ -25,8 +25,8 @@ import org.activiti.engine.runtime.DeadLetterJobQuery;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class DeadLetterJobQueryImpl extends AbstractQuery<DeadLetterJobQuery, Job> implements DeadLetterJobQuery, Serializable {
 

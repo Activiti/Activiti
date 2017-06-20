@@ -19,7 +19,7 @@ import java.util.Set;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface VariableInstanceDataManager extends DataManager<VariableInstanceEntity> {
 

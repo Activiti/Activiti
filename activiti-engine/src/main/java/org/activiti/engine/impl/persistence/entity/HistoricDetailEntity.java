@@ -18,8 +18,8 @@ import java.util.Date;
 import org.activiti.engine.history.HistoricDetail;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface HistoricDetailEntity extends HistoricDetail, Entity {
 

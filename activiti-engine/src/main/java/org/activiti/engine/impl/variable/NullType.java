@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.variable;
 
 /**
- * @author Tom Baeyens
+
  */
 public class NullType implements VariableType {
 

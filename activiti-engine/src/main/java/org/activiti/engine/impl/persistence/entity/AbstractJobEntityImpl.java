@@ -27,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Abstract job entity class.
  *
- * @author Tijs Rademakers
+
  */
 public abstract class AbstractJobEntityImpl extends AbstractEntity implements AbstractJobEntity, BulkDeleteable, Serializable {
 

@@ -25,7 +25,7 @@ import org.activiti.engine.test.Deployment;
 import org.junit.Assert;
 
 /**
- * @author Joram Barrez
+
  */
 public class ParallelGatewayTest extends PluggableActivitiTestCase {
 

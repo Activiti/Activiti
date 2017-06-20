@@ -28,7 +28,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.api.event.TestActivitiEntityEventListener;
 
 /**
- * @author Vasile Dirla
+
  */
 public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase {
 

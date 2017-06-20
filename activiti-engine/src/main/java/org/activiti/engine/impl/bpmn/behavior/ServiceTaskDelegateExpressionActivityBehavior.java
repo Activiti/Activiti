@@ -37,10 +37,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * {@link ActivityBehavior} used when 'delegateExpression' is used for a serviceTask.
  * 
- * @author Joram Barrez
- * @author Josh Long
- * @author Slawomir Wojtasiak (Patch for ACT-1159)
- * @author Falko Menge
+
+
+
+
  */
 public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityBehavior {
 

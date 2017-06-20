@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 
 /**
- * @author Tom Baeyens
+
  */
 public class GetUserInfoCmd implements Command<String>, Serializable {
 

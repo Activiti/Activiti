@@ -21,7 +21,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 public class VariablesResource extends Resource<Map<String, Object>> {
 

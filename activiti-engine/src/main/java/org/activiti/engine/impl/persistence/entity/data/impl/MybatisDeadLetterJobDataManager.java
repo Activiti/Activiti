@@ -27,7 +27,7 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.DeadLe
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class MybatisDeadLetterJobDataManager extends AbstractDataManager<DeadLetterJobEntity> implements DeadLetterJobDataManager {
   

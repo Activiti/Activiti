@@ -21,8 +21,8 @@ import org.activiti.engine.impl.Condition;
 /**
  * {@link Condition} that resolves an UEL expression at runtime.
  * 
- * @author Joram Barrez
- * @author Frederik Heremans
+
+
  */
 public class UelExpressionCondition implements Condition {
 

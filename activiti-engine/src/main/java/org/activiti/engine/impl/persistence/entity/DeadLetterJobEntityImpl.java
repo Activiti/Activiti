@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 /**
  * DeadLetterJob entity, necessary for persistence.
  *
- * @author Tijs Rademakers
+
  */
 public class DeadLetterJobEntityImpl extends AbstractJobEntityImpl implements DeadLetterJobEntity {
 

@@ -21,8 +21,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 /**
  * Implementation of the BPMN 2.0 'ioSpecification'
  * 
- * @author Esteban Robles Luna
- * @author Falko Menge
+
+
  */
 public class IOSpecification {
 

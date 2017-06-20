@@ -25,8 +25,8 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricActivityInstanceDataManager;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class HistoricActivityInstanceEntityManagerImpl extends AbstractEntityManager<HistoricActivityInstanceEntity> implements HistoricActivityInstanceEntityManager {
   

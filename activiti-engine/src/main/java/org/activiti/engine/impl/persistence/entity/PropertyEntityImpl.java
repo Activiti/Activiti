@@ -17,8 +17,8 @@ import java.io.Serializable;
 import org.activiti.engine.ActivitiException;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class PropertyEntityImpl extends AbstractEntity implements PropertyEntity, Serializable {
 

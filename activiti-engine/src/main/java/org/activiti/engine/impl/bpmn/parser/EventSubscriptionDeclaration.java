@@ -16,8 +16,8 @@ package org.activiti.engine.impl.bpmn.parser;
 import java.io.Serializable;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class EventSubscriptionDeclaration implements Serializable {
 

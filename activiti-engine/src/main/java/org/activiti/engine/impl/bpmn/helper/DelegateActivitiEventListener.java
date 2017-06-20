@@ -24,7 +24,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
  * 
  * In case an entityClass was passed in the constructor, only events that are {@link ActivitiEntityEvent}'s that target an entity of the given type, are dispatched to the delegate.
  * 
- * @author Frederik Heremans
+
  */
 public class DelegateActivitiEventListener extends BaseDelegateEventListener {
 

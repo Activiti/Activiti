@@ -17,7 +17,7 @@ package org.activiti.engine.delegate.event;
  * 
  * Override the <code>onXX(..)</code> methods to respond to entity changes accordingly.
  * 
- * @author Frederik Heremans
+
  * 
  */
 public class BaseEntityEventListener implements ActivitiEventListener {

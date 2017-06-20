@@ -26,8 +26,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.runtime.Execution;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class FindActiveActivityIdsCmd implements Command<List<String>>, Serializable {
 

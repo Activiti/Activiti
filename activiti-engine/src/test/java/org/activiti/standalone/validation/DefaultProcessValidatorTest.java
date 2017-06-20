@@ -36,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * @author jbarrez
+
  */
 public class DefaultProcessValidatorTest {
 

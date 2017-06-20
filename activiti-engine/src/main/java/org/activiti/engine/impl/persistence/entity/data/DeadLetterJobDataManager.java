@@ -20,7 +20,7 @@ import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tijs Rademakers
+
  */
 public interface DeadLetterJobDataManager extends DataManager<DeadLetterJobEntity> {
   

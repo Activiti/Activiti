@@ -7,7 +7,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  * 
  * The instance will be called at the end of executing the engine operations for each {@link ExecutionEntity} that currently is at the activity AND is inactive.
  * 
- * @author Joram Barrez
+
  */
 public interface InactiveActivityBehavior {
 

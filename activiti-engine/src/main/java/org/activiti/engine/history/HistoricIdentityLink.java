@@ -21,7 +21,7 @@ import org.activiti.engine.task.IdentityLinkType;
 /**
  * Historic counterpart of {@link IdentityLink} that represents the current state if any runtime link. Will be preserved when the runtime process instance or task is finished.
  * 
- * @author Frederik Heremans
+
  */
 public interface HistoricIdentityLink {
 

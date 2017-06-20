@@ -21,7 +21,7 @@ import org.activiti.engine.impl.test.AbstractTestCase;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 
 /**
- * @author Joram Barrez
+
  */
 public class ConnectionPoolTest extends AbstractTestCase {
 

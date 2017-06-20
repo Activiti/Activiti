@@ -16,7 +16,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class DeadLetterJobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<DeadLetterJobEntity> {
   

@@ -23,8 +23,8 @@ import org.activiti.engine.ActivitiException;
 import org.springframework.context.ApplicationContext;
 
 /**
- * @author Tom Baeyens
- * @author Frederik Heremans
+
+
  */
 public class ApplicationContextElResolver extends ELResolver {
 

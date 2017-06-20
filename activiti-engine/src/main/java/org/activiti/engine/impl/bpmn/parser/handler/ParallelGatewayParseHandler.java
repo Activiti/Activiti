@@ -17,7 +17,7 @@ import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
- * @author Joram Barrez
+
  */
 public class ParallelGatewayParseHandler extends AbstractActivityBpmnParseHandler<ParallelGateway> {
 

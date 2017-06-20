@@ -4,7 +4,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 
 /**
- * @author Andreas Karnahl
+
  */
 public class TestSampleServiceTask extends AbstractBpmnActivityBehavior {
   

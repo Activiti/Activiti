@@ -21,7 +21,7 @@ import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.repository.Model;
 
 /**
- * @author Joram Barrez
+
  */
 public interface ModelDataManager extends DataManager<ModelEntity> {
 

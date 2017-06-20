@@ -20,7 +20,7 @@ import org.mockito.stubbing.Answer;
 import static org.mockito.Mockito.mock;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 public class MockUtils {
 

@@ -21,7 +21,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 
 /**
- * @author Joram Barrez
+
  */
 public class IdentityLinkEntityImpl extends AbstractEntityNoRevision implements IdentityLinkEntity, Serializable, BulkDeleteable {
 

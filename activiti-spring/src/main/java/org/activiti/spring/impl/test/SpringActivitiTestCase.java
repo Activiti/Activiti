@@ -26,8 +26,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 
 /**
- * @author Joram Barrez
- * @author Josh Long
+
+
  */
 @TestExecutionListeners(DependencyInjectionTestExecutionListener.class)
 public abstract class SpringActivitiTestCase extends AbstractActivitiTestCase implements ApplicationContextAware {

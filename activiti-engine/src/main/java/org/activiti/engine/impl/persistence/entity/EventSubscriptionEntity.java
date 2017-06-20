@@ -18,8 +18,8 @@ import java.util.Date;
 import org.activiti.engine.impl.db.HasRevision;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public interface EventSubscriptionEntity extends Entity, HasRevision {
   

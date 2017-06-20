@@ -17,7 +17,7 @@ import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DefaultTaskFormHandler extends DefaultFormHandler implements TaskFormHandler {
 

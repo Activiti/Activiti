@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Describes basic methods for querying.
  * 
- * @author Frederik Heremans
+
  */
 public interface Query<T extends Query<?, ?>, U extends Object> {
 

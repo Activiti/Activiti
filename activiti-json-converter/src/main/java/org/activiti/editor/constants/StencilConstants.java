@@ -13,7 +13,7 @@
 package org.activiti.editor.constants;
 
 /**
- * @author Tijs Rademakers
+
  */
 public interface StencilConstants {
 

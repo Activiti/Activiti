@@ -18,7 +18,7 @@ import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.context.Context;
 
 /**
- * @author Tom Baeyens
+
  */
 public class ScriptCondition implements Condition {
 

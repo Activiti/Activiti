@@ -21,7 +21,7 @@ import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 import org.activiti.engine.impl.identity.Authentication;
 
 /**
- * @author Joram Barrez
+
  */
 public class DummyTenantInfoHolder implements TenantInfoHolder {
   

@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 import org.activiti.engine.ActivitiException;
 
 /**
- * @author Tom Baeyens
+
  */
 public class StringStreamSource implements StreamSource {
 

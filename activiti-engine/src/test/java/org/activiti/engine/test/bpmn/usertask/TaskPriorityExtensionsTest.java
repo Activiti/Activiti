@@ -22,7 +22,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Thilo-Alexander Ginkel
+
  */
 public class TaskPriorityExtensionsTest extends PluggableActivitiTestCase {
 

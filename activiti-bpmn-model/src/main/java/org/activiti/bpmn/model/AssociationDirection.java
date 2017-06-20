@@ -12,9 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-/**
- * @author Tijs Rademakers
- */
 public enum AssociationDirection {
   NONE("None"), ONE("One"), BOTH("Both");
 

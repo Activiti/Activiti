@@ -32,7 +32,7 @@ import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ExecutionBaseResource {
 

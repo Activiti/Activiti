@@ -26,7 +26,7 @@ import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
  * 
  * The interceptor is passed in an instance of {@link DelegateInvocation}. Implementations are responsible for calling {@link DelegateInvocation#proceed()}.
  * 
- * @author Daniel Meyer
+
  */
 public interface DelegateInterceptor {
 

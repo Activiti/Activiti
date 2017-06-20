@@ -20,9 +20,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * @author Tijs Rademakers
- */
 public class SubProcess extends Activity implements FlowElementsContainer {
 
   protected Map<String, FlowElement> flowElementMap = new LinkedHashMap<String, FlowElement>();

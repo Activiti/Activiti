@@ -43,7 +43,7 @@ import org.w3c.dom.NodeList;
 /**
  * Provides positions and dimensions of elements in a process diagram as provided by {@link RepositoryService#getProcessDiagram(String)}.
  * 
- * @author Falko Menge
+
  */
 public class ProcessDiagramLayoutFactory {
 

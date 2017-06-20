@@ -22,7 +22,7 @@ package org.activiti.engine.task;
  * 
  * First line can be switched to TaskInfoQueryWrapper taskInfoQueryWrapper = new TaskInfoQueryWrapper(historyService.createTaskQuery()); and the same methods can be used on the result.
  * 
- * @author Joram Barrez
+
  */
 public class TaskInfoQueryWrapper {
 

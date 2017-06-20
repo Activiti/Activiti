@@ -22,7 +22,7 @@ import org.springframework.core.io.Resource;
  * <p>
  * A strategy is capable of handling deployments corresponding to a certain indicated deployment mode. This applicability is verified using the {@link #handlesMode(String)} method.
  * 
- * @author Tiese Barrell
+
  */
 public interface AutoDeploymentStrategy {
 

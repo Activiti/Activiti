@@ -26,7 +26,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Daisuke Yoshimoto
+
  */
 public class ProcessInstanceLogQueryAndByteArrayTypeVariableTest extends PluggableActivitiTestCase {
 	

@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 /**
- * @author Tijs Rademakers
+
  */
 public interface MessageEventSubscriptionEntity extends EventSubscriptionEntity {
   

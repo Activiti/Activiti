@@ -27,8 +27,8 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricTaskInstanceData
 import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class HistoricTaskInstanceEntityManagerImpl extends AbstractEntityManager<HistoricTaskInstanceEntity> implements HistoricTaskInstanceEntityManager {
 

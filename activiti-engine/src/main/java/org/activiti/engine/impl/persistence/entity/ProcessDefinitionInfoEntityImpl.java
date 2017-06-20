@@ -19,7 +19,7 @@ import java.util.Map;
 
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ProcessDefinitionInfoEntityImpl extends AbstractEntity implements ProcessDefinitionInfoEntity, Serializable {
 

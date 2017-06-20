@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 
 /**
- * @author Frederik Heremans
+
  */
 public class HasExecutionVariableCmd implements Command<Boolean>, Serializable {
 

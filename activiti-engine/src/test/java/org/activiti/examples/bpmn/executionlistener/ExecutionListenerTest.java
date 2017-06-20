@@ -25,7 +25,7 @@ import org.activiti.examples.bpmn.executionlistener.CurrentActivityExecutionList
 import org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener.RecordedEvent;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ExecutionListenerTest extends PluggableActivitiTestCase {
 

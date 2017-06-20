@@ -20,10 +20,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * @author Tijs Rademakers
- * @author Joram Barrez
- */
 public class Process extends BaseElement implements FlowElementsContainer, HasExecutionListeners {
 
   protected String name;

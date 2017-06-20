@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
- * @author Tijs Rademakers
+
  */
 public interface ActivityProcessor {
 

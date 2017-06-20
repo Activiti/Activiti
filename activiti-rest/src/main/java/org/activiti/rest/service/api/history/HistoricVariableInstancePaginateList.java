@@ -19,7 +19,7 @@ import org.activiti.rest.common.api.AbstractPaginateList;
 import org.activiti.rest.service.api.RestResponseFactory;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class HistoricVariableInstancePaginateList extends AbstractPaginateList {
 

@@ -32,7 +32,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 public class ProcessDefinitionSortApplierTest {
 

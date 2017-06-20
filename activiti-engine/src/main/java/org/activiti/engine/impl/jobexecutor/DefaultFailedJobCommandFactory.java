@@ -17,7 +17,7 @@ import org.activiti.engine.impl.cmd.JobRetryCmd;
 import org.activiti.engine.impl.interceptor.Command;
 
 /**
- * @author Saeid Mirzaei
+
  */
 public class DefaultFailedJobCommandFactory implements FailedJobCommandFactory {
 

@@ -19,7 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
  * The CallActivityBasedOnSpringBeansExpressionTest is isUsed to test dynamically wiring in the calledElement in the callActivity task. This test case helps verify that we do not have to hard code the
  * sub process definition key within the process.
  * 
- * @author Sang Venkatraman
+
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/expression/callactivity/testCallActivityByExpression-context.xml")
 public class CallActivityBasedOnSpringBeansExpressionTest extends SpringActivitiTestCase {

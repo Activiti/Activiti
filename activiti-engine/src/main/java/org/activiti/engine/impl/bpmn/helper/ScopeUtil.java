@@ -28,8 +28,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.CollectionUtil;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public class ScopeUtil {
 

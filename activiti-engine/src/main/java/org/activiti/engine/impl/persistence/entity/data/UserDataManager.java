@@ -22,7 +22,7 @@ import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface UserDataManager extends DataManager<UserEntity> {
 

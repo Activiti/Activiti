@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Structure containing meta data (column names, column types, etc.) about a certain database table.
  * 
- * @author Joram Barrez
+
  */
 public class TableMetaData {
 

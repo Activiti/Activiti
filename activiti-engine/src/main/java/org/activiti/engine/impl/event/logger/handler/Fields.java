@@ -1,7 +1,7 @@
 package org.activiti.engine.impl.event.logger.handler;
 
 /**
- * @author Joram Barrez
+
  */
 public interface Fields {
 

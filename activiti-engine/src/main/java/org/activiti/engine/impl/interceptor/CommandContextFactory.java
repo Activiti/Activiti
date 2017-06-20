@@ -16,7 +16,7 @@ package org.activiti.engine.impl.interceptor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
- * @author Tom Baeyens
+
  */
 public class CommandContextFactory {
 

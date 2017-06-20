@@ -18,7 +18,7 @@ import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 /**
  * Implementation of the BPMN 2.0 'message'
  * 
- * @author Esteban Robles Luna
+
  */
 public class MessageDefinition {
 

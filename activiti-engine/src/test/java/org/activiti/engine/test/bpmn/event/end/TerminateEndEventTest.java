@@ -40,8 +40,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Nico Rehwaldt
- * @author Joram Barrez
+
+
  */
 public class TerminateEndEventTest extends PluggableActivitiTestCase {
 

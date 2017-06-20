@@ -22,11 +22,11 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
- * @author Tom Baeyens
- * @author Daniel Meyer
- * @author Falko Menge
- * @author Saeid Mirzaei
- * @author Joram Barrez
+
+
+
+
+
  */
 
 public interface ExecutionEntity extends DelegateExecution, Execution, ProcessInstance, Entity, HasRevision {

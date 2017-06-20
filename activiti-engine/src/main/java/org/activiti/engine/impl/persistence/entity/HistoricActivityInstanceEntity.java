@@ -17,8 +17,8 @@ package org.activiti.engine.impl.persistence.entity;
 import org.activiti.engine.history.HistoricActivityInstance;
 
 /**
- * @author Christian Stettler
- * @author Joram Barrez
+
+
  */
 public interface HistoricActivityInstanceEntity extends HistoricActivityInstance, HistoricScopeInstanceEntity {
 

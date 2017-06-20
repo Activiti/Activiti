@@ -18,7 +18,7 @@ package org.activiti.engine.impl.util;
  * 
  * Currently, only 8-bits are supported, but can be extended to use all 31 bits in the integer (1st of 32 bits is used for sign).
  * 
- * @author Frederik Heremans
+
  */
 public class BitMaskUtil {
 

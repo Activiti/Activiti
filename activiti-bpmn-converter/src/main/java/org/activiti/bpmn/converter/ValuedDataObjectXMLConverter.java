@@ -22,8 +22,8 @@ import org.activiti.bpmn.model.ValuedDataObject;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Lori Small
- * @author Tijs Rademakers
+
+
  */
 public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
 

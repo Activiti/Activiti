@@ -20,7 +20,7 @@ import java.util.Date;
 import org.activiti.engine.impl.context.Context;
 
 /**
- * @author Christian Stettler
+
  */
 public abstract class HistoricScopeInstanceEntityImpl extends AbstractEntityNoRevision implements HistoricScopeInstanceEntity, Serializable {
 

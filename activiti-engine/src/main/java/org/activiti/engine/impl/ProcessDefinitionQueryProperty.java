@@ -22,7 +22,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 /**
  * Contains the possible properties that can be used in a {@link ProcessDefinitionQuery}.
  * 
- * @author Joram Barrez
+
  */
 public class ProcessDefinitionQueryProperty implements QueryProperty {
 

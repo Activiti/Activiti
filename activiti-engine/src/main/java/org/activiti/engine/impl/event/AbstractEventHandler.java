@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Tijs Rademakers
+
  */
 public abstract class AbstractEventHandler implements EventHandler {
 

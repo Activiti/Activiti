@@ -22,7 +22,7 @@ import org.activiti.engine.runtime.JobQuery;
 /**
  * Contains the possible properties that can be used in a {@link JobQuery}.
  * 
- * @author Joram Barrez
+
  */
 public class JobQueryProperty implements QueryProperty {
 

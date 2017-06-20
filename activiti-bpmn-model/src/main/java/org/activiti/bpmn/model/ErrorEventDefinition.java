@@ -12,9 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-/**
- * @author Tijs Rademakers
- */
 public class ErrorEventDefinition extends EventDefinition {
 
   protected String errorCode;

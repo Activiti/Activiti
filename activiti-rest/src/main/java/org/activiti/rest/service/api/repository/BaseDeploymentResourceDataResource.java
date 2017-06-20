@@ -28,7 +28,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * @author Frederik Heremans
+
  */
 public class BaseDeploymentResourceDataResource {
 

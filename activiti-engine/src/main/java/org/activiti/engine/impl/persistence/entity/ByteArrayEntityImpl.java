@@ -18,9 +18,9 @@ import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tom Baeyens
- * @author Marcus Klimstra (CGI)
- * @author Joram Barrez
+
+
+
  */
 public class ByteArrayEntityImpl extends AbstractEntity implements ByteArrayEntity, Serializable {
 

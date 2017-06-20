@@ -7,7 +7,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
- * @author Tijs Rademakers
+
  */
 
 public class TaskSimpleCompleteListener implements TaskListener {

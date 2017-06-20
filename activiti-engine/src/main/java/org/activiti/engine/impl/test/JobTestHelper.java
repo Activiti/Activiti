@@ -24,9 +24,9 @@ import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.test.ActivitiRule;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
- * @author Saeid Mirzaei
+
+
+
  */
 
 // This helper class helps sharing the same code for jobExecutor test helpers,

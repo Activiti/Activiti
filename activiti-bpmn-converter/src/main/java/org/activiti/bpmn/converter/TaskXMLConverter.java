@@ -22,7 +22,7 @@ import org.activiti.bpmn.model.ManualTask;
 import org.activiti.bpmn.model.Task;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class TaskXMLConverter extends BaseBpmnXMLConverter {
 

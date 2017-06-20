@@ -18,7 +18,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 
 /**
- * @author Tom Baeyens
+
  */
 public class MapBusinessCalendarManager implements BusinessCalendarManager {
 

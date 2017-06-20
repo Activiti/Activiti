@@ -30,7 +30,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ModelResourceTest extends BaseSpringRestTestCase {
 

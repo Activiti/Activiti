@@ -18,7 +18,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
  * Specific {@link FormData} for starting a new process instance.
  * 
- * @author Tom Baeyens
+
  */
 public interface StartFormData extends FormData {
 

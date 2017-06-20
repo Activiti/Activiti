@@ -22,7 +22,7 @@ import org.activiti.bpmn.model.MapExceptionEntry;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Saeid Mirzaei
+
  */
 
 public class ActivitiMapExceptionParser extends BaseChildElementParser {

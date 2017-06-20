@@ -12,7 +12,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.ProcessInstanceHistoryLog;
 
 /**
- * @author Joram Barrez
+
  */
 public class ProcessInstanceHistoryLogImpl implements ProcessInstanceHistoryLog {
 

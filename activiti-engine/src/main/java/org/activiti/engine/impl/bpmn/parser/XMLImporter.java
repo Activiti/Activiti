@@ -22,7 +22,7 @@ import org.activiti.engine.impl.webservice.WSService;
 /**
  * A XML importer
  * 
- * @author Esteban Robles Luna
+
  */
 public interface XMLImporter {
 

@@ -28,8 +28,8 @@ import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class GetRenderedTaskFormCmd implements Command<Object>, Serializable {
 

@@ -14,7 +14,7 @@
 package org.activiti.rest.service.api.identity;
 
 /**
- * @author Frederik Heremans
+
  */
 public class GroupResponse {
 

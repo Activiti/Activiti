@@ -18,8 +18,8 @@ import javax.el.FunctionMapper;
 import javax.el.VariableMapper;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class ActivitiElContext extends ELContext {
 

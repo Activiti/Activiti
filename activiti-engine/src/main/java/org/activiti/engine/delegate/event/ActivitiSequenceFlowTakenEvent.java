@@ -15,7 +15,7 @@ package org.activiti.engine.delegate.event;
 /**
  * An {@link ActivitiEvent} that indicates a certain sequence flow has been taken.
  * 
- * @author Frederik Heremans
+
  */
 public interface ActivitiSequenceFlowTakenEvent extends ActivitiEvent {
 

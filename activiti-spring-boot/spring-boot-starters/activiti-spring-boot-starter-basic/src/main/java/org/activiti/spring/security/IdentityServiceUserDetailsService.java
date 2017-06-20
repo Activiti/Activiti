@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Josh Long
+
  */
 public class IdentityServiceUserDetailsService
         implements UserDetailsService {

@@ -28,10 +28,10 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
- * @author Tom Van Buskirk
- * @author Tijs Rademakers
- * @author Saeid Mirzaei
+
+
+
+
  */
 public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 

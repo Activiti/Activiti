@@ -29,7 +29,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Abstract superclass for all native query types.
  * 
- * @author Bernd Ruecker (camunda)
+
  */
 public abstract class AbstractNativeQuery<T extends NativeQuery<?, ?>, U> implements Command<Object>, NativeQuery<T, U>, Serializable {
 

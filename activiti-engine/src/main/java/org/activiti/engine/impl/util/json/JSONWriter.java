@@ -50,7 +50,7 @@ import java.io.Writer;
  * <p>
  * This can sometimes be easier than using a JSONObject to build a string.
  * 
- * @author JSON.org
+
  * @version 2010-03-11
  */
 public class JSONWriter {

@@ -8,8 +8,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
- * @author roman.smirnov
- * @author Joram Barrez
+
+
  */
 public class RemoveExecutionVariablesCmd extends NeedsActiveExecutionCmd<Void> {
 

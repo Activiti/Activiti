@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.Expression;
 /**
  * A transformation based data output association
  * 
- * @author Esteban Robles Luna
+
  */
 public class TransformationDataOutputAssociation extends AbstractDataAssociation {
 

@@ -20,8 +20,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 
 /**
- * @author Rich Kroll
- * @author Joram Barrez
+
+
  */
 public class ScriptTaskListener implements TaskListener {
 

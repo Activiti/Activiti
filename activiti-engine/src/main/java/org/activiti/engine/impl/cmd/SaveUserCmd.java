@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.Entity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class SaveUserCmd implements Command<Void>, Serializable {
 

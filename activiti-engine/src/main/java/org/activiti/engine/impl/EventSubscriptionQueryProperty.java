@@ -16,7 +16,7 @@ package org.activiti.engine.impl;
 import org.activiti.engine.query.QueryProperty;
 
 /**
- * @author Daniel Meyer
+
  */
 public class EventSubscriptionQueryProperty implements QueryProperty {
 

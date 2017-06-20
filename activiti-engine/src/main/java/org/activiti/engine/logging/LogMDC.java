@@ -6,7 +6,7 @@ import org.slf4j.MDC;
 /**
  * Constants and functions for MDC (Mapped Diagnostic Context) logging
  * 
- * @author Saeid Mirzaei
+
  */
 
 public class LogMDC {

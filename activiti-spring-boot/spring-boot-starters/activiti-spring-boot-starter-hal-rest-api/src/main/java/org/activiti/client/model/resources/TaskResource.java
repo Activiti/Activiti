@@ -20,7 +20,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 public class TaskResource extends Resource<Task> {
 

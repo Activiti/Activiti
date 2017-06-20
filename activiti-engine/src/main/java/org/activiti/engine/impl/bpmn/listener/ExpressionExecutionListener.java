@@ -20,7 +20,7 @@ import org.activiti.engine.delegate.Expression;
 /**
  * An {@link ExecutionListener} that evaluates a {@link Expression} when notified.
  * 
- * @author Frederik Heremans
+
  */
 public class ExpressionExecutionListener implements ExecutionListener {
 

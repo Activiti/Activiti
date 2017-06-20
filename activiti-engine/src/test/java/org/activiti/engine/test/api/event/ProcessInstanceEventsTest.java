@@ -40,7 +40,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for all {@link ActivitiEvent}s related to process instances.
  * 
- * @author Tijs Rademakers
+
  */
 public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 

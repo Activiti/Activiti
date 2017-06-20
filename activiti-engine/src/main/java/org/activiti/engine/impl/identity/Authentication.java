@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.identity;
 
 /**
- * @author Tom Baeyens
+
  */
 public abstract class Authentication {
 

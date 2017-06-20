@@ -15,8 +15,8 @@ package org.activiti.engine.impl.persistence.entity;
 
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class HistoricFormPropertyEntityImpl extends HistoricDetailEntityImpl implements HistoricFormPropertyEntity {
 

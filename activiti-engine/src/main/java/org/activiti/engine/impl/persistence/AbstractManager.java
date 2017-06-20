@@ -51,8 +51,8 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager
 import org.activiti.engine.runtime.Clock;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public abstract class AbstractManager {
   

@@ -17,8 +17,8 @@ import org.activiti.engine.impl.variable.VariableType;
 /**
  * An {@link ActivitiEvent} related to a single variable.
  * 
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public interface ActivitiVariableEvent extends ActivitiEvent {
 

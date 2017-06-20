@@ -4,7 +4,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Joram Barrez
+
  */
 public class DeleteEventLogEntry implements Command<Void> {
 

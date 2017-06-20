@@ -19,7 +19,7 @@ import org.apache.commons.lang3.time.FastDateFormat;
 /**
  * Transforms a {@link String} to a {@link Date}
  * 
- * @author Esteban Robles Luna
+
  */
 public class StringToDate extends AbstractTransformer {
 

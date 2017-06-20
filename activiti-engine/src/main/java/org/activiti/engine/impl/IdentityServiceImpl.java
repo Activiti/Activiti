@@ -43,7 +43,7 @@ import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 import java.util.List;
 
 /**
- * @author Tom Baeyens
+
  */
 public class IdentityServiceImpl extends ServiceImpl implements IdentityService {
 

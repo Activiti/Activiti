@@ -16,7 +16,7 @@ package org.activiti.rest.service.api;
 /**
  * Generic class that represents an action to be performed on a resource. Should be subclasses if additional action-parameters are required.
  * 
- * @author Frederik Heremans
+
  */
 public class RestActionRequest {
 

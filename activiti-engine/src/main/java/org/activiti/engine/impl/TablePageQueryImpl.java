@@ -22,7 +22,7 @@ import org.activiti.engine.management.TablePageQuery;
 
 /**
  * 
- * @author Joram Barrez
+
  */
 public class TablePageQueryImpl implements TablePageQuery, Command<TablePage>, Serializable {
 

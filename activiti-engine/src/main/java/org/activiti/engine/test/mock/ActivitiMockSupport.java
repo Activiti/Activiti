@@ -23,7 +23,7 @@ import org.activiti.engine.impl.test.NoOpServiceTask;
 import org.activiti.engine.test.TestActivityBehaviorFactory;
 
 /**
- * @author Joram Barrez
+
  */
 public class ActivitiMockSupport {
 

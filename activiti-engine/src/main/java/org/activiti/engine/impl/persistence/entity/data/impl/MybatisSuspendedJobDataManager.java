@@ -27,7 +27,7 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.Suspen
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class MybatisSuspendedJobDataManager extends AbstractDataManager<SuspendedJobEntity> implements SuspendedJobDataManager {
   

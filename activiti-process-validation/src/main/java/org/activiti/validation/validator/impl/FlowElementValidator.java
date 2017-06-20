@@ -28,8 +28,8 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * A validator for stuff that is shared across all flow elements
  * 
- * @author jbarrez
- * @author Erik Winlof
+
+
  */
 public class FlowElementValidator extends ProcessLevelValidator {
 

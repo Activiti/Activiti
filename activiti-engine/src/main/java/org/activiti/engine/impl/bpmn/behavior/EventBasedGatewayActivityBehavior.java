@@ -16,8 +16,8 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
- * @author Daniel Meyer
- * @author Joram Barrez
+
+
  */
 public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior {
   

@@ -22,7 +22,7 @@ import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DurationBusinessCalendarTest extends AbstractTestCase {
 

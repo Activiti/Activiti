@@ -32,7 +32,7 @@ import java.util.Map;
  * These are the first tests ever written for Activiti 6.
  * Keeping them here for nostalgic reasons.
  *
- * @author Joram Barrez
+
  */
 public class Activiti6Test extends PluggableActivitiTestCase {
 

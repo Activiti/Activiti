@@ -27,7 +27,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 @Component
 public class ProcessVariableResourceAssembler extends ResourceAssemblerSupport<ExtendedProcessInstance, VariablesResource> {

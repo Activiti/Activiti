@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class CatchEventXMLConverter extends BaseBpmnXMLConverter {
 

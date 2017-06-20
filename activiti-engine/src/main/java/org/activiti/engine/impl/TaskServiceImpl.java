@@ -75,8 +75,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class TaskServiceImpl extends ServiceImpl implements TaskService {
 

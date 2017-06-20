@@ -28,7 +28,7 @@ import java.util.*;
  * Registers a Boot Actuator endpoint that provides information on the
  * running process instance and renders BPMN diagrams of the deployed processes.
  *
- * @author Josh Long
+
  */
 @ConfigurationProperties(prefix = "endpoints.activiti")
 public class ProcessEngineEndpoint extends AbstractEndpoint<Map<String, Object>> {

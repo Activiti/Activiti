@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 
 /**
- * @author Joram Barrez
+
  */
 public class TestProcessUtil {
 

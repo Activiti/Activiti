@@ -20,7 +20,7 @@ import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
+
  */
 public class JsonTaskConverter extends JsonObjectConverter<Task> {
 

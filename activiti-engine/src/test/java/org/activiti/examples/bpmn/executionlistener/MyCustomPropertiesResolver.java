@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Yvo Swillens
+
  */
 public class MyCustomPropertiesResolver implements CustomPropertiesResolver {
 

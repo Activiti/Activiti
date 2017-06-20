@@ -15,7 +15,7 @@ package org.activiti.engine.management;
 /**
  * Allows programmatic querying of {@link TablePage}s.
  * 
- * @author Joram Barrez
+
  */
 public interface TablePageQuery {
 

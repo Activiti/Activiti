@@ -18,8 +18,8 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 /**
  * Implementation of an {@link ActivitiActivityEvent}.
  * 
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public class ActivitiActivityEventImpl extends ActivitiEventImpl implements ActivitiActivityEvent {
 

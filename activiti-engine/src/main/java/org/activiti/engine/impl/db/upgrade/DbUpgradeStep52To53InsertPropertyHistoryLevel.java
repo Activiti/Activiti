@@ -16,7 +16,7 @@ package org.activiti.engine.impl.db.upgrade;
 import org.activiti.engine.impl.db.DbSqlSession;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DbUpgradeStep52To53InsertPropertyHistoryLevel implements DbUpgradeStep {
 

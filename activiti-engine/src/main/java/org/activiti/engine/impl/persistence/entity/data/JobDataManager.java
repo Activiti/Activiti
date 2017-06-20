@@ -20,7 +20,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Joram Barrez
+
  */
 public interface JobDataManager extends DataManager<JobEntity> {
 

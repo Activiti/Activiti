@@ -26,7 +26,7 @@ import java.util.Map;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
- * @author Vasile Dirla
+
  */
 public class ShellCommandExecutor implements CommandExecutor {
     private Boolean waitFlag;

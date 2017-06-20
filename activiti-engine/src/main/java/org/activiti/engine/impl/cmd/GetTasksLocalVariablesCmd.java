@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 
 /**
- * @author Daisuke Yoshimoto
+
  */
 public class GetTasksLocalVariablesCmd implements Command<List<VariableInstance>>, Serializable{
 

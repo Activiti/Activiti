@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * Serializable for testing purposes.
  * 
- * @author Frederik Heremans
+
  */
 public class TestSerializableVariable implements Serializable {
 

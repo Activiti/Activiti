@@ -24,8 +24,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
- * @author Bernd Ruecker
- * @author Joram Barrez
+
+
  */
 public class RecorderExecutionListener implements ExecutionListener {
 

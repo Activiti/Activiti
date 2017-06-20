@@ -17,7 +17,7 @@ package org.activiti.rest.common.api;
  * 
  * @see AbstractPaginateList
  * 
- * @author Frederik Heremans
+
  */
 public class PaginateRequest {
 

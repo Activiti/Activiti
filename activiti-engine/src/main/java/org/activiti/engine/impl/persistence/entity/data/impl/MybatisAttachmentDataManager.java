@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.data.AttachmentDataManager;
 
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisAttachmentDataManager extends AbstractDataManager<AttachmentEntity> implements AttachmentDataManager {
   

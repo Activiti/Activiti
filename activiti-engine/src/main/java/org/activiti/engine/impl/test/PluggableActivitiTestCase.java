@@ -33,8 +33,8 @@ import org.slf4j.LoggerFactory;
  * requirements create some complications so we think it's best to use a separate base class. That way it is much easier for us to maintain our own codebase and at the same time provide stability on
  * the test support classes that we offer as part of our api (in org.activiti.engine.test).
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase {
 

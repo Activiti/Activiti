@@ -38,10 +38,10 @@ import org.activiti.engine.test.Deployment;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
- * @author Frederik Heremans
- * @author Falko Menge
+
+
+
+
  */
 public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 

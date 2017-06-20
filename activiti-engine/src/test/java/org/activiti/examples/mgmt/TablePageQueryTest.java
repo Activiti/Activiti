@@ -21,7 +21,7 @@ import org.activiti.engine.management.TablePage;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Joram Barrez
+
  */
 public class TablePageQueryTest extends PluggableActivitiTestCase {
 

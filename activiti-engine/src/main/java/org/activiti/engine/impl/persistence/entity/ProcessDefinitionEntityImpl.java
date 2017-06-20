@@ -23,8 +23,8 @@ import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.context.Context;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class ProcessDefinitionEntityImpl extends AbstractEntity implements ProcessDefinitionEntity, Serializable {
 

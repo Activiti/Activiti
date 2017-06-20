@@ -19,7 +19,7 @@ import org.activiti.engine.impl.variable.VariableType;
 /**
  * Implementation of {@link ActivitiVariableEvent}.
  * 
- * @author Frederik Heremans
+
  */
 public class ActivitiVariableEventImpl extends ActivitiEventImpl implements ActivitiVariableEvent {
 

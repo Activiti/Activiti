@@ -19,7 +19,7 @@ import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 /**
  * Extends the default {@link AcquireAsyncJobsDueRunnable} by setting the 'tenant' context before executing.
  * 
- * @author Joram Barrez
+
  */
 public class TenantAwareAcquireAsyncJobsDueRunnable extends AcquireAsyncJobsDueRunnable {
 

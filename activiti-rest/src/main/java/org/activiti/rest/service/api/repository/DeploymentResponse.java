@@ -21,8 +21,8 @@ import org.activiti.rest.common.util.DateToStringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * @author Tijs Rademakers
- * @author Frederik Heremans
+
+
  */
 public class DeploymentResponse {
 

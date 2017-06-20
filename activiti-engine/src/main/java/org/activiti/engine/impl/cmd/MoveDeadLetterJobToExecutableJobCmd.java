@@ -24,7 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class MoveDeadLetterJobToExecutableJobCmd implements Command<JobEntity>, Serializable {
 

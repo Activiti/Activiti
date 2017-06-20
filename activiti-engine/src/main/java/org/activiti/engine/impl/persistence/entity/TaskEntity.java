@@ -23,10 +23,10 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
- * @author Falko Menge
- * @author Tijs Rademakers
+
+
+
+
  */
 public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, HasRevision {
 

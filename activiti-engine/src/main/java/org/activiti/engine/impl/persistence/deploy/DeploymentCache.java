@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.deploy;
 /**
  * Interface for cache implementations.
  * 
- * @author Joram Barrez
+
  */
 public interface DeploymentCache<T> {
 

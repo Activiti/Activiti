@@ -17,8 +17,8 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public abstract class HistoricDetailEntityImpl extends AbstractEntityNoRevision implements HistoricDetailEntity, Serializable {
 

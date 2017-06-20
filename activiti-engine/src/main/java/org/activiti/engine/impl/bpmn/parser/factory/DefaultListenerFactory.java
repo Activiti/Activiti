@@ -53,7 +53,7 @@ import org.activiti.engine.task.Task;
 /**
  * Default implementation of the {@link ListenerFactory}. Used when no custom {@link ListenerFactory} is injected on the {@link ProcessEngineConfigurationImpl}.
  * 
- * @author Joram Barrez
+
  */
 public class DefaultListenerFactory extends AbstractBehaviorFactory implements ListenerFactory {
   private final ClassDelegateFactory classDelegateFactory;

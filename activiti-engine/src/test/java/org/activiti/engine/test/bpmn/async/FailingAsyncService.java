@@ -17,7 +17,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 
 /**
  * 
- * @author Daniel Meyer
+
  */
 public class FailingAsyncService implements JavaDelegate {
 

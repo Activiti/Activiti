@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Default cache: keep everything in memory, unless a limit is set.
  * 
- * @author Joram Barrez
+
  */
 public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
 

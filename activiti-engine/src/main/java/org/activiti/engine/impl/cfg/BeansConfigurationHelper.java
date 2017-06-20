@@ -23,7 +23,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 
 /**
- * @author Tom Baeyens
+
  */
 public class BeansConfigurationHelper {
 

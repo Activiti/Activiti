@@ -24,7 +24,7 @@ import org.activiti.bpmn.model.SendTask;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class SendTaskXMLConverter extends BaseBpmnXMLConverter {
 

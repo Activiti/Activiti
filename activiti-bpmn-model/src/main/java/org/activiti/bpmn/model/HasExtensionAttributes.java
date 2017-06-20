@@ -5,8 +5,7 @@ import java.util.Map;
 
 /**
  * interface for accessing Element attributes.
- * 
- * @author Martin Grofcik
+ *
  */
 public interface HasExtensionAttributes {
   /** get element's attributes */

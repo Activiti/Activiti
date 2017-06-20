@@ -16,7 +16,7 @@ package org.activiti.rest.service.api.repository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ModelRequest {
 

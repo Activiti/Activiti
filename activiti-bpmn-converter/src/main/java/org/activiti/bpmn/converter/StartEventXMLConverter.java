@@ -23,7 +23,7 @@ import org.activiti.bpmn.model.alfresco.AlfrescoStartEvent;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class StartEventXMLConverter extends BaseBpmnXMLConverter {
 

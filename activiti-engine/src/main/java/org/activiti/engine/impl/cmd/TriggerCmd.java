@@ -24,8 +24,8 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import java.util.Map;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
 

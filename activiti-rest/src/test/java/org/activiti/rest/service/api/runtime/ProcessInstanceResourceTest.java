@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to a single Process instance resource.
  * 
- * @author Frederik Heremans
+
  */
 public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
 

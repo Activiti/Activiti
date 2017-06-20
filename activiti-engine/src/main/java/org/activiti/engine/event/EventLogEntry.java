@@ -3,7 +3,7 @@ package org.activiti.engine.event;
 import java.util.Date;
 
 /**
- * @author Joram Barrez
+
  */
 public interface EventLogEntry {
 

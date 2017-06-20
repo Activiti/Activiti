@@ -21,7 +21,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 /**
  * helper/convenience methods for working with collections.
  * 
- * @author Joram Barrez
+
  */
 public class CollectionUtil {
 

@@ -19,7 +19,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * 
- * @author Daniel Meyer
+
  */
 public class ExclusiveTaskTest extends PluggableActivitiTestCase {
 

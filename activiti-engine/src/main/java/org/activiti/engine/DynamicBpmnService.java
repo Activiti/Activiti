@@ -17,7 +17,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /** Service providing access to the repository of process definitions and deployments.
  * 
- * @author Tijs Rademakers
+
  */
 public interface DynamicBpmnService {
 

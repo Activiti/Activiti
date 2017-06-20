@@ -17,8 +17,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
- * @author Pablo Ganga
- * @author Joram Barrez
+
+
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestExecutionListeners(CleanTestExecutionListener.class)

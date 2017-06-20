@@ -24,7 +24,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.GraphicInfo;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class BpmnEdgeParser implements BpmnXMLConstants {
 

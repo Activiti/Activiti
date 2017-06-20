@@ -15,9 +15,6 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Tijs Rademakers
- */
 public abstract class Event extends FlowNode {
 
   protected List<EventDefinition> eventDefinitions = new ArrayList<EventDefinition>();

@@ -20,7 +20,7 @@ import org.activiti.engine.management.TableMetaData;
 import org.activiti.engine.management.TablePage;
 
 /**
- * @author Joram Barrez
+
  */
 public interface TableDataManager {
 

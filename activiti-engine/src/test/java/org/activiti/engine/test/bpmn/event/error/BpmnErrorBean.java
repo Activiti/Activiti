@@ -19,7 +19,7 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Falko Menge
+
  */
 public class BpmnErrorBean implements Serializable {
 

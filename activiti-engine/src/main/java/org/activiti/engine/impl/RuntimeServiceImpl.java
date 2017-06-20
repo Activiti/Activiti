@@ -73,8 +73,8 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
- * @author Tom Baeyens
- * @author Daniel Meyer
+
+
  */
 public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 

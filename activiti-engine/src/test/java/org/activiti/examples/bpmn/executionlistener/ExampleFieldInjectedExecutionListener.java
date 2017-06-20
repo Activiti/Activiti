@@ -20,7 +20,7 @@ import org.activiti.engine.delegate.Expression;
 /**
  * Example {@link ExecutionListener} which gets 2 fields injected.
  * 
- * @author Frederik Heremans
+
  */
 public class ExampleFieldInjectedExecutionListener implements ExecutionListener {
 

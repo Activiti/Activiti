@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Gives access to a deployed process diagram, e.g., a PNG image, through a stream of bytes.
  * 
- * @author Falko Menge
+
  */
 public class GetDeploymentProcessDiagramCmd implements Command<InputStream>, Serializable {
 

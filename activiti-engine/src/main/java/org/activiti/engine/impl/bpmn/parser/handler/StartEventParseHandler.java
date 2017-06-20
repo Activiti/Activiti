@@ -24,8 +24,8 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.util.CollectionUtil;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<StartEvent> {
 

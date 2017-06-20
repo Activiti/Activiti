@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.event.BaseEntityEventListener;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
- * @author jbarrez
+
  */
 public class DebugInfoEntityEventListener extends BaseEntityEventListener {
 

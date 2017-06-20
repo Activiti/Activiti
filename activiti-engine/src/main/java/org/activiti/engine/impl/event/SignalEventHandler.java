@@ -25,8 +25,8 @@ import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Daniel Meyer
- * @author Joram Barrez
+
+
  */
 public class SignalEventHandler extends AbstractEventHandler {
 

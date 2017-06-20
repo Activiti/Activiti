@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TextAnnotation;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class TextAnnotationTextParser extends BaseChildElementParser {
 

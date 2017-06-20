@@ -20,7 +20,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Joram Barrez
+
  */
 public class ProcessDefinitionCategoryTest extends PluggableActivitiTestCase {
 

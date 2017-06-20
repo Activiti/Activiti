@@ -20,7 +20,7 @@ import org.springframework.messaging.MessagingException;
 /**
  * Spring Integration Java Configuration DSL integration for Activiti.
  *
- * @author Josh Long
+
  */
 public class Activiti {
 

@@ -29,8 +29,8 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
- * @author Tom Baeyens
- * @author Marcus Klimstra (CGI)
+
+
  */
 public class SerializableType extends ByteArrayType {
 

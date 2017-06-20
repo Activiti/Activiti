@@ -22,7 +22,7 @@ import org.activiti.engine.query.QueryProperty;
 /**
  * Contains the possible properties which can be used in a {@link HistoricVariableInstanceQuery}.
  * 
- * @author Christian Lipphardt (camunda)
+
  */
 public class HistoricVariableInstanceQueryProperty implements QueryProperty {
 

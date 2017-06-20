@@ -22,8 +22,8 @@ import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public class ModelQueryImpl extends AbstractQuery<ModelQuery, Model> implements ModelQuery {
 

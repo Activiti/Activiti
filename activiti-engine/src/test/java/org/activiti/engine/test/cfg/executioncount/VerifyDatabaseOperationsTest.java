@@ -20,7 +20,7 @@ import org.activiti.engine.test.profiler.TotalExecutionTimeCommandInterceptor;
 import org.junit.Assert;
 
 /**
- * @author Joram Barrez
+
  */
 public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
   

@@ -22,9 +22,9 @@ import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tom Baeyens
- * @author Marcus Klimstra (CGI)
- * @author Joram Barrez
+
+
+
  */
 public class VariableInstanceEntityImpl extends AbstractEntity implements VariableInstanceEntity, ValueFields, BulkDeleteable, Serializable {
 

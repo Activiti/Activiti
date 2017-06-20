@@ -27,7 +27,7 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager
  * of a subprocess and is triggered. At that point, everything within the subprocess would
  * need to be destroyed.
  * 
- * @author Joram Barrez
+
  */
 public class DestroyScopeOperation extends AbstractOperation {
 

@@ -22,7 +22,7 @@ import org.activiti.bpmn.model.BusinessRuleTask;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class BusinessRuleTaskXMLConverter extends BaseBpmnXMLConverter {
 

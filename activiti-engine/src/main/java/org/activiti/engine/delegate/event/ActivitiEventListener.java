@@ -15,7 +15,7 @@ package org.activiti.engine.delegate.event;
 /**
  * Describes a class that listens for {@link ActivitiEvent}s dispatched by the engine.
  * 
- * @author Frederik Heremans
+
  */
 public interface ActivitiEventListener {
 

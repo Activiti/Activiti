@@ -24,7 +24,7 @@ import org.activiti.bpmn.model.EventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class BoundaryEventXMLConverter extends BaseBpmnXMLConverter {
 

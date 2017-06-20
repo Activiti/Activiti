@@ -24,7 +24,7 @@ import org.activiti.engine.ActivitiException;
 /**
  * Scans class and creates {@link EntityMetaData} based on it.
  * 
- * @author Frederik Heremans
+
  */
 public class JPAEntityScanner {
 

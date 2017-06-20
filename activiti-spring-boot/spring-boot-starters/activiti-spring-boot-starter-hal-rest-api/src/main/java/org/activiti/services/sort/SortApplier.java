@@ -19,7 +19,7 @@ import org.activiti.engine.query.Query;
 import org.springframework.data.domain.Pageable;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 public interface SortApplier<T extends Query<?,?>> {
 

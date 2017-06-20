@@ -17,7 +17,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 /**
  * The various types of {@link JobEntity} subtypes, as enum.
  * 
- * @author Joram Barrez
+
  */
 public enum JobType {
   

@@ -20,7 +20,7 @@ import javax.xml.namespace.QName;
 /**
  * Represents an implementation of a {@link Operation}
  * 
- * @author Esteban Robles Luna
+
  */
 public interface OperationImplementation {
 

@@ -21,7 +21,7 @@ import org.activiti.engine.repository.Deployment;
 /**
  * Test case for all {@link ActivitiEvent}s related to deployments.
  * 
- * @author Frederik Heremans
+
  */
 public class DeploymentEventsTest extends PluggableActivitiTestCase {
 

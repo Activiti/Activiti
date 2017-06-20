@@ -26,7 +26,7 @@ import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
+
  */
 public class ResetExpiredJobsTest extends PluggableActivitiTestCase {
   

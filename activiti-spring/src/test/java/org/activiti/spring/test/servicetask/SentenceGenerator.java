@@ -13,7 +13,7 @@
 package org.activiti.spring.test.servicetask;
 
 /**
- * @author Joram Barrez
+
  */
 public class SentenceGenerator {
 

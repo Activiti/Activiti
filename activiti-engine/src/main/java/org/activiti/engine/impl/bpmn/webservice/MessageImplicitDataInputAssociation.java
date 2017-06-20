@@ -21,7 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * An implicit data input association between a source and a target. source is a variable in the current execution context and target is a property in the message
  * 
- * @author Esteban Robles Luna
+
  */
 public class MessageImplicitDataInputAssociation extends AbstractDataAssociation {
 

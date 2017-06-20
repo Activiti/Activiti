@@ -47,10 +47,10 @@ import org.activiti.engine.test.history.SerializableVariable;
 import org.activiti.standalone.jpa.FieldAccessJPAEntity;
 
 /**
- * @author Tom Baeyens
- * @author Frederik Heremans
- * @author Joram Barrez
- * @author Christian Lipphardt (camunda)
+
+
+
+
  */
 public class FullHistoryTest extends ResourceActivitiTestCase {
 

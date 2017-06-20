@@ -15,7 +15,7 @@ package org.activiti.engine.impl.transformer;
 /**
  * Transforms a {@link String} to a {@link Integer}
  * 
- * @author Esteban Robles Luna
+
  */
 public class StringToInteger extends AbstractTransformer {
 

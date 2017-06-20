@@ -14,8 +14,8 @@ package org.activiti.engine.impl.persistence.entity;
 
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface MembershipEntity extends Entity {
 

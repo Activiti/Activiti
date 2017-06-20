@@ -18,7 +18,7 @@ import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface EventLogEntryDataManager extends DataManager<EventLogEntryEntity> {
   

@@ -25,7 +25,7 @@ import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Wendel Kerr
+
  */
 public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase {
 

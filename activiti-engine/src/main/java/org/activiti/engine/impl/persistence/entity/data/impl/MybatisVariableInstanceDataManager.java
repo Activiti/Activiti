@@ -27,7 +27,7 @@ import org.activiti.engine.impl.persistence.entity.data.VariableInstanceDataMana
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.VariableByExecutionIdMatcher;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisVariableInstanceDataManager extends AbstractDataManager<VariableInstanceEntity> implements VariableInstanceDataManager {
   

@@ -31,8 +31,8 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
 /**
- * @author Joram Barrez
- * @author Josh Long
+
+
  */
 @Configuration
 @AutoConfigureBefore(DataSourceProcessEngineAutoConfiguration.class)

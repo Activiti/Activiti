@@ -14,9 +14,6 @@ package org.activiti.bpmn.model;
 
 import java.util.ArrayList;
 
-/**
- * @author Tijs Rademakers
- */
 public class SendTask extends TaskWithFieldExtensions {
 
   protected String type;

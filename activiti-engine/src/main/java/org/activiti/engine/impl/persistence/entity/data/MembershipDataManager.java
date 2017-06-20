@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity.data;
 import org.activiti.engine.impl.persistence.entity.MembershipEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface MembershipDataManager extends DataManager<MembershipEntity> {
   

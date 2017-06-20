@@ -22,7 +22,7 @@ import org.activiti.engine.query.QueryProperty;
 /**
  * Contains the possible properties that can be used by the {@link GroupQuery}.
  * 
- * @author Joram Barrez
+
  */
 public class GroupQueryProperty implements QueryProperty {
 

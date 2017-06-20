@@ -20,7 +20,7 @@ import org.activiti.engine.runtime.Job;
  * A test specifically written to test how events (start/boundary) are handled 
  * when deploying a new version of a process definition. 
  * 
- * @author Joram Barrez
+
  */
 public class TimerEventsAndNewVersionDeploymentsTest extends PluggableActivitiTestCase {
   

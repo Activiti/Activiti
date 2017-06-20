@@ -22,7 +22,7 @@ import org.activiti.validation.validator.ValidatorImpl;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author jbarrez
+
  */
 public class MessageValidator extends ValidatorImpl {
 

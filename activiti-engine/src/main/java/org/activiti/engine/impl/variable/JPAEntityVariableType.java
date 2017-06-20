@@ -19,7 +19,7 @@ import org.activiti.engine.impl.context.Context;
 /**
  * Variable type capable of storing reference to JPA-entities. Only JPA-Entities which are configured by annotations are supported. Use of compound primary keys is not supported.
  * 
- * @author Frederik Heremans
+
  */
 public class JPAEntityVariableType implements VariableType, CacheableVariable {
 

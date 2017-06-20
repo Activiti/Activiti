@@ -26,8 +26,8 @@ import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 
 /**
- * @author Joram Barrez
- * @author Falko Menge
+
+
  */
 public class EmailSendTaskTest extends PluggableActivitiTestCase {
 

@@ -15,7 +15,7 @@ package org.activiti.spring.test.servicetask;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
- * @author Joram Barrez
+
  */
 public class SentenceToUpperCaseBean {
 

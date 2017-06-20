@@ -13,7 +13,7 @@
 package org.activiti.validation.validator;
 
 /**
- * @author Erik Winlof
+
  */
 public class Constraints {
 

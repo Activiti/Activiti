@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Joram Barrez
+
  */
 public interface IdentityInfoEntityManager extends EntityManager<IdentityInfoEntity>{
 

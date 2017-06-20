@@ -28,7 +28,7 @@ import java.util.Map;
  * the process engine configuration is built.
  * </p>
  * 
- * @author Nils Preusker - n.preusker@gmail.com
+
  */
 public class Mocks {
 

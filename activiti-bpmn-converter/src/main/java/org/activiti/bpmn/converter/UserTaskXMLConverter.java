@@ -36,7 +36,7 @@ import org.activiti.bpmn.model.alfresco.AlfrescoUserTask;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers, Saeid Mirzaei
+
  */
 public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
   

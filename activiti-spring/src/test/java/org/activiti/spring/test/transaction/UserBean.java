@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.sql.DataSource;
 
 /**
- * @author Tom Baeyens
+
  */
 public class UserBean {
 

@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.Event;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class CancelEventDefinitionParser extends BaseChildElementParser {
 

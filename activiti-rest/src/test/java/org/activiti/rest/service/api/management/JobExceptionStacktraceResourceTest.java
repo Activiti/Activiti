@@ -17,7 +17,7 @@ import org.apache.http.client.methods.HttpGet;
 /**
  * Test for all REST-operations related to the Job collection and a single job resource.
  * 
- * @author Frederik Heremans
+
  */
 public class JobExceptionStacktraceResourceTest extends BaseSpringRestTestCase {
 

@@ -20,8 +20,8 @@ import java.io.InputStream;
 import org.activiti.engine.ActivitiException;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class InputStreamSource implements StreamSource {
 

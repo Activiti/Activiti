@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DateFormType extends AbstractFormType {
 

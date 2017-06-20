@@ -30,7 +30,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.springframework.http.MediaType;
 
 /**
- * @author Frederik Heremans
+
  */
 public class UserPictureResourceTest extends BaseSpringRestTestCase {
 

@@ -31,7 +31,7 @@ import org.activiti.rest.service.api.engine.variable.QueryVariable.QueryVariable
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * @author Frederik Heremans
+
  */
 public class BaseProcessInstanceResource {
 

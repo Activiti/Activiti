@@ -13,7 +13,7 @@ import org.junit.Test;
 /**
  * Test for ACT-1657
  * 
- * @author Frederik Heremans
+
  */
 public class EventListenerConverterTest extends AbstractConverterTest {
 

@@ -22,7 +22,7 @@ import java.util.Map.Entry;
 /**
  * Stores a two-dimensional graph layout.
  * 
- * @author Falko Menge
+
  */
 public class DiagramLayout implements Serializable {
 

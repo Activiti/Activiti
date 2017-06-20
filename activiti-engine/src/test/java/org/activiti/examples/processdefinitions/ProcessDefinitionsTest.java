@@ -24,8 +24,8 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
 

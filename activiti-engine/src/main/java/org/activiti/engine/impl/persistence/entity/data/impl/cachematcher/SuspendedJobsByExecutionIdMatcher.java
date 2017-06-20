@@ -17,7 +17,7 @@ import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
 import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class SuspendedJobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<SuspendedJobEntity> {
   

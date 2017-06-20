@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 /**
- * @author Frederik Heremans
+
  */
 public class TaskQueryRequest extends PaginateRequest {
 

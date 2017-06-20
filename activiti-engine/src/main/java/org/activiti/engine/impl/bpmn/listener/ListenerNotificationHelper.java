@@ -40,7 +40,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
- * @author Joram Barrez
+
  */
 public class ListenerNotificationHelper {
   

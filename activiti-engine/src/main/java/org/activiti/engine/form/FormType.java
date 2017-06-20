@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * Used to indicate the type on a {@link FormProperty}.
  * 
- * @author Tom Baeyens
+
  */
 public interface FormType extends Serializable {
 

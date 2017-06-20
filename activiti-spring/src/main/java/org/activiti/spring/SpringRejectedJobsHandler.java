@@ -21,7 +21,7 @@ import org.activiti.engine.runtime.Job;
  * Strategy for handling jobs that were acquired but cannot be executed at this point (queue-size exceeded).
  * </p>
  * 
- * @author Tijs Rademakers
+
  */
 public interface SpringRejectedJobsHandler {
 

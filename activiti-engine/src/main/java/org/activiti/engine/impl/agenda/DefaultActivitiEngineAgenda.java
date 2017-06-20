@@ -22,8 +22,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * @author Joram Barrez
- * @author martin.grofcik
+
+
  */
 public class DefaultActivitiEngineAgenda implements ActivitiEngineAgenda {
 

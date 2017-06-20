@@ -22,10 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * @author Tijs Rademakers
- * @author Joram Barrez
- */
 public class BpmnModel {
 
   protected Map<String, List<ExtensionAttribute>> definitionsAttributes = new LinkedHashMap<String, List<ExtensionAttribute>>();

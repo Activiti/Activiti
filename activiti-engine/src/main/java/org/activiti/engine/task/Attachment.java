@@ -20,7 +20,7 @@ import org.activiti.engine.TaskService;
 /**
  * Any type of content that is be associated with a task or with a process instance.
  * 
- * @author Tom Baeyens
+
  */
 public interface Attachment {
 

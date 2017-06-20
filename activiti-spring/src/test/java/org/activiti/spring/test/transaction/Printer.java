@@ -16,7 +16,7 @@ package org.activiti.spring.test.transaction;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
- * @author Tom Baeyens
+
  */
 public class Printer {
 

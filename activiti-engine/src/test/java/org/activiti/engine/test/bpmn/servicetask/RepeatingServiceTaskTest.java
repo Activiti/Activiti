@@ -16,7 +16,7 @@ package org.activiti.engine.test.bpmn.servicetask;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**
- * @author Joram Barrez
+
  */
 public class RepeatingServiceTaskTest extends PluggableActivitiTestCase {
 

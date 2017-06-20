@@ -18,7 +18,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
- * @author Frederik Heremans
+
  */
 @Entity(name = "FLOAT_ID_ENTITY")
 public class FloatIdJPAEntity {

@@ -27,7 +27,7 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ModelResourceSourceTest extends BaseSpringRestTestCase {
 

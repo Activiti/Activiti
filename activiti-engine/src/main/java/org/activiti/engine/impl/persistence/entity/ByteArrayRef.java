@@ -9,7 +9,7 @@ import org.activiti.engine.impl.context.Context;
  * Encapsulates the logic for transparently working with {@link ByteArrayEntity} .
  * </p>
  * 
- * @author Marcus Klimstra (CGI)
+
  */
 public class ByteArrayRef implements Serializable {
 

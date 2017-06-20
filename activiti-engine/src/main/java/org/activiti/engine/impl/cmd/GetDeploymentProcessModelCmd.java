@@ -24,7 +24,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
  * Gives access to a deployed process model, e.g., a BPMN 2.0 XML file, through a stream of bytes.
  * 
- * @author Falko Menge
+
  */
 public class GetDeploymentProcessModelCmd implements Command<InputStream>, Serializable {
 

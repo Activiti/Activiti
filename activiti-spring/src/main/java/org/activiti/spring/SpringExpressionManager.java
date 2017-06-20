@@ -32,7 +32,7 @@ import org.springframework.context.ApplicationContext;
 /**
  * {@link ExpressionManager} that exposes the full application-context or a limited set of beans in expressions.
  * 
- * @author Tom Baeyens
+
  */
 public class SpringExpressionManager extends ExpressionManager {
 

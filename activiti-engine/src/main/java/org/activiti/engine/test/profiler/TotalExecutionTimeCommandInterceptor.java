@@ -5,7 +5,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 
 /**
- * @author Joram Barrez
+
  */
 public class TotalExecutionTimeCommandInterceptor extends AbstractCommandInterceptor {
 

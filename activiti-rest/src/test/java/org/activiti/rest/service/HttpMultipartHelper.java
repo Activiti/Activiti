@@ -28,7 +28,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
  * 
  * Using {@link MultipartRequestEntity} to do the heavy lifting.
  * 
- * @author Tijs Rademakers
+
  */
 public class HttpMultipartHelper {
 

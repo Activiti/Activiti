@@ -28,7 +28,7 @@ import javax.xml.xpath.XPath;
  * 
  * Can be used in {@link XPath#setNamespaceContext(NamespaceContext)}.
  * 
- * @author Falko Menge
+
  */
 public class Bpmn20NamespaceContext implements NamespaceContext {
 

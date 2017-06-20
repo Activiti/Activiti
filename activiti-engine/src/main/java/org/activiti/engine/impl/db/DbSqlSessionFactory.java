@@ -28,8 +28,8 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class DbSqlSessionFactory implements SessionFactory {
   

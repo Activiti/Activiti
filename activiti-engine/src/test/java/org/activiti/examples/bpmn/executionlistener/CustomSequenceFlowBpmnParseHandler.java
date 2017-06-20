@@ -23,7 +23,7 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.SequenceFlowParseHandler;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class CustomSequenceFlowBpmnParseHandler extends SequenceFlowParseHandler {
 

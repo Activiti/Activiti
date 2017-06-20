@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.model.FlowNode;
 
 /**
- * @author Joram Barrez
+
  */
 public abstract class AbstractFlowNodeBpmnParseHandler<T extends FlowNode> extends AbstractBpmnParseHandler<T> {
 

@@ -31,8 +31,8 @@ import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> implements TaskEntityManager {
   

@@ -18,8 +18,8 @@ import org.activiti.engine.query.Query;
 /**
  * Programmatic querying for {@link HistoricActivityInstance}s.
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface HistoricActivityInstanceQuery extends Query<HistoricActivityInstanceQuery, HistoricActivityInstance> {
 

@@ -25,7 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
- * @author Frederik Heremans
+
  */
 public class DeleteHistoricProcessInstanceCmd implements Command<Object>, Serializable {
 

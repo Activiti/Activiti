@@ -18,8 +18,8 @@ import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<ErrorEventDefinition> {
 

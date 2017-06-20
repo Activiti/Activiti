@@ -17,7 +17,7 @@ import org.activiti.engine.impl.asyncexecutor.ResetExpiredJobsRunnable;
 import org.activiti.engine.impl.cfg.multitenant.TenantInfoHolder;
 
 /**
- * @author Joram Barrez
+
  */
 public class TenantAwareResetExpiredJobsRunnable extends ResetExpiredJobsRunnable {
 

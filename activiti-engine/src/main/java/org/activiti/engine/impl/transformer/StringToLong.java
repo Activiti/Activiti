@@ -15,7 +15,7 @@ package org.activiti.engine.impl.transformer;
 /**
  * Transforms a {@link String} to a {@link Long}
  * 
- * @author Esteban Robles Luna
+
  */
 public class StringToLong extends AbstractTransformer {
 

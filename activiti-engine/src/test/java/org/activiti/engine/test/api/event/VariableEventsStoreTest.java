@@ -27,7 +27,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test variables delete events with storing events {@link EventLogEntryEntity}.
  * 
- * @author Bassam Al-Sarori
+
  */
 public class VariableEventsStoreTest extends PluggableActivitiTestCase {
 

@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class MultiInstanceParser extends BaseChildElementParser {
 

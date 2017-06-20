@@ -24,8 +24,8 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.IdentityInfoDataManager;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class IdentityInfoEntityManagerImpl extends AbstractEntityManager<IdentityInfoEntity> implements IdentityInfoEntityManager {
   

@@ -17,7 +17,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Tom Baeyens
+
  */
 public class InitiatorTest extends PluggableActivitiTestCase {
 

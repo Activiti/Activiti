@@ -19,8 +19,8 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
 
 /**
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public class TestBPMNParseHandler extends AbstractBpmnParseHandler<Process> {
 

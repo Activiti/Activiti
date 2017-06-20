@@ -25,7 +25,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class TransactionSubProcessTest extends PluggableActivitiTestCase {
 

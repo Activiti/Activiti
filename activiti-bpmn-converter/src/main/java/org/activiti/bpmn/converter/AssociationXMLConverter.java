@@ -22,9 +22,6 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * @author Tijs Rademakers
- */
 public class AssociationXMLConverter extends BaseBpmnXMLConverter {
 
   public Class<? extends BaseElement> getBpmnElementType() {

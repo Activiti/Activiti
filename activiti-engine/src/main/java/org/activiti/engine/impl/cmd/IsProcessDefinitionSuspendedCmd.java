@@ -22,7 +22,7 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class IsProcessDefinitionSuspendedCmd implements Command<Boolean>, Serializable {
 

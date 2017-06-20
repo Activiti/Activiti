@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 /**
  * An {@link org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent} implementation.
  * 
- * @author martin.grofcik
+
  */
 public class ActivitiActivityCancelledEventImpl extends ActivitiActivityEventImpl implements ActivitiActivityCancelledEvent {
 

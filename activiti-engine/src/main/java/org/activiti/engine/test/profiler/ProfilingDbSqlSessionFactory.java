@@ -5,7 +5,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.Session;
 
 /**
- * @author Joram Barrez
+
  */
 public class ProfilingDbSqlSessionFactory extends DbSqlSessionFactory {
 

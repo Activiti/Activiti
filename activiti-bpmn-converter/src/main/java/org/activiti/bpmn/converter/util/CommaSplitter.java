@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Saeid Mirzaei, Tijs Rademakers
+
  */
 
 public class CommaSplitter {

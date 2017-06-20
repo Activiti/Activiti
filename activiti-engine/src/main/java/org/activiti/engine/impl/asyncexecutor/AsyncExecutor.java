@@ -17,8 +17,8 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tijd Rademakers
- * @author Joram Barrez
+
+
  */
 public interface AsyncExecutor {
 

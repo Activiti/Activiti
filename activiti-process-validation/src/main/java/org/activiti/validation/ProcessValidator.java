@@ -20,7 +20,7 @@ import org.activiti.validation.validator.ValidatorSet;
 /**
  * Validates a process definition against the rules of the Activiti engine to be executable
  * 
- * @author jbarrez
+
  */
 public interface ProcessValidator {
 

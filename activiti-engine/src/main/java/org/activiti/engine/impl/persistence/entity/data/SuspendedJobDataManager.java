@@ -20,7 +20,7 @@ import org.activiti.engine.impl.persistence.entity.SuspendedJobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tijs Rademakers
+
  */
 public interface SuspendedJobDataManager extends DataManager<SuspendedJobEntity> {
   

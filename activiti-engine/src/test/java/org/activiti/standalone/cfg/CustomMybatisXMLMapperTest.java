@@ -9,7 +9,7 @@ import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Bassam Al-Sarori
+
  */
 public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 

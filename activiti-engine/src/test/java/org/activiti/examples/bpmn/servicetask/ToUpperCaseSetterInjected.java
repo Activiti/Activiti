@@ -17,7 +17,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ToUpperCaseSetterInjected implements JavaDelegate {
 

@@ -26,8 +26,8 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for all {@link ActivitiEvent}s related to activities.
  * 
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public class HistoricActivityEventsTest extends PluggableActivitiTestCase {
 

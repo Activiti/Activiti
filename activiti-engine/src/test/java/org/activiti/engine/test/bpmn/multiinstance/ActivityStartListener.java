@@ -17,7 +17,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 
 /**
- * @author Joram Barrez
+
  */
 public class ActivityStartListener implements ExecutionListener {
   

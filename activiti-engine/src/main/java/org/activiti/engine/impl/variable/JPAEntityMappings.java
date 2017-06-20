@@ -28,7 +28,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
- * @author Frederik Heremans
+
  */
 public class JPAEntityMappings {
 

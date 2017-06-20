@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.GroupDataManager;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisGroupDataManager extends AbstractDataManager<GroupEntity> implements GroupDataManager {
 

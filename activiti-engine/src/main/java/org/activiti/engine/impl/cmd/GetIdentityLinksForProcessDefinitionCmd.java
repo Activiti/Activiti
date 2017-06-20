@@ -23,7 +23,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class GetIdentityLinksForProcessDefinitionCmd implements Command<List<IdentityLink>>, Serializable {
 

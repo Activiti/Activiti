@@ -23,7 +23,7 @@ import org.activiti.engine.impl.el.FixedValue;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Joram Barrez
+
  */
 public abstract class AbstractBehaviorFactory {
 

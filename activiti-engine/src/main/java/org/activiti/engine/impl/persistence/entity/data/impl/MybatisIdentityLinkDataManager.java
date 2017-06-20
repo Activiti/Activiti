@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.data.IdentityLinkDataManager;
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.IdentityLinksByProcInstMatcher;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisIdentityLinkDataManager extends AbstractDataManager<IdentityLinkEntity> implements IdentityLinkDataManager {
   

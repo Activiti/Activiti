@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface MembershipEntityManager extends EntityManager<MembershipEntity> {
 

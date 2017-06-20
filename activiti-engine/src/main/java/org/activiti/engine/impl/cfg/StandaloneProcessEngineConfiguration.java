@@ -16,7 +16,7 @@ package org.activiti.engine.impl.cfg;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 
 /**
- * @author Tom Baeyens
+
  */
 public class StandaloneProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 

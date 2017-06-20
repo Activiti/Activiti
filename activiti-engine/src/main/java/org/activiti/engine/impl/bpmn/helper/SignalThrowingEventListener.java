@@ -26,7 +26,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
  * An {@link ActivitiEventListener} that throws a signal event when an event is dispatched to it.
  * 
- * @author Frederik Heremans
+
  * 
  */
 public class SignalThrowingEventListener extends BaseDelegateEventListener {

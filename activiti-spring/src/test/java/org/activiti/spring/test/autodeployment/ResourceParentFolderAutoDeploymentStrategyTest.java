@@ -38,7 +38,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.io.Resource;
 
 /**
- * @author Tiese Barrell
+
  */
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAutoDeploymentStrategyTest {

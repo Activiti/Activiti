@@ -26,8 +26,8 @@ import java.util.List;
  *
  * Also makes sure the {@link ExecutionListener} instances are called.
  *
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class ContinueProcessOperation extends AbstractOperation {
 

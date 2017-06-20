@@ -23,7 +23,7 @@ import java.util.Collection;
  * 
  * Typically used with {@link ThreadLocal}'s in the implementation.
  * 
- * @author Joram Barrez
+
  */
 public interface TenantInfoHolder {
   

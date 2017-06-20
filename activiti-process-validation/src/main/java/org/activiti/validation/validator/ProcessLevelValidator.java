@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.validation.ValidationError;
 
 /**
- * @author jbarrez
+
  */
 public abstract class ProcessLevelValidator extends ValidatorImpl {
 

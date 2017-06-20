@@ -16,7 +16,7 @@ package org.activiti.engine;
  * Represents information about the initialization of the process engine.
  * 
  * @see ProcessEngines
- * @author Tom Baeyens
+
  */
 public interface ProcessEngineInfo {
 

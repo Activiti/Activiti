@@ -23,7 +23,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for all {@link ActivitiEvent}s related to executions.
  * 
- * @author Frederik Heremans
+
  */
 public class ExecutionEventsTest extends PluggableActivitiTestCase {
 

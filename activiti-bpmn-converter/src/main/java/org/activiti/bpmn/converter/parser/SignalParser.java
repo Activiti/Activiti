@@ -20,7 +20,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Signal;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class SignalParser implements BpmnXMLConstants {
 

@@ -26,8 +26,8 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricVariableInstanceDataManager;
 
 /**
- * @author Christian Lipphardt (camunda)
- * @author Joram Barrez
+
+
  */
 public class HistoricVariableInstanceEntityManagerImpl extends AbstractEntityManager<HistoricVariableInstanceEntity> implements HistoricVariableInstanceEntityManager {
   

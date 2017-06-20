@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 @Component
 public class ProcessDefinitionConverter implements ModelConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition> {

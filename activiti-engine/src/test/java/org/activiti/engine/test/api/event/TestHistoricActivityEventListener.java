@@ -20,7 +20,7 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 
 /**
- * @author Joram Barrez
+
  */
 public class TestHistoricActivityEventListener implements ActivitiEventListener {
 

@@ -25,10 +25,10 @@ import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionDataMan
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tom Baeyens
- * @author Falko Menge
- * @author Saeid Mirzaei
- * @author Joram Barrez
+
+
+
+
  */
 public class ProcessDefinitionEntityManagerImpl extends AbstractEntityManager<ProcessDefinitionEntity> implements ProcessDefinitionEntityManager {
 

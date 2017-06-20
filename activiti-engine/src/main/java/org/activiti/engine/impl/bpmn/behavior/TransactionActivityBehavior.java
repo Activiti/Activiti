@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class TransactionActivityBehavior extends SubProcessActivityBehavior {
 

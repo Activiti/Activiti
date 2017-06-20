@@ -16,7 +16,7 @@ package org.activiti.engine.test.api.form;
 import java.io.Serializable;
 
 /**
- * @author Tom Baeyens
+
  */
 public class Address implements Serializable {
 

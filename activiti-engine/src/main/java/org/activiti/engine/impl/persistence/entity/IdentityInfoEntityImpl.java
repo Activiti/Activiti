@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Tom Baeyens
+
  */
 public class IdentityInfoEntityImpl extends AbstractEntity implements IdentityInfoEntity, Serializable {
 

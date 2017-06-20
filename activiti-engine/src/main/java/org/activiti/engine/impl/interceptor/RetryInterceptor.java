@@ -20,7 +20,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Intercepts {@link ActivitiOptimisticLockingException} and tries to run the same command again. The number of retries and the time waited between retries is configurable.
  * 
- * @author Daniel Meyer
+
  */
 public class RetryInterceptor extends AbstractCommandInterceptor {
 

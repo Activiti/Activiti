@@ -15,7 +15,7 @@ package org.activiti.engine.delegate.event;
 /**
  * An {@link ActivitiEvent} related to a single entity.
  * 
- * @author Frederik Heremans
+
  */
 public interface ActivitiEntityEvent extends ActivitiEvent {
 

@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * Simple POJO, just for test purposes
  * 
- * @author Joram Barrez
+
  */
 public class UelExpressionTestOrder implements Serializable {
 

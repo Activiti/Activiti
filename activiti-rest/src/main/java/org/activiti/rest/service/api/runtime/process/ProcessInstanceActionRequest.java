@@ -16,7 +16,7 @@ package org.activiti.rest.service.api.runtime.process;
 import org.activiti.rest.service.api.RestActionRequest;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ProcessInstanceActionRequest extends RestActionRequest {
 

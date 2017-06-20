@@ -29,7 +29,7 @@ import java.util.Iterator;
 /**
  * This provides static methods to convert an XML text into a JSONArray or JSONObject, and to covert a JSONArray or JSONObject into an XML text using the JsonML transform.
  * 
- * @author JSON.org
+
  * @version 2010-02-12
  */
 public class JSONML {

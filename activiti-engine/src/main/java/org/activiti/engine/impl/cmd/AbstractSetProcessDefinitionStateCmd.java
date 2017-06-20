@@ -39,8 +39,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
- * @author Daniel Meyer
- * @author Joram Barrez
+
+
  */
 public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Void> {
 

@@ -20,7 +20,7 @@ import org.activiti.engine.TaskService;
  * @see TaskService#addUserIdentityLink(String, String, String)
  * @see TaskService#addGroupIdentityLink(String, String, String)
  * 
- * @author Joram Barrez
+
  */
 public class IdentityLinkType {
 

@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 @RestController
 @RequestMapping(value = "/api/runtime/process-instances/{processInstanceId}/variables", produces = "application/hal+json")

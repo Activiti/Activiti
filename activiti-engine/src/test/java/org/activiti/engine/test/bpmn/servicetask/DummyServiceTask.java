@@ -17,7 +17,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Joram Barrez
+
  */
 public class DummyServiceTask implements JavaDelegate {
 

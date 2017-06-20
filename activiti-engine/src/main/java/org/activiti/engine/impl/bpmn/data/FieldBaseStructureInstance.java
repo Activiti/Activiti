@@ -18,7 +18,7 @@ import java.util.Map;
 /**
  * An instance of {@link FieldBaseStructureDefinition}
  * 
- * @author Esteban Robles Luna
+
  */
 public class FieldBaseStructureInstance implements StructureInstance {
 

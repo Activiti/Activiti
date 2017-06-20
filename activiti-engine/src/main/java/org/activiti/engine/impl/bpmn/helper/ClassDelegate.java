@@ -55,10 +55,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * This class will lazily instantiate the referenced classes when needed at runtime.
  * 
- * @author Joram Barrez
- * @author Falko Menge
- * @author Saeid Mirzaei
- * @author Yvo Swillens
+
+
+
+
  */
 public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, TransactionDependentExecutionListener, TransactionDependentTaskListener, SubProcessActivityBehavior, CustomPropertiesResolver {
 

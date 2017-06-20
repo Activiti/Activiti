@@ -19,7 +19,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.form.AbstractFormType;
 
 /**
- * @author Tom Baeyens
+
  */
 public class EnumFormType extends AbstractFormType {
 

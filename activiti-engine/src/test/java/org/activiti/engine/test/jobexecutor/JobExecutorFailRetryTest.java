@@ -16,7 +16,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Saeid Mirzaei
+
  */
 
 public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {

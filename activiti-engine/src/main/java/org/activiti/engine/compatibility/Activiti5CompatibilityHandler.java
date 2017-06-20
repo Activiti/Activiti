@@ -40,8 +40,8 @@ import org.activiti.engine.task.Comment;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public interface Activiti5CompatibilityHandler {
 

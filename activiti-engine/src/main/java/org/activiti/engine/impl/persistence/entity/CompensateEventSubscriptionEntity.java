@@ -15,8 +15,8 @@ package org.activiti.engine.impl.persistence.entity;
 
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public interface CompensateEventSubscriptionEntity extends EventSubscriptionEntity {
   

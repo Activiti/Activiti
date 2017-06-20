@@ -25,8 +25,8 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Saeid Mirzaei
- * @author Tijs Rademakers
+
+
  */
 
 public class StartAuthorizationTest extends PluggableActivitiTestCase {

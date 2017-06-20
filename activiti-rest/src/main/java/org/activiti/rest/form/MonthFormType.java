@@ -16,7 +16,7 @@ package org.activiti.rest.form;
 import org.activiti.engine.form.AbstractFormType;
 
 /**
- * @author Joram Barrez
+
  */
 public class MonthFormType extends AbstractFormType {
 

@@ -23,8 +23,8 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
- * @author Joram Barrez
- * @author Falko Menge
+
+
  */
 public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>>, Serializable {
 

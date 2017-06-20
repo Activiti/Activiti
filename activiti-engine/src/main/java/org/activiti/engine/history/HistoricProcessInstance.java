@@ -23,7 +23,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 /**
  * A single execution of a whole process definition that is stored permanently.
  * 
- * @author Christian Stettler
+
  */
 public interface HistoricProcessInstance {
 

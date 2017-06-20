@@ -18,7 +18,7 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
+
  */
 public class CustomActivityBehaviorFactoryTest extends ResourceActivitiTestCase {
 

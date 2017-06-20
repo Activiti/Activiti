@@ -19,7 +19,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricTaskInstanceEntityManager extends EntityManager<HistoricTaskInstanceEntity> {
   

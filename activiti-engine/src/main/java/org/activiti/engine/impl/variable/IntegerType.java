@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.variable;
 
 /**
- * @author Joram Barrez
+
  */
 public class IntegerType implements VariableType {
 

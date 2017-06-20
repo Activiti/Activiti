@@ -17,8 +17,8 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public final class SchemaOperationsProcessEngineBuild implements Command<Object> {
 

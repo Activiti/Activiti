@@ -17,8 +17,8 @@ import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class TransactionParseHandler extends AbstractActivityBpmnParseHandler<Transaction> {
 

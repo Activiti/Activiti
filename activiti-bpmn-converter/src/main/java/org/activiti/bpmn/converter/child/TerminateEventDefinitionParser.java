@@ -22,8 +22,8 @@ import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.TerminateEventDefinition;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public class TerminateEventDefinitionParser extends BaseChildElementParser {
 

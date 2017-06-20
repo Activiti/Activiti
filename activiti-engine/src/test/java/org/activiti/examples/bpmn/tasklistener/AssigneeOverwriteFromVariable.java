@@ -19,7 +19,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
- * @author Falko Menge <falko.menge@camunda.com>
+
  */
 public class AssigneeOverwriteFromVariable implements TaskListener {
 

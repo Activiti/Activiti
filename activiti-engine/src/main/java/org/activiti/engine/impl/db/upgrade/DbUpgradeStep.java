@@ -16,7 +16,7 @@ package org.activiti.engine.impl.db.upgrade;
 import org.activiti.engine.impl.db.DbSqlSession;
 
 /**
- * @author Tom Baeyens
+
  */
 public interface DbUpgradeStep {
 

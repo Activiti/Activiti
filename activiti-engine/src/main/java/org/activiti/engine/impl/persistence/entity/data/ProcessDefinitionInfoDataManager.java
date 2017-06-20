@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity.data;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntity;
 
 /**
- * @author Tijs Rademakers
+
  */
 public interface ProcessDefinitionInfoDataManager extends DataManager<ProcessDefinitionInfoEntity> {
 

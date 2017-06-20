@@ -12,9 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-/**
- * @author Tijs Rademakers
- */
 public class Association extends Artifact {
 
   protected AssociationDirection associationDirection = AssociationDirection.NONE;

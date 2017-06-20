@@ -59,9 +59,9 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * An activity behavior that allows calling Web services
  * 
- * @author Esteban Robles Luna
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
+
  */
 public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
 

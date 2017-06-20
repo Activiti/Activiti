@@ -20,7 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.util.json.JSONArray;
 
 /**
- * @author Tom Baeyens
+
  */
 public class JsonListConverter<T> {
 

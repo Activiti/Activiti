@@ -26,7 +26,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
+
  */
 public class DeleteReasonTest extends PluggableActivitiTestCase {
   

@@ -1,8 +1,5 @@
 package org.activiti.bpmn.model;
 
-/**
- * @author Lori Small
- */
 public class LongDataObject extends ValuedDataObject {
 
   public void setValue(Object value) {

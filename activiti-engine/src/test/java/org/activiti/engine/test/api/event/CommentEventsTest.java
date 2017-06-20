@@ -25,7 +25,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for all {@link ActivitiEvent}s related to comments.
  * 
- * @author Frederik Heremans
+
  */
 public class CommentEventsTest extends PluggableActivitiTestCase {
 

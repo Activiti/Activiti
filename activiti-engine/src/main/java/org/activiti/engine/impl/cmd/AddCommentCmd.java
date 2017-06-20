@@ -29,7 +29,7 @@ import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
+
  */
 public class AddCommentCmd implements Command<Comment> {
 

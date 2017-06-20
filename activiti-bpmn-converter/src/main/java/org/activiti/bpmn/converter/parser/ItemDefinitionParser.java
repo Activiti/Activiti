@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.ItemDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ItemDefinitionParser implements BpmnXMLConstants {
 

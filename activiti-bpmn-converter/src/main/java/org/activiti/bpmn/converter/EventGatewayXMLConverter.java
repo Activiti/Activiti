@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventGateway;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class EventGatewayXMLConverter extends BaseBpmnXMLConverter {
 

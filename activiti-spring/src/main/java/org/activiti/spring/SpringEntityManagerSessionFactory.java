@@ -29,7 +29,7 @@ import javax.persistence.EntityManagerFactory;
  * Must be used when the {@link EntityManagerFactory} is managed by Spring. This implementation will retrieve the {@link EntityManager} bound to the thread by Spring in case a transaction already
  * started.
  * 
- * @author Joram Barrez
+
  */
 public class SpringEntityManagerSessionFactory implements SessionFactory {
 

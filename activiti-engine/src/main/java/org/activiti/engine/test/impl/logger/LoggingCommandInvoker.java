@@ -16,7 +16,7 @@ import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.activiti.engine.impl.interceptor.CommandInvoker;
 
 /**
- * @author jbarrez
+
  */
 public class LoggingCommandInvoker extends CommandInvoker {
 

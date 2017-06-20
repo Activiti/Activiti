@@ -19,8 +19,8 @@ import java.util.Date;
 /**
  * Represents one execution of an activity and it's stored permanent for statistics, audit and other business intelligence purposes.
  * 
- * @author Christian Stettler
- * @author Joram Barrez
+
+
  */
 public interface HistoricActivityInstance extends HistoricData {
 

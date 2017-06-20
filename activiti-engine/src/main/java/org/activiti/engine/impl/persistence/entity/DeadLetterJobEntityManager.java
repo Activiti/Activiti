@@ -20,7 +20,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tijs Rademakers
+
  */
 public interface DeadLetterJobEntityManager extends EntityManager<DeadLetterJobEntity> {
   

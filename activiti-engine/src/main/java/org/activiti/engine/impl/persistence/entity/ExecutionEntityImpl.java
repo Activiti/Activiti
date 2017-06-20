@@ -32,11 +32,11 @@ import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
- * @author Tom Baeyens
- * @author Daniel Meyer
- * @author Falko Menge
- * @author Saeid Mirzaei
- * @author Joram Barrez
+
+
+
+
+
  */
 
 public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionEntity, CountingExecutionEntity {

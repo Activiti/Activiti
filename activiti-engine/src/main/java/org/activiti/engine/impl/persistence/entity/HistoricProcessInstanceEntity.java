@@ -19,7 +19,7 @@ import java.util.List;
 import org.activiti.engine.history.HistoricProcessInstance;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity, HistoricProcessInstance {
 

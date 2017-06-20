@@ -24,7 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 /**
  * A {@link TransactionListener} that invokes an {@link ExecutionListener}.
  * 
- * @author Joram Barrez
+
  */
 public class ExecuteExecutionListenerTransactionListener implements TransactionListener {
 

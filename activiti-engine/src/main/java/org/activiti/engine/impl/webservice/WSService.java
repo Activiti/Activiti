@@ -23,7 +23,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
 /**
  * Represents a WS implementation of a {@link BpmnInterface}
  * 
- * @author Esteban Robles Luna
+
  */
 public class WSService implements BpmnInterfaceImplementation {
 

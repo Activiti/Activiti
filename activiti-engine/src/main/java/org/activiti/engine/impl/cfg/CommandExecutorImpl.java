@@ -8,8 +8,8 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 /**
  * Command executor that passes commands to the first interceptor in the chain. If no {@link CommandConfig} is passed, the default configuration will be used.
  * 
- * @author Marcus Klimstra (CGI)
- * @author Joram Barrez
+
+
  */
 public class CommandExecutorImpl implements CommandExecutor {
 

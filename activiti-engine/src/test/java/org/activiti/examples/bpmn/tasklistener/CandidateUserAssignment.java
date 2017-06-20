@@ -16,7 +16,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
- * @author Joram Barrez
+
  */
 public class CandidateUserAssignment implements TaskListener {
 

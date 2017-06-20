@@ -25,7 +25,7 @@ import org.activiti.engine.impl.bpmn.parser.Error;
  * 
  * This class represents an actual instance of a BPMN Error, whereas {@link Error} represents an Error definition.
  * 
- * @author Tijs Rademakers
+
  */
 public class BpmnError extends ActivitiException {
 

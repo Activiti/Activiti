@@ -19,8 +19,8 @@ import java.util.List;
 import org.activiti.engine.history.HistoricTaskInstance;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity, HistoricTaskInstance, Entity {
 

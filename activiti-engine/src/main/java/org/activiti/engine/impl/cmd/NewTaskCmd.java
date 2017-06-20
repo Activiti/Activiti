@@ -20,7 +20,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class NewTaskCmd implements Command<Task>, Serializable {
 

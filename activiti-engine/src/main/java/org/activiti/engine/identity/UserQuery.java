@@ -18,7 +18,7 @@ import org.activiti.engine.query.Query;
 /**
  * Allows programmatic querying of {@link User}
  * 
- * @author Joram Barrez
+
  */
 public interface UserQuery extends Query<UserQuery, User> {
 

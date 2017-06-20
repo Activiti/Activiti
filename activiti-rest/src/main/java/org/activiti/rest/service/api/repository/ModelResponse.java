@@ -20,7 +20,7 @@ import org.activiti.rest.common.util.DateToStringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ModelResponse extends ModelRequest {
 

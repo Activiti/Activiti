@@ -17,7 +17,7 @@ import java.util.List;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface AttachmentDataManager extends DataManager<AttachmentEntity> {
   

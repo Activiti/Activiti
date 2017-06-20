@@ -21,7 +21,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for task candidate use case.
  * 
- * @author Tim Stephenson
+
  */
 public class TaskAssignmentCandidateTest extends PluggableActivitiTestCase {
 

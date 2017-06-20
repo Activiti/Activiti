@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Daniel Meyer
+
  */
 public class UndoService implements JavaDelegate {
 

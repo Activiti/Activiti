@@ -52,7 +52,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConstants {
   

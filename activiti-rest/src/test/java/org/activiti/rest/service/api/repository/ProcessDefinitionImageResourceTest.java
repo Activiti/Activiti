@@ -22,7 +22,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 /**
- * @author Bassam Al-Sarori
+
  */
 public class ProcessDefinitionImageResourceTest extends BaseSpringRestTestCase {
 

@@ -16,8 +16,8 @@ package org.activiti.engine.impl.persistence.entity;
 import org.activiti.engine.history.HistoricFormProperty;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface HistoricFormPropertyEntity extends HistoricDetailEntity, HistoricFormProperty {
 

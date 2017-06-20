@@ -20,7 +20,7 @@ import java.net.URL;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 
 /**
- * @author Tom Baeyens
+
  */
 public class UrlStreamSource implements StreamSource {
 

@@ -2,9 +2,6 @@ package org.activiti.bpmn.model;
 
 import java.util.Date;
 
-/**
- * @author Lori Small
- */
 public class DateDataObject extends ValuedDataObject {
 
   public void setValue(Object value) {

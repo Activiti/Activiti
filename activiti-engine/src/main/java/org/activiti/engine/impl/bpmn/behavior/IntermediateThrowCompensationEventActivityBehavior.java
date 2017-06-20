@@ -32,8 +32,8 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public class IntermediateThrowCompensationEventActivityBehavior extends FlowNodeActivityBehavior {
 

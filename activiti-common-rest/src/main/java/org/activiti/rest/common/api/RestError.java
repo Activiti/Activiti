@@ -16,7 +16,7 @@ package org.activiti.rest.common.api;
 /**
  * Used for creating a response that represent an error that occurred.
  * 
- * @author Frederik Heremans
+
  */
 public class RestError {
 

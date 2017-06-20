@@ -22,7 +22,7 @@ import org.activiti.engine.runtime.ExecutionQuery;
 /**
  * Contains the possible properties that can be used in a {@link ExecutionQuery} .
  * 
- * @author Joram Barrez
+
  */
 public class ExecutionQueryProperty implements QueryProperty {
 

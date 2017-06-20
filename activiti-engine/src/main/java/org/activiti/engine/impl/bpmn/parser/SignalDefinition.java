@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * Represents a bpmn signal definition
  * 
- * @author Daniel Meyer
+
  */
 public class SignalDefinition implements Serializable {
 

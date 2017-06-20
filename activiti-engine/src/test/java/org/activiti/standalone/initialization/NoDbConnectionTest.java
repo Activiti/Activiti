@@ -18,7 +18,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.test.AbstractTestCase;
 
 /**
- * @author Tom Baeyens
+
  */
 public class NoDbConnectionTest extends AbstractTestCase {
 

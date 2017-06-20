@@ -33,8 +33,8 @@ import org.activiti.engine.impl.persistence.entity.VariableInstance;
  * means that when called on an execution the variable will be stored on the process instance
  * execution. Variables can be stored on the actual scope itself though, by calling the xxLocal methods.
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface VariableScope {
 

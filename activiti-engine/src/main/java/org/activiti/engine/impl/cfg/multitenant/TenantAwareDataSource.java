@@ -34,7 +34,7 @@ import org.activiti.engine.ActivitiException;
  * 
  * Heavily influenced and inspired by Spring's AbstractRoutingDataSource.
  * 
- * @author Joram Barrez
+
  */
 public class TenantAwareDataSource implements DataSource {
   

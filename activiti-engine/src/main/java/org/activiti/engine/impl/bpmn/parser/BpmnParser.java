@@ -21,8 +21,8 @@ import org.activiti.engine.impl.cfg.BpmnParseFactory;
  * 
  * There is only one instance of this parser in the process engine. This {@link BpmnParser} creates {@link BpmnParse} instances that can be used to actually parse the BPMN 2.0 XML process definitions.
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class BpmnParser {
 

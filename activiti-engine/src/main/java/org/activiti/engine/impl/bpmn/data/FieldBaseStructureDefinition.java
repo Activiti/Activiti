@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 /**
  * Represents a structure definition based on fields
  * 
- * @author Esteban Robles Luna
+
  */
 public interface FieldBaseStructureDefinition extends StructureDefinition {
 

@@ -31,8 +31,8 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.Execution;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void> {
 

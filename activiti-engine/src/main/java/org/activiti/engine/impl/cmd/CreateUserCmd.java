@@ -21,7 +21,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Tom Baeyens
+
  */
 public class CreateUserCmd implements Command<User>, Serializable {
 

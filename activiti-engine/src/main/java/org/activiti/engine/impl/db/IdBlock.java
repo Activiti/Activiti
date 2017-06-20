@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.db;
 
 /**
- * @author Tom Baeyens
+
  */
 public class IdBlock {
 

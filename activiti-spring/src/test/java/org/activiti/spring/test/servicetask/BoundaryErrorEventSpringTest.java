@@ -19,8 +19,8 @@ import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
- * @author Angel Lopez Cima
- * @author Falko Menge
+
+
  * @see https://activiti.atlassian.net/browse/ACT-1166
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/servicetask/serviceraskSpringTestCatchError-context.xml")

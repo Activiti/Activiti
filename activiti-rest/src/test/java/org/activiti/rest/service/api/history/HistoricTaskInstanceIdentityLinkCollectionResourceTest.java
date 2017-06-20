@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 /**
  * Test for REST-operation related to the historic task instance identity links resource.
  * 
- * @author Tijs Rademakers
+
  */
 public class HistoricTaskInstanceIdentityLinkCollectionResourceTest extends BaseSpringRestTestCase {
 

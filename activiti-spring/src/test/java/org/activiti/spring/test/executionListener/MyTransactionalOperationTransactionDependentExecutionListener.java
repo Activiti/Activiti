@@ -24,7 +24,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 
 /**
- * @author Yvo Swillens
+
  */
 public class MyTransactionalOperationTransactionDependentExecutionListener extends CurrentActivityTransactionDependentExecutionListener {
 

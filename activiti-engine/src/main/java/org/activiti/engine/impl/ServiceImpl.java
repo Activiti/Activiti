@@ -16,8 +16,8 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class ServiceImpl {
 

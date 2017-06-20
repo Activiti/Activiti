@@ -19,7 +19,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
- * @author Tom Baeyens
+
  */
 public interface ServiceInvoker {
 

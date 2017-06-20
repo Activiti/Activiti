@@ -22,8 +22,8 @@ import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Christian Lipphardt (camunda)
- * @author Joram Barrez
+
+
  */
 public class HistoricVariableInstanceEntityImpl extends AbstractEntity implements HistoricVariableInstanceEntity, BulkDeleteable, Serializable {
 

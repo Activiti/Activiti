@@ -17,7 +17,7 @@ import javax.el.ValueExpression;
 /**
  * Baseclass responsible for handling invocations of Expressions
  * 
- * @author Daniel Meyer
+
  */
 public abstract class ExpressionInvocation extends DelegateInvocation {
 

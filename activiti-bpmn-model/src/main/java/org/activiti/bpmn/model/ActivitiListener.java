@@ -17,9 +17,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * @author Tijs Rademakers
- */
 public class ActivitiListener extends BaseElement {
 
   protected String event;

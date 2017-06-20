@@ -25,7 +25,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for all {@link ActivitiEvent}s related to process definitions.
  * 
- * @author Frederik Heremans
+
  */
 public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 

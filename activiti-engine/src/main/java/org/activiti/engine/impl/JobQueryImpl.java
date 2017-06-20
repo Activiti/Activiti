@@ -25,9 +25,9 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 
 /**
- * @author Joram Barrez
- * @author Tom Baeyens
- * @author Falko Menge
+
+
+
  */
 public class JobQueryImpl extends AbstractQuery<JobQuery, Job> implements JobQuery, Serializable {
 

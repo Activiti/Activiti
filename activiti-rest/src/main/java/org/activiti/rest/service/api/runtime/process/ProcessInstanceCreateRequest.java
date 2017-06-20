@@ -26,9 +26,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
  * Modified to add a "returnVariables" flag, which determines whether the variables that exist within the process instance when the first wait state is encountered (or when the process instance
  * completes) should be returned or not.
  * 
- * @author Frederik Heremans
- * @author Ryan Johnston (@rjfsu)
- * @author Joram Barrez
+
+
+
  */
 public class ProcessInstanceCreateRequest {
 

@@ -21,7 +21,7 @@ import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
 /**
- * @author Frederik Heremans
+
  */
 public class EntityManagerSessionFactory implements SessionFactory {
 

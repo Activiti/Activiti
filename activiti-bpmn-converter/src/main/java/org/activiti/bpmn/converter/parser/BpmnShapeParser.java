@@ -21,8 +21,8 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.GraphicInfo;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public class BpmnShapeParser implements BpmnXMLConstants {
 

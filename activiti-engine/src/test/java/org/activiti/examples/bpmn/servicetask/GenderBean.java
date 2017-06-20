@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * Simple class for testing purposes.
  * 
- * @author Frederik Heremans
+
  */
 public class GenderBean implements Serializable {
 

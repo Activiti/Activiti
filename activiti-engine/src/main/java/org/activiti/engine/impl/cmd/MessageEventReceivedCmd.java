@@ -28,8 +28,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
- * @author Daniel Meyer
- * @author Joram Barrez
+
+
  */
 public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
 

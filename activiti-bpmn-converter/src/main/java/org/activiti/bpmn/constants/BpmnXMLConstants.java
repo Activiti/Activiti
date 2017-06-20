@@ -12,9 +12,6 @@
  */
 package org.activiti.bpmn.constants;
 
-/**
- * @author Tijs Rademakers
- */
 public interface BpmnXMLConstants {
 
   public static final String BPMN2_NAMESPACE = "http://www.omg.org/spec/BPMN/20100524/MODEL";

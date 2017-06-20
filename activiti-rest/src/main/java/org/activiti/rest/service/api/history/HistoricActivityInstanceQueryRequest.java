@@ -16,7 +16,7 @@ package org.activiti.rest.service.api.history;
 import org.activiti.rest.common.api.PaginateRequest;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class HistoricActivityInstanceQueryRequest extends PaginateRequest {
 

@@ -17,7 +17,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class NoneEndEventActivityBehavior extends FlowNodeActivityBehavior {
 

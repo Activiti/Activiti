@@ -10,7 +10,7 @@ import org.activiti.engine.runtime.ClockReader;
 /**
  * Resolves a due date taking into account the specified time zone.
  * 
- * @author mseiden
+
  */
 public class AdvancedSchedulerResolverWithTimeZone implements AdvancedSchedulerResolver {
 

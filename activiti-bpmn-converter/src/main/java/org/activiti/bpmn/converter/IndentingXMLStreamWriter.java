@@ -18,7 +18,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class IndentingXMLStreamWriter extends DelegatingXMLStreamWriter {
 

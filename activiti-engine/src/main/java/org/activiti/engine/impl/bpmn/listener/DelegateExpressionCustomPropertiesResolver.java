@@ -20,7 +20,7 @@ import org.activiti.engine.delegate.Expression;
 import java.util.Map;
 
 /**
- * @author Yvo Swillens
+
  */
 public class DelegateExpressionCustomPropertiesResolver implements CustomPropertiesResolver {
 

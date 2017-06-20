@@ -18,8 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Saeid Mirzaei
- * @author Joram Barrez
+
+
  */
 
 public class DeleteJobCmd implements Command<Object>, Serializable {

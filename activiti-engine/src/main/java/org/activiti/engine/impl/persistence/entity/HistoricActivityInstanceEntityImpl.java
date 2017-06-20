@@ -21,8 +21,8 @@ import java.util.Map;
 import org.activiti.engine.ProcessEngineConfiguration;
 
 /**
- * @author Christian Stettler
- * @author Joram Barrez
+
+
  */
 public class HistoricActivityInstanceEntityImpl extends HistoricScopeInstanceEntityImpl implements HistoricActivityInstanceEntity {
 

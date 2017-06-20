@@ -20,7 +20,7 @@ import de.odysseus.el.ExpressionFactoryImpl;
 /**
  * Class used to get hold of a {@link ExpressionFactory}.
  * 
- * @author Frederik Heremans
+
  */
 public abstract class ExpressionFactoryResolver {
 

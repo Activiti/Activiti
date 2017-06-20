@@ -24,7 +24,7 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Serializable {
 

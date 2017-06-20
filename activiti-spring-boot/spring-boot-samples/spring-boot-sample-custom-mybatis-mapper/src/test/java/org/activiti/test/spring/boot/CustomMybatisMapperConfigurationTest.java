@@ -28,7 +28,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.core.env.PropertiesPropertySource;
 
 /**
- * @author Dominik Bartos
+
  */
 public class CustomMybatisMapperConfigurationTest {
 

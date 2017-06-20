@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.interceptor;
 
 /**
- * @author Tom Baeyens
+
  */
 public abstract class AbstractCommandInterceptor implements CommandInterceptor {
 

@@ -19,9 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * @author Tijs Rademakers
- */
 public class UserTask extends Task {
 
   protected String assignee;

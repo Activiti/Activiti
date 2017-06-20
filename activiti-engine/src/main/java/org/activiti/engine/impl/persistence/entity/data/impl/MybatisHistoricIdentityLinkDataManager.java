@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricIdentityLinkData
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.HistoricIdentityLinksByProcInstMatcher;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisHistoricIdentityLinkDataManager extends AbstractDataManager<HistoricIdentityLinkEntity> implements HistoricIdentityLinkDataManager {
   

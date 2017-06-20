@@ -19,7 +19,7 @@ import java.util.Map;
 import org.activiti.engine.query.QueryProperty;
 
 /**
- * @author Tom Baeyens
+
  */
 public class HistoricTaskInstanceQueryProperty implements QueryProperty {
 

@@ -23,7 +23,7 @@ import org.subethamail.wiser.WiserMessage;
 /**
  * 
  * 
- * @author Daniel Meyer
+
  */
 public class AsyncEmailTaskTest extends EmailTestCase {
 

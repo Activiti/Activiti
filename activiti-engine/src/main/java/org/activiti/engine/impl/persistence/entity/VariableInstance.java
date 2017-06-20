@@ -16,7 +16,7 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.variable.ValueFields;
 
 /**
- * @author Tijs Rademakers
+
  * 
  * Generic variable class that can be reused for Activiti 6 and 5 engine
  */

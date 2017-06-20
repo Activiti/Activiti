@@ -22,7 +22,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Joram Barrez
+
  */
 public class NoOpServiceTask implements JavaDelegate {
 

@@ -21,7 +21,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public interface HistoricActivityInstanceDataManager extends DataManager<HistoricActivityInstanceEntity> {
   

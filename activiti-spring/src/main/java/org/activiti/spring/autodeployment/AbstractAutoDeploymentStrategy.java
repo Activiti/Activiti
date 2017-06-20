@@ -23,7 +23,7 @@ import java.io.IOException;
 /**
  * Abstract base class for implementations of {@link AutoDeploymentStrategy}.
  * 
- * @author Tiese Barrell
+
  */
 public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentStrategy {
 

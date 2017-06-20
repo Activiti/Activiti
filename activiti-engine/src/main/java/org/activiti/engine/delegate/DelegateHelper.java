@@ -31,7 +31,7 @@ import java.util.Map;
  * {@link ActivityBehavior}, {@link ExecutionListener} and {@link TaskListener}
  * interfaces.
  *
- * @author Joram Barrez
+
  */
 public class DelegateHelper {
 

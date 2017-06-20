@@ -15,7 +15,7 @@ package org.activiti.engine.impl.calendar;
 import java.util.Date;
 
 /**
- * @author Tom Baeyens
+
  */
 public interface BusinessCalendar {
 

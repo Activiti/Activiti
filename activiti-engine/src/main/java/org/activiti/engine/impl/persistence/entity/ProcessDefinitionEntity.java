@@ -18,8 +18,8 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public interface ProcessDefinitionEntity extends ProcessDefinition, Entity, HasRevision {
 

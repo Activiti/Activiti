@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 /**
  * Class handling invocations of ExecutionListeners
  * 
- * @author Daniel Meyer
+
  */
 public class ExecutionListenerInvocation extends DelegateInvocation {
 

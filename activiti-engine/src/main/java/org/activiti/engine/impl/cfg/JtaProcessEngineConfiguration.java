@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.JtaTransactionInterceptor;
 
 /**
- * @author Tom Baeyens
+
  */
 public class JtaProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
 

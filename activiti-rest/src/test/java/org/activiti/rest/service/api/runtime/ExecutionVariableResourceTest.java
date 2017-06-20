@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to a single execution variable.
  * 
- * @author Frederik Heremans
+
  */
 public class ExecutionVariableResourceTest extends BaseSpringRestTestCase {
 

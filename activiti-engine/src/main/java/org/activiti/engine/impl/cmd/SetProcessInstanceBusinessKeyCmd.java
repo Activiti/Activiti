@@ -27,7 +27,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 /**
  * {@link Command} that changes the business key of an existing process instance.
  * 
- * @author Tijs Rademakers
+
  */
 public class SetProcessInstanceBusinessKeyCmd implements Command<Void>, Serializable {
 

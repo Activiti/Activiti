@@ -19,8 +19,8 @@ import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEntity, ValueFields, HistoricVariableUpdate, Entity, HasRevision {
 

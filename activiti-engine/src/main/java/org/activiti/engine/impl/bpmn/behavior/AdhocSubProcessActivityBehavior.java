@@ -26,7 +26,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 /**
  * Implementation of the BPMN 2.0 ad-hoc subprocess.
  * 
- * @author Tijs Rademakers
+
  */
 public class AdhocSubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
 

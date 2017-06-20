@@ -37,7 +37,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Frederik Heremans
+
  */
 public class JPAVariableTest extends AbstractActivitiTestCase {
 

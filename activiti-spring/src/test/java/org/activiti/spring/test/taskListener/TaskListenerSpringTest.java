@@ -20,7 +20,7 @@ import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
- * @author Joram Barrez
+
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/taskListener/TaskListenerDelegateExpressionTest-context.xml")
 public class TaskListenerSpringTest extends SpringActivitiTestCase {

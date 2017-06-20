@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 import org.activiti.engine.task.IdentityLink;
 
 /**
- * @author Joram Barrez
+
  */
 public interface IdentityLinkEntity extends IdentityLink, Entity {
 

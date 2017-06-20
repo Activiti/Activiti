@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * Test for REST-operation related to get and delete a historic process instance.
  * 
- * @author Tijs Rademakers
+
  */
 public class HistoricProcessInstanceResourceTest extends BaseSpringRestTestCase {
 

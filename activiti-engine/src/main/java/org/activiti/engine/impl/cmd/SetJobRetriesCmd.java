@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Falko Menge
+
  */
 public class SetJobRetriesCmd implements Command<Void>, Serializable {
 

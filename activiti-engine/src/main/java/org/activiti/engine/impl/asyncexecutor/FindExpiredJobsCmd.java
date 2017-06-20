@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class FindExpiredJobsCmd implements Command<List<JobEntity>> {
   

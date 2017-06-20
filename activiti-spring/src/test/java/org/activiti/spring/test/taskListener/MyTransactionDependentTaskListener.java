@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Yvo Swillens
+
  */
 public class MyTransactionDependentTaskListener implements TransactionDependentTaskListener {
 

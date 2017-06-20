@@ -42,7 +42,7 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.Signal
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.SignalEventSubscriptionByProcInstAndEventNameMatcher;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisEventSubscriptionDataManager extends AbstractDataManager<EventSubscriptionEntity> implements EventSubscriptionDataManager {
   

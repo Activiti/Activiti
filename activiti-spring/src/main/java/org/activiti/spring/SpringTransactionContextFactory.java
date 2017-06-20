@@ -19,7 +19,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.springframework.transaction.PlatformTransactionManager;
 
 /**
- * @author Frederik Heremans
+
  */
 public class SpringTransactionContextFactory implements TransactionContextFactory {
 

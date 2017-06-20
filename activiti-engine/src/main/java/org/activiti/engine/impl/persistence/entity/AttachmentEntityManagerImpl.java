@@ -25,8 +25,8 @@ import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class AttachmentEntityManagerImpl extends AbstractEntityManager<AttachmentEntity> implements AttachmentEntityManager {
 

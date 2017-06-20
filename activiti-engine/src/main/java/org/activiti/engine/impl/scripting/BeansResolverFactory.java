@@ -17,7 +17,7 @@ import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
- * @author Tom Baeyens
+
  */
 public class BeansResolverFactory implements ResolverFactory, Resolver {
   

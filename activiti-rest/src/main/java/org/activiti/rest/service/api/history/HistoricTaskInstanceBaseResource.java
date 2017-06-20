@@ -28,7 +28,7 @@ import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class HistoricTaskInstanceBaseResource {
 

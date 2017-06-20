@@ -18,7 +18,7 @@ import java.io.Serializable;
 /**
  * Simple pojo than will be used to act as an event listener.
  * 
- * @author Frederik Heremans
+
  */
 public class ExampleExecutionListenerPojo implements Serializable {
 

@@ -19,7 +19,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 
 /**
- * @author Joram Barrez
+
  */
 public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
 

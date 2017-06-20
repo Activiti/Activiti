@@ -16,7 +16,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
- * @author Joram Barrez
+
  */
 public class ToUppercase implements JavaDelegate {
 

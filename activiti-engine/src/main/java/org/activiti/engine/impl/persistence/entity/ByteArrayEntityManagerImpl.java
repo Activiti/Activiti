@@ -21,8 +21,8 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 
 
 /**
- * @author Joram Barrez
- * @author Marcus Klimstra (CGI)
+
+
  */
 public class ByteArrayEntityManagerImpl extends AbstractEntityManager<ByteArrayEntity> implements ByteArrayEntityManager {
   

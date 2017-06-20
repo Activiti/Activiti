@@ -18,7 +18,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 
 /**
- * @author Frederik Heremans
+
  */
 public final class RestUrls {
 

@@ -18,7 +18,7 @@ import java.util.Date;
 /**
  * Request body containing a task and general properties.
  * 
- * @author Frederik Heremans
+
  */
 public class TaskRequest {
 

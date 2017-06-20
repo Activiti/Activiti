@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * Test for all REST-operations related to sub tasks.
  * 
- * @author Tijs Rademakers
+
  */
 public class TaskSubTaskCollectionResourceTest extends BaseSpringRestTestCase {
 

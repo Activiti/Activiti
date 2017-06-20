@@ -22,7 +22,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 /**
- * @author Daniel Meyer
+
  */
 public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQueryImpl, EventSubscriptionEntity> implements Serializable {
 

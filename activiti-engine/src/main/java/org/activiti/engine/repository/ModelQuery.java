@@ -18,8 +18,8 @@ import org.activiti.engine.query.Query;
 /**
  * Allows programmatic querying of {@link Model}s.
  * 
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public interface ModelQuery extends Query<ModelQuery, Model> {
 

@@ -23,8 +23,8 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.FormHandlerUtil;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class SubmitTaskFormCmd extends AbstractCompleteTaskCmd {
 

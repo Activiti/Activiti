@@ -27,9 +27,9 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
- * @author Frederik Heremans
+
+
+
  */
 public class ScriptingEngines {
 

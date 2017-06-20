@@ -21,7 +21,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for {@link ActivitiEvent} thrown when a BPMNError is not caught in the process.
  * 
- * @author Frederik Heremans
+
  */
 public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
 

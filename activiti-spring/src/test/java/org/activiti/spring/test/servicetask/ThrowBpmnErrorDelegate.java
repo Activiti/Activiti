@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 
 /**
- * @author Falko Menge
+
  */
 public class ThrowBpmnErrorDelegate implements JavaDelegate {
 

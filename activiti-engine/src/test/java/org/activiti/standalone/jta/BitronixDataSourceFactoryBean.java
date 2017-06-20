@@ -11,7 +11,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 /**
  * FactoryBean for Bitronix PoolingDataSource to correctly manage its lifecycle when used in JUnit tests.
  * 
- * @author Marcus Klimstra (CGI)
+
  */
 public class BitronixDataSourceFactoryBean extends ResourceBean implements FactoryBean<PoolingDataSource>, DisposableBean {
   private static final Logger LOG = LoggerFactory.getLogger(BitronixDataSourceFactoryBean.class);

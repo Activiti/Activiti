@@ -26,7 +26,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
  * Command for retrieving start or task form keys.
  * 
- * @author Falko Menge (camunda)
+
  */
 public class GetFormKeyCmd implements Command<String> {
 

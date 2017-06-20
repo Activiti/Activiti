@@ -5,7 +5,7 @@ import java.io.StringWriter;
 import org.apache.log4j.ConsoleAppender;
 
 /**
- * @author Saeid Mirzaei
+
  */
 
 public class MemoryLogAppender extends ConsoleAppender {

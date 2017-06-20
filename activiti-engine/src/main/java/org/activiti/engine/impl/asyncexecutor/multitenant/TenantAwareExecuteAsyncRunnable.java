@@ -21,7 +21,7 @@ import org.activiti.engine.runtime.Job;
 /**
  * Extends the default {@link ExecuteAsyncRunnable} by setting the 'tenant' context before executing.
  * 
- * @author Joram Barrez
+
  */
 public class TenantAwareExecuteAsyncRunnable extends ExecuteAsyncRunnable {
   

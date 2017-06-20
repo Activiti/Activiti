@@ -20,7 +20,7 @@ import org.activiti.engine.ActivitiException;
 /**
  * Describes basic methods for doing native queries
  * 
- * @author Bernd Ruecker (camunda)
+
  */
 public interface NativeQuery<T extends NativeQuery<?, ?>, U extends Object> {
 

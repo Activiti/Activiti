@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for REST-operation related to the historic variable instance query resource.
  * 
- * @author Tijs Rademakers
+
  */
 public class HistoricVariableInstanceQueryResourceTest extends BaseSpringRestTestCase {
 

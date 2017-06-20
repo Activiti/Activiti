@@ -20,7 +20,7 @@ import org.activiti.engine.FormService;
 /**
  * Represents a single property on a form.
  * 
- * @author Tom Baeyens
+
  */
 public interface FormProperty extends Serializable {
 

@@ -43,7 +43,7 @@ import org.activiti.engine.task.Task;
 /**
  * Builder class used to create {@link ActivitiEvent} implementations.
  *
- * @author Frederik Heremans
+
  */
 public class ActivitiEventBuilder {
 

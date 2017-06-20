@@ -17,7 +17,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Joram Barrez
+
  */
 public interface ExecuteAsyncRunnableFactory {
   

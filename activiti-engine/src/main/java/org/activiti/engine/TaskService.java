@@ -35,8 +35,8 @@ import org.activiti.engine.task.TaskQuery;
 /**
  * Service which provides access to {@link Task} and form related operations.
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface TaskService {
 

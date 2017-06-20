@@ -13,7 +13,7 @@
 package org.activiti.bpmn.exceptions;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class XMLException extends RuntimeException {
 

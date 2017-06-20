@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.SequenceFlow;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ConditionExpressionParser extends BaseChildElementParser {
 

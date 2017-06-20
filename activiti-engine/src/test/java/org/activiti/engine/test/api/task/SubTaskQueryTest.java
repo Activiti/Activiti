@@ -23,7 +23,7 @@ import org.activiti.engine.task.TaskQuery;
 /**
  * Tests for cub-tasks querying
  * 
- * @author Ionut Paduraru
+
  * @see TaskQueryTest
  */
 public class SubTaskQueryTest extends PluggableActivitiTestCase {

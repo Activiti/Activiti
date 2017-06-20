@@ -15,7 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 import org.activiti.engine.impl.db.HasRevision;
 
 /**
- * @author Tom Baeyens
+
  */
 public interface PropertyEntity extends Entity, HasRevision {
 

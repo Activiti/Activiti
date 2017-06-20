@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Joram Barrez
+
  */
 public class TriggerTimerEventJobHandler implements JobHandler {
 

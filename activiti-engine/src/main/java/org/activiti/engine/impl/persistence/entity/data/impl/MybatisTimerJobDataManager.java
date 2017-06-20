@@ -29,8 +29,8 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.TimerJ
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tijs Rademakers
- * @author Vasile Dirla
+
+
  */
 public class MybatisTimerJobDataManager extends AbstractDataManager<TimerJobEntity> implements TimerJobDataManager {
   

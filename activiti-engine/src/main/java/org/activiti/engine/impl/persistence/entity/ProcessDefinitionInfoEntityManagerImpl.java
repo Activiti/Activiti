@@ -19,7 +19,7 @@ import org.activiti.engine.impl.persistence.entity.data.ProcessDefinitionInfoDat
 
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ProcessDefinitionInfoEntityManagerImpl extends 
     AbstractEntityManager<ProcessDefinitionInfoEntity> implements ProcessDefinitionInfoEntityManager {

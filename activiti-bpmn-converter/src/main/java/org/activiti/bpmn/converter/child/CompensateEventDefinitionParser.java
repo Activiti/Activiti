@@ -22,7 +22,7 @@ import org.activiti.bpmn.model.Event;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class CompensateEventDefinitionParser extends BaseChildElementParser {
 

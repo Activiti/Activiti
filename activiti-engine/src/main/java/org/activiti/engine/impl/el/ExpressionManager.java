@@ -42,9 +42,9 @@ import de.odysseus.el.ExpressionFactoryImpl;
  * Then also this class is used as an entry point for runtime evaluation of the expressions.
  * </p>
  * 
- * @author Tom Baeyens
- * @author Dave Syer
- * @author Frederik Heremans
+
+
+
  */
 public class ExpressionManager {
 

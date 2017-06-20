@@ -18,7 +18,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 /**
- * @author Tom Baeyens
+
  */
 public class JpaHelper {
 

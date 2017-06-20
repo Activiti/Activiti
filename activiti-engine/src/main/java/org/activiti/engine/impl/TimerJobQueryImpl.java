@@ -25,8 +25,8 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.TimerJobQuery;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class TimerJobQueryImpl extends AbstractQuery<TimerJobQuery, Job> implements TimerJobQuery, Serializable {
 

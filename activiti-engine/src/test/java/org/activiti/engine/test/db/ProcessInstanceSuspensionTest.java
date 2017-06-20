@@ -17,7 +17,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * 
- * @author Daniel Meyer
+
  */
 public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 

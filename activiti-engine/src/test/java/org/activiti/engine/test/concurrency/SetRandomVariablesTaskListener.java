@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.TaskListener;
 /**
  * Tasklistener that sets some random process and task-variables.
  * 
- * @author Frederik Heremans
+
  */
 public class SetRandomVariablesTaskListener implements TaskListener {
 

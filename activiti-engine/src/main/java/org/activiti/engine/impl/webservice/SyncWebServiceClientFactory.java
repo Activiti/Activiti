@@ -15,7 +15,7 @@ package org.activiti.engine.impl.webservice;
 /**
  * A factory for {@link SyncWebServiceClient}
  * 
- * @author Esteban Robles Luna
+
  */
 public interface SyncWebServiceClientFactory {
 

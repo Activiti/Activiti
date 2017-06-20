@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 /**
  * Test for REST-operation related to the historic task instance query resource.
  * 
- * @author Tijs Rademakers
+
  */
 public class HistoricTaskInstanceCollectionResourceTest extends BaseSpringRestTestCase {
 

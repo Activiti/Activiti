@@ -25,8 +25,8 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class GetTaskVariablesCmd implements Command<Map<String, Object>>, Serializable {
 

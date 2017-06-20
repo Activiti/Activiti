@@ -28,7 +28,7 @@ import org.activiti.engine.test.Deployment;
 import org.joda.time.Period;
 
 /**
- * @author Frederik Heremans
+
  */
 public class TaskDueDateExtensionsTest extends ResourceActivitiTestCase {
   

@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 
 /**
- *  @author Dominik Bartos
+
  */
 @SpringBootApplication
 public class Application {

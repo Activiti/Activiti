@@ -17,7 +17,7 @@ import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
+
  */
 public class TaskFormDataImpl extends FormDataImpl implements TaskFormData {
 

@@ -22,7 +22,7 @@ import org.activiti.bpmn.model.SignalEventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class SignalEventDefinitionParser extends BaseChildElementParser {
 

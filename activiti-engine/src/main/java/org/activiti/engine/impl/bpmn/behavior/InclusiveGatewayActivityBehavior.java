@@ -28,9 +28,9 @@ import java.util.Iterator;
 /**
  * Implementation of the Inclusive Gateway/OR gateway/inclusive data-based gateway as defined in the BPMN specification.
  *
- * @author Tijs Rademakers
- * @author Tom Van Buskirk
- * @author Joram Barrez
+
+
+
  */
 public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior implements InactiveActivityBehavior {
 

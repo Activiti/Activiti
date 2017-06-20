@@ -23,7 +23,7 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
- * @author Joram Barrez
+
  */
 public interface DelegateTask extends VariableScope {
 

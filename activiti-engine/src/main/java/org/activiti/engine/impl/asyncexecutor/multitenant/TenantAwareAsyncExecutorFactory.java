@@ -19,7 +19,7 @@ import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
  * This factory will be called when a new {@link AsyncExecutor} for a tenant needs to be created
  * and can be used to create special implementations for specific tenants.
  * 
- * @author Joram Barrez
+
  */
 public interface TenantAwareAsyncExecutorFactory {
 

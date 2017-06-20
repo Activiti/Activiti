@@ -23,8 +23,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityImpl implements HistoricTaskInstanceEntity, BulkDeleteable {
 

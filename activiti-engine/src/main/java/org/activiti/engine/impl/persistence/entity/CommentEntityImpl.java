@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * @author Tom Baeyens
+
  */
 public class CommentEntityImpl extends AbstractEntityNoRevision implements CommentEntity, Serializable {
 

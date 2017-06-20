@@ -28,7 +28,7 @@ import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.Histor
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.HistoricVariableInstanceByTaskIdMatcher;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisHistoricVariableInstanceDataManager extends AbstractDataManager<HistoricVariableInstanceEntity> implements HistoricVariableInstanceDataManager {
   

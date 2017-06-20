@@ -21,8 +21,8 @@ import org.activiti.rest.service.api.engine.variable.RestVariable;
 /**
  * Modified to add a "completed" flag, which lets the caller know if the process instance has run to completion without encountering a wait state or experiencing an error/ exception.
  * 
- * @author Frederik Heremans
- * @author Ryan Johnston (@rjfsu)
+
+
  */
 public class ProcessInstanceResponse {
   protected String id;

@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * 
  * databasetype
  * 
- * @author Joram Barrez
+
  */
 public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
   

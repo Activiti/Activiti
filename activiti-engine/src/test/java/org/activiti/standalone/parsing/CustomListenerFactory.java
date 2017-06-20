@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultListenerFactory;
 
 /**
- * @author Joram Barrez
+
  */
 public class CustomListenerFactory extends DefaultListenerFactory {
 

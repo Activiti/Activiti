@@ -18,7 +18,7 @@ import org.activiti.engine.test.ActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
+
  */
 public class ActivitiTestCaseTest extends ActivitiTestCase {
 

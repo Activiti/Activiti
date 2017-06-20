@@ -20,7 +20,7 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.repository.Model;
 
 /**
- * @author Joram Barrez
+
  */
 public interface ModelEntityManager extends EntityManager<ModelEntity> {
 

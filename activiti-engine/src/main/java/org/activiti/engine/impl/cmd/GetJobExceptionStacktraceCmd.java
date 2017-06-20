@@ -23,8 +23,8 @@ import org.activiti.engine.impl.persistence.entity.AbstractJobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public class GetJobExceptionStacktraceCmd implements Command<String>, Serializable {
 

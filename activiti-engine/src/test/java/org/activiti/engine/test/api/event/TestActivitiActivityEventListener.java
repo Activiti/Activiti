@@ -23,7 +23,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 /**
  * Test event listener that only records events related to activities ( {@link ActivitiActivityEvent}s).
  * 
- * @author Frederik Heremans
+
  */
 public class TestActivitiActivityEventListener implements ActivitiEventListener {
 

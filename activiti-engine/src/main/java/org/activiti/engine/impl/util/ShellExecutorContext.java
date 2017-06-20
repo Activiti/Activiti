@@ -17,7 +17,7 @@ import java.util.List;
 import org.activiti.engine.cfg.security.ExecutorContext;
 
 /**
- * @author Vasile Dirla
+
  */
 public class ShellExecutorContext implements ExecutorContext {
     private Boolean waitFlag;

@@ -24,8 +24,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavior {
 

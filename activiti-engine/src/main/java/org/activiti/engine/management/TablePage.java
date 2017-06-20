@@ -18,8 +18,8 @@ import java.util.Map;
 /**
  * Data structure used for retrieving database table content.
  * 
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class TablePage {
 

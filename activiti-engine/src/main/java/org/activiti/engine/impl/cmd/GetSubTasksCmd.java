@@ -21,7 +21,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
+
  */
 public class GetSubTasksCmd implements Command<List<Task>>, Serializable {
 

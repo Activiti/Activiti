@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.event.ActivitiMembershipEvent;
 /**
  * Implementation of {@link ActivitiMembershipEvent}.
  * 
- * @author Frederik Heremans
+
  */
 public class ActivitiMembershipEventImpl extends ActivitiEventImpl implements ActivitiMembershipEvent {
 

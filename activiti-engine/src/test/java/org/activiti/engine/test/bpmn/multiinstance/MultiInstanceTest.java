@@ -42,8 +42,8 @@ import org.activiti.engine.test.Deployment;
 import org.assertj.core.api.Assertions;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class MultiInstanceTest extends PluggableActivitiTestCase {
 

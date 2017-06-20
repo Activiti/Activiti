@@ -31,7 +31,7 @@ import org.activiti.engine.task.TaskInfo;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Joram Barrez
+
  */
 public class SaveTaskCmd implements Command<Void>, Serializable {
 

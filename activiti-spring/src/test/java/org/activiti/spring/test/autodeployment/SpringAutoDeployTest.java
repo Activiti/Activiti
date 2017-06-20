@@ -30,8 +30,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class SpringAutoDeployTest extends AbstractTestCase {
 

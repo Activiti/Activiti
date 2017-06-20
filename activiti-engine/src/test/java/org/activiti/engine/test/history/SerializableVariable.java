@@ -16,7 +16,7 @@ package org.activiti.engine.test.history;
 import java.io.Serializable;
 
 /**
- * @author Tom Baeyens
+
  */
 public class SerializableVariable implements Serializable {
 

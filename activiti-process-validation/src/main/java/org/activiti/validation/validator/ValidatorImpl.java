@@ -20,7 +20,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.validation.ValidationError;
 
 /**
- * @author Joram Barrez
+
  */
 public abstract class ValidatorImpl implements Validator {
 

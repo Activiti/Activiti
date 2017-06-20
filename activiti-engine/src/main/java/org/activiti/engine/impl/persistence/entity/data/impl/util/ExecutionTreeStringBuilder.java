@@ -19,7 +19,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
  * Prints a nicely tree-looking overview of the executions.
  * 
- * @author jbarrez
+
  */
 public class ExecutionTreeStringBuilder {
   

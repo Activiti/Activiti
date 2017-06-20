@@ -25,7 +25,7 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisCommentDataManager extends AbstractDataManager<CommentEntity> implements CommentDataManager {
 

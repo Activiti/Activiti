@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.VariableScope;
  * 
  * Nothing more than a thin wrapper around a name and value. All the other methods are not implemented.
  * 
- * @author Joram Barrez
+
  */
 public class TransientVariableInstance implements VariableInstance {
   

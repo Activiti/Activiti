@@ -19,7 +19,7 @@ import org.activiti.engine.impl.JobQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 
 /**
- * @author Joram Barrez
+
  */
 public class JobQueryProperties {
   

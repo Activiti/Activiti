@@ -26,8 +26,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public class EntityManagerSessionImpl implements EntityManagerSession {
 

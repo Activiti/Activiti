@@ -40,8 +40,8 @@ import org.activiti.engine.test.api.runtime.ProcessInstanceQueryTest;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author Frederik Heremans
- * @author Falko Menge
+
+
  */
 public class HistoryServiceTest extends PluggableActivitiTestCase {
 

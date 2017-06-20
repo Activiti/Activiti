@@ -20,7 +20,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 /**
  * super class for all gateway activity implementations.
  * 
- * @author Joram Barrez
+
  */
 public abstract class GatewayActivityBehavior extends FlowNodeActivityBehavior {
 

@@ -20,7 +20,7 @@ import org.activiti.engine.delegate.Expression;
 /**
  * A data association (Input or Output) between a source and a target
  * 
- * @author Esteban Robles Luna
+
  */
 public abstract class AbstractDataAssociation implements Serializable {
 

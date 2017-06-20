@@ -10,7 +10,7 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class TaskCompletedEventHandler extends AbstractTaskEventHandler {
 

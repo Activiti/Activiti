@@ -14,9 +14,6 @@ package org.activiti.bpmn.model;
 
 import java.util.Collection;
 
-/**
- * @author Tijs Rademakers
- */
 public interface FlowElementsContainer {
 
   FlowElement getFlowElement(String id);

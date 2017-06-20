@@ -16,7 +16,7 @@ import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
- * @author Frederik Heremans
+
  */
 public class TaskAllEventsListener implements TaskListener {
 

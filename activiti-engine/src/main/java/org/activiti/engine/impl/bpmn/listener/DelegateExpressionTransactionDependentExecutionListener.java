@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.TransactionDependentExecutionListener;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 
 /**
- * @author Yvo Swillens
+
  */
 public class DelegateExpressionTransactionDependentExecutionListener implements TransactionDependentExecutionListener {
 

@@ -19,7 +19,7 @@ import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tom Baeyens
+
  */
 public class JsonProcessDefinitionConverter extends JsonObjectConverter<ProcessDefinition> {
 

@@ -18,7 +18,7 @@ import java.util.List;
 import org.slf4j.Logger;
 
 /**
- * @author jbarrez
+
  */
 public class DebugInfoExecutionTree {
 

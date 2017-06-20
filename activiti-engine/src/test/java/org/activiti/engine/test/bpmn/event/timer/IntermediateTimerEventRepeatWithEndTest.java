@@ -29,7 +29,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 /**
- * @author Vasile Dirla
+
  */
 public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTestCase {
 

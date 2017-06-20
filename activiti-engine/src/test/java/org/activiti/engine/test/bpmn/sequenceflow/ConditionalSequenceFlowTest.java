@@ -25,8 +25,8 @@ import org.activiti.engine.test.Deployment;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class ConditionalSequenceFlowTest extends PluggableActivitiTestCase {
 

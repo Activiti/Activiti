@@ -21,7 +21,7 @@ import org.activiti.engine.impl.cfg.DelegateExpressionFieldInjectionMode;
 import org.activiti.engine.impl.context.Context;
 
 /**
- * @author Joram Barrez
+
  */
 public class DelegateExpressionUtil {
   

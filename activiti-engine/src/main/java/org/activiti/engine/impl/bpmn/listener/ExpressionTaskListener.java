@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 
 /**
- * @author Joram Barrez
+
  */
 public class ExpressionTaskListener implements TaskListener {
 

@@ -24,8 +24,8 @@ import org.activiti.engine.impl.persistence.entity.data.ModelDataManager;
 import org.activiti.engine.repository.Model;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public class ModelEntityManagerImpl extends AbstractEntityManager<ModelEntity> implements ModelEntityManager {
   

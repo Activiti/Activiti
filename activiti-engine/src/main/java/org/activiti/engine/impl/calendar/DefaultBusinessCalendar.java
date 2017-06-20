@@ -22,7 +22,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DefaultBusinessCalendar implements BusinessCalendar {
 

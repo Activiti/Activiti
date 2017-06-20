@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
- * @author Tijs Rademakers
+
  */
 public class LongJsonType extends SerializableType {
 

@@ -23,7 +23,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ScriptExecutionListenerTest extends PluggableActivitiTestCase {
 

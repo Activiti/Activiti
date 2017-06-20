@@ -19,7 +19,7 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DbIdGenerator implements IdGenerator {
 

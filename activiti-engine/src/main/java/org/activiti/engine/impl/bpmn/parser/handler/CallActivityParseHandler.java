@@ -17,7 +17,7 @@ import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
- * @author Joram Barrez
+
  */
 public class CallActivityParseHandler extends AbstractActivityBpmnParseHandler<CallActivity> {
 

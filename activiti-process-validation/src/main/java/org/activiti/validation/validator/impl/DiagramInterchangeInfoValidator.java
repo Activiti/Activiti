@@ -22,7 +22,7 @@ import org.activiti.validation.validator.Problems;
 import org.activiti.validation.validator.ValidatorImpl;
 
 /**
- * @author jbarrez
+
  */
 public class DiagramInterchangeInfoValidator extends ValidatorImpl {
 

@@ -15,7 +15,7 @@ package org.activiti.editor.language.json.converter.util;
 import java.util.Collection;
 
 /**
- * @author Joram Barrez
+
  */
 public class CollectionUtils {
 	

@@ -20,7 +20,7 @@ import org.activiti.bpmn.model.DataStore;
 import org.activiti.bpmn.model.DataStoreReference;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class DataStateParser extends BaseChildElementParser {
 

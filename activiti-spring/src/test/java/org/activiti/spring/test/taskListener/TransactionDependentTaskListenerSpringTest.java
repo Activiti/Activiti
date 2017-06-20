@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
- * @author Yvo Swillens
+
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/taskListener/TaskListenerDelegateExpressionTest-context.xml")
 public class TransactionDependentTaskListenerSpringTest extends SpringActivitiTestCase {

@@ -20,7 +20,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Import;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ImportParser implements BpmnXMLConstants {
 

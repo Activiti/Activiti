@@ -14,9 +14,6 @@ package org.activiti.bpmn.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-/**
- * @author Tijs Rademakers
- */
 public class BoundaryEvent extends Event {
 
   @JsonIgnore

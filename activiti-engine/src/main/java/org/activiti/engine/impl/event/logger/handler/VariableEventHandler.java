@@ -24,7 +24,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author Joram Barrez
+
  */
 public abstract class VariableEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 

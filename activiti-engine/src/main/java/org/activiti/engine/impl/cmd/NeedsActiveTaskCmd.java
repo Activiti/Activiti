@@ -25,7 +25,7 @@ import org.activiti.engine.task.Task;
 /**
  * An abstract superclass for {@link Command} implementations that want to verify the provided task is always active (ie. not suspended).
  * 
- * @author Joram Barrez
+
  */
 public abstract class NeedsActiveTaskCmd<T> implements Command<T>, Serializable {
 

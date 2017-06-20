@@ -27,8 +27,8 @@ import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class GetRenderedStartFormCmd implements Command<Object>, Serializable {
 

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents a WS implementation of a {@link Operation}
  * 
- * @author Esteban Robles Luna
+
  */
 public class WSOperation implements OperationImplementation {
 

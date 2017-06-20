@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Enumeration containing all possible types of {@link ActivitiEvent}s.
  * 
- * @author Frederik Heremans
+
  * 
  */
 public enum ActivitiEventType {

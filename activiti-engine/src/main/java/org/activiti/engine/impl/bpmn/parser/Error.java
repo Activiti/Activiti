@@ -17,7 +17,7 @@ import org.activiti.engine.delegate.BpmnError;
 /**
  * Represents a BPMN Error definition, whereas {@link BpmnError} represents an actual instance of an Error.
  * 
- * @author Joram Barrez
+
  */
 public class Error {
 

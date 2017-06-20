@@ -22,8 +22,8 @@ import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class ScriptBindingsFactory {
 

@@ -24,7 +24,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Example of using the exclusive gateway.
  * 
- * @author Joram Barrez
+
  */
 public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
 

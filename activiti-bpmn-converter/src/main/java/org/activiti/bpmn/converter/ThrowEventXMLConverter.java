@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ThrowEvent;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ThrowEventXMLConverter extends BaseBpmnXMLConverter {
 

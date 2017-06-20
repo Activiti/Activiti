@@ -28,7 +28,7 @@ import org.junit.Assert;
 
 /**
  * 
- * @author Daniel Meyer
+
  */
 public class AsyncTaskTest extends PluggableActivitiTestCase {
 

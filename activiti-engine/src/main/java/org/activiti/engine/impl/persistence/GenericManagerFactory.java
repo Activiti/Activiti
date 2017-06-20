@@ -19,8 +19,8 @@ import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class GenericManagerFactory implements SessionFactory {
 

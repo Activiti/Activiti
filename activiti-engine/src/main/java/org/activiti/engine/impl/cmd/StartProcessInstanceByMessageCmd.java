@@ -28,8 +28,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance> {
 

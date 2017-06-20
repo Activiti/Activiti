@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * For each tenant, there will be acquire threads, but only one {@link ExecutorService} will be used
  * once the jobs are acquired.
  * 
- * @author Joram Barrez
+
  */
 public class SharedExecutorServiceAsyncExecutor extends DefaultAsyncJobExecutor implements TenantAwareAsyncExecutor {
   

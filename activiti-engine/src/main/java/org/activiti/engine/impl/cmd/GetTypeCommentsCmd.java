@@ -21,7 +21,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Comment;
 
 /**
- * @author Sam Kim
+
  */
 public class GetTypeCommentsCmd implements Command<List<Comment>>, Serializable {
 

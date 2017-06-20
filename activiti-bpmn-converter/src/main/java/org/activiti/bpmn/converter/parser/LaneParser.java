@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.Process;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class LaneParser implements BpmnXMLConstants {
 

@@ -23,7 +23,7 @@ import org.activiti.engine.repository.ModelQuery;
 import org.junit.Assert;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ModelQueryTest extends PluggableActivitiTestCase {
 

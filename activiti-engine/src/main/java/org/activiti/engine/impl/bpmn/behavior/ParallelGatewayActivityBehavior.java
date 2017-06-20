@@ -43,8 +43,8 @@ import java.util.List;
  * Note that a Parallel Gateway having one incoming and multiple outgoing sequence flow, is the same as having multiple outgoing sequence flow on a given activity. However, a parallel gateway does NOT
  * check conditions on the outgoing sequence flow.
  *
- * @author Joram Barrez
- * @author Tom Baeyens
+
+
  */
 public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
 

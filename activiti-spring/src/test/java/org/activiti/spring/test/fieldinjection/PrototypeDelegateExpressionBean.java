@@ -20,7 +20,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.DelegateHelper;
 
 /**
- * @author Joram Barrez
+
  */
 public class PrototypeDelegateExpressionBean implements JavaDelegate {
   

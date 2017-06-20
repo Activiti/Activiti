@@ -17,7 +17,7 @@ import java.util.Date;
 /**
  * An event log entry can only be inserted (and maybe deleted).
  * 
- * @author Joram Barrez
+
  */
 public class EventLogEntryEntityImpl extends AbstractEntityNoRevision implements EventLogEntryEntity {
 

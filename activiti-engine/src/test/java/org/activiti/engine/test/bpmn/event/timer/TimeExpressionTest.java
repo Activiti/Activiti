@@ -13,7 +13,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test timer expression according to act-865
  * 
- * @author Saeid Mirzaei
+
  */
 
 public class TimeExpressionTest extends PluggableActivitiTestCase {

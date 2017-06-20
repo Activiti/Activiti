@@ -27,7 +27,7 @@ import org.activiti.engine.task.Task;
 
 /**
  * 
- * @author Frederik Heremans
+
  */
 public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 

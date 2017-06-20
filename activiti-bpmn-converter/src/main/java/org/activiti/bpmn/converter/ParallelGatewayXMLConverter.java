@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ParallelGateway;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ParallelGatewayXMLConverter extends BaseBpmnXMLConverter {
 

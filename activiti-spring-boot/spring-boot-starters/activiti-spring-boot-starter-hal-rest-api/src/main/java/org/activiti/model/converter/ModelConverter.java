@@ -18,7 +18,7 @@ package org.activiti.model.converter;
 import java.util.List;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 public interface ModelConverter <SOURCE, TARGET> {
 

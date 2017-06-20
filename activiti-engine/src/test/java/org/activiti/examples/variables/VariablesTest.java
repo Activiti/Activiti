@@ -36,7 +36,7 @@ import org.activiti.engine.test.Deployment;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * @author Tom Baeyens
+
  */
 public class VariablesTest extends PluggableActivitiTestCase {
 
@@ -1226,7 +1226,7 @@ class CustomType {
 /**
  * A custom variable type for testing byte array value handling.
  *
- * @author Marcus Klimstra (CGI)
+
  */
 class CustomVariableType implements VariableType {
   public static final CustomVariableType instance = new CustomVariableType();

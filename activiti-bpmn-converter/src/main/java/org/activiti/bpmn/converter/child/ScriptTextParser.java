@@ -19,7 +19,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ScriptTask;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ScriptTextParser extends BaseChildElementParser {
 

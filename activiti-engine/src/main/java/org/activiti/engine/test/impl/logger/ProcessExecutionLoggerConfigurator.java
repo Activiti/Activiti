@@ -16,7 +16,7 @@ import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
- * @author jbarrez
+
  */
 public class ProcessExecutionLoggerConfigurator extends AbstractProcessEngineConfigurator {
 

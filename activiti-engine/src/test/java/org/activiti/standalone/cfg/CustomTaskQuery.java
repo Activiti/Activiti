@@ -12,7 +12,7 @@ import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Bassam Al-Sarori
+
  * 
  */
 public class CustomTaskQuery extends AbstractQuery<CustomTaskQuery, CustomTask> {

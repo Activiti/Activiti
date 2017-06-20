@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class HistoricVariableInstanceQueryRequest {
 

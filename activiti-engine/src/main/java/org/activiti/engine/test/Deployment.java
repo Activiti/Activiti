@@ -46,8 +46,8 @@ import java.lang.annotation.RetentionPolicy;
  *   }
  * </pre>
  * 
- * @author Dave Syer
- * @author Tom Baeyens
+
+
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Deployment {

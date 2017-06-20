@@ -25,8 +25,8 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.SuspendedJobQuery;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class SuspendedJobQueryImpl extends AbstractQuery<SuspendedJobQuery, Job> implements SuspendedJobQuery, Serializable {
 

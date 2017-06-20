@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 @Component
 public class ListConverter {

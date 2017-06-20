@@ -17,8 +17,8 @@ import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class HistoricDetailVariableInstanceUpdateEntityImpl extends HistoricDetailEntityImpl implements HistoricDetailVariableInstanceUpdateEntity {
 

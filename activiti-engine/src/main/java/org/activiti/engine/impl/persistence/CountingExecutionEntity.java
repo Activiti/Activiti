@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.persistence;
 
 /**
- * @author Joram Barrez
+
  */
 public interface CountingExecutionEntity {
   

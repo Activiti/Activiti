@@ -17,7 +17,7 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
- * @author Joram Barrez
+
  */
 public class SequenceFlowParseHandler extends AbstractBpmnParseHandler<SequenceFlow> {
 

@@ -19,8 +19,8 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface CommentEntity extends Comment, Event, Entity {
   

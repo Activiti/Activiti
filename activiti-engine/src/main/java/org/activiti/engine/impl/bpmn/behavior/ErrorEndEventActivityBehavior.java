@@ -16,8 +16,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
 

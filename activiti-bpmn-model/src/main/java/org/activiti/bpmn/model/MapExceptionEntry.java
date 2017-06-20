@@ -12,10 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-/**
- * @author Saeid Mirzaei
- */
-
 public class MapExceptionEntry {
 
   String errorCode;

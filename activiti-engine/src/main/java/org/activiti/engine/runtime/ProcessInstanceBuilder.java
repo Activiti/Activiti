@@ -25,8 +25,8 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
  * processDefinitionId or processDefinitionKey should be set before calling {@link #start()} to start a process instance.
  * 
  * 
- * @author Bassam Al-Sarori
- * @author Joram Barrez
+
+
  */
 public interface ProcessInstanceBuilder {
 

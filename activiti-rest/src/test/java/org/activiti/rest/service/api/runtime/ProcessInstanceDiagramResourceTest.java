@@ -23,7 +23,7 @@
 //
 // @TODO: fix or remove if image generator is not longer there
 ///**
-// * @author Frederik Heremans
+//
 // */
 //public class ProcessInstanceDiagramResourceTest extends BaseSpringRestTestCase {
 //

@@ -21,7 +21,7 @@ import org.activiti.engine.identity.User;
 /**
  * Form type that holds an ID of a user.
  * 
- * @author 'Frederik Heremans'
+
  */
 public class UserFormType extends AbstractFormType {
 

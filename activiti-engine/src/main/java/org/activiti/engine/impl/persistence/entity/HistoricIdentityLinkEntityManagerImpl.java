@@ -20,8 +20,8 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricIdentityLinkDataManager;
 
 /**
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public class HistoricIdentityLinkEntityManagerImpl extends AbstractEntityManager<HistoricIdentityLinkEntity> implements HistoricIdentityLinkEntityManager {
 

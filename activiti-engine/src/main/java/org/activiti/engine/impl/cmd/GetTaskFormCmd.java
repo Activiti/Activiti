@@ -26,8 +26,8 @@ import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.task.Task;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class GetTaskFormCmd implements Command<TaskFormData>, Serializable {
 

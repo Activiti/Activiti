@@ -14,7 +14,7 @@
 package org.activiti.rest.service.api.engine;
 
 /**
- * @author Henry Yan
+
  */
 public class CommentRequest {
 

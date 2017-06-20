@@ -22,7 +22,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 /**
  * Pojo representing a variable used in REST-service which definies it's name, variable, scope and type.
  * 
- * @author Frederik Heremans
+
  */
 public class RestVariable {
 

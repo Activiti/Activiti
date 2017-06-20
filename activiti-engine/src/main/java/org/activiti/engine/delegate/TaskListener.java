@@ -14,7 +14,7 @@
 package org.activiti.engine.delegate;
 
 /**
- * @author Tom Baeyens
+
  */
 public interface TaskListener extends BaseTaskListener {
 

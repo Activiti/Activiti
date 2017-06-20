@@ -27,8 +27,8 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  * Implementation of an {@link ELResolver} that resolves expressions with the process variables of a given {@link VariableScope} as context. <br>
  * Also exposes the currently logged in username to be used in expressions (if any)
  * 
- * @author Joram Barrez
- * @author Frederik Heremans
+
+
  */
 public class VariableScopeElResolver extends ELResolver {
 

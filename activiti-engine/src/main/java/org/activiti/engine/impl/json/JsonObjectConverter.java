@@ -18,7 +18,7 @@ import java.io.Writer;
 import org.activiti.engine.impl.util.json.JSONObject;
 
 /**
- * @author Tom Baeyens
+
  */
 public abstract class JsonObjectConverter<T> {
 

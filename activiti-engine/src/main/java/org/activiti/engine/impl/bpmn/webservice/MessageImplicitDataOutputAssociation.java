@@ -21,7 +21,7 @@ import org.activiti.engine.impl.bpmn.data.FieldBaseStructureInstance;
 /**
  * An implicit data output association between a source and a target. source is a property in the message and target is a variable in the current execution context
  * 
- * @author Esteban Robles Luna
+
  */
 public class MessageImplicitDataOutputAssociation extends AbstractDataAssociation {
 

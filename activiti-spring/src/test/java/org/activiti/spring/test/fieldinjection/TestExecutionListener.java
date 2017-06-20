@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.Expression;
 import org.springframework.stereotype.Component;
 
 /**
- * @author Joram Barrez
+
  */
 @Component("testExecutionListener")
 public class TestExecutionListener implements ExecutionListener {

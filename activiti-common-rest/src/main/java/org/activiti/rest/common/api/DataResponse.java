@@ -14,7 +14,7 @@
 package org.activiti.rest.common.api;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class DataResponse {
 

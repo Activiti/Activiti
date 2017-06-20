@@ -15,7 +15,7 @@ package org.activiti.engine.impl.variable;
 /**
  * Custom object type
  * 
- * @author Esteban Robles Luna
+
  */
 public class CustomObjectType implements VariableType {
 

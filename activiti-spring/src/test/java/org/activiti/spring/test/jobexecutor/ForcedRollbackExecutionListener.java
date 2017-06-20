@@ -4,7 +4,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 
 /**
- * @author Pablo Ganga
+
  */
 public class ForcedRollbackExecutionListener implements ExecutionListener {
 

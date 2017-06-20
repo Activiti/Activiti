@@ -20,7 +20,7 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
- * @author Joram Barrez
+
  */
 public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
 

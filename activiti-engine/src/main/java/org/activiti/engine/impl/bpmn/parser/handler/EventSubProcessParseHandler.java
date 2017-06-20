@@ -16,7 +16,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventSubProcess;
 
 /**
- * @author Joram Barrez
+
  */
 public class EventSubProcessParseHandler extends SubProcessParseHandler {
 

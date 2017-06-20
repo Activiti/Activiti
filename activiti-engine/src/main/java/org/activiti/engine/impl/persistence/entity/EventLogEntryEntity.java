@@ -19,7 +19,7 @@ import org.activiti.engine.event.EventLogEntry;
 /**
  * An event log entry can only be inserted (and maybe deleted).
  * 
- * @author Joram Barrez
+
  */
 public interface EventLogEntryEntity extends Entity, EventLogEntry {
 

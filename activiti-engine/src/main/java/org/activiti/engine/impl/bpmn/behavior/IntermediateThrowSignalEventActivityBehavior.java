@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {
 

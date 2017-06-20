@@ -20,7 +20,7 @@ import java.util.Date;
 import org.activiti.rest.service.api.RestActionRequest;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ProcessDefinitionActionRequest extends RestActionRequest {
 

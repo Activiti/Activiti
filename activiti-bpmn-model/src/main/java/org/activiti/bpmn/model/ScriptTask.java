@@ -12,10 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-/**
- * @author Tijs Rademakers
- * @author Joram Barrez
- */
 public class ScriptTask extends Task {
 
   protected String scriptFormat;

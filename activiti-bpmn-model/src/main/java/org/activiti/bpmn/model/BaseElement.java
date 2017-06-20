@@ -19,9 +19,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * @author Tijs Rademakers
- */
 public abstract class BaseElement implements HasExtensionAttributes {
 
   protected String id;

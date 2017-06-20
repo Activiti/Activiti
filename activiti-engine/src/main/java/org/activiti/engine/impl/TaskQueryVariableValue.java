@@ -16,7 +16,7 @@ package org.activiti.engine.impl;
 /**
  * Represents a variable value used in a task query.
  * 
- * @author Frederik Heremans
+
  */
 public class TaskQueryVariableValue extends QueryVariableValue {
 

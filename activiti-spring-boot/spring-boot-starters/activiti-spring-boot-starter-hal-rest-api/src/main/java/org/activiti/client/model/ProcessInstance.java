@@ -17,7 +17,7 @@ package org.activiti.client.model;
 
 /**
  *
- * @author Elias Ricken de Medeiros
+
  */
 public class ProcessInstance {
 

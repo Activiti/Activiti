@@ -26,7 +26,7 @@ import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Joram Barrez
+
  */
 public class SetProcessDefinitionCategoryCmd implements Command<Void> {
 

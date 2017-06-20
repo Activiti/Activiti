@@ -13,7 +13,7 @@
 package org.activiti.engine.compatibility;
 
 /**
- * @author Joram Barrez
+
  */
 public interface Activiti5CompatibilityHandlerFactory {
 

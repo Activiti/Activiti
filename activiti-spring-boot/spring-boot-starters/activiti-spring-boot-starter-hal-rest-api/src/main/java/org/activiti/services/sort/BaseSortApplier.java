@@ -20,7 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 /**
- * @author Elias Ricken de Medeiros
+
  */
 public abstract class BaseSortApplier<T extends Query<?, ?>> implements SortApplier<T> {
 

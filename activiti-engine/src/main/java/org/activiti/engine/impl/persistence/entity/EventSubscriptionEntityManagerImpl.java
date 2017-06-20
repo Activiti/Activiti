@@ -28,8 +28,8 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.EventSubscriptionDataManager;
 
 /**
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class EventSubscriptionEntityManagerImpl extends AbstractEntityManager<EventSubscriptionEntity> implements EventSubscriptionEntityManager {
   

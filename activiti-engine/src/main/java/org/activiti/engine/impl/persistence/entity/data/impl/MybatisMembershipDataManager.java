@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.MembershipDataManager;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisMembershipDataManager extends AbstractDataManager<MembershipEntity> implements MembershipDataManager {
   

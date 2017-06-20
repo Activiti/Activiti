@@ -14,7 +14,7 @@
 package org.activiti.rest.service.api.runtime.process;
 
 /**
- * @author Frederik Heremans
+
  */
 public class ExecutionResponse {
 

@@ -17,7 +17,7 @@ package org.activiti.engine;
  * 
  * The check is done when the engine is created in {@link ProcessEngineBuilder#buildProcessEngine()}.
  * 
- * @author Tom Baeyens
+
  */
 public class ActivitiWrongDbException extends ActivitiException {
 

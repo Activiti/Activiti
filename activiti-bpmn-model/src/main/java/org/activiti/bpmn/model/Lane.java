@@ -17,9 +17,6 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
-/**
- * @author Tijs Rademakers
- */
 public class Lane extends BaseElement {
 
   protected String name;

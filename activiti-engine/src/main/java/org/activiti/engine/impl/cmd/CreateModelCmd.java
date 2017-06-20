@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.Model;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class CreateModelCmd implements Command<Model>, Serializable {
 

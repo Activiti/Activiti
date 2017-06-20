@@ -18,7 +18,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.validation.ValidationError;
 
 /**
- * @author jbarrez
+
  */
 public interface Validator {
 

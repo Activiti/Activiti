@@ -19,8 +19,8 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.repository.Model;
 
 /**
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public interface ModelEntity extends Model, HasRevision, Entity {
 

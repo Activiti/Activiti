@@ -20,8 +20,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class SetExecutionVariablesCmd extends NeedsActiveExecutionCmd<Object> {
 

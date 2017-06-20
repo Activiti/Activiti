@@ -50,8 +50,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
- * @author Tijs Rademakers
- * @author Frederik Heremans
+
+
  */
 @RestController
 @Api(tags = { "Deployment" }, description = "Manage Deployment", authorizations = { @Authorization(value = "basicAuth") })

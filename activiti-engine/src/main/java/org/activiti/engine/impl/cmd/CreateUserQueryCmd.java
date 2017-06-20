@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Tom Baeyens
+
  */
 public class CreateUserQueryCmd implements Command<UserQuery>, Serializable {
 

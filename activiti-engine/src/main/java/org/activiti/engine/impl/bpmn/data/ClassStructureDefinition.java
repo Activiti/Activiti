@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 /**
  * Represents a structure encapsulated in a class
  * 
- * @author Esteban Robles Luna
+
  */
 public class ClassStructureDefinition implements FieldBaseStructureDefinition {
 

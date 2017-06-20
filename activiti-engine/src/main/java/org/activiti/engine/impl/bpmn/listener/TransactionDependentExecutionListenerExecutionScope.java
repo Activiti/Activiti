@@ -17,7 +17,7 @@ import java.util.Map;
 import org.activiti.bpmn.model.FlowElement;
 
 /**
- * @author Yvo Swillens
+
  */
 public class TransactionDependentExecutionListenerExecutionScope {
 

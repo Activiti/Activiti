@@ -19,7 +19,7 @@ import java.util.Set;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
- * @author Tom Baeyens
+
  */
 public class FormData implements Map<String, Object> {
 

@@ -35,8 +35,8 @@ import org.activiti.engine.runtime.TimerJobQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
- * @author Falko Menge
+
+
  */
 public class JobQueryTest extends PluggableActivitiTestCase {
 

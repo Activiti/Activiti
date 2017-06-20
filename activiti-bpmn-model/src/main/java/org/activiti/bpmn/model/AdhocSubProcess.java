@@ -12,9 +12,6 @@
  */
 package org.activiti.bpmn.model;
 
-/**
- * @author Tijs Rademakers
- */
 public class AdhocSubProcess extends SubProcess {
 
   public static final String ORDERING_PARALLEL = "Parallel";

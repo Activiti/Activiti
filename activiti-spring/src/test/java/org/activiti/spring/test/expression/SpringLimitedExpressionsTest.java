@@ -23,7 +23,7 @@ import org.springframework.test.context.ContextConfiguration;
 /**
  * Test limiting the exposed beans in expressions.
  * 
- * @author Frederik Heremans
+
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/expression/expressionLimitedBeans-context.xml")
 public class SpringLimitedExpressionsTest extends SpringActivitiTestCase {

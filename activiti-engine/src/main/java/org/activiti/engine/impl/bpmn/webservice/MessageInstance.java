@@ -18,7 +18,7 @@ import org.activiti.engine.impl.bpmn.data.StructureInstance;
 /**
  * An instance of a {@link MessageDefinition}
  * 
- * @author Esteban Robles Luna
+
  */
 public class MessageInstance {
 

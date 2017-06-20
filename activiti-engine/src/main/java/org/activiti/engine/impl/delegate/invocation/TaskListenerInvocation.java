@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.TaskListener;
 /**
  * Class handling invocations of {@link TaskListener TaskListeners}
  * 
- * @author Daniel Meyer
+
  */
 public class TaskListenerInvocation extends DelegateInvocation {
 

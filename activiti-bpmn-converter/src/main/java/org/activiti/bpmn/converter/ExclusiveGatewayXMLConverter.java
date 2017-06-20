@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExclusiveGateway;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ExclusiveGatewayXMLConverter extends BaseBpmnXMLConverter {
 

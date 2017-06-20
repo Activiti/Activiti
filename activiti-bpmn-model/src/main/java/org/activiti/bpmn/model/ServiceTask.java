@@ -15,9 +15,6 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Tijs Rademakers
- */
 public class ServiceTask extends TaskWithFieldExtensions {
 
   public static final String DMN_TASK = "dmn";

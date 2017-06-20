@@ -18,7 +18,7 @@ import java.util.List;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class ExecutionTree implements Iterable<ExecutionTreeNode> {
 

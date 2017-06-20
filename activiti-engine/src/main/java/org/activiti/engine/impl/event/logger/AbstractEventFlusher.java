@@ -7,7 +7,7 @@ import org.activiti.engine.impl.event.logger.handler.EventLoggerEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Joram Barrez
+
  */
 public abstract class AbstractEventFlusher implements EventFlusher {
 

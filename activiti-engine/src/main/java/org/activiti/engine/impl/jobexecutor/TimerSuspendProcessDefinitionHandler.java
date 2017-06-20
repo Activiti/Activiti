@@ -19,7 +19,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.util.json.JSONObject;
 
 /**
- * @author Joram Barrez
+
  */
 public class TimerSuspendProcessDefinitionHandler extends TimerChangeProcessDefinitionSuspensionStateJobHandler {
 

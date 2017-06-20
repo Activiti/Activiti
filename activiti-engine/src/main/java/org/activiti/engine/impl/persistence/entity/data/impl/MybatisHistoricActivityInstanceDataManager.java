@@ -28,7 +28,7 @@ import org.activiti.engine.impl.persistence.entity.data.HistoricActivityInstance
 import org.activiti.engine.impl.persistence.entity.data.impl.cachematcher.UnfinishedHistoricActivityInstanceMatcher;
 
 /**
- * @author Joram Barrez
+
  */
 public class MybatisHistoricActivityInstanceDataManager extends AbstractDataManager<HistoricActivityInstanceEntity> implements HistoricActivityInstanceDataManager {
   

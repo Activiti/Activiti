@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
- * @author Daniel Meyer
+
  */
 public class SetVariablesDelegate implements JavaDelegate {
 

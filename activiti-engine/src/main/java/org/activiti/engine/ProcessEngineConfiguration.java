@@ -70,7 +70,7 @@ import java.util.Map;
  * </p>
  *
  * @see ProcessEngines
- * @author Tom Baeyens
+
  */
 public abstract class ProcessEngineConfiguration {
 

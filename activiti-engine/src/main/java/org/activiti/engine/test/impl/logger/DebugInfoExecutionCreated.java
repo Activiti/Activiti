@@ -16,7 +16,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.slf4j.Logger;
 
 /**
- * @author jbarrez
+
  */
 public class DebugInfoExecutionCreated extends AbstractDebugInfo {
 

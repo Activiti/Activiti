@@ -15,9 +15,9 @@ package org.activiti.engine.impl.persistence.entity;
 import org.activiti.engine.impl.variable.VariableType;
 
 /**
- * @author Tom Baeyens
- * @author Marcus Klimstra (CGI)
- * @author Joram Barrez
+
+
+
  */
 public interface VariableInstanceEntity extends VariableInstance {
   

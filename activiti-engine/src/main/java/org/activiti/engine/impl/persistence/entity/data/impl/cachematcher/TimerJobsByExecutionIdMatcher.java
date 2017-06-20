@@ -16,7 +16,7 @@ import org.activiti.engine.impl.persistence.CachedEntityMatcherAdapter;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public class TimerJobsByExecutionIdMatcher extends CachedEntityMatcherAdapter<TimerJobEntity> {
   

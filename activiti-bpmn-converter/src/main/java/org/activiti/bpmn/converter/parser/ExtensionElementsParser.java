@@ -27,7 +27,7 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ExtensionElementsParser implements BpmnXMLConstants {
 

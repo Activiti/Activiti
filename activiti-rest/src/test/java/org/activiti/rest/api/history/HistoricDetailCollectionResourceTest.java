@@ -33,7 +33,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * Test for REST-operation related to the historic detail query resource.
  * 
- * @author Tijs Rademakers
+
  */
 public class HistoricDetailCollectionResourceTest extends BaseSpringRestTestCase {
 

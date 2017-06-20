@@ -28,7 +28,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Daniel Meyer
+
  */
 public class JtaTransactionContext implements TransactionContext {
 

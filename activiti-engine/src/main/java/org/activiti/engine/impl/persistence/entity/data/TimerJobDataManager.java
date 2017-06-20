@@ -20,8 +20,8 @@ import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
- * @author Tijs Rademakers
- * @author Vasile Dirla
+
+
  */
 public interface TimerJobDataManager extends DataManager<TimerJobEntity> {
   

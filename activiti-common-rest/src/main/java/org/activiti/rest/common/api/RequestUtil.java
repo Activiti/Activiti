@@ -20,7 +20,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.apache.commons.lang3.time.FastDateFormat;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class RequestUtil {
 

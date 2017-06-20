@@ -19,7 +19,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
 /**
- * @author Frederik Heremans
+
  */
 @Entity
 public class CompoundIdJPAEntity implements Serializable {

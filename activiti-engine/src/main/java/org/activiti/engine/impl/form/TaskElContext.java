@@ -19,7 +19,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import de.odysseus.el.util.SimpleContext;
 
 /**
- * @author Tom Baeyens
+
  */
 public class TaskElContext extends SimpleContext {
 

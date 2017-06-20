@@ -14,7 +14,7 @@
 package org.activiti.engine.impl.scripting;
 
 /**
- * @author Tom Baeyens
+
  */
 public interface Resolver {
 

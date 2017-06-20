@@ -17,7 +17,7 @@ import java.io.Serializable;
 import org.activiti.engine.ProcessEngineInfo;
 
 /**
- * @author Tom Baeyens
+
  */
 public class ProcessEngineInfoImpl implements Serializable, ProcessEngineInfo {
 

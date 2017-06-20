@@ -26,8 +26,8 @@ import java.util.List;
  * Operation that leaves the {@link FlowElement} where the {@link ExecutionEntity} is currently at
  * and leaves it following the sequence flow.
  *
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 

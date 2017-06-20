@@ -17,8 +17,8 @@ import java.io.InputStream;
 import org.activiti.bpmn.converter.util.InputStreamProvider;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public interface StreamSource extends InputStreamProvider {
 

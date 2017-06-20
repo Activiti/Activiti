@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author Joram Barrez
+
  */
 public interface IdentityLinkEntityManager extends EntityManager<IdentityLinkEntity> {
 

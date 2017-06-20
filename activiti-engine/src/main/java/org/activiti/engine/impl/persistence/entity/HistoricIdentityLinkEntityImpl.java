@@ -20,7 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.db.BulkDeleteable;
 
 /**
- * @author Frederik Heremans
+
  */
 public class HistoricIdentityLinkEntityImpl extends AbstractEntityNoRevision implements HistoricIdentityLinkEntity, Serializable, BulkDeleteable {
 

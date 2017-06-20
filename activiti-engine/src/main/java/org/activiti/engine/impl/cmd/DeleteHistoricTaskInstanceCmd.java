@@ -20,7 +20,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DeleteHistoricTaskInstanceCmd implements Command<Object>, Serializable {
 

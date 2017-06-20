@@ -26,7 +26,7 @@ import org.activiti.engine.test.EnableVerboseExecutionTreeLogging;
 import org.activiti.engine.test.bpmn.event.compensate.helper.SetVariablesDelegate;
 
 /**
- * @author Tijs Rademakers
+
  */
 @EnableVerboseExecutionTreeLogging
 public class CompensateEventTest extends PluggableActivitiTestCase {

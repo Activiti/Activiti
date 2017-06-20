@@ -17,7 +17,7 @@ package org.activiti.engine.runtime;
  * 
  * Note that a {@link ProcessInstance} also is an execution.
  * 
- * @author Joram Barrez
+
  */
 public interface Execution {
 

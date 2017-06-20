@@ -17,8 +17,8 @@ import java.util.Date;
 /**
  * Represents an async job: a piece of logic that needs to be executed asynchronously. 
  * 
- * @author Tijs Rademakers
- * @author Joram Barrez
+
+
  */
 public interface JobEntity extends AbstractJobEntity {
 

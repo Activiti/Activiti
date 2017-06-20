@@ -25,8 +25,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Joram Barrez
- * @author Frederik Heremans
+
+
  */
 public class JavaServiceTaskTest extends PluggableActivitiTestCase {
 

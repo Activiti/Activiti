@@ -17,7 +17,7 @@ import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
 
 /**
- * @author Tom Baeyens
+
  */
 public class FormPropertyImpl implements FormProperty {
 

@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * 
  * When using H2 and the default schema name, it will also boot the H2 webapp (reachable with browser on http://localhost:8082/)
  * 
- * @author Joram Barrez
+
  */
 public class AbstractActviti6Test {
   

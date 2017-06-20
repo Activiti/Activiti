@@ -27,9 +27,9 @@ import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.GroupDataManager;
 
 /**
- * @author Tom Baeyens
- * @author Saeid Mirzaei
- * @author Joram Barrez
+
+
+
  */
 public class GroupEntityManagerImpl extends AbstractEntityManager<GroupEntity> implements GroupEntityManager {
   

@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.form;
 
 /**
- * @author Tom Baeyens
+
  */
 public class FormReference {
 

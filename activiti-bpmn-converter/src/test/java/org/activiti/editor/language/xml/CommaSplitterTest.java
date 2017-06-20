@@ -9,7 +9,7 @@ import org.activiti.bpmn.converter.util.CommaSplitter;
 import org.junit.Test;
 
 /**
- * @author Saeid Mirzaei
+
  */
 
 public class CommaSplitterTest {

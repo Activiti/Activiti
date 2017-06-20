@@ -31,8 +31,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Serializable {
 

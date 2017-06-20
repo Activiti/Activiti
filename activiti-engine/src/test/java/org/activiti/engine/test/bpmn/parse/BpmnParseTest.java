@@ -27,7 +27,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * 
- * @author Joram Barrez
+
  */
 public class BpmnParseTest extends PluggableActivitiTestCase {
 

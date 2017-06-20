@@ -65,7 +65,7 @@ import java.util.TreeSet;
  * <li>Numbers may have the <code>0-</code> <small>(octal)</small> or <code>0x-</code> <small>(hex)</small> prefix.</li>
  * </ul>
  * 
- * @author JSON.org
+
  * @version 2010-01-05
  */
 public class JSONObject {

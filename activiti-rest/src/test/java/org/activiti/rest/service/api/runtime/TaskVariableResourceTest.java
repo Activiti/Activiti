@@ -41,7 +41,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to a single task variable.
  * 
- * @author Frederik Heremans
+
  */
 public class TaskVariableResourceTest extends BaseSpringRestTestCase {
 

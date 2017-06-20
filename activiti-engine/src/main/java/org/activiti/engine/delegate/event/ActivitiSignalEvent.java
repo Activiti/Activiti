@@ -15,7 +15,7 @@ package org.activiti.engine.delegate.event;
 /**
  * An {@link ActivitiEvent} related to a signal being sent to an activity.
  * 
- * @author Frederik Heremans
+
  */
 public interface ActivitiSignalEvent extends ActivitiActivityEvent {
 

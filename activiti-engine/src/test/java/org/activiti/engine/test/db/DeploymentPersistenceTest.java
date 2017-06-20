@@ -24,7 +24,7 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.repository.Deployment;
 
 /**
- * @author Tom Baeyens
+
  */
 public class DeploymentPersistenceTest extends PluggableActivitiTestCase {
 

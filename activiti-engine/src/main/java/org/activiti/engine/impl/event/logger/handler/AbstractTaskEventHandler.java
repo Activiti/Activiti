@@ -7,7 +7,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 /**
- * @author Joram Barrez
+
  */
 public abstract class AbstractTaskEventHandler extends AbstractDatabaseEventLoggerEventHandler {
 

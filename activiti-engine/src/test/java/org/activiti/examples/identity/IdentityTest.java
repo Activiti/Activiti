@@ -22,7 +22,7 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 
 /**
- * @author Tom Baeyens
+
  */
 public class IdentityTest extends PluggableActivitiTestCase {
 

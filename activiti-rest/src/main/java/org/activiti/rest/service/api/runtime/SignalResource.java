@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Resource for notifying the engine a signal event has been received, independent of an execution.
  * 
- * @author Frederik Heremans
+
  */
 @RestController
 @Api(tags = { "Runtime" }, description = "Manage Runtime", authorizations = { @Authorization(value = "basicAuth") })

@@ -17,7 +17,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ErrorEventSubProcessTest extends PluggableActivitiTestCase {
 

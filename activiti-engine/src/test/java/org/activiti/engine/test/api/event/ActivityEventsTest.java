@@ -41,8 +41,8 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for all {@link ActivitiEvent}s related to activities.
  * 
- * @author Joram Barrez
- * @author Tijs Rademakers
+
+
  */
 public class ActivityEventsTest extends PluggableActivitiTestCase {
 

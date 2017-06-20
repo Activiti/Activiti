@@ -17,7 +17,7 @@ import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
- * @author Tom Baeyens
+
  */
 public class StartFormDataImpl extends FormDataImpl implements StartFormData {
 

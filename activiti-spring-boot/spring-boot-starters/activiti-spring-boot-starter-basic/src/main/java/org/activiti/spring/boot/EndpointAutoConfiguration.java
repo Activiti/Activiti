@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Configuration;
  * talk to the {@link org.activiti.engine.IdentityService}
  * as required.
  *
- * @author Josh Long
+
  */
 @Configuration
 @ConditionalOnClass (name = "org.springframework.boot.actuate.endpoint.AbstractEndpoint")

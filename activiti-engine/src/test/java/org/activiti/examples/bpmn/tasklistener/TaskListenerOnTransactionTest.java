@@ -24,7 +24,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Yvo Swillens
+
  */
 public class TaskListenerOnTransactionTest extends PluggableActivitiTestCase {
 

@@ -30,7 +30,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class VariableScopeTest extends PluggableActivitiTestCase {
 
@@ -87,8 +87,8 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
   /**
    * A testcase to produce and fix issue ACT-862.
    * 
-   * @author Roman Smirnov
-   * @author Christian Lipphardt
+
+
    */
   @Deployment
   public void testVariableNamesScope() {
@@ -254,8 +254,8 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
   /**
    * A command to get the names of the variables
    * 
-   * @author Roman Smirnov
-   * @author Christian Lipphardt
+
+
    */
   private class GetVariableNamesCommand implements Command<List<String>> {
 

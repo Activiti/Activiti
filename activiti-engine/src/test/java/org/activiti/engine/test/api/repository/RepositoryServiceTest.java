@@ -35,8 +35,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Frederik Heremans
- * @author Joram Barrez
+
+
  */
 public class RepositoryServiceTest extends PluggableActivitiTestCase {
 

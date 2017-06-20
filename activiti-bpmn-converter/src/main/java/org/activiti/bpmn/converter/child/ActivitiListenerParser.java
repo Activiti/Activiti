@@ -22,8 +22,8 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * @author Tijs Rademakers
- * @author Yvo Swillens
+
+
  */
 public abstract class ActivitiListenerParser extends BaseChildElementParser {
 

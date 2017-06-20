@@ -52,8 +52,8 @@ import org.junit.Assert;
 import junit.framework.AssertionFailedError;
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+
+
  */
 public abstract class AbstractActivitiTestCase extends AbstractTestCase {
 

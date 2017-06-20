@@ -41,7 +41,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for all REST-operations related to Process instance variables.
  * 
- * @author Frederik Heremans
+
  */
 public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRestTestCase {
 

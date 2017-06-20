@@ -21,7 +21,7 @@ import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.Event;
 
 /**
- * @author Tijs Rademakers
+
  */
 public class ErrorEventDefinitionParser extends BaseChildElementParser {
 

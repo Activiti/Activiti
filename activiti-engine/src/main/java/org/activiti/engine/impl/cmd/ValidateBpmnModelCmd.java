@@ -10,7 +10,7 @@ import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ValidationError;
 
 /**
- * @author Joram Barrez
+
  */
 public class ValidateBpmnModelCmd implements Command<List<ValidationError>> {
 

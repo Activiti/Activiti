@@ -26,8 +26,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Daniel Meyer
- * @author Joram Barrez
+
+
  */
 public class EventBasedGatewayTest extends PluggableActivitiTestCase {
 

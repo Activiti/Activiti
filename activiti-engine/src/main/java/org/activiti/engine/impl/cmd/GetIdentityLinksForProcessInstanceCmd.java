@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.IdentityLink;
 
 /**
- * @author Marcus Klimstra
+
  */
 public class GetIdentityLinksForProcessInstanceCmd implements Command<List<IdentityLink>>, Serializable {
 

@@ -20,7 +20,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 /**
- * @author Frederik Heremans
+
  */
 @Entity(name = "SQLDATE_ID_ENTITY")
 public class SQLDateIdJPAEntity {

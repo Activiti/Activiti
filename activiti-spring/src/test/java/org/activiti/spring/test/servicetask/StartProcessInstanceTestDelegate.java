@@ -18,7 +18,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.context.Context;
 
 /**
- * @author Joram Barrez
+
  */
 public class StartProcessInstanceTestDelegate implements JavaDelegate {
 

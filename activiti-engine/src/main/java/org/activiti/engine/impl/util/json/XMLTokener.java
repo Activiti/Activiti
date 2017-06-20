@@ -27,7 +27,7 @@ package org.activiti.engine.impl.util.json;
 /**
  * The XMLTokener extends the JSONTokener to provide additional methods for the parsing of XML texts.
  * 
- * @author JSON.org
+
  * @version 2010-01-30
  */
 public class XMLTokener extends JSONTokener {

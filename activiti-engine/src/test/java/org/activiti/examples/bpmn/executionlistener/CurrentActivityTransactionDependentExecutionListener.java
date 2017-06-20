@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * Simple {@link TransactionDependentExecutionListener} that collects current process scope data and custom properties.
  * 
- * @author Yvo Swillens
+
  */
 public class CurrentActivityTransactionDependentExecutionListener implements TransactionDependentExecutionListener {
 

@@ -23,7 +23,7 @@ import org.activiti.engine.runtime.Job;
 /**
  * {@link EntityManager} responsible for the {@link JobEntity} class.
  * 
- * @author Joram Barrez
+
  */
 public interface JobEntityManager extends EntityManager<JobEntity> {
   

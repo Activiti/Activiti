@@ -33,8 +33,8 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.validation.validator.Problems;
 
 /**
- * @author Joram Barrez
- * @author Erik Winlof
+
+
  */
 public class BpmnDeploymentTest extends PluggableActivitiTestCase {
 

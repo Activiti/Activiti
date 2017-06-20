@@ -15,7 +15,7 @@ package org.activiti.engine.impl.bpmn.data;
 /**
  * An instance of {@link PrimitiveStructureDefinition}
  * 
- * @author Esteban Robles Luna
+
  */
 public class PrimitiveStructureInstance implements StructureInstance {
 

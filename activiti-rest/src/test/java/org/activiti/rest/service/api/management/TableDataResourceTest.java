@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 /**
  * Test for all REST-operations related to the Table columns.
  * 
- * @author Frederik Heremans
+
  */
 public class TableDataResourceTest extends BaseSpringRestTestCase {
 

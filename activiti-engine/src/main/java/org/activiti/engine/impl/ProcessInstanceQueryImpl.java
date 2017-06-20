@@ -35,12 +35,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
- * @author Tijs Rademakers
- * @author Frederik Heremans
- * @author Falko Menge
- * @author Daniel Meyer
+
+
+
+
+
+
  */
 public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessInstanceQuery, ProcessInstance> implements ProcessInstanceQuery, Serializable {
 

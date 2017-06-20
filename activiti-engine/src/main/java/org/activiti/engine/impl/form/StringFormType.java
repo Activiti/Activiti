@@ -16,7 +16,7 @@ package org.activiti.engine.impl.form;
 import org.activiti.engine.form.AbstractFormType;
 
 /**
- * @author Tom Baeyens
+
  */
 public class StringFormType extends AbstractFormType {
 

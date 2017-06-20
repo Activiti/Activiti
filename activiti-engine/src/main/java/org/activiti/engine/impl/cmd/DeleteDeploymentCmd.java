@@ -19,7 +19,7 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
 /**
- * @author Joram Barrez
+
  */
 public class DeleteDeploymentCmd implements Command<Void>, Serializable {
 
