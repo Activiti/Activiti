@@ -220,9 +220,9 @@ public class TaskBaseResource {
     if (request.getDueAfter() != null) {
       taskQuery.taskDueAfter(request.getDueAfter());
     }
-    if (request.getWithoutDueDate() != null && request.getWithoutDueDate()) {
+   /* if (request.getWithoutDueDate() != null && request.getWithoutDueDate()) {
       taskQuery.withoutTaskDueDate();
-    }
+    }*/
 
     if (request.getActive() != null) {
       if (request.getActive().booleanValue()) {
@@ -285,6 +285,10 @@ public class TaskBaseResource {
 
     if (Boolean.TRUE.equals(request.getWithoutTenantId())) {
       taskQuery.taskWithoutTenantId();
+    }
+	//Added new
+	 if (Boolean.TRUE.equals(request.getWithoutDueDate())) {
+      taskQuery.withoutTaskDueDate();
     }
 
     if (request.getCandidateOrAssigned() != null) {

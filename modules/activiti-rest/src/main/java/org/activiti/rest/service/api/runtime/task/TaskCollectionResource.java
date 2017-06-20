@@ -279,6 +279,10 @@ public class TaskCollectionResource extends TaskBaseResource {
     if (requestParams.containsKey("withoutTenantId") && Boolean.valueOf(requestParams.get("withoutTenantId"))) {
       request.setWithoutTenantId(Boolean.TRUE);
     }
+	//Added new
+	 if (requestParams.containsKey("withoutDueDate") && Boolean.valueOf(requestParams.get("withoutDueDate"))) {
+      request.setWithoutDueDate(Boolean.TRUE);
+    }
 
     if (requestParams.containsKey("candidateOrAssigned")) {
       request.setCandidateOrAssigned(requestParams.get("candidateOrAssigned"));
