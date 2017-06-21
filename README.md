@@ -12,6 +12,9 @@ Activiti
   <a href='https://codecov.io/gh/Activiti/Activiti'>
     <img src='http://img.shields.io/codecov/c/github/Activiti/Activiti/development.svg?maxAge=2592000' alt='Coverage Status' />
   </a>
+  <a href='https://github.com/Activiti/Activiti/blob/master/LICENSE'>
+       <img src='https://img.shields.io/hexpm/l/plug.svg' alt='license' />
+    </a>
 </p>
 
 Homepage: http://activiti.org/
