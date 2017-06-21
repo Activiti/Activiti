@@ -97,7 +97,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 /**
- 
+
 
  */
 public class BpmnXMLConverter implements BpmnXMLConstants {
