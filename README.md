@@ -180,8 +180,6 @@ FAQ
 
             * be scared of stepping on the feet of the owner.
 
-        * For more motivation, see [this video on How to get a healthy open source project?](http://video.google.com/videoplay?docid=-4216011961522818645#)
-
     * Credit to the authors is given:
 
         * with [Open Hub](https://www.openhub.net/p/activiti/contributors) which also has statistics
