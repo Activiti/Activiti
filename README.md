@@ -55,7 +55,7 @@ Configuring IntelliJ
 
     * If you don't do this, you need to set the file encoding and number of spaces correctly manually.
 
-    * Use the one from `droolsjbpm-build-bootstrap/ide-configuration`
+    * Use the one from `Activiti/ide-configuration`
 
     * Copy to `~/.IntelliJIdea*/config/codestyles/` (on mac: `~/Library/Preferences/IntelliJIdea*/config/codestyles/`)
 
@@ -80,8 +80,6 @@ Configuring IntelliJ
         * Combobox *Default encoding for properties files*: `ISO-8859-1`
 
             * Note: normal i18n properties files must be in `ISO-8859-1` as specified by the java `ResourceBundle` contract.
-
-                * Note on note: GWT i18n properties files override that and must be in `UTF-8` as specified by the GWT contract.
 
 * Set the correct number of spaces when pressing tab:
 
