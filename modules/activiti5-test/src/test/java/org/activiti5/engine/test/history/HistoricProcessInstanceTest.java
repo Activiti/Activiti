@@ -28,6 +28,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.repository.DeploymentProperties;
 import org.activiti.engine.runtime.Clock;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
@@ -522,4 +523,61 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   	repositoryService.deleteDeployment(deploymentId, true);
   }
   
+  /**
+   * Validation for https://activiti.atlassian.net/browse/ACT-4246
+   */
+  @Deployment(resources= {
+    "org/activiti5/engine/test/history/HistoricProcessInstanceTest.testMessageStartEvent.bpmn20.xml"
+  })
+  public void testMessageStartEvent() {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMessageStartEvent");
+		Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("message3").singleResult();
+		
+		runtimeService.messageEventReceived("message3", execution.getId());
+		
+		// Check Process' history
+		HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+		assertNull(historicProcessInstance.getEndTime());
+
+		Task task = taskService.createTaskQuery().processInstanceId(historicProcessInstance.getId()).singleResult();
+		taskService.complete(task.getId());
+		
+		// Recheck Process' history
+		historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+		assertNotNull(historicProcessInstance.getEndTime());
+    }
+  }
+  
+  /**
+   * Validation for https://activiti.atlassian.net/browse/ACT-4246
+   */
+  @Deployment(resources= {
+    "org/activiti5/engine/test/history/HistoricProcessInstanceTest.testMessageStartEventWithCallActivity.bpmn20.xml",
+    "org/activiti5/engine/test/history/HistoricProcessInstanceTest.testMessageStartEventWithCallActivity-subprocess.bpmn20.xml"
+  })
+  
+  public void testMessageStartEventWithCallActivity() {
+    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMessageStartEventWithCallActivity");
+		Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("message3").singleResult();
+		
+		runtimeService.messageEventReceived("message3", execution.getId());
+		
+		// Check sub process's history
+		HistoricProcessInstance historicSubProcessInstance = historyService.createHistoricProcessInstanceQuery().superProcessInstanceId(processInstance.getId()).singleResult();
+		assertNotNull(historicSubProcessInstance.getEndTime());
+		
+		// Check process' history
+		HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+		assertNull(historicProcessInstance.getEndTime());
+		
+		Task task = taskService.createTaskQuery().processInstanceId(historicProcessInstance.getId()).singleResult();
+		taskService.complete(task.getId());
+		
+		// Recheck process' history
+		historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+		assertNotNull(historicProcessInstance.getEndTime());
+    }
+  }
 }

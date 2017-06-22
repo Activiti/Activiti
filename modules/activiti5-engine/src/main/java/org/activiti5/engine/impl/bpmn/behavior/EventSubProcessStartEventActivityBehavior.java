@@ -13,8 +13,11 @@
 package org.activiti5.engine.impl.bpmn.behavior;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti5.engine.impl.context.Context;
+import org.activiti5.engine.impl.persistence.entity.HistoricProcessInstanceEntity;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.impl.pvm.runtime.InterpretableExecution;
@@ -59,6 +62,17 @@ public class EventSubProcessStartEventActivityBehavior extends NoneStartEventAct
     // set the outgoing execution to this activity
     ((InterpretableExecution)outgoingExecution).setActivity(activity);
     
+    // ACT-4246
+    List<HistoricProcessInstanceEntity> cachedHistoricProcessInstances = Context.getCommandContext().getDbSqlSession().findInCache(HistoricProcessInstanceEntity.class);
+    for (HistoricProcessInstanceEntity cachedHistoricProcessInstance : cachedHistoricProcessInstances) {
+         if ((execution.getProcessInstanceId().equals(cachedHistoricProcessInstance.getProcessInstanceId())) && (cachedHistoricProcessInstance.getEndTime() != null)) {
+             cachedHistoricProcessInstance.setEndActivityId(null);
+             cachedHistoricProcessInstance.setEndTime(null);
+             cachedHistoricProcessInstance.setDurationInMillis(null);
+             cachedHistoricProcessInstance.setDeleteReason(null);
+             break;
+         }
+    }
     // continue execution
     outgoingExecution.takeAll(activity.getOutgoingTransitions(), Collections.EMPTY_LIST);
   }
