@@ -723,7 +723,6 @@ public class RestResponseFactory {
     return createHistoricProcessInstanceResponse(processInstance, createUrlBuilder());
   }
 
-  @SuppressWarnings("deprecation")
   public HistoricProcessInstanceResponse createHistoricProcessInstanceResponse(HistoricProcessInstance processInstance, RestUrlBuilder urlBuilder) {
     HistoricProcessInstanceResponse result = new HistoricProcessInstanceResponse();
     result.setBusinessKey(processInstance.getBusinessKey());
@@ -742,8 +741,8 @@ public class RestResponseFactory {
     result.setUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE, processInstance.getId()));
     if (processInstance.getProcessVariables() != null) {
       Map<String, Object> variableMap = processInstance.getProcessVariables();
-      for (String name : variableMap.keySet()) {
-        result.addVariable(createRestVariable(name, variableMap.get(name), RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_HISTORY_PROCESS, false, urlBuilder));
+      for (Entry<String, Object> variable : variableMap.entrySet()) {
+        result.addVariable(createRestVariable(variable.getKey(), variable.getValue(), RestVariableScope.LOCAL, processInstance.getId(), VARIABLE_HISTORY_PROCESS, false, urlBuilder));
       }
     }
     result.setTenantId(processInstance.getTenantId());
