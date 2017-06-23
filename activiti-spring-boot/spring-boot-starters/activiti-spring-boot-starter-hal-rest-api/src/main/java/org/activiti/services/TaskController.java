@@ -21,14 +21,13 @@ import org.activiti.client.model.Task;
 import org.activiti.client.model.resources.TaskResource;
 import org.activiti.client.model.resources.assembler.TaskResourceAssembler;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.task.TaskQuery;
 import org.activiti.model.converter.TaskConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,20 +47,22 @@ public class TaskController {
     private final TaskService taskService;
     private final TaskConverter taskConverter;
     private final TaskResourceAssembler taskResourceAssembler;
-    private final PageRetriever pageRetriever;
+    private final PageableTaskService pageableTaskService;
 
     @Autowired
-    public TaskController(TaskService taskService, TaskConverter taskConverter, TaskResourceAssembler taskResourceAssembler, PageRetriever pageRetriever) {
+    public TaskController(TaskService taskService,
+                          TaskConverter taskConverter,
+                          TaskResourceAssembler taskResourceAssembler,
+                          PageableTaskService pageableTaskService) {
         this.taskService = taskService;
         this.taskConverter = taskConverter;
         this.taskResourceAssembler = taskResourceAssembler;
-        this.pageRetriever = pageRetriever;
+        this.pageableTaskService = pageableTaskService;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public Resources<TaskResource> getTasks(Pageable pageable, PagedResourcesAssembler<Task> pagedResourcesAssembler) {
-        TaskQuery query = taskService.createTaskQuery();
-        Page<Task> page = pageRetriever.loadPage(query, pageable, taskConverter);
+    public PagedResources<TaskResource> getTasks(Pageable pageable, PagedResourcesAssembler<Task> pagedResourcesAssembler) {
+        Page<Task> page = pageableTaskService.getTasks(pageable);
         return pagedResourcesAssembler.toResource(page, taskResourceAssembler);
     }
 

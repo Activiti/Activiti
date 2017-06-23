@@ -26,8 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.Resources;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,8 +57,8 @@ public class ProcessInstanceController {
         this.pageableProcessInstanceService = pageableProcessInstanceService;
     }
 
-    @RequestMapping(method = RequestMethod.GET, params = {"page", "size"})
-    public Resources<ProcessInstanceResource> getProcessInstances(Pageable pageable, PagedResourcesAssembler<ProcessInstance> pagedResourcesAssembler){
+    @RequestMapping(method = RequestMethod.GET)
+    public PagedResources<ProcessInstanceResource> getProcessInstances(Pageable pageable, PagedResourcesAssembler<ProcessInstance> pagedResourcesAssembler){
         Page<ProcessInstance> page = pageableProcessInstanceService.getProcessInstances(pageable);
         return pagedResourcesAssembler.toResource(page, resourceAssembler);
     }

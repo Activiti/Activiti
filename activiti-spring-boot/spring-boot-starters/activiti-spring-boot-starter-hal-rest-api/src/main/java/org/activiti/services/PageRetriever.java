@@ -24,9 +24,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-/**
-
- */
 @Component
 public class PageRetriever {
 

@@ -83,6 +83,7 @@ public abstract class AbstractQuery<T extends Query<?, ?>, U> extends ListQueryP
   }
 
   @SuppressWarnings("unchecked")
+  @Override
   public T orderBy(QueryProperty property) {
     this.orderProperty = property;
     return (T) this;

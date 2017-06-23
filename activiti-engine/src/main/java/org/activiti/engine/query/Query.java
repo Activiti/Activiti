@@ -15,12 +15,14 @@ package org.activiti.engine.query;
 
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
+
 /**
  * Describes basic methods for querying.
  * 
 
  */
-public interface Query<T extends Query<?, ?>, U extends Object> {
+public interface Query<T extends Query<?, ?>, U> {
 
   /**
    * Order the results ascending on the given property as defined in this class (needs to come after a call to one of the orderByXxxx methods).
@@ -31,6 +33,13 @@ public interface Query<T extends Query<?, ?>, U extends Object> {
    * Order the results descending on the given property as defined in this class (needs to come after a call to one of the orderByXxxx methods).
    */
   T desc();
+
+  /**
+   * Order the results by the given {@link QueryProperty} (needs to be followed by {@link #asc()} or {@link #desc()})
+   * @param property the {@code QueryProperty} to be used to order the results
+   * @return itself
+   */
+  T orderBy(QueryProperty property);
 
   /** Executes the query and returns the number of results */
   long count();
