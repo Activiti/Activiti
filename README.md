@@ -3,9 +3,6 @@ Activiti
 
 
 <p>
-  <a title='Maven Central' href="https://maven-badges.herokuapp.com/maven-central/org.activiti/activiti-engine">
-    <img src='https://maven-badges.herokuapp.com/maven-central/org.activiti/activiti-engine/badge.svg' alt = 'Activiti Maven central'
-  </a>
   <a title='Build Status Travis' href="https://travis-ci.org/Activiti/Activiti">
     <img src='https://travis-ci.org/Activiti/Activiti.svg?branch=development'  alt='Travis Status' />
   </a>
