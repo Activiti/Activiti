@@ -21,8 +21,6 @@ Activiti is a light-weight workflow and Business Process Management (BPM) Platfo
 
 Activiti JIRA: https://activiti.atlassian.net
 
-Activiti QA: http://build.activiti.org:8080
-
 
 Configuring IntelliJ
 --------------------
