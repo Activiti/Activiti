@@ -15,8 +15,11 @@
 
 package org.activiti.services.sort;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.impl.ProcessDefinitionQueryProperty;
+import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -27,18 +30,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessDefinitionSortApplier extends BaseSortApplier<ProcessDefinitionQuery> {
 
+    private Map<String, QueryProperty> orderByProperties = new HashMap<>();
+
+    public ProcessDefinitionSortApplier() {
+        orderByProperties.put("id", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_ID);
+        orderByProperties.put("deploymentId", ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
+    }
+
     protected void applyDefaultSort(ProcessDefinitionQuery query) {
         query.orderByProcessDefinitionId().asc();
     }
 
-    protected void applyOrder(ProcessDefinitionQuery query, Sort.Order order) {
-        if (order.getProperty().equals(ProcessDefinitionQueryProperty.PROCESS_DEFINITION_ID.getName())) {
-            query.orderByProcessDefinitionId();
-        } else if (order.getProperty().equals(ProcessDefinitionQueryProperty.DEPLOYMENT_ID.getName())) {
-            query.orderByDeploymentId();
-        } else {
-            throw new ActivitiIllegalArgumentException("The property '" + order.getProperty() + "' cannot be used to sort the result.");
-        }
+    @Override
+    protected QueryProperty getOrderByProperty(Sort.Order order) {
+        return orderByProperties.get(order.getProperty());
     }
 
 }

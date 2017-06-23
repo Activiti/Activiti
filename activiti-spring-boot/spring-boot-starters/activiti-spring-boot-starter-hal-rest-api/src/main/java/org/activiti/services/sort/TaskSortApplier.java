@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.impl.TaskQueryProperty;
+import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.TaskQuery;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
@@ -37,17 +38,12 @@ public class TaskSortApplier extends BaseSortApplier<TaskQuery> {
 
     @Override
     protected void applyDefaultSort(TaskQuery query) {
-        query.orderByTaskId();
+        query.orderByTaskId().asc();
     }
 
     @Override
-    protected void applyOrder(TaskQuery query,
-                              Sort.Order order) {
-        TaskQueryProperty property = orderByProperties.get(order.getProperty());
-        if (property != null) {
-            query.orderBy(property);
-        } else {
-            applyDefaultSort(query);
-        }
+    protected QueryProperty getOrderByProperty(Sort.Order order) {
+        return orderByProperties.get(order.getProperty());
     }
+
 }

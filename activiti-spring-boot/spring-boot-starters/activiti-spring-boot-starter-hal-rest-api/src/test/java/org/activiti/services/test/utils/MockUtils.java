@@ -15,9 +15,8 @@
 package org.activiti.services.test.utils;
 
 import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 /**
 
@@ -25,12 +24,8 @@ import static org.mockito.Mockito.mock;
 public class MockUtils {
 
     public static <T> T selfReturningMock(Class<T> clazz) {
-        return mock(clazz, new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                return invocationOnMock.getMock();
-            }
-        });
+        return mock(clazz,
+                    InvocationOnMock::getMock);
     }
 
 }
