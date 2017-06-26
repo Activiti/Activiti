@@ -97,6 +97,14 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>spring-snapshots</id>
+      <name>Spring Snapshots</name>
+      <url>https://repo.spring.io/libs-snapshot</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <dependencyManagement>
@@ -606,6 +614,7 @@
                       However this class is never referenced directly in the project: we are adding it to ignore list
                       to avoid a dependency that's not necessary.-->
                       <regexIgnoredClass>com\.google\.common\.base\.Predicate</regexIgnoredClass>
+
                     </regexIgnoredClasses>
                     <suppressTypesFromJavaRuntime>true</suppressTypesFromJavaRuntime>
                     <useClassesFromLastBuild>true</useClassesFromLastBuild>
@@ -738,7 +747,7 @@
             </execution>
           </executions>
         </plugin>
-
+        
       </plugins>
     </pluginManagement>
   </build>

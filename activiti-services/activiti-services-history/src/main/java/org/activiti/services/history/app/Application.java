@@ -1,40 +1,27 @@
-package org.activiti;
+package org.activiti.services.history.app;
 
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
-import org.springframework.beans.factory.InitializingBean;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.StreamListener;
 
 @SpringBootApplication
+@EnableBinding(HistoryConsumerChannels.class)
 public class Application {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
 	}
 
-    @Bean
-    InitializingBean usersAndGroupsInitializer(final IdentityService identityService) {
 
-        return () -> {
-
-            Group group = identityService.newGroup("user");
-            group.setName("users");
-            group.setType("security-role");
-            identityService.saveGroup(group);
-
-            createUser("admin", "admin", identityService);
-            createUser("john", "pass", identityService);
-
-        };
+    @StreamListener(HistoryConsumerChannels.HISTORY_CONSUMER)
+    public synchronized void receive(String message) {
+        System.out.println("******************");
+        System.out.println("At Hisotry");
+        System.out.println("******************");
+        System.out.println("Received message " + message);
     }
 
-    private void createUser(String username, String password, IdentityService identityService) {
-        User admin = identityService.newUser(username);
-        admin.setPassword(password);
-        identityService.saveUser(admin);
-    }
 
 }
