@@ -19,9 +19,6 @@ import org.activiti.client.model.ProcessDefinition;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 
-/**
-
- */
 public class ProcessDefinitionResource extends Resource<ProcessDefinition> {
 
     public ProcessDefinitionResource(ProcessDefinition content, Link... links) {

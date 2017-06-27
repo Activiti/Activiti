@@ -15,11 +15,11 @@
 
 package org.activiti.model.converter;
 
+import java.util.List;
+
 import org.activiti.client.model.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
 
@@ -36,12 +36,15 @@ public class ProcessDefinitionConverter implements ModelConverter<org.activiti.e
 
     @Override
     public ProcessDefinition from(org.activiti.engine.repository.ProcessDefinition source) {
-        ProcessDefinition processDefinition = new ProcessDefinition();
-        processDefinition.setId(source.getId());
-        processDefinition.setName(source.getName());
-        processDefinition.setCategory(source.getCategory());
-        processDefinition.setVersion(source.getVersion());
-        processDefinition.setDeploymentId(source.getDeploymentId());
+        ProcessDefinition processDefinition = null;
+        if (source != null) {
+            processDefinition = new ProcessDefinition();
+            processDefinition.setId(source.getId());
+            processDefinition.setName(source.getName());
+            processDefinition.setCategory(source.getCategory());
+            processDefinition.setVersion(source.getVersion());
+            processDefinition.setDeploymentId(source.getDeploymentId());
+        }
         return processDefinition;
     }
 

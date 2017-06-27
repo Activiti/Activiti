@@ -35,6 +35,7 @@ public class ProcessDefinitionSortApplier extends BaseSortApplier<ProcessDefinit
     public ProcessDefinitionSortApplier() {
         orderByProperties.put("id", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_ID);
         orderByProperties.put("deploymentId", ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
+        orderByProperties.put("name", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_NAME);
     }
 
     protected void applyDefaultSort(ProcessDefinitionQuery query) {

@@ -22,15 +22,16 @@
         <!-- JVM params for test execution -->
         <argLine>-Duser.language=en</argLine>
 
-        <spring.boot.version>2.0.0.M1</spring.boot.version>
-        <mockito.version>2.7.22</mockito.version>
-        <assertj.version>3.8.0</assertj.version>
+			<spring.boot.version>2.0.0.M1</spring.boot.version>
+			<!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
+			<spring.hateoas.version>0.24.0.BUILD-SNAPSHOT</spring.hateoas.version>
+			<mockito.version>2.7.22</mockito.version>
+			<assertj.version>3.8.0</assertj.version>
 
         <!-- plugins -->
         <maven.enforcer.plugin.version>1.4.1</maven.enforcer.plugin.version>
         <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
-
-    </properties>
+		</properties>
 
 	<repositories>
     <repository>
@@ -54,6 +55,11 @@
 				<groupId>org.hibernate.javax.persistence</groupId>
 				<artifactId>hibernate-jpa-2.1-api</artifactId>
 				<version>1.0.0.Final</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.hateoas</groupId>
+				<artifactId>spring-hateoas</artifactId>
+				<version>${spring.hateoas.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>cglib</groupId>
