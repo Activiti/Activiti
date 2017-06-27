@@ -15,7 +15,7 @@
 
     <modules>
         <module>activiti-services-history</module>
-        <module>activiti-services-audit-producer</module>
+        <module>activiti-services-util-audit-producer</module>
     </modules>
 
 </project>
