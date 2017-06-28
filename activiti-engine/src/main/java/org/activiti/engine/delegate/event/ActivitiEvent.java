@@ -19,7 +19,7 @@ package org.activiti.engine.delegate.event;
 
  * 
  */
-public interface ActivitiEvent {
+public interface ActivitiEvent{
 
   /**
    * @return type of event.
