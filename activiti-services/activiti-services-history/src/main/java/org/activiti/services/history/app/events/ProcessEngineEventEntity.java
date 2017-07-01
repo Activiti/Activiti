@@ -17,16 +17,34 @@
 
 package org.activiti.services.history.app.events;
 
+import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.activiti.services.model.events.ProcessEngineEvent;
 
-@Entity
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ProcessEngineEventEntity implements ProcessEngineEvent {
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "eventType")
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = ActivityStartedEventEntity.class, name = "ActivityStartedEvent"),
+        @JsonSubTypes.Type(value = ProcessStartedEventEntity.class, name = "ProcessStartedEvent"),
+        @JsonSubTypes.Type(value = TaskCreatedEventEntity.class, name = "TaskCreatedEvent"),
+        @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = "VariableCreatedEvent")
+})
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "TYPE")
+public abstract class ProcessEngineEventEntity implements ProcessEngineEvent {
 
     @Id
     @GeneratedValue

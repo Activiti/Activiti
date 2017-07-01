@@ -22,9 +22,9 @@ public class Application {
 
 
     @StreamListener(HistoryConsumerChannels.HISTORY_CONSUMER)
-    public synchronized void receive(ProcessEngineEvent event) {
+    public synchronized void receive(ProcessEngineEventEntity event) {
         System.out.println(">>>> Recieved Event" + event);
-        eventStoreRestResource.save((ProcessEngineEventEntity) event);
+        eventStoreRestResource.save(event);
 
     }
 
