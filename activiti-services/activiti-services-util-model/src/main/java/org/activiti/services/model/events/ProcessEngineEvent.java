@@ -1,4 +1,6 @@
 /*
+ * Copyright 2017 Alfresco and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,25 +15,17 @@
  *
  */
 
-package org.activiti.model.converter;
+package org.activiti.services.model.events;
 
-import org.springframework.stereotype.Component;
+public interface ProcessEngineEvent {
 
-import java.util.ArrayList;
-import java.util.List;
+    Long getTimestamp();
 
-/**
+    String getEventType();
 
- */
-@Component
-public class ListConverter {
+    String getExecutionId();
 
-    public <SOURCE, TARGET> List<TARGET> from(List<SOURCE> sourceElements, ModelConverter<SOURCE, TARGET> elementConverter) {
-        List<TARGET> targetElements = new ArrayList<>();
-        for (SOURCE sourceElement : sourceElements) {
-            targetElements.add(elementConverter.from(sourceElement));
-        }
-        return targetElements;
-    }
+    String getProcessDefinitionId();
 
+    String getProcessInstanceId();
 }

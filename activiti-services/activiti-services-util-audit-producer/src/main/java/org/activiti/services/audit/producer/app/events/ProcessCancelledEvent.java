@@ -1,4 +1,6 @@
 /*
+ * Copyright 2017 Alfresco and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,17 +15,10 @@
  *
  */
 
-package org.activiti.client.model.resources;
+package org.activiti.services.audit.producer.app.events;
 
-import org.activiti.services.model.Task;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
+import org.activiti.services.model.events.ProcessEngineEvent;
 
-public class TaskResource extends Resource<Task> {
-
-    public TaskResource(Task content,
-                        Iterable<Link> links) {
-        super(content,
-              links);
-    }
+public interface ProcessCancelledEvent extends ProcessEngineEvent {
+    String getCause();
 }

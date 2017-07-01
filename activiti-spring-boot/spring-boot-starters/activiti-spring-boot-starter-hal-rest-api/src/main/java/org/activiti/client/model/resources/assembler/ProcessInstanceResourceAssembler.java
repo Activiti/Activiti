@@ -15,7 +15,7 @@
 
 package org.activiti.client.model.resources.assembler;
 
-import org.activiti.client.model.ProcessInstance;
+import org.activiti.services.model.ProcessInstance;
 import org.activiti.client.model.resources.ProcessInstanceResource;
 import org.activiti.services.ProcessInstanceController;
 import org.activiti.services.ProcessInstanceVariableController;
@@ -33,15 +33,19 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 public class ProcessInstanceResourceAssembler extends ResourceAssemblerSupport<ProcessInstance, ProcessInstanceResource> {
 
     public ProcessInstanceResourceAssembler() {
-        super(ProcessInstanceController.class, ProcessInstanceResource.class);
+        super(ProcessInstanceController.class,
+              ProcessInstanceResource.class);
     }
 
     @Override
     public ProcessInstanceResource toResource(ProcessInstance processInstance) {
-        Link processInstancesRel = linkTo(methodOn(ProcessInstanceController.class).getProcessInstances(null, null)).withRel("processInstances");
+        Link processInstancesRel = linkTo(methodOn(ProcessInstanceController.class).getProcessInstances(null,
+                                                                                                        null)).withRel("processInstances");
         Link selfLink = linkTo(methodOn(ProcessInstanceController.class).getProcessInstance(processInstance.getId())).withSelfRel();
         Link variablesLink = linkTo(methodOn(ProcessInstanceVariableController.class).getVariables(processInstance.getId())).withRel("variables");
-        return new ProcessInstanceResource(processInstance, selfLink, variablesLink, processInstancesRel);
+        return new ProcessInstanceResource(processInstance,
+                                           selfLink,
+                                           variablesLink,
+                                           processInstancesRel);
     }
-
 }

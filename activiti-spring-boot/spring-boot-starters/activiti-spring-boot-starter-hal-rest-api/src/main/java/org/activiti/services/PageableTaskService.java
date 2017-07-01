@@ -16,10 +16,10 @@
 
 package org.activiti.services;
 
-import org.activiti.client.model.Task;
+import org.activiti.services.model.Task;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.model.converter.TaskConverter;
+import org.activiti.services.model.converter.TaskConverter;
 import org.activiti.services.sort.TaskSortApplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

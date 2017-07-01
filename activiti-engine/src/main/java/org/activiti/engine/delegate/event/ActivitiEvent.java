@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.delegate.event;
 
+import java.io.Serializable;
 
 /**
  * Describes an event that occurred in the Activiti Engine which is dispatched to external listeners, if any.
@@ -19,6 +20,7 @@ package org.activiti.engine.delegate.event;
 
  * 
  */
+
 public interface ActivitiEvent{
 
   /**

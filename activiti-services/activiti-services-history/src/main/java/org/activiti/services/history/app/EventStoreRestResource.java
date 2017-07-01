@@ -1,4 +1,6 @@
 /*
+ * Copyright 2017 Alfresco and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,17 +15,14 @@
  *
  */
 
-package org.activiti.client.model.resources;
+package org.activiti.services.history.app;
 
-import org.activiti.services.model.Task;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
+import org.activiti.services.history.app.events.ProcessEngineEventEntity;
+import org.activiti.services.model.events.ProcessEngineEvent;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-public class TaskResource extends Resource<Task> {
+@RepositoryRestResource(collectionResourceRel = "event", path = "event")
+interface EventStoreRestResource extends PagingAndSortingRepository<ProcessEngineEventEntity, Long> {
 
-    public TaskResource(Task content,
-                        Iterable<Link> links) {
-        super(content,
-              links);
-    }
 }

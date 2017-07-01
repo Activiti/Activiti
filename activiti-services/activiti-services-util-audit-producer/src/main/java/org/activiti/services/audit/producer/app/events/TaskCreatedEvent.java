@@ -1,4 +1,6 @@
 /*
+ * Copyright 2017 Alfresco and/or its affiliates.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,17 +15,12 @@
  *
  */
 
-package org.activiti.model.converter;
+package org.activiti.services.audit.producer.app.events;
 
-import java.util.List;
+import org.activiti.services.model.Task;
+import org.activiti.services.model.events.ProcessEngineEvent;
 
-/**
+public interface TaskCreatedEvent extends ProcessEngineEvent {
 
- */
-public interface ModelConverter <SOURCE, TARGET> {
-
-    TARGET from(SOURCE source);
-
-    List<TARGET> from(List<SOURCE> sources);
-
+    Task getTask();
 }

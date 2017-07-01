@@ -18,7 +18,7 @@ package org.activiti.services;
 import java.util.List;
 
 import org.activiti.engine.query.Query;
-import org.activiti.model.converter.ModelConverter;
+import org.activiti.services.model.converter.ModelConverter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

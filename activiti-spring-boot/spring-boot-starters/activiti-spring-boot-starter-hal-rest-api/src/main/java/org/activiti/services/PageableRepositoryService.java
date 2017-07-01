@@ -15,10 +15,10 @@
 
 package org.activiti.services;
 
-import org.activiti.client.model.ProcessDefinition;
+import org.activiti.services.model.ProcessDefinition;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
-import org.activiti.model.converter.ProcessDefinitionConverter;
+import org.activiti.services.model.converter.ProcessDefinitionConverter;
 import org.activiti.services.sort.ProcessDefinitionSortApplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

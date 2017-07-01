@@ -15,7 +15,7 @@
 
 package org.activiti.client.model.resources.assembler;
 
-import org.activiti.client.model.ProcessDefinition;
+import org.activiti.services.model.ProcessDefinition;
 import org.activiti.client.model.resources.ProcessDefinitionResource;
 import org.activiti.services.ProcessDefinitionController;
 import org.activiti.services.ProcessInstanceController;
@@ -33,13 +33,16 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 public class ProcessDefinitionResourceAssembler extends ResourceAssemblerSupport<ProcessDefinition, ProcessDefinitionResource> {
 
     public ProcessDefinitionResourceAssembler() {
-        super(ProcessDefinitionController.class, ProcessDefinitionResource.class);
+        super(ProcessDefinitionController.class,
+              ProcessDefinitionResource.class);
     }
 
     @Override
     public ProcessDefinitionResource toResource(ProcessDefinition processDefinition) {
         Link selfRel = linkTo(methodOn(ProcessDefinitionController.class).getProcessDefinition(processDefinition.getId())).withSelfRel();
         Link startProcessLink = linkTo(methodOn(ProcessInstanceController.class).startProcess(null)).withRel("startProcess");
-        return new ProcessDefinitionResource(processDefinition, selfRel, startProcessLink);
+        return new ProcessDefinitionResource(processDefinition,
+                                             selfRel,
+                                             startProcessLink);
     }
 }

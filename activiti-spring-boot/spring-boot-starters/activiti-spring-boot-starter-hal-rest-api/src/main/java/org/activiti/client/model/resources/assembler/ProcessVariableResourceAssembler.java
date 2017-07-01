@@ -15,7 +15,7 @@
 
 package org.activiti.client.model.resources.assembler;
 
-import org.activiti.client.model.ProcessInstanceVariables;
+import org.activiti.client.model.ExtendedProcessInstance;
 import org.activiti.client.model.resources.VariablesResource;
 import org.activiti.services.ProcessInstanceController;
 import org.activiti.services.ProcessInstanceVariableController;
@@ -27,17 +27,19 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Component
-public class ProcessVariableResourceAssembler extends ResourceAssemblerSupport<ProcessInstanceVariables, VariablesResource> {
+public class ProcessVariableResourceAssembler extends ResourceAssemblerSupport<ExtendedProcessInstance, VariablesResource> {
 
     public ProcessVariableResourceAssembler() {
-        super(ProcessInstanceVariableController.class, VariablesResource.class);
+        super(ProcessInstanceVariableController.class,
+              VariablesResource.class);
     }
 
     @Override
-    public VariablesResource toResource(ProcessInstanceVariables processInstanceVariables) {
-        Link selfRel = linkTo(methodOn(ProcessInstanceVariableController.class).getVariables(processInstanceVariables.getProcessInstanceId())).withSelfRel();
-        Link processInstanceRel = linkTo(methodOn(ProcessInstanceController.class).getProcessInstance(processInstanceVariables.getProcessInstanceId())).withRel("processInstance");
-        return new VariablesResource(processInstanceVariables.getVariables(), selfRel, processInstanceRel);
+    public VariablesResource toResource(ExtendedProcessInstance processInstance) {
+        Link selfRel = linkTo(methodOn(ProcessInstanceVariableController.class).getVariables(processInstance.getId())).withSelfRel();
+        Link processInstanceRel = linkTo(methodOn(ProcessInstanceController.class).getProcessInstance(processInstance.getId())).withRel("processInstance");
+        return new VariablesResource(processInstance.getVariables(),
+                                     selfRel,
+                                     processInstanceRel);
     }
-
 }

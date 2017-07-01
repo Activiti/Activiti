@@ -18,7 +18,7 @@ package org.activiti.client.model.resources.assembler;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.client.model.Task;
+import org.activiti.services.model.Task;
 import org.activiti.client.model.resources.TaskResource;
 import org.activiti.services.ProcessInstanceController;
 import org.activiti.services.TaskController;

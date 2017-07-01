@@ -15,7 +15,7 @@
 
 package org.activiti.client.model.resources;
 
-import org.activiti.client.model.ProcessDefinition;
+import org.activiti.services.model.ProcessDefinition;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 

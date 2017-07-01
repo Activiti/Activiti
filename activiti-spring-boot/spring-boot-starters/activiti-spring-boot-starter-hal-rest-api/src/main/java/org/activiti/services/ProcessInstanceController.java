@@ -15,14 +15,15 @@
 
 package org.activiti.services;
 
-import org.activiti.client.model.ProcessInstance;
+
 import org.activiti.client.model.SignalInfo;
 import org.activiti.client.model.StartProcessInfo;
 import org.activiti.client.model.resources.ProcessInstanceResource;
 import org.activiti.client.model.resources.assembler.ProcessInstanceResourceAssembler;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
-import org.activiti.model.converter.ProcessInstanceConverter;
+import org.activiti.services.model.ProcessInstance;
+import org.activiti.services.model.converter.ProcessInstanceConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

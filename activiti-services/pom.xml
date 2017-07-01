@@ -1,21 +1,22 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
 
-    <parent>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-root</artifactId>
-        <version>6.1.0-SNAPSHOT</version>
-    </parent>
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <version>6.1.0-SNAPSHOT</version>
+  </parent>
 
 
-    <artifactId>activiti-services</artifactId>
-    <packaging>pom</packaging>
+  <artifactId>activiti-services</artifactId>
+  <packaging>pom</packaging>
 
-    <modules>
-        <module>activiti-services-history</module>
-        <module>activiti-services-util-audit-producer</module>
-    </modules>
+  <modules>
+    <module>activiti-services-history</module>
+    <module>activiti-services-util-audit-producer</module>
+    <module>activiti-services-util-model</module>
+  </modules>
 
 </project>
