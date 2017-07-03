@@ -120,14 +120,6 @@ public interface Activiti5CompatibilityHandler {
   
   void deleteHistoricTask(String taskId);
   
-  String getFormKey(String processDefinitionId, String taskDefinitionKey);
-  
-  Object getRenderedStartForm(String processDefinitionId, String formEngineName);
-  
-  ProcessInstance submitStartFormData(String processDefinitionId, String businessKey, Map<String, String> properties);
-  
-  void submitTaskFormData(String taskId, Map<String, String> properties, boolean completeTask);
-  
   void saveTask(TaskEntity task);
   
   void addIdentityLink(String taskId, String identityId, int identityIdType, String identityType);
