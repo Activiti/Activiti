@@ -18,7 +18,6 @@
 package org.activiti.services.history.app;
 
 import org.activiti.services.history.app.events.ProcessEngineEventEntity;
-import org.activiti.services.model.events.ProcessEngineEvent;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 

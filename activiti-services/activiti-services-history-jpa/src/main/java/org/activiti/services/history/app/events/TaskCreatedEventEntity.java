@@ -19,7 +19,6 @@ package org.activiti.services.history.app.events;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.MappedSuperclass;
 
 @Entity
 @DiscriminatorValue(value = "TaskCreatedEvent")

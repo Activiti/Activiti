@@ -19,11 +19,11 @@ package org.activiti.services.history.app.events;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import javax.persistence.MappedSuperclass;
 
 @Entity
 @DiscriminatorValue(value = "ProcessStartedEvent")
-public class ProcessStartedEventEntity extends ProcessEngineEventEntity{
+public class ProcessStartedEventEntity extends ProcessEngineEventEntity {
+
     private String nestedProcessDefinitionId;
     private String nestedProcessInstanceId;
 
