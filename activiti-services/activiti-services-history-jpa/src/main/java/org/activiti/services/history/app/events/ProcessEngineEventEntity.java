@@ -43,7 +43,7 @@ import org.activiti.services.model.events.ProcessEngineEvent;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "TYPE")
-public abstract class ProcessEngineEventEntity implements ProcessEngineEvent {
+public abstract class ProcessEngineEventEntity {
 
     @Id
     @GeneratedValue
@@ -70,27 +70,26 @@ public abstract class ProcessEngineEventEntity implements ProcessEngineEvent {
         this.processInstanceId = processInstanceId;
     }
 
-    @Override
+
     public Long getTimestamp() {
         return timestamp;
     }
 
-    @Override
+
     public String getEventType() {
         return eventType;
     }
 
-    @Override
+
     public String getExecutionId() {
         return executionId;
     }
 
-    @Override
+
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
 
-    @Override
     public String getProcessInstanceId() {
         return processInstanceId;
     }
