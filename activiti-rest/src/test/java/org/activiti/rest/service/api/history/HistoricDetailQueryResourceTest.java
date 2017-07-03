@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * Test for REST-operation related to the historic detail query resource.
  * 
-
  */
 public class HistoricDetailQueryResourceTest extends BaseSpringRestTestCase {
 
@@ -72,11 +71,6 @@ public class HistoricDetailQueryResourceTest extends BaseSpringRestTestCase {
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processInstanceId", processInstance2.getId());
     assertResultsPresentInDataResponse(url, requestNode, 4, "intVar", 67890);
-
-    requestNode = objectMapper.createObjectNode();
-    requestNode.put("processInstanceId", processInstance2.getId());
-    requestNode.put("selectOnlyFormProperties", true);
-    assertResultsPresentInDataResponse(url, requestNode, 0, null, null);
 
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processInstanceId", processInstance2.getId());

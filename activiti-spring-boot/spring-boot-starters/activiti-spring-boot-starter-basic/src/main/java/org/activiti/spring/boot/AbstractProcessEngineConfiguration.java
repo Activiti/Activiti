@@ -18,7 +18,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -38,7 +37,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 /**
  * Provides sane definitions for the various beans required to be productive with Activiti in Spring.
  *
-
  */
 public abstract class AbstractProcessEngineConfiguration {
 	
@@ -111,10 +109,6 @@ public abstract class AbstractProcessEngineConfiguration {
 
   public ManagementService managementServiceBeanBean(ProcessEngine processEngine) {
     return processEngine.getManagementService();
-  }
-
-  public FormService formServiceBean(ProcessEngine processEngine) {
-    return processEngine.getFormService();
   }
 
   public IdentityService identityServiceBean(ProcessEngine processEngine) {

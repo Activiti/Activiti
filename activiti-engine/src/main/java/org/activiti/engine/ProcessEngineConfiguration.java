@@ -249,8 +249,6 @@ public abstract class ProcessEngineConfiguration {
 
   public abstract RuntimeService getRuntimeService();
 
-  public abstract FormService getFormService();
-
   public abstract TaskService getTaskService();
 
   public abstract HistoryService getHistoryService();

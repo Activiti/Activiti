@@ -15,9 +15,7 @@ package org.activiti.rest.service.api.history;
 
 import org.activiti.rest.common.api.PaginateRequest;
 
-/**
 
- */
 public class HistoricDetailQueryRequest extends PaginateRequest {
 
   private String id;
@@ -25,7 +23,6 @@ public class HistoricDetailQueryRequest extends PaginateRequest {
   private String executionId;
   private String activityInstanceId;
   private String taskId;
-  private Boolean selectOnlyFormProperties;
   private Boolean selectOnlyVariableUpdates;
 
   public String getId() {
@@ -66,14 +63,6 @@ public class HistoricDetailQueryRequest extends PaginateRequest {
 
   public void setTaskId(String taskId) {
     this.taskId = taskId;
-  }
-
-  public Boolean getSelectOnlyFormProperties() {
-    return selectOnlyFormProperties;
-  }
-
-  public void setSelectOnlyFormProperties(Boolean selectOnlyFormProperties) {
-    this.selectOnlyFormProperties = selectOnlyFormProperties;
   }
 
   public Boolean getSelectOnlyVariableUpdates() {

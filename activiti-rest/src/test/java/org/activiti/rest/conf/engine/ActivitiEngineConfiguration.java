@@ -2,7 +2,6 @@ package org.activiti.rest.conf.engine;
 
 import javax.sql.DataSource;
 
-import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -96,11 +95,6 @@ public class ActivitiEngineConfiguration {
   @Bean
   public HistoryService historyService() {
     return processEngine().getHistoryService();
-  }
-
-  @Bean
-  public FormService formService() {
-    return processEngine().getFormService();
   }
 
   @Bean

@@ -25,7 +25,6 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.DynamicBpmnService;
-import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -51,10 +50,7 @@ import org.junit.Assert;
 
 import junit.framework.AssertionFailedError;
 
-/**
 
-
- */
 public abstract class AbstractActivitiTestCase extends AbstractTestCase {
 
   private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Collections.singletonList("ACT_GE_PROPERTY");
@@ -69,7 +65,6 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
   protected TaskService taskService;
-  protected FormService formService;
   protected HistoryService historyService;
   protected IdentityService identityService;
   protected ManagementService managementService;
@@ -244,7 +239,6 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
     repositoryService = processEngine.getRepositoryService();
     runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
-    formService = processEngine.getFormService();
     historyService = processEngine.getHistoryService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();

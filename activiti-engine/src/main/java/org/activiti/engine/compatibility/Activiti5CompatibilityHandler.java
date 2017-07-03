@@ -23,7 +23,6 @@ import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEvent;
-import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -39,10 +38,6 @@ import org.activiti.engine.task.Comment;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/**
-
-
- */
 public interface Activiti5CompatibilityHandler {
 
   public static final String ACTIVITI_5_ENGINE_TAG = "activiti-5";
@@ -124,8 +119,6 @@ public interface Activiti5CompatibilityHandler {
   void deleteTask(String taskId, String deleteReason, boolean cascade);
   
   void deleteHistoricTask(String taskId);
-  
-  StartFormData getStartFormData(String processDefinitionId);
   
   String getFormKey(String processDefinitionId, String taskDefinitionKey);
   

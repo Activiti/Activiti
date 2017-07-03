@@ -35,9 +35,6 @@ import org.activiti.engine.test.Deployment;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/**
-
- */
 public class VariablesTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -1114,10 +1111,10 @@ public class VariablesTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    Map<String, String> variables = new HashMap<String, String>();
+    Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("testProperty", "434");
 
-    formService.submitTaskFormData(task.getId(), variables);
+    taskService.complete(task.getId(), variables);
     String resultVar = (String) runtimeService.getVariable(processInstance.getId(), "testProperty");
 
     assertEquals("434", resultVar);
@@ -1128,9 +1125,9 @@ public class VariablesTest extends PluggableActivitiTestCase {
     // If no variable is given, no variable should be set and script test should throw exception
     processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    variables = new HashMap<String, String>();
+    variables = new HashMap<String, Object>();
     try {
-      formService.submitTaskFormData(task.getId(), variables);
+      taskService.complete(task.getId(), variables);
       fail("Should throw exception as testProperty is not defined and used in Script task");
     } catch (Exception e) {
       runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
@@ -1141,11 +1138,11 @@ public class VariablesTest extends PluggableActivitiTestCase {
     // No we put null property, This should be put into the variable. We do not expect exceptions
     processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    variables = new HashMap<String, String>();
+    variables = new HashMap<String, Object>();
     variables.put("testProperty", null);
 
     try {
-      formService.submitTaskFormData(task.getId(), variables);
+      taskService.complete(task.getId(), variables);
     } catch (Exception e) {
       fail("Should not throw exception as the testProperty is defined, although null");
     }
@@ -1226,7 +1223,6 @@ class CustomType {
 /**
  * A custom variable type for testing byte array value handling.
  *
-
  */
 class CustomVariableType implements VariableType {
   public static final CustomVariableType instance = new CustomVariableType();

@@ -27,10 +27,7 @@ import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
 
-
- */
 public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
@@ -197,20 +194,6 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
       }
     }
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-  public void testSubmitTaskFormAfterProcessInstanceSuspend() {
-    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-    ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
-    runtimeService.suspendProcessInstanceById(processInstance.getId());
-
-    try {
-      formService.submitTaskFormData(taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId(), new HashMap<String, String>());
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-    }
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })

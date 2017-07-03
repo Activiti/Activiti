@@ -19,7 +19,6 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -45,7 +44,6 @@ import org.springframework.util.StringUtils;
 /**
  * Provides sane definitions for the various beans required to be productive with Activiti in Spring.
  *
-
  */
 public abstract class AbstractProcessEngineAutoConfiguration
         extends AbstractProcessEngineConfiguration {
@@ -190,13 +188,6 @@ public abstract class AbstractProcessEngineAutoConfiguration
   @Override
   public ManagementService managementServiceBeanBean(ProcessEngine processEngine) {
     return super.managementServiceBeanBean(processEngine);
-  }
-
-  @Bean
-  @ConditionalOnMissingBean
-  @Override
-  public FormService formServiceBean(ProcessEngine processEngine) {
-    return super.formServiceBean(processEngine);
   }
 
   @Bean
