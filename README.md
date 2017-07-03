@@ -1,7 +1,6 @@
 Activiti
 ========
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f859f1bf542b43cab64e1e85706e5243)](https://www.codacy.com/app/Activiti/Activiti?utm_source=github.com&utm_medium=referral&utm_content=Activiti/Activiti&utm_campaign=badger)
 [![Join the chat at https://gitter.im/Activiti/Activiti7](https://badges.gitter.im/Activiti/Activiti7.svg)](https://gitter.im/Activiti/Activiti7?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
@@ -12,6 +11,9 @@ Activiti
   <a href='https://codecov.io/gh/Activiti/Activiti'>
     <img src='http://img.shields.io/codecov/c/github/Activiti/Activiti/development.svg?maxAge=2592000' alt='Coverage Status' />
   </a>
+  <a href='https://www.codacy.com/app/Activiti/Activiti?utm_source=github.com&utm_medium=referral&utm_content=Activiti/Activiti&utm_campaign=badger'>
+      <img src='https://api.codacy.com/project/badge/Grade/f859f1bf542b43cab64e1e85706e5243' alt='codacy' />
+    </a>
   <a href='https://github.com/Activiti/Activiti/blob/master/LICENSE'>
        <img src='https://img.shields.io/hexpm/l/plug.svg' alt='license' />
     </a>
