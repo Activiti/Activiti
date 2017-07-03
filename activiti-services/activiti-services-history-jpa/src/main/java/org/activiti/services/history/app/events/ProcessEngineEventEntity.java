@@ -27,7 +27,6 @@ import javax.persistence.InheritanceType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.activiti.services.model.events.ProcessEngineEvent;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(
