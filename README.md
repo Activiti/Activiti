@@ -1,6 +1,8 @@
 Activiti
 ========
 
+[![Join the chat at https://gitter.im/Activiti/Activiti7](https://badges.gitter.im/Activiti/Activiti7.svg)](https://gitter.im/Activiti/Activiti7?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 <p>
   <a title='Build Status Travis' href="https://travis-ci.org/Activiti/Activiti">
