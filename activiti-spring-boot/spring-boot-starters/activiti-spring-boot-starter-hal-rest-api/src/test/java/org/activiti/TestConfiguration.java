@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package org.activiti.rest;
-
-import java.util.Collections;
+package org.activiti;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.hal.Jackson2HalModule;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.stereotype.Component;
 
-@Component
-public class SimpleRestTemplateBuilder {
+@Configuration
+public class TestConfiguration {
 
-    public TestRestTemplate build(String rootUri) {
+    @Bean
+    public RestTemplateBuilder restTemplateBuilder() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                          false);
@@ -40,11 +39,8 @@ public class SimpleRestTemplateBuilder {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        RestTemplateBuilder restTemplateBuilder = new RestTemplateBuilder()
-                .rootUri(rootUri)
-                .additionalMessageConverters(Collections.singletonList(converter));
-        return new TestRestTemplate(restTemplateBuilder);
-
+        return new RestTemplateBuilder()
+                .additionalMessageConverters(converter);
     }
 
 }

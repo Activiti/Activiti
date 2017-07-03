@@ -16,30 +16,32 @@
 
 package org.activiti.runtime;
 
-import org.activiti.BaseRestIT;
 import org.activiti.client.model.ProcessInstance;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.activiti.runtime.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.*;
 
-public class ProcessInstanceIT extends BaseRestIT {
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class ProcessInstanceIT {
 
     private static final String SIMPLE_PROCESS = "SimpleProcess";
 
-    private ProcessInstanceRestTemplate processInstanceRestTemplate;
+    @Autowired
+    private TestRestTemplate restTemplate;
 
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        processInstanceRestTemplate = new ProcessInstanceRestTemplate(getRestTemplate());
-    }
+    @Autowired
+    private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
     @Test
     public void should_start_process() throws Exception {
@@ -60,7 +62,7 @@ public class ProcessInstanceIT extends BaseRestIT {
         ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
 
         //when
-        ResponseEntity<ProcessInstance> retrievedEntity = getRestTemplate().exchange(
+        ResponseEntity<ProcessInstance> retrievedEntity = restTemplate.exchange(
                 PROCESS_INSTANCES_RELATIVE_URL + startedProcessEntity.getBody().getId(),
                 HttpMethod.GET,
                 null,
@@ -79,7 +81,7 @@ public class ProcessInstanceIT extends BaseRestIT {
         processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
 
         //when
-        ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = getRestTemplate().exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page=0&size=2",
+        ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page=0&size=2",
                                                                                                           HttpMethod.GET,
                                                                                                           null,
                                                                                                           new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {

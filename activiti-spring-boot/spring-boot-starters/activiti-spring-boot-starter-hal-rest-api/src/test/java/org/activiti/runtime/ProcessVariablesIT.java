@@ -19,27 +19,29 @@ package org.activiti.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.BaseRestIT;
 import org.activiti.client.model.ProcessInstance;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
-public class ProcessVariablesIT extends BaseRestIT {
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class ProcessVariablesIT {
 
+    @Autowired
+    private TestRestTemplate restTemplate;
+
+    @Autowired
     private ProcessInstanceRestTemplate processInstanceRestTemplate;
-
-    @Override
-    @Before
-    public void setUp() throws Exception {
-        super.setUp();
-        processInstanceRestTemplate = new ProcessInstanceRestTemplate(getRestTemplate());
-    }
 
     @Test
     public void should_retrieve_process_variables() throws Exception {
@@ -55,7 +57,7 @@ public class ProcessVariablesIT extends BaseRestIT {
                                                                                                         variables);
 
         //when
-        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = getRestTemplate().exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables",
+        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables",
                                                                                                     HttpMethod.GET,
                                                                                                     null,
                                                                                                     new ParameterizedTypeReference<Resource<Map<String, Object>>>() {

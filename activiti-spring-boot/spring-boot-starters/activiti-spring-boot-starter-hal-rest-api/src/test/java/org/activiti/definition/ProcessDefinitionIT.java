@@ -16,24 +16,32 @@
 
 package org.activiti.definition;
 
-import org.activiti.BaseRestIT;
 import org.activiti.client.model.ProcessDefinition;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class ProcessDefinitionIT extends BaseRestIT {
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+public class ProcessDefinitionIT {
+
+    @Autowired
+    private TestRestTemplate restTemplate;
 
     private static final String PROCESS_DEFINITIONS_URL = "/api/repository/process-definitions/";
 
     @Test
     public void should_retrieve_list_of_processDefinition() throws Exception {
         //given
-
 
         //when
         ResponseEntity<PagedResources<ProcessDefinition>> entity = getProcessDefinitions();
@@ -43,13 +51,14 @@ public class ProcessDefinitionIT extends BaseRestIT {
         assertThat(entity.getBody().getContent())
                 .extracting(
                         ProcessDefinition::getName
-                ).contains("Process with variables", "SimpleProcess");
+                ).contains("Process with variables",
+                           "SimpleProcess");
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        return getRestTemplate().exchange(PROCESS_DEFINITIONS_URL,
+        return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
                                           HttpMethod.GET,
                                           null,
                                           responseType);
@@ -68,10 +77,10 @@ public class ProcessDefinitionIT extends BaseRestIT {
         ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
 
         //when
-        ResponseEntity<ProcessDefinition> entity = getRestTemplate().exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId(),
-                                                                                   HttpMethod.GET,
-                                                                                   null,
-                                                                                   responseType);
+        ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId(),
+                                                                              HttpMethod.GET,
+                                                                              null,
+                                                                              responseType);
 
         //then
         assertThat(entity).isNotNull();

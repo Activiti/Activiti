@@ -20,20 +20,21 @@ import java.util.Map;
 
 import org.activiti.client.model.ExtendedProcessInstance;
 import org.activiti.client.model.ProcessInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ProcessInstanceRestTemplate {
 
     protected static final String PROCESS_INSTANCES_RELATIVE_URL = "/api/runtime/process-instances/";
-    private final TestRestTemplate testRestTemplate;
 
-    public ProcessInstanceRestTemplate(TestRestTemplate testRestTemplate) {
-        this.testRestTemplate = testRestTemplate;
-    }
+    @Autowired
+    private TestRestTemplate testRestTemplate;
 
     public ResponseEntity<ProcessInstance> startProcess(String processDefinitionKey,
                                                         Map<String, Object> variables) {
