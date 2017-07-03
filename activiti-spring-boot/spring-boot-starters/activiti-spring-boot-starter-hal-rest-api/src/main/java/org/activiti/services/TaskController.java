@@ -80,7 +80,7 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/{taskId}/complete", method = RequestMethod.POST)
-    public ResponseEntity<Void> completeTask(@PathVariable String taskId, @RequestBody Map<String, Object> variables) {
+    public ResponseEntity<Void> completeTask(@PathVariable String taskId, @RequestBody(required = false) Map<String, Object> variables) {
         taskService.complete(taskId, variables);
         return new ResponseEntity<>(HttpStatus.OK);
     }

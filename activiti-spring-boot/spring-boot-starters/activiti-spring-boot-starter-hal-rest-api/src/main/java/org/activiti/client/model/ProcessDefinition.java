@@ -15,9 +15,6 @@
 
 package org.activiti.client.model;
 
-/**
-
- */
 public class ProcessDefinition {
 
   private String id;

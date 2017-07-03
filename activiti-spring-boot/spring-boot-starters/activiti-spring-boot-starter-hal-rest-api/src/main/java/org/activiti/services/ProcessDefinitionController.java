@@ -18,6 +18,7 @@ package org.activiti.services;
 import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.resources.ProcessDefinitionResource;
 import org.activiti.client.model.resources.assembler.ProcessDefinitionResourceAssembler;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.model.converter.ProcessDefinitionConverter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,9 @@ public class ProcessDefinitionController {
     @RequestMapping(value = "/{id}")
     public ProcessDefinitionResource getProcessDefinition(@PathVariable String id){
         org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
+        if (processDefinition == null) {
+            throw new ActivitiException("Unable to find process definition for the given id:'" + id + "'");
+        }
         return resourceAssembler.toResource(processDefinitionConverter.from(processDefinition));
     }
 

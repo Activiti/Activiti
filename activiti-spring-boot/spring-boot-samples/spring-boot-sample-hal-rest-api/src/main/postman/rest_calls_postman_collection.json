@@ -1,0 +1,202 @@
+{
+	"variables": [],
+	"info": {
+		"name": "New REST API",
+		"_postman_id": "390f588e-20f0-557e-1090-f9a08d576933",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Repository",
+			"description": "",
+			"item": [
+				{
+					"name": "getProcesses",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/api/repository/process-definitions?page=0&size=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"repository",
+								"process-definitions"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "runtime",
+			"description": "",
+			"item": [
+				{
+					"name": "getProcessInstances",
+					"request": {
+						"url": "http://localhost:8080/api/runtime/process-instances",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "startProcess",
+					"request": {
+						"url": "http://localhost:8080/api/runtime/process-instances",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"processDefinitionKey\": \"ProcessWithVariables\",\n  \"variables\": {\n    \"firstName\": \"Paulo\",\n    \"lastName\": \"Silva\",\n    \"aget\": 25\n  }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "getProcessVariables",
+					"request": {
+						"url": "http://localhost:8080/api/runtime/process-instances/19/variables",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "getTasks",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/api/runtime/tasks?page=0&size=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"runtime",
+								"tasks"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "size",
+									"value": "10",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "getTask",
+					"request": {
+						"url": "http://localhost:8080/api/runtime/tasks/16",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "claimTask",
+					"request": {
+						"url": {
+							"raw": "http://localhost:8080/api/runtime/tasks/17/claim?assignee=john",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"runtime",
+								"tasks",
+								"17",
+								"claim"
+							],
+							"query": [
+								{
+									"key": "assignee",
+									"value": "john",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "completeTask",
+					"request": {
+						"url": "http://localhost:8080/api/runtime/tasks/17/complete",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
