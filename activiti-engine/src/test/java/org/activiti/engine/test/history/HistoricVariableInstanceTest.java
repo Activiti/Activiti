@@ -37,9 +37,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml", "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml" })
@@ -208,7 +206,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
   }
   
   public void testHistoricVariableQuery2() {
-    String processDefinitionId = deployTwoTasksTestProcess();
+    deployTwoTasksTestProcess();
     
     // Generate data
     Map<String, Object> startVars = new HashMap<String, Object>();
@@ -572,20 +570,9 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       sqlWithConditions = baseQuerySql + " where NAME_ like #{name}";
       assertEquals(2, historyService.createNativeHistoricDetailQuery().sql(sqlWithConditions).parameter("name", "var%").list().size());
 
-      Task task = taskService.createTaskQuery().singleResult();
-      Map<String, String> formDatas = new HashMap<String, String>();
-      formDatas.put("field1", "field value 1");
-      formDatas.put("field2", "field value 2");
-      formService.submitTaskFormData(task.getId(), formDatas);
-
-      String countSql = "select count(*) from " + tableName + " where TYPE_ = #{type} and PROC_INST_ID_ = #{pid}";
-      assertEquals(2, historyService.createNativeHistoricDetailQuery().sql(countSql).parameter("type", "FormProperty").parameter("pid", processInstance.getId()).count());
-
       // paging
       assertEquals(3, historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).listPage(0, 3).size());
-      assertEquals(3, historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).listPage(1, 3).size());
-      sqlWithConditions = baseQuerySql + " where TYPE_ = #{type} and PROC_INST_ID_ = #{pid}";
-      assertEquals(2, historyService.createNativeHistoricDetailQuery().sql(sqlWithConditions).parameter("type", "FormProperty").parameter("pid", processInstance.getId()).listPage(0, 2).size());
+      assertEquals(2, historyService.createNativeHistoricDetailQuery().sql(baseQuerySql).listPage(1, 3).size());
     }
   }
 

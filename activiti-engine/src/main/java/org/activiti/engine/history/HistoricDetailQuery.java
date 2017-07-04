@@ -19,7 +19,6 @@ import org.activiti.engine.runtime.Execution;
 /**
  * Programmatic querying for {@link HistoricDetail}s.
  * 
-
  */
 public interface HistoricDetailQuery extends Query<HistoricDetailQuery, HistoricDetail> {
 
@@ -45,9 +44,6 @@ public interface HistoricDetailQuery extends Query<HistoricDetailQuery, Historic
    * Only select historic variable updates associated to the given {@link HistoricTaskInstance historic task instance}.
    */
   HistoricDetailQuery taskId(String taskId);
-
-  /** Only select {@link HistoricFormProperty}s. */
-  HistoricDetailQuery formProperties();
 
   /** Only select {@link HistoricVariableUpdate}s. */
   HistoricDetailQuery variableUpdates();

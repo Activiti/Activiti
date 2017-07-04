@@ -22,7 +22,6 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventDispatcherImpl;
-import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.impl.*;
 import org.activiti.engine.impl.agenda.DefaultActivitiEngineAgendaFactory;
 import org.activiti.engine.impl.asyncexecutor.*;
@@ -37,7 +36,6 @@ import org.activiti.engine.impl.bpmn.webservice.MessageInstance;
 import org.activiti.engine.impl.calendar.*;
 import org.activiti.engine.impl.cfg.standalone.StandaloneMybatisTransactionContextFactory;
 import org.activiti.engine.impl.cmd.ValidateExecutionRelatedEntityCountCfgCmd;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.db.DbSqlSessionFactory;
 import org.activiti.engine.impl.db.IbatisVariableTypeHandler;
@@ -48,7 +46,6 @@ import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.event.SignalEventHandler;
 import org.activiti.engine.impl.event.logger.EventLogger;
-import org.activiti.engine.impl.form.*;
 import org.activiti.engine.impl.history.DefaultHistoryManager;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.history.HistoryManager;
@@ -102,10 +99,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-/**
 
-
- */
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
 
   private static Logger log = LoggerFactory.getLogger(ProcessEngineConfigurationImpl.class);
@@ -127,7 +121,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected HistoryService historyService = new HistoryServiceImpl(this);
   protected IdentityService identityService = new IdentityServiceImpl();
   protected TaskService taskService = new TaskServiceImpl(this);
-  protected FormService formService = new FormServiceImpl();
   protected ManagementService managementService = new ManagementServiceImpl();
   protected DynamicBpmnService dynamicBpmnService = new DynamicBpmnServiceImpl(this);
 
@@ -492,12 +485,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   // OTHER //////////////////////////////////////////////////////////////////////
 
-  protected List<FormEngine> customFormEngines;
-  protected Map<String, FormEngine> formEngines;
-
-  protected List<AbstractFormType> customFormTypes;
-  protected FormTypes formTypes;
-
   protected List<VariableType> customPreVariableTypes;
   protected List<VariableType> customPostVariableTypes;
   protected VariableTypes variableTypes;
@@ -677,8 +664,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initHelpers();
     initVariableTypes();
     initBeans();
-    initFormEngines();
-    initFormTypes();
     initScriptingEngines();
     initClock();
     initBusinessCalendarManager();
@@ -823,7 +808,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initService(historyService);
     initService(identityService);
     initService(taskService);
-    initService(formService);
     initService(managementService);
     initService(dynamicBpmnService);
   }
@@ -1837,37 +1821,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  public void initFormEngines() {
-    if (formEngines == null) {
-      formEngines = new HashMap<String, FormEngine>();
-      FormEngine defaultFormEngine = new JuelFormEngine();
-      formEngines.put(null, defaultFormEngine); // default form engine is
-                                                // looked up with null
-      formEngines.put(defaultFormEngine.getName(), defaultFormEngine);
-    }
-    if (customFormEngines != null) {
-      for (FormEngine formEngine : customFormEngines) {
-        formEngines.put(formEngine.getName(), formEngine);
-      }
-    }
-  }
-
-  public void initFormTypes() {
-    if (formTypes == null) {
-      formTypes = new FormTypes();
-      formTypes.addFormType(new StringFormType());
-      formTypes.addFormType(new LongFormType());
-      formTypes.addFormType(new DateFormType("dd/MM/yyyy"));
-      formTypes.addFormType(new BooleanFormType());
-      formTypes.addFormType(new DoubleFormType());
-    }
-    if (customFormTypes != null) {
-      for (AbstractFormType customFormType : customFormTypes) {
-        formTypes.addFormType(customFormType);
-      }
-    }
-  }
-
   public void initScriptingEngines() {
     if (resolverFactories == null) {
       resolverFactories = new ArrayList<ResolverFactory>();
@@ -2138,15 +2091,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public FormService getFormService() {
-    return formService;
-  }
-
-  public ProcessEngineConfigurationImpl setFormService(FormService formService) {
-    this.formService = formService;
-    return this;
-  }
-
   public ManagementService getManagementService() {
     return managementService;
   }
@@ -2316,24 +2260,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfiguration setWsOverridenEndpointAddresses(final ConcurrentMap<QName, URL> wsOverridenEndpointAddress) {
     this.wsOverridenEndpointAddresses.putAll(wsOverridenEndpointAddress);
-    return this;
-  }
-
-  public Map<String, FormEngine> getFormEngines() {
-    return formEngines;
-  }
-
-  public ProcessEngineConfigurationImpl setFormEngines(Map<String, FormEngine> formEngines) {
-    this.formEngines = formEngines;
-    return this;
-  }
-
-  public FormTypes getFormTypes() {
-    return formTypes;
-  }
-
-  public ProcessEngineConfigurationImpl setFormTypes(FormTypes formTypes) {
-    this.formTypes = formTypes;
     return this;
   }
 
@@ -2522,24 +2448,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public ProcessEngineConfigurationImpl setCustomJobHandlers(List<JobHandler> customJobHandlers) {
     this.customJobHandlers = customJobHandlers;
-    return this;
-  }
-
-  public List<FormEngine> getCustomFormEngines() {
-    return customFormEngines;
-  }
-
-  public ProcessEngineConfigurationImpl setCustomFormEngines(List<FormEngine> customFormEngines) {
-    this.customFormEngines = customFormEngines;
-    return this;
-  }
-
-  public List<AbstractFormType> getCustomFormTypes() {
-    return customFormTypes;
-  }
-
-  public ProcessEngineConfigurationImpl setCustomFormTypes(List<AbstractFormType> customFormTypes) {
-    this.customFormTypes = customFormTypes;
     return this;
   }
 

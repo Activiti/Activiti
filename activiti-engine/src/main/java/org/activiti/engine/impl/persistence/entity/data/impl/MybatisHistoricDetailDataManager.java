@@ -27,14 +27,10 @@ import org.activiti.engine.impl.persistence.entity.HistoricDetailTransitionInsta
 import org.activiti.engine.impl.persistence.entity.HistoricDetailTransitionInstanceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntityImpl;
-import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntityImpl;
 import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricDetailDataManager;
 
-/**
 
- */
 public class MybatisHistoricDetailDataManager extends AbstractDataManager<HistoricDetailEntity> implements HistoricDetailDataManager {
 
   public MybatisHistoricDetailDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
@@ -65,11 +61,6 @@ public class MybatisHistoricDetailDataManager extends AbstractDataManager<Histor
   @Override
   public HistoricDetailVariableInstanceUpdateEntity createHistoricDetailVariableInstanceUpdate() {
     return new HistoricDetailVariableInstanceUpdateEntityImpl();
-  }
-  
-  @Override
-  public HistoricFormPropertyEntity createHistoricFormProperty() {
-    return new HistoricFormPropertyEntityImpl();
   }
   
   @Override

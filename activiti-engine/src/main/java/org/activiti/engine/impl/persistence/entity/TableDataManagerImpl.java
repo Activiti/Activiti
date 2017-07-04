@@ -26,7 +26,6 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.history.HistoricFormProperty;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
@@ -51,9 +50,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-/**
-
- */
 public class TableDataManagerImpl extends AbstractManager implements TableDataManager {
 
   public TableDataManagerImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
@@ -102,7 +98,6 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
     // a couple of stuff goes to the same table
     entityToTableNameMap.put(HistoricDetailAssignmentEntity.class, "ACT_HI_DETAIL");
     entityToTableNameMap.put(HistoricDetailTransitionInstanceEntity.class, "ACT_HI_DETAIL");
-    entityToTableNameMap.put(HistoricFormPropertyEntity.class, "ACT_HI_DETAIL");
     entityToTableNameMap.put(HistoricDetailVariableInstanceUpdateEntity.class, "ACT_HI_DETAIL");
     entityToTableNameMap.put(HistoricDetailEntity.class, "ACT_HI_DETAIL");
 
@@ -133,7 +128,6 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
     apiTypeToTableNameMap.put(HistoricActivityInstance.class, "ACT_HI_ACTINST");
     apiTypeToTableNameMap.put(HistoricDetail.class, "ACT_HI_DETAIL");
     apiTypeToTableNameMap.put(HistoricVariableUpdate.class, "ACT_HI_DETAIL");
-    apiTypeToTableNameMap.put(HistoricFormProperty.class, "ACT_HI_DETAIL");
     apiTypeToTableNameMap.put(HistoricTaskInstance.class, "ACT_HI_TASKINST");
     apiTypeToTableNameMap.put(HistoricVariableInstance.class, "ACT_HI_VARINST");
 

@@ -3,7 +3,6 @@ package org.activiti.rest.conf.jpa;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
-import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -85,11 +84,6 @@ public class JPAActivitiEngineConfiguration {
   @Bean
   public HistoryService historyService() {
     return processEngine().getHistoryService();
-  }
-
-  @Bean
-  public FormService formService() {
-    return processEngine().getFormService();
   }
 
   @Bean

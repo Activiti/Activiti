@@ -15,7 +15,6 @@ package org.activiti.engine.impl;
 import java.util.Map;
 
 import org.activiti.engine.DynamicBpmnService;
-import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -34,9 +33,7 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
 
- */
 public class ProcessEngineImpl implements ProcessEngine {
 
   private static Logger log = LoggerFactory.getLogger(ProcessEngineImpl.class);
@@ -47,7 +44,6 @@ public class ProcessEngineImpl implements ProcessEngine {
   protected HistoryService historicDataService;
   protected IdentityService identityService;
   protected TaskService taskService;
-  protected FormService formService;
   protected ManagementService managementService;
   protected DynamicBpmnService dynamicBpmnService;
   protected AsyncExecutor asyncExecutor;
@@ -64,7 +60,6 @@ public class ProcessEngineImpl implements ProcessEngine {
     this.historicDataService = processEngineConfiguration.getHistoryService();
     this.identityService = processEngineConfiguration.getIdentityService();
     this.taskService = processEngineConfiguration.getTaskService();
-    this.formService = processEngineConfiguration.getFormService();
     this.managementService = processEngineConfiguration.getManagementService();
     this.dynamicBpmnService = processEngineConfiguration.getDynamicBpmnService();
     this.asyncExecutor = processEngineConfiguration.getAsyncExecutor();
@@ -141,10 +136,6 @@ public class ProcessEngineImpl implements ProcessEngine {
     return repositoryService;
   }
 
-  public FormService getFormService() {
-    return formService;
-  }
-  
   public DynamicBpmnService getDynamicBpmnService() {
     return dynamicBpmnService;
   }

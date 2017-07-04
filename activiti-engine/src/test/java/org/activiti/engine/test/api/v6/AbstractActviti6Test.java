@@ -3,8 +3,6 @@ package org.activiti.engine.test.api.v6;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
@@ -32,7 +30,6 @@ import org.slf4j.LoggerFactory;
  * 
  * When using H2 and the default schema name, it will also boot the H2 webapp (reachable with browser on http://localhost:8082/)
  * 
-
  */
 public class AbstractActviti6Test {
   
@@ -48,7 +45,6 @@ public class AbstractActviti6Test {
   protected RepositoryService repositoryService;
   protected RuntimeService runtimeService;
   protected TaskService taskService;
-  protected FormService formService;
   protected HistoryService historyService;
   protected ManagementService managementService;
 
@@ -69,7 +65,6 @@ public class AbstractActviti6Test {
     this.repositoryService = cachedProcessEngine.getRepositoryService();
     this.runtimeService = cachedProcessEngine.getRuntimeService();
     this.taskService = cachedProcessEngine.getTaskService();
-    this.formService = cachedProcessEngine.getFormService();
     this.historyService = cachedProcessEngine.getHistoryService();
     this.managementService = cachedProcessEngine.getManagementService();
   }

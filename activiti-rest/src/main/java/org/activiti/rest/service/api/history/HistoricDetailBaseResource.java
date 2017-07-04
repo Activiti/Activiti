@@ -24,9 +24,6 @@ import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
-
- */
 public class HistoricDetailBaseResource {
 
   private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
@@ -60,11 +57,6 @@ public class HistoricDetailBaseResource {
     }
     if (queryRequest.getTaskId() != null) {
       query.taskId(queryRequest.getTaskId());
-    }
-    if (queryRequest.getSelectOnlyFormProperties() != null) {
-      if (queryRequest.getSelectOnlyFormProperties()) {
-        query.formProperties();
-      }
     }
     if (queryRequest.getSelectOnlyVariableUpdates() != null) {
       if (queryRequest.getSelectOnlyVariableUpdates()) {

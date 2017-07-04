@@ -32,9 +32,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
 
- */
 public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
 
   private static final String TEST_PROCESS_WITH_PARALLEL_GATEWAY = "org/activiti/examples/bpmn/gateway/ParallelGatewayTest.testForkJoin.bpmn20.xml";
@@ -265,12 +263,10 @@ public class ProcessInstanceMigrationTest extends PluggableActivitiTestCase {
       // check UserTask
       Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
       assertEquals(newProcessDefinition.getId(), task.getProcessDefinitionId());
-      assertEquals("testFormKey", formService.getTaskFormData(task.getId()).getFormKey());
       
       if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
         HistoricTaskInstance historicTask = historyService.createHistoricTaskInstanceQuery().processInstanceId(pi.getId()).singleResult();
         assertEquals(newProcessDefinition.getId(), historicTask.getProcessDefinitionId());
-        assertEquals("testFormKey", formService.getTaskFormData(historicTask.getId()).getFormKey());
       }
 
       // continue

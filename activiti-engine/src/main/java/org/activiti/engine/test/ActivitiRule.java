@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -71,7 +70,6 @@ import org.junit.runners.model.Statement;
  * time rather then the time that was set during a test method.
  * </p>
  * 
-
  */
 public class ActivitiRule implements TestRule {
 
@@ -86,7 +84,6 @@ public class ActivitiRule implements TestRule {
   protected HistoryService historyService;
   protected IdentityService identityService;
   protected ManagementService managementService;
-  protected FormService formService;
 
   protected ActivitiMockSupport mockSupport;
 
@@ -230,7 +227,6 @@ public class ActivitiRule implements TestRule {
     historyService = processEngine.getHistoryService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();
-    formService = processEngine.getFormService();
   }
 
   protected void initializeMockSupport() {
@@ -324,10 +320,6 @@ public class ActivitiRule implements TestRule {
 
   public ManagementService getManagementService() {
     return managementService;
-  }
-
-  public FormService getFormService() {
-    return formService;
   }
 
   public void setManagementService(ManagementService managementService) {

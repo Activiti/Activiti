@@ -22,10 +22,7 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-/**
 
-
- */
 public class VariableScopeResolver implements Resolver {
 
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
@@ -81,8 +78,6 @@ public class VariableScopeResolver implements Resolver {
       return processEngineConfiguration.getRepositoryService();
     } else if (managementServiceKey.equals(key)) {
       return processEngineConfiguration.getManagementService();
-    } else if (formServiceKey.equals(key)) {
-      return processEngineConfiguration.getFormService();
     } else if (identityServiceKey.equals(key)) {
       return processEngineConfiguration.getIdentityService();
     }

@@ -13,13 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import org.activiti.engine.history.HistoricFormProperty;
-
-/**
-
-
- */
-public interface HistoricFormPropertyEntity extends HistoricDetailEntity, HistoricFormProperty {
+public interface HistoricFormPropertyEntity extends HistoricDetailEntity {
 
   String getPropertyId();
 

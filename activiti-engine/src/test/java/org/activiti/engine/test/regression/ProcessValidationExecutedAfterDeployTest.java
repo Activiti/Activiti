@@ -72,26 +72,4 @@ public class ProcessValidationExecutedAfterDeployTest extends PluggableActivitiT
     }
   }
 
-  public void testGetStartFormData() {
-
-    disableValidation();
-    repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/regression/ProcessValidationExecutedAfterDeployTest.bpmn20.xml").deploy();
-    enableValidation();
-    clearDeploymentCache();
-
-    ProcessDefinition definition = getLatestProcessDefinitionVersionByKey("testProcess1");
-    if (definition == null) {
-      fail("Error occurred in fetching process model.");
-    }
-    try {
-      formService.getStartFormData(definition.getId());
-      assertTrue(true);
-    } catch (ActivitiException e) {
-      fail("Error occurred in fetching start form data:");
-    }
-
-    for (org.activiti.engine.repository.Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId());
-    }
-  }
 }

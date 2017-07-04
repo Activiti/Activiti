@@ -32,9 +32,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
-
- */
 
 @RestController
 @Api(tags = { "History" }, description = "Manage History", authorizations = { @Authorization(value = "basicAuth") })
@@ -77,10 +74,6 @@ public class HistoricDetailCollectionResource extends HistoricDetailBaseResource
 
     if (allRequestParams.get("taskId") != null) {
       queryRequest.setTaskId(allRequestParams.get("taskId"));
-    }
-
-    if (allRequestParams.get("selectOnlyFormProperties") != null) {
-      queryRequest.setSelectOnlyFormProperties(Boolean.valueOf(allRequestParams.get("selectOnlyFormProperties")));
     }
 
     if (allRequestParams.get("selectOnlyVariableUpdates") != null) {

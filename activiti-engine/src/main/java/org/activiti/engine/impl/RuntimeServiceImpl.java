@@ -25,7 +25,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.form.FormData;
 import org.activiti.engine.impl.cmd.ActivateProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.AddEventListenerCommand;
 import org.activiti.engine.impl.cmd.AddIdentityLinkForProcessInstanceCmd;
@@ -45,7 +44,6 @@ import org.activiti.engine.impl.cmd.GetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.GetExecutionsVariablesCmd;
 import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessInstanceCmd;
 import org.activiti.engine.impl.cmd.GetProcessInstanceEventsCmd;
-import org.activiti.engine.impl.cmd.GetStartFormCmd;
 import org.activiti.engine.impl.cmd.HasExecutionVariableCmd;
 import org.activiti.engine.impl.cmd.MessageEventReceivedCmd;
 import org.activiti.engine.impl.cmd.RemoveEventListenerCommand;
@@ -72,10 +70,7 @@ import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
-/**
 
-
- */
 public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public ProcessInstance startProcessInstanceByKey(String processDefinitionKey) {
@@ -383,10 +378,6 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
 
   public List<String> getActiveActivityIds(String executionId) {
     return commandExecutor.execute(new FindActiveActivityIdsCmd(executionId));
-  }
-
-  public FormData getFormInstanceById(String processDefinitionId) {
-    return commandExecutor.execute(new GetStartFormCmd(processDefinitionId));
   }
 
   public void suspendProcessInstanceById(String processInstanceId) {

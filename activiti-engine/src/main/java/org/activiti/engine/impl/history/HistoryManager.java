@@ -1,7 +1,6 @@
 package org.activiti.engine.impl.history;
 
 import java.util.Date;
-import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -210,11 +209,6 @@ public interface HistoryManager {
    * Creates a new comment to indicate a new attachment has been created or deleted, if history is enabled.
    */
   void createAttachmentComment(String taskId, String processInstanceId, String attachmentName, boolean create);
-
-  /**
-   * Report form properties submitted, if audit history is enabled.
-   */
-  void recordFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, String> properties, String taskId);
 
   // Identity link related history
   /**

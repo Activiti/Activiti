@@ -14,7 +14,6 @@ import java.util.TimerTask;
 import java.util.concurrent.Callable;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
@@ -95,7 +94,6 @@ public abstract class BaseJPARestTestCase extends AbstractTestCase {
   protected static RepositoryService repositoryService;
   protected static RuntimeService runtimeService;
   protected static TaskService taskService;
-  protected static FormService formService;
   protected static HistoryService historyService;
   protected static IdentityService identityService;
   protected static ManagementService managementService;
@@ -113,7 +111,6 @@ public abstract class BaseJPARestTestCase extends AbstractTestCase {
     repositoryService = appContext.getBean(RepositoryService.class);
     runtimeService = appContext.getBean(RuntimeService.class);
     taskService = appContext.getBean(TaskService.class);
-    formService = appContext.getBean(FormService.class);
     historyService = appContext.getBean(HistoryService.class);
     identityService = appContext.getBean(IdentityService.class);
     managementService = appContext.getBean(ManagementService.class);

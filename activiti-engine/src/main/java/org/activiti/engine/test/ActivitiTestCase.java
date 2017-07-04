@@ -47,7 +47,6 @@ import org.activiti.engine.test.mock.ActivitiMockSupport;
  * the time that was set during a test method.
  * </p>
  * 
-
  */
 public abstract class ActivitiTestCase extends TestCase {
 
@@ -62,7 +61,6 @@ public abstract class ActivitiTestCase extends TestCase {
   protected HistoryService historicDataService;
   protected IdentityService identityService;
   protected ManagementService managementService;
-  protected FormService formService;
 
   private ActivitiMockSupport mockSupport;
 
@@ -118,7 +116,6 @@ public abstract class ActivitiTestCase extends TestCase {
     historicDataService = processEngine.getHistoryService();
     identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();
-    formService = processEngine.getFormService();
   }
 
   protected void initializeMockSupport() {

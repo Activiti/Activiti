@@ -14,11 +14,8 @@
 package org.activiti.engine.impl.persistence.entity;
 
 
-/**
 
-
- */
-public class HistoricFormPropertyEntityImpl extends HistoricDetailEntityImpl implements HistoricFormPropertyEntity {
+public class HistoricFormPropertyEntityImpl extends HistoricDetailEntityImpl {
 
   private static final long serialVersionUID = 1L;
 

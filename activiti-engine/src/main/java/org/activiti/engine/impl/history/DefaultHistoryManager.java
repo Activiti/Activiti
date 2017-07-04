@@ -15,7 +15,6 @@ package org.activiti.engine.impl.history;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
@@ -46,8 +45,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Manager class that centralises recording of all history-related operations that are originated from inside the engine.
  * 
-
-
  */
 public class DefaultHistoryManager extends AbstractManager implements HistoryManager {
 
@@ -797,21 +794,6 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       }
       comment.setMessage(attachmentName);
       getCommentEntityManager().insert(comment);
-    }
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see org.activiti.engine.impl.history.HistoryManagerInterface# reportFormPropertiesSubmitted (org.activiti.engine.impl.persistence.entity.ExecutionEntity, java.util.Map, java.lang.String)
-   */
-  @Override
-  public void recordFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, String> properties, String taskId) {
-    if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-      for (String propertyId : properties.keySet()) {
-        String propertyValue = properties.get(propertyId);
-        getHistoricDetailEntityManager().insertHistoricFormPropertyEntity(processInstance, propertyId, propertyValue, taskId);
-      }
     }
   }
 

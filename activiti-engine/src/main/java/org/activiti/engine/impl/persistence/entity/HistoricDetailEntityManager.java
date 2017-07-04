@@ -19,16 +19,11 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
 
-/**
 
- */
 public interface HistoricDetailEntityManager extends EntityManager<HistoricDetailEntity> {
-
-  HistoricFormPropertyEntity insertHistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue, String taskId);
 
   HistoricDetailVariableInstanceUpdateEntity copyAndInsertHistoricDetailVariableInstanceUpdateEntity(VariableInstanceEntity variableInstance);
 
-  
   long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery);
 
   List<HistoricDetail> findHistoricDetailsByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery, Page page);
@@ -38,7 +33,6 @@ public interface HistoricDetailEntityManager extends EntityManager<HistoricDetai
   List<HistoricDetail> findHistoricDetailsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
   long findHistoricDetailCountByNativeQuery(Map<String, Object> parameterMap);
-  
 
   void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId);
 

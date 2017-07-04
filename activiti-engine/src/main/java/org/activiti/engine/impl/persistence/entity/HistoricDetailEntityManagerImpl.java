@@ -24,10 +24,6 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.HistoricDetailDataManager;
 
-/**
-
-
- */
 public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<HistoricDetailEntity> implements HistoricDetailEntityManager {
   
   protected HistoricDetailDataManager historicDetailDataManager;
@@ -40,27 +36,6 @@ public class HistoricDetailEntityManagerImpl extends AbstractEntityManager<Histo
   @Override
   protected DataManager<HistoricDetailEntity> getDataManager() {
     return historicDetailDataManager;
-  }
-  
-  @Override
-  public HistoricFormPropertyEntity insertHistoricFormPropertyEntity(ExecutionEntity execution, 
-      String propertyId, String propertyValue, String taskId) {
-    
-    HistoricFormPropertyEntity historicFormPropertyEntity = historicDetailDataManager.createHistoricFormProperty();
-    historicFormPropertyEntity.setProcessInstanceId(execution.getProcessInstanceId());
-    historicFormPropertyEntity.setExecutionId(execution.getId());
-    historicFormPropertyEntity.setTaskId(taskId);
-    historicFormPropertyEntity.setPropertyId(propertyId);
-    historicFormPropertyEntity.setPropertyValue(propertyValue);
-    historicFormPropertyEntity.setTime(getClock().getCurrentTime());
-
-    HistoricActivityInstanceEntity historicActivityInstance = getHistoryManager().findActivityInstance(execution, true, false);
-    if (historicActivityInstance != null) {
-      historicFormPropertyEntity.setActivityInstanceId(historicActivityInstance.getId());
-    }
-    
-    insert(historicFormPropertyEntity);
-    return historicFormPropertyEntity;
   }
   
   @Override

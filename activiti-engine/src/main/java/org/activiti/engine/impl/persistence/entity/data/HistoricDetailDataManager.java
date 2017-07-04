@@ -22,11 +22,8 @@ import org.activiti.engine.impl.persistence.entity.HistoricDetailAssignmentEntit
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailTransitionInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
-import org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity;
 
-/**
 
- */
 public interface HistoricDetailDataManager extends DataManager<HistoricDetailEntity> {
   
   HistoricDetailAssignmentEntity createHistoricDetailAssignment();
@@ -35,8 +32,6 @@ public interface HistoricDetailDataManager extends DataManager<HistoricDetailEnt
   
   HistoricDetailVariableInstanceUpdateEntity createHistoricDetailVariableInstanceUpdate();
   
-  HistoricFormPropertyEntity createHistoricFormProperty();
-
   List<HistoricDetailEntity> findHistoricDetailsByProcessInstanceId(String processInstanceId);
   
   List<HistoricDetailEntity> findHistoricDetailsByTaskId(String taskId);

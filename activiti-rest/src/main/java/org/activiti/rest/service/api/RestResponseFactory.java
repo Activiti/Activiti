@@ -20,13 +20,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.form.FormData;
-import org.activiti.engine.form.FormProperty;
-import org.activiti.engine.form.StartFormData;
-import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
-import org.activiti.engine.history.HistoricFormProperty;
 import org.activiti.engine.history.HistoricIdentityLink;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -894,12 +889,7 @@ public class RestResponseFactory {
       result.setTaskUrl(urlBuilder.buildUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE, detail.getTaskId()));
     }
     result.setTime(detail.getTime());
-    if (detail instanceof HistoricFormProperty) {
-      HistoricFormProperty formProperty = (HistoricFormProperty) detail;
-      result.setDetailType(HistoricDetailResponse.FORM_PROPERTY);
-      result.setPropertyId(formProperty.getPropertyId());
-      result.setPropertyValue(formProperty.getPropertyValue());
-    } else if (detail instanceof HistoricVariableUpdate) {
+    if (detail instanceof HistoricVariableUpdate) {
       HistoricVariableUpdate variableUpdate = (HistoricVariableUpdate) detail;
       result.setDetailType(HistoricDetailResponse.VARIABLE_UPDATE);
       result.setRevision(variableUpdate.getRevision());

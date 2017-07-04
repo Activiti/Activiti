@@ -13,7 +13,6 @@
 package org.activiti.engine.test.api.repository;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -23,10 +22,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-/**
-
-
- */
 public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/db/processOne.bpmn20.xml" })
@@ -218,28 +213,6 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
     assertEquals(0, runtimeService.createProcessInstanceQuery().suspended().count());
     assertEquals(0, runtimeService.createProcessInstanceQuery().active().count());
-  }
-
-  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
-  public void testSubmitStartFormAfterProcessDefinitionSuspend() {
-    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-    repositoryService.suspendProcessDefinitionById(processDefinition.getId());
-
-    try {
-      formService.submitStartFormData(processDefinition.getId(), new HashMap<String, String>());
-      fail();
-    } catch (ActivitiException e) {
-      // This is expected
-    }
-
-    try {
-      formService.submitStartFormData(processDefinition.getId(), "someKey", new HashMap<String, String>());
-      fail();
-    } catch (ActivitiException e) {
-      e.printStackTrace();
-      // This is expected
-    }
-
   }
 
   @Deployment
