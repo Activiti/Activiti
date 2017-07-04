@@ -14,9 +14,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>spring-boot-sample-hal-rest-api</module>
-        <module>spring-boot-sample-jpa</module>
-        <module>spring-boot-sample-actuator</module>
-        <module>spring-boot-sample-custom-mybatis-mapper</module>
     </modules>
     <dependencies>
         <dependency>
