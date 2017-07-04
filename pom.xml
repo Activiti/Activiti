@@ -25,12 +25,13 @@
 			<spring.boot.version>2.0.0.M1</spring.boot.version>
 			<!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
 			<spring.hateoas.version>0.24.0.BUILD-SNAPSHOT</spring.hateoas.version>
-			<mockito.version>2.7.22</mockito.version>
-			<assertj.version>3.8.0</assertj.version>
+      <springfox.swagger.version>2.7.0</springfox.swagger.version>
+      <mockito.version>2.7.22</mockito.version>
+      <assertj.version>3.8.0</assertj.version>
 
-        <!-- plugins -->
-        <maven.enforcer.plugin.version>1.4.1</maven.enforcer.plugin.version>
-        <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
+      <!-- plugins -->
+      <maven.enforcer.plugin.version>1.4.1</maven.enforcer.plugin.version>
+      <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
 		</properties>
 
 	<repositories>
@@ -50,6 +51,16 @@
 				<groupId>javax.el</groupId>
 				<artifactId>el-api</artifactId>
 				<version>2.2</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>${springfox.swagger.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${springfox.swagger.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate.javax.persistence</groupId>

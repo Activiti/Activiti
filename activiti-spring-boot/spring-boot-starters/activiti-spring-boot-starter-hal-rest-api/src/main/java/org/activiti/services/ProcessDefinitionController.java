@@ -60,7 +60,7 @@ public class ProcessDefinitionController {
         return pagedResourcesAssembler.toResource(page, resourceAssembler);
     }
 
-    @RequestMapping(value = "/{id}")
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ProcessDefinitionResource getProcessDefinition(@PathVariable String id){
         org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
         if (processDefinition == null) {
