@@ -37,7 +37,7 @@ public class ProcessDefinitionIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private static final String PROCESS_DEFINITIONS_URL = "/api/repository/process-definitions/";
+    private static final String PROCESS_DEFINITIONS_URL = "/api/processes/";
 
     @Test
     public void should_retrieve_list_of_processDefinition() throws Exception {

@@ -18,7 +18,7 @@ package org.activiti.runtime;
 
 import java.util.Map;
 
-import org.activiti.client.model.ExtendedProcessInstance;
+import org.activiti.client.model.StartProcessInfo;
 import org.activiti.client.model.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -31,17 +31,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessInstanceRestTemplate {
 
-    protected static final String PROCESS_INSTANCES_RELATIVE_URL = "/api/runtime/process-instances/";
+    protected static final String PROCESS_INSTANCES_RELATIVE_URL = "/api/process-instances/";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     public ResponseEntity<ProcessInstance> startProcess(String processDefinitionKey,
                                                         Map<String, Object> variables) {
-        ExtendedProcessInstance processInstance = new ExtendedProcessInstance();
-        processInstance.setProcessDefinitionKey(processDefinitionKey);
-        processInstance.setVariables(variables);
-        HttpEntity<ExtendedProcessInstance> requestEntity = new HttpEntity<>(processInstance);
+        StartProcessInfo info = new StartProcessInfo();
+        info.setProcessDefinitionKey(processDefinitionKey);
+        info.setVariables(variables);
+        HttpEntity<StartProcessInfo> requestEntity = new HttpEntity<>(info);
 
         return testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL,
                                          HttpMethod.POST,

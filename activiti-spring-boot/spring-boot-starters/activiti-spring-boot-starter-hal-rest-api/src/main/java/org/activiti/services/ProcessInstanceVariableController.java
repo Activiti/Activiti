@@ -17,7 +17,7 @@ package org.activiti.services;
 
 import java.util.Map;
 
-import org.activiti.client.model.ExtendedProcessInstance;
+import org.activiti.client.model.ProcessInstanceVariables;
 import org.activiti.client.model.resources.assembler.ProcessVariableResourceAssembler;
 import org.activiti.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 
  */
 @RestController
-@RequestMapping(value = "/api/runtime/process-instances/{processInstanceId}/variables", produces = "application/hal+json")
+@RequestMapping(value = "/api/process-instances/{processInstanceId}/variables", produces = "application/hal+json")
 public class ProcessInstanceVariableController {
 
     private final RuntimeService runtimeService;
@@ -47,11 +47,7 @@ public class ProcessInstanceVariableController {
     public Resource<Map<String, Object>> getVariables(@PathVariable String processInstanceId) {
         Map<String, Object> variables = runtimeService.getVariables(processInstanceId);
 
-        ExtendedProcessInstance processInstance = new ExtendedProcessInstance();
-        processInstance.setId(processInstanceId);
-        processInstance.setVariables(variables);
-
-        return variableResourceBuilder.toResource(processInstance);
+        return variableResourceBuilder.toResource(new ProcessInstanceVariables(processInstanceId, variables));
     }
 
 }

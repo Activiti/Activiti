@@ -15,7 +15,7 @@
 
 package org.activiti.services;
 
-import org.activiti.client.model.ExtendedProcessInstance;
+import org.activiti.client.model.StartProcessInfo;
 import org.activiti.client.model.ProcessInstance;
 import org.activiti.client.model.resources.ProcessInstanceResource;
 import org.activiti.client.model.resources.assembler.ProcessInstanceResourceAssembler;
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
  */
 @RestController
-@RequestMapping(value = "/api/runtime/process-instances", produces = "application/hal+json")
+@RequestMapping(value = "/api/process-instances", produces = "application/hal+json")
 public class ProcessInstanceController {
 
     private final ProcessInstanceConverter processInstanceConverter;
@@ -64,10 +64,10 @@ public class ProcessInstanceController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Resource<ProcessInstance> startProcess(@RequestBody ExtendedProcessInstance processInstance) {
+    public Resource<ProcessInstance> startProcess(@RequestBody StartProcessInfo info) {
         ProcessInstanceBuilder builder = runtimeService.createProcessInstanceBuilder();
-        builder.processDefinitionKey(processInstance.getProcessDefinitionKey());
-        builder.variables(processInstance.getVariables());
+        builder.processDefinitionKey(info.getProcessDefinitionKey());
+        builder.variables(info.getVariables());
 
         return resourceAssembler.toResource(processInstanceConverter.from(builder.start()));
     }
