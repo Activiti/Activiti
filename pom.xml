@@ -22,7 +22,6 @@
         <!-- JVM params for test execution -->
         <argLine>-Duser.language=en</argLine>
 
-			<guava.version>22.0</guava.version>
 			<spring.boot.version>2.0.0.M1</spring.boot.version>
 			<!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
 			<spring.hateoas.version>0.24.0.BUILD-SNAPSHOT</spring.hateoas.version>
@@ -48,11 +47,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>com.google.guava</groupId>
-				<artifactId>guava</artifactId>
-        <version>${guava.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>javax.el</groupId>
 				<artifactId>el-api</artifactId>
