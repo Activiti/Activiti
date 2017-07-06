@@ -599,7 +599,10 @@
                                                  (transitive dependencies), which then results in the dependency check failure.
                                                  From the maintenance point of view, ignoring these generated classes seems like the
                                                  best option. -->
-
+											<!-- The enforcer is complaining about Predicate class after adding the dependency to Swagger.
+											However this class is never referenced directly in the project: we are adding it to ignore list
+											to avoid a dependency that's not necessary.-->
+											<regexIgnoredClass>com\.google\.common\.base\.Predicate</regexIgnoredClass>
 										</regexIgnoredClasses>
 										<suppressTypesFromJavaRuntime>true</suppressTypesFromJavaRuntime>
 										<useClassesFromLastBuild>true</useClassesFromLastBuild>
