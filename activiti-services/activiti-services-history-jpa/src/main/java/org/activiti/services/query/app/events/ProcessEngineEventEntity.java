@@ -15,7 +15,7 @@
  *
  */
 
-package org.activiti.services.history.app.events;
+package org.activiti.services.query.app.events;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;

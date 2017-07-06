@@ -15,13 +15,10 @@
  *
  */
 
-package org.activiti.services.history.app;
+package org.activiti.services.query.app.events;
 
-import org.activiti.services.history.app.events.ProcessEngineEventEntity;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+public class TaskCreatedEvent extends ProcessEngineEvent {
 
-@RepositoryRestResource(collectionResourceRel = "event", path = "event")
-interface EventStoreRestResource extends PagingAndSortingRepository<ProcessEngineEventEntity, Long> {
-
+    public TaskCreatedEvent() {
+    }
 }

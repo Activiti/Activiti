@@ -15,6 +15,7 @@
 
   <modules>
     <module>activiti-services-history-jpa</module>
+    <module>activiti-services-query</module>
     <module>activiti-services-util-audit-producer</module>
     <module>activiti-services-util-model</module>
   </modules>

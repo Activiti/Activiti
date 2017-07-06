@@ -39,7 +39,6 @@ public class MessageProducerActivitiEventListener implements ActivitiEventListen
                                                        ((ActivitiProcessStartedEvent) event).getNestedProcessDefinitionId(),
                                                        ((ActivitiProcessStartedEvent) event).getNestedProcessInstanceId());
                 break;
-            //((ActivitiProcessStartedEvent)event).getVariables()
             case PROCESS_CANCELLED:
                 newEvent = new ProcessCancelledEventImpl(event.getExecutionId(),
                                                          event.getProcessDefinitionId(),

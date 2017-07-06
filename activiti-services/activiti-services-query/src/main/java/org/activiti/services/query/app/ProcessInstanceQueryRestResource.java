@@ -15,15 +15,13 @@
  *
  */
 
-package org.activiti.services.history.app.events;
+package org.activiti.services.query.app;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import org.activiti.services.query.app.model.ProcessInstance;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@Entity
-@DiscriminatorValue(value = "TaskCreatedEvent")
-public class TaskCreatedEventEntity extends ProcessEngineEventEntity {
+@RepositoryRestResource(collectionResourceRel = "process-instances", path = "process-instances")
+interface ProcessInstanceQueryRestResource extends PagingAndSortingRepository<ProcessInstance, Long> {
 
-    public TaskCreatedEventEntity() {
-    }
 }

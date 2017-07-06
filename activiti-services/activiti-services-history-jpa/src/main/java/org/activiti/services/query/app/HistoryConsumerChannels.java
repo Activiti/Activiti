@@ -1,4 +1,4 @@
-package org.activiti.services.history.app;
+package org.activiti.services.query.app;
 
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.messaging.SubscribableChannel;

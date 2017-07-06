@@ -15,56 +15,49 @@
  *
  */
 
-package org.activiti.services.history.app.events;
+package org.activiti.services.query.app.events;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = "VariableCreatedEvent")
-public class VariableCreatedEventEntity extends ProcessEngineEventEntity {
+@DiscriminatorValue(value = "ActivityStartedEvent")
+public class ActivityStartedEventEntity extends ProcessEngineEventEntity {
 
-    protected String variableName;
-    protected String variableValue;
-    protected String variableType;
-    protected String taskId;
+    protected String activityId;
+    protected String activityName;
+    protected String activityType;
 
-    public VariableCreatedEventEntity() {
+    public ActivityStartedEventEntity() {
     }
 
-    public VariableCreatedEventEntity(Long timestamp,
+    public ActivityStartedEventEntity(Long timestamp,
                                       String eventType,
                                       String executionId,
                                       String processDefinitionId,
                                       String processInstanceId,
-                                      String variableName,
-                                      String variableValue,
-                                      String variableType,
-                                      String taskId) {
+                                      String activityId,
+                                      String activityName,
+                                      String activityType) {
         super(timestamp,
               eventType,
               executionId,
               processDefinitionId,
               processInstanceId);
-        this.variableName = variableName;
-        this.variableValue = variableValue;
-        this.variableType = variableType;
-        this.taskId = taskId;
+        this.activityId = activityId;
+        this.activityName = activityName;
+        this.activityType = activityType;
     }
 
-    public String getVariableName() {
-        return variableName;
+    public String getActivityId() {
+        return activityId;
     }
 
-    public String getVariableValue() {
-        return variableValue;
+    public String getActivityName() {
+        return activityName;
     }
 
-    public String getVariableType() {
-        return variableType;
-    }
-
-    public String getTaskId() {
-        return taskId;
+    public String getActivityType() {
+        return activityType;
     }
 }
