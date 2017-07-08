@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
@@ -51,19 +50,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testTimerEventWithStartAndDuration() throws Exception {
-    Locale currentLocale = Locale.getDefault(Locale.Category.FORMAT);
-    try {
-        String[] languages = Locale.getISOLanguages();
-        for(String language : languages){
-            timerEventWithStartAndDuration(new Locale(language));
-        }
-    } finally {
-        Locale.setDefault(Locale.Category.FORMAT, currentLocale);
-    }
-  }
 
-  private void timerEventWithStartAndDuration(Locale locale) throws Exception {
-    Locale.setDefault(Locale.Category.FORMAT, locale);
     Calendar testStartCal = new GregorianCalendar(2016, 0, 1, 10, 0, 0);
     Date testStartTime = testStartCal.getTime();
     processEngineConfiguration.getClock().setCurrentTime(testStartTime);
