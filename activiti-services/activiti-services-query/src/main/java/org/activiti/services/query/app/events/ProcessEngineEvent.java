@@ -18,19 +18,29 @@
 package org.activiti.services.query.app.events;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "eventType")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ActivityStartedEvent.class, name = "ActivityStartedEvent"),
+        @JsonSubTypes.Type(value = ActivityCompletedEvent.class, name = "ActivityCompletedEvent"),
         @JsonSubTypes.Type(value = ProcessStartedEvent.class, name = "ProcessStartedEvent"),
+        @JsonSubTypes.Type(value = ProcessCompletedEvent.class, name = "ProcessCompletedEvent"),
         @JsonSubTypes.Type(value = TaskCreatedEvent.class, name = "TaskCreatedEvent"),
-        @JsonSubTypes.Type(value = VariableCreatedEvent.class, name = "VariableCreatedEvent")
+        @JsonSubTypes.Type(value = TaskAssignedEvent.class, name = "TaskAssignedEvent"),
+        @JsonSubTypes.Type(value = TaskCompletedEvent.class, name = "TaskCompletedEvent"),
+        @JsonSubTypes.Type(value = VariableCreatedEvent.class, name = "VariableCreatedEvent"),
+        @JsonSubTypes.Type(value = VariableUpdatedEvent.class, name = "VariableUpdatedEvent"),
+        @JsonSubTypes.Type(value = VariableDeletedEvent.class, name = "VariableDeletedEvent"),
+        @JsonSubTypes.Type(value = SequenceFlowTakenEvent.class, name = "SequenceFlowTakenEvent")
+
 })
 public abstract class ProcessEngineEvent {
 

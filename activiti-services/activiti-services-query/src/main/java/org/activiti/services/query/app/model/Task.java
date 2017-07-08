@@ -21,7 +21,14 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Task {
 
     @Id
@@ -31,24 +38,29 @@ public class Task {
     private String description;
     private Date createTime;
     private Date dueDate;
-    private int priority;
+    private String priority;
     private String category;
     private String processDefinitionId;
     private String processInstanceId;
+    private String status;
+    private Date lastModified;
 
     public Task() {
     }
 
-    public Task(String id,
-                String assignee,
-                String name,
-                String description,
-                Date createTime,
-                Date dueDate,
-                int priority,
-                String category,
-                String processDefinitionId,
-                String processInstanceId) {
+    @JsonCreator
+    public Task(@JsonProperty("id") String id,
+                @JsonProperty("assignee") String assignee,
+                @JsonProperty("name") String name,
+                @JsonProperty("description") String description,
+                @JsonProperty("createTime") Date createTime,
+                @JsonProperty("dueDate") Date dueDate,
+                @JsonProperty("priority") String priority,
+                @JsonProperty("category") String category,
+                @JsonProperty("processDefinitionId") String processDefinitionId,
+                @JsonProperty("processInstanceId") String processInstanceId,
+                @JsonProperty("status") String status,
+                @JsonProperty("lastModified") Date lastModified) {
         this.id = id;
         this.assignee = assignee;
         this.name = name;
@@ -59,6 +71,8 @@ public class Task {
         this.category = category;
         this.processDefinitionId = processDefinitionId;
         this.processInstanceId = processInstanceId;
+        this.status = status;
+        this.lastModified = lastModified;
     }
 
     public String getId() {
@@ -85,7 +99,7 @@ public class Task {
         return dueDate;
     }
 
-    public int getPriority() {
+    public String getPriority() {
         return priority;
     }
 
@@ -99,5 +113,61 @@ public class Task {
 
     public String getProcessInstanceId() {
         return processInstanceId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Date getLastModified() {
+        return lastModified;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setLastModified(Date lastModified) {
+        this.lastModified = lastModified;
     }
 }

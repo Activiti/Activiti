@@ -15,22 +15,23 @@
  *
  */
 
-package org.activiti.services.model.events;
+package org.activiti.services.audit.producer.app.events;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import org.activiti.services.model.events.ProcessEngineEvent;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public interface ProcessEngineEvent {
+public interface SequenceFlowTakenEvent extends ProcessEngineEvent {
 
-    Long getTimestamp();
+    String getId();
 
-    String getEventType();
+    public String getSourceActivityId();
 
-    String getExecutionId();
+    public String getSourceActivityName();
 
-    String getProcessDefinitionId();
+    public String getSourceActivityType();
 
-    String getProcessInstanceId();
+    public String getTargetActivityId();
+
+    public String getTargetActivityName();
+
+    public String getTargetActivityType();
 }

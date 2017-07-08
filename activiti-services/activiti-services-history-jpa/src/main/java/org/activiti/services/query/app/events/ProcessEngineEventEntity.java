@@ -25,19 +25,29 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "eventType")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ActivityStartedEventEntity.class, name = "ActivityStartedEvent"),
+        @JsonSubTypes.Type(value = ActivityCompletedEventEntity.class, name = "ActivityCompletedEvent"),
         @JsonSubTypes.Type(value = ProcessStartedEventEntity.class, name = "ProcessStartedEvent"),
+        @JsonSubTypes.Type(value = ProcessCompletedEventEntity.class, name = "ProcessCompletedEvent"),
         @JsonSubTypes.Type(value = TaskCreatedEventEntity.class, name = "TaskCreatedEvent"),
-        @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = "VariableCreatedEvent")
+        @JsonSubTypes.Type(value = TaskAssignedEventEntity.class, name = "TaskAssignedEvent"),
+        @JsonSubTypes.Type(value = TaskCompletedEventEntity.class, name = "TaskCompletedEvent"),
+        @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = "VariableCreatedEvent"),
+        @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = "VariableUpdatedEvent"),
+        @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = "VariableDeletedEvent"),
+        @JsonSubTypes.Type(value = SequenceFlowTakenEventEntity.class, name = "SequenceFlowTakenEvent")
+
 })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

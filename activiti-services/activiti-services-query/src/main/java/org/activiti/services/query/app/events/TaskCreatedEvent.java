@@ -17,8 +17,30 @@
 
 package org.activiti.services.query.app.events;
 
+import org.activiti.services.query.app.model.Task;
+
 public class TaskCreatedEvent extends ProcessEngineEvent {
 
+    private Task task;
+
     public TaskCreatedEvent() {
+    }
+
+    public TaskCreatedEvent(Long timestamp,
+                            String eventType,
+                            String executionId,
+                            String processDefinitionId,
+                            String processInstanceId,
+                            Task task) {
+        super(timestamp,
+              eventType,
+              executionId,
+              processDefinitionId,
+              processInstanceId);
+        this.task = task;
+    }
+
+    public Task getTask() {
+        return task;
     }
 }

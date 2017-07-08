@@ -17,37 +17,30 @@
 
 package org.activiti.services.query.app.events;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Transient;
+import org.activiti.services.query.app.model.ProcessInstance;
 
-import org.activiti.services.model.Task;
+public class ProcessCompletedEvent extends ProcessEngineEvent {
 
-@Entity
-@DiscriminatorValue(value = "TaskCreatedEvent")
-public class TaskCreatedEventEntity extends ProcessEngineEventEntity {
+    private ProcessInstance processInstance;
 
-    @Transient
-    private Task task;
-
-    public TaskCreatedEventEntity() {
+    public ProcessCompletedEvent() {
     }
 
-    public TaskCreatedEventEntity(Long timestamp,
-                                  String eventType,
-                                  String executionId,
-                                  String processDefinitionId,
-                                  String processInstanceId,
-                                  Task task) {
+    public ProcessCompletedEvent(Long timestamp,
+                                 String eventType,
+                                 String executionId,
+                                 String processDefinitionId,
+                                 String processInstanceId,
+                                 ProcessInstance processInstance) {
         super(timestamp,
               eventType,
               executionId,
               processDefinitionId,
               processInstanceId);
-        this.task = task;
+        this.processInstance = processInstance;
     }
 
-    public Task getTask() {
-        return task;
+    public ProcessInstance getProcessInstance() {
+        return processInstance;
     }
 }

@@ -24,21 +24,21 @@ import javax.persistence.Transient;
 import org.activiti.services.model.Task;
 
 @Entity
-@DiscriminatorValue(value = "TaskCreatedEvent")
-public class TaskCreatedEventEntity extends ProcessEngineEventEntity {
+@DiscriminatorValue(value = "TaskAssignedEvent")
+public class TaskAssignedEventEntity extends ProcessEngineEventEntity {
 
     @Transient
     private Task task;
 
-    public TaskCreatedEventEntity() {
+    public TaskAssignedEventEntity() {
     }
 
-    public TaskCreatedEventEntity(Long timestamp,
-                                  String eventType,
-                                  String executionId,
-                                  String processDefinitionId,
-                                  String processInstanceId,
-                                  Task task) {
+    public TaskAssignedEventEntity(Long timestamp,
+                                   String eventType,
+                                   String executionId,
+                                   String processDefinitionId,
+                                   String processInstanceId,
+                                   Task task) {
         super(timestamp,
               eventType,
               executionId,

@@ -15,22 +15,25 @@
  *
  */
 
-package org.activiti.services.model.events;
+package org.activiti.services.audit.producer.app.events;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import org.activiti.services.model.events.ProcessEngineEvent;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public interface ProcessEngineEvent {
+public interface ActivityCompletedEvent extends ProcessEngineEvent {
 
-    Long getTimestamp();
+    /**
+     * @return the id of the activity this event is related to. This corresponds to an id defined in the process definition.
+     */
+    String getActivityId();
 
-    String getEventType();
+    /**
+     * @return the name of the activity this event is related to.
+     */
+    String getActivityName();
 
-    String getExecutionId();
+    /**
+     * @return the type of the activity (if set during parsing).
+     */
+    String getActivityType();
 
-    String getProcessDefinitionId();
-
-    String getProcessInstanceId();
 }

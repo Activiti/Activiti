@@ -15,22 +15,30 @@
  *
  */
 
-package org.activiti.services.model.events;
+package org.activiti.services.audit.producer.app.events;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import org.activiti.services.model.events.ProcessEngineEvent;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public interface ProcessEngineEvent {
+public interface VariableDeletedEvent extends ProcessEngineEvent {
 
-    Long getTimestamp();
+    /**
+     * @return the name of the variable involved.
+     */
+    String getVariableName();
 
-    String getEventType();
+    /**
+     * @return The variable type as string.
+     */
+    String getVariableType();
 
+    /**
+     * @return the id of the execution the variable is set on.
+     */
+    @Override
     String getExecutionId();
 
-    String getProcessDefinitionId();
-
-    String getProcessInstanceId();
+    /**
+     * @return the id of the task the variable has been set on.
+     */
+    String getTaskId();
 }

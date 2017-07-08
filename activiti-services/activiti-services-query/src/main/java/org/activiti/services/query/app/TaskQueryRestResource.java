@@ -22,6 +22,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.activiti.services.query.app.model.*;
 
 @RepositoryRestResource(collectionResourceRel = "tasks", path = "tasks")
-interface TaskQueryRestResource extends PagingAndSortingRepository<Task, Long> {
+interface TaskQueryRestResource extends PagingAndSortingRepository<Task, String> {
 
 }
