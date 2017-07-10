@@ -21,6 +21,7 @@ import java.util.Collections;
 
 import org.activiti.client.model.ClaimTaskInfo;
 import org.activiti.client.model.CompleteTaskInfo;
+import org.activiti.client.model.ProcessInstance;
 import org.activiti.client.model.Task;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +36,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.activiti.runtime.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -44,6 +46,8 @@ public class TasksIT {
     private static final String TASKS_URL = "/api/tasks/";
     private static final ParameterizedTypeReference<Task> TASK_RESPONSE_TYPE = new ParameterizedTypeReference<Task>() {
     };
+    public static final ParameterizedTypeReference<PagedResources<Task>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Task>>() {
+    };
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -52,7 +56,7 @@ public class TasksIT {
     private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
     @Test
-    public void should_get_available_tasks() throws Exception {
+    public void shouldGetAvailableTasks() throws Exception {
         //given
         processInstanceRestTemplate.startProcess("SimpleProcess");
         processInstanceRestTemplate.startProcess("SimpleProcess");
@@ -67,16 +71,31 @@ public class TasksIT {
         assertThat(tasks.size()).isGreaterThanOrEqualTo(2);
     }
 
+    @Test
+    public void shouldGetTasksRelatedToTheGivenProcessInstance() throws Exception {
+        //given
+        ResponseEntity<ProcessInstance> startProcessResponse = processInstanceRestTemplate.startProcess("SimpleProcess");
+
+        //when
+        ResponseEntity<PagedResources<Task>> tasksEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessResponse.getBody().getId() + "/tasks",
+                                                                                  HttpMethod.GET,
+                                                                                  null,
+                                                                                  PAGED_TASKS_RESPONSE_TYPE);
+
+        //then
+        assertThat(tasksEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(tasksEntity.getBody().getContent()).extracting(Task::getName).containsExactly("Perform action");
+    }
+
     private ResponseEntity<PagedResources<Task>> executeRequestGetTasks() {
         return testRestTemplate.exchange(TASKS_URL,
                                          HttpMethod.GET,
                                          null,
-                                         new ParameterizedTypeReference<PagedResources<Task>>() {
-                                         });
+                                         PAGED_TASKS_RESPONSE_TYPE);
     }
 
     @Test
-    public void should_get_task_by_id() throws Exception {
+    public void shouldGetTaskById() throws Exception {
         //given
         processInstanceRestTemplate.startProcess("SimpleProcess");
         Task task = executeRequestGetTasks().getBody().iterator().next();
@@ -93,7 +112,7 @@ public class TasksIT {
     }
 
     @Test
-    public void claimTask_should_set_assignee() throws Exception {
+    public void claimTaskShouldSetAssignee() throws Exception {
         //given
         processInstanceRestTemplate.startProcess("SimpleProcess");
         Task task = executeRequestGetTasks().getBody().iterator().next();
@@ -101,22 +120,50 @@ public class TasksIT {
         claimTaskInfo.setAssignee("peter");
 
         //when
-        ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/claim",
-                                                                        HttpMethod.POST,
-                                                                        new HttpEntity<>(claimTaskInfo),
-                                                                        TASK_RESPONSE_TYPE);
+        ResponseEntity<Task> responseEntity = executeRequestClaim(task,
+                                                                  claimTaskInfo);
 
         //then
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getBody().getAssignee()).isEqualTo("peter");
     }
 
+    private ResponseEntity<Task> executeRequestClaim(Task task,
+                                                     ClaimTaskInfo claimTaskInfo) {
+        return testRestTemplate.exchange(TASKS_URL + task.getId() + "/claim",
+                                         HttpMethod.POST,
+                                         new HttpEntity<>(claimTaskInfo),
+                                         TASK_RESPONSE_TYPE);
+    }
+
     @Test
-    public void should_complete_a_task() throws Exception {
+    public void releaseTaskShouldSetAssigneeBackToNull() throws Exception {
         //given
         processInstanceRestTemplate.startProcess("SimpleProcess");
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
+        ClaimTaskInfo claimTaskInfo = new ClaimTaskInfo();
+        claimTaskInfo.setAssignee("peter");
+        executeRequestClaim(task,
+                            claimTaskInfo);
+
+        //when
+        ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/release",
+                                                                        HttpMethod.POST,
+                                                                        null,
+                                                                        TASK_RESPONSE_TYPE);
+
+        //then
+        assertThat(responseEntity).isNotNull();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().getAssignee()).isNull();
+    }
+
+    @Test
+    public void shouldCompleteATask() throws Exception {
+        //given
+        processInstanceRestTemplate.startProcess("SimpleProcess");
+        Task task = executeRequestGetTasks().getBody().iterator().next();
 
         //when
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",
@@ -130,13 +177,14 @@ public class TasksIT {
     }
 
     @Test
-    public void should_complete_a_task_passing_input_variables() throws Exception {
+    public void shouldCompleteATaskPassingInputVariables() throws Exception {
         //given
         processInstanceRestTemplate.startProcess("SimpleProcess");
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         CompleteTaskInfo completeTaskInfo = new CompleteTaskInfo();
-        completeTaskInfo.setInputVariables(Collections.singletonMap("myVar", "any"));
+        completeTaskInfo.setInputVariables(Collections.singletonMap("myVar",
+                                                                    "any"));
 
         //when
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",
@@ -148,5 +196,4 @@ public class TasksIT {
         //then
         assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
     }
-
 }

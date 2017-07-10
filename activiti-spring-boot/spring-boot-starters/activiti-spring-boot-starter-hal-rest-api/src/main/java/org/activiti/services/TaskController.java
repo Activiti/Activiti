@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/tasks", produces = "application/hal+json")
+@RequestMapping(value = "/api/tasks")
 public class TaskController {
 
     private final TaskService taskService;
@@ -73,6 +73,13 @@ public class TaskController {
     @RequestMapping(value = "/{taskId}/claim", method = RequestMethod.POST)
     public Resource<Task> claimTask(@PathVariable String taskId, @RequestBody ClaimTaskInfo claimTaskInfo) {
         taskService.claim(taskId, claimTaskInfo.getAssignee());
+        Task task = taskConverter.from(taskService.createTaskQuery().taskId(taskId).singleResult());
+        return  taskResourceAssembler.toResource(task);
+    }
+
+    @RequestMapping(value = "/{taskId}/release", method = RequestMethod.POST)
+    public Resource<Task> releaseTask(@PathVariable String taskId) {
+        taskService.unclaim(taskId);
         Task task = taskConverter.from(taskService.createTaskQuery().taskId(taskId).singleResult());
         return  taskResourceAssembler.toResource(task);
     }

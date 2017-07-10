@@ -37,14 +37,16 @@ public class ProcessDefinitionIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private static final String PROCESS_DEFINITIONS_URL = "/api/processes/";
+    private static final String PROCESS_DEFINITIONS_URL = "/api/process-definitions/";
 
     @Test
-    public void should_retrieve_list_of_processDefinition() throws Exception {
+    public void shouldRetrieveListOfProcessDefinition() throws Exception {
         //given
+        //processes are automatically deployed from src/test/resources/processes
 
         //when
         ResponseEntity<PagedResources<ProcessDefinition>> entity = getProcessDefinitions();
+
         //then
         assertThat(entity).isNotNull();
         assertThat(entity.getBody()).isNotNull();
@@ -65,7 +67,7 @@ public class ProcessDefinitionIT {
     }
 
     @Test
-    public void should_return_process_definition_by_id() throws Exception {
+    public void shouldReturnProcessDefinitionById() throws Exception {
         //given
         ParameterizedTypeReference<ProcessDefinition> responseType = new ParameterizedTypeReference<ProcessDefinition>() {
         };
