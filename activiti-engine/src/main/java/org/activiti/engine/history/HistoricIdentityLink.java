@@ -13,8 +13,6 @@
 
 package org.activiti.engine.history;
 
-import org.activiti.engine.identity.GroupQuery;
-import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 

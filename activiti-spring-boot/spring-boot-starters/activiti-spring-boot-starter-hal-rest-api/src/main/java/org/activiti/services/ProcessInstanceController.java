@@ -15,8 +15,9 @@
 
 package org.activiti.services;
 
-import org.activiti.client.model.ExtendedProcessInstance;
 import org.activiti.client.model.ProcessInstance;
+import org.activiti.client.model.SignalInfo;
+import org.activiti.client.model.StartProcessInfo;
 import org.activiti.client.model.resources.ProcessInstanceResource;
 import org.activiti.client.model.resources.assembler.ProcessInstanceResourceAssembler;
 import org.activiti.engine.RuntimeService;
@@ -28,6 +29,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
  */
 @RestController
-@RequestMapping(value = "/api/runtime/process-instances", produces = "application/hal+json")
+@RequestMapping(value = "/api/process-instances")
 public class ProcessInstanceController {
 
     private final ProcessInstanceConverter processInstanceConverter;
@@ -50,7 +53,10 @@ public class ProcessInstanceController {
     private PageableProcessInstanceService pageableProcessInstanceService;
 
     @Autowired
-    public ProcessInstanceController(ProcessInstanceConverter processInstanceConverter, RuntimeService runtimeService, ProcessInstanceResourceAssembler resourceAssembler, PageableProcessInstanceService pageableProcessInstanceService) {
+    public ProcessInstanceController(ProcessInstanceConverter processInstanceConverter,
+                                     RuntimeService runtimeService,
+                                     ProcessInstanceResourceAssembler resourceAssembler,
+                                     PageableProcessInstanceService pageableProcessInstanceService) {
         this.processInstanceConverter = processInstanceConverter;
         this.runtimeService = runtimeService;
         this.resourceAssembler = resourceAssembler;
@@ -58,24 +64,32 @@ public class ProcessInstanceController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public PagedResources<ProcessInstanceResource> getProcessInstances(Pageable pageable, PagedResourcesAssembler<ProcessInstance> pagedResourcesAssembler){
+    public PagedResources<ProcessInstanceResource> getProcessInstances(Pageable pageable,
+                                                                       PagedResourcesAssembler<ProcessInstance> pagedResourcesAssembler) {
         Page<ProcessInstance> page = pageableProcessInstanceService.getProcessInstances(pageable);
-        return pagedResourcesAssembler.toResource(page, resourceAssembler);
+        return pagedResourcesAssembler.toResource(page,
+                                                  resourceAssembler);
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public Resource<ProcessInstance> startProcess(@RequestBody ExtendedProcessInstance processInstance) {
+    public Resource<ProcessInstance> startProcess(@RequestBody StartProcessInfo info) {
         ProcessInstanceBuilder builder = runtimeService.createProcessInstanceBuilder();
-        builder.processDefinitionKey(processInstance.getProcessDefinitionKey());
-        builder.variables(processInstance.getVariables());
+        builder.processDefinitionKey(info.getProcessDefinitionKey());
+        builder.variables(info.getVariables());
 
         return resourceAssembler.toResource(processInstanceConverter.from(builder.start()));
     }
 
     @RequestMapping(value = "/{processInstanceId}", method = RequestMethod.GET)
-    public Resource<ProcessInstance> getProcessInstance(@PathVariable String processInstanceId){
+    public Resource<ProcessInstance> getProcessInstance(@PathVariable String processInstanceId) {
         org.activiti.engine.runtime.ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
         return resourceAssembler.toResource(processInstanceConverter.from(processInstance));
     }
 
+    @RequestMapping(value = "/send-signal")
+    public ResponseEntity<Void> sendSignal(@RequestBody
+                                                   SignalInfo signalInfo) {
+        runtimeService.signalEventReceived(signalInfo.getName(), signalInfo.getInputVariables());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

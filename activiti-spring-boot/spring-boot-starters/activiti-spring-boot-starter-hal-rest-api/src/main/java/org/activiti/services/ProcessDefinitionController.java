@@ -31,11 +31,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
-
- */
 @RestController
-@RequestMapping(value = "/api/repository/process-definitions", produces = "application/hal+json")
+@RequestMapping(value = "/api/process-definitions")
 public class ProcessDefinitionController {
 
     private final RepositoryService repositoryService;

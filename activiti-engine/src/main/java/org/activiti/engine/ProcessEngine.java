@@ -55,8 +55,6 @@ public interface ProcessEngine {
 
   HistoryService getHistoryService();
 
-  IdentityService getIdentityService();
-
   ManagementService getManagementService();
   
   DynamicBpmnService getDynamicBpmnService();

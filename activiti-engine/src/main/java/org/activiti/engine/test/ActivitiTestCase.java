@@ -46,7 +46,8 @@ import org.activiti.engine.test.mock.ActivitiMockSupport;
  * e.g. e.g. due dates of timers. Or start, end and duration times in the history service. In the tearDown, the internal clock will automatically be reset to use the current system time rather then
  * the time that was set during a test method.
  * </p>
- * 
+ *
+
  */
 public abstract class ActivitiTestCase extends TestCase {
 
@@ -59,7 +60,6 @@ public abstract class ActivitiTestCase extends TestCase {
   protected RuntimeService runtimeService;
   protected TaskService taskService;
   protected HistoryService historicDataService;
-  protected IdentityService identityService;
   protected ManagementService managementService;
 
   private ActivitiMockSupport mockSupport;
@@ -114,7 +114,6 @@ public abstract class ActivitiTestCase extends TestCase {
     runtimeService = processEngine.getRuntimeService();
     taskService = processEngine.getTaskService();
     historicDataService = processEngine.getHistoryService();
-    identityService = processEngine.getIdentityService();
     managementService = processEngine.getManagementService();
   }
 

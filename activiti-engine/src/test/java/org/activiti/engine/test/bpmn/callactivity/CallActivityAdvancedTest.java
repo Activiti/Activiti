@@ -25,6 +25,7 @@ import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -354,15 +355,15 @@ public class CallActivityAdvancedTest extends PluggableActivitiTestCase {
       "org/activiti/engine/test/bpmn/callactivity/simpleSubProcess.bpmn20.xml"
   })
   public void testStartUserIdSetWhenLooping() {
-    identityService.setAuthenticatedUserId("kermit");
+    Authentication.setAuthenticatedUserId("kermit");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("loopingCallActivity", CollectionUtil.singletonMap("input", 0));
     for (int i=1; i<4; i++) {
       Task task = taskService.createTaskQuery().singleResult();
       assertEquals("Task in subprocess", task.getName());
-      identityService.setAuthenticatedUserId("kermit");
+      Authentication.setAuthenticatedUserId("kermit");
       taskService.complete(task.getId(), CollectionUtil.singletonMap("input", i));
     }
-    identityService.setAuthenticatedUserId(null);
+    Authentication.setAuthenticatedUserId(null);
     
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("Final task", task.getName());

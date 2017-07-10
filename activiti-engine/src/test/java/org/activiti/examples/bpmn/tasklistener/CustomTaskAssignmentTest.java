@@ -12,6 +12,7 @@
  */
 package org.activiti.examples.bpmn.tasklistener;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,42 +27,21 @@ import org.activiti.engine.test.Deployment;
  */
 public class CustomTaskAssignmentTest extends PluggableActivitiTestCase {
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-
-    identityService.saveUser(identityService.newUser("kermit"));
-    identityService.saveUser(identityService.newUser("fozzie"));
-    identityService.saveUser(identityService.newUser("gonzo"));
-
-    identityService.saveGroup(identityService.newGroup("management"));
-
-    identityService.createMembership("kermit", "management");
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    identityService.deleteUser("kermit");
-    identityService.deleteUser("fozzie");
-    identityService.deleteUser("gonzo");
-    identityService.deleteGroup("management");
-    super.tearDown();
-  }
 
   @Deployment
   public void testCandidateGroupAssignment() {
     runtimeService.startProcessInstanceByKey("customTaskAssignment");
     assertEquals(1, taskService.createTaskQuery().taskCandidateGroup("management").count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
-    assertEquals(0, taskService.createTaskQuery().taskCandidateUser("fozzie").count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit", Arrays.asList("management")).count());
+    assertEquals(0, taskService.createTaskQuery().taskCandidateUser("fozzie",null).count());
   }
 
   @Deployment
   public void testCandidateUserAssignment() {
     runtimeService.startProcessInstanceByKey("customTaskAssignment");
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit").count());
-    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("fozzie").count());
-    assertEquals(0, taskService.createTaskQuery().taskCandidateUser("gonzo").count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("kermit",null).count());
+    assertEquals(1, taskService.createTaskQuery().taskCandidateUser("fozzie",null).count());
+    assertEquals(0, taskService.createTaskQuery().taskCandidateUser("gonzo",null).count());
   }
 
   @Deployment

@@ -44,7 +44,7 @@ public class ProcessInstanceIT {
     private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
     @Test
-    public void should_start_process() throws Exception {
+    public void shouldStartProcess() throws Exception {
         //when
         ResponseEntity<ProcessInstance> entity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
 
@@ -57,7 +57,7 @@ public class ProcessInstanceIT {
     }
 
     @Test
-    public void should_retrieve_process_instance_by_id() throws Exception {
+    public void shouldRetrieveProcessInstanceById() throws Exception {
         //given
         ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
 
@@ -74,7 +74,7 @@ public class ProcessInstanceIT {
     }
 
     @Test
-    public void should_retrieve_list_of_process_instances() throws Exception {
+    public void shouldRetrieveListOfProcessInstances() throws Exception {
         //given
         processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
         processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);

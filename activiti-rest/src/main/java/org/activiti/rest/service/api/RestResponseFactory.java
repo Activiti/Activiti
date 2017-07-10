@@ -27,8 +27,6 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.bpmn.deployer.ResourceNameUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
@@ -57,19 +55,12 @@ import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableSc
 import org.activiti.rest.service.api.engine.variable.RestVariableConverter;
 import org.activiti.rest.service.api.engine.variable.ShortRestVariableConverter;
 import org.activiti.rest.service.api.engine.variable.StringRestVariableConverter;
-//import org.activiti.rest.service.api.form.FormDataResponse;
-//import org.activiti.rest.service.api.form.RestEnumFormProperty;
-//import org.activiti.rest.service.api.form.RestFormProperty;
 import org.activiti.rest.service.api.history.HistoricActivityInstanceResponse;
 import org.activiti.rest.service.api.history.HistoricDetailResponse;
 import org.activiti.rest.service.api.history.HistoricIdentityLinkResponse;
 import org.activiti.rest.service.api.history.HistoricProcessInstanceResponse;
 import org.activiti.rest.service.api.history.HistoricTaskInstanceResponse;
 import org.activiti.rest.service.api.history.HistoricVariableInstanceResponse;
-import org.activiti.rest.service.api.identity.GroupResponse;
-import org.activiti.rest.service.api.identity.MembershipResponse;
-import org.activiti.rest.service.api.identity.UserInfoResponse;
-import org.activiti.rest.service.api.identity.UserResponse;
 import org.activiti.rest.service.api.management.JobResponse;
 import org.activiti.rest.service.api.management.TableResponse;
 import org.activiti.rest.service.api.repository.DeploymentResourceResponse;
@@ -986,93 +977,6 @@ public class RestResponseFactory {
       response.setExecutionUrl(urlBuilder.buildUrl(RestUrls.URL_EXECUTION, job.getExecutionId()));
     }
 
-    return response;
-  }
-
-  public List<UserResponse> createUserResponseList(List<User> users, boolean incudePassword) {
-    RestUrlBuilder urlBuilder = createUrlBuilder();
-    List<UserResponse> responseList = new ArrayList<UserResponse>();
-    for (User instance : users) {
-      responseList.add(createUserResponse(instance, incudePassword, urlBuilder));
-    }
-    return responseList;
-  }
-
-  public UserResponse createUserResponse(User user, boolean incudePassword) {
-    return createUserResponse(user, incudePassword, createUrlBuilder());
-  }
-
-  public UserResponse createUserResponse(User user, boolean incudePassword, RestUrlBuilder urlBuilder) {
-    UserResponse response = new UserResponse();
-    response.setFirstName(user.getFirstName());
-    response.setLastName(user.getLastName());
-    response.setId(user.getId());
-    response.setEmail(user.getEmail());
-    response.setUrl(urlBuilder.buildUrl(RestUrls.URL_USER, user.getId()));
-
-    if (incudePassword) {
-      response.setPassword(user.getPassword());
-    }
-
-    if (user.isPictureSet()) {
-      response.setPictureUrl(urlBuilder.buildUrl(RestUrls.URL_USER_PICTURE, user.getId()));
-    }
-    return response;
-  }
-
-  public List<UserInfoResponse> createUserInfoKeysResponse(List<String> keys, String userId) {
-    RestUrlBuilder urlBuilder = createUrlBuilder();
-    List<UserInfoResponse> responseList = new ArrayList<UserInfoResponse>();
-    for (String instance : keys) {
-      responseList.add(createUserInfoResponse(instance, null, userId, urlBuilder));
-    }
-    return responseList;
-  }
-
-  public UserInfoResponse createUserInfoResponse(String key, String value, String userId) {
-    return createUserInfoResponse(key, value, userId, createUrlBuilder());
-  }
-
-  public UserInfoResponse createUserInfoResponse(String key, String value, String userId, RestUrlBuilder urlBuilder) {
-    UserInfoResponse response = new UserInfoResponse();
-    response.setKey(key);
-    response.setValue(value);
-    response.setUrl(urlBuilder.buildUrl(RestUrls.URL_USER_INFO, userId, key));
-    return response;
-  }
-
-  public List<GroupResponse> createGroupResponseList(List<Group> groups) {
-    RestUrlBuilder urlBuilder = createUrlBuilder();
-    List<GroupResponse> responseList = new ArrayList<GroupResponse>();
-    for (Group instance : groups) {
-      responseList.add(createGroupResponse(instance, urlBuilder));
-    }
-    return responseList;
-  }
-
-  public GroupResponse createGroupResponse(Group group) {
-    return createGroupResponse(group, createUrlBuilder());
-  }
-
-  public GroupResponse createGroupResponse(Group group, RestUrlBuilder urlBuilder) {
-    GroupResponse response = new GroupResponse();
-    response.setId(group.getId());
-    response.setName(group.getName());
-    response.setType(group.getType());
-    response.setUrl(urlBuilder.buildUrl(RestUrls.URL_GROUP, group.getId()));
-
-    return response;
-  }
-
-  public MembershipResponse createMembershipResponse(String userId, String groupId) {
-    return createMembershipResponse(userId, groupId, createUrlBuilder());
-  }
-
-  public MembershipResponse createMembershipResponse(String userId, String groupId, RestUrlBuilder urlBuilder) {
-    MembershipResponse response = new MembershipResponse();
-    response.setGroupId(groupId);
-    response.setUserId(userId);
-    response.setUrl(urlBuilder.buildUrl(RestUrls.URL_GROUP_MEMBERSHIP, groupId, userId));
     return response;
   }
 

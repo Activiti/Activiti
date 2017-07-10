@@ -16,6 +16,7 @@ package org.activiti.rest.service.api.runtime;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
@@ -46,9 +47,9 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
       taskService.saveTask(task);
 
       // Add a comment as "kermit"
-      identityService.setAuthenticatedUserId("kermit");
+      Authentication.setAuthenticatedUserId("kermit");
       Comment comment = taskService.addComment(task.getId(), null, "This is a comment...");
-      identityService.setAuthenticatedUserId(null);
+      Authentication.setAuthenticatedUserId(null);
 
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, task.getId()));
       CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
@@ -158,9 +159,9 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
       taskService.saveTask(task);
 
       // Add a comment as "kermit"
-      identityService.setAuthenticatedUserId("kermit");
+      Authentication.setAuthenticatedUserId("kermit");
       Comment comment = taskService.addComment(task.getId(), null, "This is a comment...");
-      identityService.setAuthenticatedUserId(null);
+      Authentication.setAuthenticatedUserId(null);
 
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
       CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
@@ -202,9 +203,9 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
       taskService.saveTask(task);
 
       // Add a comment as "kermit"
-      identityService.setAuthenticatedUserId("kermit");
+      Authentication.setAuthenticatedUserId("kermit");
       Comment comment = taskService.addComment(task.getId(), null, "This is a comment...");
-      identityService.setAuthenticatedUserId(null);
+      Authentication.setAuthenticatedUserId(null);
 
       HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
       closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
@@ -235,9 +236,9 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
       taskService.saveTask(task);
 
       // Add a comment as "kermit"
-      identityService.setAuthenticatedUserId("kermit");
+      Authentication.setAuthenticatedUserId("kermit");
       Comment comment = taskService.addComment(task.getId(), null, "This is a comment...");
-      identityService.setAuthenticatedUserId(null);
+      Authentication.setAuthenticatedUserId(null);
 
       taskService.complete(task.getId());
 

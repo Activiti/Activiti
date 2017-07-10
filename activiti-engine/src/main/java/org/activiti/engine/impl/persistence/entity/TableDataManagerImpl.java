@@ -30,8 +30,6 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.TablePageQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -101,12 +99,6 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
     entityToTableNameMap.put(HistoricDetailVariableInstanceUpdateEntity.class, "ACT_HI_DETAIL");
     entityToTableNameMap.put(HistoricDetailEntity.class, "ACT_HI_DETAIL");
 
-    // Identity module
-    entityToTableNameMap.put(GroupEntity.class, "ACT_ID_GROUP");
-    entityToTableNameMap.put(MembershipEntity.class, "ACT_ID_MEMBERSHIP");
-    entityToTableNameMap.put(UserEntity.class, "ACT_ID_USER");
-    entityToTableNameMap.put(IdentityInfoEntity.class, "ACT_ID_INFO");
-
     // general
     entityToTableNameMap.put(PropertyEntity.class, "ACT_GE_PROPERTY");
     entityToTableNameMap.put(ByteArrayEntity.class, "ACT_GE_BYTEARRAY");
@@ -131,9 +123,6 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
     apiTypeToTableNameMap.put(HistoricTaskInstance.class, "ACT_HI_TASKINST");
     apiTypeToTableNameMap.put(HistoricVariableInstance.class, "ACT_HI_VARINST");
 
-    // identity
-    apiTypeToTableNameMap.put(Group.class, "ACT_ID_GROUP");
-    apiTypeToTableNameMap.put(User.class, "ACT_ID_USER");
 
     // TODO: Identity skipped for the moment as no SQL injection is provided
     // here

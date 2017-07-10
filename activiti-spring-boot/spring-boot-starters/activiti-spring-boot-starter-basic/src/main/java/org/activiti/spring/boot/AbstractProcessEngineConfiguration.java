@@ -19,7 +19,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
@@ -111,7 +110,4 @@ public abstract class AbstractProcessEngineConfiguration {
     return processEngine.getManagementService();
   }
 
-  public IdentityService identityServiceBean(ProcessEngine processEngine) {
-    return processEngine.getIdentityService();
-  }
 }

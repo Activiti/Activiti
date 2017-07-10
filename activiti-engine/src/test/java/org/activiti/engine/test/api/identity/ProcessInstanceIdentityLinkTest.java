@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.test.api.identity;
 
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -35,10 +36,10 @@ public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
 
-    identityService.setAuthenticatedUserId("kermit");
+    Authentication.setAuthenticatedUserId("kermit");
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     taskService.complete(task.getId());
-    identityService.setAuthenticatedUserId(null);
+    Authentication.setAuthenticatedUserId(null);
 
     assertProcessEnded(processInstance.getId());
 
@@ -50,12 +51,12 @@ public class ProcessInstanceIdentityLinkTest extends PluggableActivitiTestCase {
   // IDENTITY_LINK)
   @Deployment
   public void testSetAuthenticatedUserWithNoWaitStates() {
-    identityService.setAuthenticatedUserId("kermit");
+    Authentication.setAuthenticatedUserId("kermit");
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("identityLinktest");
     assertProcessEnded(processInstance.getId());
 
-    identityService.setAuthenticatedUserId(null);
+    Authentication.setAuthenticatedUserId(null);
   }
 
 }

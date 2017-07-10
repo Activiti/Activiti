@@ -349,22 +349,6 @@ public class CommandContext {
     return processEngineConfiguration.getDeadLetterJobEntityManager();
   }
 
-  public UserEntityManager getUserEntityManager() {
-    return processEngineConfiguration.getUserEntityManager();
-  }
-
-  public GroupEntityManager getGroupEntityManager() {
-    return processEngineConfiguration.getGroupEntityManager();
-  }
-
-  public IdentityInfoEntityManager getIdentityInfoEntityManager() {
-    return processEngineConfiguration.getIdentityInfoEntityManager();
-  }
-
-  public MembershipEntityManager getMembershipIdentityManager() {
-    return processEngineConfiguration.getMembershipEntityManager();
-  }
-
   public AttachmentEntityManager getAttachmentEntityManager() {
     return processEngineConfiguration.getAttachmentEntityManager();
   }

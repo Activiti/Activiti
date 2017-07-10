@@ -14,8 +14,6 @@ package org.activiti.engine.test.bpmn.servicetask;
 
 import java.util.List;
 
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -65,22 +63,5 @@ public class CallServiceInServiceTaskTest extends PluggableActivitiTestCase {
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
   }
 
-  @Deployment
-  public void testMultipleServiceInvocationsFromDelegate() {
-    runtimeService.startProcessInstanceByKey("multipleServiceInvocations");
-
-    // The service task should have created a user which is part of the
-    // admin group
-    User user = identityService.createUserQuery().singleResult();
-    assertEquals("Kermit", user.getId());
-    Group group = identityService.createGroupQuery().groupMember(user.getId()).singleResult();
-    assertNotNull(group);
-    assertEquals("admin", group.getId());
-
-    // Cleanup
-    identityService.deleteUser("Kermit");
-    identityService.deleteGroup("admin");
-    identityService.deleteMembership("Kermit", "admin");
-  }
 
 }
