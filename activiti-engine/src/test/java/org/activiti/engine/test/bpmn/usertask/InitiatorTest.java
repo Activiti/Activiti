@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.usertask;
 
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
@@ -24,10 +25,10 @@ public class InitiatorTest extends PluggableActivitiTestCase {
   @Deployment
   public void testInitiator() {
     try {
-      identityService.setAuthenticatedUserId("bono");
+      Authentication.setAuthenticatedUserId("bono");
       runtimeService.startProcessInstanceByKey("InitiatorProcess");
     } finally {
-      identityService.setAuthenticatedUserId(null);
+      Authentication.setAuthenticatedUserId(null);
     }
 
     assertEquals(1, taskService.createTaskQuery().taskAssignee("bono").count());
@@ -37,10 +38,10 @@ public class InitiatorTest extends PluggableActivitiTestCase {
   @Deployment
   public void testInitiatorWithWhiteSpaceInExpression() {
     try {
-      identityService.setAuthenticatedUserId("bono");
+      Authentication.setAuthenticatedUserId("bono");
       runtimeService.startProcessInstanceByKey("InitiatorProcess");
     } finally {
-      identityService.setAuthenticatedUserId(null);
+      Authentication.setAuthenticatedUserId(null);
     }
 
     assertEquals(1, taskService.createTaskQuery().taskAssignee("bono").count());

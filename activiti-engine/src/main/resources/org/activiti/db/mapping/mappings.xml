@@ -22,17 +22,14 @@
     <mapper resource="org/activiti/db/mapping/entity/DeadLetterJob.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Deployment.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Execution.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/Group.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricActivityInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricDetail.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricProcessInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricVariableInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricTaskInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/HistoricIdentityLink.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/IdentityInfo.xml" />
     <mapper resource="org/activiti/db/mapping/entity/IdentityLink.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Job.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/Membership.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Model.xml" />
     <mapper resource="org/activiti/db/mapping/entity/ProcessDefinition.xml" />
     <mapper resource="org/activiti/db/mapping/entity/ProcessDefinitionInfo.xml" />
@@ -42,7 +39,6 @@
     <mapper resource="org/activiti/db/mapping/entity/TableData.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Task.xml" />
     <mapper resource="org/activiti/db/mapping/entity/TimerJob.xml" />
-    <mapper resource="org/activiti/db/mapping/entity/User.xml" />
     <mapper resource="org/activiti/db/mapping/entity/VariableInstance.xml" />
     <mapper resource="org/activiti/db/mapping/entity/EventSubscription.xml" />
     <mapper resource="org/activiti/db/mapping/entity/EventLogEntry.xml" />

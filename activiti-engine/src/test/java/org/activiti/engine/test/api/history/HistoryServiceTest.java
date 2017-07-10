@@ -29,6 +29,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -88,7 +89,7 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testHistoricProcessInstanceUserIdAndActivityId() {
-    identityService.setAuthenticatedUserId("johndoe");
+    Authentication.setAuthenticatedUserId("johndoe");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
     assertEquals("johndoe", historicProcessInstance.getStartUserId());

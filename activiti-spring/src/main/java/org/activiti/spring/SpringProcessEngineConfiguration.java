@@ -17,6 +17,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.CommandConfig;
@@ -66,6 +67,11 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     ProcessEngines.setInitialized(true);
     autoDeployResources(processEngine);
     return processEngine;
+  }
+
+  @Override
+  public UserGroupLookupProxy getUserGroupLookupProxy() {
+    return null; //no identity provider set
   }
 
   public void setTransactionSynchronizationAdapterOrder(Integer transactionSynchronizationAdapterOrder) {

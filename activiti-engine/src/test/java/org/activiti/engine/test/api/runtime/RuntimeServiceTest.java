@@ -30,6 +30,7 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -1028,7 +1029,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testAuthenticatedStartUserProcessInstance() {
     final String authenticatedUser = "user1";
-    identityService.setAuthenticatedUserId(authenticatedUser);
+    Authentication.setAuthenticatedUserId(authenticatedUser);
     final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
     assertEquals(authenticatedUser, processInstance.getStartUserId());

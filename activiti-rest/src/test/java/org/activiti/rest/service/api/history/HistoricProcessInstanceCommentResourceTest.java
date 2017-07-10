@@ -15,6 +15,7 @@ package org.activiti.rest.service.api.history;
 
 import java.util.List;
 
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.test.Deployment;
@@ -46,9 +47,9 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseSpringRestTe
       pi = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
       // Add a comment as "kermit"
-      identityService.setAuthenticatedUserId("kermit");
+      Authentication.setAuthenticatedUserId("kermit");
       Comment comment = taskService.addComment(null, pi.getId(), "This is a comment...");
-      identityService.setAuthenticatedUserId(null);
+      Authentication.setAuthenticatedUserId(null);
 
       CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT_COLLECTION, pi.getId())),
           HttpStatus.SC_OK);
@@ -139,9 +140,9 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseSpringRestTe
       pi = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
       // Add a comment as "kermit"
-      identityService.setAuthenticatedUserId("kermit");
+      Authentication.setAuthenticatedUserId("kermit");
       Comment comment = taskService.addComment(null, pi.getId(), "This is a comment...");
-      identityService.setAuthenticatedUserId(null);
+      Authentication.setAuthenticatedUserId(null);
 
       CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())),
           200);
@@ -188,9 +189,9 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseSpringRestTe
       pi = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
       // Add a comment as "kermit"
-      identityService.setAuthenticatedUserId("kermit");
+      Authentication.setAuthenticatedUserId("kermit");
       Comment comment = taskService.addComment(null, pi.getId(), "This is a comment...");
-      identityService.setAuthenticatedUserId(null);
+      Authentication.setAuthenticatedUserId(null);
 
       closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())),
           HttpStatus.SC_NO_CONTENT));

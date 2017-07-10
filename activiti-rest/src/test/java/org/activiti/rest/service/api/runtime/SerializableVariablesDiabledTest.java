@@ -20,12 +20,9 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.IdentityService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -58,13 +55,10 @@ public class SerializableVariablesDiabledTest {
 	
 	private RepositoryService repositoryService;
 	private RuntimeService runtimeService;
-	private IdentityService identityService;
 	private TaskService taskService;
 	
 	private String serverUrlPrefix;
-	
-	private String testUserId;
-	private String testGroupId;
+
 
 	@Before
 	public void setupServer() {
@@ -74,31 +68,14 @@ public class SerializableVariablesDiabledTest {
 			
 			this.repositoryService = testServer.getApplicationContext().getBean(RepositoryService.class);
 			this.runtimeService = testServer.getApplicationContext().getBean(RuntimeService.class);
-			this.identityService = testServer.getApplicationContext().getBean(IdentityService.class);
 			this.taskService = testServer.getApplicationContext().getBean(TaskService.class);
 			
-	    User user = identityService.newUser("kermit");
-	    user.setFirstName("Kermit");
-	    user.setLastName("the Frog");
-	    user.setPassword("kermit");
-	    identityService.saveUser(user);
-	    
-	    Group group = identityService.newGroup("admin");
-	    group.setName("Administrators");
-	    identityService.saveGroup(group);
-	    
-	    identityService.createMembership(user.getId(), group.getId());
-	    
-	    this.testUserId = user.getId();
-	    this.testGroupId = group.getId();
+
 		}
 	}
 	
 	@After
 	public void removeUsers() {
-		identityService.deleteMembership(testUserId, testGroupId);
-		identityService.deleteGroup(testGroupId);
-		identityService.deleteUser(testUserId);
 		
 		for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
 			repositoryService.deleteDeployment(deployment.getId(), true);

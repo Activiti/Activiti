@@ -3,7 +3,6 @@ package org.activiti.engine.history;
 import java.util.Date;
 import java.util.List;
 
-import org.activiti.engine.IdentityService;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**

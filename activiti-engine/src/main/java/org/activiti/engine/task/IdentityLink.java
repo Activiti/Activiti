@@ -13,8 +13,6 @@
 
 package org.activiti.engine.task;
 
-import org.activiti.engine.identity.GroupQuery;
-import org.activiti.engine.identity.UserQuery;
 
 /**
  * An identity link is used to associate a task with a certain identity.

@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.identity.Group;
+
+import org.activiti.engine.UserGroupLookupProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -17,26 +16,30 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class BasicAuthenticationProvider implements AuthenticationProvider {
 
-  @Autowired
-  private IdentityService identityService;
+  @Autowired(required = false)
+  private UserGroupLookupProxy userGroupLookupProxy;
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
     String name = authentication.getName();
     String password = authentication.getCredentials().toString();
 
-    boolean authenticated = identityService.checkPassword(name, password);
-    if (authenticated) {
-      List<Group> groups = identityService.createGroupQuery().groupMember(name).list();
+    org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(name);
+
+    if(userGroupLookupProxy!=null) {
+      List<String> groups = userGroupLookupProxy.getGroupsForCandidateUser(name);
       Collection<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
-      for (Group group : groups) {
-        grantedAuthorities.add(new SimpleGrantedAuthority(group.getId()));
+      for(String group:groups){
+        grantedAuthorities.add(new SimpleGrantedAuthority(group));
       }
-      identityService.setAuthenticatedUserId(name);
+
       return new UsernamePasswordAuthenticationToken(name, password, grantedAuthorities);
-    } else {
-      throw new BadCredentialsException("Authentication failed for this username and password");
     }
+
+    //TODO: need to review - expected scenario is that a proxy to an identity provider is supplied
+
+    return new UsernamePasswordAuthenticationToken(name, password, null);
+
   }
 
   @Override
