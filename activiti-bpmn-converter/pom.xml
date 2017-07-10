@@ -16,9 +16,6 @@
     <activiti.artifact>
       org.activiti.bpmn.converter
     </activiti.artifact>
-    <activiti.osgi.export.additional>
-      org.activiti.bpmn.constants,org.activiti.bpmn.util,org.activiti.bpmn.exceptions
-    </activiti.osgi.export.additional>
   </properties>
 
   <dependencies>
@@ -60,7 +57,7 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <scope>provided</scope>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -77,7 +74,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>2.1.1</version>
+            <version>${maven-source-plugin.version}</version>
             <executions>
               <execution>
                 <id>attach-sources</id>

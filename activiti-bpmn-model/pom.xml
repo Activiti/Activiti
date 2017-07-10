@@ -16,9 +16,6 @@
     <activiti.artifact>
       org.activiti.bpmn.model
     </activiti.artifact>
-    <activiti.osgi.import.additional>
-      org.apache.commons.lang;resolution:=optional
-    </activiti.osgi.import.additional>
   </properties>
 
   <dependencies>
@@ -48,7 +45,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>2.1.1</version>
+            <version>${maven-source-plugin.version}</version>
             <executions>
               <execution>
                 <id>attach-sources</id>
