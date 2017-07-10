@@ -180,37 +180,44 @@
     <dependency>
       <groupId>org.eclipse.jetty.orbit</groupId>
       <artifactId>javax.servlet</artifactId>
+      <version>${jetty.javax.servlet.version}</version>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
+      <version>${jetty-server.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
+      <version>${jetty-servlet.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-http</artifactId>
+      <version>${jetty-http.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
+      <version>${jetty-webapp.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-io</artifactId>
+      <version>${jetty-io.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
+      <version>${jetty-util.version}</version>
       <scope>test</scope>
     </dependency>
 
