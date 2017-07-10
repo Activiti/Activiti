@@ -28,6 +28,7 @@ import java.util.Set;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
@@ -1925,7 +1926,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
   public void testQueryStartedBy() throws Exception {
     final String authenticatedUser = "user1";
-    identityService.setAuthenticatedUserId(authenticatedUser);
+    Authentication.setAuthenticatedUserId(authenticatedUser);
     runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().startedBy(authenticatedUser).list();

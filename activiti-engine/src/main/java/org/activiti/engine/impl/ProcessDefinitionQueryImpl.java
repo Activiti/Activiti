@@ -19,13 +19,15 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.identity.Group;
+import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 
@@ -36,6 +38,9 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQuery, ProcessDefinition> implements ProcessDefinitionQuery {
 
   private static final long serialVersionUID = 1L;
+
+  private static final Logger log = LoggerFactory.getLogger(ProcessDefinitionQueryImpl.class);
+
   protected String id;
   protected Set<String> ids;
   protected String category;
@@ -279,13 +284,14 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     // includes the groups the candidate
     // user is part of
     if (authorizationUserId != null) {
-      List<Group> groups = Context.getCommandContext().getGroupEntityManager().findGroupsByUser(authorizationUserId);
-      List<String> groupIds = new ArrayList<String>();
-      for (Group group : groups) {
-        groupIds.add(group.getId());
+      UserGroupLookupProxy userGroupLookupProxy = Context.getProcessEngineConfiguration().getUserGroupLookupProxy();
+      if(userGroupLookupProxy !=null){
+        return userGroupLookupProxy.getGroupsForCandidateUser(authorizationUserId);
+      } else{
+        log.warn("No UserGroupLookupProxy set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
       }
-      return groupIds;
     }
+
     return null;
   }
 

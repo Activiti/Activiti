@@ -2,6 +2,7 @@ package org.activiti.standalone.cfg;
 
 import java.util.List;
 
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
@@ -146,16 +147,16 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
   public void testAttachmentQuery() {
     String taskId = createTask("task1", null, null, 0);
 
-    identityService.setAuthenticatedUserId("kermit");
+    Authentication.setAuthenticatedUserId("kermit");
 
     String attachmentId = taskService.createAttachment("image/png", taskId, null, "attachment1", "", "http://activiti.org/").getId();
     taskService.createAttachment("image/jpeg", taskId, null, "attachment2", "Attachment Description", "http://activiti.org/");
 
-    identityService.setAuthenticatedUserId("gonzo");
+    Authentication.setAuthenticatedUserId("gonzo");
 
     taskService.createAttachment("image/png", taskId, null, "zattachment3", "Attachment Description", "http://activiti.org/");
 
-    identityService.setAuthenticatedUserId("fozzie");
+    Authentication.setAuthenticatedUserId("fozzie");
 
     for (int i = 0; i < 15; i++) {
       taskService.createAttachment(null, createTask(i + "", null, null, 0), null, "attachmentName" + i, "", "http://activiti.org/" + i);

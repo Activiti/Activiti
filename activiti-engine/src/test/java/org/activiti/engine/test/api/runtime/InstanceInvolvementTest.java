@@ -15,6 +15,7 @@ package org.activiti.engine.test.api.runtime;
 
 import java.util.List;
 
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
@@ -121,19 +122,19 @@ public class InstanceInvolvementTest extends PluggableActivitiTestCase {
 
   private String startProcessAsUser(String processId, String userId) {
     try {
-      identityService.setAuthenticatedUserId(userId);
+      Authentication.setAuthenticatedUserId(userId);
       return runtimeService.startProcessInstanceByKey(processId).getId();
     } finally {
-      identityService.setAuthenticatedUserId(null);
+      Authentication.setAuthenticatedUserId(null);
     }
   }
 
   private void completeTaskAsUser(String taskId, String userId) {
     try {
-      identityService.setAuthenticatedUserId(userId);
+      Authentication.setAuthenticatedUserId(userId);
       taskService.complete(taskId);
     } finally {
-      identityService.setAuthenticatedUserId(null);
+      Authentication.setAuthenticatedUserId(null);
     }
   }
 

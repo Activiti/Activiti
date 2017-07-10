@@ -28,17 +28,14 @@ import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.GroupEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
-import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
-import org.activiti.engine.impl.persistence.entity.MembershipEntityManager;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
@@ -46,7 +43,6 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
-import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.runtime.Clock;
 
@@ -184,22 +180,6 @@ public abstract class AbstractManager {
 
   protected HistoricIdentityLinkEntityManager getHistoricIdentityLinkEntityManager() {
     return getProcessEngineConfiguration().getHistoricIdentityLinkEntityManager();
-  }
-
-  protected UserEntityManager getUserIdentityEntityManager() {
-    return getProcessEngineConfiguration().getUserEntityManager();
-  }
-
-  protected GroupEntityManager getGroupEntityManager() {
-    return getProcessEngineConfiguration().getGroupEntityManager();
-  }
-
-  protected IdentityInfoEntityManager getIdentityInfoEntityManager() {
-    return getProcessEngineConfiguration().getIdentityInfoEntityManager();
-  }
-
-  protected MembershipEntityManager getMembershipEntityManager() {
-    return getProcessEngineConfiguration().getMembershipEntityManager();
   }
 
   protected AttachmentEntityManager getAttachmentEntityManager() {

@@ -28,17 +28,6 @@ import org.activiti.engine.task.Task;
  */
 public class StandaloneTaskTest extends PluggableActivitiTestCase {
 
-  public void setUp() throws Exception {
-    super.setUp();
-    identityService.saveUser(identityService.newUser("kermit"));
-    identityService.saveUser(identityService.newUser("gonzo"));
-  }
-
-  public void tearDown() throws Exception {
-    identityService.deleteUser("kermit");
-    identityService.deleteUser("gonzo");
-    super.tearDown();
-  }
 
   public void testCreateToComplete() {
 

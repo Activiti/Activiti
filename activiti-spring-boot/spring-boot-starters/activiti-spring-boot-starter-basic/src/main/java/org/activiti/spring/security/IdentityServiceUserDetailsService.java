@@ -14,9 +14,6 @@ package org.activiti.spring.security;
 
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,7 +26,11 @@ import java.util.List;
 
  */
 public class IdentityServiceUserDetailsService
-        implements UserDetailsService {
+        /*implements UserDetailsService*/ {
+/*
+    Removing this as remvoing db-based IdentityService.
+    Not deleting in case we need to refer to it later.
+    Expectation is that equivalent configuration will be set when an alternative provider is used e.g. keycloak.
 
     private final IdentityService identityService;
 
@@ -92,6 +93,7 @@ public class IdentityServiceUserDetailsService
             return group.getName();
         }
     }
+*/
 
 
 }

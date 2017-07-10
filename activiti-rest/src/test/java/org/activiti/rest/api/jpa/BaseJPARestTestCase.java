@@ -15,14 +15,11 @@ import java.util.concurrent.Callable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -95,7 +92,6 @@ public abstract class BaseJPARestTestCase extends AbstractTestCase {
   protected static RuntimeService runtimeService;
   protected static TaskService taskService;
   protected static HistoryService historyService;
-  protected static IdentityService identityService;
   protected static ManagementService managementService;
 
   protected static MessageRepository messageRepository;
@@ -112,7 +108,6 @@ public abstract class BaseJPARestTestCase extends AbstractTestCase {
     runtimeService = appContext.getBean(RuntimeService.class);
     taskService = appContext.getBean(TaskService.class);
     historyService = appContext.getBean(HistoryService.class);
-    identityService = appContext.getBean(IdentityService.class);
     managementService = appContext.getBean(ManagementService.class);
 
     messageRepository = appContext.getBean(MessageRepository.class);
@@ -134,7 +129,6 @@ public abstract class BaseJPARestTestCase extends AbstractTestCase {
 
   @Override
   public void runBare() throws Throwable {
-    createUsers();
 
     log.error(EMPTY_LINE);
 
@@ -158,25 +152,11 @@ public abstract class BaseJPARestTestCase extends AbstractTestCase {
 
     } finally {
       TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
-      dropUsers();
       assertAndEnsureCleanDb();
       processEngineConfiguration.getClock().reset();
     }
   }
 
-  protected void createUsers() {
-    User user = identityService.newUser("kermit");
-    user.setFirstName("Kermit");
-    user.setLastName("the Frog");
-    user.setPassword("kermit");
-    identityService.saveUser(user);
-
-    Group group = identityService.newGroup("admin");
-    group.setName("Administrators");
-    identityService.saveGroup(group);
-
-    identityService.createMembership(user.getId(), group.getId());
-  }
 
   public static void createAndStartServer() {
     server = new Server(HTTP_SERVER_PORT);
@@ -252,14 +232,6 @@ public abstract class BaseJPARestTestCase extends AbstractTestCase {
       Assert.fail(e.getMessage());
     }
     return null;
-  }
-
-  protected void dropUsers() {
-    IdentityService identityService = processEngine.getIdentityService();
-
-    identityService.deleteUser("kermit");
-    identityService.deleteGroup("admin");
-    identityService.deleteMembership("kermit", "admin");
   }
 
   /**

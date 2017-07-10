@@ -18,6 +18,7 @@ import javax.sql.DataSource;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.multitenant.ExecutorPerTenantAsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.multitenant.SharedExecutorServiceAsyncExecutor;
@@ -168,4 +169,8 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
     // empty here. will be done in registerTenant
   }
 
+  @Override
+  public UserGroupLookupProxy getUserGroupLookupProxy() {
+    return null; //no external identity provider supplied
+  }
 }

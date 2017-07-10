@@ -14,7 +14,6 @@ import org.activiti.engine.impl.persistence.entity.Entity;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityImpl;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
-import org.activiti.engine.impl.persistence.entity.GroupEntityImpl;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailAssignmentEntityImpl;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityImpl;
@@ -26,10 +25,8 @@ import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity
 import org.activiti.engine.impl.persistence.entity.HistoricScopeInstanceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityImpl;
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityImpl;
-import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityImpl;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityImpl;
 import org.activiti.engine.impl.persistence.entity.JobEntityImpl;
-import org.activiti.engine.impl.persistence.entity.MembershipEntityImpl;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ModelEntityImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
@@ -40,7 +37,6 @@ import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity
 import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
-import org.activiti.engine.impl.persistence.entity.UserEntityImpl;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl;
 
 
@@ -176,29 +172,13 @@ public class EntityDependencyOrder {
 		 * FK from execution
 		 */
 		DELETE_ORDER.add(ProcessDefinitionEntityImpl.class);
-		
-		/*
-	   * FK to User
-	   * FK to Group
-	   */
-		DELETE_ORDER.add(MembershipEntityImpl.class);
-		
-		/*
-		 * Fk from Membership
-		 */
-		DELETE_ORDER.add(UserEntityImpl.class);
-	  
-	  /*
-	   * FK from Membership
-	   */
-		DELETE_ORDER.add(GroupEntityImpl.class);
-	  
+
+
 	  
 	  // History entities have no FK's
 	  
 		DELETE_ORDER.add(HistoricIdentityLinkEntityImpl.class);
-	  
-		DELETE_ORDER.add(IdentityInfoEntityImpl.class);
+
 	  
 		DELETE_ORDER.add(HistoricActivityInstanceEntityImpl.class);
 		DELETE_ORDER.add(HistoricProcessInstanceEntityImpl.class);

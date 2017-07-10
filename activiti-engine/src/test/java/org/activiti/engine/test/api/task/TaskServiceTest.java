@@ -31,10 +31,9 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricVariableUpdate;
-import org.activiti.engine.identity.Group;
-import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.TaskServiceImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -48,8 +47,6 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.junit.Rule;
-import org.junit.rules.ExpectedException;
 
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
 
@@ -140,7 +137,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       taskService.saveTask(task);
       String taskId = task.getId();
 
-      identityService.setAuthenticatedUserId("johndoe");
+      Authentication.setAuthenticatedUserId("johndoe");
       // Fetch the task again and update
       taskService
           .addComment(
@@ -170,7 +167,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       taskService.saveTask(task);
       String taskId = task.getId();
 
-      identityService.setAuthenticatedUserId("johndoe");
+      Authentication.setAuthenticatedUserId("johndoe");
       String customType1 = "Type1";
       String customType2 = "Type2";
 
@@ -211,7 +208,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       task.setOwner("johndoe");
       taskService.saveTask(task);
       String taskId = task.getId();
-      identityService.setAuthenticatedUserId("johndoe");
+      Authentication.setAuthenticatedUserId("johndoe");
       // Fetch the task again and update
       taskService.createAttachment("web page", taskId, null, "weatherforcast", "temperatures and more", "http://weather.com");
       Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
@@ -239,7 +236,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       task.setOwner("johndoe");
       taskService.saveTask(task);
       String taskId = task.getId();
-      identityService.setAuthenticatedUserId("johndoe");
+      Authentication.setAuthenticatedUserId("johndoe");
 
       // Fetch attachment and update its name
       taskService.createAttachment("web page", taskId, null, "weatherforcast", "temperatures and more", "http://weather.com");
@@ -479,71 +476,60 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testClaimUnexistingTaskId() {
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
+
 
     try {
-      taskService.claim("unexistingtaskid", user.getId());
+      taskService.claim("unexistingtaskid", "user");
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("Cannot find task with id unexistingtaskid", ae.getMessage());
       assertEquals(Task.class, ae.getObjectClass());
     }
 
-    identityService.deleteUser(user.getId());
   }
 
   public void testClaimAlreadyClaimedTaskByOtherUser() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
-    User secondUser = identityService.newUser("seconduser");
-    identityService.saveUser(secondUser);
+
 
     // Claim task the first time
-    taskService.claim(task.getId(), user.getId());
+    taskService.claim(task.getId(), "firstuser");
 
     try {
-      taskService.claim(task.getId(), secondUser.getId());
+      taskService.claim(task.getId(), "seconduser");
       fail("ActivitiException expected");
     } catch (ActivitiTaskAlreadyClaimedException ae) {
       assertTextPresent("Task '" + task.getId() + "' is already claimed by someone else.", ae.getMessage());
     }
 
     taskService.deleteTask(task.getId(), true);
-    identityService.deleteUser(user.getId());
-    identityService.deleteUser(secondUser.getId());
   }
 
   public void testClaimAlreadyClaimedTaskBySameUser() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
 
     // Claim task the first time
-    taskService.claim(task.getId(), user.getId());
+    taskService.claim(task.getId(), "user");
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
 
     // Claim the task again with the same user. No exception should be
     // thrown
-    taskService.claim(task.getId(), user.getId());
+    taskService.claim(task.getId(), "user");
 
     taskService.deleteTask(task.getId(), true);
-    identityService.deleteUser(user.getId());
+
   }
 
   public void testUnClaimTask() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
 
     // Claim task the first time
-    taskService.claim(task.getId(), user.getId());
+    taskService.claim(task.getId(), "user");
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-    assertEquals(user.getId(), task.getAssignee());
+    assertEquals("user", task.getAssignee());
 
     // Unclaim the task
     taskService.unclaim(task.getId());
@@ -552,7 +538,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertNull(task.getAssignee());
 
     taskService.deleteTask(task.getId(), true);
-    identityService.deleteUser(user.getId());
   }
 
   public void testCompleteTaskNullTaskId() {
@@ -730,24 +715,21 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testSetAssignee() {
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
 
     Task task = taskService.newTask();
     assertNull(task.getAssignee());
     taskService.saveTask(task);
 
     // Set assignee
-    taskService.setAssignee(task.getId(), user.getId());
+    taskService.setAssignee(task.getId(), "user");
 
     // Fetch task again
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
-    assertEquals(user.getId(), task.getAssignee());
+    assertEquals("user", task.getAssignee());
 
     // Set assignee to null
     taskService.setAssignee(task.getId(), null);
 
-    identityService.deleteUser(user.getId());
     taskService.deleteTask(task.getId(), true);
   }
 
@@ -761,34 +743,28 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testSetAssigneeUnexistingTask() {
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
 
     try {
-      taskService.setAssignee("unexistingTaskId", user.getId());
+      taskService.setAssignee("unexistingTaskId", "user");
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("Cannot find task with id unexistingTaskId", ae.getMessage());
       assertEquals(Task.class, ae.getObjectClass());
     }
 
-    identityService.deleteUser(user.getId());
   }
 
   public void testAddCandidateUserDuplicate() {
     // Check behavior when adding the same user twice as candidate
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
 
     Task task = taskService.newTask();
     taskService.saveTask(task);
 
-    taskService.addCandidateUser(task.getId(), user.getId());
+    taskService.addCandidateUser(task.getId(), "user");
 
     // Add as candidate the second time
-    taskService.addCandidateUser(task.getId(), user.getId());
+    taskService.addCandidateUser(task.getId(), "user");
 
-    identityService.deleteUser(user.getId());
     taskService.deleteTask(task.getId(), true);
   }
 
@@ -811,18 +787,15 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testAddCandidateUserUnexistingTask() {
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
 
     try {
-      taskService.addCandidateUser("unexistingTaskId", user.getId());
+      taskService.addCandidateUser("unexistingTaskId", "user");
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("Cannot find task with id unexistingTaskId", ae.getMessage());
       assertEquals(Task.class, ae.getObjectClass());
     }
 
-    identityService.deleteUser(user.getId());
   }
 
   public void testAddCandidateGroupNullTaskId() {
@@ -844,16 +817,15 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testAddCandidateGroupUnexistingTask() {
-    Group group = identityService.newGroup("group");
-    identityService.saveGroup(group);
+
     try {
-      taskService.addCandidateGroup("unexistingTaskId", group.getId());
+      taskService.addCandidateGroup("unexistingTaskId", "group");
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("Cannot find task with id unexistingTaskId", ae.getMessage());
       assertEquals(Task.class, ae.getObjectClass());
     }
-    identityService.deleteGroup(group.getId());
+
   }
 
   public void testAddGroupIdentityLinkNullTaskId() {
@@ -875,18 +847,16 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testAddGroupIdentityLinkUnexistingTask() {
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
+
 
     try {
-      taskService.addGroupIdentityLink("unexistingTaskId", user.getId(), IdentityLinkType.CANDIDATE);
+      taskService.addGroupIdentityLink("unexistingTaskId", "user", IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("Cannot find task with id unexistingTaskId", ae.getMessage());
       assertEquals(Task.class, ae.getObjectClass());
     }
 
-    identityService.deleteUser(user.getId());
   }
 
   public void testAddUserIdentityLinkNullTaskId() {
@@ -908,18 +878,16 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   }
 
   public void testAddUserIdentityLinkUnexistingTask() {
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
+
 
     try {
-      taskService.addUserIdentityLink("unexistingTaskId", user.getId(), IdentityLinkType.CANDIDATE);
+      taskService.addUserIdentityLink("unexistingTaskId", "user", IdentityLinkType.CANDIDATE);
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("Cannot find task with id unexistingTaskId", ae.getMessage());
       assertEquals(Task.class, ae.getObjectClass());
     }
 
-    identityService.deleteUser(user.getId());
   }
 
   public void testGetIdentityLinksWithCandidateUser() {
@@ -927,7 +895,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     taskService.saveTask(task);
     String taskId = task.getId();
 
-    identityService.saveUser(identityService.newUser("kermit"));
 
     taskService.addCandidateUser(taskId, "kermit");
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
@@ -938,7 +905,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     // cleanup
     taskService.deleteTask(taskId, true);
-    identityService.deleteUser("kermit");
+
   }
 
   public void testGetIdentityLinksWithCandidateGroup() {
@@ -946,7 +913,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     taskService.saveTask(task);
     String taskId = task.getId();
 
-    identityService.saveGroup(identityService.newGroup("muppets"));
 
     taskService.addCandidateGroup(taskId, "muppets");
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
@@ -957,15 +923,12 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     // cleanup
     taskService.deleteTask(taskId, true);
-    identityService.deleteGroup("muppets");
   }
 
   public void testGetIdentityLinksWithAssignee() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
     String taskId = task.getId();
-
-    identityService.saveUser(identityService.newUser("kermit"));
 
     taskService.claim(taskId, "kermit");
     List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
@@ -976,7 +939,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     // cleanup
     taskService.deleteTask(taskId, true);
-    identityService.deleteUser("kermit");
   }
 
   public void testGetIdentityLinksWithNonExistingAssignee() {
@@ -1000,9 +962,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     taskService.saveTask(task);
     String taskId = task.getId();
 
-    identityService.saveUser(identityService.newUser("kermit"));
-    identityService.saveUser(identityService.newUser("fozzie"));
-
     taskService.claim(taskId, "kermit");
     taskService.delegateTask(taskId, "fozzie");
 
@@ -1021,8 +980,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
     // cleanup
     taskService.deleteTask(taskId, true);
-    identityService.deleteUser("kermit");
-    identityService.deleteUser("fozzie");
   }
 
   public void testGetIdentityLinksWithNonExistingOwner() {
@@ -1612,13 +1569,11 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
   public void testClaimTime() {
     Task task = taskService.newTask();
     taskService.saveTask(task);
-    User user = identityService.newUser("user");
-    identityService.saveUser(user);
 
     assertNull(task.getClaimTime());
 
     // Claim task
-    taskService.claim(task.getId(), user.getId());
+    taskService.claim(task.getId(), "user");
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
 
     assertNotNull(task.getClaimTime());
@@ -1630,7 +1585,6 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     assertNull(task.getClaimTime());
 
     taskService.deleteTask(task.getId(), true);
-    identityService.deleteUser(user.getId());
   }
 
 }

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.test.bpmn.usertask;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.activiti.bpmn.exceptions.XMLException;
@@ -28,31 +29,19 @@ import org.activiti.engine.test.Deployment;
  */
 public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
 
-  public void setUp() throws Exception {
-    identityService.saveUser(identityService.newUser("kermit"));
-    identityService.saveUser(identityService.newUser("gonzo"));
-    identityService.saveUser(identityService.newUser("fozzie"));
+  private static final String KERMIT = "kermit";
+  private static final List<String> KERMITSGROUPS = Arrays.asList("management","accountancy");
 
-    identityService.saveGroup(identityService.newGroup("management"));
-    identityService.saveGroup(identityService.newGroup("accountancy"));
+  private static final String GONZO = "gonzo";
+  private static final List<String> GONZOSGROUPS = Arrays.asList();
 
-    identityService.createMembership("kermit", "management");
-    identityService.createMembership("kermit", "accountancy");
-    identityService.createMembership("fozzie", "management");
-  }
-
-  public void tearDown() throws Exception {
-    identityService.deleteGroup("accountancy");
-    identityService.deleteGroup("management");
-    identityService.deleteUser("fozzie");
-    identityService.deleteUser("gonzo");
-    identityService.deleteUser("kermit");
-  }
+  private static final String FOZZIE = "fozzie";
+  private static final List<String> FOZZIESGROUPS = Arrays.asList("management");
 
   @Deployment
   public void testAssigneeExtension() {
     runtimeService.startProcessInstanceByKey("assigneeExtension");
-    List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
+    List<Task> tasks = taskService.createTaskQuery().taskAssignee(KERMIT).list();
     assertEquals(1, tasks.size());
     assertEquals("my task", tasks.get(0).getName());
   }
@@ -70,7 +59,7 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testOwnerExtension() {
     runtimeService.startProcessInstanceByKey("ownerExtension");
-    List<Task> tasks = taskService.createTaskQuery().taskOwner("gonzo").list();
+    List<Task> tasks = taskService.createTaskQuery().taskOwner(GONZO).list();
     assertEquals(1, tasks.size());
     assertEquals("my task", tasks.get(0).getName());
   }
@@ -78,9 +67,9 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testCandidateUsersExtension() {
     runtimeService.startProcessInstanceByKey("candidateUsersExtension");
-    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
+    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
     assertEquals(1, tasks.size());
-    tasks = taskService.createTaskQuery().taskCandidateUser("gonzo").list();
+    tasks = taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list();
     assertEquals(1, tasks.size());
   }
 
@@ -90,11 +79,11 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
 
     // Bugfix check: potentially the query could return 2 tasks since
     // kermit is a member of the two candidate groups
-    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
+    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
     assertEquals(1, tasks.size());
     assertEquals("make profit", tasks.get(0).getName());
 
-    tasks = taskService.createTaskQuery().taskCandidateUser("fozzie").list();
+    tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE,FOZZIESGROUPS).list();
     assertEquals(1, tasks.size());
     assertEquals("make profit", tasks.get(0).getName());
 
@@ -110,16 +99,16 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
   public void testMixedCandidateUserDefinition() {
     runtimeService.startProcessInstanceByKey("mixedCandidateUser");
 
-    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
+    List<Task> tasks = taskService.createTaskQuery().taskCandidateUser(KERMIT,KERMITSGROUPS).list();
     assertEquals(1, tasks.size());
 
-    tasks = taskService.createTaskQuery().taskCandidateUser("fozzie").list();
+    tasks = taskService.createTaskQuery().taskCandidateUser(FOZZIE,FOZZIESGROUPS).list();
     assertEquals(1, tasks.size());
 
-    tasks = taskService.createTaskQuery().taskCandidateUser("gonzo").list();
+    tasks = taskService.createTaskQuery().taskCandidateUser(GONZO,GONZOSGROUPS).list();
     assertEquals(1, tasks.size());
 
-    tasks = taskService.createTaskQuery().taskCandidateUser("mispiggy").list();
+    tasks = taskService.createTaskQuery().taskCandidateUser("mispiggy",null).list();
     assertEquals(0, tasks.size());
   }
 

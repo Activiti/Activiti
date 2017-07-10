@@ -3,7 +3,6 @@ package org.activiti.rest.conf.engine;
 import javax.sql.DataSource;
 
 import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -95,11 +94,6 @@ public class ActivitiEngineConfiguration {
   @Bean
   public HistoryService historyService() {
     return processEngine().getHistoryService();
-  }
-
-  @Bean
-  public IdentityService identityService() {
-    return processEngine().getIdentityService();
   }
 
   @Bean
