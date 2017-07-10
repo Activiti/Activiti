@@ -17,6 +17,8 @@ package org.activiti.services;
 
 import java.util.Map;
 
+import org.activiti.client.model.ClaimTaskInfo;
+import org.activiti.client.model.CompleteTaskInfo;
 import org.activiti.client.model.Task;
 import org.activiti.client.model.resources.TaskResource;
 import org.activiti.client.model.resources.assembler.TaskResourceAssembler;
@@ -34,14 +36,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
-
- */
 @RestController
-@RequestMapping(value = "/api/runtime/tasks", produces = "application/hal+json")
+@RequestMapping(value = "/api/tasks")
 public class TaskController {
 
     private final TaskService taskService;
@@ -73,15 +71,28 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/{taskId}/claim", method = RequestMethod.POST)
-    public Resource<Task> claimTask(@PathVariable String taskId, @RequestParam("assignee") String assignee) {
-        taskService.claim(taskId, assignee);
+    public Resource<Task> claimTask(@PathVariable String taskId, @RequestBody ClaimTaskInfo claimTaskInfo) {
+        taskService.claim(taskId, claimTaskInfo.getAssignee());
+        Task task = taskConverter.from(taskService.createTaskQuery().taskId(taskId).singleResult());
+        return  taskResourceAssembler.toResource(task);
+    }
+
+    @RequestMapping(value = "/{taskId}/release", method = RequestMethod.POST)
+    public Resource<Task> releaseTask(@PathVariable String taskId) {
+        taskService.unclaim(taskId);
         Task task = taskConverter.from(taskService.createTaskQuery().taskId(taskId).singleResult());
         return  taskResourceAssembler.toResource(task);
     }
 
     @RequestMapping(value = "/{taskId}/complete", method = RequestMethod.POST)
-    public ResponseEntity<Void> completeTask(@PathVariable String taskId, @RequestBody(required = false) Map<String, Object> variables) {
-        taskService.complete(taskId, variables);
+    public ResponseEntity<Void> completeTask(@PathVariable String taskId, @RequestBody(required = false)
+                                             CompleteTaskInfo completeTaskInfo) {
+        Map<String, Object> inputVariables = null;
+        if (completeTaskInfo != null) {
+            inputVariables = completeTaskInfo.getInputVariables();
+        }
+        taskService.complete(taskId,
+                             inputVariables);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

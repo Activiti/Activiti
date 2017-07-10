@@ -44,7 +44,7 @@ public class ProcessVariablesIT {
     private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
     @Test
-    public void should_retrieve_process_variables() throws Exception {
+    public void shouldRetrieveProcessVariables() throws Exception {
         //given
         Map<String, Object> variables = new HashMap<>();
         variables.put("firstName",
