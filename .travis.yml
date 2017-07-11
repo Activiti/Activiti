@@ -11,7 +11,8 @@ notifications:
 
 # Enable integration tests
 script:
-  mvn verify -B
+  - mvn verify -B
+  - mvn verify -B -DsurefireArgLine="-Duser.language=ja -Duser.country=JP"
 
 # Send coverage data
 after_success:
