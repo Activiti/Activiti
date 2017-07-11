@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import javax.sql.DataSource;
 
+import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -52,9 +53,9 @@ public class DataSourceProcessEngineAutoConfiguration {
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
             DataSource dataSource,
             PlatformTransactionManager transactionManager,
-            SpringAsyncExecutor springAsyncExecutor) throws IOException {
+            SpringAsyncExecutor springAsyncExecutor, UserGroupLookupProxy userGroupLookupProxy) throws IOException {
       
-      return this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springAsyncExecutor);
+      return this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springAsyncExecutor, userGroupLookupProxy);
     }
   }
 

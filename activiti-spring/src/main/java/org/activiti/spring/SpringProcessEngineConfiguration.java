@@ -71,7 +71,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
 
   @Override
   public UserGroupLookupProxy getUserGroupLookupProxy() {
-    return null; //no identity provider set
+    return userGroupLookupProxy;
   }
 
   public void setTransactionSynchronizationAdapterOrder(Integer transactionSynchronizationAdapterOrder) {

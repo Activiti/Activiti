@@ -74,6 +74,13 @@
     <jetty-util.version>8.1.16.v20140903</jetty-util.version>
     <swagger.version>1.5.10</swagger.version>
 
+    <!--keycloak snapshot that was used to build boot2 adapter
+    the original snapshot doesn't contain the boot2 adapter, just this particular build
+    see https://issues.jboss.org/browse/KEYCLOAK-5098
+    https://github.com/keycloak/keycloak/pull/4279
+    -->
+    <keycloak.version>3.2.0.CR1-SNAPSHOT</keycloak.version>
+
     <!-- plugins -->
     <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.7.1</maven-surefire-plugin.version>
@@ -95,6 +102,14 @@
       <url>https://repo.spring.io/libs-milestone</url>
       <snapshots>
         <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository> <!-- Using snapshot repo to temporarily keep keycloak adapter -->
+      <id>activiti-snapshots</id>
+      <name>Activiti Snapshots</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+      <snapshots>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
   </repositories>
@@ -141,6 +156,54 @@
         <artifactId>spring-hateoas</artifactId>
         <version>${spring.hateoas.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-admin-client</artifactId>
+        <version>3.2.0.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-adapter-core</artifactId>
+        <version>3.2.0.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-spring-security-adapter</artifactId>
+        <version>3.2.0.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-spring-boot-2-adapter</artifactId>
+        <version>${keycloak.version}</version>
+      </dependency>
+
+      <!--
+      keycloak boot 2 adapter only proven with jetty and undertow
+      see https://github.com/keycloak/keycloak/pull/4279
+  <dependency>
+    <groupId>org.keycloak</groupId>
+    <artifactId>keycloak-tomcat8-adapter</artifactId>
+    <version>3.2.0.Final</version>
+  </dependency>
+  -->
+      <!--
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-undertow-adapter</artifactId>
+        <version>3.2.0.Final</version>
+      </dependency>
+-->
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-jetty94-adapter</artifactId>
+        <version>3.2.0.Final</version>
+      </dependency>
+
       <!-- Logging -->
       <dependency>
         <groupId>org.slf4j</groupId>
