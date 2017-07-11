@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -93,6 +93,50 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     // now we are really done :-)
     assertProcessEnded(pi.getId());
+  }
+  
+  @Deployment
+  public void testTimerOnUserTask() {
+    // Set the clock fixed
+    Date startTime = new Date();
+
+    // After process start, there should be 3 timers created
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("timerOnUserTask");
+    Task task1 = taskService.createTaskQuery().singleResult();
+    assertEquals("First Task", task1.getName());
+    
+    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    List<Job> jobs = jobQuery.list();
+    assertEquals(1, jobs.size());
+
+    // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    Job job = managementService.createJobQuery().executable().singleResult();
+    assertNotNull(job);
+    managementService.executeJob(job.getId());
+    
+    // we still have one timer more to fire
+    assertEquals(0L, jobQuery.count());
+    
+     HistoricActivityInstance userTaskAcivity = historyService.createHistoricActivityInstanceQuery().activityId("firstTask").singleResult();
+
+     assertNotNull(userTaskAcivity);
+     assertNull("Activity should have not ended yet", userTaskAcivity.getEndTime());
+     
+     Task userTask = taskService.createTaskQuery().taskDefinitionKey("firstTask").singleResult();
+     taskService.complete(userTask.getId());
+     
+     userTaskAcivity = historyService.createHistoricActivityInstanceQuery().activityId("firstTask").singleResult();
+
+     assertNotNull(userTaskAcivity);
+     assertNotNull("Activity should have ended", userTaskAcivity.getEndTime());
+     
+     // one remaining task
+     userTask = taskService.createTaskQuery().singleResult();
+     taskService.complete(userTask.getId());
+     
+     assertProcessEnded(pi.getId());
+     
   }
   
   @Deployment
