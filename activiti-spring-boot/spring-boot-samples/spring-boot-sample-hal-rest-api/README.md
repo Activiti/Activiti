@@ -10,6 +10,8 @@ The keycloak integration for passing the user on to Activiti is based upon https
 
 As well as securing the endpoints, keycloak is also being used to find groups for a user via a lookup proxy class.
 
-TODO: Provide a keycloak json file to configure realm etc, reference a docker image with it applied or both...
+TODO: Breakpoint KeycloakActivitiAuthenticationProvider to see whether authentication.getName() contains a keycloak unique id or name or how to ensure it's configurable... Or is it even getting hit at all?
 
-TODO: Breakpoint BasicAuthenticationProvider to see whether authentication.getName() contains a keycloak unique id or name or how to ensure it's configurable...
+TODO: Configure postman to get the keycloak token and use it on subsequent requests
+
+TODO: Provide a keycloak json file to configure realm etc, reference a docker image with it applied or both...
