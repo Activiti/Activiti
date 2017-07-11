@@ -378,7 +378,6 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-validator</artifactId>
         <version>${hibernate-validator.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -434,14 +433,12 @@
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-core</artifactId>
         <version>${hibernate-core.version}</version>
-        <scope>test</scope>
         <optional>true</optional>
       </dependency>
       <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-entitymanager</artifactId>
         <version>${hibernate-entitymanager.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.codehaus.btm</groupId>
