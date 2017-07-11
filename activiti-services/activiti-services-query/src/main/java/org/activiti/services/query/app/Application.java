@@ -3,12 +3,12 @@ package org.activiti.services.query.app;
 import java.util.Date;
 import java.util.Optional;
 
-import org.activiti.services.query.app.events.ProcessCompletedEvent;
-import org.activiti.services.query.app.events.ProcessEngineEvent;
-import org.activiti.services.query.app.events.ProcessStartedEvent;
-import org.activiti.services.query.app.events.TaskAssignedEvent;
-import org.activiti.services.query.app.events.TaskCompletedEvent;
-import org.activiti.services.query.app.events.TaskCreatedEvent;
+import org.activiti.services.query.events.ProcessCompletedEvent;
+import org.activiti.services.query.events.ProcessEngineEvent;
+import org.activiti.services.query.events.ProcessStartedEvent;
+import org.activiti.services.query.events.TaskAssignedEvent;
+import org.activiti.services.query.events.TaskCompletedEvent;
+import org.activiti.services.query.events.TaskCreatedEvent;
 import org.activiti.services.query.app.model.ProcessInstance;
 import org.activiti.services.query.app.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
