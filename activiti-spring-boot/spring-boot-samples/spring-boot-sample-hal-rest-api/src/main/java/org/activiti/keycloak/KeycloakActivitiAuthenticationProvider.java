@@ -24,7 +24,7 @@ public class KeycloakActivitiAuthenticationProvider extends KeycloakAuthenticati
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        //TODO: might want to use principal instead of name as keycloak lets you configure that
+
         org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(authentication.getName());
         return super.authenticate(authentication);
     }

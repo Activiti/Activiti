@@ -10,8 +10,12 @@ The keycloak integration for passing the user on to Activiti is based upon https
 
 As well as securing the endpoints, keycloak is also being used to find groups for a user via a lookup proxy class.
 
-TODO: Breakpoint KeycloakActivitiAuthenticationProvider to see whether authentication.getName() contains a keycloak unique id or name or how to ensure it's configurable... Or is it even getting hit at all?
+To run using a standalone keycloak, download keycloak and run using ./standalone.sh -Djboss.socket.binding.port-offset=100
 
-TODO: Configure postman to get the keycloak token and use it on subsequent requests
+The port-offset is important as otherwise Activiti and Keycloak will have a port confllict.
+
+To hit an endpoint in the browser, go to http://localhost:8080/api/process-definitions
+
+TODO: Configure postman to get the keycloak token and use it on subsequent requests - see http://xpam.pl/blog/?p=154
 
 TODO: Provide a keycloak json file to configure realm etc, reference a docker image with it applied or both...
