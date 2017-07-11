@@ -14,17 +14,15 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>6.1.0-SNAPSHOT</version>
-
+  <version>7.0.0-SNAPSHOT</version>
   <properties>
     <!--configuration properties-->
-    <jdk.version>1.8</jdk.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
+    <jdk.version>1.8</jdk.version>
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
-
-    <spring.boot.version>2.0.0.M1</spring.boot.version>
+    <spring.boot.version>2.0.0.M2</spring.boot.version>
     <!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
     <spring.hateoas.version>0.24.0.BUILD-SNAPSHOT</spring.hateoas.version>
     <springfox.version>2.7.0</springfox.version>
@@ -440,11 +438,6 @@
         <optional>true</optional>
       </dependency>
       <dependency>
-        <groupId>org.hibernate.javax.persistence</groupId>
-        <artifactId>hibernate-jpa-2.1-api</artifactId>
-        <version>${hibernate-jpa-2.1-api.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.hibernate</groupId>
         <artifactId>hibernate-entitymanager</artifactId>
         <version>${hibernate-entitymanager.version}</version>
@@ -670,34 +663,6 @@
                 <rules>
                   <banDuplicateClasses>
                     <ignoreClasses>
-                      <!-- Duplicated by XStream's transitive deps, with very little chance to get properly fixed -->
-                      <ignoreClass>org.xmlpull.v1.XmlPullParserException</ignoreClass>
-                      <ignoreClass>org.xmlpull.v1.XmlPullParser</ignoreClass>
-                      <!-- Bundled by both com.sun:tools and com.sun.xml.bind:jaxb-xjc. No easy way to exclude one of them. -->
-                      <ignoreClass>org.relaxng.datatype.*</ignoreClass>
-                      <!-- Classes duplicated by the jar itself (bug), see https://issues.apache.org.jira/browse/XMLBEANS-499 -->
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLName</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLInputStream</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.utils.NestedThrowable$Util</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLStreamException</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.ReferenceResolver</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.XMLEvent</ignoreClass>
-                      <ignoreClass>org.apache.xmlbeans.xml.stream.Location</ignoreClass>
-                      <!-- Duplicated in xml-apis:xml-apis:jar:1.4.01 and xerces:xercesImpl:jar:2.11.0.SP4. The class is identical
-                                                 and there is very little chance this will get ever fixed. -->
-                      <ignoreClass>org.w3c.dom.ElementTraversal</ignoreClass>
-                      <ignoreClass>org.w3c.dom.UserDataHandler</ignoreClass>
-
-                      <!-- Classes bundled in errai-javax-enterprise which are GWT friendly.
-                                                 See https://github.com/errai/errai/blob/master/errai-javax-enterprise/README -->
-                      <ignoreClass>javax.interceptor.InvocationContext</ignoreClass>
-                      <ignoreClass>javax.inject.Provider</ignoreClass>
-                      <ignoreClass>javax.inject.Named</ignoreClass>
-                      <ignoreClass>javax.inject.Scope</ignoreClass>
-                      <ignoreClass>javax.inject.Qualifier</ignoreClass>
-                      <ignoreClass>javax.inject.Singleton</ignoreClass>
-                      <ignoreClass>javax.enterprise.*</ignoreClass>
                       <!-- Servlet API is bundled in way too many different dependencies, causing nightmares trying to
                                                  properly exclude everything. There were no real issues with this so far as mostly the APIs
                                                  are just duplicates of the exactly same sources. In ideal world, this get eventually fixed,
@@ -711,7 +676,6 @@
                       <!-- Exactly the same case as for above 'javax.annotation.*' classes. Following dependencies contain
                                                  these classes: 'net.jcip:jcip-annotations' and 'com.google.code.findbugs:annotations'. -->
                       <ignoreClass>net.jcip.annotations.*</ignoreClass>
-
                     </ignoreClasses>
                     <dependencies>
 
