@@ -166,6 +166,12 @@
 
       <dependency>
         <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-core</artifactId>
+        <version>3.2.0.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
         <artifactId>keycloak-adapter-core</artifactId>
         <version>3.2.0.Final</version>
       </dependency>
