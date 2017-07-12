@@ -6,10 +6,10 @@ Activiti
 
 <p>
   <a title='Build Status Travis' href="https://travis-ci.org/Activiti/Activiti">
-    <img src='https://travis-ci.org/Activiti/Activiti.svg?branch=development'  alt='Travis Status' />
+    <img src='https://travis-ci.org/Activiti/Activiti.svg?branch=master'  alt='Travis Status' />
   </a>
   <a href='https://codecov.io/gh/Activiti/Activiti'>
-    <img src='http://img.shields.io/codecov/c/github/Activiti/Activiti/development.svg?maxAge=2592000' alt='Coverage Status' />
+    <img src='http://img.shields.io/codecov/c/github/Activiti/Activiti/master.svg?maxAge=2592000' alt='Coverage Status' />
   </a>
   <a href='https://www.codacy.com/app/Activiti/Activiti?utm_source=github.com&utm_medium=referral&utm_content=Activiti/Activiti&utm_campaign=badger'>
       <img src='https://api.codacy.com/project/badge/Grade/f859f1bf542b43cab64e1e85706e5243' alt='codacy' />
