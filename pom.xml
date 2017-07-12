@@ -48,7 +48,8 @@
     <joda-time.version>2.6</joda-time.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
-    <httpclient.version>4.3.5</httpclient.version>
+    <httpclient.version>4.5</httpclient.version>
+    <httpcore.version>4.4.1</httpcore.version>
     <javax.mail.version>1.4.1</javax.mail.version>
     <groovy-all.version>2.4.5</groovy-all.version>
     <groovy.version>1.7.5</groovy.version>
@@ -411,6 +412,11 @@
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>${httpclient.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${httpcore.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.mail</groupId>

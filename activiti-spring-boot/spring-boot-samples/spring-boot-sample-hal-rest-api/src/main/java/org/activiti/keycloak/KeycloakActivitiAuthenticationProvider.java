@@ -16,7 +16,10 @@
 
 package org.activiti.keycloak;
 
+import org.keycloak.KeycloakPrincipal;
+import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
@@ -25,7 +28,17 @@ public class KeycloakActivitiAuthenticationProvider extends KeycloakAuthenticati
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(authentication.getName());
+        KeycloakAuthenticationToken token = (KeycloakAuthenticationToken)authentication;
+
+        String userId = authentication.getName(); //this will be keycloak id
+
+        if(token.getPrincipal() instanceof KeycloakPrincipal){
+            KeycloakPrincipal<KeycloakSecurityContext> kp = (KeycloakPrincipal<KeycloakSecurityContext>)token.getPrincipal();
+            userId = kp.getKeycloakSecurityContext().getIdToken().getPreferredUsername(); //replace with username - could be changed to e.g. email if desired
+
+        }
+
+        org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(userId);
         return super.authenticate(authentication);
     }
 }

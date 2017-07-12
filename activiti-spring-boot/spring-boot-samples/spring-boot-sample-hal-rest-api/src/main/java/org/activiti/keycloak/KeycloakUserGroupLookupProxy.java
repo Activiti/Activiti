@@ -17,8 +17,10 @@
 package org.activiti.keycloak;
 
 import org.activiti.engine.UserGroupLookupProxy;
+import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.idm.GroupRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +44,9 @@ public class KeycloakUserGroupLookupProxy implements UserGroupLookupProxy {
 
     @Value("${keycloakadminuser}")
     private String adminPassword;
+
+    @Autowired
+    private KeycloakSpringBootProperties keycloakSpringBootProperties;
 
 
     public List<String> getGroupsForCandidateUser(String candidateUser){
