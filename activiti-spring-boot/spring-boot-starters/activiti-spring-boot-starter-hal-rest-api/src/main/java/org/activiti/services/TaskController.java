@@ -19,11 +19,11 @@ import java.util.Map;
 
 import org.activiti.client.model.ClaimTaskInfo;
 import org.activiti.client.model.CompleteTaskInfo;
-import org.activiti.client.model.Task;
 import org.activiti.client.model.resources.TaskResource;
 import org.activiti.client.model.resources.assembler.TaskResourceAssembler;
 import org.activiti.engine.TaskService;
-import org.activiti.model.converter.TaskConverter;
+import org.activiti.services.model.Task;
+import org.activiti.services.model.converter.TaskConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

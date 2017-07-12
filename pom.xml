@@ -23,6 +23,8 @@
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
     <spring.boot.version>2.0.0.M2</spring.boot.version>
+    <spring.cloud.version>Finchley.BUILD-SNAPSHOT</spring.cloud.version>
+    <spring.cloud.stream.version>Elmhurst.BUILD-SNAPSHOT</spring.cloud.stream.version>
     <!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
     <spring.hateoas.version>0.24.0.BUILD-SNAPSHOT</spring.hateoas.version>
     <springfox.version>2.7.0</springfox.version>
@@ -109,6 +111,27 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring.cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-stream-dependencies</artifactId>
+        <version>${spring.cloud.stream.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>javax.el</groupId>
         <artifactId>el-api</artifactId>
@@ -264,13 +287,6 @@
         <groupId>org.mybatis</groupId>
         <artifactId>mybatis</artifactId>
         <version>${mybatis.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring.boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>joda-time</groupId>
@@ -455,6 +471,7 @@
     <module>activiti-bpmn-converter</module>
     <module>activiti-engine</module>
     <module>activiti-spring</module>
+    <module>activiti-services</module>
     <module>activiti-spring-boot</module>
   </modules>
 

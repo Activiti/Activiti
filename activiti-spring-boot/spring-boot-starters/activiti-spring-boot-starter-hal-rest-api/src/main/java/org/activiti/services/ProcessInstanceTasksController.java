@@ -16,9 +16,10 @@
 
 package org.activiti.services;
 
-import org.activiti.client.model.Task;
+
 import org.activiti.client.model.resources.TaskResource;
 import org.activiti.client.model.resources.assembler.TaskResourceAssembler;
+import org.activiti.services.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +48,7 @@ public class ProcessInstanceTasksController {
     @RequestMapping("/tasks")
     public PagedResources<TaskResource> getTasks(@PathVariable String processInstanceId, Pageable pageable, PagedResourcesAssembler<Task> pagedResourcesAssembler) {
         Page<Task> page = pageableTaskService.getTasks(processInstanceId,
-                                                        pageable);
+                                                       pageable);
         return pagedResourcesAssembler.toResource(page, taskResourceAssembler);
     }
 

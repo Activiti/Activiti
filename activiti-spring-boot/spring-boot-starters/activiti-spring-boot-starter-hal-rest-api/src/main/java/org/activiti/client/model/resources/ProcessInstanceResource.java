@@ -19,9 +19,6 @@ import org.activiti.services.model.ProcessInstance;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 
-/**
-
- */
 public class ProcessInstanceResource extends Resource<ProcessInstance> {
 
     public ProcessInstanceResource(ProcessInstance processInstance, Link... links) {
