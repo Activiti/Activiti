@@ -46,6 +46,8 @@ public class JpaProcessEngineAutoConfiguration {
   @EnableConfigurationProperties(ActivitiProperties.class)
   public static class JpaConfiguration extends AbstractProcessEngineAutoConfiguration {
 
+    @Autowired(required = false)
+    protected UserGroupLookupProxy userGroupLookupProxy;
 
     @Bean
     @ConditionalOnMissingBean
@@ -57,7 +59,7 @@ public class JpaProcessEngineAutoConfiguration {
     @ConditionalOnMissingBean
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
             DataSource dataSource, EntityManagerFactory entityManagerFactory,
-            PlatformTransactionManager transactionManager, SpringAsyncExecutor springAsyncExecutor, UserGroupLookupProxy userGroupLookupProxy) throws IOException {
+            PlatformTransactionManager transactionManager, SpringAsyncExecutor springAsyncExecutor) throws IOException {
 
       SpringProcessEngineConfiguration config = this.baseSpringProcessEngineConfiguration(dataSource, 
           transactionManager, springAsyncExecutor, userGroupLookupProxy);

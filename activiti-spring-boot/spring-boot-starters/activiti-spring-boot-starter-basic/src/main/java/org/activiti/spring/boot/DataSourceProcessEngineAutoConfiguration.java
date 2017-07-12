@@ -19,6 +19,7 @@ import javax.sql.DataSource;
 import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
@@ -42,6 +43,9 @@ public class DataSourceProcessEngineAutoConfiguration {
   @EnableConfigurationProperties(ActivitiProperties.class)
   public static class DataSourceProcessEngineConfiguration extends AbstractProcessEngineAutoConfiguration {
 
+    @Autowired(required = false)
+    protected UserGroupLookupProxy userGroupLookupProxy;
+
     @Bean
     @ConditionalOnMissingBean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
@@ -53,7 +57,7 @@ public class DataSourceProcessEngineAutoConfiguration {
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
             DataSource dataSource,
             PlatformTransactionManager transactionManager,
-            SpringAsyncExecutor springAsyncExecutor, UserGroupLookupProxy userGroupLookupProxy) throws IOException {
+            SpringAsyncExecutor springAsyncExecutor) throws IOException {
       
       return this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springAsyncExecutor, userGroupLookupProxy);
     }

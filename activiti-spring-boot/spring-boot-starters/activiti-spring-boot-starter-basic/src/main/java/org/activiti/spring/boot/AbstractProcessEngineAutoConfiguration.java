@@ -95,7 +95,9 @@ public abstract class AbstractProcessEngineAutoConfiguration
     conf.setMailServerUseSSL(activitiProperties.isMailServerUseSsl());
     conf.setMailServerUseTLS(activitiProperties.isMailServerUseTls());
 
-    conf.setUserGroupLookupProxy(userGroupLookupProxy);
+    if(userGroupLookupProxy!=null) {
+      conf.setUserGroupLookupProxy(userGroupLookupProxy);
+    }
     
     conf.setHistoryLevel(activitiProperties.getHistoryLevel());
 
