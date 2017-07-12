@@ -231,16 +231,6 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-common-rest</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-rest</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-layout</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -453,8 +443,6 @@
     <module>activiti-bpmn-model</module>
     <module>activiti-process-validation</module>
     <module>activiti-bpmn-layout</module>
-    <module>activiti-common-rest</module>
-    <module>activiti-rest</module>
     <module>activiti-json-converter</module>
     <module>activiti-bpmn-converter</module>
     <module>activiti-engine</module>
