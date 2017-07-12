@@ -16,8 +16,8 @@
 
 package org.activiti.runtime;
 
-import org.activiti.client.model.ProcessInstance;
-import org.activiti.client.model.ProcessInstanceStatus;
+import org.activiti.services.model.ProcessInstance;
+import org.activiti.services.model.ProcessInstanceStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

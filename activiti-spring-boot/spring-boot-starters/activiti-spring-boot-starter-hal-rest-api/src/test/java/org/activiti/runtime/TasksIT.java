@@ -21,8 +21,8 @@ import java.util.Collections;
 
 import org.activiti.client.model.ClaimTaskInfo;
 import org.activiti.client.model.CompleteTaskInfo;
-import org.activiti.client.model.ProcessInstance;
-import org.activiti.client.model.Task;
+import org.activiti.services.model.ProcessInstance;
+import org.activiti.services.model.Task;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -19,9 +19,9 @@ package org.activiti.runtime.events;
 import java.util.Collections;
 import java.util.Map;
 
-import org.activiti.client.model.ProcessInstance;
+import org.activiti.services.model.ProcessInstance;
 import org.activiti.client.model.SignalInfo;
-import org.activiti.client.model.Task;
+import org.activiti.services.model.Task;
 import org.activiti.runtime.ProcessInstanceRestTemplate;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.client.model;
+package org.activiti.services.model;
 
 import java.util.Map;
 

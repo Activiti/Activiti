@@ -18,9 +18,9 @@ package org.activiti.runtime;
 
 import java.util.Map;
 
-import org.activiti.client.model.ProcessInstance;
+import org.activiti.services.model.ProcessInstance;
 import org.activiti.client.model.StartProcessInfo;
-import org.activiti.client.model.Task;
+import org.activiti.services.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
