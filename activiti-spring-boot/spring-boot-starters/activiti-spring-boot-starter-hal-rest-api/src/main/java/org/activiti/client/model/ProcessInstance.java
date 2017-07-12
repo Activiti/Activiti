@@ -15,72 +15,62 @@
 
 package org.activiti.client.model;
 
-/**
- *
+import com.fasterxml.jackson.annotation.JsonInclude;
 
- */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProcessInstance {
 
-  private String id;
-  private String businessKey;
-  private boolean suspended;
-  private boolean ended;
-  private String processDefinitionId;
-  private String processDefinitionKey;
-  private String activityId;
-  private String name;
+    private String id;
+    private String businessKey;
+    private ProcessInstanceStatus status;
+    private String name;
+    private String processDefinitionId;
+    private String processDefinitionKey;
+    private String activityId;
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public String getBusinessKey() {
-    return businessKey;
-  }
+    public String getBusinessKey() {
+        return businessKey;
+    }
 
-  public void setBusinessKey(String businessKey) {
-    this.businessKey = businessKey;
-  }
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+    }
 
-  public boolean isSuspended() {
-    return suspended;
-  }
+    public ProcessInstanceStatus getStatus() {
+        return status;
+    }
 
-  public void setSuspended(boolean suspended) {
-    this.suspended = suspended;
-  }
+    public void setStatus(ProcessInstanceStatus status) {
+        this.status = status;
+    }
 
-  public boolean isEnded() {
-    return ended;
-  }
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
 
-  public void setEnded(boolean ended) {
-    this.ended = ended;
-  }
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
 
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
+    public String getProcessDefinitionKey() {
+        return processDefinitionKey;
+    }
 
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
+    public void setProcessDefinitionKey(String processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
+    }
 
-  public String getProcessDefinitionKey() {
-    return processDefinitionKey;
-  }
-
-  public void setProcessDefinitionKey(String processDefinitionKey) {
-    this.processDefinitionKey = processDefinitionKey;
-  }
-
-  public String getActivityId() {
-    return activityId;
-  }
+    public String getActivityId() {
+        return activityId;
+    }
 
   public void setActivityId(String activityId) {
     this.activityId = activityId;

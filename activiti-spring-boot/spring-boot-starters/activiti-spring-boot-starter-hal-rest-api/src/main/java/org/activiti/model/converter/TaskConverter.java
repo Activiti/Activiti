@@ -15,11 +15,11 @@
 
 package org.activiti.model.converter;
 
+import java.util.List;
+
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
 
@@ -40,8 +40,6 @@ public class TaskConverter implements ModelConverter<Task, org.activiti.client.m
         clientTask.setId(task.getId());
         clientTask.setName(task.getName());
         clientTask.setAssignee(task.getAssignee());
-        clientTask.setSuspended(task.isSuspended());
-        clientTask.setCategory(task.getCategory());
         clientTask.setCreateTime(task.getCreateTime());
         clientTask.setDueDate(task.getDueDate());
         clientTask.setDescription(task.getDescription());

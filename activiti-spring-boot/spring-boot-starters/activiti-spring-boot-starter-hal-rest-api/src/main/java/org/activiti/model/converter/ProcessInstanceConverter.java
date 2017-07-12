@@ -15,15 +15,13 @@
 
 package org.activiti.model.converter;
 
+import java.util.List;
+
+import org.activiti.client.model.ProcessInstanceStatus;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-/**
-
- */
 @Component
 public class ProcessInstanceConverter implements ModelConverter<ProcessInstance, org.activiti.client.model.ProcessInstance> {
 
@@ -40,10 +38,14 @@ public class ProcessInstanceConverter implements ModelConverter<ProcessInstance,
         clientObject.setId(processInstance.getId());
         clientObject.setName(processInstance.getName());
         clientObject.setProcessDefinitionId(processInstance.getProcessDefinitionId());
+        clientObject.setProcessDefinitionKey(processInstance.getProcessDefinitionKey());
         clientObject.setActivityId(processInstance.getActivityId());
+        if (processInstance.isSuspended()){
+            clientObject.setStatus(ProcessInstanceStatus.SUSPENDED);
+        } else {
+            clientObject.setStatus(ProcessInstanceStatus.ACTIVE);
+        }
         clientObject.setBusinessKey(processInstance.getBusinessKey());
-        clientObject.setEnded(processInstance.isEnded());
-        clientObject.setSuspended(processInstance.isSuspended());
         return clientObject;
     }
 

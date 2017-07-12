@@ -64,6 +64,17 @@ public class ProcessInstanceRestTemplate {
                             null);
     }
 
+    public ResponseEntity<ProcessInstance> getProcessInstance(ResponseEntity<ProcessInstance> processInstanceEntity) {
+
+        ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId(),
+                                                                                        HttpMethod.GET,
+                                                                                        null,
+                                                                                        new ParameterizedTypeReference<ProcessInstance>() {
+                                                                                        });
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        return responseEntity;
+    }
+
     public ResponseEntity<PagedResources<Task>> getTasks(ResponseEntity<ProcessInstance> processInstanceEntity) {
         ResponseEntity<PagedResources<Task>> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/tasks",
                                                                                   HttpMethod.GET,

@@ -15,51 +15,54 @@
 
 package org.activiti.client.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProcessDefinition {
 
-  private String id;
-  private String name;
-  private String category;
-  private int version;
-  private String deploymentId;
+    private String id;
+    private String name;
+    private String category;
+    private int version;
+    private String deploymentId;
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public String getCategory() {
-    return category;
-  }
+    public String getCategory() {
+        return category;
+    }
 
-  public void setCategory(String category) {
-    this.category = category;
-  }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-  public int getVersion() {
-    return version;
-  }
+    public int getVersion() {
+        return version;
+    }
 
-  public void setVersion(int version) {
-    this.version = version;
-  }
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
-  public String getDeploymentId() {
-    return deploymentId;
-  }
+    public String getDeploymentId() {
+        return deploymentId;
+    }
 
-  public void setDeploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
-  }
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
 }

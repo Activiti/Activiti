@@ -21,6 +21,7 @@ import org.activiti.client.model.ProcessInstanceVariables;
 import org.activiti.client.model.resources.assembler.ProcessVariableResourceAssembler;
 import org.activiti.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
  */
 @RestController
-@RequestMapping(value = "/api/process-instances/{processInstanceId}/variables")
+@RequestMapping(value = "/api/process-instances/{processInstanceId}/variables", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessInstanceVariableController {
 
     private final RuntimeService runtimeService;

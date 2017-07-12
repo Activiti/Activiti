@@ -17,6 +17,7 @@
 package org.activiti.runtime;
 
 import org.activiti.client.model.ProcessInstance;
+import org.activiti.client.model.ProcessInstanceStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -81,16 +83,61 @@ public class ProcessInstanceIT {
         processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
 
         //when
-        ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page=0&size=2",
-                                                                                                          HttpMethod.GET,
-                                                                                                          null,
-                                                                                                          new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
-                                                                                                          });
+        ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
+                                                                                                     HttpMethod.GET,
+                                                                                                     null,
+                                                                                                     new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
+                                                                                                     },
+                                                                                                     "0",
+                                                                                                     "2");
 
         //then
         assertThat(processInstancesPage).isNotNull();
         assertThat(processInstancesPage.getBody().getContent()).hasSize(2);
-        assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isGreaterThanOrEqualTo(2);
+        assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isGreaterThanOrEqualTo(3);
+    }
+
+    @Test
+    public void suspendShouldPutProcessInstanceInSuspendedState() throws Exception {
+        //given
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
+
+        //when
+        ResponseEntity<Void> responseEntity = executeRequestSuspendProcess(startProcessEntity);
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity);
+        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstanceStatus.SUSPENDED);
+    }
+
+    private ResponseEntity<Void> executeRequestSuspendProcess(ResponseEntity<ProcessInstance> processInstanceEntity) {
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/suspend",
+                                                              HttpMethod.POST,
+                                                              null,
+                                                              new ParameterizedTypeReference<Void>() {
+                                                              });
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        return responseEntity;
+    }
+
+    @Test
+    public void activateShouldPutASuspendedProcessInstanceBackToActiveState() throws Exception {
+        //given
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
+        executeRequestSuspendProcess(startProcessEntity);
+
+        //when
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessEntity.getBody().getId() + "/activate",
+                                                              HttpMethod.POST,
+                                                              null,
+                                                              new ParameterizedTypeReference<Void>() {
+                                                              });
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity);
+        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstanceStatus.ACTIVE);
     }
 
 }
