@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
@@ -37,11 +38,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
-
- */
 @RestController
-@RequestMapping(value = "/api/process-instances")
+@RequestMapping(value = "/api/process-instances", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessInstanceController {
 
     private final ProcessInstanceConverter processInstanceConverter;
@@ -92,4 +90,17 @@ public class ProcessInstanceController {
         runtimeService.signalEventReceived(signalInfo.getName(), signalInfo.getInputVariables());
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @RequestMapping(value = "{processInstanceId}/suspend")
+    public ResponseEntity<Void> suspend(@PathVariable String processInstanceId){
+        runtimeService.suspendProcessInstanceById(processInstanceId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "{processInstanceId}/activate")
+    public ResponseEntity<Void> activate(@PathVariable String processInstanceId){
+        runtimeService.activateProcessInstanceById(processInstanceId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
