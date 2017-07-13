@@ -29,6 +29,7 @@ public class ProcessInstance {
   private String processDefinitionKey;
   private String activityId;
   private String name;
+  private String startUserId;
 
   public String getId() {
     return id;
@@ -94,4 +95,11 @@ public class ProcessInstance {
 	  return name;
   }
 
+  public String getStartUserId() {
+    return startUserId;
+  }
+
+  public void setStartUserId(String startUserId) {
+    this.startUserId = startUserId;
+  }
 }

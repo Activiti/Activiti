@@ -34,7 +34,10 @@ public class KeycloakActivitiAuthenticationProvider extends KeycloakAuthenticati
 
         if(token.getPrincipal() instanceof KeycloakPrincipal){
             KeycloakPrincipal<KeycloakSecurityContext> kp = (KeycloakPrincipal<KeycloakSecurityContext>)token.getPrincipal();
-            userId = kp.getKeycloakSecurityContext().getIdToken().getPreferredUsername(); //replace with username - could be changed to e.g. email if desired
+          //option to use username instead of id
+            if(kp.getKeycloakSecurityContext().getToken()!=null && kp.getKeycloakSecurityContext().getToken().getPreferredUsername()!=null) {
+                userId = kp.getKeycloakSecurityContext().getToken().getPreferredUsername(); //replace with username - could be changed to e.g. email if desired
+            }
 
         }
 

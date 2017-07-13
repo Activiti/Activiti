@@ -44,6 +44,7 @@ public class ProcessInstanceConverter implements ModelConverter<ProcessInstance,
         clientObject.setBusinessKey(processInstance.getBusinessKey());
         clientObject.setEnded(processInstance.isEnded());
         clientObject.setSuspended(processInstance.isSuspended());
+        clientObject.setStartUserId(processInstance.getStartUserId());
         return clientObject;
     }
 

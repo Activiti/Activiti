@@ -20,14 +20,17 @@ import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
+import org.keycloak.adapters.springsecurity.client.KeycloakClientRequestFactory;
+import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -45,20 +48,6 @@ import java.util.List;
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter
 {
 
-    @Value("${keycloak.auth-server-url}")
-    private String authServer;
-
-    @Value("${keycloak.realm}")
-    private String realm;
-
-    @Value("${keycloakadminclientapp}")
-    private String keycloakadminclientapp;
-
-    @Value("${keycloakclientuser}")
-    private String clientUser;
-
-    @Value("${keycloakclientpassword}")
-    private String clientPassword;
 
     /**
      * Registers the KeycloakAuthenticationProvider with the authentication manager.
@@ -94,7 +83,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter
         super.configure(http);
         http    .authorizeRequests()
                 .antMatchers("/*").hasRole("user") //could optionally set these by autowiring and parsing keycloakSpringBootProperties
-                .anyRequest().authenticated();
+                .anyRequest().authenticated().and().csrf().disable();
 
     }
 }
