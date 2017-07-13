@@ -16,8 +16,13 @@
 
 package org.activiti.runtime;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.ProcessInstance;
-import org.activiti.client.model.ProcessInstanceStatus;
+import org.activiti.definition.ProcessDefinitionIT;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +50,20 @@ public class ProcessInstanceIT {
     @Autowired
     private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
+    private Map<String, String> processDefinitionIds = new HashMap<>();
+    @Before
+    public void setup(){
+        ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
+        assertThat(processDefinitions.getBody().getContent()).hasSize(3);
+        for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
+            processDefinitionIds.put(pd.getName(), pd.getId());
+        }
+    }
+
     @Test
     public void shouldStartProcess() throws Exception {
         //when
-        ResponseEntity<ProcessInstance> entity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
+        ResponseEntity<ProcessInstance> entity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //then
         assertThat(entity).isNotNull();
@@ -61,7 +76,7 @@ public class ProcessInstanceIT {
     @Test
     public void shouldRetrieveProcessInstanceById() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
+        ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
         ResponseEntity<ProcessInstance> retrievedEntity = restTemplate.exchange(
@@ -78,9 +93,9 @@ public class ProcessInstanceIT {
     @Test
     public void shouldRetrieveListOfProcessInstances() throws Exception {
         //given
-        processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
-        processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
-        processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
@@ -100,7 +115,7 @@ public class ProcessInstanceIT {
     @Test
     public void suspendShouldPutProcessInstanceInSuspendedState() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
         ResponseEntity<Void> responseEntity = executeRequestSuspendProcess(startProcessEntity);
@@ -108,7 +123,7 @@ public class ProcessInstanceIT {
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity);
-        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstanceStatus.SUSPENDED);
+        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.SUSPENDED.name());
     }
 
     private ResponseEntity<Void> executeRequestSuspendProcess(ResponseEntity<ProcessInstance> processInstanceEntity) {
@@ -124,7 +139,7 @@ public class ProcessInstanceIT {
     @Test
     public void activateShouldPutASuspendedProcessInstanceBackToActiveState() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
         executeRequestSuspendProcess(startProcessEntity);
 
         //when
@@ -137,7 +152,15 @@ public class ProcessInstanceIT {
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity);
-        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstanceStatus.ACTIVE);
+        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING.name());
     }
 
+    private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
+        ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
+        };
+        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
+                                     HttpMethod.GET,
+                                     null,
+                                     responseType);
+    }
 }

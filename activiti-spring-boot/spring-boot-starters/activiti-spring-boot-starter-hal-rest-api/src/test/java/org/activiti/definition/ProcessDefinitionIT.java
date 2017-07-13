@@ -37,7 +37,7 @@ public class ProcessDefinitionIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private static final String PROCESS_DEFINITIONS_URL = "/api/process-definitions/";
+    public static final String PROCESS_DEFINITIONS_URL = "/process-definitions/";
 
     @Test
     public void shouldRetrieveListOfProcessDefinition() throws Exception {
@@ -53,8 +53,8 @@ public class ProcessDefinitionIT {
         assertThat(entity.getBody().getContent())
                 .extracting(
                         ProcessDefinition::getName
-                ).contains("Process with variables",
-                           "SimpleProcess");
+                ).contains("ProcessWithVariables",
+                           "SimpleProcess", "ProcessWithBoundarySignal");
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {

@@ -16,6 +16,7 @@
 
 package org.activiti.services;
 
+import org.activiti.controllers.ProcessInstanceController;
 import org.activiti.engine.RuntimeService;
 import org.junit.Before;
 import org.junit.Test;

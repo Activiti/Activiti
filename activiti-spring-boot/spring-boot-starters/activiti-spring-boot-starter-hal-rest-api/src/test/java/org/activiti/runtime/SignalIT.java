@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime.events;
+package org.activiti.runtime;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.ProcessInstance;
 import org.activiti.client.model.Task;
 import org.activiti.client.model.commands.SignalProcessInstanceCmd;
+import org.activiti.definition.ProcessDefinitionIT;
 import org.activiti.runtime.ProcessInstanceRestTemplate;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,11 +54,25 @@ public class SignalIT {
     @Autowired
     private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
+    private static final String SIGNAL_PROCESS = "ProcessWithBoundarySignal";
+
+
+    private Map<String, String> processDefinitionIds = new HashMap<>();
+    @Before
+    public void setup(){
+        ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
+        assertThat(processDefinitions.getBody().getContent()).hasSize(3);
+        for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
+            processDefinitionIds.put(pd.getName(), pd.getId());
+        }
+    }
+
+
     @Test
     public void processShouldTakeExceptionPathWhenSignalIsSent() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess("ProcessWithBoundarySignal");
-        SignalProcessInstanceCmd signalProcessInstanceCmd = new SignalProcessInstanceCmd("gp");
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS));
+        SignalProcessInstanceCmd signalProcessInstanceCmd = new SignalProcessInstanceCmd("go");
 
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
@@ -72,7 +90,7 @@ public class SignalIT {
     @Test
     public void processShouldHaveVariablesSetWhenSignalCarriesVariables() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess("ProcessWithBoundarySignal");
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS));
         SignalProcessInstanceCmd signalProcessInstanceCmd = new SignalProcessInstanceCmd("go",
                                                                                          Collections.singletonMap("myVar",
                                                                                                                   "myContent"));
@@ -93,5 +111,14 @@ public class SignalIT {
         ResponseEntity<Resource<Map<String, Object>>> variablesEntity = processInstanceRestTemplate.getVariables(startProcessEntity);
         assertThat(variablesEntity.getBody().getContent()).containsEntry("myVar",
                                                                          "myContent");
+    }
+
+    private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
+        ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
+        };
+        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
+                                         HttpMethod.GET,
+                                         null,
+                                         responseType);
     }
 }

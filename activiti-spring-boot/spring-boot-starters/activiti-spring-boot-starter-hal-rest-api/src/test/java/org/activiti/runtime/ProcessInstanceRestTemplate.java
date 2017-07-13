@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.*;
 @Component
 public class ProcessInstanceRestTemplate {
 
-    public static final String PROCESS_INSTANCES_RELATIVE_URL = "/api/process-instances/";
+    public static final String PROCESS_INSTANCES_RELATIVE_URL = "/process-instances/";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -57,8 +57,8 @@ public class ProcessInstanceRestTemplate {
         return responseEntity;
     }
 
-    public ResponseEntity<ProcessInstance> startProcess(String processDefinitionKey) {
-        return startProcess(processDefinitionKey,
+    public ResponseEntity<ProcessInstance> startProcess(String processDefinitionId) {
+        return startProcess(processDefinitionId,
                             null);
     }
 

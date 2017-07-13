@@ -19,13 +19,17 @@ package org.activiti.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.ProcessInstance;
+import org.activiti.definition.ProcessDefinitionIT;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -43,6 +47,20 @@ public class ProcessVariablesIT {
     @Autowired
     private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
+    private Map<String, String> processDefinitionIds = new HashMap<>();
+
+    private static final String SIMPLE_PROCESS_WITH_VARIABLES = "ProcessWithVariables";
+
+    @Before
+    public void setup() {
+        ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
+        assertThat(processDefinitions.getBody().getContent()).hasSize(3);
+        for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
+            processDefinitionIds.put(pd.getName(),
+                                     pd.getId());
+        }
+    }
+
     @Test
     public void shouldRetrieveProcessVariables() throws Exception {
         //given
@@ -53,21 +71,33 @@ public class ProcessVariablesIT {
                       "Silva");
         variables.put("age",
                       15);
-        ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess("ProcessWithVariables",
-                                                                                                        variables);
+        ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS_WITH_VARIABLES),
+                                                                                                 variables);
 
         //when
         ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables",
-                                                                                                    HttpMethod.GET,
-                                                                                                    null,
-                                                                                                    new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
-                                                                                  });
+                                                                                                HttpMethod.GET,
+                                                                                                null,
+                                                                                                new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
+                                                                                                });
 
         //then
         assertThat(variablesResponse).isNotNull();
         assertThat(variablesResponse.getBody().getContent())
-                .containsEntry("firstName", "Pedro")
-                .containsEntry("lastName", "Silva")
-                .containsEntry("age", 15);
+                .containsEntry("firstName",
+                               "Pedro")
+                .containsEntry("lastName",
+                               "Silva")
+                .containsEntry("age",
+                               15);
+    }
+
+    private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
+        ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
+        };
+        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
+                                     HttpMethod.GET,
+                                     null,
+                                     responseType);
     }
 }
