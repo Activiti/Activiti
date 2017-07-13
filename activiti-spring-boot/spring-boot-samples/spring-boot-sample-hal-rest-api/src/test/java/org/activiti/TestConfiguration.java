@@ -43,7 +43,8 @@ public class TestConfiguration {
         converter.setObjectMapper(mapper);
 
         return new RestTemplateBuilder()
-                .additionalMessageConverters(converter);
+                .additionalMessageConverters(converter)
+                .additionalCustomizers();
     }
 
 }

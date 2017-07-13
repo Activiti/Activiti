@@ -16,7 +16,9 @@
 
 package org.activiti.runtime;
 
+import org.activiti.KeycloakEnabledBaseTestIT;
 import org.activiti.client.model.ProcessInstance;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.keycloak.admin.client.Keycloak;
@@ -39,22 +41,7 @@ import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ProcessInstanceIT {
-
-    @Value("${keycloak.auth-server-url}")
-    private String authServer;
-
-    @Value("${keycloak.realm}")
-    private String realm;
-
-    @Value("${keycloak.resource}")
-    private String resource;
-
-    @Value("${keycloaktestuser}")
-    private String keycloaktestuser;
-
-    @Value("${keycloaktestpassword}")
-    private String keycloaktestpassword;
+public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
 
     private static final String SIMPLE_PROCESS = "SimpleProcess";
 
@@ -64,15 +51,10 @@ public class ProcessInstanceIT {
     @Autowired
     private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
-
-    protected AccessTokenResponse authenticateUser() throws IOException {
-        return Keycloak.getInstance(authServer,realm,keycloaktestuser,keycloaktestpassword,resource).tokenManager().getAccessToken();
-    }
-
     @Test
     public void shouldStartProcess() throws Exception {
         //when
-        ResponseEntity<ProcessInstance> entity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS,authenticateUser());
+        ResponseEntity<ProcessInstance> entity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS,accessToken);
 
         //then
         assertThat(entity).isNotNull();
@@ -87,7 +69,6 @@ public class ProcessInstanceIT {
     @Test
     public void shouldRetrieveProcessInstanceById() throws Exception {
 
-        AccessTokenResponse accessToken = authenticateUser();
 
         //given
         ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS,accessToken);
@@ -110,8 +91,6 @@ public class ProcessInstanceIT {
 
     @Test
     public void shouldRetrieveListOfProcessInstances() throws Exception {
-
-        AccessTokenResponse accessToken = authenticateUser();
 
         //given
         processInstanceRestTemplate.startProcess(SIMPLE_PROCESS,accessToken);
