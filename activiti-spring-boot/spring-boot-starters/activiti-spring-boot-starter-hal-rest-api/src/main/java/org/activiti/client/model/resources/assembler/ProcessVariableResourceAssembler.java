@@ -17,8 +17,9 @@ package org.activiti.client.model.resources.assembler;
 
 import org.activiti.client.model.ProcessInstanceVariables;
 import org.activiti.client.model.resources.VariablesResource;
-import org.activiti.services.ProcessInstanceController;
-import org.activiti.services.ProcessInstanceVariableController;
+import org.activiti.controllers.HomeController;
+import org.activiti.controllers.ProcessInstanceController;
+import org.activiti.controllers.ProcessInstanceVariableController;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -30,14 +31,18 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 public class ProcessVariableResourceAssembler extends ResourceAssemblerSupport<ProcessInstanceVariables, VariablesResource> {
 
     public ProcessVariableResourceAssembler() {
-        super(ProcessInstanceVariableController.class, VariablesResource.class);
+        super(ProcessInstanceVariableController.class,
+              VariablesResource.class);
     }
 
     @Override
     public VariablesResource toResource(ProcessInstanceVariables processInstanceVariables) {
         Link selfRel = linkTo(methodOn(ProcessInstanceVariableController.class).getVariables(processInstanceVariables.getProcessInstanceId())).withSelfRel();
-        Link processInstanceRel = linkTo(methodOn(ProcessInstanceController.class).getProcessInstance(processInstanceVariables.getProcessInstanceId())).withRel("processInstance");
-        return new VariablesResource(processInstanceVariables.getVariables(), selfRel, processInstanceRel);
+        Link processInstanceRel = linkTo(methodOn(ProcessInstanceController.class).getProcessInstanceById(processInstanceVariables.getProcessInstanceId())).withRel("processInstance");
+        Link homeLink = linkTo(HomeController.class).withRel("home");
+        return new VariablesResource(processInstanceVariables.getVariables(),
+                                     selfRel,
+                                     processInstanceRel,
+                                     homeLink);
     }
-
 }

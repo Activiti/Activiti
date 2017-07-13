@@ -17,112 +17,104 @@ package org.activiti.client.model;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Task {
+
+    public enum TaskStatus {
+        CREATED, ASSIGNED, SUSPENDED
+    }
 
     private String id;
     private String owner;
     private String assignee;
     private String name;
     private String description;
-    private Date createTime;
+    private Date createdDate;
+    private Date claimedDate;
     private Date dueDate;
     private int priority;
-    private String taskDefinitionKey;
     private String processDefinitionId;
     private String processInstanceId;
+    private String status;
+
+    public Task() {
+    }
+
+    public Task(String id,
+                String owner,
+                String assignee,
+                String name,
+                String description,
+                Date createdDate,
+                Date claimedDate,
+                Date dueDate,
+                int priority,
+                String processDefinitionId,
+                String processInstanceId,
+                String status) {
+        this.id = id;
+        this.owner = owner;
+        this.assignee = assignee;
+        this.name = name;
+        this.description = description;
+        this.createdDate = createdDate;
+        this.claimedDate = claimedDate;
+        this.dueDate = dueDate;
+        this.priority = priority;
+        this.processDefinitionId = processDefinitionId;
+        this.processInstanceId = processInstanceId;
+        this.status = status;
+    }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getOwner() {
+        return owner;
     }
 
-  public String getOwner() {
-    return owner;
-  }
-
-  public void setOwner(String owner) {
-    this.owner = owner;
-  }
-
-  public String getAssignee() {
-    return assignee;
-  }
-
-    public void setAssignee(String assignee) {
-        this.assignee = assignee;
+    public String getAssignee() {
+        return assignee;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public Date getCreatedDate() {
+        return createdDate;
     }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
+    public Date getClaimedDate() {
+        return claimedDate;
     }
 
     public Date getDueDate() {
         return dueDate;
     }
 
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
-    }
-
     public int getPriority() {
         return priority;
-    }
-
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
-
-    public String getTaskDefinitionKey() {
-        return taskDefinitionKey;
-    }
-
-    public void setTaskDefinitionKey(String taskDefinitionKey) {
-        this.taskDefinitionKey = taskDefinitionKey;
     }
 
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
 
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
-    }
-
     public String getProcessInstanceId() {
         return processInstanceId;
     }
 
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
-
-    public boolean isClaimed() {
-        return assignee != null;
+    public String getStatus() {
+        return status;
     }
 }

@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.activiti.client.model.ProcessInstance;
-import org.activiti.client.model.SignalInfo;
 import org.activiti.client.model.Task;
+import org.activiti.client.model.commands.SignalProcessInstanceCmd;
 import org.activiti.runtime.ProcessInstanceRestTemplate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +38,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.activiti.runtime.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,21 +48,20 @@ public class SignalIT {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private ProcessInstanceRestTemplate  processInstanceRestTemplate;
+    private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
     @Test
     public void processShouldTakeExceptionPathWhenSignalIsSent() throws Exception {
         //given
         ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess("ProcessWithBoundarySignal");
-        SignalInfo signalInfo = new SignalInfo();
-        signalInfo.setName("go");
+        SignalProcessInstanceCmd signalProcessInstanceCmd = new SignalProcessInstanceCmd("gp");
 
         //when
-        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/send-signal",
-                                                              HttpMethod.POST,
-                                                              new HttpEntity<>(signalInfo),
-                                                              new ParameterizedTypeReference<Void>() {
-                                                              });
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
+                                                                    HttpMethod.POST,
+                                                                    new HttpEntity<>(signalProcessInstanceCmd),
+                                                                    new ParameterizedTypeReference<Void>() {
+                                                                    });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -74,16 +73,16 @@ public class SignalIT {
     public void processShouldHaveVariablesSetWhenSignalCarriesVariables() throws Exception {
         //given
         ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess("ProcessWithBoundarySignal");
-        SignalInfo signalInfo = new SignalInfo();
-        signalInfo.setName("go");
-        signalInfo.setInputVariables(Collections.singletonMap("myVar", "myContent"));
+        SignalProcessInstanceCmd signalProcessInstanceCmd = new SignalProcessInstanceCmd("go",
+                                                                                         Collections.singletonMap("myVar",
+                                                                                                                  "myContent"));
 
         //when
-        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/send-signal",
-                                                              HttpMethod.POST,
-                                                              new HttpEntity<>(signalInfo),
-                                                              new ParameterizedTypeReference<Void>() {
-                                                              });
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
+                                                                    HttpMethod.POST,
+                                                                    new HttpEntity<>(signalProcessInstanceCmd),
+                                                                    new ParameterizedTypeReference<Void>() {
+                                                                    });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -92,8 +91,7 @@ public class SignalIT {
         assertThat(taskEntity.getBody().getContent()).extracting(Task::getName).containsExactly("Boundary target");
 
         ResponseEntity<Resource<Map<String, Object>>> variablesEntity = processInstanceRestTemplate.getVariables(startProcessEntity);
-        assertThat(variablesEntity.getBody().getContent()).containsEntry("myVar", "myContent");
+        assertThat(variablesEntity.getBody().getContent()).containsEntry("myVar",
+                                                                         "myContent");
     }
-
-
 }

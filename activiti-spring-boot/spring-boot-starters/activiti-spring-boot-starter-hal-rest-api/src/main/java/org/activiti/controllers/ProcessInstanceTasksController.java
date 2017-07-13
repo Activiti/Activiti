@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.activiti.services;
+package org.activiti.controllers;
 
 import org.activiti.client.model.Task;
 import org.activiti.client.model.resources.TaskResource;
 import org.activiti.client.model.resources.assembler.TaskResourceAssembler;
+import org.activiti.services.PageableTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/process-instances/{processInstanceId}", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "process-instances/{processInstanceId}", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessInstanceTasksController {
 
     private final PageableTaskService pageableTaskService;

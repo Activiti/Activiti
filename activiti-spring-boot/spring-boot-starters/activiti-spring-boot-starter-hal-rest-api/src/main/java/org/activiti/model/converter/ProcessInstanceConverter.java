@@ -17,7 +17,6 @@ package org.activiti.model.converter;
 
 import java.util.List;
 
-import org.activiti.client.model.ProcessInstanceStatus;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -33,25 +32,33 @@ public class ProcessInstanceConverter implements ModelConverter<ProcessInstance,
     }
 
     @Override
-    public org.activiti.client.model.ProcessInstance from(ProcessInstance processInstance) {
-        org.activiti.client.model.ProcessInstance clientObject = new org.activiti.client.model.ProcessInstance();
-        clientObject.setId(processInstance.getId());
-        clientObject.setName(processInstance.getName());
-        clientObject.setProcessDefinitionId(processInstance.getProcessDefinitionId());
-        clientObject.setProcessDefinitionKey(processInstance.getProcessDefinitionKey());
-        clientObject.setActivityId(processInstance.getActivityId());
-        if (processInstance.isSuspended()){
-            clientObject.setStatus(ProcessInstanceStatus.SUSPENDED);
-        } else {
-            clientObject.setStatus(ProcessInstanceStatus.ACTIVE);
+    public org.activiti.client.model.ProcessInstance from(ProcessInstance source) {
+        org.activiti.client.model.ProcessInstance processInstance = null;
+        if (source != null) {
+            processInstance = new org.activiti.client.model.ProcessInstance(source.getId(),
+                                                                            source.getName(),
+                                                                            source.getDescription(),
+                                                                            source.getProcessDefinitionId(),
+                                                                            source.getStartUserId(),
+                                                                            source.getStartTime(),
+                                                                            source.getBusinessKey(),
+                                                                            calculateStatus(source));
         }
-        clientObject.setBusinessKey(processInstance.getBusinessKey());
-        return clientObject;
+        return processInstance;
+    }
+
+    private String calculateStatus(ProcessInstance source) {
+        if (source.isSuspended()) {
+            return org.activiti.client.model.ProcessInstance.ProcessInstanceStatus.SUSPENDED.name();
+        } else if (source.isEnded()) {
+            return org.activiti.client.model.ProcessInstance.ProcessInstanceStatus.COMPLETED.name();
+        }
+        return org.activiti.client.model.ProcessInstance.ProcessInstanceStatus.RUNNING.name();
     }
 
     @Override
     public List<org.activiti.client.model.ProcessInstance> from(List<ProcessInstance> processInstances) {
-        return listConverter.from(processInstances, this);
+        return listConverter.from(processInstances,
+                                  this);
     }
-
 }

@@ -21,9 +21,7 @@ import org.activiti.client.model.ProcessDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
 
- */
 @Component
 public class ProcessDefinitionConverter implements ModelConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition> {
 
@@ -38,12 +36,7 @@ public class ProcessDefinitionConverter implements ModelConverter<org.activiti.e
     public ProcessDefinition from(org.activiti.engine.repository.ProcessDefinition source) {
         ProcessDefinition processDefinition = null;
         if (source != null) {
-            processDefinition = new ProcessDefinition();
-            processDefinition.setId(source.getId());
-            processDefinition.setName(source.getName());
-            processDefinition.setCategory(source.getCategory());
-            processDefinition.setVersion(source.getVersion());
-            processDefinition.setDeploymentId(source.getDeploymentId());
+            processDefinition = new ProcessDefinition(source.getId(), source.getName(), source.getDescription(), source.getVersion() );
         }
         return processDefinition;
     }

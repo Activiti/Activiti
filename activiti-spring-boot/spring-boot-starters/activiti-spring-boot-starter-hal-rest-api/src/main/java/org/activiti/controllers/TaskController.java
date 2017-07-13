@@ -13,17 +13,17 @@
  *
  */
 
-package org.activiti.services;
+package org.activiti.controllers;
 
 import java.util.Map;
 
-import org.activiti.client.model.ClaimTaskInfo;
-import org.activiti.client.model.CompleteTaskInfo;
+import org.activiti.client.model.commands.CompleteTaskCmd;
 import org.activiti.client.model.Task;
 import org.activiti.client.model.resources.TaskResource;
 import org.activiti.client.model.resources.assembler.TaskResourceAssembler;
 import org.activiti.engine.TaskService;
 import org.activiti.model.converter.TaskConverter;
+import org.activiti.services.PageableTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/tasks", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "tasks", produces = MediaTypes.HAL_JSON_VALUE)
 public class TaskController {
 
     private final TaskService taskService;
@@ -66,14 +66,18 @@ public class TaskController {
     }
 
     @RequestMapping(value = "/{taskId}", method = RequestMethod.GET)
-    public Resource<Task> getTask(@PathVariable String taskId) {
+    public Resource<Task> getTaskById(@PathVariable String taskId) {
         org.activiti.engine.task.Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         return taskResourceAssembler.toResource(taskConverter.from(task));
     }
 
     @RequestMapping(value = "/{taskId}/claim", method = RequestMethod.POST)
-    public Resource<Task> claimTask(@PathVariable String taskId, @RequestBody ClaimTaskInfo claimTaskInfo) {
-        taskService.claim(taskId, claimTaskInfo.getAssignee());
+    public Resource<Task> claimTask(@PathVariable String taskId) {
+        String assignee = null;
+        if(assignee == null) {
+            throw new IllegalStateException("Assignee must be resolved from the Identity/Security Layer");
+        }
+        taskService.claim(taskId, assignee);
         Task task = taskConverter.from(taskService.createTaskQuery().taskId(taskId).singleResult());
         return  taskResourceAssembler.toResource(task);
     }
@@ -87,10 +91,10 @@ public class TaskController {
 
     @RequestMapping(value = "/{taskId}/complete", method = RequestMethod.POST)
     public ResponseEntity<Void> completeTask(@PathVariable String taskId, @RequestBody(required = false)
-                                             CompleteTaskInfo completeTaskInfo) {
+            CompleteTaskCmd completeTaskCmd) {
         Map<String, Object> inputVariables = null;
-        if (completeTaskInfo != null) {
-            inputVariables = completeTaskInfo.getInputVariables();
+        if (completeTaskCmd != null) {
+            inputVariables = completeTaskCmd.getOutputVariables();
         }
         taskService.complete(taskId,
                              inputVariables);

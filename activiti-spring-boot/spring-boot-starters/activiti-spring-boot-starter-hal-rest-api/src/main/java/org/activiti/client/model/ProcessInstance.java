@@ -15,73 +15,78 @@
 
 package org.activiti.client.model;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProcessInstance {
 
+    public enum ProcessInstanceStatus {
+        RUNNING, SUSPENDED, COMPLETED
+    }
+
     private String id;
-    private String businessKey;
-    private ProcessInstanceStatus status;
     private String name;
+    private String description;
     private String processDefinitionId;
-    private String processDefinitionKey;
-    private String activityId;
+    private String initiator;
+    private Date startDate;
+    private String businessKey;
+    private String status;
+
+    public ProcessInstance() {
+    }
+
+    public ProcessInstance(String id,
+                           String name,
+                           String description,
+                           String processDefinitionId,
+                           String initiator,
+                           Date startDate,
+                           String businessKey,
+                           String status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.startDate = startDate;
+        this.initiator = initiator;
+        this.businessKey = businessKey;
+        this.status = status;
+        this.processDefinitionId = processDefinitionId;
+    }
 
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Date getStartDate() {
+        return startDate;
+    }
+
+    public String getInitiator() {
+        return initiator;
     }
 
     public String getBusinessKey() {
         return businessKey;
     }
 
-    public void setBusinessKey(String businessKey) {
-        this.businessKey = businessKey;
-    }
-
-    public ProcessInstanceStatus getStatus() {
+    public String getStatus() {
         return status;
-    }
-
-    public void setStatus(ProcessInstanceStatus status) {
-        this.status = status;
     }
 
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
-
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
-    }
-
-    public String getProcessDefinitionKey() {
-        return processDefinitionKey;
-    }
-
-    public void setProcessDefinitionKey(String processDefinitionKey) {
-        this.processDefinitionKey = processDefinitionKey;
-    }
-
-    public String getActivityId() {
-        return activityId;
-    }
-
-  public void setActivityId(String activityId) {
-    this.activityId = activityId;
-  }
-
-  public void setName(String name) {
-	  this.name = name;
-  }
-
-  public String getName() {
-	  return name;
-  }
-
 }

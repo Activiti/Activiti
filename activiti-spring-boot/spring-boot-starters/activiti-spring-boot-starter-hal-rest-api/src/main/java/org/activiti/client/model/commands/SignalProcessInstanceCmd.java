@@ -14,30 +14,34 @@
  * limitations under the License.
  */
 
-package org.activiti.client.model;
+package org.activiti.client.model.commands;
 
 import java.util.Map;
 
-public class SignalInfo {
+public class SignalProcessInstanceCmd implements Command {
 
     private String name;
 
     private Map<String, Object> inputVariables;
 
-    public String getName() {
-        return name;
+    public SignalProcessInstanceCmd() {
     }
 
-    public void setName(String name) {
+    public SignalProcessInstanceCmd(String name,
+                                    Map<String, Object> inputVariables) {
         this.name = name;
+        this.inputVariables = inputVariables;
+    }
+
+    public SignalProcessInstanceCmd(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public Map<String, Object> getInputVariables() {
         return inputVariables;
     }
-
-    public void setInputVariables(Map<String, Object> inputVariables) {
-        this.inputVariables = inputVariables;
-    }
-
 }

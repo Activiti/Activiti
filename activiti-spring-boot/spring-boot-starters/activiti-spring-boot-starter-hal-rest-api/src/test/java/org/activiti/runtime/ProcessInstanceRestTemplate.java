@@ -19,8 +19,8 @@ package org.activiti.runtime;
 import java.util.Map;
 
 import org.activiti.client.model.ProcessInstance;
-import org.activiti.client.model.StartProcessInfo;
 import org.activiti.client.model.Task;
+import org.activiti.client.model.commands.StartProcessInstanceCmd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -42,12 +42,10 @@ public class ProcessInstanceRestTemplate {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    public ResponseEntity<ProcessInstance> startProcess(String processDefinitionKey,
+    public ResponseEntity<ProcessInstance> startProcess(String processDefinitionId,
                                                         Map<String, Object> variables) {
-        StartProcessInfo info = new StartProcessInfo();
-        info.setProcessDefinitionKey(processDefinitionKey);
-        info.setVariables(variables);
-        HttpEntity<StartProcessInfo> requestEntity = new HttpEntity<>(info);
+        StartProcessInstanceCmd cmd = new StartProcessInstanceCmd(processDefinitionId, variables);
+        HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(cmd);
 
         ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL,
                                                                              HttpMethod.POST,

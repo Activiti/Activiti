@@ -14,19 +14,22 @@
  * limitations under the License.
  */
 
-package org.activiti.client.model;
+package org.activiti.client.model.commands;
 
 import java.util.Map;
 
-public class CompleteTaskInfo {
+public class CompleteTaskCmd implements Command{
 
-    private Map<String, Object> inputVariables;
+    private Map<String, Object> outputVariables;
 
-    public Map<String, Object> getInputVariables() {
-        return inputVariables;
+    public CompleteTaskCmd() {
     }
 
-    public void setInputVariables(Map<String, Object> inputVariables) {
-        this.inputVariables = inputVariables;
+    public CompleteTaskCmd(Map<String, Object> outputVariables) {
+        this.outputVariables = outputVariables;
+    }
+
+    public Map<String, Object> getOutputVariables() {
+        return outputVariables;
     }
 }

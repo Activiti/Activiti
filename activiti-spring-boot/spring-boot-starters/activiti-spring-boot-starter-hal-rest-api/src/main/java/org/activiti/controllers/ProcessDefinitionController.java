@@ -13,7 +13,7 @@
  *
  */
 
-package org.activiti.services;
+package org.activiti.controllers;
 
 import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.resources.ProcessDefinitionResource;
@@ -21,6 +21,7 @@ import org.activiti.client.model.resources.assembler.ProcessDefinitionResourceAs
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.model.converter.ProcessDefinitionConverter;
+import org.activiti.services.PageableRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/process-definitions", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "process-definitions", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessDefinitionController {
 
     private final RepositoryService repositoryService;
@@ -45,7 +46,10 @@ public class ProcessDefinitionController {
     private final PageableRepositoryService pageableRepositoryService;
 
     @Autowired
-    public ProcessDefinitionController(RepositoryService repositoryService, ProcessDefinitionConverter processDefinitionConverter, ProcessDefinitionResourceAssembler resourceAssembler, PageableRepositoryService pageableRepositoryService) {
+    public ProcessDefinitionController(RepositoryService repositoryService,
+                                       ProcessDefinitionConverter processDefinitionConverter,
+                                       ProcessDefinitionResourceAssembler resourceAssembler,
+                                       PageableRepositoryService pageableRepositoryService) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.resourceAssembler = resourceAssembler;
@@ -53,18 +57,19 @@ public class ProcessDefinitionController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public PagedResources<ProcessDefinitionResource> getProcessDefinitions(Pageable pageable, PagedResourcesAssembler<ProcessDefinition> pagedResourcesAssembler) {
+    public PagedResources<ProcessDefinitionResource> getProcessDefinitions(Pageable pageable,
+                                                                           PagedResourcesAssembler<ProcessDefinition> pagedResourcesAssembler) {
         Page<ProcessDefinition> page = pageableRepositoryService.getProcessDefinitions(pageable);
-        return pagedResourcesAssembler.toResource(page, resourceAssembler);
+        return pagedResourcesAssembler.toResource(page,
+                                                  resourceAssembler);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public ProcessDefinitionResource getProcessDefinition(@PathVariable String id){
+    public ProcessDefinitionResource getProcessDefinition(@PathVariable String id) {
         org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
         if (processDefinition == null) {
             throw new ActivitiException("Unable to find process definition for the given id:'" + id + "'");
         }
         return resourceAssembler.toResource(processDefinitionConverter.from(processDefinition));
     }
-
 }

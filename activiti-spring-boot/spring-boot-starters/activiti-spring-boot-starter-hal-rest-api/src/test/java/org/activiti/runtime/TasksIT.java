@@ -19,8 +19,7 @@ package org.activiti.runtime;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.activiti.client.model.ClaimTaskInfo;
-import org.activiti.client.model.CompleteTaskInfo;
+import org.activiti.client.model.commands.CompleteTaskCmd;
 import org.activiti.client.model.ProcessInstance;
 import org.activiti.client.model.Task;
 import org.junit.Test;
@@ -43,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TasksIT {
 
-    private static final String TASKS_URL = "/api/tasks/";
+    private static final String TASKS_URL = "tasks";
     private static final ParameterizedTypeReference<Task> TASK_RESPONSE_TYPE = new ParameterizedTypeReference<Task>() {
     };
     public static final ParameterizedTypeReference<PagedResources<Task>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Task>>() {
@@ -116,23 +115,19 @@ public class TasksIT {
         //given
         processInstanceRestTemplate.startProcess("SimpleProcess");
         Task task = executeRequestGetTasks().getBody().iterator().next();
-        ClaimTaskInfo claimTaskInfo = new ClaimTaskInfo();
-        claimTaskInfo.setAssignee("peter");
 
         //when
-        ResponseEntity<Task> responseEntity = executeRequestClaim(task,
-                                                                  claimTaskInfo);
+        ResponseEntity<Task> responseEntity = executeRequestClaim(task);
 
         //then
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getBody().getAssignee()).isEqualTo("peter");
     }
 
-    private ResponseEntity<Task> executeRequestClaim(Task task,
-                                                     ClaimTaskInfo claimTaskInfo) {
+    private ResponseEntity<Task> executeRequestClaim(Task task) {
         return testRestTemplate.exchange(TASKS_URL + task.getId() + "/claim",
                                          HttpMethod.POST,
-                                         new HttpEntity<>(claimTaskInfo),
+                                         null,
                                          TASK_RESPONSE_TYPE);
     }
 
@@ -142,10 +137,7 @@ public class TasksIT {
         processInstanceRestTemplate.startProcess("SimpleProcess");
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
-        ClaimTaskInfo claimTaskInfo = new ClaimTaskInfo();
-        claimTaskInfo.setAssignee("peter");
-        executeRequestClaim(task,
-                            claimTaskInfo);
+        executeRequestClaim(task);
 
         //when
         ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/release",
@@ -182,14 +174,13 @@ public class TasksIT {
         processInstanceRestTemplate.startProcess("SimpleProcess");
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
-        CompleteTaskInfo completeTaskInfo = new CompleteTaskInfo();
-        completeTaskInfo.setInputVariables(Collections.singletonMap("myVar",
-                                                                    "any"));
+        CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd(Collections.singletonMap("myVar",
+                                                                                       "any"));
 
         //when
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",
                                                                         HttpMethod.POST,
-                                                                        new HttpEntity<>(completeTaskInfo),
+                                                                        new HttpEntity<>(completeTaskCmd),
                                                                         new ParameterizedTypeReference<Void>() {
                                                                         });
 

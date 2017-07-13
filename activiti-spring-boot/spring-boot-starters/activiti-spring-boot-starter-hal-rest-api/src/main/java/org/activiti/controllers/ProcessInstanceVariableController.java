@@ -13,7 +13,7 @@
  *
  */
 
-package org.activiti.services;
+package org.activiti.controllers;
 
 import java.util.Map;
 
@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
  */
 @RestController
-@RequestMapping(value = "/api/process-instances/{processInstanceId}/variables", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "process-instances/{processInstanceId}/variables", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessInstanceVariableController {
 
     private final RuntimeService runtimeService;

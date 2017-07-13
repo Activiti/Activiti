@@ -35,25 +35,37 @@ public class TaskConverter implements ModelConverter<Task, org.activiti.client.m
     }
 
     @Override
-    public org.activiti.client.model.Task from(Task task) {
-        org.activiti.client.model.Task clientTask = new org.activiti.client.model.Task();
-        clientTask.setId(task.getId());
-        clientTask.setName(task.getName());
-        clientTask.setAssignee(task.getAssignee());
-        clientTask.setCreateTime(task.getCreateTime());
-        clientTask.setDueDate(task.getDueDate());
-        clientTask.setDescription(task.getDescription());
-        clientTask.setOwner(task.getOwner());
-        clientTask.setPriority(task.getPriority());
-        clientTask.setTaskDefinitionKey(task.getTaskDefinitionKey());
-        clientTask.setProcessDefinitionId(task.getProcessDefinitionId());
-        clientTask.setProcessInstanceId(task.getProcessInstanceId());
-        return clientTask;
+    public org.activiti.client.model.Task from(Task source) {
+        org.activiti.client.model.Task task = null;
+        if (source != null) {
+            task = new org.activiti.client.model.Task(source.getId(),
+                                                      source.getOwner(),
+                                                      source.getAssignee(),
+                                                      source.getName(),
+                                                      source.getDescription(),
+                                                      source.getCreateTime(),
+                                                      source.getClaimTime(),
+                                                      source.getDueDate(),
+                                                      source.getPriority(),
+                                                      source.getProcessDefinitionId(),
+                                                      source.getProcessInstanceId(),
+                                                      calculateStatus(source));
+        }
+        return task;
+    }
+
+    private String calculateStatus(Task source) {
+        if(source.isSuspended()){
+            return org.activiti.client.model.Task.TaskStatus.SUSPENDED.name();
+        }else if(source.getAssignee() != null && !source.getAssignee().isEmpty()) {
+            return org.activiti.client.model.Task.TaskStatus.ASSIGNED.name();
+        }
+        return org.activiti.client.model.Task.TaskStatus.CREATED.name();
     }
 
     @Override
     public List<org.activiti.client.model.Task> from(List<Task> tasks) {
-        return listConverter.from(tasks, this);
+        return listConverter.from(tasks,
+                                  this);
     }
-
 }
