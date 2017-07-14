@@ -39,7 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Component
 public class ProcessInstanceRestTemplate {
 
-    public static final String PROCESS_INSTANCES_RELATIVE_URL = "/api/process-instances/";
+    public static final String PROCESS_INSTANCES_RELATIVE_URL = "/process-instances/";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
