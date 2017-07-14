@@ -42,8 +42,7 @@ public class ProcessInstanceConverter implements ModelConverter<ProcessInstance,
                                                                             source.getStartUserId(),
                                                                             source.getStartTime(),
                                                                             source.getBusinessKey(),
-                                                                            calculateStatus(source),
-                                                                            source.getStartUserId());
+                                                                            calculateStatus(source));
         }
         return processInstance;
     }

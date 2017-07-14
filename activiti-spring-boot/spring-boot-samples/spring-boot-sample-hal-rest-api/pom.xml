@@ -107,12 +107,10 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
-      <version>3.0.21.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson2-provider</artifactId>
-      <version>3.0.21.Final</version>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>

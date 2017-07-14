@@ -74,13 +74,15 @@
     <jetty-io.version>8.1.16.v20140903</jetty-io.version>
     <jetty-util.version>8.1.16.v20140903</jetty-util.version>
     <swagger.version>1.5.10</swagger.version>
+    <resteasy.version>3.0.21.Final</resteasy.version>
 
     <!--keycloak snapshot that was used to build boot2 adapter
     the original snapshot doesn't contain the boot2 adapter, just this particular build
     see https://issues.jboss.org/browse/KEYCLOAK-5098
     https://github.com/keycloak/keycloak/pull/4279
     -->
-    <keycloak.version>3.2.0.CR1-SNAPSHOT</keycloak.version>
+    <keycloak.snapshot.version>3.2.0.CR1-SNAPSHOT</keycloak.snapshot.version>
+    <keycloak.version>3.2.0.Final</keycloak.version>
 
     <!-- plugins -->
     <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
@@ -161,31 +163,31 @@
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-admin-client</artifactId>
-        <version>3.2.0.Final</version>
+        <version>${keycloak.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-core</artifactId>
-        <version>3.2.0.Final</version>
+        <version>${keycloak.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-adapter-core</artifactId>
-        <version>3.2.0.Final</version>
+        <version>${keycloak.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-spring-security-adapter</artifactId>
-        <version>3.2.0.Final</version>
+        <version>${keycloak.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-spring-boot-2-adapter</artifactId>
-        <version>${keycloak.version}</version>
+        <version>${keycloak.snapshot.version}</version>
       </dependency>
 
       <!--
@@ -194,21 +196,33 @@
   <dependency>
     <groupId>org.keycloak</groupId>
     <artifactId>keycloak-tomcat8-adapter</artifactId>
-    <version>3.2.0.Final</version>
+    <version>${keycloak.version}</version>
   </dependency>
   -->
       <!--
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-undertow-adapter</artifactId>
-        <version>3.2.0.Final</version>
+        <version>${keycloak.version}</version>
       </dependency>
 -->
 
       <dependency>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-jetty94-adapter</artifactId>
-        <version>3.2.0.Final</version>
+        <version>${keycloak.version}</version>
+      </dependency>
+
+      <!-- addresses https://issues.jboss.org/browse/KEYCLOAK-2009 , may not be needed on servers other than embedded jetty-->
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-client</artifactId>
+        <version>3.0.21.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jackson2-provider</artifactId>
+        <version>3.0.21.Final</version>
       </dependency>
 
       <!-- Logging -->

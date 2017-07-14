@@ -76,8 +76,8 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
         assertThat(returnedProcInst).isNotNull();
         assertThat(returnedProcInst.getId()).isNotNull();
         assertThat(returnedProcInst.getProcessDefinitionId()).contains("SimpleProcess:");
-        assertThat(returnedProcInst.getStartUserId()).isNotNull();
-        assertThat(returnedProcInst.getStartUserId()).isEqualTo(keycloaktestuser);//will only match if using username not id
+        assertThat(returnedProcInst.getInitiator()).isNotNull();
+        assertThat(returnedProcInst.getInitiator()).isEqualTo(keycloaktestuser);//will only match if using username not id
     }
 
     @Test

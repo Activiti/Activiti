@@ -35,7 +35,6 @@ public class ProcessInstance {
     private Date startDate;
     private String businessKey;
     private String status;
-    private String startUserId;
 
     public ProcessInstance() {
     }
@@ -47,8 +46,7 @@ public class ProcessInstance {
                            String initiator,
                            Date startDate,
                            String businessKey,
-                           String status,
-                           String startUserId) {
+                           String status) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -57,7 +55,6 @@ public class ProcessInstance {
         this.businessKey = businessKey;
         this.status = status;
         this.processDefinitionId = processDefinitionId;
-        this.startUserId = startUserId;
     }
 
     public String getId() {
@@ -91,12 +88,5 @@ public class ProcessInstance {
     public String getProcessDefinitionId() {
         return processDefinitionId;
     }
-    
-    public String getStartUserId() {
-      return startUserId;
-    }
 
-    public void setStartUserId(String startUserId) {
-      this.startUserId = startUserId;
-    }
 }
