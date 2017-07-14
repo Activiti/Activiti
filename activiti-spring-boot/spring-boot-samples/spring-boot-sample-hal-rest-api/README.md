@@ -6,7 +6,7 @@ The REST endpoints are also secured using keycloak as an identity provider.
 
 The keycloak integration for authentication is based upon https://developers.redhat.com/blog/2017/05/25/easily-secure-your-spring-boot-applications-with-keycloak/ 
 
-The keycloak setup used here can be replicated by importing the provided keycloak realm and users json files. The user 'testuser' with password 'password' is used for accessing endpoints. The user 'client'/'client' is for using admin client to look up groups.
+The keycloak setup used here can be replicated by importing the provided keycloak realm and users json files. The user 'testuser' with password 'password' is used for accessing endpoints. The user 'hr'/'password' is in the 'hr' group. The user 'client'/'client' is for using admin client to look up groups.
 
 The keycloak integration for passing the user on to Activiti is based upon https://dzone.com/articles/easily-secure-your-spring-boot-applications-with-k
 
@@ -18,7 +18,7 @@ To run using a standalone keycloak, download keycloak and run using the followin
 
 The port-offset is important as otherwise Activiti and Keycloak will have a port confllict.
 
-To hit an endpoint in the browser, go to http://localhost:8080/api/process-definitions
+To hit an endpoint in the browser, go to http://localhost:8080/process-definitions
 
 
 TODO: Would like  to configure postman to get the keycloak token and use it on subsequent requests - see http://xpam.pl/blog/?p=154 , seems like nobody has documented how to do this successfully for keycloak
