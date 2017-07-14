@@ -15,91 +15,88 @@
 
 package org.activiti.client.model;
 
-/**
- *
+import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
- */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProcessInstance {
 
-  private String id;
-  private String businessKey;
-  private boolean suspended;
-  private boolean ended;
-  private String processDefinitionId;
-  private String processDefinitionKey;
-  private String activityId;
-  private String name;
-  private String startUserId;
+    public enum ProcessInstanceStatus {
+        RUNNING, SUSPENDED, COMPLETED
+    }
 
-  public String getId() {
-    return id;
-  }
+    private String id;
+    private String name;
+    private String description;
+    private String processDefinitionId;
+    private String initiator;
+    private Date startDate;
+    private String businessKey;
+    private String status;
+    private String startUserId;
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public ProcessInstance() {
+    }
 
-  public String getBusinessKey() {
-    return businessKey;
-  }
+    public ProcessInstance(String id,
+                           String name,
+                           String description,
+                           String processDefinitionId,
+                           String initiator,
+                           Date startDate,
+                           String businessKey,
+                           String status,
+                           String startUserId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.startDate = startDate;
+        this.initiator = initiator;
+        this.businessKey = businessKey;
+        this.status = status;
+        this.processDefinitionId = processDefinitionId;
+        this.startUserId = startUserId;
+    }
 
-  public void setBusinessKey(String businessKey) {
-    this.businessKey = businessKey;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public boolean isSuspended() {
-    return suspended;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setSuspended(boolean suspended) {
-    this.suspended = suspended;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public boolean isEnded() {
-    return ended;
-  }
+    public Date getStartDate() {
+        return startDate;
+    }
 
-  public void setEnded(boolean ended) {
-    this.ended = ended;
-  }
+    public String getInitiator() {
+        return initiator;
+    }
 
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
+    public String getBusinessKey() {
+        return businessKey;
+    }
 
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
+    public String getStatus() {
+        return status;
+    }
 
-  public String getProcessDefinitionKey() {
-    return processDefinitionKey;
-  }
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
+    
+    public String getStartUserId() {
+      return startUserId;
+    }
 
-  public void setProcessDefinitionKey(String processDefinitionKey) {
-    this.processDefinitionKey = processDefinitionKey;
-  }
-
-  public String getActivityId() {
-    return activityId;
-  }
-
-  public void setActivityId(String activityId) {
-    this.activityId = activityId;
-  }
-
-  public void setName(String name) {
-	  this.name = name;
-  }
-
-  public String getName() {
-	  return name;
-  }
-
-  public String getStartUserId() {
-    return startUserId;
-  }
-
-  public void setStartUserId(String startUserId) {
-    this.startUserId = startUserId;
-  }
+    public void setStartUserId(String startUserId) {
+      this.startUserId = startUserId;
+    }
 }

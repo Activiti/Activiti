@@ -15,51 +15,44 @@
 
 package org.activiti.client.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProcessDefinition {
 
-  private String id;
-  private String name;
-  private String category;
-  private int version;
-  private String deploymentId;
+    private String id;
+    private String name;
+    private String description;
+    private int version;
 
-  public String getId() {
-    return id;
-  }
+    public ProcessDefinition() {
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public ProcessDefinition(String id,
+                             String name,
+                             String description,
+                             int version) {
+        this.id = id;
+        this.name = name;
+        this.version = version;
+        this.description = description;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getCategory() {
-    return category;
-  }
+    public String getDescription() {
+        return description;
+    }
 
-  public void setCategory(String category) {
-    this.category = category;
-  }
-
-  public int getVersion() {
-    return version;
-  }
-
-  public void setVersion(int version) {
-    this.version = version;
-  }
-
-  public String getDeploymentId() {
-    return deploymentId;
-  }
-
-  public void setDeploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
-  }
+    public int getVersion() {
+        return version;
+    }
 }

@@ -17,8 +17,9 @@ package org.activiti.client.model.resources.assembler;
 
 import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.resources.ProcessDefinitionResource;
-import org.activiti.services.ProcessDefinitionController;
-import org.activiti.services.ProcessInstanceController;
+import org.activiti.controllers.HomeController;
+import org.activiti.controllers.ProcessDefinitionController;
+import org.activiti.controllers.ProcessInstanceController;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -26,20 +27,22 @@ import org.springframework.stereotype.Component;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-/**
-
- */
 @Component
 public class ProcessDefinitionResourceAssembler extends ResourceAssemblerSupport<ProcessDefinition, ProcessDefinitionResource> {
 
     public ProcessDefinitionResourceAssembler() {
-        super(ProcessDefinitionController.class, ProcessDefinitionResource.class);
+        super(ProcessDefinitionController.class,
+              ProcessDefinitionResource.class);
     }
 
     @Override
     public ProcessDefinitionResource toResource(ProcessDefinition processDefinition) {
         Link selfRel = linkTo(methodOn(ProcessDefinitionController.class).getProcessDefinition(processDefinition.getId())).withSelfRel();
         Link startProcessLink = linkTo(methodOn(ProcessInstanceController.class).startProcess(null)).withRel("startProcess");
-        return new ProcessDefinitionResource(processDefinition, selfRel, startProcessLink);
+        Link homeLink = linkTo(HomeController.class).withRel("home");
+        return new ProcessDefinitionResource(processDefinition,
+                                             selfRel,
+                                             startProcessLink,
+                                             homeLink);
     }
 }

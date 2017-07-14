@@ -20,8 +20,9 @@ import java.util.List;
 
 import org.activiti.client.model.Task;
 import org.activiti.client.model.resources.TaskResource;
-import org.activiti.services.ProcessInstanceController;
-import org.activiti.services.TaskController;
+import org.activiti.controllers.HomeController;
+import org.activiti.controllers.ProcessInstanceController;
+import org.activiti.controllers.TaskController;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -29,26 +30,29 @@ import org.springframework.stereotype.Component;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-/**
-
- */
 @Component
 public class TaskResourceAssembler extends ResourceAssemblerSupport<Task, TaskResource> {
 
     public TaskResourceAssembler() {
-        super(TaskController.class, TaskResource.class);
+        super(TaskController.class,
+              TaskResource.class);
     }
 
     @Override
     public TaskResource toResource(Task task) {
         List<Link> links = new ArrayList<>();
-        links.add(linkTo(methodOn(TaskController.class).getTask(task.getId())).withSelfRel());
-        if (!task.isClaimed()) {
-            links.add(linkTo(methodOn(TaskController.class).claimTask(task.getId(), null)).withRel("claim"));
+        links.add(linkTo(methodOn(TaskController.class).getTaskById(task.getId())).withSelfRel());
+        if (!task.getStatus().equals(Task.TaskStatus.ASSIGNED.name())) {
+            links.add(linkTo(methodOn(TaskController.class).claimTask(task.getId())).withRel("claim"));
         } else {
-            links.add(linkTo(methodOn(TaskController.class).completeTask(task.getId(), null)).withRel("complete"));
+            links.add(linkTo(methodOn(TaskController.class).releaseTask(task.getId())).withRel("release"));
+            links.add(linkTo(methodOn(TaskController.class).completeTask(task.getId(),
+                                                                         null)).withRel("complete"));
         }
-        links.add(linkTo(methodOn(ProcessInstanceController.class).getProcessInstance(task.getProcessInstanceId())).withRel("processInstance"));
-        return new TaskResource(task, links);
+        links.add(linkTo(methodOn(ProcessInstanceController.class).getProcessInstanceById(task.getProcessInstanceId())).withRel("processInstance"));
+        Link homeLink = linkTo(HomeController.class).withRel("home");
+        links.add(homeLink);
+        return new TaskResource(task,
+                                links);
     }
 }

@@ -15,15 +15,12 @@
 
 package org.activiti.model.converter;
 
+import java.util.List;
+
 import org.activiti.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-/**
-
- */
 @Component
 public class ProcessInstanceConverter implements ModelConverter<ProcessInstance, org.activiti.client.model.ProcessInstance> {
 
@@ -35,22 +32,34 @@ public class ProcessInstanceConverter implements ModelConverter<ProcessInstance,
     }
 
     @Override
-    public org.activiti.client.model.ProcessInstance from(ProcessInstance processInstance) {
-        org.activiti.client.model.ProcessInstance clientObject = new org.activiti.client.model.ProcessInstance();
-        clientObject.setId(processInstance.getId());
-        clientObject.setName(processInstance.getName());
-        clientObject.setProcessDefinitionId(processInstance.getProcessDefinitionId());
-        clientObject.setActivityId(processInstance.getActivityId());
-        clientObject.setBusinessKey(processInstance.getBusinessKey());
-        clientObject.setEnded(processInstance.isEnded());
-        clientObject.setSuspended(processInstance.isSuspended());
-        clientObject.setStartUserId(processInstance.getStartUserId());
-        return clientObject;
+    public org.activiti.client.model.ProcessInstance from(ProcessInstance source) {
+        org.activiti.client.model.ProcessInstance processInstance = null;
+        if (source != null) {
+            processInstance = new org.activiti.client.model.ProcessInstance(source.getId(),
+                                                                            source.getName(),
+                                                                            source.getDescription(),
+                                                                            source.getProcessDefinitionId(),
+                                                                            source.getStartUserId(),
+                                                                            source.getStartTime(),
+                                                                            source.getBusinessKey(),
+                                                                            calculateStatus(source),
+                                                                            source.getStartUserId());
+        }
+        return processInstance;
+    }
+
+    private String calculateStatus(ProcessInstance source) {
+        if (source.isSuspended()) {
+            return org.activiti.client.model.ProcessInstance.ProcessInstanceStatus.SUSPENDED.name();
+        } else if (source.isEnded()) {
+            return org.activiti.client.model.ProcessInstance.ProcessInstanceStatus.COMPLETED.name();
+        }
+        return org.activiti.client.model.ProcessInstance.ProcessInstanceStatus.RUNNING.name();
     }
 
     @Override
     public List<org.activiti.client.model.ProcessInstance> from(List<ProcessInstance> processInstances) {
-        return listConverter.from(processInstances, this);
+        return listConverter.from(processInstances,
+                                  this);
     }
-
 }

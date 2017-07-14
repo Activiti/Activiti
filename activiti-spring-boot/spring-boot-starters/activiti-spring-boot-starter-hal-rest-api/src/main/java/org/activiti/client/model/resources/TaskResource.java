@@ -19,9 +19,6 @@ import org.activiti.client.model.Task;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 
-/**
-
- */
 public class TaskResource extends Resource<Task> {
 
     public TaskResource(Task content, Iterable<Link> links) {
