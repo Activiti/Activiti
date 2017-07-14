@@ -17,9 +17,8 @@
 package org.activiti.runtime;
 
 import org.activiti.client.model.ProcessInstance;
-import org.activiti.client.model.StartProcessInfo;
 import org.activiti.client.model.Task;
-import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
+import org.activiti.client.model.commands.StartProcessInstanceCmd;
 import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -30,10 +29,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
@@ -53,13 +50,11 @@ public class ProcessInstanceRestTemplate {
         return headers;
     }
 
-    public ResponseEntity<ProcessInstance> startProcess(String processDefinitionKey,
+    public ResponseEntity<ProcessInstance> startProcess(String processDefinitionId,
                                                         Map<String, Object> variables, AccessTokenResponse accessToken) {
-        StartProcessInfo info = new StartProcessInfo();
-        info.setProcessDefinitionKey(processDefinitionKey);
-        info.setVariables(variables);
+        StartProcessInstanceCmd cmd = new StartProcessInstanceCmd(processDefinitionId, variables);
 
-        HttpEntity<StartProcessInfo> requestEntity = new HttpEntity<>(info,getHeaders(accessToken.getToken()));
+        HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(cmd,getHeaders(accessToken.getToken()));
 
 
         ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL,
