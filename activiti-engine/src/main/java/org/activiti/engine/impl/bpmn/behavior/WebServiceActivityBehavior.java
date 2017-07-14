@@ -198,7 +198,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
     
     for (org.activiti.bpmn.model.ItemDefinition itemDefinitionElement : bpmnModel.getItemDefinitions().values()) {
     
-      if (itemDefinitionMap.containsKey(itemDefinitionElement.getId()) == false) {
+      if (!itemDefinitionMap.containsKey(itemDefinitionElement.getId())) {
         StructureDefinition structure = null;
     
         try {
@@ -222,7 +222,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   
   public void createMessages(BpmnModel bpmnModel) {
     for (Message messageElement : bpmnModel.getMessages()) {
-      if (messageDefinitionMap.containsKey(messageElement.getId()) == false) {
+      if (!messageDefinitionMap.containsKey(messageElement.getId())) {
         MessageDefinition messageDefinition = new MessageDefinition(messageElement.getId());
         if (StringUtils.isNotEmpty(messageElement.getItemRef())) {
           if (itemDefinitionMap.containsKey(messageElement.getItemRef())) {
@@ -243,7 +243,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
 
       for (org.activiti.bpmn.model.Operation operationObject : interfaceObject.getOperations()) {
           
-        if (operationMap.containsKey(operationObject.getId()) == false) {
+        if (!operationMap.containsKey(operationObject.getId())) {
           MessageDefinition inMessage = messageDefinitionMap.get(operationObject.getInMessageRef());
           Operation operation = new Operation(operationObject.getId(), operationObject.getName(), bpmnInterface, inMessage);
           operation.setImplementation(wsOperationMap.get(operationObject.getImplementationRef()));
@@ -262,7 +262,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   }
   
   protected void fillImporterInfo(Import theImport, String sourceSystemId) {
-    if (xmlImporterMap.containsKey(theImport.getImportType()) == false) {
+    if (!xmlImporterMap.containsKey(theImport.getImportType())) {
       
       if (theImport.getImportType().equals("http://schemas.xmlsoap.org/wsdl/")) {
         Class<?> wsdlImporterClass;

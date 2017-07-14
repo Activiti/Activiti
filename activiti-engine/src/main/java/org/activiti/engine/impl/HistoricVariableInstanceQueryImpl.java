@@ -221,7 +221,7 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
 
     List<HistoricVariableInstance> historicVariableInstances = commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstancesByQueryCriteria(this, page);
 
-    if (excludeVariableInitialization == false) {
+    if (!excludeVariableInitialization) {
       for (HistoricVariableInstance historicVariableInstance : historicVariableInstances) {
         if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
           HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
