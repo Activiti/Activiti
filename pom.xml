@@ -31,7 +31,6 @@
     <assertj.version>3.8.0</assertj.version>
     <el-api.version>2.2</el-api.version>
     <slf4j.version>1.7.6</slf4j.version>
-    <hibernate.version>1.0.0.Final</hibernate.version>
     <hibernate-core.version>5.2.2.Final</hibernate-core.version>
     <hibernate-jpa-2.1-api.version>1.0.0.Final</hibernate-jpa-2.1-api.version>
     <hibernate-validator.version>5.3.4.Final</hibernate-validator.version>
@@ -134,7 +133,7 @@
       <dependency>
         <groupId>org.hibernate.javax.persistence</groupId>
         <artifactId>hibernate-jpa-2.1-api</artifactId>
-        <version>${hibernate.version}</version>
+        <version>${hibernate-jpa-2.1-api.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.hateoas</groupId>

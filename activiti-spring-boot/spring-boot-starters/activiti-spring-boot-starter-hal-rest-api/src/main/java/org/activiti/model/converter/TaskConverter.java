@@ -49,6 +49,7 @@ public class TaskConverter implements ModelConverter<Task, org.activiti.client.m
                                                       source.getPriority(),
                                                       source.getProcessDefinitionId(),
                                                       source.getProcessInstanceId(),
+                                                      source.getParentTaskId(),
                                                       calculateStatus(source));
         }
         return task;
