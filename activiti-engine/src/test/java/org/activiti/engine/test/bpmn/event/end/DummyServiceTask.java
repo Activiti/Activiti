@@ -12,22 +12,19 @@
  */
 package org.activiti.engine.test.bpmn.event.end;
 
-import java.util.logging.Logger;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
 
 public class DummyServiceTask extends TaskActivityBehavior {
 
-	private static final Logger log = Logger.getLogger("DummyServiceTask");
+    public DummyServiceTask() {
+        super();
+    }
 
-  public DummyServiceTask() {
-    super();
-  }
-
-  @Override
-  public void trigger(DelegateExecution execution, String signalName, Object signalData) {
-    leave(execution);
-  }
-  
+    @Override
+    public void trigger(DelegateExecution execution,
+                        String signalName,
+                        Object signalData) {
+        leave(execution);
+    }
 }
