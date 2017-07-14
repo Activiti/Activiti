@@ -20,6 +20,8 @@ import org.junit.Before;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 
@@ -49,5 +51,15 @@ public class KeycloakEnabledBaseTestIT {
 
     protected AccessTokenResponse authenticateUser() throws IOException {
         return Keycloak.getInstance(authServer,realm,keycloaktestuser,keycloaktestpassword,resource).tokenManager().getAccessToken();
+    }
+
+    protected HttpHeaders getHeaders(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + new String(token));
+        return headers;
+    }
+
+    protected HttpEntity getRequestEntityWithHeaders(){
+        return new org.springframework.http.HttpEntity(getHeaders(accessToken.getToken()));
     }
 }

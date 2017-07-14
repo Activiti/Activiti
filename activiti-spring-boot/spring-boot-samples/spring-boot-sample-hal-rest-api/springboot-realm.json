@@ -227,6 +227,14 @@
     }
   },
   "groups" : [ {
+    "id" : "4dabdbc9-d8d1-47e2-9d4c-f6ce213de6b1",
+    "name" : "hr",
+    "path" : "/hr",
+    "attributes" : { },
+    "realmRoles" : [ ],
+    "clientRoles" : { },
+    "subGroups" : [ ]
+  }, {
     "id" : "3345fc60-2a38-4ceb-bd84-a6f4109c25c9",
     "name" : "testgroup",
     "path" : "/testgroup",
@@ -415,6 +423,20 @@
         "jsonType.label" : "String"
       }
     }, {
+      "id" : "acc6f78b-077e-4dd0-922b-9210e23cf427",
+      "name" : "Client IP Address",
+      "protocol" : "openid-connect",
+      "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+      "consentRequired" : false,
+      "consentText" : "",
+      "config" : {
+        "user.session.note" : "clientAddress",
+        "id.token.claim" : "true",
+        "access.token.claim" : "true",
+        "claim.name" : "clientAddress",
+        "jsonType.label" : "String"
+      }
+    }, {
       "id" : "98a1e8ad-ebff-4552-b411-24078897a506",
       "name" : "full name",
       "protocol" : "openid-connect",
@@ -468,6 +490,34 @@
         "id.token.claim" : "true",
         "access.token.claim" : "true",
         "claim.name" : "family_name",
+        "jsonType.label" : "String"
+      }
+    }, {
+      "id" : "b0fdb7f7-dfb6-4f34-b91e-aa48f3c6eb2a",
+      "name" : "Client ID",
+      "protocol" : "openid-connect",
+      "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+      "consentRequired" : false,
+      "consentText" : "",
+      "config" : {
+        "user.session.note" : "clientId",
+        "id.token.claim" : "true",
+        "access.token.claim" : "true",
+        "claim.name" : "clientId",
+        "jsonType.label" : "String"
+      }
+    }, {
+      "id" : "0bb7887a-c716-47ca-a664-c69a01e0ecec",
+      "name" : "Client Host",
+      "protocol" : "openid-connect",
+      "protocolMapper" : "oidc-usersessionmodel-note-mapper",
+      "consentRequired" : false,
+      "consentText" : "",
+      "config" : {
+        "user.session.note" : "clientHost",
+        "id.token.claim" : "true",
+        "access.token.claim" : "true",
+        "claim.name" : "clientHost",
         "jsonType.label" : "String"
       }
     }, {

@@ -18,6 +18,7 @@ package org.activiti.services;
 
 import org.activiti.client.model.Task;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.model.converter.TaskConverter;
 import org.activiti.services.sort.TaskSortApplier;
@@ -46,7 +47,12 @@ public class PageableTaskService {
     }
 
     public Page<Task> getTasks(Pageable pageable) {
+
+        String userId = Authentication.getAuthenticatedUserId();
         TaskQuery query = taskService.createTaskQuery();
+        if(userId != null) {
+            query = query.taskCandidateOrAssigned(userId);
+        }
         sortApplier.applySort(query, pageable);
         return pageRetriever.loadPage(query, pageable, taskConverter);
     }
