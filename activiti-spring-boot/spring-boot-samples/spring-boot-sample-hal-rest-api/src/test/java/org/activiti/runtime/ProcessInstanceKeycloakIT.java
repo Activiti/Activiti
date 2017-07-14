@@ -17,14 +17,12 @@
 package org.activiti.runtime;
 
 import org.activiti.KeycloakEnabledBaseTestIT;
+import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.ProcessInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -34,9 +32,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.io.IOException;
 
-import static org.activiti.runtime.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.activiti.runtime.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
@@ -44,17 +44,31 @@ import static org.assertj.core.api.Assertions.*;
 public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
 
     private static final String SIMPLE_PROCESS = "SimpleProcess";
+    public static final String PROCESS_DEFINITIONS_URL = "/process-definitions/";
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private ProcessInstanceRestTemplate processInstanceRestTemplate;
+    private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
+
+
+    private Map<String, String> processDefinitionIds = new HashMap<>();
+    @Before
+    public void setup() throws Exception{
+        super.setUp();
+        ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
+        assertThat(processDefinitions.getBody().getContent()).hasSize(1);
+        for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
+            processDefinitionIds.put(pd.getName(), pd.getId());
+        }
+    }
+
 
     @Test
     public void shouldStartProcess() throws Exception {
         //when
-        ResponseEntity<ProcessInstance> entity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS,accessToken);
+        ResponseEntity<ProcessInstance> entity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
 
         //then
         assertThat(entity).isNotNull();
@@ -71,7 +85,7 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
 
 
         //given
-        ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(SIMPLE_PROCESS,accessToken);
+        ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
 
         org.springframework.http.HttpEntity requestEntity = new org.springframework.http.HttpEntity(getHeaders(accessToken.getToken()));
 
@@ -93,9 +107,9 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
     public void shouldRetrieveListOfProcessInstances() throws Exception {
 
         //given
-        processInstanceRestTemplate.startProcess(SIMPLE_PROCESS,accessToken);
-        processInstanceRestTemplate.startProcess(SIMPLE_PROCESS,accessToken);
-        processInstanceRestTemplate.startProcess(SIMPLE_PROCESS,accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
 
         org.springframework.http.HttpEntity requestEntity = new org.springframework.http.HttpEntity(getHeaders(accessToken.getToken()));
 
@@ -117,5 +131,16 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + new String(token));
         return headers;
+    }
+
+    private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
+        ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
+        };
+        org.springframework.http.HttpEntity requestEntity = new org.springframework.http.HttpEntity(getHeaders(accessToken.getToken()));
+
+        return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
+                HttpMethod.GET,
+                requestEntity,
+                responseType);
     }
 }

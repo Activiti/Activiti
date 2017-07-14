@@ -37,7 +37,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Component
-public class ProcessInstanceRestTemplate {
+public class ProcessInstanceKeycloakRestTemplate {
 
     public static final String PROCESS_INSTANCES_RELATIVE_URL = "/process-instances/";
 
@@ -83,7 +83,7 @@ public class ProcessInstanceRestTemplate {
     }
 
     public ResponseEntity<Resource<Map<String, Object>>> getVariables(ResponseEntity<ProcessInstance> processInstanceEntity) {
-        ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/variables",
+        ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/variables",
                                                                                            HttpMethod.GET,
                                                                                            null,
                                                                                            new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
