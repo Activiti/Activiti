@@ -17,8 +17,10 @@ import java.io.IOException;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
+import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -44,6 +46,9 @@ public class JpaProcessEngineAutoConfiguration {
   @EnableConfigurationProperties(ActivitiProperties.class)
   public static class JpaConfiguration extends AbstractProcessEngineAutoConfiguration {
 
+    @Autowired(required = false)
+    protected UserGroupLookupProxy userGroupLookupProxy;
+
     @Bean
     @ConditionalOnMissingBean
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
@@ -57,7 +62,7 @@ public class JpaProcessEngineAutoConfiguration {
             PlatformTransactionManager transactionManager, SpringAsyncExecutor springAsyncExecutor) throws IOException {
 
       SpringProcessEngineConfiguration config = this.baseSpringProcessEngineConfiguration(dataSource, 
-          transactionManager, springAsyncExecutor);
+          transactionManager, springAsyncExecutor, userGroupLookupProxy);
       config.setJpaEntityManagerFactory(entityManagerFactory);
       config.setTransactionManager(transactionManager);
       config.setJpaHandleTransaction(false);

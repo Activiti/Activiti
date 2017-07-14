@@ -25,6 +25,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringCallerRunsRejectedJobsHandler;
@@ -66,7 +67,7 @@ public abstract class AbstractProcessEngineAutoConfiguration
   }
 
   protected SpringProcessEngineConfiguration baseSpringProcessEngineConfiguration(DataSource dataSource, PlatformTransactionManager platformTransactionManager,
-                                                                                  SpringAsyncExecutor springAsyncExecutor) throws IOException {
+                                                                                  SpringAsyncExecutor springAsyncExecutor, UserGroupLookupProxy userGroupLookupProxy) throws IOException {
 
     List<Resource> procDefResources = this.discoverProcessDefinitionResources(
         this.resourceLoader, this.activitiProperties.getProcessDefinitionLocationPrefix(),
@@ -93,6 +94,10 @@ public abstract class AbstractProcessEngineAutoConfiguration
     conf.setMailServerDefaultFrom(activitiProperties.getMailServerDefaultFrom());
     conf.setMailServerUseSSL(activitiProperties.isMailServerUseSsl());
     conf.setMailServerUseTLS(activitiProperties.isMailServerUseTls());
+
+    if(userGroupLookupProxy!=null) {
+      conf.setUserGroupLookupProxy(userGroupLookupProxy);
+    }
     
     conf.setHistoryLevel(activitiProperties.getHistoryLevel());
 
