@@ -19,10 +19,10 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 
 @SpringBootApplication
 @EnableBinding(QueryConsumerChannels.class)
-public class Application {
+public class QueryApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class,
+        SpringApplication.run(QueryApplication.class,
                               args);
     }
 

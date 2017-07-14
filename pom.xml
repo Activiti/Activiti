@@ -87,7 +87,6 @@
     <illegal-transitive-dependency-check.version>1.7.4</illegal-transitive-dependency-check.version>
     <maven-failsafe-plugin.version>2.20</maven-failsafe-plugin.version>
     <maven-source-plugin.version>2.1.1</maven-source-plugin.version>
-    <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
   </properties>
 
   <repositories>
@@ -108,6 +107,25 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>spring-snapshots</id>
+      <name>Spring Snapshots</name>
+      <url>http://repo.spring.io/snapshot</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>spring-milestones</id>
+      <name>Spring Milestones</name>
+      <url>http://repo.spring.io/milestone</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
   <dependencyManagement>
     <dependencies>
@@ -764,7 +782,11 @@
             </execution>
           </executions>
         </plugin>
-
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring.boot.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>

@@ -29,10 +29,10 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 @EnableBinding(HistoryConsumerChannels.class)
-public class Application implements CommandLineRunner{
+public class HistoryJPAApplication implements CommandLineRunner{
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class,
+        SpringApplication.run(HistoryJPAApplication.class,
                               args);
     }
 
