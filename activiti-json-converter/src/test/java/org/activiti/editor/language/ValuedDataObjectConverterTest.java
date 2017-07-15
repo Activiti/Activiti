@@ -27,12 +27,14 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
   @Test
   public void convertJsonToModel() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
+    assertNotNull(bpmnModel);
     validateModel(bpmnModel);
   }
 
   @Test
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
+    assertNotNull(bpmnModel);
     bpmnModel = convertToJsonAndBack(bpmnModel);
     validateModel(bpmnModel);
   }

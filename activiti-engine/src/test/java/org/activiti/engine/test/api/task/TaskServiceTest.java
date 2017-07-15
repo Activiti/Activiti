@@ -407,6 +407,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
   public void testDeleteTaskUnexistingTaskId() {
     // Deleting unexisting task should be silently ignored
+    assertNotNull(taskService);
     taskService.deleteTask("unexistingtaskid");
   }
 
@@ -508,6 +509,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
 
   public void testClaimAlreadyClaimedTaskBySameUser() {
     Task task = taskService.newTask();
+    assertNotNull(taskService);
     taskService.saveTask(task);
 
     // Claim task the first time
@@ -758,6 +760,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
     // Check behavior when adding the same user twice as candidate
 
     Task task = taskService.newTask();
+    assertNotNull(taskService);
     taskService.saveTask(task);
 
     taskService.addCandidateUser(task.getId(), "user");

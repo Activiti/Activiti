@@ -19,6 +19,7 @@ public class InCompleteSignalConverterTest extends AbstractConverterTest {
   @Test
   public void convertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
+    assertNotNull(bpmnModel);
     validateModel(bpmnModel);
   }
 

@@ -277,9 +277,9 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
         throw new ActivitiException("Could not instantiate businessRuleTask (id:" + businessRuleTask.getId()  + ") class: " + 
             businessRuleTask.getClassName(), e);
       }
-    } else {
+    }/* else {
       // no default behavior
-    }
+    }*/
 
     for (String ruleVariableInputObject : businessRuleTask.getInputVariables()) {
       ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleVariableInputObject.trim()));

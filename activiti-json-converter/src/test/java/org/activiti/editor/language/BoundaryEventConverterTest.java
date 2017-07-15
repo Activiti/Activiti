@@ -1,9 +1,5 @@
 package org.activiti.editor.language;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ErrorEventDefinition;
@@ -12,17 +8,21 @@ import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.junit.Test;
 
+import static org.junit.Assert.*;
+
 public class BoundaryEventConverterTest extends AbstractConverterTest {
 
   @Test
   public void convertJsonToModel() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
+    assertNotNull(bpmnModel);
     validateModel(bpmnModel);
   }
 
   @Test
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
+    assertNotNull(bpmnModel);
     bpmnModel = convertToJsonAndBack(bpmnModel);
     validateModel(bpmnModel);
   }

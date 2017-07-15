@@ -40,11 +40,11 @@ public class CompensateEventDefinitionParseHandler extends AbstractBpmnParseHand
       boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryCompensateEventActivityBehavior(boundaryEvent, 
           eventDefinition, boundaryEvent.isCancelActivity()));
 
-    } else {
+    }/* else {
 
       // What to do?
 
-    }
+    }*/
 
   }
 

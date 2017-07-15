@@ -16,12 +16,14 @@ public class DataStoreConverterTest extends AbstractConverterTest {
   @Test
   public void convertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
+    assertNotNull(bpmnModel);
     validateModel(bpmnModel);
   }
 
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
+    assertNotNull(bpmnModel);
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
   }

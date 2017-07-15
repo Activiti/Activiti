@@ -270,6 +270,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
    */
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/signal/SignalEventTest.testSignalWithGlobalScope.bpmn20.xml" })
   public void testSignalProcessInstanceStart() throws Exception {
+    assertNotNull(runtimeService);
     this.runtimeService.startProcessInstanceByKey("processWithSignalCatch");
     listener.clearEventsReceived();
 

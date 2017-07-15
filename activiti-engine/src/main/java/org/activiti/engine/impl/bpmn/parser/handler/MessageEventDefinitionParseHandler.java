@@ -48,9 +48,9 @@ public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler
       boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryMessageEventActivityBehavior(boundaryEvent, messageDefinition, boundaryEvent.isCancelActivity()));
     }
 
-    else {
+   /* else {
       // What to do here?
-    }
+    }*/
 
   }
 

@@ -22,12 +22,14 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
   @Test
   public void convertJsonToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
+    assertNotNull(bpmnModel);
     validateModel(bpmnModel);
   }
   
   @Test 
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
+    assertNotNull(bpmnModel);
     validateModel(bpmnModel);
     bpmnModel = exportAndReadXMLFile(bpmnModel);
     validateModel(bpmnModel);
