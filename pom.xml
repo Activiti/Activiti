@@ -47,7 +47,8 @@
     <joda-time.version>2.6</joda-time.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
-    <httpclient.version>4.3.5</httpclient.version>
+    <httpclient.version>4.5</httpclient.version>
+    <httpcore.version>4.4.1</httpcore.version>
     <javax.mail.version>1.4.1</javax.mail.version>
     <groovy-all.version>2.4.5</groovy-all.version>
     <groovy.version>1.7.5</groovy.version>
@@ -72,6 +73,15 @@
     <jetty-io.version>8.1.16.v20140903</jetty-io.version>
     <jetty-util.version>8.1.16.v20140903</jetty-util.version>
     <swagger.version>1.5.10</swagger.version>
+    <resteasy.version>3.0.21.Final</resteasy.version>
+
+    <!--keycloak snapshot that was used to build boot2 adapter
+    the original snapshot doesn't contain the boot2 adapter, just this particular build
+    see https://issues.jboss.org/browse/KEYCLOAK-5098
+    https://github.com/keycloak/keycloak/pull/4279
+    -->
+    <keycloak.snapshot.version>3.2.0.CR1-SNAPSHOT</keycloak.snapshot.version>
+    <keycloak.version>3.2.0.Final</keycloak.version>
 
     <!-- plugins -->
     <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
@@ -94,6 +104,14 @@
       <url>https://repo.spring.io/libs-milestone</url>
       <snapshots>
         <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository> <!-- Using snapshot repo to temporarily keep keycloak adapter -->
+      <id>activiti-snapshots</id>
+      <name>Activiti Snapshots</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+      <snapshots>
+        <enabled>true</enabled>
       </snapshots>
     </repository>
   </repositories>
@@ -140,6 +158,72 @@
         <artifactId>spring-hateoas</artifactId>
         <version>${spring.hateoas.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-admin-client</artifactId>
+        <version>${keycloak.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-core</artifactId>
+        <version>${keycloak.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-adapter-core</artifactId>
+        <version>${keycloak.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-spring-security-adapter</artifactId>
+        <version>${keycloak.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-spring-boot-2-adapter</artifactId>
+        <version>${keycloak.snapshot.version}</version>
+      </dependency>
+
+      <!--
+      keycloak boot 2 adapter only proven with jetty and undertow
+      see https://github.com/keycloak/keycloak/pull/4279
+  <dependency>
+    <groupId>org.keycloak</groupId>
+    <artifactId>keycloak-tomcat8-adapter</artifactId>
+    <version>${keycloak.version}</version>
+  </dependency>
+  -->
+      <!--
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-undertow-adapter</artifactId>
+        <version>${keycloak.version}</version>
+      </dependency>
+-->
+
+      <dependency>
+        <groupId>org.keycloak</groupId>
+        <artifactId>keycloak-jetty94-adapter</artifactId>
+        <version>${keycloak.version}</version>
+      </dependency>
+
+      <!-- addresses https://issues.jboss.org/browse/KEYCLOAK-2009 , may not be needed on servers other than embedded jetty-->
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-client</artifactId>
+        <version>3.0.21.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jackson2-provider</artifactId>
+        <version>3.0.21.Final</version>
+      </dependency>
+
       <!-- Logging -->
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -337,7 +421,11 @@
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>${httpclient.version}</version>
-        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>${httpcore.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.mail</groupId>
@@ -473,6 +561,7 @@
           <excludes>
             <exclude>**/*TestCase.java</exclude>
             <exclude>**/*IT.java</exclude>
+            <exclude>**/*Keycloak*.java</exclude>
           </excludes>
           <runOrder>alphabetical</runOrder>
         </configuration>
@@ -727,6 +816,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>${maven-failsafe-plugin.version}</version>
+          <configuration>
+            <excludes>
+              <exclude>**/*Keycloak*.java</exclude>
+            </excludes>
+          </configuration>
           <executions>
             <execution>
               <id>integration-test</id>

@@ -15,8 +15,10 @@ package org.activiti.spring.boot;
 import java.io.IOException;
 import javax.sql.DataSource;
 
+import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -30,6 +32,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 @EnableConfigurationProperties(ActivitiProperties.class)
 public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoConfiguration {
 
+    @Autowired(required = false)
+    protected UserGroupLookupProxy userGroupLookupProxy;
+
     @Bean
     @ConditionalOnMissingBean
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
@@ -37,11 +42,10 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             PlatformTransactionManager transactionManager,
             SpringAsyncExecutor springAsyncExecutor) throws IOException {
 
-        SpringProcessEngineConfiguration config = this.baseSpringProcessEngineConfiguration(dataSource,
-                                                                                            transactionManager,
-                                                                                            springAsyncExecutor);
-
-        config.setTransactionManager(transactionManager);
-        return config;
+        return this.baseSpringProcessEngineConfiguration(dataSource,
+                                                         transactionManager,
+                                                         springAsyncExecutor,
+                                                         userGroupLookupProxy);
     }
 }
+
