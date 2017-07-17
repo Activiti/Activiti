@@ -11,7 +11,7 @@ public class ActivitiConflictException extends ActivitiException {
   }
   
   public ActivitiConflictException(String message, Throwable cause) {
-	  super(message, cause);
+	super(message, cause);
   }
   
 }
