@@ -16,8 +16,10 @@
 package org.activiti.controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.resources.ProcessDefinitionResource;
@@ -44,16 +46,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProcessDefinitionController {
 
     private final RepositoryService repositoryService;
+    private final TaskService taskService;
     private final ProcessDefinitionConverter processDefinitionConverter;
     private final ProcessDefinitionResourceAssembler resourceAssembler;
     private final PageableRepositoryService pageableRepositoryService;
 
     @Autowired
     public ProcessDefinitionController(RepositoryService repositoryService,
+    								   TaskService taskService,
                                        ProcessDefinitionConverter processDefinitionConverter,
                                        ProcessDefinitionResourceAssembler resourceAssembler,
                                        PageableRepositoryService pageableRepositoryService) {
         this.repositoryService = repositoryService;
+        this.taskService = taskService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.resourceAssembler = resourceAssembler;
         this.pageableRepositoryService = pageableRepositoryService;
@@ -63,8 +68,7 @@ public class ProcessDefinitionController {
     public PagedResources<ProcessDefinitionResource> getProcessDefinitions(Pageable pageable,
                                                                            PagedResourcesAssembler<ProcessDefinition> pagedResourcesAssembler) {
         Page<ProcessDefinition> page = pageableRepositoryService.getProcessDefinitions(pageable);
-        return pagedResourcesAssembler.toResource(page,
-                                                  resourceAssembler);
+        return pagedResourcesAssembler.toResource(page, resourceAssembler);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -82,6 +86,22 @@ public class ProcessDefinitionController {
         if (processDefinition == null) {
             throw new ActivitiException("Unable to find process definition for the given id:'" + id + "'");
         }
-        return resourceAssembler.toResource(processDefinitionConverter.from(processDefinition));
+        List<String> users = new ArrayList<String>();
+        List<String> groups = new ArrayList<String>();
+        Map<String, Object> variables = new HashMap<String, Object>();
+        List<String> userTasks = new ArrayList<String>();
+        List<String> serviceTasks = new ArrayList<String>();
+        
+        ProcessDefinition pd = new ProcessDefinition(processDefinition.getId(), 
+        		processDefinition.getName(), 
+        		processDefinition.getDescription(), 
+        		processDefinition.getVersion(), 
+        		users, 
+        		groups, 
+        		variables, 
+        		userTasks, 
+        		serviceTasks);
+        
+        return resourceAssembler.toResource(pd);
     }
 }
