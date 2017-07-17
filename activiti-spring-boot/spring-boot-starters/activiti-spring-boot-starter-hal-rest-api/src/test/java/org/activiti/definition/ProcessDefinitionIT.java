@@ -89,4 +89,31 @@ public class ProcessDefinitionIT {
         assertThat(entity.getBody()).isNotNull();
         assertThat(entity.getBody().getId()).isEqualTo(aProcessDefinition.getId());
     }
+    
+    @Test
+    public void shouldReturnProcessDefinitionMetadata() throws Exception {
+    	//given
+        ParameterizedTypeReference<ProcessDefinition> responseType = new ParameterizedTypeReference<ProcessDefinition>() {
+        };
+
+        ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsEntity = getProcessDefinitions();
+        assertThat(processDefinitionsEntity).isNotNull();
+        assertThat(processDefinitionsEntity.getBody()).isNotNull();
+        assertThat(processDefinitionsEntity.getBody().getContent()).isNotEmpty();
+        ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
+        
+        //when
+        ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/meta",
+                                                                              HttpMethod.GET,
+                                                                              null,
+                                                                              responseType);
+        //then
+        assertThat(entity).isNotNull();
+        assertThat(entity.getBody()).isNotNull();
+        assertThat(entity.getBody().getVariables()).isNotNull();
+        assertThat(entity.getBody().getUsers()).isNotNull();
+        assertThat(entity.getBody().getGroups()).isNotNull();
+        assertThat(entity.getBody().getUserTasks()).isNotNull();
+        assertThat(entity.getBody().getServiceTasks()).isNotNull();
+    }
 }

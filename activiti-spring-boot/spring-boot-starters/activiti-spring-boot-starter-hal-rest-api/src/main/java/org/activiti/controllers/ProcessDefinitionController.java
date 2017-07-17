@@ -15,11 +15,17 @@
 
 package org.activiti.controllers;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.resources.ProcessDefinitionResource;
 import org.activiti.client.model.resources.assembler.ProcessDefinitionResourceAssembler;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
 import org.activiti.model.converter.ProcessDefinitionConverter;
 import org.activiti.services.PageableRepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +44,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProcessDefinitionController {
 
     private final RepositoryService repositoryService;
-
     private final ProcessDefinitionConverter processDefinitionConverter;
-
     private final ProcessDefinitionResourceAssembler resourceAssembler;
-
     private final PageableRepositoryService pageableRepositoryService;
 
     @Autowired
@@ -67,6 +70,15 @@ public class ProcessDefinitionController {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ProcessDefinitionResource getProcessDefinition(@PathVariable String id) {
         org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
+        if (processDefinition == null) {
+            throw new ActivitiException("Unable to find process definition for the given id:'" + id + "'");
+        }
+        return resourceAssembler.toResource(processDefinitionConverter.from(processDefinition));
+    }
+    
+    @RequestMapping(value = "/{id}/meta", method = RequestMethod.GET)
+    public ProcessDefinitionResource getProcessDefinitionMetadata(@PathVariable String id) {
+    	org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
         if (processDefinition == null) {
             throw new ActivitiException("Unable to find process definition for the given id:'" + id + "'");
         }
