@@ -20,7 +20,6 @@ The port-offset is important as otherwise Activiti and Keycloak will have a port
 
 To hit an endpoint in the browser, go to http://localhost:8080/process-definitions
 
-
-TODO: Would like  to configure postman to get the keycloak token and use it on subsequent requests - see http://xpam.pl/blog/?p=154 , seems like nobody has documented how to do this successfully for keycloak
+A postman postman collection is provided which includes a call to get the keycloak token and use it on subsequent requests (based upon http://xpam.pl/blog/?p=154) - note that the token does expire so can then be necessary to make the call again.
 
 TODO: Provide a reference a docker image with the keycloak json files applied... See https://github.com/dfranssen/docker-keycloak-import-realm and https://github.com/keycloak/keycloak-test-docker-images/tree/master/keycloak-sssd-integration-tests for info on how to do this.
