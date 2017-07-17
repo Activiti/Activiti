@@ -17,6 +17,15 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-services-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-services-audit-producer</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>test</scope>
@@ -124,11 +133,7 @@
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-services-audit-producer</artifactId>
-      <version>${project.version}</version>
-    </dependency>
+
   </dependencies>
 
 </project>

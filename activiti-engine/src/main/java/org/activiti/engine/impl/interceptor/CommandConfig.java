@@ -3,7 +3,7 @@ package org.activiti.engine.impl.interceptor;
 import org.activiti.engine.impl.cfg.TransactionPropagation;
 
 /**
- * Configuration settings for the command interceptor chain.
+ * Configuration settings for the commands interceptor chain.
  * 
  * Instances of this class are immutable, and thus thread- and share-safe.
  * 

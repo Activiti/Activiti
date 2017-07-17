@@ -47,11 +47,11 @@ public class CommandContext {
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected FailedJobCommandFactory failedJobCommandFactory;
   protected List<CommandContextCloseListener> closeListeners;
-  protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
+  protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a commands context
   protected boolean reused;
 
   protected ActivitiEngineAgenda agenda;
-  protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the command
+  protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the commands
   protected LinkedList<Object> resultStack = new LinkedList<Object>(); // needs to be a stack, as JavaDelegates can do api calls again
 
   public CommandContext(Command<?> command, ProcessEngineConfigurationImpl processEngineConfiguration) {
@@ -114,12 +114,12 @@ public class CommandContext {
   protected void logException() {
     if (exception instanceof JobNotFoundException || exception instanceof ActivitiTaskAlreadyClaimedException) {
       // reduce log level, because this may have been caused because of job deletion due to cancelActiviti="true"
-      log.info("Error while closing command context", exception);
+      log.info("Error while closing commands context", exception);
     } else if (exception instanceof ActivitiOptimisticLockingException) {
       // reduce log level, as normally we're not interested in logging this exception
       log.debug("Optimistic locking exception : " + exception);
     } else {
-      log.error("Error while closing command context", exception);
+      log.error("Error while closing commands context", exception);
     }
   }
 
@@ -129,7 +129,7 @@ public class CommandContext {
     } else if (exception instanceof RuntimeException) {
       throw (RuntimeException) exception;
     } else {
-      throw new ActivitiException("exception while executing command " + command, exception);
+      throw new ActivitiException("exception while executing commands " + command, exception);
     }
   }
 
@@ -219,7 +219,7 @@ public class CommandContext {
       this.exception = exception;
 
     } else {
-      log.error("masked exception in command context. for root cause, see below as it will be rethrown later.", exception);
+      log.error("masked exception in commands context. for root cause, see below as it will be rethrown later.", exception);
       LogMDC.clear();
     }
   }

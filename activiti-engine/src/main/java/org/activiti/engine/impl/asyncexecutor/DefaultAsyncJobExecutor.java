@@ -124,7 +124,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
         // so other executors can pick the job up (or this async executor, the next time the 
         // acquire query is executed.
         
-        // This can happen while already in a command context (for example in a transaction listener
+        // This can happen while already in a commands context (for example in a transaction listener
         // after the async executor has been hinted that a new async job is created)
         // or not (when executed in the acquire thread runnable)
         

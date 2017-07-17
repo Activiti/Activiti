@@ -25,7 +25,7 @@ import org.activiti.engine.repository.DiagramLayout;
 /**
  * Provides positions and dimensions of elements in a process diagram as provided by {@link GetDeploymentProcessDiagramCmd}.
  * 
- * This command requires a process model and a diagram image to be deployed.
+ * This commands requires a process model and a diagram image to be deployed.
  * 
 
  */

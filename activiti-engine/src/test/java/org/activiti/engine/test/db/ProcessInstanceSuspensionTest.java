@@ -33,14 +33,14 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     makeSureJobDue(job);
 
-    // the acquirejobs command sees the job:
+    // the acquirejobs commands sees the job:
     List<TimerJobEntity> acquiredJobs = executeAcquireJobsCommand();
     assertEquals(1, acquiredJobs.size());
 
     // suspend the process instance:
     runtimeService.suspendProcessInstanceById(pi.getId());
 
-    // now, the acquirejobs command does not see the job:
+    // now, the acquirejobs commands does not see the job:
     acquiredJobs = executeAcquireJobsCommand();
     assertEquals(0, acquiredJobs.size());
   }
@@ -57,14 +57,14 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     makeSureJobDue(job);
 
-    // the acquire jobs command sees the job:
+    // the acquire jobs commands sees the job:
     List<TimerJobEntity> acquiredJobs = executeAcquireJobsCommand();
     assertEquals(1, acquiredJobs.size());
 
     // suspend the process instance:
     repositoryService.suspendProcessDefinitionById(pd.getId(), true, null);
 
-    // now, the acquire jobs command does not see the job:
+    // now, the acquire jobs commands does not see the job:
     acquiredJobs = executeAcquireJobsCommand();
     assertEquals(0, acquiredJobs.size());
   }
@@ -81,14 +81,14 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
     makeSureJobDue(job);
 
-    // the acquire jobs command sees the job:
+    // the acquire jobs commands sees the job:
     List<TimerJobEntity> acquiredJobs = executeAcquireJobsCommand();
     assertEquals(1, acquiredJobs.size());
 
     // suspend the process instance:
     repositoryService.suspendProcessDefinitionById(pd.getId());
 
-    // the acquire jobs command still sees the job, because the process instances are not suspended:
+    // the acquire jobs commands still sees the job, because the process instances are not suspended:
     acquiredJobs = executeAcquireJobsCommand();
     assertEquals(1, acquiredJobs.size());
   }

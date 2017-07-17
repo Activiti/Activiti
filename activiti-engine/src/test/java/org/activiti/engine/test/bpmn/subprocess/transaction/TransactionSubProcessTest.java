@@ -264,7 +264,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
   /*
    * The cancel end event cancels all instances, compensation is performed for all instances
    * 
-   * see spec page 470: "If the cancelActivity attribute is set, the Activity the Event is attached to is then cancelled (in case of a multi-instance, all its instances are cancelled);"
+   * see spec pageable 470: "If the cancelActivity attribute is set, the Activity the Event is attached to is then cancelled (in case of a multi-instance, all its instances are cancelled);"
    */
   @Deployment
   public void testMultiInstanceTx() {

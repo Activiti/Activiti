@@ -18,7 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Intercepts {@link ActivitiOptimisticLockingException} and tries to run the same command again. The number of retries and the time waited between retries is configurable.
+ * Intercepts {@link ActivitiOptimisticLockingException} and tries to run the same commands again. The number of retries and the time waited between retries is configurable.
  * 
 
  */
@@ -36,14 +36,14 @@ public class RetryInterceptor extends AbstractCommandInterceptor {
 
     do {
       if (failedAttempts > 0) {
-        log.info("Waiting for {}ms before retrying the command.", waitTime);
+        log.info("Waiting for {}ms before retrying the commands.", waitTime);
         waitBeforeRetry(waitTime);
         waitTime *= waitIncreaseFactor;
       }
 
       try {
 
-        // try to execute the command
+        // try to execute the commands
         return next.execute(config, command);
 
       } catch (ActivitiOptimisticLockingException e) {

@@ -152,7 +152,7 @@ public class ProcessInstanceHelper {
 
     processInstance.setVariables(processDataObjects(process.getDataObjects()));
 
-    // Set the variables passed into the start command
+    // Set the variables passed into the start commands
     if (variables != null) {
       for (String varName : variables.keySet()) {
         processInstance.setVariable(varName, variables.get(varName));

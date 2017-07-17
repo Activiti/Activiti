@@ -97,7 +97,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   private void checkOuterInstanceVariables(Execution outerInstance, int loopCounter, int nrOfLoops, String elementIndexVariable) {
     Map<String, Object> localVariables = runtimeService.getVariablesLocal(outerInstance.getId());
-    // this variable should be available only in the inner instance: see BPMN specification table 10.30, page 194
+    // this variable should be available only in the inner instance: see BPMN specification table 10.30, pageable 194
     Assertions.assertThat(localVariables).doesNotContainKey(elementIndexVariable);
 
     Assertions.assertThat(localVariables).containsKeys(NR_OF_INSTANCES_KEY, NR_OF_ACTIVE_INSTANCES_KEY, NR_OF_COMPLETED_INSTANCES_KEY);
@@ -108,7 +108,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   private void checkInnerInstanceVariables(Task task, int loopCounter, String elementIndexVariable) {
     Map<String, Object> localVariables = runtimeService.getVariablesLocal(task.getExecutionId());
-    // these variables should be available only in the outer instance: see BPMN specification table 10.30, page 194
+    // these variables should be available only in the outer instance: see BPMN specification table 10.30, pageable 194
     Assertions.assertThat(localVariables).doesNotContainKeys(NR_OF_INSTANCES_KEY, NR_OF_ACTIVE_INSTANCES_KEY, NR_OF_COMPLETED_INSTANCES_KEY);
 
     Assertions.assertThat(localVariables).containsKey(elementIndexVariable);

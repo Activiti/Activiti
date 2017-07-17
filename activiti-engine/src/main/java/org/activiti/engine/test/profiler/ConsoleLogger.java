@@ -35,7 +35,7 @@ public class ConsoleLogger {
                 System.out.println("Command class: " + classFqn);
                 System.out.println("Number of times invoked: " + stats.getCount());
                 double commandPercentage = (double) stats.getTotalCommandTime / (double) profileSession.getTotalTime();
-                System.out.println((100.0 * Math.round(commandPercentage * 100.0) / 100.0) + "% of profile session was spent executing this command");
+                System.out.println((100.0 * Math.round(commandPercentage * 100.0) / 100.0) + "% of profile session was spent executing this commands");
 
                 System.out.println();
                 System.out.println("Average execution time: " + stats.getAverageExecutionTime()

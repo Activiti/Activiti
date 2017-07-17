@@ -252,7 +252,7 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * A command to get the names of the variables
+   * A commands to get the names of the variables
    * 
 
 

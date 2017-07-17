@@ -188,7 +188,7 @@ public class ExecuteAsyncRunnable implements Runnable {
         FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
         Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), exception);
 
-        log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
+        log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and commands of type '" + cmd.getClass() + "'");
         processEngineConfiguration.getCommandExecutor().execute(commandConfig, cmd);
 
         // Dispatch an event, indicating job execution failed in a

@@ -55,7 +55,7 @@ public class TablePage {
   }
 
   /**
-   * @return the start index of this page (ie the index of the first element in the page)
+   * @return the start index of this pageable (ie the index of the first element in the pageable)
    */
   public long getFirstResult() {
     return firstResult;
@@ -81,14 +81,14 @@ public class TablePage {
   }
 
   /**
-   * @return the total rowcount of the table from which this page is only a subset.
+   * @return the total rowcount of the table from which this pageable is only a subset.
    */
   public long getTotal() {
     return total;
   }
 
   /**
-   * @return the actual number of rows in this page.
+   * @return the actual number of rows in this pageable.
    */
   public long getSize() {
     return rowData.size();

@@ -217,7 +217,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     // We need to move time at least one hour to make the timer executable
     processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 7200000L));
 
-    // Acquire job by running the acquire command manually
+    // Acquire job by running the acquire commands manually
     ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
     AcquireTimerJobsCmd acquireJobsCmd = new AcquireTimerJobsCmd(processEngine.getProcessEngineConfiguration().getAsyncExecutor());
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();

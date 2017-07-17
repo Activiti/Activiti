@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.activiti.client.model.ClaimTaskInfo;
-import org.activiti.client.model.CompleteTaskInfo;
+import org.activiti.services.model.commands.CompleteTaskInfo;
 import org.activiti.services.model.ProcessInstance;
 import org.activiti.services.model.Task;
 import org.junit.Test;

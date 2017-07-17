@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.cfg;
 
 /**
- * Enumeration that represents the transaction propagation behaviours supported by the command executor.
+ * Enumeration that represents the transaction propagation behaviours supported by the commands executor.
  * 
 
  */

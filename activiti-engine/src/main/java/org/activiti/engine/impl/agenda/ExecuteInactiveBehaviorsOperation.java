@@ -36,7 +36,7 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
   public void run() {
 
     /*
-     * Algorithm: for each execution that is involved in this command context,
+     * Algorithm: for each execution that is involved in this commands context,
      *
      * 1) Get its process definition
      * 2) Verify if its process definitions has any InactiveActivityBehavior behaviours.

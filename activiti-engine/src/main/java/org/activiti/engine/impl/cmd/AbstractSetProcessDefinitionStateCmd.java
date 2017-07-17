@@ -98,7 +98,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
 
   protected List<ProcessDefinitionEntity> findProcessDefinition(CommandContext commandContext) {
 
-    // If process definition is already provided (eg. when command is called through the DeployCmd)
+    // If process definition is already provided (eg. when commands is called through the DeployCmd)
     // we don't need to do an extra database fetch and we can simply return it, wrapped in a list
     if (processDefinitionEntity != null) {
       return Collections.singletonList(processDefinitionEntity);

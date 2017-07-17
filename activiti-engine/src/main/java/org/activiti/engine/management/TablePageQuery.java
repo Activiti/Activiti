@@ -20,17 +20,17 @@ package org.activiti.engine.management;
 public interface TablePageQuery {
 
   /**
-   * The name of the table of which a page must be fetched.
+   * The name of the table of which a pageable must be fetched.
    */
   TablePageQuery tableName(String tableName);
 
   /**
-   * Orders the resulting table page rows by the given column in ascending order.
+   * Orders the resulting table pageable rows by the given column in ascending order.
    */
   TablePageQuery orderAsc(String column);
 
   /**
-   * Orders the resulting table page rows by the given column in descending order.
+   * Orders the resulting table pageable rows by the given column in descending order.
    */
   TablePageQuery orderDesc(String column);
 

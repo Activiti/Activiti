@@ -34,7 +34,7 @@ public class TransactionContextInterceptor extends AbstractCommandInterceptor {
   public <T> T execute(CommandConfig config, Command<T> command) {
     
     CommandContext commandContext = Context.getCommandContext();
-    // Storing it in a variable, to reference later (it can change during command execution)
+    // Storing it in a variable, to reference later (it can change during commands execution)
     boolean isReused = commandContext.isReused();
     
     try {

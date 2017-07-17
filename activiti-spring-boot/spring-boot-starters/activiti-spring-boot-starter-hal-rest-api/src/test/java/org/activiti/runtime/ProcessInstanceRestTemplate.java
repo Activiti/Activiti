@@ -19,7 +19,7 @@ package org.activiti.runtime;
 import java.util.Map;
 
 import org.activiti.services.model.ProcessInstance;
-import org.activiti.client.model.StartProcessInfo;
+import org.activiti.services.model.commands.StartProcessInfo;
 import org.activiti.services.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;

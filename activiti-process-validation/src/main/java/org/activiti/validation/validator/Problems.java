@@ -53,7 +53,7 @@ public interface Problems {
   String MAIL_TASK_NO_RECIPIENT = "activiti-mailtask-no-recipient";
   String MAIL_TASK_NO_CONTENT = "activiti-mailtask-no-content";
 
-  String SHELL_TASK_NO_COMMAND = "activiti-shelltask-no-command";
+  String SHELL_TASK_NO_COMMAND = "activiti-shelltask-no-commands";
   String SHELL_TASK_INVALID_PARAM = "activiti-shelltask-invalid-param";
   
   String DMN_TASK_NO_KEY = "activiti-dmntask-no-decision-table-key";

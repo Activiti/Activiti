@@ -13,7 +13,7 @@
 package org.activiti.engine.impl.interceptor;
 
 /**
- * The command executor for internal usage.
+ * The commands executor for internal usage.
  * 
 
  */
@@ -25,12 +25,12 @@ public interface CommandExecutor {
   CommandConfig getDefaultConfig();
 
   /**
-   * Execute a command with the specified {@link CommandConfig}.
+   * Execute a commands with the specified {@link CommandConfig}.
    */
   <T> T execute(CommandConfig config, Command<T> command);
 
   /**
-   * Execute a command with the default {@link CommandConfig}.
+   * Execute a commands with the default {@link CommandConfig}.
    */
   <T> T execute(Command<T> command);
 

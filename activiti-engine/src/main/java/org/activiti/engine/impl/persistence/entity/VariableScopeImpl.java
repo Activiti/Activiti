@@ -63,7 +63,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
 
       CommandContext commandContext = Context.getCommandContext();
       if (commandContext == null) {
-        throw new ActivitiException("lazy loading outside command context");
+        throw new ActivitiException("lazy loading outside commands context");
       }
       Collection<VariableInstanceEntity> variableInstancesList = loadVariableInstances();
       for (VariableInstanceEntity variableInstance : variableInstancesList) {

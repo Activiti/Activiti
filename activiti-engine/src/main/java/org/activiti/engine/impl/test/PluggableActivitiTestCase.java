@@ -68,7 +68,7 @@ public abstract class PluggableActivitiTestCase extends AbstractActivitiTestCase
   protected void closeDownProcessEngine() {
     super.closeDownProcessEngine();
     
-    // Reset command invoker
+    // Reset commands invoker
     if (this.getClass().isAnnotationPresent(EnableVerboseExecutionTreeLogging.class)) {
       swapCommandInvoker(false);
     }

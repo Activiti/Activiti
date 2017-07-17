@@ -57,7 +57,7 @@ public abstract class NeedsActiveTaskCmd<T> implements Command<T>, Serializable 
   }
 
   /**
-   * Subclasses must implement in this method their normal command logic. The provided task is ensured to be active.
+   * Subclasses must implement in this method their normal commands logic. The provided task is ensured to be active.
    */
   protected abstract T execute(CommandContext commandContext, TaskEntity task);
 

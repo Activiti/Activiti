@@ -59,7 +59,7 @@ public abstract class ExternalInvocationTaskValidator extends ProcessLevelValida
       String fieldName = fieldExtension.getFieldName();
       String fieldValue = fieldExtension.getStringValue();
 
-      if (fieldName.equals("command")) {
+      if (fieldName.equals("commands")) {
         shellCommandDefined = true;
       }
 
@@ -70,7 +70,7 @@ public abstract class ExternalInvocationTaskValidator extends ProcessLevelValida
     }
 
     if (!shellCommandDefined) {
-      addError(errors, Problems.SHELL_TASK_NO_COMMAND, process, task, "No shell command is defined on the shell activity");
+      addError(errors, Problems.SHELL_TASK_NO_COMMAND, process, task, "No shell commands is defined on the shell activity");
     }
   }
   

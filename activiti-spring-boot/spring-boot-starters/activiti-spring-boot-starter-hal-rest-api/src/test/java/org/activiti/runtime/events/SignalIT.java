@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.activiti.services.model.ProcessInstance;
-import org.activiti.client.model.SignalInfo;
+import org.activiti.services.model.commands.SignalInfo;
 import org.activiti.services.model.Task;
 import org.activiti.runtime.ProcessInstanceRestTemplate;
 import org.junit.Test;

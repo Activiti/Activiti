@@ -37,7 +37,7 @@ public interface JobEntityManager extends EntityManager<JobEntity> {
   /**
    * Returns {@link JobEntity} that are eligble to be executed.
    * 
-   * For example used by the default {@link AcquireJobsCmd} command used by 
+   * For example used by the default {@link AcquireJobsCmd} commands used by
    * the default {@link AcquireTimerJobsRunnable} implementation to get async jobs 
    * that can be executed.
    */

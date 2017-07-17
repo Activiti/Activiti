@@ -29,7 +29,7 @@ public class CommandInvoker extends AbstractCommandInterceptor {
   public <T> T execute(final CommandConfig config, final Command<T> command) {
     final CommandContext commandContext = Context.getCommandContext();
 
-    // Execute the command.
+    // Execute the commands.
     // This will produce operations that will be put on the agenda.
     commandContext.getAgenda().planOperation(new Runnable() {
       @Override

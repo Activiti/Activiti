@@ -83,7 +83,7 @@ public class ProcessInstanceIT {
         processInstanceRestTemplate.startProcess(SIMPLE_PROCESS);
 
         //when
-        ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
+        ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?pageable={pageable}&size={size}",
                                                                                                      HttpMethod.GET,
                                                                                                      null,
                                                                                                      new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {

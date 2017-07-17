@@ -210,11 +210,11 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       String taskId = task.getId();
       Authentication.setAuthenticatedUserId("johndoe");
       // Fetch the task again and update
-      taskService.createAttachment("web page", taskId, null, "weatherforcast", "temperatures and more", "http://weather.com");
+      taskService.createAttachment("web pageable", taskId, null, "weatherforcast", "temperatures and more", "http://weather.com");
       Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
       assertEquals("weatherforcast", attachment.getName());
       assertEquals("temperatures and more", attachment.getDescription());
-      assertEquals("web page", attachment.getType());
+      assertEquals("web pageable", attachment.getType());
       assertEquals(taskId, attachment.getTaskId());
       assertNull(attachment.getProcessInstanceId());
       assertEquals("http://weather.com", attachment.getUrl());
@@ -239,7 +239,7 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       Authentication.setAuthenticatedUserId("johndoe");
 
       // Fetch attachment and update its name
-      taskService.createAttachment("web page", taskId, null, "weatherforcast", "temperatures and more", "http://weather.com");
+      taskService.createAttachment("web pageable", taskId, null, "weatherforcast", "temperatures and more", "http://weather.com");
       Attachment attachment = taskService.getTaskAttachments(taskId).get(0);
       attachment.setName("UpdatedName");
       taskService.saveAttachment(attachment);
@@ -265,11 +265,11 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
       ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
       String processInstanceId = processInstance.getId();
-      taskService.createAttachment("web page", null, processInstanceId, "weatherforcast", "temperatures and more", "http://weather.com");
+      taskService.createAttachment("web pageable", null, processInstanceId, "weatherforcast", "temperatures and more", "http://weather.com");
       Attachment attachment = taskService.getProcessInstanceAttachments(processInstanceId).get(0);
       assertEquals("weatherforcast", attachment.getName());
       assertEquals("temperatures and more", attachment.getDescription());
-      assertEquals("web page", attachment.getType());
+      assertEquals("web pageable", attachment.getType());
       assertEquals(processInstanceId, attachment.getProcessInstanceId());
       assertNull(attachment.getTaskId());
       assertEquals("http://weather.com", attachment.getUrl());

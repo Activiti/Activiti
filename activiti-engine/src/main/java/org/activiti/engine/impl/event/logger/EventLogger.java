@@ -88,7 +88,7 @@ public class EventLogger implements ActivitiEventListener {
 		EventLoggerEventHandler eventHandler = getEventHandler(event);
 		if (eventHandler != null) {
 
-			// Events are flushed when command context is closed
+			// Events are flushed when commands context is closed
 			CommandContext currentCommandContext = Context.getCommandContext();
 			EventFlusher eventFlusher = (EventFlusher) currentCommandContext.getAttribute(EVENT_FLUSHER_KEY);
 			

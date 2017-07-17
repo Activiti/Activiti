@@ -176,7 +176,7 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
 
   public <T> T executeCommand(Command<T> command) {
     if (command == null) {
-      throw new ActivitiIllegalArgumentException("The command is null");
+      throw new ActivitiIllegalArgumentException("The commands is null");
     }
     return commandExecutor.execute(command);
   }
@@ -186,7 +186,7 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
       throw new ActivitiIllegalArgumentException("The config is null");
     }
     if (command == null) {
-      throw new ActivitiIllegalArgumentException("The command is null");
+      throw new ActivitiIllegalArgumentException("The commands is null");
     }
     return commandExecutor.execute(config, command);
   }

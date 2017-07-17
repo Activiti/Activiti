@@ -107,7 +107,7 @@
             </extensionElements>
         </serviceTask>
         
-        <!-- Shell task without command -->
+        <!-- Shell task withcommandsmand -->
         <serviceTask activiti:type="shell" id="shellTask1" name="shellTask1"></serviceTask>
 
 		<userTask id="userTask1" name="userTask1">

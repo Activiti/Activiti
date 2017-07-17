@@ -17,8 +17,9 @@
 package org.activiti.services;
 
 
-import org.activiti.client.model.resources.TaskResource;
-import org.activiti.client.model.resources.assembler.TaskResourceAssembler;
+import org.activiti.services.core.pageable.PageableTaskService;
+import org.activiti.services.core.resources.TaskResource;
+import org.activiti.assembler.TaskResourceAssembler;
 import org.activiti.services.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

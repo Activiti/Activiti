@@ -430,7 +430,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   /**
    * The {@link AsyncExecutor} has a 'cleanup' thread that resets expired jobs
    * so they can be re-acquired by other executors. This setting defines the size
-   * of the page being used when fetching these expired jobs.
+   * of the pageable being used when fetching these expired jobs.
    */
   protected int asyncExecutorResetExpiredJobsPageSize = 3;
 
@@ -705,7 +705,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
   }
 
-  // command executors
+  // commands executors
   // ////////////////////////////////////////////////////////
 
   public void initCommandExecutors() {
@@ -781,7 +781,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public CommandInterceptor initInterceptorChain(List<CommandInterceptor> chain) {
     if (chain == null || chain.isEmpty()) {
-      throw new ActivitiException("invalid command interceptor chain configuration: " + chain);
+      throw new ActivitiException("invalid commands interceptor chain configuration: " + chain);
     }
     for (int i = 0; i < chain.size() - 1; i++) {
       chain.get(i).setNext(chain.get(i + 1));

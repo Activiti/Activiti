@@ -289,6 +289,38 @@
         <version>${project.version}</version>
       </dependency>
 
+      <!-- Activiti Services -->
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-services</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-audit-producer</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-util-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-core</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-history-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-query</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- EMAIL -->
       <dependency>
         <groupId>org.apache.commons</groupId>

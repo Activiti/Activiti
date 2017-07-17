@@ -31,7 +31,7 @@ import org.activiti.engine.task.Task;
 public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 
   /**
-   * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different threads, using 2 modified commands that use a barrier for starting and a barrier for completing the command,
+   * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different threads, using 2 modified commands that use a barrier for starting and a barrier for completing the commands,
    * so they each insert a new variable guaranteed.
    */
   public void testDuplicateVariableInsertOnExecution() throws Exception {
@@ -83,7 +83,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different threads, using 2 modified commands that use a barrier for starting and a barrier for completing the command,
+   * Test for ACT-1887: Inserting the same new variable at the same time, from 2 different threads, using 2 modified commands that use a barrier for starting and a barrier for completing the commands,
    * so they each insert a new variable guaranteed.
    */
   public void testDuplicateVariableInsertOnTask() throws Exception {

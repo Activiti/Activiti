@@ -68,7 +68,7 @@ public class HistoryServiceTests {
     public void getAllEventsTests() throws Exception {
 
         //given
-        ResponseEntity<PagedResources<ProcessEngineEventEntity>> eventsPagedResources = restTemplate.exchange(relativeQueryEndpoint + "?page={page}&size={size}",
+        ResponseEntity<PagedResources<ProcessEngineEventEntity>> eventsPagedResources = restTemplate.exchange(relativeQueryEndpoint + "?pageable={pageable}&size={size}",
                                                                                                               HttpMethod.GET,
                                                                                                               null,
                                                                                                               new ParameterizedTypeReference<PagedResources<ProcessEngineEventEntity>>() {
@@ -95,7 +95,7 @@ public class HistoryServiceTests {
 
 
         //given
-        eventsPagedResources = restTemplate.exchange(relativeQueryEndpoint + "?page={page}&size={size}",
+        eventsPagedResources = restTemplate.exchange(relativeQueryEndpoint + "?pageable={pageable}&size={size}",
                                                      HttpMethod.GET,
                                                      null,
                                                      new ParameterizedTypeReference<PagedResources<ProcessEngineEventEntity>>() {

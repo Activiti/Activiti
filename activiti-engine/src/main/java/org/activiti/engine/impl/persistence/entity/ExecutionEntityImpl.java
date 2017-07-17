@@ -565,7 +565,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
     CommandContext commandContext = Context.getCommandContext();
     if (commandContext == null) {
-      throw new ActivitiException("lazy loading outside command context");
+      throw new ActivitiException("lazy loading outside commands context");
     }
     VariableInstanceEntity variableInstance = commandContext.getVariableInstanceEntityManager().findVariableInstanceByExecutionAndName(id, variableName);
 
@@ -576,7 +576,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected List<VariableInstanceEntity> getSpecificVariables(Collection<String> variableNames) {
     CommandContext commandContext = Context.getCommandContext();
     if (commandContext == null) {
-      throw new ActivitiException("lazy loading outside command context");
+      throw new ActivitiException("lazy loading outside commands context");
     }
     return commandContext.getVariableInstanceEntityManager().findVariableInstancesByExecutionAndNames(id, variableNames);
   }

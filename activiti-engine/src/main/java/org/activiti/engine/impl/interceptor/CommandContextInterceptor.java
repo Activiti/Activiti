@@ -42,11 +42,11 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
 
     boolean contextReused = false;
     // We need to check the exception, because the transaction can be in a
-    // rollback state, and some other command is being fired to compensate (eg. decrementing job retries)
+    // rollback state, and some other commands is being fired to compensate (eg. decrementing job retries)
     if (!config.isContextReusePossible() || context == null || context.getException() != null) {
       context = commandContextFactory.createCommandContext(command);
     } else {
-      log.debug("Valid context found. Reusing it for the current command '{}'", command.getClass().getCanonicalName());
+      log.debug("Valid context found. Reusing it for the current commands '{}'", command.getClass().getCanonicalName());
       contextReused = true;
       context.setReused(true);
     }

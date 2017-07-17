@@ -22,7 +22,7 @@ import org.activiti.engine.impl.variable.JPAEntityListVariableType;
 import org.activiti.engine.impl.variable.JPAEntityVariableType;
 
 /**
- * List that initialises binary variable values if command-context is active.
+ * List that initialises binary variable values if commands-context is active.
  * 
 
  */
@@ -59,7 +59,7 @@ public class VariableInitializingList extends ArrayList<VariableInstanceEntity> 
   }
 
   /**
-   * If the passed {@link VariableInstanceEntity} is a binary variable and the command-context is active, the variable value is fetched to ensure the byte-array is populated.
+   * If the passed {@link VariableInstanceEntity} is a binary variable and the commands-context is active, the variable value is fetched to ensure the byte-array is populated.
    */
   protected void initializeVariable(VariableInstanceEntity e) {
     if (Context.getCommandContext() != null && e != null && e.getType() != null) {

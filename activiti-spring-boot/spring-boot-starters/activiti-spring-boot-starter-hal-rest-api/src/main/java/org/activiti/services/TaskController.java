@@ -18,9 +18,10 @@ package org.activiti.services;
 import java.util.Map;
 
 import org.activiti.client.model.ClaimTaskInfo;
-import org.activiti.client.model.CompleteTaskInfo;
-import org.activiti.client.model.resources.TaskResource;
-import org.activiti.client.model.resources.assembler.TaskResourceAssembler;
+import org.activiti.services.model.commands.CompleteTaskInfo;
+import org.activiti.services.core.pageable.PageableTaskService;
+import org.activiti.services.core.resources.TaskResource;
+import org.activiti.assembler.TaskResourceAssembler;
 import org.activiti.engine.TaskService;
 import org.activiti.services.model.Task;
 import org.activiti.services.model.converter.TaskConverter;

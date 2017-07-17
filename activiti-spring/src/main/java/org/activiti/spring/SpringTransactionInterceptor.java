@@ -37,7 +37,7 @@ public class SpringTransactionInterceptor extends AbstractCommandInterceptor {
   }
 
   public <T> T execute(final CommandConfig config, final Command<T> command) {
-    LOGGER.debug("Running command with propagation {}", config.getTransactionPropagation());
+    LOGGER.debug("Running commands with propagation {}", config.getTransactionPropagation());
 
     TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
     transactionTemplate.setPropagationBehavior(getPropagation(config));

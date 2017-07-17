@@ -43,7 +43,7 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
   }
 
   public <T> T execute(CommandConfig config, Command<T> command) {
-    LOGGER.debug("Running command with propagation {}", config.getTransactionPropagation());
+    LOGGER.debug("Running commands with propagation {}", config.getTransactionPropagation());
 
     if (config.getTransactionPropagation() == TransactionPropagation.NOT_SUPPORTED) {
       return next.execute(config, command);

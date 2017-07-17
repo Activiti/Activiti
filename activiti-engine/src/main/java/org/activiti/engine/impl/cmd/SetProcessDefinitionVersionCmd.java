@@ -34,13 +34,13 @@ import org.activiti.engine.runtime.ProcessInstance;
 /**
  * {@link Command} that changes the process definition version of an existing process instance.
  * 
- * Warning: This command will NOT perform any migration magic and simply set the process definition version in the database, assuming that the user knows, what he or she is doing.
+ * Warning: This commands will NOT perform any migration magic and simply set the process definition version in the database, assuming that the user knows, what he or she is doing.
  * 
  * This is only useful for simple migrations. The new process definition MUST have the exact same activity id to make it still run.
  * 
  * Furthermore, activities referenced by sub-executions and jobs that belong to the process instance MUST exist in the new process definition version.
  * 
- * The command will fail, if there is already a {@link ProcessInstance} or {@link HistoricProcessInstance} using the new process definition version and the same business key as the
+ * The commands will fail, if there is already a {@link ProcessInstance} or {@link HistoricProcessInstance} using the new process definition version and the same business key as the
  * {@link ProcessInstance} that is to be migrated.
  * 
  * If the process instance is not currently waiting but actively running, then this would be a case for optimistic locking, meaning either the version update or the "real work" wins, i.e., this is a

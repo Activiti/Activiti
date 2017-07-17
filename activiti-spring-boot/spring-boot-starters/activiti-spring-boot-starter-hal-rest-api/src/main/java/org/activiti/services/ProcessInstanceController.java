@@ -15,18 +15,13 @@
 
 package org.activiti.services;
 
-
-import org.activiti.client.model.SignalInfo;
-import org.activiti.client.model.StartProcessInfo;
-import org.activiti.client.model.resources.ProcessInstanceResource;
-import org.activiti.client.model.resources.assembler.ProcessInstanceResourceAssembler;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.runtime.ProcessInstanceBuilder;
-import org.activiti.services.audit.producer.app.MessageProducerActivitiEventListener;
+import org.activiti.services.model.commands.SignalInfo;
+import org.activiti.services.model.commands.StartProcessInfo;
+import org.activiti.services.core.ProcessEngineWrapper;
+import org.activiti.assembler.ProcessInstanceResourceAssembler;
+import org.activiti.services.core.resources.ProcessInstanceResource;
 import org.activiti.services.model.ProcessInstance;
-import org.activiti.services.model.converter.ProcessInstanceConverter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
@@ -44,68 +39,50 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/api/process-instances", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessInstanceController {
 
-    private final ProcessInstanceConverter processInstanceConverter;
-
-    private final RuntimeService runtimeService;
+    private ProcessEngineWrapper processEngine;
 
     private final ProcessInstanceResourceAssembler resourceAssembler;
 
-    private PageableProcessInstanceService pageableProcessInstanceService;
-
     @Autowired
-    public ProcessInstanceController(ProcessInstanceConverter processInstanceConverter,
-                                     RuntimeService runtimeService,
-                                     ProcessInstanceResourceAssembler resourceAssembler,
-                                     PageableProcessInstanceService pageableProcessInstanceService,
-                                     MessageProducerActivitiEventListener listener) {
-        this.processInstanceConverter = processInstanceConverter;
-        this.runtimeService = runtimeService;
+    public ProcessInstanceController(ProcessEngineWrapper processEngine,
+                                     ProcessInstanceResourceAssembler resourceAssembler) {
+        this.processEngine = processEngine;
         this.resourceAssembler = resourceAssembler;
-        this.pageableProcessInstanceService = pageableProcessInstanceService;
-        //@TODO: not sure if this is the best place to register the listener
-        this.runtimeService.addEventListener(listener);
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public PagedResources<ProcessInstanceResource> getProcessInstances(Pageable pageable,
                                                                        PagedResourcesAssembler<ProcessInstance> pagedResourcesAssembler) {
-        Page<ProcessInstance> page = pageableProcessInstanceService.getProcessInstances(pageable);
-        return pagedResourcesAssembler.toResource(page,
+        return pagedResourcesAssembler.toResource(processEngine.getProcessInstances(pageable),
                                                   resourceAssembler);
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public Resource<ProcessInstance> startProcess(@RequestBody StartProcessInfo info) {
-        ProcessInstanceBuilder builder = runtimeService.createProcessInstanceBuilder();
-        builder.processDefinitionKey(info.getProcessDefinitionKey());
-        builder.variables(info.getVariables());
-
-        return resourceAssembler.toResource(processInstanceConverter.from(builder.start()));
+        return resourceAssembler.toResource(processEngine.startProcess(info));
     }
 
     @RequestMapping(value = "/{processInstanceId}", method = RequestMethod.GET)
     public Resource<ProcessInstance> getProcessInstance(@PathVariable String processInstanceId) {
-        org.activiti.engine.runtime.ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-        return resourceAssembler.toResource(processInstanceConverter.from(processInstance));
+        return resourceAssembler.toResource(processEngine.getProcessInstance(processInstanceId));
     }
 
     @RequestMapping(value = "/send-signal")
     public ResponseEntity<Void> sendSignal(@RequestBody
                                                    SignalInfo signalInfo) {
-        runtimeService.signalEventReceived(signalInfo.getName(), signalInfo.getInputVariables());
+        processEngine.signal(signalInfo);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "{processInstanceId}/suspend")
-    public ResponseEntity<Void> suspend(@PathVariable String processInstanceId){
-        runtimeService.suspendProcessInstanceById(processInstanceId);
+    public ResponseEntity<Void> suspend(@PathVariable String processInstanceId) {
+        processEngine.suspend(processInstanceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "{processInstanceId}/activate")
-    public ResponseEntity<Void> activate(@PathVariable String processInstanceId){
-        runtimeService.activateProcessInstanceById(processInstanceId);
+    public ResponseEntity<Void> activate(@PathVariable String processInstanceId) {
+        processEngine.activate(processInstanceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

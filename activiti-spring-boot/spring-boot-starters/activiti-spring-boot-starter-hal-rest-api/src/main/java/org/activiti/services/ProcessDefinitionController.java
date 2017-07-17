@@ -15,9 +15,10 @@
 
 package org.activiti.services;
 
+import org.activiti.services.core.pageable.PageableRepositoryService;
 import org.activiti.services.model.ProcessDefinition;
-import org.activiti.client.model.resources.ProcessDefinitionResource;
-import org.activiti.client.model.resources.assembler.ProcessDefinitionResourceAssembler;
+import org.activiti.services.core.resources.ProcessDefinitionResource;
+import org.activiti.assembler.ProcessDefinitionResourceAssembler;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.services.model.converter.ProcessDefinitionConverter;

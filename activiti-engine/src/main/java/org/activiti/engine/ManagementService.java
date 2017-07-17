@@ -236,22 +236,22 @@ public interface ManagementService {
   String databaseSchemaUpgrade(Connection connection, String catalog, String schema);
 
   /**
-   * Executes a given command with the default {@link CommandConfig}.
+   * Executes a given commands with the default {@link CommandConfig}.
    * 
    * @param command
-   *          the command, cannot be null.
-   * @return the result of command execution
+   *          the commands, cannot be null.
+   * @return the result of commands execution
    */
   <T> T executeCommand(Command<T> command);
 
   /**
-   * Executes a given command with the specified {@link CommandConfig}.
+   * Executes a given commands with the specified {@link CommandConfig}.
    * 
    * @param config
-   *          the command execution configuration, cannot be null.
+   *          the commands execution configuration, cannot be null.
    * @param command
-   *          the command, cannot be null.
-   * @return the result of command execution
+   *          the commands, cannot be null.
+   * @return the result of commands execution
    */
   <T> T executeCommand(CommandConfig config, Command<T> command);
 

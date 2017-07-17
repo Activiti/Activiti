@@ -97,7 +97,7 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
 
         if (shellCommandExecutorFactory != null) {
             // if there is a ShellExecutorFactoryProvided
-            // then it will be used to create a desired shell command executor.
+            // then it will be used to create a desired shell commands executor.
             commandExecutor = shellCommandExecutorFactory.createExecutor(executorContext);
         } else {
             // default Shell executor (if the shell security is OFF)
@@ -107,7 +107,7 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
         try {
             commandExecutor.executeCommand(execution);
         } catch (Exception e) {
-            throw new ActivitiException("Could not execute shell command ", e);
+            throw new ActivitiException("Could not execute shell commands ", e);
         }
 
         leave(execution);
