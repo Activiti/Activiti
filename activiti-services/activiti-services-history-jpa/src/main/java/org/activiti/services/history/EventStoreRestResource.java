@@ -21,7 +21,9 @@ import org.activiti.services.history.events.ProcessEngineEventEntity;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(collectionResourceRel = "events", path = "events")
+import static org.activiti.services.history.EventsRelProvider.COLLECTION_RESOURCE_REL;
+
+@RepositoryRestResource(collectionResourceRel = COLLECTION_RESOURCE_REL, path = COLLECTION_RESOURCE_REL)
 interface EventStoreRestResource extends PagingAndSortingRepository<ProcessEngineEventEntity, Long> {
 
 

@@ -28,13 +28,17 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.springframework.data.rest.core.annotation.RestResource;
+
+import static org.activiti.services.history.EventsRelProvider.COLLECTION_RESOURCE_REL;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "eventType")
+        property = "eventType",
+        visible = true)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ActivityStartedEventEntity.class, name = "ActivityStartedEvent"),
         @JsonSubTypes.Type(value = ActivityCompletedEventEntity.class, name = "ActivityCompletedEvent"),
@@ -47,11 +51,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = "VariableUpdatedEvent"),
         @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = "VariableDeletedEvent"),
         @JsonSubTypes.Type(value = SequenceFlowTakenEventEntity.class, name = "SequenceFlowTakenEvent")
-
 })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "TYPE")
+@RestResource(path = COLLECTION_RESOURCE_REL)
 public abstract class ProcessEngineEventEntity {
 
     @Id
@@ -79,21 +83,17 @@ public abstract class ProcessEngineEventEntity {
         this.processInstanceId = processInstanceId;
     }
 
-
     public Long getTimestamp() {
         return timestamp;
     }
-
 
     public String getEventType() {
         return eventType;
     }
 
-
     public String getExecutionId() {
         return executionId;
     }
-
 
     public String getProcessDefinitionId() {
         return processDefinitionId;
