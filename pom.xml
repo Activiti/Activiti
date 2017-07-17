@@ -531,6 +531,7 @@
     <module>activiti-bpmn-model</module>
     <module>activiti-process-validation</module>
     <module>activiti-bpmn-layout</module>
+    <module>activiti-image-generator</module>
     <module>activiti-json-converter</module>
     <module>activiti-bpmn-converter</module>
     <module>activiti-engine</module>
