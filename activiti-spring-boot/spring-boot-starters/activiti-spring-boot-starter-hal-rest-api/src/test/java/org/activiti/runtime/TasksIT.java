@@ -48,6 +48,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.activiti.runtime.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
@@ -117,6 +118,10 @@ public class TasksIT {
 
         //should now get all of the tasks for SIMPLE_PROCESS
         shouldGetAvailableTasks();
+
+        //verify that the mock was used
+        verify(authenticationWrapper).getAuthenticatedUserId();
+        verify(userGroupLookupProxy).getGroupsForCandidateUser("testuser");
 
     }
 
