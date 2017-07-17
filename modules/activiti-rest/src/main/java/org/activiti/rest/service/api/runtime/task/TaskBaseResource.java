@@ -286,6 +286,10 @@ public class TaskBaseResource {
     if (Boolean.TRUE.equals(request.getWithoutTenantId())) {
       taskQuery.taskWithoutTenantId();
     }
+    
+    if (Boolean.TRUE.equals(request.getWithoutDueDate())) {
+      taskQuery.withoutTaskDueDate();
+    }
 
     if (request.getCandidateOrAssigned() != null) {
       taskQuery.taskCandidateOrAssigned(request.getCandidateOrAssigned());
