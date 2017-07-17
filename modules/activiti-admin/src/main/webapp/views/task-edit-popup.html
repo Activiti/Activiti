@@ -27,16 +27,16 @@
 		<tr>
 			<td class="edit-label" translate="TASK.POPUP.EDIT.ASSIGNEE"></td>
 			<td>
-				<div class="input-group input-group-sm type-ahead-scrollable">
-					<input type="text" users-typeahead user-model="model.assignee" user-display-model="assigneeDisplay" user-status="active" class="form-control">
+				<div class="input-group input-group-sm">
+					<input type="text" ng-model="model.assignee" class="form-control">
 				</div>
 			</td>
 		</tr>
 		<tr>
 			<td class="edit-label" translate="TASK.POPUP.EDIT.OWNER"></td>
 			<td>
-				<div class="input-group input-group-sm type-ahead-scrollable">
-					<input type="text" users-typeahead user-model="model.owner" user-display-model="ownerDisplay" user-status="active" class="form-control">
+				<div class="input-group input-group-sm">
+					<input type="text" ng-model="model.owner" class="form-control">
 				</div>
 			</td>
 		</tr>
