@@ -22,8 +22,8 @@ import org.activiti.client.model.Task;
 import org.activiti.client.model.resources.TaskResource;
 import org.activiti.client.model.resources.assembler.TaskResourceAssembler;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.model.converter.TaskConverter;
+import org.activiti.services.AuthenticationWrapper;
 import org.activiti.services.PageableTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -48,6 +48,7 @@ public class TaskController {
     private final TaskConverter taskConverter;
     private final TaskResourceAssembler taskResourceAssembler;
     private final PageableTaskService pageableTaskService;
+    private AuthenticationWrapper authenticationWrapper = new AuthenticationWrapper();
 
     @Autowired
     public TaskController(TaskService taskService,
@@ -74,7 +75,7 @@ public class TaskController {
 
     @RequestMapping(value = "/{taskId}/claim", method = RequestMethod.POST)
     public Resource<Task> claimTask(@PathVariable String taskId) {
-        String assignee = Authentication.getAuthenticatedUserId();
+        String assignee = authenticationWrapper.getAuthenticatedUserId();
         if(assignee == null) {
             throw new IllegalStateException("Assignee must be resolved from the Identity/Security Layer");
         }
@@ -102,4 +103,11 @@ public class TaskController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    public AuthenticationWrapper getAuthenticationWrapper() {
+        return authenticationWrapper;
+    }
+
+    public void setAuthenticationWrapper(AuthenticationWrapper authenticationWrapper) {
+        this.authenticationWrapper = authenticationWrapper;
+    }
 }
