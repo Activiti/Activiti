@@ -20,6 +20,6 @@ The port-offset is important as otherwise Activiti and Keycloak will have a port
 
 To run the sample, run from IDE using the Application.java file. To hit an endpoint in the browser, go to http://localhost:8080/process-definitions
 
-A postman postman collection is provided which includes a call to get the keycloak token and use it on subsequent requests (based upon http://xpam.pl/blog/?p=154) - note that the token does expire so can then be necessary to make the call again.
+A postman postman collection is provided which includes a call to get the keycloak token and use it on subsequent requests (based upon http://xpam.pl/blog/?p=154, http://keycloak-user.88327.x6.nabble.com/keycloak-user-Using-postman-to-test-keycloak-protected-app-td3250.html and http://blog.getpostman.com/2014/01/27/extracting-data-from-responses-and-chaining-requests/) - note that the token does expire so can then be necessary to make the call again.
 
 TODO: Provide a reference a docker image with the keycloak json files applied... See https://github.com/dfranssen/docker-keycloak-import-realm and https://github.com/keycloak/keycloak-test-docker-images/tree/master/keycloak-sssd-integration-tests for info on how to do this.
