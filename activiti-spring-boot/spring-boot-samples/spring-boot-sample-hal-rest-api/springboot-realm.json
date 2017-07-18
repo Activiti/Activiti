@@ -1537,6 +1537,34 @@
       "account" : [ "manage-account", "view-profile" ]
     },
     "groups" : [ "/testgroup" ]
-  } ],
+  }, {
+    "id" : "e24cf342-fc50-4cb1-a0c0-57daedb82749",
+    "createdTimestamp" : 1498137163228,
+    "username" : "admin",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "credentials" : [ {
+      "type" : "password",
+      "hashedSaltedValue" : "HuTLxSTg7sB62oK0MEkE0Wd+GubUfKV2zAPIsyLqjGPwiNt6bm/KF6klDA4b1QuRfBVvoHLOOgIx2gFEPUGXFw==",
+      "salt" : "4uyMaFvyJCRwso0up6hapQ==",
+      "hashIterations" : 20000,
+      "counter" : 0,
+      "algorithm" : "pbkdf2",
+      "digits" : 0,
+      "period" : 0,
+      "createdDate" : 1498137163347,
+      "config" : { }
+    } ],
+    "disableableCredentialTypes" : [ "password" ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "uma_authorization", "admin", "offline_access" ],
+    "clientRoles" : {
+      "realm-management" : [ "manage-users", "manage-clients", "manage-authorization", "manage-events", "manage-realm", "create-client", "impersonation", "realm-admin", "manage-identity-providers" ],
+      "broker" : [ "read-token" ],
+      "account" : [ "manage-account", "view-profile" ]
+    },
+    "groups" : [ ]
+  }],
   "keycloakVersion" : "3.1.0.Final"
 }
