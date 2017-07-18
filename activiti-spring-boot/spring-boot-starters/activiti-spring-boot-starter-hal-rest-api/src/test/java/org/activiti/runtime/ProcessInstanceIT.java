@@ -55,7 +55,7 @@ public class ProcessInstanceIT {
     @Before
     public void setUp(){
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
-        assertThat(processDefinitions.getBody().getContent()).hasSize(4);
+        assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
         for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
             processDefinitionIds.put(pd.getName(), pd.getId());
         }
