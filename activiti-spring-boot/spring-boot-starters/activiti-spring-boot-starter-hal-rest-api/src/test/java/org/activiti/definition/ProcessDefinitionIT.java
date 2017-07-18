@@ -30,6 +30,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.Iterator;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProcessDefinitionIT {
@@ -38,6 +40,7 @@ public class ProcessDefinitionIT {
     private TestRestTemplate restTemplate;
 
     public static final String PROCESS_DEFINITIONS_URL = "/process-definitions/";
+    private static final String PROCESS_WITH_VARIABLES_2 = "ProcessWithVariables2";
 
     @Test
     public void shouldRetrieveListOfProcessDefinition() throws Exception {
@@ -100,7 +103,14 @@ public class ProcessDefinitionIT {
         assertThat(processDefinitionsEntity).isNotNull();
         assertThat(processDefinitionsEntity.getBody()).isNotNull();
         assertThat(processDefinitionsEntity.getBody().getContent()).isNotEmpty();
-        ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
+        ProcessDefinition aProcessDefinition = null;
+        	
+        Iterator<ProcessDefinition> it = processDefinitionsEntity.getBody().getContent().iterator();
+        do
+        {
+        	aProcessDefinition = it.next();
+        }
+        while(!aProcessDefinition.getName().equals(PROCESS_WITH_VARIABLES_2));
         
         //when
         ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/meta",
@@ -111,9 +121,14 @@ public class ProcessDefinitionIT {
         assertThat(entity).isNotNull();
         assertThat(entity.getBody()).isNotNull();
         assertThat(entity.getBody().getVariables()).isNotNull();
+        assertThat(entity.getBody().getVariables().size()).isEqualTo(3);
         assertThat(entity.getBody().getUsers()).isNotNull();
+        assertThat(entity.getBody().getUsers().size()).isEqualTo(4);
         assertThat(entity.getBody().getGroups()).isNotNull();
+        assertThat(entity.getBody().getGroups().size()).isEqualTo(4);
         assertThat(entity.getBody().getUserTasks()).isNotNull();
+        assertThat(entity.getBody().getUserTasks().size()).isEqualTo(2);
         assertThat(entity.getBody().getServiceTasks()).isNotNull();
+        assertThat(entity.getBody().getServiceTasks().size()).isEqualTo(2);
     }
 }

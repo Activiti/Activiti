@@ -16,7 +16,6 @@
 package org.activiti.client.model;
 
 import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -31,9 +30,9 @@ public class ProcessDefinition {
     private int version;
     private List<String> users;
     private List<String> groups;
-    private Map<String, Object> variables;
-    private List<String> userTasks;
-    private List<String> serviceTasks;
+    private List<String []> variables;
+    private List<String []> userTasks;
+    private List<String []> serviceTasks;
 
     public ProcessDefinition() {
     }
@@ -54,9 +53,9 @@ public class ProcessDefinition {
                              int version,
                              List<String> users,
                              List<String> groups,
-                             Map<String, Object> variables,
-                             List<String> userTasks,
-                             List<String> serviceTasks) {
+                             List<String []> variables,
+                             List<String []> userTasks,
+                             List<String []> serviceTasks) {
         this.id = id;
         this.name = name;
         this.version = version;
@@ -92,15 +91,15 @@ public class ProcessDefinition {
 		return groups;
 	}
 
-	public Map<String, Object> getVariables() {
+	public List<String []> getVariables() {
 		return variables;
 	}
 
-	public List<String> getUserTasks() {
+	public List<String []> getUserTasks() {
 		return userTasks;
 	}
 
-	public List<String> getServiceTasks() {
+	public List<String []> getServiceTasks() {
 		return serviceTasks;
 	}
     
