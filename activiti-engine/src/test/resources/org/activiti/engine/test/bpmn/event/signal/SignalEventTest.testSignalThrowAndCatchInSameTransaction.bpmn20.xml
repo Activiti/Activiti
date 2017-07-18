@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20151216134505649" modeler:modelId="969743" modeler:modelVersion="1" modeler:modelLastUpdated="1450273500878">
+  <signal id="fileAddedSignal" name="fileAddedSignal" activiti:scope="global"/>
+  <process id="signalBoundaryProcess" name="Signal Boundary Process" isExecutable="true">
+    <startEvent id="startevent1" name="Start"/>
+    <endEvent id="endevent1" name="End"/>
+    <serviceTask id="servicetask1" name="Check for File" activiti:class="org.activiti.engine.test.bpmn.event.signal.TestSignalService"/>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"/>
+    <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="exclusivegateway1"/>
+    <sequenceFlow id="flow2" sourceRef="exclusivegateway1" targetRef="servicetask1"/>
+    <userTask id="addfiletask" name="Add a file">
+      <extensionElements>
+        <modeler:allow-send-email>true</modeler:allow-send-email>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow3" name="File missing" sourceRef="exclusivegateway2" targetRef="addfiletask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${!fileexists}]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"/>
+    <sequenceFlow id="flow4" sourceRef="servicetask1" targetRef="exclusivegateway2"/>
+    <userTask id="usefiletask" name="Use the file">
+      <extensionElements>
+        <modeler:allow-send-email>true</modeler:allow-send-email>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow5" name="file exists" sourceRef="exclusivegateway2" targetRef="usefiletask">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${fileexists}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="usefiletask" targetRef="endevent1"/>
+    <boundaryEvent id="boundarysignal1" name="Signal" attachedToRef="addfiletask" cancelActivity="true">
+      <signalEventDefinition signalRef="fileAddedSignal"/>
+    </boundaryEvent>
+    <sequenceFlow id="flow9" sourceRef="boundarysignal1" targetRef="exclusivegateway1"/>
+    <intermediateThrowEvent id="signalintermediatethrowevent1" name="SignalThrowEvent">
+      <signalEventDefinition signalRef="fileAddedSignal"/>
+    </intermediateThrowEvent>
+    <sequenceFlow id="flow11" sourceRef="addfiletask" targetRef="signalintermediatethrowevent1"/>
+    <endEvent id="sid-7FF4EA1B-2310-4A22-BCAD-DCE38B82122A"/>
+    <sequenceFlow id="sid-2AA227CA-6BF8-4EEE-B47C-F86C46AFFB37" sourceRef="signalintermediatethrowevent1" targetRef="sid-7FF4EA1B-2310-4A22-BCAD-DCE38B82122A"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_signalBoundaryProcess">
+    <bpmndi:BPMNPlane bpmnElement="signalBoundaryProcess" id="BPMNPlane_signalBoundaryProcess">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="70.0" y="150.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent1" id="BPMNShape_endevent1">
+        <omgdc:Bounds height="28.0" width="28.0" x="730.0" y="150.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="230.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
+        <omgdc:Bounds height="40.0" width="40.0" x="150.0" y="148.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="addfiletask" id="BPMNShape_addfiletask">
+        <omgdc:Bounds height="55.0" width="105.0" x="348.0" y="230.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
+        <omgdc:Bounds height="40.0" width="40.0" x="380.0" y="148.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usefiletask" id="BPMNShape_usefiletask">
+        <omgdc:Bounds height="55.0" width="105.0" x="530.0" y="140.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="boundarysignal1" id="BPMNShape_boundarysignal1">
+        <omgdc:Bounds height="30.0" width="30.0" x="351.8090647428054" y="270.4153463559613"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="signalintermediatethrowevent1" id="BPMNShape_signalintermediatethrowevent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="565.0" y="240.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-7FF4EA1B-2310-4A22-BCAD-DCE38B82122A" id="BPMNShape_sid-7FF4EA1B-2310-4A22-BCAD-DCE38B82122A">
+        <omgdc:Bounds height="28.0" width="28.0" x="640.0" y="241.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-2AA227CA-6BF8-4EEE-B47C-F86C46AFFB37" id="BPMNEdge_sid-2AA227CA-6BF8-4EEE-B47C-F86C46AFFB37">
+        <omgdi:waypoint x="595.0" y="255.0"/>
+        <omgdi:waypoint x="640.0" y="255.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="99.99066615873943" y="165.52908233501432"/>
+        <omgdi:waypoint x="150.6818181818182" y="167.3181818181818"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="189.91150442477877" y="167.91150442477877"/>
+        <omgdi:waypoint x="230.0" y="167.73333333333335"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="400.1111111111111" y="187.88888888888889"/>
+        <omgdi:waypoint x="400.3463687150838" y="230.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="335.0" y="167.72340425531914"/>
+        <omgdi:waypoint x="380.08474576271186" y="167.91525423728814"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="419.94535519125685" y="167.94535519125682"/>
+        <omgdi:waypoint x="530.0" y="167.64383561643837"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+        <omgdi:waypoint x="635.0" y="166.3622291021672"/>
+        <omgdi:waypoint x="730.0032865188506" y="164.3033343478887"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="453.0" y="256.76880222841226"/>
+        <omgdi:waypoint x="565.0014546188061" y="255.20889338971023"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow9" id="BPMNEdge_flow9">
+        <omgdi:waypoint x="375.48445322859754" y="297.65207936034545"/>
+        <omgdi:waypoint x="397.0" y="328.0"/>
+        <omgdi:waypoint x="170.0" y="328.0"/>
+        <omgdi:waypoint x="170.0" y="188.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

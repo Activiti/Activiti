@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20141210093416680" modeler:modelId="924474" modeler:modelVersion="1" modeler:modelLastUpdated="1418204052768">
+  <process id="transientVarsTest" isExecutable="true">
+  
+    <startEvent id="theStart"/>
+    <sequenceFlow sourceRef="theStart" targetRef="serviceTask01"/>
+    
+    <serviceTask id="serviceTask01" activiti:class="org.activiti.engine.test.api.variables.TransientVariablesTest$FetchDataServiceTask" />
+    <sequenceFlow sourceRef="serviceTask01" targetRef="serviceTask02"/>
+    
+    <serviceTask id="serviceTask02" activiti:class="org.activiti.engine.test.api.variables.TransientVariablesTest$ServiceTask02" />
+    <sequenceFlow sourceRef="serviceTask02" targetRef="theUserTask"/>
+    
+    <userTask id="theUserTask" />
+    <sequenceFlow sourceRef="theUserTask" targetRef="theEnd"/>
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+</definitions>

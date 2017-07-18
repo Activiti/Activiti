@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="simpleSubProcess">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="adhocSubProcess" />
+    
+    <adHocSubProcess id="adhocSubProcess" cancelRemainingInstances="false" ordering="Parallel">
+    
+      <userTask id="subProcessTask" name="Task in subprocess" />
+      <userTask id="subProcessTask2" name="Task2 in subprocess" />
+      
+      <completionCondition>${completed}</completionCondition>
+    
+    </adHocSubProcess>
+    
+    <sequenceFlow id="flow2" sourceRef="adhocSubProcess" targetRef="afterTask" />
+    
+    <userTask id="afterTask" name="After task" />
+    
+    <sequenceFlow id="flow3" sourceRef="afterTask" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

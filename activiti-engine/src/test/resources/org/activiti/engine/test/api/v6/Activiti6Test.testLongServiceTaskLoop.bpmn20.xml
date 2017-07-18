@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  targetNamespace="Examples">
+
+  <process id="testLongServiceTaskLoop">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask" />
+    
+    <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.api.v6.CountingServiceTaskTestDelegate"/>
+    <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="exclusiveGw" />
+    
+    <exclusiveGateway id="exclusiveGw" />
+    <sequenceFlow id="flow3" sourceRef="exclusiveGw" targetRef="serviceTask">
+      <conditionExpression xsi:type="tFormalExpression">
+      	<![CDATA[${counter < maxCount}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="exclusiveGw" targetRef="theEnd">
+      <conditionExpression xsi:type="tFormalExpression">
+      	<![CDATA[${counter == maxCount}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

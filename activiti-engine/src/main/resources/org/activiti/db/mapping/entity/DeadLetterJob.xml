@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl">
+
+    <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl">
+        <id property="id" column="ID_" jdbcType="VARCHAR" />
+        <result property="revision" column="REV_" jdbcType="INTEGER" />
+        <result property="jobType" column="TYPE_" jdbcType="VARCHAR" />
+        <result property="exclusive" column="EXCLUSIVE_" jdbcType="BOOLEAN" />
+        <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+        <result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
+        <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+        <result property="exceptionByteArrayRef" column="EXCEPTION_STACK_ID_" typeHandler="ByteArrayRefTypeHandler" />
+        <result property="exceptionMessage" column="EXCEPTION_MSG_" jdbcType="VARCHAR" />
+        <result property="jobHandlerType" column="HANDLER_TYPE_" jdbcType="VARCHAR" />
+        <result property="jobHandlerConfiguration" column="HANDLER_CFG_" jdbcType="VARCHAR" />
+        <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+        <result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
+        <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <delete id="deleteDeadLetterJob" parameterType="org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl">
+        delete from ${prefix}ACT_RU_DEADLETTER_JOB where ID_ = #{id} and REV_ = #{revision}
+    </delete>
+
+    <select id="selectDeadLetterJob" parameterType="string" resultMap="jobResultMap">
+        select * from ${prefix}ACT_RU_DEADLETTER_JOB where ID_ = #{id, jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectDeadLetterJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+        select *
+        from ${prefix}ACT_RU_DEADLETTER_JOB J
+        where J.EXECUTION_ID_ = #{parameter}
+    </select>
+    
+    <select id="selectDeadLetterJobsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+        select *
+        from ${prefix}ACT_RU_DEADLETTER_JOB J
+        where J.PROCESS_INSTANCE_ID_ = #{parameter}
+    </select>
+
+    <!-- TIMER INSERT -->
+  
+  	<insert id="insertDeadLetterJob" parameterType="org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl">
+    insert into ${prefix}ACT_RU_DEADLETTER_JOB (
+            ID_, 
+            REV_,
+            TYPE_,
+            EXCLUSIVE_,
+            EXECUTION_ID_, 
+            PROCESS_INSTANCE_ID_,
+            PROC_DEF_ID_,
+            EXCEPTION_STACK_ID_,
+            EXCEPTION_MSG_,
+            DUEDATE_,
+            REPEAT_,
+            HANDLER_TYPE_,
+            HANDLER_CFG_,
+            TENANT_ID_)
+    values (#{id, jdbcType=VARCHAR},
+    		#{revision, jdbcType=INTEGER},
+            #{jobType, jdbcType=VARCHAR},
+            #{exclusive, jdbcType=BOOLEAN},
+            #{executionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+            #{exceptionMessage, jdbcType=VARCHAR},
+            #{duedate, jdbcType=TIMESTAMP},
+            #{repeat, jdbcType=VARCHAR},
+            #{jobHandlerType, jdbcType=VARCHAR},
+            #{jobHandlerConfiguration, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+    )
+  	</insert>
+
+  	<insert id="bulkInsertDeadLetterJob" parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_RU_DEADLETTER_JOB (
+            ID_,
+            REV_,
+            TYPE_,
+            EXCLUSIVE_,
+            EXECUTION_ID_, 
+            PROCESS_INSTANCE_ID_,
+            PROC_DEF_ID_,
+            EXCEPTION_STACK_ID_,
+            EXCEPTION_MSG_,
+            DUEDATE_,
+            REPEAT_,
+            HANDLER_TYPE_,
+            HANDLER_CFG_,
+            TENANT_ID_) VALUES 
+	    <foreach collection="list" item="job" index="index" separator=","> 
+	        (#{job.id, jdbcType=VARCHAR},
+	         #{job.revision, jdbcType=INTEGER},
+	         #{job.jobType, jdbcType=VARCHAR},
+	         #{job.exclusive, jdbcType=BOOLEAN},
+	         #{job.executionId, jdbcType=VARCHAR},
+	         #{job.processInstanceId, jdbcType=VARCHAR},
+	         #{job.processDefinitionId, jdbcType=VARCHAR},
+	         #{job.exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+	         #{job.exceptionMessage, jdbcType=VARCHAR},
+	         #{job.duedate, jdbcType=TIMESTAMP},
+	         #{job.repeat, jdbcType=VARCHAR},
+	         #{job.jobHandlerType, jdbcType=VARCHAR},
+	         #{job.jobHandlerConfiguration, jdbcType=VARCHAR},
+	         #{job.tenantId, jdbcType=VARCHAR})
+	    </foreach>
+  	</insert>
+  	
+  <insert id="bulkInsertDeadLetterJob" databaseId="oracle" parameterType="java.util.List">
+    INSERT ALL
+    <foreach collection="list" item="job" index="index">
+      INTO ${prefix}ACT_RU_DEADLETTER_JOB (
+      ID_,
+      REV_,
+      TYPE_,
+      EXCLUSIVE_,
+      EXECUTION_ID_, 
+      PROCESS_INSTANCE_ID_,
+      PROC_DEF_ID_,
+      EXCEPTION_STACK_ID_,
+      EXCEPTION_MSG_,
+      DUEDATE_,
+      REPEAT_,
+      HANDLER_TYPE_,
+      HANDLER_CFG_,
+      TENANT_ID_) VALUES 
+      (#{job.id, jdbcType=VARCHAR},
+       #{job.revision, jdbcType=INTEGER},
+       #{job.jobType, jdbcType=VARCHAR},
+       #{job.exclusive, jdbcType=BOOLEAN},
+       #{job.executionId, jdbcType=VARCHAR},
+       #{job.processInstanceId, jdbcType=VARCHAR},
+       #{job.processDefinitionId, jdbcType=VARCHAR},
+       #{job.exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+       #{job.exceptionMessage, jdbcType=VARCHAR},
+       #{job.duedate, jdbcType=TIMESTAMP},
+       #{job.repeat, jdbcType=VARCHAR},
+       #{job.jobHandlerType, jdbcType=VARCHAR},
+       #{job.jobHandlerConfiguration, jdbcType=VARCHAR},
+       #{job.tenantId, jdbcType=VARCHAR})
+    </foreach>
+    SELECT * FROM dual
+  </insert>
+
+    <select id="selectDeadLetterJobByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultMap="jobResultMap">
+        ${limitBefore}
+        select RES.* ${limitBetween}
+        <include refid="selectDeadLetterJobByQueryCriteriaSql"/>
+        ${orderBy}
+        ${limitAfter}
+    </select>
+
+    <select id="selectDeadLetterJobCountByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultType="long">
+        select count(distinct RES.ID_)
+        <include refid="selectDeadLetterJobByQueryCriteriaSql"/>
+    </select>
+
+    <sql id="selectDeadLetterJobByQueryCriteriaSql">
+        from ${prefix}ACT_RU_DEADLETTER_JOB RES
+        <where>
+            <if test="id != null">
+                RES.ID_ = #{id}
+            </if>
+            <if test="processInstanceId != null">
+                and RES.PROCESS_INSTANCE_ID_ = #{processInstanceId}
+            </if>
+            <if test="executionId != null">
+                and RES.EXECUTION_ID_ = #{executionId}
+            </if>
+            <if test="processDefinitionId != null">
+                and RES.PROC_DEF_ID_ = #{processDefinitionId}
+            </if>
+            <if test="executable">
+                and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
+            </if>
+            <if test="onlyTimers">
+                and RES.TYPE_ = 'timer'
+            </if>
+            <if test="onlyMessages">
+                and RES.TYPE_ = 'message'
+            </if>
+            <if test="duedateHigherThan != null">
+                and RES.DUEDATE_ &gt; #{duedateHigherThan}
+            </if>
+            <if test="duedateLowerThan != null">
+                and RES.DUEDATE_ &lt; #{duedateLowerThan}
+            </if>
+            <if test="duedateHigherThanOrEqual != null">
+                and RES.DUEDATE_ &gt;= #{duedateHigherThanOrEqual}
+            </if>
+            <if test="duedateLowerThanOrEqual != null">
+                and RES.DUEDATE_ &lt;= #{duedateLowerThanOrEqual}
+            </if>
+            <if test="withException">
+                and (RES.EXCEPTION_MSG_ is not null or RES.EXCEPTION_STACK_ID_ is not null)
+            </if>
+            <if test="exceptionMessage">
+                and RES.EXCEPTION_MSG_ = #{exceptionMessage}
+            </if>
+            <if test="tenantId != null">
+                and RES.TENANT_ID_ = #{tenantId}
+            </if>
+            <if test="tenantIdLike != null">
+                and RES.TENANT_ID_ like #{tenantIdLike}${wildcardEscapeClause}
+            </if>
+            <if test="withoutTenantId">
+                and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+            </if>
+        </where>
+    </sql>
+
+    <!-- JOB UPDATE STATEMENTS -->
+    <update id="updateDeadLetterJobTenantIdForDeployment" parameterType="java.util.Map">
+        update ${prefix}ACT_RU_DEADLETTER_JOB set
+        TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+        where
+        ID_ in (
+        	SELECT J.ID_ from ${prefix}ACT_RU_DEADLETTER_JOB J
+        	inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_  = P.ID_
+        	inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
+        	where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+        )
+    </update>
+
+    <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
+     Tested this on MySQL 5.6: does NOT use a temporary table (so good performance) -->
+    <update id="updateDeadLetterJobTenantIdForDeployment" databaseId="mysql" parameterType="java.util.Map">
+        update ${prefix}ACT_RU_DEADLETTER_JOB set
+        TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+        where
+        ID_ in (
+
+	        SELECT tempTask.tempId
+	        FROM (
+	        SELECT J.ID_ as tempId
+	        FROM  ${prefix}ACT_RU_DEADLETTER_JOB J
+	        inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_  = P.ID_
+	        inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
+	        where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+
+        ) AS tempTask
+
+        )
+    </update>
+</mapper>

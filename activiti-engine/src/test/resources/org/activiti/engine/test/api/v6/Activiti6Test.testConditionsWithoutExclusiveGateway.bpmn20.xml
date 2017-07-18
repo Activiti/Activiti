@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	targetNamespace="Examples">
+
+	<process id="testConditions">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+
+		<userTask id="theTask" />
+
+		<sequenceFlow id="flow2" sourceRef="theTask" targetRef="A">
+			<conditionExpression xsi:type="tFormalExpression">
+      			<![CDATA[${input < 10}]]>
+			</conditionExpression>
+		</sequenceFlow>
+
+		<sequenceFlow id="flow3" sourceRef="theTask" targetRef="B">
+			<conditionExpression xsi:type="tFormalExpression">
+      			<![CDATA[${input < 100}]]>
+			</conditionExpression>
+		</sequenceFlow>
+
+		<sequenceFlow id="flow4" sourceRef="theTask" targetRef="C">
+			<conditionExpression xsi:type="tFormalExpression">
+      			<![CDATA[${input < 1000}]]>
+			</conditionExpression>
+		</sequenceFlow>
+
+		<userTask id="A" name="A" />
+		<userTask id="B" name="B"/>
+		<userTask id="C" name="C"/>
+
+	</process>
+
+</definitions>

@@ -1,0 +1,395 @@
+{
+    "resourceId": "1744",
+    "properties": {
+        "process_id": "formPropertiesProcess",
+        "name": "User registration",
+        "documentation": "",
+        "process_author": "",
+        "process_version": "",
+        "process_namespace": "http://www.activiti.org/processdef",
+        "executionlisteners": "",
+        "eventlisteners": "",
+        "signaldefinitions": "",
+        "messagedefinitions": ""
+    },
+    "stencil": {
+        "id": "BPMNDiagram"
+    },
+    "childShapes": [
+        {
+            "resourceId": "sid-4B2D3C15-D74C-44CF-9A05-774564C8A48F",
+            "properties": {
+                "overrideid": "startNode",
+                "name": "",
+                "documentation": "",
+                "executionlisteners": "",
+                "initiator": "",
+                "formkeydefinition": "",
+                "formproperties": {
+                    "formProperties": [
+                        {
+                            "id": "new_property_1",
+                            "name": "v000",
+                            "type": "string",
+                            "readable": false,
+                            "writable": false,
+                            "expression": "",
+                            "variable": "v111",
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_2",
+                            "name": "v001",
+                            "type": "long",
+                            "readable": false,
+                            "writable": true,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_3",
+                            "name": "v010",
+                            "type": "boolean",
+                            "readable": true,
+                            "writable": false,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_4",
+                            "name": "v011",
+                            "type": "date",
+                            "readable": true,
+                            "writable": true,
+                            "datePattern": "MM-dd-yyyy hh:mm",
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_5",
+                            "name": "v100",
+                            "type": "enum",
+                            "readable": false,
+                            "writable": false,
+                            "required": true,
+                            "enumValues": [
+                                {
+                                    "id": "value1",
+                                    "name": "Value 1"
+                                },
+                                {
+                                    "id": "value2",
+                                    "name": "Value 2"
+                                },
+                                {
+                                    "id": "value3",
+                                    "name": "Value 3"
+                                },
+                                {
+                                    "id": "value4",
+                                    "name": "Value 4"
+                                }
+                            ]
+                        },
+                        {
+                            "id": "new_property_6",
+                            "name": "v101",
+                            "type": "string",
+                            "readable": false,
+                            "writable": true,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_7",
+                            "name": "v110",
+                            "type": "string",
+                            "readable": true,
+                            "writable": false,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_8",
+                            "name": "v111",
+                            "type": "string",
+                            "readable": true,
+                            "writable": true,
+                            "required": true
+                        }
+                    ]
+                }
+            },
+            "stencil": {
+                "id": "StartNoneEvent"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-67E5C57C-B8CB-4B76-AF19-46A3DD03290E"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 191.25,
+                    "y": 193
+                },
+                "upperLeft": {
+                    "x": 161.25,
+                    "y": 163
+                }
+            },
+            "dockers": []
+        },
+        {
+            "resourceId": "sid-2640A22A-A7FE-4BEB-A245-0AFE5E907291",
+            "properties": {
+                "overrideid": "userTask",
+                "name": "",
+                "documentation": "",
+                "asynchronousdefinition": "false",
+                "exclusivedefinition": "false",
+                "executionlisteners": "",
+                "multiinstance_type": "None",
+                "multiinstance_cardinality": "",
+                "multiinstance_collection": "",
+                "multiinstance_variable": "",
+                "multiinstance_condition": "",
+                "isforcompensation": "false",
+                "usertaskassignment": "",
+                "formkeydefinition": "",
+                "duedatedefinition": "",
+                "prioritydefinition": "",
+                "formproperties": {
+                    "formProperties": [
+                        {
+                            "id": "new_property_1",
+                            "name": "v000",
+                            "type": "string",
+                            "readable": false,
+                            "writable": false,
+                            "expression": "",
+                            "variable": "v111",
+                            "required": false
+                        },
+                        {
+                            "id": "new_property_2",
+                            "name": "v001",
+                            "type": "long",
+                            "readable": false,
+                            "writable": true,
+                            "required": false
+                        },
+                        {
+                            "id": "new_property_3",
+                            "name": "v010",
+                            "type": "boolean",
+                            "readable": true,
+                            "writable": false
+                        },
+                        {
+                            "id": "new_property_4",
+                            "name": "v011",
+                            "type": "date",
+                            "readable": true,
+                            "writable": true,
+                            "datePattern": "MM-dd-yyyy hh:mm"
+                        },
+                        {
+                            "id": "new_property_5",
+                            "name": "v100",
+                            "type": "enum",
+                            "readable": false,
+                            "writable": false,
+                            "enumValues": [
+                                {
+                                    "id": "value1",
+                                    "name": "Value 1"
+                                },
+                                {
+                                    "id": "value2",
+                                    "name": "Value 2"
+                                },
+                                {
+                                    "id": "value3",
+                                    "name": "Value 3"
+                                },
+                                {
+                                    "id": "value4",
+                                    "name": "Value 4"
+                                }
+                            ],
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_6",
+                            "name": "v101",
+                            "type": "string",
+                            "readable": false,
+                            "writable": true,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_7",
+                            "name": "v110",
+                            "type": "string",
+                            "readable": true,
+                            "writable": false,
+                            "required": true
+                        },
+                        {
+                            "id": "new_property_8",
+                            "name": "v111",
+                            "type": "string",
+                            "readable": true,
+                            "writable": true,
+                            "required": true
+                        }
+                    ]
+                },
+                "tasklisteners": ""
+            },
+            "stencil": {
+                "id": "UserTask"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-F5607957-26B8-4781-B424-513C79A4ABBA"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 340,
+                    "y": 218
+                },
+                "upperLeft": {
+                    "x": 240,
+                    "y": 138
+                }
+            },
+            "dockers": []
+        },
+        {
+            "resourceId": "sid-67E5C57C-B8CB-4B76-AF19-46A3DD03290E",
+            "properties": {
+                "overrideid": "",
+                "name": "",
+                "documentation": "",
+                "conditionsequenceflow": "",
+                "executionlisteners": "",
+                "defaultflow": "false"
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-2640A22A-A7FE-4BEB-A245-0AFE5E907291"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 239.234375,
+                    "y": 178
+                },
+                "upperLeft": {
+                    "x": 191.46875,
+                    "y": 178
+                }
+            },
+            "dockers": [
+                {
+                    "x": 15,
+                    "y": 15
+                },
+                {
+                    "x": 50,
+                    "y": 40
+                }
+            ],
+            "target": {
+                "resourceId": "sid-2640A22A-A7FE-4BEB-A245-0AFE5E907291"
+            }
+        },
+        {
+            "resourceId": "sid-DA28CB1A-F2D3-4C30-B3DB-ABD246D1DA3A",
+            "properties": {
+                "overrideid": "",
+                "name": "",
+                "documentation": "",
+                "executionlisteners": ""
+            },
+            "stencil": {
+                "id": "EndNoneEvent"
+            },
+            "childShapes": [],
+            "outgoing": [],
+            "bounds": {
+                "lowerRight": {
+                    "x": 413,
+                    "y": 192
+                },
+                "upperLeft": {
+                    "x": 385,
+                    "y": 164
+                }
+            },
+            "dockers": []
+        },
+        {
+            "resourceId": "sid-F5607957-26B8-4781-B424-513C79A4ABBA",
+            "properties": {
+                "overrideid": "",
+                "name": "",
+                "documentation": "",
+                "conditionsequenceflow": "",
+                "executionlisteners": "",
+                "defaultflow": "false"
+            },
+            "stencil": {
+                "id": "SequenceFlow"
+            },
+            "childShapes": [],
+            "outgoing": [
+                {
+                    "resourceId": "sid-DA28CB1A-F2D3-4C30-B3DB-ABD246D1DA3A"
+                }
+            ],
+            "bounds": {
+                "lowerRight": {
+                    "x": 384.375,
+                    "y": 178
+                },
+                "upperLeft": {
+                    "x": 340.390625,
+                    "y": 178
+                }
+            },
+            "dockers": [
+                {
+                    "x": 50,
+                    "y": 40
+                },
+                {
+                    "x": 14,
+                    "y": 14
+                }
+            ],
+            "target": {
+                "resourceId": "sid-DA28CB1A-F2D3-4C30-B3DB-ABD246D1DA3A"
+            }
+        }
+    ],
+    "bounds": {
+        "lowerRight": {
+            "x": 1200,
+            "y": 1050
+        },
+        "upperLeft": {
+            "x": 0,
+            "y": 0
+        }
+    },
+    "stencilset": {
+        "url": "stencilsets/bpmn2.0/bpmn2.0.json",
+        "namespace": "http://b3mn.org/stencilset/bpmn2.0#"
+    },
+    "ssextensions": []
+}
