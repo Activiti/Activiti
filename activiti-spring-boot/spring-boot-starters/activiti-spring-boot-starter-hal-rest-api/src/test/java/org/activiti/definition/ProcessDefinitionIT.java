@@ -56,7 +56,7 @@ public class ProcessDefinitionIT {
         assertThat(entity.getBody().getContent())
                 .extracting(
                         ProcessDefinition::getName
-                ).contains("ProcessWithVariables",
+                ).contains("ProcessWithVariables", "ProcessWithVariables2",
                            "SimpleProcess", "ProcessWithBoundarySignal");
     }
 
