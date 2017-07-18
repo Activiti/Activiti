@@ -18,6 +18,7 @@ package org.activiti.services;
 
 import org.activiti.client.model.Task;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.model.converter.TaskConverter;
 import org.activiti.services.sort.TaskSortApplier;
@@ -26,6 +27,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class PageableTaskService {
 
@@ -33,6 +36,11 @@ public class PageableTaskService {
     private final TaskConverter taskConverter;
     private final PageRetriever pageRetriever;
     private final TaskSortApplier sortApplier;
+
+    @Autowired(required = false)
+    private UserGroupLookupProxy userGroupLookupProxy;
+
+    private AuthenticationWrapper authenticationWrapper = new AuthenticationWrapper();
 
     @Autowired
     public PageableTaskService(TaskService taskService,
@@ -46,7 +54,16 @@ public class PageableTaskService {
     }
 
     public Page<Task> getTasks(Pageable pageable) {
+
+        String userId = authenticationWrapper.getAuthenticatedUserId();
         TaskQuery query = taskService.createTaskQuery();
+        if(userId != null) {
+            List<String> groups = null;
+            if(userGroupLookupProxy!=null){
+               groups = userGroupLookupProxy.getGroupsForCandidateUser(userId);
+            }
+            query = query.taskCandidateOrAssigned(userId,groups);
+        }
         sortApplier.applySort(query, pageable);
         return pageRetriever.loadPage(query, pageable, taskConverter);
     }
@@ -57,4 +74,19 @@ public class PageableTaskService {
         return pageRetriever.loadPage(query, pageable, taskConverter);
     }
 
+    public UserGroupLookupProxy getUserGroupLookupProxy() {
+        return userGroupLookupProxy;
+    }
+
+    public void setUserGroupLookupProxy(UserGroupLookupProxy userGroupLookupProxy) {
+        this.userGroupLookupProxy = userGroupLookupProxy;
+    }
+
+    public AuthenticationWrapper getAuthenticationWrapper() {
+        return authenticationWrapper;
+    }
+
+    public void setAuthenticationWrapper(AuthenticationWrapper authenticationWrapper) {
+        this.authenticationWrapper = authenticationWrapper;
+    }
 }
