@@ -28,39 +28,48 @@ import org.activiti.engine.test.Deployment;
  */
 public class GroovyScriptTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testScriptExecution() {
-    int[] inputArray = new int[] { 1, 2, 3, 4, 5 };
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
+    @Deployment
+    public void testScriptExecution() {
+        int[] inputArray = new int[]{1, 2, 3, 4, 5};
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("scriptExecution",
+                                                                      CollectionUtil.singletonMap("inputArray",
+                                                                                                  inputArray));
 
-    Integer result = (Integer) runtimeService.getVariable(pi.getId(), "sum");
-    assertEquals(15, result.intValue());
-  }
+        Integer result = (Integer) runtimeService.getVariable(pi.getId(),
+                                                              "sum");
+        assertEquals(15,
+                     result.intValue());
+    }
 
-  @Deployment
-  public void testSetVariableThroughExecutionInScript() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptVariableThroughExecution");
+    @Deployment
+    public void testSetVariableThroughExecutionInScript() {
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptVariableThroughExecution");
 
-    // Since 'def' is used, the 'scriptVar' will be script local
-    // and not automatically stored as a process variable.
-    assertNull(runtimeService.getVariable(pi.getId(), "scriptVar"));
-    assertEquals("test123", runtimeService.getVariable(pi.getId(), "myVar"));
-  }
-  
-  @Deployment
-  public void testAsyncScript() {
-    // Set the clock fixed
-    Date startTime = new Date();
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testAsyncScript");
-    
-    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(processInstance.getId());
-    List<Job> jobs = jobQuery.list();
-    assertEquals(1, jobs.size());
-    
-    // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
-    assertEquals(0L, jobQuery.count());
-    
-    assertProcessEnded(processInstance.getId());
-  } 
+        // Since 'def' is used, the 'scriptVar' will be script local
+        // and not automatically stored as a process variable.
+        assertNull(runtimeService.getVariable(pi.getId(),
+                                              "scriptVar"));
+        assertEquals("test123",
+                     runtimeService.getVariable(pi.getId(),
+                                                "myVar"));
+    }
+
+    @Deployment
+    public void testAsyncScript() {
+        // Set the clock fixed
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testAsyncScript");
+
+        JobQuery jobQuery = managementService.createJobQuery().processInstanceId(processInstance.getId());
+        List<Job> jobs = jobQuery.list();
+        assertEquals(1,
+                     jobs.size());
+
+        // After setting the clock to time '1 hour and 5 seconds', the second timer should fire
+        waitForJobExecutorToProcessAllJobs(5000L,
+                                           100L);
+        assertEquals(0L,
+                     jobQuery.count());
+
+        assertProcessEnded(processInstance.getId());
+    }
 }

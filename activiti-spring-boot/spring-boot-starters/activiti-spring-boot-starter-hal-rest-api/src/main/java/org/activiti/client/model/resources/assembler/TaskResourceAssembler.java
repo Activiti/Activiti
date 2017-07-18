@@ -50,8 +50,10 @@ public class TaskResourceAssembler extends ResourceAssemblerSupport<Task, TaskRe
                                                                          null)).withRel("complete"));
         }
         links.add(linkTo(methodOn(ProcessInstanceController.class).getProcessInstanceById(task.getProcessInstanceId())).withRel("processInstance"));
-        Link homeLink = linkTo(HomeController.class).withRel("home");
-        links.add(homeLink);
+        if(task.getParentTaskId() !=null && !task.getParentTaskId().isEmpty()) {
+            links.add(linkTo(methodOn(TaskController.class).getTaskById(task.getParentTaskId())).withRel("parent"));
+        }
+        links.add(linkTo(HomeController.class).withRel("home"));
         return new TaskResource(task,
                                 links);
     }

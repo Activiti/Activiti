@@ -12,65 +12,79 @@
  */
 package org.activiti.standalone.escapeclause;
 
-import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.TimerJobQuery;
 
 public class JobQueryEscapeClauseTest extends AbstractEscapeClauseTestCase {
 
-  private String deploymentId;
-  private String deploymentTwoId;
-  private String deploymentThreeId;
+    private String deploymentId;
+    private String deploymentTwoId;
+    private String deploymentThreeId;
 
-  protected void setUp() throws Exception {
-    super.setUp();
-    
-    deploymentId = repositoryService.createDeployment()
-        .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
-        .tenantId("tenant%")
-        .deploy()
-        .getId();
+    protected void setUp() throws Exception {
+        super.setUp();
 
-    deploymentTwoId = repositoryService.createDeployment()
-            .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
-            .tenantId("tenant_")
-            .deploy()
-            .getId();
+        deploymentId = repositoryService.createDeployment()
+                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
+                .tenantId("tenant%")
+                .deploy()
+                .getId();
 
-    deploymentThreeId = repositoryService.createDeployment()
-        .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
-        .tenantId("test")
-        .deploy()
-        .getId();
+        deploymentTwoId = repositoryService.createDeployment()
+                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
+                .tenantId("tenant_")
+                .deploy()
+                .getId();
 
-    runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask", "tenant%").getId();
-    
-    runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask", "tenant_").getId();
-    
-    runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask", "test").getId();
-  }
+        deploymentThreeId = repositoryService.createDeployment()
+                .addClasspathResource("org/activiti/engine/test/api/mgmt/timerOnTask.bpmn20.xml")
+                .tenantId("test")
+                .deploy()
+                .getId();
 
-  @Override
-  protected void tearDown() throws Exception {
-    repositoryService.deleteDeployment(deploymentId, true);
-    repositoryService.deleteDeployment(deploymentTwoId, true);
-    repositoryService.deleteDeployment(deploymentThreeId, true);
-    super.tearDown();
-  }
+        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask",
+                                                            "tenant%").getId();
 
-  public void testQueryByTenantIdLike() {
-    TimerJobQuery query = managementService.createTimerJobQuery().jobTenantIdLike("%\\%%");
-    assertEquals("tenant%", query.singleResult().getTenantId());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
+        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask",
+                                                            "tenant_").getId();
 
-    query = managementService.createTimerJobQuery().jobTenantIdLike("%\\_%");
-    assertEquals("tenant_", query.singleResult().getTenantId());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
+        runtimeService.startProcessInstanceByKeyAndTenantId("timerOnTask",
+                                                            "test").getId();
+    }
 
-    query = managementService.createTimerJobQuery().jobTenantIdLike("%test%");
-    assertEquals("test", query.singleResult().getTenantId());
-    assertEquals(1, query.list().size());
-    assertEquals(1, query.count());
-  }
+    @Override
+    protected void tearDown() throws Exception {
+        repositoryService.deleteDeployment(deploymentId,
+                                           true);
+        repositoryService.deleteDeployment(deploymentTwoId,
+                                           true);
+        repositoryService.deleteDeployment(deploymentThreeId,
+                                           true);
+        super.tearDown();
+    }
+
+    public void testQueryByTenantIdLike() {
+        TimerJobQuery query = managementService.createTimerJobQuery().jobTenantIdLike("%\\%%");
+        assertEquals("tenant%",
+                     query.singleResult().getTenantId());
+        assertEquals(1,
+                     query.list().size());
+        assertEquals(1,
+                     query.count());
+
+        query = managementService.createTimerJobQuery().jobTenantIdLike("%\\_%");
+        assertEquals("tenant_",
+                     query.singleResult().getTenantId());
+        assertEquals(1,
+                     query.list().size());
+        assertEquals(1,
+                     query.count());
+
+        query = managementService.createTimerJobQuery().jobTenantIdLike("%test%");
+        assertEquals("test",
+                     query.singleResult().getTenantId());
+        assertEquals(1,
+                     query.list().size());
+        assertEquals(1,
+                     query.count());
+    }
 }

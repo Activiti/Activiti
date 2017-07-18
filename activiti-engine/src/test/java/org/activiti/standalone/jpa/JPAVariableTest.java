@@ -15,13 +15,9 @@ package org.activiti.standalone.jpa;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -36,178 +32,175 @@ import org.activiti.engine.impl.variable.EntityManagerSessionFactory;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
-/**
-
- */
 public class JPAVariableTest extends AbstractActivitiTestCase {
 
-  protected static ProcessEngine cachedProcessEngine;
+    protected static ProcessEngine cachedProcessEngine;
 
-  private static FieldAccessJPAEntity simpleEntityFieldAccess;
-  private static PropertyAccessJPAEntity simpleEntityPropertyAccess;
-  private static SubclassFieldAccessJPAEntity subclassFieldAccess;
-  private static SubclassPropertyAccessJPAEntity subclassPropertyAccess;
+    private static FieldAccessJPAEntity simpleEntityFieldAccess;
+    private static PropertyAccessJPAEntity simpleEntityPropertyAccess;
+    private static SubclassFieldAccessJPAEntity subclassFieldAccess;
+    private static SubclassPropertyAccessJPAEntity subclassPropertyAccess;
 
-  private static ByteIdJPAEntity byteIdJPAEntity;
-  private static ShortIdJPAEntity shortIdJPAEntity;
-  private static IntegerIdJPAEntity integerIdJPAEntity;
-  private static LongIdJPAEntity longIdJPAEntity;
-  private static FloatIdJPAEntity floatIdJPAEntity;
-  private static DoubleIdJPAEntity doubleIdJPAEntity;
-  private static CharIdJPAEntity charIdJPAEntity;
-  private static StringIdJPAEntity stringIdJPAEntity;
-  private static DateIdJPAEntity dateIdJPAEntity;
-  private static SQLDateIdJPAEntity sqlDateIdJPAEntity;
-  private static BigDecimalIdJPAEntity bigDecimalIdJPAEntity;
-  private static BigIntegerIdJPAEntity bigIntegerIdJPAEntity;
-  private static CompoundIdJPAEntity compoundIdJPAEntity;
+    private static ByteIdJPAEntity byteIdJPAEntity;
+    private static ShortIdJPAEntity shortIdJPAEntity;
+    private static IntegerIdJPAEntity integerIdJPAEntity;
+    private static LongIdJPAEntity longIdJPAEntity;
+    private static FloatIdJPAEntity floatIdJPAEntity;
+    private static DoubleIdJPAEntity doubleIdJPAEntity;
+    private static CharIdJPAEntity charIdJPAEntity;
+    private static StringIdJPAEntity stringIdJPAEntity;
+    private static DateIdJPAEntity dateIdJPAEntity;
+    private static SQLDateIdJPAEntity sqlDateIdJPAEntity;
+    private static BigDecimalIdJPAEntity bigDecimalIdJPAEntity;
+    private static BigIntegerIdJPAEntity bigIntegerIdJPAEntity;
+    private static CompoundIdJPAEntity compoundIdJPAEntity;
 
-  private static FieldAccessJPAEntity entityToQuery;
-  private static FieldAccessJPAEntity entityToUpdate;
+    private static FieldAccessJPAEntity entityToQuery;
+    private static FieldAccessJPAEntity entityToUpdate;
 
-  private static boolean entitiesInitialized;
+    private static boolean entitiesInitialized;
 
-  private static EntityManagerFactory entityManagerFactory;
+    private static EntityManagerFactory entityManagerFactory;
 
-  protected void initializeProcessEngine() {
-    if (cachedProcessEngine == null) {
-      ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
-          .createProcessEngineConfigurationFromResource("org/activiti/standalone/jpa/activiti.cfg.xml");
+    protected void initializeProcessEngine() {
+        if (cachedProcessEngine == null) {
+            ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) ProcessEngineConfiguration
+                    .createProcessEngineConfigurationFromResource("org/activiti/standalone/jpa/activiti.cfg.xml");
 
-      cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
+            cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
 
-      EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration.getSessionFactories().get(EntityManagerSession.class);
+            EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration.getSessionFactories().get(EntityManagerSession.class);
 
-      entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
+            entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
+        }
+        processEngine = cachedProcessEngine;
     }
-    processEngine = cachedProcessEngine;
-  }
 
-  public void setupJPAEntities() {
+    public void setupJPAEntities() {
 
-    if (!entitiesInitialized) {
+        if (!entitiesInitialized) {
 
-      EntityManager manager = entityManagerFactory.createEntityManager();
-      manager.getTransaction().begin();
+            EntityManager manager = entityManagerFactory.createEntityManager();
+            manager.getTransaction().begin();
 
-      // Simple test data
-      simpleEntityFieldAccess = new FieldAccessJPAEntity();
-      simpleEntityFieldAccess.setId(1L);
-      simpleEntityFieldAccess.setValue("value1");
-      manager.persist(simpleEntityFieldAccess);
+            // Simple test data
+            simpleEntityFieldAccess = new FieldAccessJPAEntity();
+            simpleEntityFieldAccess.setId(1L);
+            simpleEntityFieldAccess.setValue("value1");
+            manager.persist(simpleEntityFieldAccess);
 
-      simpleEntityPropertyAccess = new PropertyAccessJPAEntity();
-      simpleEntityPropertyAccess.setId(1L);
-      simpleEntityPropertyAccess.setValue("value2");
-      manager.persist(simpleEntityPropertyAccess);
+            simpleEntityPropertyAccess = new PropertyAccessJPAEntity();
+            simpleEntityPropertyAccess.setId(1L);
+            simpleEntityPropertyAccess.setValue("value2");
+            manager.persist(simpleEntityPropertyAccess);
 
-      subclassFieldAccess = new SubclassFieldAccessJPAEntity();
-      subclassFieldAccess.setId(1L);
-      subclassFieldAccess.setValue("value3");
-      manager.persist(subclassFieldAccess);
+            subclassFieldAccess = new SubclassFieldAccessJPAEntity();
+            subclassFieldAccess.setId(1L);
+            subclassFieldAccess.setValue("value3");
+            manager.persist(subclassFieldAccess);
 
-      subclassPropertyAccess = new SubclassPropertyAccessJPAEntity();
-      subclassPropertyAccess.setId(1L);
-      subclassPropertyAccess.setValue("value4");
-      manager.persist(subclassPropertyAccess);
+            subclassPropertyAccess = new SubclassPropertyAccessJPAEntity();
+            subclassPropertyAccess.setId(1L);
+            subclassPropertyAccess.setValue("value4");
+            manager.persist(subclassPropertyAccess);
 
-      // Test entities with all possible ID types
-      byteIdJPAEntity = new ByteIdJPAEntity();
-      byteIdJPAEntity.setByteId((byte) 1);
-      manager.persist(byteIdJPAEntity);
+            // Test entities with all possible ID types
+            byteIdJPAEntity = new ByteIdJPAEntity();
+            byteIdJPAEntity.setByteId((byte) 1);
+            manager.persist(byteIdJPAEntity);
 
-      shortIdJPAEntity = new ShortIdJPAEntity();
-      shortIdJPAEntity.setShortId((short) 123);
-      manager.persist(shortIdJPAEntity);
+            shortIdJPAEntity = new ShortIdJPAEntity();
+            shortIdJPAEntity.setShortId((short) 123);
+            manager.persist(shortIdJPAEntity);
 
-      integerIdJPAEntity = new IntegerIdJPAEntity();
-      integerIdJPAEntity.setIntId(123);
-      manager.persist(integerIdJPAEntity);
+            integerIdJPAEntity = new IntegerIdJPAEntity();
+            integerIdJPAEntity.setIntId(123);
+            manager.persist(integerIdJPAEntity);
 
-      longIdJPAEntity = new LongIdJPAEntity();
-      longIdJPAEntity.setLongId(123456789L);
-      manager.persist(longIdJPAEntity);
+            longIdJPAEntity = new LongIdJPAEntity();
+            longIdJPAEntity.setLongId(123456789L);
+            manager.persist(longIdJPAEntity);
 
-      floatIdJPAEntity = new FloatIdJPAEntity();
-      floatIdJPAEntity.setFloatId((float) 123.45678);
-      manager.persist(floatIdJPAEntity);
+            floatIdJPAEntity = new FloatIdJPAEntity();
+            floatIdJPAEntity.setFloatId((float) 123.45678);
+            manager.persist(floatIdJPAEntity);
 
-      doubleIdJPAEntity = new DoubleIdJPAEntity();
-      doubleIdJPAEntity.setDoubleId(12345678.987654);
-      manager.persist(doubleIdJPAEntity);
+            doubleIdJPAEntity = new DoubleIdJPAEntity();
+            doubleIdJPAEntity.setDoubleId(12345678.987654);
+            manager.persist(doubleIdJPAEntity);
 
-      charIdJPAEntity = new CharIdJPAEntity();
-      charIdJPAEntity.setCharId('g');
-      manager.persist(charIdJPAEntity);
+            charIdJPAEntity = new CharIdJPAEntity();
+            charIdJPAEntity.setCharId('g');
+            manager.persist(charIdJPAEntity);
 
-      dateIdJPAEntity = new DateIdJPAEntity();
-      dateIdJPAEntity.setDateId(new java.util.Date());
-      manager.persist(dateIdJPAEntity);
+            dateIdJPAEntity = new DateIdJPAEntity();
+            dateIdJPAEntity.setDateId(new java.util.Date());
+            manager.persist(dateIdJPAEntity);
 
-      sqlDateIdJPAEntity = new SQLDateIdJPAEntity();
-      sqlDateIdJPAEntity.setDateId(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-      manager.persist(sqlDateIdJPAEntity);
+            sqlDateIdJPAEntity = new SQLDateIdJPAEntity();
+            sqlDateIdJPAEntity.setDateId(new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
+            manager.persist(sqlDateIdJPAEntity);
 
-      stringIdJPAEntity = new StringIdJPAEntity();
-      stringIdJPAEntity.setStringId("azertyuiop");
-      manager.persist(stringIdJPAEntity);
+            stringIdJPAEntity = new StringIdJPAEntity();
+            stringIdJPAEntity.setStringId("azertyuiop");
+            manager.persist(stringIdJPAEntity);
 
-      bigDecimalIdJPAEntity = new BigDecimalIdJPAEntity();
-      bigDecimalIdJPAEntity.setBigDecimalId(new BigDecimal("12345678912345678900000.123456789123456789"));
-      manager.persist(bigDecimalIdJPAEntity);
+            bigDecimalIdJPAEntity = new BigDecimalIdJPAEntity();
+            bigDecimalIdJPAEntity.setBigDecimalId(new BigDecimal("12345678912345678900000.123456789123456789"));
+            manager.persist(bigDecimalIdJPAEntity);
 
-      bigIntegerIdJPAEntity = new BigIntegerIdJPAEntity();
-      bigIntegerIdJPAEntity.setBigIntegerId(new BigInteger("12345678912345678912345678900000"));
-      manager.persist(bigIntegerIdJPAEntity);
+            bigIntegerIdJPAEntity = new BigIntegerIdJPAEntity();
+            bigIntegerIdJPAEntity.setBigIntegerId(new BigInteger("12345678912345678912345678900000"));
+            manager.persist(bigIntegerIdJPAEntity);
 
-      manager.flush();
-      manager.getTransaction().commit();
-      manager.close();
+            manager.flush();
+            manager.getTransaction().commit();
+            manager.close();
 
-      entitiesInitialized = true;
+            entitiesInitialized = true;
+        }
     }
-  }
 
-  public void setupIllegalJPAEntities() {
-    EntityManager manager = entityManagerFactory.createEntityManager();
-    manager.getTransaction().begin();
+    public void setupIllegalJPAEntities() {
+        EntityManager manager = entityManagerFactory.createEntityManager();
+        manager.getTransaction().begin();
 
-    compoundIdJPAEntity = new CompoundIdJPAEntity();
-    EmbeddableCompoundId id = new EmbeddableCompoundId();
-    id.setIdPart1(123L);
-    id.setIdPart2("part2");
-    compoundIdJPAEntity.setId(id);
-    manager.persist(compoundIdJPAEntity);
+        compoundIdJPAEntity = new CompoundIdJPAEntity();
+        EmbeddableCompoundId id = new EmbeddableCompoundId();
+        id.setIdPart1(123L);
+        id.setIdPart2("part2");
+        compoundIdJPAEntity.setId(id);
+        manager.persist(compoundIdJPAEntity);
 
-    manager.flush();
-    manager.getTransaction().commit();
-    manager.close();
-  }
+        manager.flush();
+        manager.getTransaction().commit();
+        manager.close();
+    }
 
-  public void setupQueryJPAEntity() {
-    EntityManager manager = entityManagerFactory.createEntityManager();
-    manager.getTransaction().begin();
+    public void setupQueryJPAEntity() {
+        EntityManager manager = entityManagerFactory.createEntityManager();
+        manager.getTransaction().begin();
 
-    entityToQuery = new FieldAccessJPAEntity();
-    entityToQuery.setId(2L);
-    manager.persist(entityToQuery);
+        entityToQuery = new FieldAccessJPAEntity();
+        entityToQuery.setId(2L);
+        manager.persist(entityToQuery);
 
-    manager.flush();
-    manager.getTransaction().commit();
-    manager.close();
-  }
+        manager.flush();
+        manager.getTransaction().commit();
+        manager.close();
+    }
 
-  public void setupJPAEntityToUpdate() {
-    EntityManager manager = entityManagerFactory.createEntityManager();
-    manager.getTransaction().begin();
+    public void setupJPAEntityToUpdate() {
+        EntityManager manager = entityManagerFactory.createEntityManager();
+        manager.getTransaction().begin();
 
-    entityToUpdate = new FieldAccessJPAEntity();
-    entityToUpdate.setId(3L);
-    manager.persist(entityToUpdate);
-    manager.flush();
-    manager.getTransaction().commit();
-    manager.close();
-  }
+        entityToUpdate = new FieldAccessJPAEntity();
+        entityToUpdate.setId(3L);
+        manager.persist(entityToUpdate);
+        manager.flush();
+        manager.getTransaction().commit();
+        manager.close();
+    }
 
 //  //@TODO: fix Caused by: org.h2.jdbc.JdbcSQLException: Concurrent update in table "JPA_ENTITY_FIELD": another transaction has updated or deleted the same row [90131-193]
 //  @Deployment
@@ -435,169 +428,208 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
 //    assertTrue(((List<?>) runtimeService.getVariable(processInstance.getId(), "list")).get(0) instanceof FieldAccessJPAEntity);
 //  }
 
-  // https://activiti.atlassian.net/browse/ACT-995
-  @Deployment(resources = "org/activiti/standalone/jpa/JPAVariableTest.testQueryJPAVariable.bpmn20.xml")
-  public void testReplaceExistingJPAEntityWithAnotherOfSameType() {
-    EntityManager manager = entityManagerFactory.createEntityManager();
-    manager.getTransaction().begin();
+    // https://activiti.atlassian.net/browse/ACT-995
+    @Deployment(resources = "org/activiti/standalone/jpa/JPAVariableTest.testQueryJPAVariable.bpmn20.xml")
+    public void testReplaceExistingJPAEntityWithAnotherOfSameType() {
+        EntityManager manager = entityManagerFactory.createEntityManager();
+        manager.getTransaction().begin();
 
-    // Old variable that gets replaced
-    FieldAccessJPAEntity oldVariable = new FieldAccessJPAEntity();
-    oldVariable.setId(11L);
-    oldVariable.setValue("value1");
-    manager.persist(oldVariable);
+        // Old variable that gets replaced
+        FieldAccessJPAEntity oldVariable = new FieldAccessJPAEntity();
+        oldVariable.setId(11L);
+        oldVariable.setValue("value1");
+        manager.persist(oldVariable);
 
-    // New variable
-    FieldAccessJPAEntity newVariable = new FieldAccessJPAEntity();
-    newVariable.setId(12L);
-    newVariable.setValue("value2");
-    manager.persist(newVariable);
+        // New variable
+        FieldAccessJPAEntity newVariable = new FieldAccessJPAEntity();
+        newVariable.setId(12L);
+        newVariable.setValue("value2");
+        manager.persist(newVariable);
 
-    manager.flush();
-    manager.getTransaction().commit();
-    manager.close();
+        manager.flush();
+        manager.getTransaction().commit();
+        manager.close();
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess");
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess");
 
-    String executionId = processInstance.getId();
-    String variableName = "testVariable";
-    runtimeService.setVariable(executionId, variableName, oldVariable);
+        String executionId = processInstance.getId();
+        String variableName = "testVariable";
+        runtimeService.setVariable(executionId,
+                                   variableName,
+                                   oldVariable);
 
-    runtimeService.setVariable(executionId, variableName, newVariable);
+        runtimeService.setVariable(executionId,
+                                   variableName,
+                                   newVariable);
 
-    Object variable = runtimeService.getVariable(executionId, variableName);
-    assertEquals(newVariable.getId(), ((FieldAccessJPAEntity) variable).getId());
-  }
-
-  @Deployment
-  public void testIllegalEntities() {
-    setupIllegalJPAEntities();
-    // Starting process instance with a variable that has a compound primary
-    // key, which is not supported.
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("compoundIdJPAEntity", compoundIdJPAEntity);
-
-    try {
-      runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions", variables);
-      fail("Exception expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Cannot find field or method with annotation @Id on class", ae.getMessage());
-      assertTextPresent("only single-valued primary keys are supported on JPA-entities", ae.getMessage());
+        Object variable = runtimeService.getVariable(executionId,
+                                                     variableName);
+        assertEquals(newVariable.getId(),
+                     ((FieldAccessJPAEntity) variable).getId());
     }
 
-    // Starting process instance with a variable that has null as ID-value
-    variables = new HashMap<String, Object>();
-    variables.put("nullValueEntity", new FieldAccessJPAEntity());
+    @Deployment
+    public void testIllegalEntities() {
+        setupIllegalJPAEntities();
+        // Starting process instance with a variable that has a compound primary
+        // key, which is not supported.
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("compoundIdJPAEntity",
+                      compoundIdJPAEntity);
 
-    try {
-      runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions", variables);
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("Value of primary key for JPA-Entity cannot be null", ae.getMessage());
+        try {
+            runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
+                                                     variables);
+            fail("Exception expected");
+        } catch (ActivitiException ae) {
+            assertTextPresent("Cannot find field or method with annotation @Id on class",
+                              ae.getMessage());
+            assertTextPresent("only single-valued primary keys are supported on JPA-entities",
+                              ae.getMessage());
+        }
+
+        // Starting process instance with a variable that has null as ID-value
+        variables = new HashMap<String, Object>();
+        variables.put("nullValueEntity",
+                      new FieldAccessJPAEntity());
+
+        try {
+            runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
+                                                     variables);
+            fail("Exception expected");
+        } catch (ActivitiIllegalArgumentException ae) {
+            assertTextPresent("Value of primary key for JPA-Entity cannot be null",
+                              ae.getMessage());
+        }
+
+        // Starting process instance with an invalid type of ID
+        // Under normal circumstances, JPA will throw an exception for this of
+        // the class is
+        // present in the PU when creating EntityanagerFactory, but we test it
+        // *just in case*
+        variables = new HashMap<String, Object>();
+        IllegalIdClassJPAEntity illegalIdTypeEntity = new IllegalIdClassJPAEntity();
+        illegalIdTypeEntity.setId(Calendar.getInstance());
+        variables.put("illegalTypeId",
+                      illegalIdTypeEntity);
+
+        try {
+            runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
+                                                     variables);
+            fail("Exception expected");
+        } catch (ActivitiException ae) {
+            assertTextPresent("Unsupported Primary key type for JPA-Entity",
+                              ae.getMessage());
+        }
+
+        // Start process instance with JPA-entity which has an ID but isn't
+        // persisted. When reading
+        // the variable we should get an exception.
+        variables = new HashMap<String, Object>();
+        FieldAccessJPAEntity nonPersistentEntity = new FieldAccessJPAEntity();
+        nonPersistentEntity.setId(9999L);
+        variables.put("nonPersistentEntity",
+                      nonPersistentEntity);
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions",
+                                                                                   variables);
+
+        try {
+            runtimeService.getVariable(processInstance.getId(),
+                                       "nonPersistentEntity");
+            fail("Exception expected");
+        } catch (ActivitiException ae) {
+            assertTextPresent("Entity does not exist: " + FieldAccessJPAEntity.class.getName() + " - 9999",
+                              ae.getMessage());
+        }
     }
 
-    // Starting process instance with an invalid type of ID
-    // Under normal circumstances, JPA will throw an exception for this of
-    // the class is
-    // present in the PU when creating EntityanagerFactory, but we test it
-    // *just in case*
-    variables = new HashMap<String, Object>();
-    IllegalIdClassJPAEntity illegalIdTypeEntity = new IllegalIdClassJPAEntity();
-    illegalIdTypeEntity.setId(Calendar.getInstance());
-    variables.put("illegalTypeId", illegalIdTypeEntity);
+    @Deployment
+    public void testQueryJPAVariable() {
+        setupQueryJPAEntity();
 
-    try {
-      runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions", variables);
-      fail("Exception expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Unsupported Primary key type for JPA-Entity", ae.getMessage());
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("entityToQuery",
+                      entityToQuery);
+
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess",
+                                                                                   variables);
+
+        // Query the processInstance
+        ProcessInstance result = runtimeService.createProcessInstanceQuery().variableValueEquals("entityToQuery",
+                                                                                                 entityToQuery).singleResult();
+        assertNotNull(result);
+        assertEquals(result.getId(),
+                     processInstance.getId());
+
+        // Query with the same entity-type but with different ID should have no
+        // result
+        FieldAccessJPAEntity unexistingEntity = new FieldAccessJPAEntity();
+        unexistingEntity.setId(8888L);
+
+        result = runtimeService.createProcessInstanceQuery().variableValueEquals("entityToQuery",
+                                                                                 unexistingEntity).singleResult();
+        assertNull(result);
+
+        // All other operators are unsupported
+        try {
+            runtimeService.createProcessInstanceQuery().variableValueNotEquals("entityToQuery",
+                                                                               entityToQuery).singleResult();
+            fail("Exception expected");
+        } catch (ActivitiIllegalArgumentException ae) {
+            assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'",
+                              ae.getMessage());
+        }
+        try {
+            runtimeService.createProcessInstanceQuery().variableValueGreaterThan("entityToQuery",
+                                                                                 entityToQuery).singleResult();
+            fail("Exception expected");
+        } catch (ActivitiIllegalArgumentException ae) {
+            assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'",
+                              ae.getMessage());
+        }
+        try {
+            runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("entityToQuery",
+                                                                                        entityToQuery).singleResult();
+            fail("Exception expected");
+        } catch (ActivitiIllegalArgumentException ae) {
+            assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'",
+                              ae.getMessage());
+        }
+        try {
+            runtimeService.createProcessInstanceQuery().variableValueLessThan("entityToQuery",
+                                                                              entityToQuery).singleResult();
+            fail("Exception expected");
+        } catch (ActivitiIllegalArgumentException ae) {
+            assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'",
+                              ae.getMessage());
+        }
+        try {
+            runtimeService.createProcessInstanceQuery().variableValueLessThanOrEqual("entityToQuery",
+                                                                                     entityToQuery).singleResult();
+            fail("Exception expected");
+        } catch (ActivitiIllegalArgumentException ae) {
+            assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'",
+                              ae.getMessage());
+        }
     }
 
-    // Start process instance with JPA-entity which has an ID but isn't
-    // persisted. When reading
-    // the variable we should get an exception.
-    variables = new HashMap<String, Object>();
-    FieldAccessJPAEntity nonPersistentEntity = new FieldAccessJPAEntity();
-    nonPersistentEntity.setId(9999L);
-    variables.put("nonPersistentEntity", nonPersistentEntity);
+    @Deployment
+    public void testUpdateJPAEntityValues() {
+        setupJPAEntityToUpdate();
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("entityToUpdate",
+                      entityToUpdate);
 
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcessExceptions", variables);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("UpdateJPAValuesProcess",
+                                                                                   variables);
 
-    try {
-      runtimeService.getVariable(processInstance.getId(), "nonPersistentEntity");
-      fail("Exception expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Entity does not exist: " + FieldAccessJPAEntity.class.getName() + " - 9999", ae.getMessage());
+        // Servicetask in process 'UpdateJPAValuesProcess' should have set value
+        // on entityToUpdate.
+        Object updatedEntity = runtimeService.getVariable(processInstance.getId(),
+                                                          "entityToUpdate");
+        assertTrue(updatedEntity instanceof FieldAccessJPAEntity);
+        assertEquals("updatedValue",
+                     ((FieldAccessJPAEntity) updatedEntity).getValue());
     }
-  }
-
-  @Deployment
-  public void testQueryJPAVariable() {
-    setupQueryJPAEntity();
-
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("entityToQuery", entityToQuery);
-
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("JPAVariableProcess", variables);
-
-    // Query the processInstance
-    ProcessInstance result = runtimeService.createProcessInstanceQuery().variableValueEquals("entityToQuery", entityToQuery).singleResult();
-    assertNotNull(result);
-    assertEquals(result.getId(), processInstance.getId());
-
-    // Query with the same entity-type but with different ID should have no
-    // result
-    FieldAccessJPAEntity unexistingEntity = new FieldAccessJPAEntity();
-    unexistingEntity.setId(8888L);
-
-    result = runtimeService.createProcessInstanceQuery().variableValueEquals("entityToQuery", unexistingEntity).singleResult();
-    assertNull(result);
-
-    // All other operators are unsupported
-    try {
-      runtimeService.createProcessInstanceQuery().variableValueNotEquals("entityToQuery", entityToQuery).singleResult();
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'", ae.getMessage());
-    }
-    try {
-      runtimeService.createProcessInstanceQuery().variableValueGreaterThan("entityToQuery", entityToQuery).singleResult();
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'", ae.getMessage());
-    }
-    try {
-      runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("entityToQuery", entityToQuery).singleResult();
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'", ae.getMessage());
-    }
-    try {
-      runtimeService.createProcessInstanceQuery().variableValueLessThan("entityToQuery", entityToQuery).singleResult();
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'", ae.getMessage());
-    }
-    try {
-      runtimeService.createProcessInstanceQuery().variableValueLessThanOrEqual("entityToQuery", entityToQuery).singleResult();
-      fail("Exception expected");
-    } catch (ActivitiIllegalArgumentException ae) {
-      assertTextPresent("JPA entity variables can only be used in 'variableValueEquals'", ae.getMessage());
-    }
-  }
-
-  @Deployment
-  public void testUpdateJPAEntityValues() {
-    setupJPAEntityToUpdate();
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("entityToUpdate", entityToUpdate);
-
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("UpdateJPAValuesProcess", variables);
-
-    // Servicetask in process 'UpdateJPAValuesProcess' should have set value
-    // on entityToUpdate.
-    Object updatedEntity = runtimeService.getVariable(processInstance.getId(), "entityToUpdate");
-    assertTrue(updatedEntity instanceof FieldAccessJPAEntity);
-    assertEquals("updatedValue", ((FieldAccessJPAEntity) updatedEntity).getValue());
-  }
 }

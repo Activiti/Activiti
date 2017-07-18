@@ -52,7 +52,7 @@ public class ProcessVariablesIT {
     private static final String SIMPLE_PROCESS_WITH_VARIABLES = "ProcessWithVariables";
 
     @Before
-    public void setup() {
+    public void setUp() {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getBody().getContent()).hasSize(3);
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
