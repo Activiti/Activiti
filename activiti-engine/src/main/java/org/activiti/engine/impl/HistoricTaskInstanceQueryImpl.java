@@ -1161,12 +1161,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
         ObjectNode languageNode = Context.getLocalizationElementProperties(locale, task.getTaskDefinitionKey(), processDefinitionId, withLocalizationFallback);
         if (languageNode != null) {
           JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
-          if (languageNameNode != null && languageNameNode.isNull() == false) {
+          if (languageNameNode != null && !languageNameNode.isNull()) {
             taskEntity.setLocalizedName(languageNameNode.asText());
           }
 
           JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
-          if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
+          if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
             taskEntity.setLocalizedDescription(languageDescriptionNode.asText());
           }
         }

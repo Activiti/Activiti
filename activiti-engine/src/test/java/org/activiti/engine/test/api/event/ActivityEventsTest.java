@@ -104,7 +104,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     ActivitiActivityEvent activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(0);
     assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
     assertEquals("theStart", activityEvent.getActivityId());
-    assertTrue(processInstance.getId().equals(activityEvent.getExecutionId()) == false);
+    assertTrue(!processInstance.getId().equals(activityEvent.getExecutionId()));
     assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
     assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
 
@@ -112,7 +112,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(1);
     assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
     assertEquals("theStart", activityEvent.getActivityId());
-    assertTrue(processInstance.getId().equals(activityEvent.getExecutionId()) == false);
+    assertTrue(!processInstance.getId().equals(activityEvent.getExecutionId()));
     assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
     assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
 
@@ -120,7 +120,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(2);
     assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
     assertEquals("shipOrder", activityEvent.getActivityId());
-    assertTrue(processInstance.getId().equals(activityEvent.getExecutionId()) == false);
+    assertTrue(!processInstance.getId().equals(activityEvent.getExecutionId()));
     assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
     assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
 
@@ -137,7 +137,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(0);
     assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
     assertEquals("shipOrder", activityEvent.getActivityId());
-    assertTrue(processInstance.getId().equals(activityEvent.getExecutionId()) == false);
+    assertTrue(!processInstance.getId().equals(activityEvent.getExecutionId()));
     assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
     assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
 
@@ -151,21 +151,21 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(2);
     assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
     assertEquals("subProcessStart", activityEvent.getActivityId());
-    assertTrue(execution.getId().equals(activityEvent.getExecutionId()) == false);
+    assertTrue(!execution.getId().equals(activityEvent.getExecutionId()));
     assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
     assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(3);
     assertEquals(ActivitiEventType.ACTIVITY_COMPLETED, activityEvent.getType());
     assertEquals("subProcessStart", activityEvent.getActivityId());
-    assertTrue(execution.getId().equals(activityEvent.getExecutionId()) == false);
+    assertTrue(!execution.getId().equals(activityEvent.getExecutionId()));
     assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
     assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
 
     activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(4);
     assertEquals(ActivitiEventType.ACTIVITY_STARTED, activityEvent.getType());
     assertEquals("subTask", activityEvent.getActivityId());
-    assertTrue(execution.getId().equals(activityEvent.getExecutionId()) == false);
+    assertTrue(!execution.getId().equals(activityEvent.getExecutionId()));
     assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
     assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
     listener.clearEventsReceived();

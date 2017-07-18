@@ -13,7 +13,6 @@
 package org.activiti.spring.boot;
 
 import java.io.IOException;
-
 import javax.sql.DataSource;
 
 import org.activiti.engine.UserGroupLookupProxy;
@@ -22,35 +21,19 @@ import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 
-/**
-
-
- */
 @Configuration
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
-public class DataSourceProcessEngineAutoConfiguration {
-
-  @Configuration
-  @ConditionalOnMissingClass("javax.persistence.EntityManagerFactory")
-  @EnableConfigurationProperties(ActivitiProperties.class)
-  public static class DataSourceProcessEngineConfiguration extends AbstractProcessEngineAutoConfiguration {
+@EnableConfigurationProperties(ActivitiProperties.class)
+public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoConfiguration {
 
     @Autowired(required = false)
     protected UserGroupLookupProxy userGroupLookupProxy;
-
-    @Bean
-    @ConditionalOnMissingBean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-      return new DataSourceTransactionManager(dataSource);
-    }
 
     @Bean
     @ConditionalOnMissingBean
@@ -58,9 +41,11 @@ public class DataSourceProcessEngineAutoConfiguration {
             DataSource dataSource,
             PlatformTransactionManager transactionManager,
             SpringAsyncExecutor springAsyncExecutor) throws IOException {
-      
-      return this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springAsyncExecutor, userGroupLookupProxy);
-    }
-  }
 
+        return this.baseSpringProcessEngineConfiguration(dataSource,
+                                                         transactionManager,
+                                                         springAsyncExecutor,
+                                                         userGroupLookupProxy);
+    }
 }
+

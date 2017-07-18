@@ -110,7 +110,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
 
     boolean inExtensionElements = false;
     boolean readyWithChildElements = false;
-    while (readyWithChildElements == false && xtr.hasNext()) {
+    while (!readyWithChildElements && xtr.hasNext()) {
       xtr.next();
       if (xtr.isStartElement()) {
         if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
@@ -163,7 +163,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     }
 
     boolean readyWithExtensionElement = false;
-    while (readyWithExtensionElement == false && xtr.hasNext()) {
+    while (!readyWithExtensionElement && xtr.hasNext()) {
       xtr.next();
       if (xtr.isCharacters() || XMLStreamReader.CDATA == xtr.getEventType()) {
         if (StringUtils.isNotEmpty(xtr.getText().trim())) {
@@ -180,7 +180,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   }
 
   public static void writeDefaultAttribute(String attributeName, String value, XMLStreamWriter xtw) throws Exception {
-    if (StringUtils.isNotEmpty(value) && "null".equalsIgnoreCase(value) == false) {
+    if (StringUtils.isNotEmpty(value) && !"null".equalsIgnoreCase(value)) {
       xtw.writeAttribute(attributeName, value);
     }
   }
@@ -197,7 +197,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
 
   public static boolean writeExtensionElements(BaseElement baseElement, boolean didWriteExtensionStartElement, Map<String, String> namespaceMap, XMLStreamWriter xtw) throws Exception {
     if (!baseElement.getExtensionElements().isEmpty()) {
-      if (didWriteExtensionStartElement == false) {
+      if (!didWriteExtensionStartElement) {
         xtw.writeStartElement(ELEMENT_EXTENSIONS);
         didWriteExtensionStartElement = true;
       }
@@ -222,7 +222,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         if (StringUtils.isNotEmpty(extensionElement.getNamespacePrefix())) {
           xtw.writeStartElement(extensionElement.getNamespacePrefix(), extensionElement.getName(), extensionElement.getNamespace());
 
-          if (namespaceMap.containsKey(extensionElement.getNamespacePrefix()) == false || namespaceMap.get(extensionElement.getNamespacePrefix()).equals(extensionElement.getNamespace()) == false) {
+          if (!namespaceMap.containsKey(extensionElement.getNamespacePrefix()) || !namespaceMap.get(extensionElement.getNamespacePrefix()).equals(extensionElement.getNamespace())) {
 
             xtw.writeNamespace(extensionElement.getNamespacePrefix(), extensionElement.getNamespace());
             namespaceMap.put(extensionElement.getNamespacePrefix(), extensionElement.getNamespace());
@@ -241,7 +241,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
             if (StringUtils.isNotEmpty(attribute.getNamespace())) {
               if (StringUtils.isNotEmpty(attribute.getNamespacePrefix())) {
 
-                if (namespaceMap.containsKey(attribute.getNamespacePrefix()) == false || namespaceMap.get(attribute.getNamespacePrefix()).equals(attribute.getNamespace()) == false) {
+                if (!namespaceMap.containsKey(attribute.getNamespacePrefix()) || !namespaceMap.get(attribute.getNamespacePrefix()).equals(attribute.getNamespace())) {
 
                   xtw.writeNamespace(attribute.getNamespacePrefix(), attribute.getNamespace());
                   namespaceMap.put(attribute.getNamespacePrefix(), attribute.getNamespace());

@@ -58,8 +58,9 @@ public class SignalIT {
 
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
+
     @Before
-    public void setup(){
+    public void setUp(){
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getBody().getContent()).hasSize(3);
         for(ProcessDefinition pd : processDefinitions.getBody().getContent()){

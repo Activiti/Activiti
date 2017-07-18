@@ -18,20 +18,20 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TimerEventDefinition;
 
-/**
-
- */
 public class TimeDateParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ATTRIBUTE_TIMER_DATE;
-  }
+    public String getElementName() {
+        return ATTRIBUTE_TIMER_DATE;
+    }
 
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof TimerEventDefinition == false)
-      return;
+    public void parseChildElement(XMLStreamReader xtr,
+                                  BaseElement parentElement,
+                                  BpmnModel model) throws Exception {
+        if (!(parentElement instanceof TimerEventDefinition)) {
+            return;
+        }
 
-    TimerEventDefinition eventDefinition = (TimerEventDefinition) parentElement;
-    eventDefinition.setTimeDate(xtr.getElementText());
-  }
+        TimerEventDefinition eventDefinition = (TimerEventDefinition) parentElement;
+        eventDefinition.setTimeDate(xtr.getElementText());
+    }
 }
