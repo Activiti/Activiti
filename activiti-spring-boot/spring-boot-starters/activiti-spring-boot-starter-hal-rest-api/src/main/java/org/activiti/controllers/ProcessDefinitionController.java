@@ -143,22 +143,4 @@ public class ProcessDefinitionController {
         
         return resourceAssembler.toResource(pd);
     }
-    
-    protected ExtensionElement getExtensionElement(String key, org.activiti.bpmn.model.Process process) {
-        Map<String, List<ExtensionElement>> extensionElements = process.getExtensionElements();
-
-        if (!extensionElements.isEmpty()) {
-          return extensionElements.get(key).get(0);
-        }
-        return null;
-    }
-    
-    protected String getExtensionValue(String key, org.activiti.bpmn.model.Process process) {
-        Map<String, List<ExtensionElement>> extensionElements = process.getExtensionElements();
-
-        if (!extensionElements.isEmpty()) {
-          return extensionElements.get(key).get(0).getElementText();
-        }
-        return null;
-    }
 }
