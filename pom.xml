@@ -77,10 +77,10 @@
     <keycloak.version>3.2.0.Final</keycloak.version>
 
     <!-- plugins -->
-    <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-    <maven-surefire-plugin.version>2.7.1</maven-surefire-plugin.version>
-    <maven-jar-plugin.version>2.3.2</maven-jar-plugin.version>
-    <maven-release-plugin>2.4.2</maven-release-plugin>
+    <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
+    <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven.enforcer.plugin.version>1.4.1</maven.enforcer.plugin.version>
     <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
     <extra-enforcer-rules.version>1.0-beta-6</extra-enforcer-rules.version>
