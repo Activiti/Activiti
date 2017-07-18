@@ -6,13 +6,6 @@
   <description>BPM and workflow engine</description>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-root</artifactId>
-
-  <parent>
-    <groupId>org.sonatype.oss</groupId>
-    <artifactId>oss-parent</artifactId>
-    <version>7</version>
-  </parent>
-
   <packaging>pom</packaging>
   <version>7.0.0-SNAPSHOT</version>
   <properties>
@@ -850,16 +843,17 @@
     <name>Alfresco</name>
     <url>http://www.alfresco.com</url>
   </organization>
+  <inceptionYear>2010</inceptionYear>
   <issueManagement>
-    <system>JIRA</system>
-    <url>https://activiti.atlassian.net/browse/ACT</url>
+    <system>GitHub</system>
+    <url>https://github.com/Activiti/Activiti/issues</url>
   </issueManagement>
   <ciManagement>
-    <system>Bamboo</system>
+    <system>Travis</system>
     <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
   </ciManagement>
   <scm>
-    <url>git@github.com:Activiti/Activiti.git</url>
+    <url>https://github.com/Activiti/Activiti</url>
     <connection>scm:git:git@github.com:Activiti/Activiti.git</connection>
     <developerConnection>scm:git:git@github.com:Activiti/Activiti.git</developerConnection>
   </scm>
