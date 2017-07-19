@@ -42,14 +42,14 @@ public class HistoryJPAApplication implements CommandLineRunner{
     }
 
     @Autowired
-    EventStoreRestResource eventStoreRestResource;
+    private EventStoreRepository eventStoreRepository;
 
     @StreamListener(HistoryConsumerChannels.HISTORY_CONSUMER)
     public synchronized void receive(ProcessEngineEventEntity event) {
         System.out.println(">>>> Recieved Event" + event);
         System.out.println(">>>> \t Event Meta Data: " + event.getTimestamp() + " > " + event.getEventType());
         System.out.println(">>>> \t Event Class: " + event.getClass().getCanonicalName());
-        eventStoreRestResource.save(event);
+        eventStoreRepository.save(event);
     }
 
     @Bean
