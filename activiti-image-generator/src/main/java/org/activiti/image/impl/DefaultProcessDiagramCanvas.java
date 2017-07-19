@@ -57,6 +57,14 @@ import javax.imageio.ImageIO;
 import org.activiti.bpmn.model.AssociationDirection;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.image.exception.ActivitiImageException;
+import org.activiti.image.impl.icon.BusinessRuleTaskIconType;
+import org.activiti.image.impl.icon.ManualTaskIconType;
+import org.activiti.image.impl.icon.ReceiveTaskIconType;
+import org.activiti.image.impl.icon.ScriptTaskIconType;
+import org.activiti.image.impl.icon.SendTaskIconType;
+import org.activiti.image.impl.icon.ServiceTaskIconType;
+import org.activiti.image.impl.icon.TaskIconType;
+import org.activiti.image.impl.icon.UserTaskIconType;
 import org.activiti.image.util.ReflectUtil;
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGraphics2D;
@@ -65,6 +73,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Represents a canvas on which BPMN 2.0 constructs can be drawn.
@@ -156,16 +165,13 @@ public class DefaultProcessDiagramCanvas {
 
     // icons
     protected static int ICON_PADDING = 5;
-    protected static BufferedImage USERTASK_IMAGE;
-    protected static BufferedImage SCRIPTTASK_IMAGE;
-    protected static BufferedImage SERVICETASK_IMAGE;
-    protected static BufferedImage RECEIVETASK_IMAGE;
-    protected static BufferedImage SENDTASK_IMAGE;
-    protected static BufferedImage MANUALTASK_IMAGE;
-    protected static BufferedImage BUSINESS_RULE_TASK_IMAGE;
-    protected static BufferedImage SHELL_TASK_IMAGE;
-    protected static BufferedImage MULE_TASK_IMAGE;
-    protected static BufferedImage CAMEL_TASK_IMAGE;
+    protected static TaskIconType USERTASK_IMAGE;
+    protected static TaskIconType SCRIPTTASK_IMAGE;
+    protected static TaskIconType SERVICETASK_IMAGE;
+    protected static TaskIconType RECEIVETASK_IMAGE;
+    protected static TaskIconType SENDTASK_IMAGE;
+    protected static TaskIconType MANUALTASK_IMAGE;
+    protected static TaskIconType BUSINESS_RULE_TASK_IMAGE;
 
     protected static BufferedImage TIMER_IMAGE;
     protected static BufferedImage COMPENSATE_THROW_IMAGE;
@@ -248,12 +254,14 @@ public class DefaultProcessDiagramCanvas {
     }
 
     public void initialize() {
-    	// Get a DOMImplementation.
-    	DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
+        // Get a DOMImplementation.
+        DOMImplementation domImpl = GenericDOMImplementation.getDOMImplementation();
 
         // Create an instance of org.w3c.dom.Document.
         String svgNS = "http://www.w3.org/2000/svg";
-        Document document = domImpl.createDocument(svgNS, "svg", null);
+        Document document = domImpl.createDocument(svgNS,
+                                                   "svg",
+                                                   null);
 
         // Create an instance of the SVG Generator.
         this.g = new SVGGraphics2D(document);
@@ -285,26 +293,13 @@ public class DefaultProcessDiagramCanvas {
                                    FONT_SIZE);
 
         try {
-            USERTASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/userTask.png",
-                                                                  customClassLoader));
-            SCRIPTTASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/scriptTask.png",
-                                                                    customClassLoader));
-            SERVICETASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/serviceTask.png",
-                                                                     customClassLoader));
-            RECEIVETASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/receiveTask.png",
-                                                                     customClassLoader));
-            SENDTASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/sendTask.png",
-                                                                  customClassLoader));
-            MANUALTASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/manualTask.png",
-                                                                    customClassLoader));
-            BUSINESS_RULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/businessRuleTask.png",
-                                                                            customClassLoader));
-            SHELL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/shellTask.png",
-                                                                    customClassLoader));
-            CAMEL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/camelTask.png",
-                                                                    customClassLoader));
-            MULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/muleTask.png",
-                                                                   customClassLoader));
+            USERTASK_IMAGE = new UserTaskIconType();
+            SCRIPTTASK_IMAGE = new ScriptTaskIconType();
+            SERVICETASK_IMAGE = new ServiceTaskIconType();
+            RECEIVETASK_IMAGE = new ReceiveTaskIconType();
+            SENDTASK_IMAGE = new SendTaskIconType();
+            MANUALTASK_IMAGE = new ManualTaskIconType();
+            BUSINESS_RULE_TASK_IMAGE = new BusinessRuleTaskIconType();
 
             TIMER_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/timer.png",
                                                                customClassLoader));
@@ -341,17 +336,20 @@ public class DefaultProcessDiagramCanvas {
             throw new ActivitiImageException("ProcessDiagramGenerator already closed");
         }
 
-		try {
-	        SVGGraphics2D svgGenerator = (SVGGraphics2D) this.g;
-	
-	        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-	        Writer out;
-				out = new OutputStreamWriter(stream, "UTF-8");
-	        svgGenerator.stream(out, true);
-	        return new ByteArrayInputStream(stream.toByteArray());
-		} catch (UnsupportedEncodingException | SVGGraphics2DIOException e) {
-			throw new ActivitiImageException("Error while generating process image", e);
-		}
+        try {
+            SVGGraphics2D svgGenerator = (SVGGraphics2D) this.g;
+
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            Writer out;
+            out = new OutputStreamWriter(stream,
+                                         "UTF-8");
+            svgGenerator.stream(out,
+                                true);
+            return new ByteArrayInputStream(stream.toByteArray());
+        } catch (UnsupportedEncodingException | SVGGraphics2DIOException e) {
+            throw new ActivitiImageException("Error while generating process image",
+                                             e);
+        }
     }
 
     /**
@@ -878,17 +876,34 @@ public class DefaultProcessDiagramCanvas {
         g.setTransform(originalTransformation);
     }
 
-    public void drawTask(BufferedImage icon,
+    public void drawTask(TaskIconType icon,
                          String name,
                          GraphicInfo graphicInfo) {
         drawTask(name,
                  graphicInfo);
-        g.drawImage(icon,
-                    (int) (graphicInfo.getX() + ICON_PADDING),
-                    (int) (graphicInfo.getY() + ICON_PADDING),
-                    (int) (icon.getWidth()),
-                    (int) (icon.getHeight()),
-                    null);
+
+        final SVGGraphics2D svgGenerator = (SVGGraphics2D) g;
+        Element gTag = svgGenerator.getDOMFactory().createElementNS(null,
+                                                                    SVGGraphics2D.SVG_G_TAG);
+        gTag.setAttributeNS(null,
+                            "transform",
+                            "translate(" + (graphicInfo.getX() + ICON_PADDING) + "," + (graphicInfo.getY() + ICON_PADDING) + ")");
+
+        Element pathTag = svgGenerator.getDOMFactory().createElementNS(null,
+                                                                       SVGGraphics2D.SVG_PATH_TAG);
+        pathTag.setAttributeNS(null,
+                               "d",
+                               icon.getDValue());
+        pathTag.setAttributeNS(null,
+                               "anchors",
+                               icon.getAnchorValue());
+        pathTag.setAttributeNS(null,
+                               "style",
+                               icon.getStyleValue());
+
+        gTag.appendChild(pathTag);
+        svgGenerator.getDOMTreeManager().appendGroup(gTag,
+                                                     null);
     }
 
     public void drawTask(String name,
@@ -1148,20 +1163,6 @@ public class DefaultProcessDiagramCanvas {
     public void drawBusinessRuleTask(String name,
                                      GraphicInfo graphicInfo) {
         drawTask(BUSINESS_RULE_TASK_IMAGE,
-                 name,
-                 graphicInfo);
-    }
-
-    public void drawCamelTask(String name,
-                              GraphicInfo graphicInfo) {
-        drawTask(CAMEL_TASK_IMAGE,
-                 name,
-                 graphicInfo);
-    }
-
-    public void drawMuleTask(String name,
-                             GraphicInfo graphicInfo) {
-        drawTask(MULE_TASK_IMAGE,
                  name,
                  graphicInfo);
     }

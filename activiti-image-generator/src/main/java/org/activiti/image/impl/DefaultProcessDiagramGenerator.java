@@ -230,16 +230,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
                                              ServiceTask serviceTask = (ServiceTask) flowNode;
-                                             if ("camel".equalsIgnoreCase(serviceTask.getType())) {
-                                                 processDiagramCanvas.drawCamelTask(serviceTask.getName(),
-                                                                                    graphicInfo);
-                                             } else if ("mule".equalsIgnoreCase(serviceTask.getType())) {
-                                                 processDiagramCanvas.drawMuleTask(serviceTask.getName(),
-                                                                                   graphicInfo);
-                                             } else {
-                                                 processDiagramCanvas.drawServiceTask(serviceTask.getName(),
-                                                                                      graphicInfo);
-                                             }
+                                             processDiagramCanvas.drawServiceTask(serviceTask.getName(),
+                                                                                  graphicInfo);
                                          }
                                      });
 
