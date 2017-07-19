@@ -34,8 +34,8 @@ public class SubProcessConverterAutoLayoutTest extends AbstractConverterTest {
     bpmnAutoLayout.execute();
 
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
+    assertNotNull(parsedModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
 
   protected String getResource() {

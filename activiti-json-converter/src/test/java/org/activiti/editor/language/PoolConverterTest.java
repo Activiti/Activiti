@@ -24,6 +24,7 @@ public class PoolConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readJsonFile();
     assertNotNull(bpmnModel);
     bpmnModel = convertToJsonAndBack(bpmnModel);
+    assertNotNull(bpmnModel);
     validateModel(bpmnModel);
   }
 

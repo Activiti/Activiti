@@ -200,7 +200,6 @@ public class JobEventsTest extends PluggableActivitiTestCase {
   @Deployment
   public void testJobCanceledEventOnBoundaryEvent() throws Exception {
     Clock testClock = new DefaultClockImpl();
-    assertNotNull(testClock);
 
     processEngineConfiguration.setClock(testClock);
 
@@ -209,6 +208,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     listener.clearEventsReceived();
 
     Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
 
     taskService.complete(task.getId());
 

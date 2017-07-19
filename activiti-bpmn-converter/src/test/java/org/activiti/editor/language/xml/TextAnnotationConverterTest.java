@@ -23,8 +23,8 @@ public class TextAnnotationConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     assertNotNull(bpmnModel);
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
+    assertNotNull(parsedModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
 
   protected String getResource() {

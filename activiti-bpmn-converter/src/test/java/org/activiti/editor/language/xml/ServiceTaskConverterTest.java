@@ -28,8 +28,8 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     assertNotNull("BPMN Model XML not found", bpmnModel);
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
+    assertNotNull(parsedModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
 
   protected String getResource() {

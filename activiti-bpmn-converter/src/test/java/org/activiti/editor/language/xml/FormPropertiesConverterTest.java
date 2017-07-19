@@ -32,6 +32,7 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     assertNotNull(bpmnModel);
     validateModel(bpmnModel);
     bpmnModel = exportAndReadXMLFile(bpmnModel);
+    assertNotNull(bpmnModel);
     validateModel(bpmnModel);
   }
   

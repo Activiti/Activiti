@@ -10,7 +10,7 @@ public class ChineseConverterTest extends AbstractConverterTest {
   public void convertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     assertNotNull("BPMN Model XML not found", bpmnModel);
-    deployProcess(bpmnModel);
+    //deployProcess(bpmnModel);
   }
 
   @Test
@@ -18,7 +18,8 @@ public class ChineseConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     assertNotNull("BPMN Model XML not found", bpmnModel);
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
-    deployProcess(parsedModel);
+    assertNotNull(parsedModel);
+    //deployProcess(parsedModel);
   }
 
   protected String getResource() {
