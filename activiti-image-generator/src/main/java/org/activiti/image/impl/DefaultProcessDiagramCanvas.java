@@ -882,28 +882,9 @@ public class DefaultProcessDiagramCanvas {
         drawTask(name,
                  graphicInfo);
 
-        final SVGGraphics2D svgGenerator = (SVGGraphics2D) g;
-        Element gTag = svgGenerator.getDOMFactory().createElementNS(null,
-                                                                    SVGGraphics2D.SVG_G_TAG);
-        gTag.setAttributeNS(null,
-                            "transform",
-                            "translate(" + (graphicInfo.getX() + ICON_PADDING) + "," + (graphicInfo.getY() + ICON_PADDING) + ")");
-
-        Element pathTag = svgGenerator.getDOMFactory().createElementNS(null,
-                                                                       SVGGraphics2D.SVG_PATH_TAG);
-        pathTag.setAttributeNS(null,
-                               "d",
-                               icon.getDValue());
-        pathTag.setAttributeNS(null,
-                               "anchors",
-                               icon.getAnchorValue());
-        pathTag.setAttributeNS(null,
-                               "style",
-                               icon.getStyleValue());
-
-        gTag.appendChild(pathTag);
-        svgGenerator.getDOMTreeManager().appendGroup(gTag,
-                                                     null);
+        icon.drawIcon(graphicInfo,
+                      ICON_PADDING,
+                      (SVGGraphics2D) g);
     }
 
     public void drawTask(String name,
