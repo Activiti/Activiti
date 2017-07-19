@@ -17,8 +17,6 @@
 package org.activiti.runtime;
 
 import org.activiti.KeycloakEnabledBaseTestIT;
-import org.activiti.client.model.ProcessDefinition;
-import org.activiti.client.model.Task;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

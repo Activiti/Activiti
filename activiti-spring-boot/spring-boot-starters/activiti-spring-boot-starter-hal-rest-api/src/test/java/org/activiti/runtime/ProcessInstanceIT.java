@@ -19,8 +19,6 @@ package org.activiti.runtime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.client.model.ProcessDefinition;
-import org.activiti.client.model.ProcessInstance;
 import org.activiti.definition.ProcessDefinitionIT;
 import org.junit.Before;
 import org.junit.Test;

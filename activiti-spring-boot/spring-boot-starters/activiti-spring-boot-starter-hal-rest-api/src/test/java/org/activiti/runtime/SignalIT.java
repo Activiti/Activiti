@@ -20,12 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.client.model.ProcessDefinition;
-import org.activiti.client.model.ProcessInstance;
-import org.activiti.client.model.Task;
 import org.activiti.client.model.commands.SignalProcessInstanceCmd;
 import org.activiti.definition.ProcessDefinitionIT;
-import org.activiti.runtime.ProcessInstanceRestTemplate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

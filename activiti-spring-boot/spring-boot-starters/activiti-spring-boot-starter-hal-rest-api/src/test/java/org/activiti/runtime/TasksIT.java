@@ -22,11 +22,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.commands.CompleteTaskCmd;
-import org.activiti.client.model.ProcessInstance;
-import org.activiti.client.model.Task;
-import org.activiti.controllers.TaskController;
+import org.activiti.services.rest.controllers.TaskController;
 import org.activiti.definition.ProcessDefinitionIT;
 import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.services.AuthenticationWrapper;
