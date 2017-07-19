@@ -3,6 +3,7 @@ package org.activiti.services.query.app;
 import java.util.Date;
 import java.util.Optional;
 
+import org.activiti.services.query.app.dao.TaskRepository;
 import org.activiti.services.query.events.ProcessCompletedEvent;
 import org.activiti.services.query.events.ProcessEngineEvent;
 import org.activiti.services.query.events.ProcessStartedEvent;
@@ -30,7 +31,7 @@ public class QueryApplication {
     ProcessInstanceQueryRestResource processInstanceQueryRestResource;
 
     @Autowired
-    TaskQueryRestResource taskQueryRestResource;
+    TaskRepository taskQueryRestResource;
 
     @StreamListener(QueryConsumerChannels.QUERY_CONSUMER)
     public synchronized void receive(ProcessEngineEvent event) {
