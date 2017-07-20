@@ -14,7 +14,7 @@
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <jdk.version>1.8</jdk.version>
     <!-- JVM params for test execution -->
-    <argLine>-Duser.language=en</argLine>
+    <argLine>-Xmx256m -Duser.language=en</argLine>
     <spring.boot.version>2.0.0.M2</spring.boot.version>
     <!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
     <spring.hateoas.version>0.24.0.BUILD-SNAPSHOT</spring.hateoas.version>
