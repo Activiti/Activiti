@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime;
+package org.activiti.services.identity.keycloak;
 
 import java.util.Map;
 

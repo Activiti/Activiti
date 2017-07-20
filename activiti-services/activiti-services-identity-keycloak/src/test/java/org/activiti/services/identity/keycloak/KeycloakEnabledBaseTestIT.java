@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti;
+package org.activiti.services.identity.keycloak;
 
 import org.junit.Before;
 import org.keycloak.admin.client.Keycloak;

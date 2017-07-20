@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime;
+package org.activiti.services.identity.keycloak;
 
-import org.activiti.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.junit.Before;
@@ -35,7 +34,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.activiti.runtime.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.activiti.services.identity.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)

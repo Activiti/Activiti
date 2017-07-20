@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti;
+package org.activiti.services.identity.keycloak;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +28,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 @Configuration
-@PropertySources({@PropertySource("classpath:application.properties"),@PropertySource("classpath:application-test.properties")})
+@PropertySources({@PropertySource("application.properties"),@PropertySource("application-test.properties")})
 public class TestConfiguration {
 
     @Bean

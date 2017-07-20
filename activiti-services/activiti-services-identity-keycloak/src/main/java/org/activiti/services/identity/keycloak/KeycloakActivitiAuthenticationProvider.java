@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.keycloak;
+package org.activiti.services.identity.keycloak;
 
 import org.keycloak.KeycloakPrincipal;
 import org.keycloak.KeycloakSecurityContext;
@@ -28,17 +28,16 @@ public class KeycloakActivitiAuthenticationProvider extends KeycloakAuthenticati
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        KeycloakAuthenticationToken token = (KeycloakAuthenticationToken)authentication;
+        KeycloakAuthenticationToken token = (KeycloakAuthenticationToken) authentication;
 
         String userId = authentication.getName(); //this will be keycloak id
 
-        if(token.getPrincipal() instanceof KeycloakPrincipal){
-            KeycloakPrincipal<KeycloakSecurityContext> kp = (KeycloakPrincipal<KeycloakSecurityContext>)token.getPrincipal();
-          //option to use username instead of id
-            if(kp.getKeycloakSecurityContext().getToken()!=null && kp.getKeycloakSecurityContext().getToken().getPreferredUsername()!=null) {
+        if (token.getPrincipal() instanceof KeycloakPrincipal) {
+            KeycloakPrincipal<KeycloakSecurityContext> kp = (KeycloakPrincipal<KeycloakSecurityContext>) token.getPrincipal();
+            //option to use username instead of id
+            if (kp.getKeycloakSecurityContext().getToken() != null && kp.getKeycloakSecurityContext().getToken().getPreferredUsername() != null) {
                 userId = kp.getKeycloakSecurityContext().getToken().getPreferredUsername(); //replace with username - could be changed to e.g. email if desired
             }
-
         }
 
         org.activiti.engine.impl.identity.Authentication.setAuthenticatedUserId(userId);

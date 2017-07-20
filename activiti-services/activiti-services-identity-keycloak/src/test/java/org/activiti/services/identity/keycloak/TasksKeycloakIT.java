@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime;
+package org.activiti.services.identity.keycloak;
 
-import org.activiti.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.Task;
 import org.junit.Before;

@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package org.activiti.keycloak;
+package org.activiti.services.identity.keycloak;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.activiti.engine.UserGroupLookupProxy;
 import org.keycloak.admin.client.Keycloak;
@@ -22,9 +25,6 @@ import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Component("usergrouplookuproxy")
 public class KeycloakUserGroupLookupProxy implements UserGroupLookupProxy {
@@ -44,26 +44,31 @@ public class KeycloakUserGroupLookupProxy implements UserGroupLookupProxy {
     @Value("${keycloakclientpassword}")
     private String clientPassword;
 
-
-    public List<String> getGroupsForCandidateUser(String candidateUser){
+    public List<String> getGroupsForCandidateUser(String candidateUser) {
         //candidateUser here will use identifier chosen in KeycloakActivitiAuthenticationProvider
 
-        Keycloak keycloak = Keycloak.getInstance(authServer,realm,clientUser,clientPassword,keycloakadminclientapp);
+        Keycloak keycloak = Keycloak.getInstance(authServer,
+                                                 realm,
+                                                 clientUser,
+                                                 clientPassword,
+                                                 keycloakadminclientapp);
 
         //if using id then could use keycloak.realms().realm(realm).users().get(candidateUser)
         //but with name have to search for user
-        List<UserRepresentation> users = keycloak.realms().realm(realm).users().search(candidateUser,0,10);
-        if(users.size()>1){
-            throw new UnsupportedOperationException("User id "+candidateUser+" is not unique");
+        List<UserRepresentation> users = keycloak.realms().realm(realm).users().search(candidateUser,
+                                                                                       0,
+                                                                                       10);
+        if (users.size() > 1) {
+            throw new UnsupportedOperationException("User id " + candidateUser + " is not unique");
         }
         UserRepresentation user = users.get(0);
 
         List<GroupRepresentation> groupRepresentations = keycloak.realms().realm(realm).users().get(user.getId()).groups();
 
         List<String> groups = null;
-        if(groupRepresentations!=null && groupRepresentations.size()>0){
+        if (groupRepresentations != null && groupRepresentations.size() > 0) {
             groups = new ArrayList<String>();
-            for(GroupRepresentation groupRepresentation:groupRepresentations){
+            for (GroupRepresentation groupRepresentation : groupRepresentations) {
                 groups.add(groupRepresentation.getName());
             }
         }
