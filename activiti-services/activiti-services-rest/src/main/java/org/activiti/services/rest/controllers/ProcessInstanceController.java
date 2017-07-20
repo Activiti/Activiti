@@ -67,7 +67,7 @@ public class ProcessInstanceController {
         return resourceAssembler.toResource(processEngine.getProcessInstanceById(processInstanceId));
     }
 
-    @RequestMapping(value = "/send-signal")
+    @RequestMapping(value = "/signal")
     public ResponseEntity<Void> sendSignal(@RequestBody
                                                    SignalProcessInstanceCmd cmd) {
         processEngine.signal(cmd);

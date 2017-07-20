@@ -23,10 +23,7 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-services-rest</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-services-identity-keycloak</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-annotations</artifactId>
