@@ -17,6 +17,7 @@
 package org.activiti.definition;
 
 import org.activiti.client.model.ProcessDefinition;
+import org.activiti.client.model.ProcessDefinitionMeta;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +97,7 @@ public class ProcessDefinitionIT {
     @Test
     public void shouldReturnProcessDefinitionMetadata() throws Exception {
     	//given
-        ParameterizedTypeReference<ProcessDefinition> responseType = new ParameterizedTypeReference<ProcessDefinition>() {
+        ParameterizedTypeReference<ProcessDefinitionMeta> responseType = new ParameterizedTypeReference<ProcessDefinitionMeta>() {
         };
 
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsEntity = getProcessDefinitions();
@@ -113,7 +114,7 @@ public class ProcessDefinitionIT {
         while(!aProcessDefinition.getName().equals(PROCESS_WITH_VARIABLES_2));
         
         //when
-        ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/meta",
+        ResponseEntity<ProcessDefinitionMeta> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/meta",
                                                                               HttpMethod.GET,
                                                                               null,
                                                                               responseType);

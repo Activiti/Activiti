@@ -15,8 +15,6 @@
 
 package org.activiti.client.model;
 
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -28,43 +26,18 @@ public class ProcessDefinition {
     private String name;
     private String description;
     private int version;
-    private List<String> users;
-    private List<String> groups;
-    private List<String []> variables;
-    private List<String []> userTasks;
-    private List<String []> serviceTasks;
 
     public ProcessDefinition() {
     }
-    
-    public ProcessDefinition(String id,
-					         String name,
-					         String description,
-					         int version) {
-    	this.id = id;
-    	this.name = name;
-    	this.version = version;
-    	this.description = description;
-	}
 
     public ProcessDefinition(String id,
                              String name,
                              String description,
-                             int version,
-                             List<String> users,
-                             List<String> groups,
-                             List<String []> variables,
-                             List<String []> userTasks,
-                             List<String []> serviceTasks) {
+                             int version) {
         this.id = id;
         this.name = name;
         this.version = version;
         this.description = description;
-        this.users = users;
-        this.groups = groups;
-        this.variables = variables;
-        this.userTasks = userTasks;
-        this.serviceTasks = serviceTasks;
     }
 
     public String getId() {
@@ -82,26 +55,4 @@ public class ProcessDefinition {
     public int getVersion() {
         return version;
     }
-
-	public List<String> getUsers() {
-		return users;
-	}
-
-	public List<String> getGroups() {
-		return groups;
-	}
-
-	public List<String []> getVariables() {
-		return variables;
-	}
-
-	public List<String []> getUserTasks() {
-		return userTasks;
-	}
-
-	public List<String []> getServiceTasks() {
-		return serviceTasks;
-	}
-    
-    
 }
