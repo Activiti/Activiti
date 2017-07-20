@@ -24,19 +24,17 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.springframework.data.rest.core.annotation.RestResource;
-
-import static org.activiti.services.history.EventsRelProvider.COLLECTION_RESOURCE_REL;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
+        include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "eventType",
         visible = true)
 @JsonSubTypes({
@@ -55,7 +53,6 @@ import static org.activiti.services.history.EventsRelProvider.COLLECTION_RESOURC
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "TYPE")
-@RestResource(path = COLLECTION_RESOURCE_REL)
 public abstract class ProcessEngineEventEntity {
 
     @Id
@@ -102,4 +99,10 @@ public abstract class ProcessEngineEventEntity {
     public String getProcessInstanceId() {
         return processInstanceId;
     }
+
+    @JsonIgnore
+    public Long getId() {
+        return id;
+    }
+
 }

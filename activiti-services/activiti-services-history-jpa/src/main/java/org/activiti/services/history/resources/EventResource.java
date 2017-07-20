@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package org.activiti.services.history;
+package org.activiti.services.history.resources;
 
 import org.activiti.services.history.events.ProcessEngineEventEntity;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
 
-@RepositoryRestResource(exported = false)
-public interface EventStoreRepository extends CrudRepository<ProcessEngineEventEntity, Long> {
+public class EventResource extends Resource<ProcessEngineEventEntity> {
+
+    public EventResource(ProcessEngineEventEntity content,
+                         Link... links) {
+        super(content,
+              links);
+    }
 
 }

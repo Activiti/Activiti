@@ -29,7 +29,14 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 @EnableBinding(HistoryConsumerChannels.class)
-public class HistoryJPAApplication implements CommandLineRunner{
+public class HistoryJPAApplication implements CommandLineRunner {
+
+    private final EventsRepository eventsRepository;
+
+    @Autowired
+    public HistoryJPAApplication(EventsRepository eventsRepository) {
+        this.eventsRepository = eventsRepository;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(HistoryJPAApplication.class,
@@ -41,15 +48,12 @@ public class HistoryJPAApplication implements CommandLineRunner{
         System.out.println(">>> Starting Audit App... ");
     }
 
-    @Autowired
-    private EventStoreRepository eventStoreRepository;
-
     @StreamListener(HistoryConsumerChannels.HISTORY_CONSUMER)
     public synchronized void receive(ProcessEngineEventEntity event) {
         System.out.println(">>>> Recieved Event" + event);
         System.out.println(">>>> \t Event Meta Data: " + event.getTimestamp() + " > " + event.getEventType());
         System.out.println(">>>> \t Event Class: " + event.getClass().getCanonicalName());
-        eventStoreRepository.save(event);
+        eventsRepository.save(event);
     }
 
     @Bean
