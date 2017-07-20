@@ -8,7 +8,7 @@ ARG KEYCLOAK_IMPORT_REALM=springboot-realm.json
 
 RUN /opt/jboss/keycloak/bin/add-user.sh -u admin -p admin
 
-ADD springboot-realm.json /opt/jboss/keycloak/
+ADD docker/springboot-realm.json /opt/jboss/keycloak/
 
 ENTRYPOINT [ "/opt/jboss/docker-entrypoint.sh" ]
 
