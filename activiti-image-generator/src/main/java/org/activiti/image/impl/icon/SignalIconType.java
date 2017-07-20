@@ -3,36 +3,21 @@ package org.activiti.image.impl.icon;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.w3c.dom.Element;
 
-public abstract class TaskIconType extends IconType {
+public class SignalIconType extends IconType {
 
     @Override
-    public String getAnchorValue() {
-        return "top left";
+    public String getFillValue() {
+        return "none";
     }
 
     @Override
     public String getStrokeValue() {
-        return null;
+        return "#585858";
     }
 
     @Override
-    public String getFillValue() {
-        return null;
-    }
-
-    @Override
-    public Integer getWidth() {
-        return null;
-    }
-
-    @Override
-    public Integer getHeight() {
-        return null;
-    }
-
-    @Override
-    public String getStrokeWidth() {
-        return null;
+    public String getDValue() {
+        return " M7.7124971 20.247342  L22.333334 20.247342  L15.022915000000001 7.575951200000001  L7.7124971 20.247342  z";
     }
 
     public void drawIcon(final int imageX,
@@ -43,7 +28,7 @@ public abstract class TaskIconType extends IconType {
                                                                     SVGGraphics2D.SVG_G_TAG);
         gTag.setAttributeNS(null,
                             "transform",
-                            "translate(" + (imageX + iconPadding) + "," + (imageY + iconPadding) + ")");
+                            "translate(" + (imageX - 7) + "," + (imageY - 7) + ")");
 
         Element pathTag = svgGenerator.getDOMFactory().createElementNS(null,
                                                                        SVGGraphics2D.SVG_PATH_TAG);
@@ -51,14 +36,42 @@ public abstract class TaskIconType extends IconType {
                                "d",
                                this.getDValue());
         pathTag.setAttributeNS(null,
-                               "anchors",
-                               this.getAnchorValue());
-        pathTag.setAttributeNS(null,
                                "style",
                                this.getStyleValue());
+        pathTag.setAttributeNS(null,
+                               "fill",
+                               this.getFillValue());
+        pathTag.setAttributeNS(null,
+                               "stroke",
+                               this.getStrokeValue());
 
         gTag.appendChild(pathTag);
         svgGenerator.getDOMTreeManager().appendGroup(gTag,
                                                      null);
+    }
+
+    @Override
+    public String getAnchorValue() {
+        return null;
+    }
+
+    @Override
+    public String getStyleValue() {
+        return "fill:none;stroke-width:1.4;stroke-miterlimit:4;stroke-dasharray:none";
+    }
+
+    @Override
+    public Integer getWidth() {
+        return 17;
+    }
+
+    @Override
+    public Integer getHeight() {
+        return 15;
+    }
+
+    @Override
+    public String getStrokeWidth() {
+        return null;
     }
 }

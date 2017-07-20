@@ -58,12 +58,19 @@ import org.activiti.bpmn.model.AssociationDirection;
 import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.image.exception.ActivitiImageException;
 import org.activiti.image.impl.icon.BusinessRuleTaskIconType;
+import org.activiti.image.impl.icon.CompensateIconType;
+import org.activiti.image.impl.icon.CompensateThrowIconType;
+import org.activiti.image.impl.icon.IconType;
 import org.activiti.image.impl.icon.ManualTaskIconType;
+import org.activiti.image.impl.icon.MessageIconType;
 import org.activiti.image.impl.icon.ReceiveTaskIconType;
 import org.activiti.image.impl.icon.ScriptTaskIconType;
 import org.activiti.image.impl.icon.SendTaskIconType;
 import org.activiti.image.impl.icon.ServiceTaskIconType;
+import org.activiti.image.impl.icon.SignalIconType;
+import org.activiti.image.impl.icon.SignalThrowIconType;
 import org.activiti.image.impl.icon.TaskIconType;
+import org.activiti.image.impl.icon.TimerIconType;
 import org.activiti.image.impl.icon.UserTaskIconType;
 import org.activiti.image.util.ReflectUtil;
 import org.apache.batik.dom.GenericDOMImplementation;
@@ -73,7 +80,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * Represents a canvas on which BPMN 2.0 constructs can be drawn.
@@ -173,15 +179,14 @@ public class DefaultProcessDiagramCanvas {
     protected static TaskIconType MANUALTASK_IMAGE;
     protected static TaskIconType BUSINESS_RULE_TASK_IMAGE;
 
-    protected static BufferedImage TIMER_IMAGE;
-    protected static BufferedImage COMPENSATE_THROW_IMAGE;
-    protected static BufferedImage COMPENSATE_CATCH_IMAGE;
+    protected static IconType TIMER_IMAGE;
+    protected static IconType COMPENSATE_THROW_IMAGE;
+    protected static IconType COMPENSATE_CATCH_IMAGE;
     protected static BufferedImage ERROR_THROW_IMAGE;
     protected static BufferedImage ERROR_CATCH_IMAGE;
-    protected static BufferedImage MESSAGE_THROW_IMAGE;
-    protected static BufferedImage MESSAGE_CATCH_IMAGE;
-    protected static BufferedImage SIGNAL_CATCH_IMAGE;
-    protected static BufferedImage SIGNAL_THROW_IMAGE;
+    protected static IconType MESSAGE_CATCH_IMAGE;
+    protected static IconType SIGNAL_CATCH_IMAGE;
+    protected static IconType SIGNAL_THROW_IMAGE;
 
     protected int canvasWidth = -1;
     protected int canvasHeight = -1;
@@ -301,24 +306,16 @@ public class DefaultProcessDiagramCanvas {
             MANUALTASK_IMAGE = new ManualTaskIconType();
             BUSINESS_RULE_TASK_IMAGE = new BusinessRuleTaskIconType();
 
-            TIMER_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/timer.png",
-                                                               customClassLoader));
-            COMPENSATE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/compensate-throw.png",
-                                                                          customClassLoader));
-            COMPENSATE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/compensate.png",
-                                                                          customClassLoader));
+            TIMER_IMAGE = new TimerIconType();
+            COMPENSATE_THROW_IMAGE = new CompensateThrowIconType();
+            COMPENSATE_CATCH_IMAGE = new CompensateIconType();
             ERROR_THROW_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/error-throw.png",
                                                                      customClassLoader));
             ERROR_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/error.png",
                                                                      customClassLoader));
-            MESSAGE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/message-throw.png",
-                                                                       customClassLoader));
-            MESSAGE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/message.png",
-                                                                       customClassLoader));
-            SIGNAL_THROW_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/signal-throw.png",
-                                                                      customClassLoader));
-            SIGNAL_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/signal.png",
-                                                                      customClassLoader));
+            MESSAGE_CATCH_IMAGE = new MessageIconType();
+            SIGNAL_THROW_IMAGE = new SignalThrowIconType();
+            SIGNAL_CATCH_IMAGE = new SignalIconType();
         } catch (IOException e) {
             LOGGER.warn("Could not load image for process diagram creation: {}",
                         e.getMessage());
@@ -382,7 +379,7 @@ public class DefaultProcessDiagramCanvas {
     }
 
     public void drawStartEvent(GraphicInfo graphicInfo,
-                               BufferedImage image) {
+    		IconType icon) {
         Paint originalPaint = g.getPaint();
         g.setPaint(EVENT_COLOR);
         Ellipse2D circle = new Ellipse2D.Double(graphicInfo.getX(),
@@ -393,16 +390,14 @@ public class DefaultProcessDiagramCanvas {
         g.setPaint(EVENT_BORDER_COLOR);
         g.draw(circle);
         g.setPaint(originalPaint);
-        if (image != null) {
-            // calculate coordinates to center image
-            int imageX = (int) Math.round(graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (image.getWidth() / 2));
-            int imageY = (int) Math.round(graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (image.getHeight() / 2));
-            g.drawImage(image,
-                        imageX,
-                        imageY,
-                        (int) (image.getWidth()),
-                        (int) (image.getHeight()),
-                        null);
+        
+
+        // calculate coordinates to center image
+        if (icon != null) {
+	        int imageX = (int) Math.round(graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (icon.getWidth() / 2));
+	        int imageY = (int) Math.round(graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (icon.getHeight() / 2));
+	
+	        icon.drawIcon(imageX, imageY, ICON_PADDING, (SVGGraphics2D) g);
         }
     }
 
@@ -451,7 +446,7 @@ public class DefaultProcessDiagramCanvas {
 
     public void drawCatchingEvent(GraphicInfo graphicInfo,
                                   boolean isInterrupting,
-                                  BufferedImage image,
+                                  IconType icon,
                                   String eventType) {
 
         // event circles
@@ -483,21 +478,16 @@ public class DefaultProcessDiagramCanvas {
         g.setPaint(originalPaint);
         g.draw(innerCircle);
 
-        if (image != null) {
+        if (icon != null) {
             // calculate coordinates to center image
-            int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (image.getWidth() / 2));
-            int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (image.getHeight() / 2));
+            int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (icon.getWidth() / 2));
+            int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (icon.getHeight() / 2));
             if ("timer".equals(eventType)) {
                 // move image one pixel to center timer image
                 imageX++;
                 imageY++;
             }
-            g.drawImage(image,
-                        imageX,
-                        imageY,
-                        (int) (image.getWidth()),
-                        (int) (image.getHeight()),
-                        null);
+            icon.drawIcon(imageX, imageY, ICON_PADDING, (SVGGraphics2D) g);
         }
     }
 
@@ -512,6 +502,7 @@ public class DefaultProcessDiagramCanvas {
 
     public void drawCatchingCompensateEvent(GraphicInfo graphicInfo,
                                             boolean isInterrupting) {
+
         drawCatchingEvent(graphicInfo,
                           isInterrupting,
                           COMPENSATE_CATCH_IMAGE,
@@ -546,10 +537,12 @@ public class DefaultProcessDiagramCanvas {
 
     public void drawCatchingErrorEvent(GraphicInfo graphicInfo,
                                        boolean isInterrupting) {
+    	/*
         drawCatchingEvent(graphicInfo,
                           isInterrupting,
                           ERROR_CATCH_IMAGE,
                           "error");
+                          */
     }
 
     public void drawCatchingSignalEvent(String name,
@@ -571,6 +564,7 @@ public class DefaultProcessDiagramCanvas {
 
     public void drawCatchingMessageEvent(GraphicInfo graphicInfo,
                                          boolean isInterrupting) {
+
         drawCatchingEvent(graphicInfo,
                           isInterrupting,
                           MESSAGE_CATCH_IMAGE,
@@ -584,6 +578,7 @@ public class DefaultProcessDiagramCanvas {
                           isInterrupting,
                           MESSAGE_CATCH_IMAGE,
                           "message");
+
         drawLabel(name,
                   graphicInfo);
     }
@@ -882,7 +877,7 @@ public class DefaultProcessDiagramCanvas {
         drawTask(name,
                  graphicInfo);
 
-        icon.drawIcon(graphicInfo,
+        icon.drawIcon((int) graphicInfo.getX(), (int) graphicInfo.getY(),
                       ICON_PADDING,
                       (SVGGraphics2D) g);
     }
