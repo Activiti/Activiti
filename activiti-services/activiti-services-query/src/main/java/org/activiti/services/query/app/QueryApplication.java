@@ -50,7 +50,7 @@ public class QueryApplication {
                                         new Date(startedEvent.getTimestamp())));
         } else if (event instanceof ProcessCompletedEvent) {
             ProcessCompletedEvent completedEvent = (ProcessCompletedEvent) event;
-            Optional<ProcessInstance> processInstancebyId = processInstanceQueryRestResource.findById(Long.parseLong(completedEvent.getProcessInstanceId()));
+            Optional<ProcessInstance> processInstancebyId = processInstanceQueryRestResource.findById(completedEvent.getProcessInstanceId());
             ProcessInstance processInstance = processInstancebyId.get();
             processInstance.setStatus("COMPLETED");
             processInstance.setLastModified(new Date(completedEvent.getTimestamp()));

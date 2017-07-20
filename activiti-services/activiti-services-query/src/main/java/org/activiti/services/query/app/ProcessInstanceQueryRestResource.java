@@ -17,11 +17,22 @@
 
 package org.activiti.services.query.app;
 
+import com.querydsl.core.types.dsl.StringPath;
 import org.activiti.services.query.app.model.ProcessInstance;
-import org.springframework.data.repository.PagingAndSortingRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.querydsl.binding.QuerydslBindings;
+import org.springframework.data.repository.CrudRepository;
+import org.activiti.services.query.app.model.QProcessInstance;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 
-@RepositoryRestResource(collectionResourceRel = "process-instances", path = "process-instances")
-interface ProcessInstanceQueryRestResource extends PagingAndSortingRepository<ProcessInstance, Long> {
 
+interface ProcessInstanceQueryRestResource extends CrudRepository<ProcessInstance, String>, QuerydslPredicateExecutor<ProcessInstance>, QuerydslBinderCustomizer<QProcessInstance> {
+
+    @Override
+    default public void customize(QuerydslBindings bindings, QProcessInstance root) {
+
+        bindings.bind(String.class).first(
+                (StringPath path, String value) -> path.containsIgnoreCase(value));
+
+    }
 }
