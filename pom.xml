@@ -634,6 +634,10 @@
           <version>${maven-release-plugin.version}</version>
           <configuration>
             <releaseProfiles>sign</releaseProfiles>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <tagNameFormat>activiti-@{project.version}</tagNameFormat>
+            <!-- Necessary until keycloak releases boot2 adaptor -->
+            <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
           </configuration>
         </plugin>
         <plugin>
