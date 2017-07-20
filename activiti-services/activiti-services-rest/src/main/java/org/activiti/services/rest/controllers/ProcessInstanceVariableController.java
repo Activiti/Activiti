@@ -17,6 +17,7 @@ package org.activiti.services.rest.controllers;
 
 import java.util.Map;
 
+import org.activiti.services.core.model.ProcessInstanceVariables;
 import org.activiti.services.rest.resources.assembler.ProcessVariableResourceAssembler;
 import org.activiti.engine.RuntimeService;
 import org.springframework.beans.factory.annotation.Autowired;

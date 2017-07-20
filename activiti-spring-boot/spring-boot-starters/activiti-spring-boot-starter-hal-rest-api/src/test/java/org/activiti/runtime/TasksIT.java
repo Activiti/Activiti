@@ -22,12 +22,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.client.model.commands.CompleteTaskCmd;
-import org.activiti.services.rest.controllers.TaskController;
 import org.activiti.definition.ProcessDefinitionIT;
 import org.activiti.engine.UserGroupLookupProxy;
-import org.activiti.services.AuthenticationWrapper;
-import org.activiti.services.PageableTaskService;
+import org.activiti.services.core.model.ProcessDefinition;
+import org.activiti.services.core.model.ProcessInstance;
+import org.activiti.services.core.model.Task;
+import org.activiti.services.core.model.commands.CompleteTaskCmd;
+import org.activiti.services.core.tests.pageable.AuthenticationWrapper;
+import org.activiti.services.core.tests.pageable.PageableTaskService;
+import org.activiti.services.rest.controllers.TaskController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,9 +47,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.activiti.runtime.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -77,13 +79,13 @@ public class TasksIT {
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
-
     @Before
-    public void setUp(){
+    public void setUp() {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getBody().getContent()).hasSize(3);
-        for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
-            processDefinitionIds.put(pd.getName(), pd.getId());
+        for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
+            processDefinitionIds.put(pd.getName(),
+                                     pd.getId());
         }
         pageableTaskService.setUserGroupLookupProxy(userGroupLookupProxy);
         pageableTaskService.setAuthenticationWrapper(authenticationWrapper);
@@ -119,7 +121,6 @@ public class TasksIT {
         //verify that the mock was used
         verify(authenticationWrapper).getAuthenticatedUserId();
         verify(userGroupLookupProxy).getGroupsForCandidateUser("testuser");
-
     }
 
     @Test
@@ -148,9 +149,9 @@ public class TasksIT {
 
         //when
         ResponseEntity<PagedResources<Task>> tasksEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessResponse.getBody().getId() + "/tasks",
-                                                                                  HttpMethod.GET,
-                                                                                  null,
-                                                                                  PAGED_TASKS_RESPONSE_TYPE);
+                                                                                     HttpMethod.GET,
+                                                                                     null,
+                                                                                     PAGED_TASKS_RESPONSE_TYPE);
 
         //then
         assertThat(tasksEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -193,7 +194,6 @@ public class TasksIT {
         //when
         ResponseEntity<Task> responseEntity = executeRequestClaim(task);
 
-
         //then
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -208,7 +208,6 @@ public class TasksIT {
 
         //when
         ResponseEntity<Task> responseEntity = executeRequestClaim(task);
-
 
         //then
         assertThat(responseEntity).isNotNull();
@@ -284,8 +283,8 @@ public class TasksIT {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
         return testRestTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
-                                     HttpMethod.GET,
-                                     null,
-                                     responseType);
+                                         HttpMethod.GET,
+                                         null,
+                                         responseType);
     }
 }

@@ -17,6 +17,8 @@
 package org.activiti.runtime;
 
 import org.activiti.KeycloakEnabledBaseTestIT;
+import org.activiti.services.core.model.ProcessDefinition;
+import org.activiti.services.core.model.ProcessInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -65,7 +67,7 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
     @Test
     public void shouldStartProcess() throws Exception {
         //when
-        ResponseEntity<ProcessInstance> entity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        ResponseEntity<ProcessInstance> entity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS), accessToken);
 
         //then
         assertThat(entity).isNotNull();

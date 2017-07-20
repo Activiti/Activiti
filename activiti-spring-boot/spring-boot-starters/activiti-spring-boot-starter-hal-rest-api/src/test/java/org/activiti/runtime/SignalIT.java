@@ -20,8 +20,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.client.model.commands.SignalProcessInstanceCmd;
 import org.activiti.definition.ProcessDefinitionIT;
+import org.activiti.services.core.model.ProcessDefinition;
+import org.activiti.services.core.model.ProcessInstance;
+import org.activiti.services.core.model.Task;
+import org.activiti.services.core.model.commands.SignalProcessInstanceCmd;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,18 +55,17 @@ public class SignalIT {
 
     private static final String SIGNAL_PROCESS = "ProcessWithBoundarySignal";
 
-
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
     @Before
-    public void setUp(){
+    public void setUp() {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getBody().getContent()).hasSize(3);
-        for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
-            processDefinitionIds.put(pd.getName(), pd.getId());
+        for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
+            processDefinitionIds.put(pd.getName(),
+                                     pd.getId());
         }
     }
-
 
     @Test
     public void processShouldTakeExceptionPathWhenSignalIsSent() throws Exception {
@@ -114,8 +116,8 @@ public class SignalIT {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
         return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
-                                         HttpMethod.GET,
-                                         null,
-                                         responseType);
+                                     HttpMethod.GET,
+                                     null,
+                                     responseType);
     }
 }

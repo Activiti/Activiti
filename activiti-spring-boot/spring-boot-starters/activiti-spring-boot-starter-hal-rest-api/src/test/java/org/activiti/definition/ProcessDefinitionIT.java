@@ -16,6 +16,7 @@
 
 package org.activiti.definition;
 
+import org.activiti.services.core.model.ProcessDefinition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,16 +54,17 @@ public class ProcessDefinitionIT {
                 .extracting(
                         ProcessDefinition::getName
                 ).contains("ProcessWithVariables",
-                           "SimpleProcess", "ProcessWithBoundarySignal");
+                           "SimpleProcess",
+                           "ProcessWithBoundarySignal");
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
         return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
-                                          HttpMethod.GET,
-                                          null,
-                                          responseType);
+                                     HttpMethod.GET,
+                                     null,
+                                     responseType);
     }
 
     @Test
@@ -79,9 +81,9 @@ public class ProcessDefinitionIT {
 
         //when
         ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId(),
-                                                                              HttpMethod.GET,
-                                                                              null,
-                                                                              responseType);
+                                                                         HttpMethod.GET,
+                                                                         null,
+                                                                         responseType);
 
         //then
         assertThat(entity).isNotNull();

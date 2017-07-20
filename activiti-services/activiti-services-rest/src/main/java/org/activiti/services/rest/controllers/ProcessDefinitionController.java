@@ -15,12 +15,13 @@
 
 package org.activiti.services.rest.controllers;
 
-import org.activiti.services.rest.resources.ProcessDefinitionResource;
-import org.activiti.services.rest.resources.assembler.ProcessDefinitionResourceAssembler;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
-import org.activiti.model.converter.ProcessDefinitionConverter;
-import org.activiti.services.PageableRepositoryService;
+import org.activiti.services.core.model.ProcessDefinition;
+import org.activiti.services.core.model.converter.ProcessDefinitionConverter;
+import org.activiti.services.core.tests.pageable.PageableRepositoryService;
+import org.activiti.services.rest.resources.ProcessDefinitionResource;
+import org.activiti.services.rest.resources.assembler.ProcessDefinitionResourceAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

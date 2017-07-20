@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.definition.ProcessDefinitionIT;
+import org.activiti.services.core.model.ProcessDefinition;
+import org.activiti.services.core.model.ProcessInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,11 +53,12 @@ public class ProcessInstanceIT {
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
     @Before
-    public void setUp(){
+    public void setUp() {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getBody().getContent()).hasSize(3);
-        for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
-            processDefinitionIds.put(pd.getName(), pd.getId());
+        for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
+            processDefinitionIds.put(pd.getName(),
+                                     pd.getId());
         }
     }
 
@@ -127,10 +130,10 @@ public class ProcessInstanceIT {
 
     private ResponseEntity<Void> executeRequestSuspendProcess(ResponseEntity<ProcessInstance> processInstanceEntity) {
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/suspend",
-                                                              HttpMethod.POST,
-                                                              null,
-                                                              new ParameterizedTypeReference<Void>() {
-                                                              });
+                                                                    HttpMethod.POST,
+                                                                    null,
+                                                                    new ParameterizedTypeReference<Void>() {
+                                                                    });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         return responseEntity;
     }
@@ -143,10 +146,10 @@ public class ProcessInstanceIT {
 
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessEntity.getBody().getId() + "/activate",
-                                                              HttpMethod.POST,
-                                                              null,
-                                                              new ParameterizedTypeReference<Void>() {
-                                                              });
+                                                                    HttpMethod.POST,
+                                                                    null,
+                                                                    new ParameterizedTypeReference<Void>() {
+                                                                    });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

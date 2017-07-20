@@ -16,6 +16,7 @@
 
 package org.activiti.services;
 
+import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.rest.controllers.ProcessInstanceController;
 import org.activiti.engine.RuntimeService;
 import org.junit.Before;
@@ -32,7 +33,7 @@ public class ProcessInstanceControllerTest {
     private ProcessInstanceController controller;
 
     @Mock
-    private RuntimeService runtimeService;
+    private ProcessEngineWrapper processEngine;
 
     @Before
     public void setUp() throws Exception {
@@ -48,7 +49,7 @@ public class ProcessInstanceControllerTest {
         controller.suspend(processInstanceId);
 
         //then
-        verify(runtimeService).suspendProcessInstanceById(processInstanceId);
+        verify(processEngine).suspend(processInstanceId);
     }
 
     @Test
@@ -60,7 +61,7 @@ public class ProcessInstanceControllerTest {
         controller.activate(processInstanceId);
 
         //then
-        verify(runtimeService).activateProcessInstanceById(processInstanceId);
+        verify(processEngine).activate(processInstanceId);
     }
 
 }

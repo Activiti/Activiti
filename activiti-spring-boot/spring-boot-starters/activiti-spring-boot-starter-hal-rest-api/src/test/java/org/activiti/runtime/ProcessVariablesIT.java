@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.definition.ProcessDefinitionIT;
+import org.activiti.services.core.model.ProcessDefinition;
+import org.activiti.services.core.model.ProcessInstance;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

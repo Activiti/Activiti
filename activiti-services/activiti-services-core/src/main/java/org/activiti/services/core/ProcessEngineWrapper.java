@@ -57,7 +57,7 @@ public class ProcessEngineWrapper {
         runtimeService.activateProcessInstanceById(processInstanceId);
     }
 
-    public ProcessInstance getProcessInstance(String processInstanceId) {
+    public ProcessInstance getProcessInstanceById(String processInstanceId) {
         org.activiti.engine.runtime.ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
                 .processInstanceId(processInstanceId).singleResult();
         return processInstanceConverter.from(processInstance);
