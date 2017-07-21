@@ -1,6 +1,8 @@
 language: java 
 jdk:
   - oraclejdk8
+env:
+  - MAVEN_OPTS=-Xmx1536m
 notifications:
   webhooks:
     urls:
