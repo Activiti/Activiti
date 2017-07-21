@@ -1,5 +1,7 @@
 package org.activiti.services.query.app;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,13 +66,13 @@ public class QueryApplication {
                     new ProcessInstance(Long.parseLong(startedEvent.getProcessInstanceId()),
                                         startedEvent.getProcessDefinitionId(),
                                         "RUNNING",
-                                        new Date(startedEvent.getTimestamp()),variables));
+                                        new Date(startedEvent.getTimestamp()).toInstant().atZone(ZoneId.systemDefault()),variables));
         } else if (event instanceof ProcessCompletedEvent) {
             ProcessCompletedEvent completedEvent = (ProcessCompletedEvent) event;
             Optional<ProcessInstance> processInstancebyId = processInstanceQueryRestResource.findById(completedEvent.getProcessInstanceId());
             ProcessInstance processInstance = processInstancebyId.get();
             processInstance.setStatus("COMPLETED");
-            processInstance.setLastModified(new Date(completedEvent.getTimestamp()));
+            processInstance.setLastModified(new Date(completedEvent.getTimestamp()).toInstant().atZone(ZoneId.systemDefault()));
             processInstanceQueryRestResource.save(processInstance);
         } else if (event instanceof TaskCreatedEvent) {
             TaskCreatedEvent taskCreatedEvent = (TaskCreatedEvent) event;

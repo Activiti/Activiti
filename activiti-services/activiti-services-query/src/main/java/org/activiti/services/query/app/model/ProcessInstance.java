@@ -17,7 +17,7 @@
 
 package org.activiti.services.query.app.model;
 
-import java.util.Date;
+import java.time.ZonedDateTime;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -27,6 +27,7 @@ import org.activiti.services.query.app.model.Variable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -37,7 +38,8 @@ public class ProcessInstance {
     private Long processInstanceId;
     private String processDefinitionId;
     private String status;
-    private Date lastModified;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private ZonedDateTime lastModified;
 
     @OneToMany
     private List<Variable> variables;
@@ -48,7 +50,7 @@ public class ProcessInstance {
     public ProcessInstance(Long processInstanceId,
                            String processDefinitionId,
                            String status,
-                           Date lastModified,
+                           ZonedDateTime lastModified,
                            List<Variable> variables) {
         this.processInstanceId = processInstanceId;
         this.processDefinitionId = processDefinitionId;
@@ -69,7 +71,7 @@ public class ProcessInstance {
         return status;
     }
 
-    public Date getLastModified() {
+    public ZonedDateTime getLastModified() {
         return lastModified;
     }
 
@@ -85,7 +87,7 @@ public class ProcessInstance {
         this.status = status;
     }
 
-    public void setLastModified(Date lastModified) {
+    public void setLastModified(ZonedDateTime lastModified) {
         this.lastModified = lastModified;
     }
 

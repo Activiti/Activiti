@@ -24,7 +24,7 @@ This approach can also support > and < operators... but I think expanding it to 
 
 PROCESSINSTANCE implemented using QuerydslPredicate approach so no 'search' param ... see below
 
-TODO: this approach not working on nested objects e.g. query/tasks?search=variables.name:name
+TODO: this approach not working on nested objects e.g. query/tasks?search=variables.name:name , see SearchTermResolver.java and TaskSpecification.java
 
 TODO: need to provide endpoints to get an individual record, not just list?
 TODO: need examples of date restrictions, probably needs some config (https://stackoverflow.com/questions/35155824/can-spring-data-rests-querydsl-integration-be-used-to-perform-more-complex-quer)

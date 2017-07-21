@@ -26,7 +26,7 @@ import javax.persistence.criteria.Root;
 
 abstract public class BaseSpecification<T> {
 
-    private SpecSearchCriteria criteria;
+    protected SpecSearchCriteria criteria;
 
     public BaseSpecification(final SpecSearchCriteria criteria) {
         super();

@@ -17,6 +17,7 @@
 package org.activiti.services.query.app.specification;
 
 import org.activiti.services.query.app.model.Task;
+import org.activiti.services.query.app.model.Variable;
 import org.activiti.services.query.app.util.SpecSearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -30,5 +31,14 @@ public class TaskSpecification extends BaseSpecification<Task> implements Specif
 
     public TaskSpecification(SpecSearchCriteria criteria) {
         super(criteria);
+    }
+
+
+    public Predicate toPredicate(final Root<Task> root, final CriteriaQuery<?> query, final CriteriaBuilder builder) {
+
+        //TODO: might need to detect a . here for nested objects, not sure yet...
+        query.subquery(Variable.class);
+
+        return super.toPredicate(root,query,builder);
     }
 }
