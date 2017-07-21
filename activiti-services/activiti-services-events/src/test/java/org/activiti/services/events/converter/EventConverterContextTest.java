@@ -17,6 +17,7 @@
 package org.activiti.services.events.converter;
 
 import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +26,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventImpl;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,10 +36,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class EventConverterContextTest {
 
-    @InjectMocks
     private EventConverterContext converterContext;
 
-    @Mock
     private Map<ActivitiEventType, EventConverter> convertersMap;
 
     @Mock
@@ -48,6 +46,8 @@ public class EventConverterContextTest {
     @Before
     public void setUp() throws Exception {
         initMocks(this);
+        converters = new HashMap<>();
+        converterContext = new EventConverterContext(converters);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class EventConverterContextTest {
         ActivitiEventImpl activitiEvent = new ActivitiEventImpl(ActivitiEventType.PROCESS_STARTED);
         ProcessEngineEvent processEngineEvent = mock(ProcessEngineEvent.class);
 
-        given(convertersMap.get(ActivitiEventType.PROCESS_STARTED)).willReturn(eventConverter);
+        converters.put(ActivitiEventType.PROCESS_STARTED, eventConverter);
         given(eventConverter.from(activitiEvent)).willReturn(processEngineEvent);
 
         //when
