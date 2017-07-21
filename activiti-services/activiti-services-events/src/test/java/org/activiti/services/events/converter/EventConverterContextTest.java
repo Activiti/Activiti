@@ -16,10 +16,8 @@
 
 package org.activiti.services.events.converter;
 
-import java.util.HashSet;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventImpl;
@@ -27,7 +25,6 @@ import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -38,7 +35,7 @@ public class EventConverterContextTest {
 
     private EventConverterContext converterContext;
 
-    private Map<ActivitiEventType, EventConverter> convertersMap;
+    private Map<ActivitiEventType, EventConverter> converters;
 
     @Mock
     private EventConverter eventConverter;
