@@ -84,8 +84,19 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <redirectTestOutputToFile>false</redirectTestOutputToFile>
+          <failIfNoTests>false</failIfNoTests>
+          <trimStackTrace>false</trimStackTrace>
+          <excludes>
+            <exclude>**/*TestCase.java</exclude>
+            <exclude>**/*IT.java</exclude>
+            <exclude>**/*Keycloak*.java</exclude>
+          </excludes>
+          <runOrder>alphabetical</runOrder>
+        </configuration>
       </plugin>
     </plugins>
   </build>
