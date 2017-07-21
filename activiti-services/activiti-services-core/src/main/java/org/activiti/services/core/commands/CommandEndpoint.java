@@ -5,6 +5,7 @@ import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.commands.Command;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.activiti.services.events.ProcessEngineChannels;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,11 @@ import org.springframework.stereotype.Component;
 public class CommandEndpoint {
 
     private ProcessEngineWrapper processEngine;
+
+    @Autowired
+    public CommandEndpoint(ProcessEngineWrapper processEngine) {
+        this.processEngine = processEngine;
+    }
 
     @StreamListener(ProcessEngineChannels.COMMAND_CONSUMER)
     public void consumeCommand(Command cmd) {
