@@ -50,10 +50,10 @@ public class ProcessDefinitionMetaController {
         List<String []> userTasks = new ArrayList<String []>();
         List<String []> serviceTasks = new ArrayList<String []>();
         List<FlowElement> flowElementList = (List<FlowElement>) process.getFlowElements();
-        for (FlowElement f : flowElementList) {
-        	if(f.getClass().equals(UserTask.class))
+        for (FlowElement flowElement : flowElementList) {
+        	if(flowElement.getClass().equals(UserTask.class))
         	{
-        		UserTask userTask = (UserTask) f;
+        		UserTask userTask = (UserTask) flowElement;
         		String[] t = new String[2];
         		t[0] = userTask.getName();
         		t[1] = userTask.getDocumentation();
@@ -61,9 +61,9 @@ public class ProcessDefinitionMetaController {
         		users.addAll(userTask.getCandidateUsers());
         		groups.addAll(userTask.getCandidateGroups());
         	}
-        	if(f.getClass().equals(ServiceTask.class))
+        	if(flowElement.getClass().equals(ServiceTask.class))
         	{
-        		ServiceTask serviceTask = (ServiceTask) f;
+        		ServiceTask serviceTask = (ServiceTask) flowElement;
         		String[] s = new String[2];
         		s[0] = serviceTask.getName();
         		s[1] = serviceTask.getImplementation();
