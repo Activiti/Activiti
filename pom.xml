@@ -625,6 +625,7 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <failIfNoTests>false</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>
           <excludes>
