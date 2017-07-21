@@ -8,6 +8,8 @@ To use the query service start QueryApplication from the IDE. Also start SampleA
 
 To start a process submit the relevant post to the sample application. Its logs should show 'started on port(s)' to reveal which port. Use the postman collection called 'rest_calls_postman_collection.json' (elsewhere in Activiti).
 
+The events are emitted by the activiti-services-util-audit-producer project. See e.g. ActivitiStartedEventConverter. 
+
 After starting a process you can query for tasks by going to http://localhost:55085/query/tasks/ or http://localhost:55085/query/process-instances/ where the port is that from the logs of the QueryApplication startup.
 
 The approach for querying tasks using TaskQueryController is based upon http://www.baeldung.com/rest-api-search-language-spring-data-specifications . It supports searches on multiple criteria such as http://localhost:56448/query/tasks?search=priority:50,status:CREATED
@@ -22,32 +24,37 @@ This approach can also support > and < operators... but I think expanding it to 
 
 PROCESSINSTANCE implemented using QuerydslPredicate approach so no 'search' param ... see below
 
-TODO: expand to be able to match to a task or processes VARIABLES, requires elaborating model - can we do it without engine? Maybe just persist dummy values using repository
-TODO: need to provide endpoints to get an individual record, not just list
-TODO: need examples of date restrictions, probably needs some config (https://stackoverflow.com/questions/35155824/can-spring-data-rests-querydsl-integration-be-used-to-perform-more-complex-quer)
+TODO: this approach not working on nested objects e.g. query/tasks?search=variables.name:name
 
-TODO: items sometimes seem to go missing as though message never processed (but I know instance started as postman gives ID) and can get different number of tasks vs proc inst
+TODO: need to provide endpoints to get an individual record, not just list?
+TODO: need examples of date restrictions, probably needs some config (https://stackoverflow.com/questions/35155824/can-spring-data-rests-querydsl-integration-be-used-to-perform-more-complex-quer)
 
 ## Alternatively use @QuerydslPredicate instead of Specifications?
 
-Process Intances currently can instead be queried using e.g. /query/processinstances?status=RUNNING&page=0&size=10&sort=lastModified,desc
+Process Instances currently can instead be queried using e.g. /query/processinstances?status=RUNNING&page=0&size=10&sort=lastModified,desc
 
 This is because the implementation for proc inst is instead based upon https://github.com/spring-projects/spring-data-examples/tree/master/web/querydsl
 Which is much the same as http://www.baeldung.com/rest-api-search-querydsl-web-in-spring-data-jpa
 
-How to decide which approach? Need to look at which better handles variables (i.e. nested objects).
+This approach works with nested objects as can query for variables - so e.g. /query/processinstances?variables.name=bob does not match and /query/processinstances?variables.name=name does (provided 'name' is the name of a variable name)
 
-The customizer can be used to do joins e.g. to variables (see also https://stackoverflow.com/questions/21637636/spring-data-jpa-with-querydslpredicateexecutor-and-joining-into-a-collection)
-Actually the spring example has nested objects.
-This page is handy re joins - https://stackoverflow.com/questions/35918824/spring-querydslpredicate-questions
-
-Even named queries http://dontpanic.42.nl/2011/06/spring-data-jpa-with-querydsl.html
+Seems it could be used for named queries http://dontpanic.42.nl/2011/06/spring-data-jpa-with-querydsl.html
 And date ranges https://stackoverflow.com/questions/35155824/can-spring-data-rests-querydsl-integration-be-used-to-perform-more-complex-quer
 
 Or if we wanted to do ranges with > and < we could do this - http://www.baeldung.com/rest-api-search-language-spring-data-querydsl but that means having to have ?search= in the uri
 
-## Or elastic
+If the Q* classes aren't present in the /target/generated-sources directory then run mvn generate-sources from this project directory
+
+## And/or elastic
 
 OR should we use Elasticsearch?
 Boot2 supports latest elastic so maybe try an example but with boot2 dependencies e.g. https://www.mkyong.com/spring-boot/spring-boot-spring-data-elasticsearch-example/
 Presumably then the Elasticsearch searching and querying would be available - https://www.elastic.co/guide/en/elasticsearch/reference/current/_the_search_api.html
+
+## TODO Variables
+
+Currently hacking variables just to see what can be done. Should really be consuming VariableCreatedEvent in QueryApplication.java
+
+## Flesh out the API to support all the reasonable kinds of queries needed
+
+This will mostly be a matter of consuming all the relevant events and mapping in all of the entities and attributes needed.

@@ -18,13 +18,17 @@
 package org.activiti.services.query.app.model;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.activiti.services.query.app.model.Variable;
+
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -45,6 +49,9 @@ public class Task {
     private String status;
     private Date lastModified;
 
+    @OneToMany
+    private List<Variable> variables;
+
     public Task() {
     }
 
@@ -60,7 +67,8 @@ public class Task {
                 @JsonProperty("processDefinitionId") String processDefinitionId,
                 @JsonProperty("processInstanceId") String processInstanceId,
                 @JsonProperty("status") String status,
-                @JsonProperty("lastModified") Date lastModified) {
+                @JsonProperty("lastModified") Date lastModified,
+                @JsonProperty("variables") List<Variable> variables) {
         this.id = id;
         this.assignee = assignee;
         this.name = name;
@@ -73,6 +81,7 @@ public class Task {
         this.processInstanceId = processInstanceId;
         this.status = status;
         this.lastModified = lastModified;
+        this.variables=variables;
     }
 
     public String getId() {
@@ -169,5 +178,13 @@ public class Task {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public List<Variable> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(List<Variable> variables) {
+        this.variables = variables;
     }
 }

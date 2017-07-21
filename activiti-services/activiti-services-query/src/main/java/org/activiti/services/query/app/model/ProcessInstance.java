@@ -18,8 +18,12 @@
 package org.activiti.services.query.app.model;
 
 import java.util.Date;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import org.activiti.services.query.app.model.Variable;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -35,17 +39,22 @@ public class ProcessInstance {
     private String status;
     private Date lastModified;
 
+    @OneToMany
+    private List<Variable> variables;
+
     public ProcessInstance() {
     }
 
     public ProcessInstance(Long processInstanceId,
                            String processDefinitionId,
                            String status,
-                           Date lastModified) {
+                           Date lastModified,
+                           List<Variable> variables) {
         this.processInstanceId = processInstanceId;
         this.processDefinitionId = processDefinitionId;
         this.status = status;
         this.lastModified = lastModified;
+        this.variables = variables;
     }
 
     public Long getProcessInstanceId() {
@@ -78,5 +87,13 @@ public class ProcessInstance {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
+    }
+
+    public List<Variable> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(List<Variable> variables) {
+        this.variables = variables;
     }
 }

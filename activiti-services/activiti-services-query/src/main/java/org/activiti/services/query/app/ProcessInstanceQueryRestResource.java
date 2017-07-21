@@ -31,6 +31,7 @@ interface ProcessInstanceQueryRestResource extends CrudRepository<ProcessInstanc
     @Override
     default public void customize(QuerydslBindings bindings, QProcessInstance root) {
 
+
         bindings.bind(String.class).first(
                 (StringPath path, String value) -> path.containsIgnoreCase(value));
 
