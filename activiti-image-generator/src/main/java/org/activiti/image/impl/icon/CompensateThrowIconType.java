@@ -3,7 +3,7 @@ package org.activiti.image.impl.icon;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.w3c.dom.Element;
 
-public class CompensateThrowIconType extends IconType {
+public class CompensateThrowIconType extends CompensateIconType {
 
     @Override
     public Integer getWidth() {
@@ -18,16 +18,6 @@ public class CompensateThrowIconType extends IconType {
     @Override
     public String getFillValue() {
         return "#585858";
-    }
-
-    @Override
-    public String getStyleValue() {
-        return null;
-    }
-
-    @Override
-    public String getDValue() {
-        return null;
     }
 
     @Override
@@ -93,20 +83,5 @@ public class CompensateThrowIconType extends IconType {
 
         svgGenerator.getDOMTreeManager().appendGroup(gTag,
                                                      null);
-    }
-
-    @Override
-    public String getStrokeValue() {
-        return "#585858";
-    }
-
-    @Override
-    public String getStrokeWidth() {
-        return "1.4";
-    }
-
-    @Override
-    public String getAnchorValue() {
-        return null;
     }
 }

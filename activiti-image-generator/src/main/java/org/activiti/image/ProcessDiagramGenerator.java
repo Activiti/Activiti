@@ -32,15 +32,13 @@ public interface ProcessDiagramGenerator {
      * @param highLightedFlows flows to highlight
      * @param activityFontName override the default activity font
      * @param labelFontName override the default label font
-     * @param customClassLoader provide a custom classloader for retrieving icon images
      */
     public InputStream generateDiagram(BpmnModel bpmnModel,
                                        List<String> highLightedActivities,
                                        List<String> highLightedFlows,
                                        String activityFontName,
                                        String labelFontName,
-                                       String annotationFontName,
-                                       ClassLoader customClassLoader);
+                                       String annotationFontName);
 
     /**
      * Generates a diagram of the given process definition, using the diagram interchange information of the process.
@@ -58,6 +56,5 @@ public interface ProcessDiagramGenerator {
     public InputStream generateDiagram(BpmnModel bpmnModel,
                                        String activityFontName,
                                        String labelFontName,
-                                       String annotationFontName,
-                                       ClassLoader customClassLoader);
+                                       String annotationFontName);
 }
