@@ -627,7 +627,6 @@
         <configuration>
           <failIfNoTests>false</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>
-          <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <excludes>
             <exclude>**/*TestCase.java</exclude>
             <exclude>**/*IT.java</exclude>
