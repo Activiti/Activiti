@@ -81,8 +81,6 @@ import org.w3c.dom.Document;
 /**
  * Represents a canvas on which BPMN 2.0 constructs can be drawn.
  * <p>
- * Some of the icons used are licensed under a Creative Commons Attribution 2.5
- * License, see http://www.famfamfam.com/lab/icons/silk/
  * @see org.activiti.engine.impl.bpmn.diagram.DefaultProcessDiagramGenerator
  */
 public class DefaultProcessDiagramCanvas {
@@ -1771,9 +1769,7 @@ public class DefaultProcessDiagramCanvas {
                                               Line2D b) {
         double d = (a.getX1() - a.getX2()) * (b.getY2() - b.getY1()) - (a.getY1() - a.getY2()) * (b.getX2() - b.getX1());
         double da = (a.getX1() - b.getX1()) * (b.getY2() - b.getY1()) - (a.getY1() - b.getY1()) * (b.getX2() - b.getX1());
-        // double db = (a.getX1()-a.getX2())*(a.getY1()-b.getY1()) - (a.getY1()-a.getY2())*(a.getX1()-b.getX1());
         double ta = da / d;
-        // double tb = db/d;
         Point p = new Point();
         p.setLocation(a.getX1() + ta * (a.getX2() - a.getX1()),
                       a.getY1() + ta * (a.getY2() - a.getY1()));
