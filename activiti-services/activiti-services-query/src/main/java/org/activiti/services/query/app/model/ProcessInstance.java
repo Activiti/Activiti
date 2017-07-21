@@ -17,7 +17,7 @@
 
 package org.activiti.services.query.app.model;
 
-import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -38,8 +38,8 @@ public class ProcessInstance {
     private Long processInstanceId;
     private String processDefinitionId;
     private String status;
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private ZonedDateTime lastModified;
+
+    private Date lastModified;
 
     @OneToMany
     private List<Variable> variables;
@@ -50,7 +50,7 @@ public class ProcessInstance {
     public ProcessInstance(Long processInstanceId,
                            String processDefinitionId,
                            String status,
-                           ZonedDateTime lastModified,
+                           Date lastModified,
                            List<Variable> variables) {
         this.processInstanceId = processInstanceId;
         this.processDefinitionId = processDefinitionId;
@@ -71,7 +71,7 @@ public class ProcessInstance {
         return status;
     }
 
-    public ZonedDateTime getLastModified() {
+    public Date getLastModified() {
         return lastModified;
     }
 
@@ -87,7 +87,7 @@ public class ProcessInstance {
         this.status = status;
     }
 
-    public void setLastModified(ZonedDateTime lastModified) {
+    public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
     }
 

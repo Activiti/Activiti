@@ -22,6 +22,8 @@ import org.activiti.services.query.app.util.SpecSearchCriteria;
 import org.springframework.data.jpa.domain.Specification;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.springframework.data.jpa.domain.Specification;
@@ -36,8 +38,12 @@ public class TaskSpecification extends BaseSpecification<Task> implements Specif
 
     public Predicate toPredicate(final Root<Task> root, final CriteriaQuery<?> query, final CriteriaBuilder builder) {
 
-        //TODO: might need to detect a . here for nested objects, not sure yet...
-        query.subquery(Variable.class);
+        //TODO: below fails to solve 'Unable to locate Attribute  with the the given name [variables.name]'
+        //Seems we'd need to hook into the VariableSpecificationBuilder to apply a query.select(root).where like https://stackoverflow.com/questions/17306655/using-the-jpa-criteria-api-can-you-do-a-fetch-join-that-results-in-only-one-joi
+
+        //Join<Task, Variable> join = root.join("variables",JoinType.LEFT);
+        //root.fetch("variables", JoinType.LEFT);
+
 
         return super.toPredicate(root,query,builder);
     }
