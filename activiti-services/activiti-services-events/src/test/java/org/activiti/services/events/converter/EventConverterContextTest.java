@@ -16,7 +16,9 @@
 
 package org.activiti.services.events.converter;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventImpl;
@@ -25,8 +27,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -37,7 +40,7 @@ public class EventConverterContextTest {
     private EventConverterContext converterContext;
 
     @Mock
-    private Map<ActivitiEventType, EventConverter> converters;
+    private Map<ActivitiEventType, EventConverter> convertersMap;
 
     @Mock
     private EventConverter eventConverter;
@@ -53,7 +56,7 @@ public class EventConverterContextTest {
         ActivitiEventImpl activitiEvent = new ActivitiEventImpl(ActivitiEventType.PROCESS_STARTED);
         ProcessEngineEvent processEngineEvent = mock(ProcessEngineEvent.class);
 
-        given(converters.get(ActivitiEventType.PROCESS_STARTED)).willReturn(eventConverter);
+        given(convertersMap.get(ActivitiEventType.PROCESS_STARTED)).willReturn(eventConverter);
         given(eventConverter.from(activitiEvent)).willReturn(processEngineEvent);
 
         //when
@@ -61,7 +64,6 @@ public class EventConverterContextTest {
 
         //then
         assertThat(eventResult).isEqualTo(processEngineEvent);
-
     }
 
     @Test
