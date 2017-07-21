@@ -26,4 +26,4 @@ A reference dockerfile is also provided which applies the keycloak json configur
 
 To run it first have docker installed then go to the directory and do 'docker build . -t activitikeycloak' Then execute 'docker run -p 8180:8080 --name keycloak -i -t activitikeycloak'
 
-TODO: The reference docker is based upon https://github.com/dfranssen/docker-keycloak-import-realm but creation of admin user isn't working for master and no config of master realm is provided (could add as they can be put on comma-separated on keycloak.import). But the realm we need to run tests is there.
+If you get a container already in use error when running the docker container then do a docker rm with the id of the running container and try again. To access the admin console for the container go to http://localhost:8180/auth/admin/springboot/console/ and log in as admin/admin. (This reference docker is based upon reference docker is based upon https://github.com/dfranssen/docker-keycloak-import-realm. Note that the admin user has been included in the springboot-realm.json.)
