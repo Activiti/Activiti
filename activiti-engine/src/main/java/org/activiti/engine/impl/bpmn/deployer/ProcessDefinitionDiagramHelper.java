@@ -61,7 +61,7 @@ public class ProcessDefinitionDiagramHelper {
             String diagramResourceName = ResourceNameUtil.getProcessDiagramResourceName(
                     processDefinition.getResourceName(),
                     processDefinition.getKey(),
-                    "png");
+                    "svg");
 
             resource.setName(diagramResourceName);
             resource.setBytes(diagramBytes);
