@@ -1,5 +1,6 @@
 package org.activiti.image.impl.icon;
 
+import org.activiti.image.impl.ProcessDiagramSVGGraphics2D;
 import org.apache.batik.svggen.SVGGraphics2D;
 import org.w3c.dom.Element;
 
@@ -28,7 +29,7 @@ public class MessageIconType extends IconType {
     public void drawIcon(final int imageX,
                          final int imageY,
                          final int iconPadding,
-                         final SVGGraphics2D svgGenerator) {
+                         final ProcessDiagramSVGGraphics2D svgGenerator) {
         Element gTag = svgGenerator.getDOMFactory().createElementNS(null,
                                                                     SVGGraphics2D.SVG_G_TAG);
         gTag.setAttributeNS(null,
@@ -51,8 +52,7 @@ public class MessageIconType extends IconType {
                                this.getStrokeWidth());
 
         gTag.appendChild(pathTag);
-        svgGenerator.getDOMTreeManager().appendGroup(gTag,
-                                                     null);
+        svgGenerator.getExtendDOMGroupManager().addElement(gTag);
     }
 
     @Override

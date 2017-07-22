@@ -1,6 +1,6 @@
 package org.activiti.image.impl.icon;
 
-import org.apache.batik.svggen.SVGGraphics2D;
+import org.activiti.image.impl.ProcessDiagramSVGGraphics2D;
 
 public abstract class IconType {
 
@@ -19,7 +19,7 @@ public abstract class IconType {
     abstract public void drawIcon(final int imageX,
                                   final int imageY,
                                   final int iconPadding,
-                                  final SVGGraphics2D svgGenerator);
+                                  final ProcessDiagramSVGGraphics2D svgGenerator);
 
     abstract public String getStrokeValue();
 

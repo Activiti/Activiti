@@ -93,18 +93,24 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                              if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
                                                  EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
                                                  if (eventDefinition instanceof TimerEventDefinition) {
-                                                     processDiagramCanvas.drawTimerStartEvent(graphicInfo);
+                                                     processDiagramCanvas.drawTimerStartEvent(flowNode.getId(),
+                                                                                              graphicInfo);
                                                  } else if (eventDefinition instanceof ErrorEventDefinition) {
-                                                     processDiagramCanvas.drawErrorStartEvent(graphicInfo);
+                                                     processDiagramCanvas.drawErrorStartEvent(flowNode.getId(),
+                                                                                              graphicInfo);
                                                  } else if (eventDefinition instanceof SignalEventDefinition) {
-                                                     processDiagramCanvas.drawSignalStartEvent(graphicInfo);
+                                                     processDiagramCanvas.drawSignalStartEvent(flowNode.getId(),
+                                                                                               graphicInfo);
                                                  } else if (eventDefinition instanceof MessageEventDefinition) {
-                                                     processDiagramCanvas.drawMessageStartEvent(graphicInfo);
+                                                     processDiagramCanvas.drawMessageStartEvent(flowNode.getId(),
+                                                                                                graphicInfo);
                                                  } else {
-                                                     processDiagramCanvas.drawNoneStartEvent(graphicInfo);
+                                                     processDiagramCanvas.drawNoneStartEvent(flowNode.getId(),
+                                                                                             graphicInfo);
                                                  }
                                              } else {
-                                                 processDiagramCanvas.drawNoneStartEvent(graphicInfo);
+                                                 processDiagramCanvas.drawNoneStartEvent(flowNode.getId(),
+                                                                                         graphicInfo);
                                              }
                                          }
                                      });
@@ -121,15 +127,18 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                              if (intermediateCatchEvent.getEventDefinitions() != null && !intermediateCatchEvent.getEventDefinitions()
                                                      .isEmpty()) {
                                                  if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
-                                                     processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(),
+                                                     processDiagramCanvas.drawCatchingSignalEvent(flowNode.getId(),
+                                                                                                  flowNode.getName(),
                                                                                                   graphicInfo,
                                                                                                   true);
                                                  } else if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
-                                                     processDiagramCanvas.drawCatchingTimerEvent(flowNode.getName(),
+                                                     processDiagramCanvas.drawCatchingTimerEvent(flowNode.getId(),
+                                                                                                 flowNode.getName(),
                                                                                                  graphicInfo,
                                                                                                  true);
                                                  } else if (intermediateCatchEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
-                                                     processDiagramCanvas.drawCatchingMessageEvent(flowNode.getName(),
+                                                     processDiagramCanvas.drawCatchingMessageEvent(flowNode.getId(),
+                                                                                                   flowNode.getName(),
                                                                                                    graphicInfo,
                                                                                                    true);
                                                  }
@@ -148,14 +157,18 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                              ThrowEvent throwEvent = (ThrowEvent) flowNode;
                                              if (throwEvent.getEventDefinitions() != null && !throwEvent.getEventDefinitions().isEmpty()) {
                                                  if (throwEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
-                                                     processDiagramCanvas.drawThrowingSignalEvent(graphicInfo);
+                                                     processDiagramCanvas.drawThrowingSignalEvent(flowNode.getId(),
+                                                                                                  graphicInfo);
                                                  } else if (throwEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
-                                                     processDiagramCanvas.drawThrowingCompensateEvent(graphicInfo);
+                                                     processDiagramCanvas.drawThrowingCompensateEvent(flowNode.getId(),
+                                                                                                      graphicInfo);
                                                  } else {
-                                                     processDiagramCanvas.drawThrowingNoneEvent(graphicInfo);
+                                                     processDiagramCanvas.drawThrowingNoneEvent(flowNode.getId(),
+                                                                                                graphicInfo);
                                                  }
                                              } else {
-                                                 processDiagramCanvas.drawThrowingNoneEvent(graphicInfo);
+                                                 processDiagramCanvas.drawThrowingNoneEvent(flowNode.getId(),
+                                                                                            graphicInfo);
                                              }
                                          }
                                      });
@@ -171,13 +184,16 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                              EndEvent endEvent = (EndEvent) flowNode;
                                              if (endEvent.getEventDefinitions() != null && !endEvent.getEventDefinitions().isEmpty()) {
                                                  if (endEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
-                                                     processDiagramCanvas.drawErrorEndEvent(flowNode.getName(),
+                                                     processDiagramCanvas.drawErrorEndEvent(flowNode.getId(),
+                                                                                            flowNode.getName(),
                                                                                             graphicInfo);
                                                  } else {
-                                                     processDiagramCanvas.drawNoneEndEvent(graphicInfo);
+                                                     processDiagramCanvas.drawNoneEndEvent(flowNode.getId(),
+                                                                                           graphicInfo);
                                                  }
                                              } else {
-                                                 processDiagramCanvas.drawNoneEndEvent(graphicInfo);
+                                                 processDiagramCanvas.drawNoneEndEvent(flowNode.getId(),
+                                                                                       graphicInfo);
                                              }
                                          }
                                      });
@@ -190,7 +206,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawTask(flowNode.getName(),
+                                             processDiagramCanvas.drawTask(flowNode.getId(),
+                                                                           flowNode.getName(),
                                                                            graphicInfo);
                                          }
                                      });
@@ -203,7 +220,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawUserTask(flowNode.getName(),
+                                             processDiagramCanvas.drawUserTask(flowNode.getId(),
+                                                                               flowNode.getName(),
                                                                                graphicInfo);
                                          }
                                      });
@@ -216,7 +234,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawScriptTask(flowNode.getName(),
+                                             processDiagramCanvas.drawScriptTask(flowNode.getId(),
+                                                                                 flowNode.getName(),
                                                                                  graphicInfo);
                                          }
                                      });
@@ -230,7 +249,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
                                              ServiceTask serviceTask = (ServiceTask) flowNode;
-                                             processDiagramCanvas.drawServiceTask(serviceTask.getName(),
+                                             processDiagramCanvas.drawServiceTask(flowNode.getId(),
+                                                                                  serviceTask.getName(),
                                                                                   graphicInfo);
                                          }
                                      });
@@ -243,7 +263,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawReceiveTask(flowNode.getName(),
+                                             processDiagramCanvas.drawReceiveTask(flowNode.getId(),
+                                                                                  flowNode.getName(),
                                                                                   graphicInfo);
                                          }
                                      });
@@ -256,7 +277,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawSendTask(flowNode.getName(),
+                                             processDiagramCanvas.drawSendTask(flowNode.getId(),
+                                                                               flowNode.getName(),
                                                                                graphicInfo);
                                          }
                                      });
@@ -269,7 +291,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawManualTask(flowNode.getName(),
+                                             processDiagramCanvas.drawManualTask(flowNode.getId(),
+                                                                                 flowNode.getName(),
                                                                                  graphicInfo);
                                          }
                                      });
@@ -282,7 +305,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawBusinessRuleTask(flowNode.getName(),
+                                             processDiagramCanvas.drawBusinessRuleTask(flowNode.getId(),
+                                                                                       flowNode.getName(),
                                                                                        graphicInfo);
                                          }
                                      });
@@ -295,7 +319,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawExclusiveGateway(graphicInfo);
+                                             processDiagramCanvas.drawExclusiveGateway(flowNode.getId(),
+                                                                                       graphicInfo);
                                          }
                                      });
 
@@ -307,7 +332,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawInclusiveGateway(graphicInfo);
+                                             processDiagramCanvas.drawInclusiveGateway(flowNode.getId(),
+                                                                                       graphicInfo);
                                          }
                                      });
 
@@ -319,7 +345,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawParallelGateway(graphicInfo);
+                                             processDiagramCanvas.drawParallelGateway(flowNode.getId(),
+                                                                                      graphicInfo);
                                          }
                                      });
 
@@ -331,7 +358,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawEventBasedGateway(graphicInfo);
+                                             processDiagramCanvas.drawEventBasedGateway(flowNode.getId(),
+                                                                                        graphicInfo);
                                          }
                                      });
 
@@ -347,23 +375,28 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                              if (boundaryEvent.getEventDefinitions() != null && !boundaryEvent.getEventDefinitions().isEmpty()) {
                                                  if (boundaryEvent.getEventDefinitions().get(0) instanceof TimerEventDefinition) {
 
-                                                     processDiagramCanvas.drawCatchingTimerEvent(flowNode.getName(),
+                                                     processDiagramCanvas.drawCatchingTimerEvent(flowNode.getId(),
+                                                                                                 flowNode.getName(),
                                                                                                  graphicInfo,
                                                                                                  boundaryEvent.isCancelActivity());
                                                  } else if (boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
 
-                                                     processDiagramCanvas.drawCatchingErrorEvent(graphicInfo,
+                                                     processDiagramCanvas.drawCatchingErrorEvent(flowNode.getId(),
+                                                                                                 graphicInfo,
                                                                                                  boundaryEvent.isCancelActivity());
                                                  } else if (boundaryEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
-                                                     processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(),
+                                                     processDiagramCanvas.drawCatchingSignalEvent(flowNode.getId(),
+                                                                                                  flowNode.getName(),
                                                                                                   graphicInfo,
                                                                                                   boundaryEvent.isCancelActivity());
                                                  } else if (boundaryEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
-                                                     processDiagramCanvas.drawCatchingMessageEvent(flowNode.getName(),
+                                                     processDiagramCanvas.drawCatchingMessageEvent(flowNode.getId(),
+                                                                                                   flowNode.getName(),
                                                                                                    graphicInfo,
                                                                                                    boundaryEvent.isCancelActivity());
                                                  } else if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
-                                                     processDiagramCanvas.drawCatchingCompensateEvent(graphicInfo,
+                                                     processDiagramCanvas.drawCatchingCompensateEvent(flowNode.getId(),
+                                                                                                      graphicInfo,
                                                                                                       boundaryEvent.isCancelActivity());
                                                  }
                                              }
@@ -379,11 +412,13 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
                                              if (graphicInfo.getExpanded() != null && !graphicInfo.getExpanded()) {
-                                                 processDiagramCanvas.drawCollapsedSubProcess(flowNode.getName(),
+                                                 processDiagramCanvas.drawCollapsedSubProcess(flowNode.getId(),
+                                                                                              flowNode.getName(),
                                                                                               graphicInfo,
                                                                                               false);
                                              } else {
-                                                 processDiagramCanvas.drawExpandedSubProcess(flowNode.getName(),
+                                                 processDiagramCanvas.drawExpandedSubProcess(flowNode.getId(),
+                                                                                             flowNode.getName(),
                                                                                              graphicInfo,
                                                                                              false);
                                              }
@@ -399,11 +434,13 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
                                              if (graphicInfo.getExpanded() != null && !graphicInfo.getExpanded()) {
-                                                 processDiagramCanvas.drawCollapsedSubProcess(flowNode.getName(),
+                                                 processDiagramCanvas.drawCollapsedSubProcess(flowNode.getId(),
+                                                                                              flowNode.getName(),
                                                                                               graphicInfo,
                                                                                               true);
                                              } else {
-                                                 processDiagramCanvas.drawExpandedSubProcess(flowNode.getName(),
+                                                 processDiagramCanvas.drawExpandedSubProcess(flowNode.getId(),
+                                                                                             flowNode.getName(),
                                                                                              graphicInfo,
                                                                                              true);
                                              }
@@ -418,7 +455,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           BpmnModel bpmnModel,
                                                           FlowNode flowNode) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
-                                             processDiagramCanvas.drawCollapsedCallActivity(flowNode.getName(),
+                                             processDiagramCanvas.drawCollapsedCallActivity(flowNode.getId(),
+                                                                                            flowNode.getName(),
                                                                                             graphicInfo);
                                          }
                                      });
@@ -432,7 +470,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                           Artifact artifact) {
                                              GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(artifact.getId());
                                              TextAnnotation textAnnotation = (TextAnnotation) artifact;
-                                             processDiagramCanvas.drawTextAnnotation(textAnnotation.getText(),
+                                             processDiagramCanvas.drawTextAnnotation(textAnnotation.getId(),
+                                                                                     textAnnotation.getText(),
                                                                                      graphicInfo);
                                          }
                                      });
