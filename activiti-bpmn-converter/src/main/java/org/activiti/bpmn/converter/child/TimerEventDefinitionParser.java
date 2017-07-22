@@ -26,22 +26,29 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class TimerEventDefinitionParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ELEMENT_EVENT_TIMERDEFINITION;
-  }
-
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof Event == false)
-      return;
-
-    TimerEventDefinition eventDefinition = new TimerEventDefinition();
-    String calendarName = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_CALENDAR_NAME);
-    if (StringUtils.isNotEmpty(calendarName)) {
-      eventDefinition.setCalendarName(calendarName);
+    public String getElementName() {
+        return ELEMENT_EVENT_TIMERDEFINITION;
     }
-    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TIMERDEFINITION, eventDefinition, xtr, model);
 
-    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
-  }
+    public void parseChildElement(XMLStreamReader xtr,
+                                  BaseElement parentElement,
+                                  BpmnModel model) throws Exception {
+        if (!(parentElement instanceof Event)) {
+            return;
+        }
+        TimerEventDefinition eventDefinition = new TimerEventDefinition();
+        String calendarName = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
+                                                    ATTRIBUTE_CALENDAR_NAME);
+        if (StringUtils.isNotEmpty(calendarName)) {
+            eventDefinition.setCalendarName(calendarName);
+        }
+        BpmnXMLUtil.addXMLLocation(eventDefinition,
+                                   xtr);
+        BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TIMERDEFINITION,
+                                       eventDefinition,
+                                       xtr,
+                                       model);
+
+        ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+    }
 }

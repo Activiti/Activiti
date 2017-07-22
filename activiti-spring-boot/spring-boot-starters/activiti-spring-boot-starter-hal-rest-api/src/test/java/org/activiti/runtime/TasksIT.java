@@ -16,6 +16,7 @@
 
 package org.activiti.runtime;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,10 +26,15 @@ import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.commands.CompleteTaskCmd;
 import org.activiti.client.model.ProcessInstance;
 import org.activiti.client.model.Task;
+import org.activiti.controllers.TaskController;
 import org.activiti.definition.ProcessDefinitionIT;
+import org.activiti.engine.UserGroupLookupProxy;
+import org.activiti.services.AuthenticationWrapper;
+import org.activiti.services.PageableTaskService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -42,6 +48,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.activiti.runtime.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -60,6 +68,16 @@ public class TasksIT {
     @Autowired
     private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
+    //mocking identity integration as that is to be supplied in implementation of starter (e.g. see sample)
+    private UserGroupLookupProxy userGroupLookupProxy = Mockito.mock(UserGroupLookupProxy.class);
+    private AuthenticationWrapper authenticationWrapper = Mockito.mock(AuthenticationWrapper.class);
+
+    @Autowired
+    private PageableTaskService pageableTaskService; //want to inject mocks for identity
+
+    @Autowired
+    private TaskController taskController;
+
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
 
@@ -70,6 +88,9 @@ public class TasksIT {
         for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
             processDefinitionIds.put(pd.getName(), pd.getId());
         }
+        pageableTaskService.setUserGroupLookupProxy(userGroupLookupProxy);
+        pageableTaskService.setAuthenticationWrapper(authenticationWrapper);
+        taskController.setAuthenticationWrapper(authenticationWrapper);
     }
 
     @Test
@@ -86,6 +107,41 @@ public class TasksIT {
         Collection<Task> tasks = responseEntity.getBody().getContent();
         assertThat(tasks).extracting(Task::getName).contains("Perform action");
         assertThat(tasks.size()).isGreaterThanOrEqualTo(2);
+    }
+
+    @Test
+    public void shouldGetAvailableTasksForUser() throws Exception {
+
+        //user is not candidate for task by id but set as candidate by groups
+        when(authenticationWrapper.getAuthenticatedUserId()).thenReturn("testuser");
+        when(userGroupLookupProxy.getGroupsForCandidateUser("testuser")).thenReturn(Arrays.asList("hr"));
+
+        //should now get all of the tasks for SIMPLE_PROCESS
+        shouldGetAvailableTasks();
+
+        //verify that the mock was used
+        verify(authenticationWrapper).getAuthenticatedUserId();
+        verify(userGroupLookupProxy).getGroupsForCandidateUser("testuser");
+
+    }
+
+    @Test
+    public void shouldNotGetTasksWithoutPermission() throws Exception {
+
+        //now authenticated as testuser who is not in hr group as not setting any groups
+        when(authenticationWrapper.getAuthenticatedUserId()).thenReturn("testuser");
+        when(userGroupLookupProxy.getGroupsForCandidateUser("testuser")).thenReturn(null);
+
+        //given
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+
+        //when
+        ResponseEntity<PagedResources<Task>> responseEntity = executeRequestGetTasks();
+
+        //then
+        assertThat(responseEntity).isNotNull();
+        Collection<Task> tasks = responseEntity.getBody().getContent();
+        assertThat(tasks.size()).isEqualTo(0);
     }
 
     @Test
@@ -130,6 +186,25 @@ public class TasksIT {
 
     @Test
     public void claimTaskShouldSetAssignee() throws Exception {
+        when(authenticationWrapper.getAuthenticatedUserId()).thenReturn("testuser");
+        when(userGroupLookupProxy.getGroupsForCandidateUser("testuser")).thenReturn(Arrays.asList("hr"));
+
+        //given
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        Task task = executeRequestGetTasks().getBody().iterator().next();
+
+        //when
+        ResponseEntity<Task> responseEntity = executeRequestClaim(task);
+
+
+        //then
+        assertThat(responseEntity).isNotNull();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody().getAssignee()).isEqualTo("testuser");
+    }
+
+    @Test
+    public void claimTaskShouldFailWhenNoUserAvailable() throws Exception {
         //given
         processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
         Task task = executeRequestGetTasks().getBody().iterator().next();

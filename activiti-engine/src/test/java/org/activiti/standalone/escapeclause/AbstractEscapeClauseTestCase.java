@@ -16,12 +16,7 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 
 public class AbstractEscapeClauseTestCase extends ResourceActivitiTestCase {
 
-  public AbstractEscapeClauseTestCase() {
-    this(null);
-  }
-  
-  public AbstractEscapeClauseTestCase(String activitiConfigurationResource) {
-    super("org/activiti/standalone/escapeclause/activiti.cfg.xml");
-  }
-  
+    public AbstractEscapeClauseTestCase() {
+        super("org/activiti/standalone/escapeclause/activiti.cfg.xml");
+    }
 }

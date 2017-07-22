@@ -106,7 +106,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
       List<? extends ExecutionEntity> multiInstanceExecutions = parentScopeExecution.getExecutions();
       List<ExecutionEntity> executionsToDelete = new ArrayList<ExecutionEntity>();
       for (ExecutionEntity multiInstanceExecution : multiInstanceExecutions) {
-        if (multiInstanceExecution.getId().equals(parentScopeExecution.getId()) == false) {
+        if (!multiInstanceExecution.getId().equals(parentScopeExecution.getId())) {
           ScopeUtil.createCopyOfSubProcessExecutionForCompensation(multiInstanceExecution);
 
           // end all executions in the scope of the transaction

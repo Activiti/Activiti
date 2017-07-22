@@ -14,10 +14,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 /**
  * Suspended jobs are stored separately to increase the normal job query performance
- *
-
-
  */
 public interface DeadLetterJobEntity extends AbstractJobEntity {
-  
+
 }

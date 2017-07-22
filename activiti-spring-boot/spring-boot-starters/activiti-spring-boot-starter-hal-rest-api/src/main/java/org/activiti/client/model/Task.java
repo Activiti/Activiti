@@ -39,6 +39,7 @@ public class Task {
     private int priority;
     private String processDefinitionId;
     private String processInstanceId;
+    private String parentTaskId;
     private String status;
 
     public Task() {
@@ -55,6 +56,7 @@ public class Task {
                 int priority,
                 String processDefinitionId,
                 String processInstanceId,
+                String parentTaskId,
                 String status) {
         this.id = id;
         this.owner = owner;
@@ -67,6 +69,7 @@ public class Task {
         this.priority = priority;
         this.processDefinitionId = processDefinitionId;
         this.processInstanceId = processInstanceId;
+        this.parentTaskId = parentTaskId;
         this.status = status;
     }
 
@@ -116,5 +119,9 @@ public class Task {
 
     public String getStatus() {
         return status;
+    }
+
+    public String getParentTaskId() {
+        return parentTaskId;
     }
 }

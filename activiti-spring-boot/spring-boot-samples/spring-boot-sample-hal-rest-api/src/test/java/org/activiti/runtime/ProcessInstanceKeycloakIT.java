@@ -27,7 +27,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,13 +86,11 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
         //given
         ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
 
-        org.springframework.http.HttpEntity requestEntity = new org.springframework.http.HttpEntity(getHeaders(accessToken.getToken()));
-
         //when
         ResponseEntity<ProcessInstance> retrievedEntity = restTemplate.exchange(
                 PROCESS_INSTANCES_RELATIVE_URL + startedProcessEntity.getBody().getId(),
                 HttpMethod.GET,
-                requestEntity,
+                getRequestEntityWithHeaders(),
                 new ParameterizedTypeReference<ProcessInstance>() {
                 });
 
@@ -111,12 +108,10 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
         processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
         processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
 
-        org.springframework.http.HttpEntity requestEntity = new org.springframework.http.HttpEntity(getHeaders(accessToken.getToken()));
-
         //when
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page=0&size=2",
                                                                                                           HttpMethod.GET,
-                                                                                                          requestEntity,
+                                                                                                            getRequestEntityWithHeaders(),
                                                                                                           new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                                                                                                           });
 
@@ -127,20 +122,15 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
         assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isGreaterThanOrEqualTo(2);
     }
 
-    private HttpHeaders getHeaders(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + new String(token));
-        return headers;
-    }
+
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        org.springframework.http.HttpEntity requestEntity = new org.springframework.http.HttpEntity(getHeaders(accessToken.getToken()));
 
         return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
                 HttpMethod.GET,
-                requestEntity,
+                getRequestEntityWithHeaders(),
                 responseType);
     }
 }

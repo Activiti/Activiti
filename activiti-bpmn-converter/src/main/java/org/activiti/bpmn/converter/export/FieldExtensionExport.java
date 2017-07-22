@@ -31,7 +31,7 @@ public class FieldExtensionExport implements BpmnXMLConstants {
 
         if (StringUtils.isNotEmpty(fieldExtension.getStringValue()) || StringUtils.isNotEmpty(fieldExtension.getExpression())) {
 
-          if (didWriteExtensionStartElement == false) {
+          if (!didWriteExtensionStartElement) {
             xtw.writeStartElement(ELEMENT_EXTENSIONS);
             didWriteExtensionStartElement = true;
           }
