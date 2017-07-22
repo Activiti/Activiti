@@ -411,7 +411,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         String testTenant = "Activiti-tenant";
 
         // Deploy v1
-        String deployment1 = repositoryService.createDeployment()
+        repositoryService.createDeployment()
                 .addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v1.bpmn20.xml")
                 .tenantId(testTenant)
                 .deploy().getId();

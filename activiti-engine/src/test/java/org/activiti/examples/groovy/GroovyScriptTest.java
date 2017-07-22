@@ -13,7 +13,6 @@
 
 package org.activiti.examples.groovy;
 
-import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
