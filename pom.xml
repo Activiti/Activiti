@@ -395,6 +395,11 @@
 
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-awt-util</artifactId>
+        <version>${batik.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-dom</artifactId>
         <version>${batik.version}</version>
       </dependency>
@@ -403,7 +408,7 @@
         <artifactId>batik-svggen</artifactId>
         <version>${batik.version}</version>
       </dependency>
-
+ 
       <!-- Test -->
       <dependency>
         <groupId>junit</groupId>
