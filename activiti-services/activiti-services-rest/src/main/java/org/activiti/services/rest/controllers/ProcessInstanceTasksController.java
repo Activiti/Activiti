@@ -17,7 +17,7 @@
 package org.activiti.services.rest.controllers;
 
 import org.activiti.services.core.model.Task;
-import org.activiti.services.core.tests.pageable.PageableTaskService;
+import org.activiti.services.core.pageable.PageableTaskService;
 import org.activiti.services.rest.resources.TaskResource;
 import org.activiti.services.rest.resources.assembler.TaskResourceAssembler;
 import org.springframework.beans.factory.annotation.Autowired;

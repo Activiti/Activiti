@@ -13,7 +13,7 @@
  *
  */
 
-package org.activiti.services.core.tests.pageable.sort;
+package org.activiti.services.core.pageable.sort;
 
 import org.activiti.engine.query.Query;
 import org.springframework.data.domain.Pageable;

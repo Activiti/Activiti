@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.services.core.tests.pageable.sort;
+package org.activiti.services.core.pageable.sort;
 
 import java.util.HashMap;
 import java.util.Map;

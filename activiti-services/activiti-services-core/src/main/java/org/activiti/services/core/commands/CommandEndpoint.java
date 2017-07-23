@@ -1,9 +1,11 @@
 package org.activiti.services.core.commands;
 
-import org.activiti.services.core.ProcessEngineWrapper;
-import org.activiti.services.core.model.ProcessInstance;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.activiti.services.core.model.commands.Command;
-import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.activiti.services.events.ProcessEngineChannels;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -12,18 +14,22 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommandEndpoint {
 
-    private ProcessEngineWrapper processEngine;
+    private Map<Class, CommandExecutor> commandExecutors;
 
     @Autowired
-    public CommandEndpoint(ProcessEngineWrapper processEngine) {
-        this.processEngine = processEngine;
+    public CommandEndpoint(Set<CommandExecutor> cmdExecutors) {
+        this.commandExecutors = cmdExecutors.stream().collect(Collectors.toMap(CommandExecutor::getHandledType,
+                                                                               Function.identity()));
     }
 
     @StreamListener(ProcessEngineChannels.COMMAND_CONSUMER)
     public void consumeCommand(Command cmd) {
-        if (cmd instanceof StartProcessInstanceCmd) {
-            ProcessInstance processInstance = processEngine.startProcess((StartProcessInstanceCmd) cmd);
-            System.out.println(processInstance.getId() + " -  " + processInstance);
+
+        CommandExecutor cmdExecutor = commandExecutors.get(cmd.getClass());
+        if (cmdExecutor != null) {
+            cmdExecutor.execute(cmd);
         }
+
+        System.out.println(">>> No Command Found for type: " + cmd.getClass());
     }
 }

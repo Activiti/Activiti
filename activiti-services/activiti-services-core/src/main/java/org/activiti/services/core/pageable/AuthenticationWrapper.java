@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.services.core.tests.pageable;
+package org.activiti.services.core.pageable;
 
 import org.activiti.engine.impl.identity.Authentication;
 

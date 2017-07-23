@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.services.core.tests.pageable;
+package org.activiti.services.core.pageable;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.converter.TaskConverter;
-import org.activiti.services.core.tests.pageable.sort.TaskSortApplier;
+import org.activiti.services.core.pageable.sort.TaskSortApplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

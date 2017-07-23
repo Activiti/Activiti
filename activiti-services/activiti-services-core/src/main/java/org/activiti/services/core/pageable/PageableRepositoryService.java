@@ -13,13 +13,13 @@
  *
  */
 
-package org.activiti.services.core.tests.pageable;
+package org.activiti.services.core.pageable;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.converter.ProcessDefinitionConverter;
-import org.activiti.services.core.tests.pageable.sort.ProcessDefinitionSortApplier;
+import org.activiti.services.core.pageable.sort.ProcessDefinitionSortApplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -19,7 +19,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.converter.ProcessDefinitionConverter;
-import org.activiti.services.core.tests.pageable.PageableRepositoryService;
+import org.activiti.services.core.pageable.PageableRepositoryService;
 import org.activiti.services.rest.resources.ProcessDefinitionResource;
 import org.activiti.services.rest.resources.assembler.ProcessDefinitionResourceAssembler;
 import org.springframework.beans.factory.annotation.Autowired;

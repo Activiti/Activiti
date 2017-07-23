@@ -13,7 +13,7 @@
  *
  */
 
-package org.activiti.services.core.tests.pageable;
+package org.activiti.services.core.pageable;
 
 import java.util.List;
 

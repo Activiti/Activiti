@@ -6,7 +6,7 @@ import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.commands.SignalProcessInstanceCmd;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.activiti.services.core.model.converter.ProcessInstanceConverter;
-import org.activiti.services.core.tests.pageable.PageableProcessInstanceService;
+import org.activiti.services.core.pageable.PageableProcessInstanceService;
 import org.activiti.services.events.MessageProducerActivitiEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

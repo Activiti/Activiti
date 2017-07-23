@@ -13,12 +13,12 @@
  *
  */
 
-package org.activiti.services.core.tests.pageable;
+package org.activiti.services.core.pageable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.ProcessInstanceQueryProperty;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
-import org.activiti.services.core.tests.pageable.sort.ProcessInstanceSortApplier;
+import org.activiti.services.core.pageable.sort.ProcessInstanceSortApplier;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
