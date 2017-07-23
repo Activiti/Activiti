@@ -5,7 +5,6 @@
 
   <name>Activiti - Image Generator</name>
   <artifactId>activiti-image-generator</artifactId>
-  <packaging>jar</packaging>
 
   <parent>
     <groupId>org.activiti</groupId>
