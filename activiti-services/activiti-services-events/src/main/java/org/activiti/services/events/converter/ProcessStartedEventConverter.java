@@ -18,22 +18,27 @@ package org.activiti.services.events.converter;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
+import org.activiti.services.events.ProcessStartedEventImpl;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.springframework.stereotype.Component;
 
-import static org.activiti.engine.delegate.event.ActivitiEventType.ACTIVITY_COMPENSATE;
+import static org.activiti.engine.delegate.event.ActivitiEventType.PROCESS_STARTED;
 
 @Component
-public class ActivitiCompensateEventconveter implements EventConverter {
+public class ProcessStartedEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println(event.getType() + "---> Activity Compensate??? " + event.getClass().getCanonicalName());
-        return null;
+        return new ProcessStartedEventImpl(event.getExecutionId(),
+                                               event.getProcessDefinitionId(),
+                                               event.getProcessInstanceId(),
+                                               ((ActivitiProcessStartedEvent) event).getNestedProcessDefinitionId(),
+                                               ((ActivitiProcessStartedEvent) event).getNestedProcessInstanceId());
     }
 
     @Override
     public ActivitiEventType handledType() {
-        return ACTIVITY_COMPENSATE;
+        return PROCESS_STARTED;
     }
 }

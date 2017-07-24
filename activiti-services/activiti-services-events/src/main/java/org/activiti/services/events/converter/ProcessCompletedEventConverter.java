@@ -16,6 +16,7 @@
 
 package org.activiti.services.events.converter;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEntityEventImpl;
@@ -41,11 +42,11 @@ public class ProcessCompletedEventConverter implements EventConverter {
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
         System.out.println(event.getType() + "---> Completed??? " + event.getClass().getCanonicalName());
-        System.out.println("Completed Entity: " + ((ActivitiEntityEventImpl) event).getEntity().getClass().getCanonicalName());
+        System.out.println("Completed Entity: " + ((ActivitiEntityEvent) event).getEntity().getClass().getCanonicalName());
         return new ProcessCompletedEventImpl(event.getExecutionId(),
                                              event.getProcessDefinitionId(),
                                              event.getProcessInstanceId(),
-                                             processInstanceConverter.from(((ExecutionEntityImpl) ((ActivitiEntityEventImpl) event).getEntity()).getProcessInstance()));
+                                             processInstanceConverter.from(((ExecutionEntityImpl) ((ActivitiEntityEvent) event).getEntity()).getProcessInstance()));
     }
 
     @Override

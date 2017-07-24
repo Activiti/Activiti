@@ -18,22 +18,28 @@ package org.activiti.services.events.converter;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiActivityEventImpl;
+import org.activiti.services.events.ActivityStartedEventImpl;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.springframework.stereotype.Component;
 
-import static org.activiti.engine.delegate.event.ActivitiEventType.ACTIVITY_CANCELLED;
+import static org.activiti.engine.delegate.event.ActivitiEventType.ACTIVITY_STARTED;
 
 @Component
-public class ActivitiCancelledEventConverter implements EventConverter {
+public class ActivityStartedEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println(event.getType() + "---> Activity Cancelled??? " + event.getClass().getCanonicalName());
-        return null;
+        return new ActivityStartedEventImpl(event.getExecutionId(),
+                                            event.getProcessDefinitionId(),
+                                            event.getProcessInstanceId(),
+                                            ((ActivitiActivityEventImpl) event).getActivityId(),
+                                            ((ActivitiActivityEventImpl) event).getActivityName(),
+                                            ((ActivitiActivityEventImpl) event).getActivityType());
     }
 
     @Override
     public ActivitiEventType handledType() {
-        return ACTIVITY_CANCELLED;
+        return ACTIVITY_STARTED;
     }
 }

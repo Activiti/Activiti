@@ -18,22 +18,22 @@ package org.activiti.services.core.model.commands;
 
 import java.util.Map;
 
-public class SignalProcessInstanceCmd implements Command {
+public class SignalProcessInstancesCmd implements Command {
 
     private String name;
 
     private Map<String, Object> inputVariables;
 
-    public SignalProcessInstanceCmd() {
+    public SignalProcessInstancesCmd() {
     }
 
-    public SignalProcessInstanceCmd(String name,
-                                    Map<String, Object> inputVariables) {
+    public SignalProcessInstancesCmd(String name,
+                                     Map<String, Object> inputVariables) {
         this.name = name;
         this.inputVariables = inputVariables;
     }
 
-    public SignalProcessInstanceCmd(String name) {
+    public SignalProcessInstancesCmd(String name) {
         this.name = name;
     }
 

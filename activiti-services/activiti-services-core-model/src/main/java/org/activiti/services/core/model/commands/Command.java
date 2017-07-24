@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes(
         {
                 @JsonSubTypes.Type(value = StartProcessInstanceCmd.class, name = "StartProcessInstanceCmd"),
-                @JsonSubTypes.Type(value = SignalProcessInstanceCmd.class, name = "SignalProcessInstanceCmd"),
+                @JsonSubTypes.Type(value = SignalProcessInstancesCmd.class, name = "SignalProcessInstancesCmd"),
                 @JsonSubTypes.Type(value = CompleteTaskCmd.class, name = "CompleteTaskCmd")
         }
 )

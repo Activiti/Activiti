@@ -24,7 +24,7 @@ import org.activiti.definition.ProcessDefinitionIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
-import org.activiti.services.core.model.commands.SignalProcessInstanceCmd;
+import org.activiti.services.core.model.commands.SignalProcessInstancesCmd;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,12 +71,12 @@ public class SignalIT {
     public void processShouldTakeExceptionPathWhenSignalIsSent() throws Exception {
         //given
         ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS));
-        SignalProcessInstanceCmd signalProcessInstanceCmd = new SignalProcessInstanceCmd("go");
+        SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("go");
 
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
                                                                     HttpMethod.POST,
-                                                                    new HttpEntity<>(signalProcessInstanceCmd),
+                                                                    new HttpEntity<>(signalProcessInstancesCmd),
                                                                     new ParameterizedTypeReference<Void>() {
                                                                     });
 
@@ -90,14 +90,14 @@ public class SignalIT {
     public void processShouldHaveVariablesSetWhenSignalCarriesVariables() throws Exception {
         //given
         ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS));
-        SignalProcessInstanceCmd signalProcessInstanceCmd = new SignalProcessInstanceCmd("go",
-                                                                                         Collections.singletonMap("myVar",
+        SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("go",
+                                                                                            Collections.singletonMap("myVar",
                                                                                                                   "myContent"));
 
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
                                                                     HttpMethod.POST,
-                                                                    new HttpEntity<>(signalProcessInstanceCmd),
+                                                                    new HttpEntity<>(signalProcessInstancesCmd),
                                                                     new ParameterizedTypeReference<Void>() {
                                                                     });
 

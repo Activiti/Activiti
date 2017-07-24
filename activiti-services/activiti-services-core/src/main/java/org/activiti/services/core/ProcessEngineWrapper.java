@@ -3,7 +3,7 @@ package org.activiti.services.core;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.services.core.model.ProcessInstance;
-import org.activiti.services.core.model.commands.SignalProcessInstanceCmd;
+import org.activiti.services.core.model.commands.SignalProcessInstancesCmd;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.activiti.services.core.model.converter.ProcessInstanceConverter;
 import org.activiti.services.core.pageable.PageableProcessInstanceService;
@@ -44,7 +44,7 @@ public class ProcessEngineWrapper {
         return processInstanceConverter.from(builder.start());
     }
 
-    public void signal(SignalProcessInstanceCmd signalInfo) {
+    public void signal(SignalProcessInstancesCmd signalInfo) {
         runtimeService.signalEventReceived(signalInfo.getName(),
                                            signalInfo.getInputVariables());
     }

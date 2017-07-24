@@ -16,30 +16,32 @@
 
 package org.activiti.services.events.converter;
 
+import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiActivityEventImpl;
-import org.activiti.services.events.ActivityStartedEventImpl;
+import org.activiti.services.events.ActivityCompletedEventImpl;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.springframework.stereotype.Component;
 
-import static org.activiti.engine.delegate.event.ActivitiEventType.ACTIVITY_STARTED;
+import static org.activiti.engine.delegate.event.ActivitiEventType.ACTIVITY_COMPLETED;
 
 @Component
-public class ActivitiStartedEventConverter implements EventConverter {
+public class ActivityCompletedEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        return new ActivityStartedEventImpl(event.getExecutionId(),
-                                            event.getProcessDefinitionId(),
-                                            event.getProcessInstanceId(),
-                                            ((ActivitiActivityEventImpl) event).getActivityId(),
-                                            ((ActivitiActivityEventImpl) event).getActivityName(),
-                                            ((ActivitiActivityEventImpl) event).getActivityType());
+        return new ActivityCompletedEventImpl(event.getExecutionId(),
+                                                  event.getProcessDefinitionId(),
+                                                  event.getProcessInstanceId(),
+                                                  ((ActivitiActivityEvent) event).getActivityId(),
+                                                  ((ActivitiActivityEvent) event).getActivityName(),
+                                                  ((ActivitiActivityEvent) event).getActivityType());
+
     }
 
     @Override
     public ActivitiEventType handledType() {
-        return ACTIVITY_STARTED;
+        return ACTIVITY_COMPLETED;
     }
 }

@@ -17,7 +17,7 @@ package org.activiti.services.rest.controllers;
 
 import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.core.model.ProcessInstance;
-import org.activiti.services.core.model.commands.SignalProcessInstanceCmd;
+import org.activiti.services.core.model.commands.SignalProcessInstancesCmd;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.activiti.services.rest.resources.ProcessInstanceResource;
 import org.activiti.services.rest.resources.assembler.ProcessInstanceResourceAssembler;
@@ -69,7 +69,7 @@ public class ProcessInstanceController {
 
     @RequestMapping(value = "/signal")
     public ResponseEntity<Void> sendSignal(@RequestBody
-                                                   SignalProcessInstanceCmd cmd) {
+                                                   SignalProcessInstancesCmd cmd) {
         processEngine.signal(cmd);
         return new ResponseEntity<>(HttpStatus.OK);
     }
