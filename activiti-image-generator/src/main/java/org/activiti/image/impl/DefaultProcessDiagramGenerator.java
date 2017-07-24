@@ -588,7 +588,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         // Draw pool shape, if process is participant in collaboration
         for (Pool pool : bpmnModel.getPools()) {
             GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(pool.getId());
-            processDiagramCanvas.drawPoolOrLane(pool.getName(),
+            processDiagramCanvas.drawPoolOrLane(pool.getId(),
+                                                pool.getName(),
                                                 graphicInfo);
         }
 
@@ -596,7 +597,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         for (Process process : bpmnModel.getProcesses()) {
             for (Lane lane : process.getLanes()) {
                 GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(lane.getId());
-                processDiagramCanvas.drawPoolOrLane(lane.getName(),
+                processDiagramCanvas.drawPoolOrLane(lane.getId(),
+                                                    lane.getName(),
                                                     graphicInfo);
             }
         }

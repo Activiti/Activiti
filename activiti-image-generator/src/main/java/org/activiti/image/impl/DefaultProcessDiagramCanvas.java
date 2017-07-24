@@ -935,7 +935,8 @@ public class DefaultProcessDiagramCanvas {
                  false);
     }
 
-    public void drawPoolOrLane(String name,
+    public void drawPoolOrLane(String id,
+                               String name,
                                GraphicInfo graphicInfo) {
         int x = (int) graphicInfo.getX();
         int y = (int) graphicInfo.getY();
@@ -969,6 +970,9 @@ public class DefaultProcessDiagramCanvas {
                          3 + y + availableTextSpace - (availableTextSpace - realWidth) / 2);
             g.setFont(currentFont);
         }
+
+        // set element's id
+        g.setCurrentGroupId(id);
     }
 
     protected void drawTask(String id,
