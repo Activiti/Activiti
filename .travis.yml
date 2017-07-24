@@ -29,5 +29,5 @@ after_success:
   bash <(curl -s https://codecov.io/bash)
 
 after_failure:
-  - cat target/surefire-reports/*.xml | grep -B 1 -A 10 "<error"
-  - cat target/failsafe-reports/*.xml | grep -B 1 -A 10 "<error"
+  - cat **/target/surefire-reports/*.xml | grep -B 1 -A 10 "<error"
+  - cat **/target/failsafe-reports/*.xml | grep -B 1 -A 10 "<error"
