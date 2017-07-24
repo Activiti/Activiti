@@ -10,6 +10,9 @@ import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.client.model.ProcessDefinitionMeta;
+import org.activiti.client.model.ProcessDefinitionServiceTask;
+import org.activiti.client.model.ProcessDefinitionUserTask;
+import org.activiti.client.model.ProcessDefinitionVariable;
 import org.activiti.client.model.resources.ProcessDefinitionMetaResource;
 import org.activiti.client.model.resources.assembler.ProcessDefinitionMetaResourceAssembler;
 import org.activiti.engine.ActivitiException;
@@ -43,31 +46,39 @@ public class ProcessDefinitionMetaController {
         }
         
         Process process = repositoryService.getBpmnModel(id).getMainProcess();
-        List<String []> variables = getVariables(process);
+        List<ProcessDefinitionVariable> variables = getVariables(process);
        
         List<String> users = new ArrayList<String>();
         List<String> groups = new ArrayList<String>();
-        List<String []> userTasks = new ArrayList<String []>();
-        List<String []> serviceTasks = new ArrayList<String []>();
+        List<ProcessDefinitionUserTask> userTasks = new ArrayList<ProcessDefinitionUserTask>();
+//        List<String []> userTasks = new ArrayList<String []>();
+        List<ProcessDefinitionServiceTask> serviceTasks = new ArrayList<ProcessDefinitionServiceTask>();
+//        List<String []> serviceTasks = new ArrayList<String []>();
         List<FlowElement> flowElementList = (List<FlowElement>) process.getFlowElements();
         for (FlowElement flowElement : flowElementList) {
         	if(flowElement.getClass().equals(UserTask.class))
         	{
         		UserTask userTask = (UserTask) flowElement;
-        		String[] t = new String[2];
-        		t[0] = userTask.getName();
-        		t[1] = userTask.getDocumentation();
-        		userTasks.add(t);
+        		ProcessDefinitionUserTask task = new ProcessDefinitionUserTask(
+        				userTask.getName(), userTask.getDocumentation());
+        		userTasks.add(task);
+//        		String [] task = new String[2];
+//        		task[0] = userTask.getName();
+//        		task[1] = userTask.getDocumentation();
+//        		userTasks.add(task);
         		users.addAll(userTask.getCandidateUsers());
         		groups.addAll(userTask.getCandidateGroups());
         	}
         	if(flowElement.getClass().equals(ServiceTask.class))
         	{
         		ServiceTask serviceTask = (ServiceTask) flowElement;
-        		String[] s = new String[2];
-        		s[0] = serviceTask.getName();
-        		s[1] = serviceTask.getImplementation();
-        		serviceTasks.add(s);
+        		ProcessDefinitionServiceTask task = new ProcessDefinitionServiceTask(
+        				serviceTask.getName(), serviceTask.getImplementation());
+        		serviceTasks.add(task);
+//        		String [] task = new String[2];
+//        		task[0] = serviceTask.getName();
+//        		task[1] = serviceTask.getImplementation();
+//        		serviceTasks.add(task);
         	}
         }
         
@@ -83,9 +94,9 @@ public class ProcessDefinitionMetaController {
         		serviceTasks));
 	}
 	
-	private List<String []> getVariables(Process process)
+	private List<ProcessDefinitionVariable> getVariables(Process process)
 	{
-		List<String []> variables = new ArrayList<String[]>();
+		List<ProcessDefinitionVariable> variables = new ArrayList<ProcessDefinitionVariable>();
         if(!process.getExtensionElements().isEmpty())
         {
         	Iterator<List<ExtensionElement>> it = process.getExtensionElements().values().iterator();
@@ -96,9 +107,9 @@ public class ProcessDefinitionMetaController {
         		while(it2.hasNext())
         		{
         			ExtensionElement ee = it2.next();
-        			String[] variable = new String[2];
-        			variable[0] = ee.getAttributeValue(ee.getNamespace(), "variableName");
-        			variable[1] = ee.getAttributeValue(ee.getNamespace(), "variableType");
+        			String name = ee.getAttributeValue(ee.getNamespace(), "variableName");
+        			String type = ee.getAttributeValue(ee.getNamespace(), "variableType");
+        			ProcessDefinitionVariable variable = new ProcessDefinitionVariable(name, type);
         			variables.add(variable);
         		}
         	}

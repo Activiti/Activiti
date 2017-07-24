@@ -4,27 +4,32 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProcessDefinitionMeta {
 	
-	private String processDefinitionId;
+	private String id;
     private String name;
     private String description;
     private int version;
     private List<String> users;
     private List<String> groups;
-    private List<String []> variables;
-    private List<String []> userTasks;
-    private List<String []> serviceTasks;
+    @JsonDeserialize(using = ProcessDefinitionVariable.class)
+    private List<ProcessDefinitionVariable> variables;
+    @JsonDeserialize(using = ProcessDefinitionUserTask.class)
+    private List<ProcessDefinitionUserTask> userTasks;
+    @JsonDeserialize(using = ProcessDefinitionServiceTask.class)
+    private List<ProcessDefinitionServiceTask> serviceTasks;
     
     public ProcessDefinitionMeta() {};
     
 	public ProcessDefinitionMeta(String id, String name, String description, int version, List<String> users,
-			List<String> groups, List<String[]> variables, List<String[]> userTasks, List<String[]> serviceTasks) {
+			List<String> groups, List<ProcessDefinitionVariable> variables, 
+			List<ProcessDefinitionUserTask> userTasks, List<ProcessDefinitionServiceTask> serviceTasks) {
 		super();
-		this.processDefinitionId = id;
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.version = version;
@@ -36,7 +41,7 @@ public class ProcessDefinitionMeta {
 	}
 
 	public String getId() {
-		return processDefinitionId;
+		return id;
 	}
 
 	public String getName() {
@@ -59,15 +64,15 @@ public class ProcessDefinitionMeta {
 		return groups;
 	}
 
-	public List<String[]> getVariables() {
+	public List<ProcessDefinitionVariable> getVariables() {
 		return variables;
 	}
 
-	public List<String[]> getUserTasks() {
+	public List<ProcessDefinitionUserTask> getUserTasks() {
 		return userTasks;
 	}
 
-	public List<String[]> getServiceTasks() {
+	public List<ProcessDefinitionServiceTask> getServiceTasks() {
 		return serviceTasks;
 	}
 
