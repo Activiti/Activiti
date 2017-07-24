@@ -1373,12 +1373,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
         ObjectNode languageNode = Context.getLocalizationElementProperties(locale, task.getTaskDefinitionKey(), processDefinitionId, withLocalizationFallback);
         if (languageNode != null) {
           JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
-          if (languageNameNode != null && languageNameNode.isNull() == false) {
+          if (languageNameNode != null && !languageNameNode.isNull()) {
             task.setLocalizedName(languageNameNode.asText());
           }
           
           JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
-          if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
+          if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
             task.setLocalizedDescription(languageDescriptionNode.asText());
           }
         }
