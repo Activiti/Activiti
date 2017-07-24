@@ -160,7 +160,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
           continue;
         }
         
-        if (didWriteExtensionStartElement == false) {
+        if (!didWriteExtensionStartElement) {
           xtw.writeStartElement(ELEMENT_EXTENSIONS);
           didWriteExtensionStartElement = true;
         }

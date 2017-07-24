@@ -30,7 +30,7 @@ public class MultiInstanceParser extends BaseChildElementParser {
   }
 
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof Activity == false)
+    if (!(parentElement instanceof Activity))
       return;
 
     MultiInstanceLoopCharacteristics multiInstanceDef = new MultiInstanceLoopCharacteristics();
@@ -44,7 +44,7 @@ public class MultiInstanceParser extends BaseChildElementParser {
 
     boolean readyWithMultiInstance = false;
     try {
-      while (readyWithMultiInstance == false && xtr.hasNext()) {
+      while (!readyWithMultiInstance && xtr.hasNext()) {
         xtr.next();
         if (xtr.isStartElement() && ELEMENT_MULTIINSTANCE_CARDINALITY.equalsIgnoreCase(xtr.getLocalName())) {
           multiInstanceDef.setLoopCardinality(xtr.getElementText());

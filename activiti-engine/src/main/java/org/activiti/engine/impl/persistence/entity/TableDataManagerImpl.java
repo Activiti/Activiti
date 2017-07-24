@@ -275,7 +275,7 @@ public class TableDataManagerImpl extends AbstractManager implements TableDataMa
           }
         }
         
-        if (wrongSchema == false) {
+        if (!wrongSchema) {
           String name = resultSet.getString("COLUMN_NAME").toUpperCase();
           String type = resultSet.getString("TYPE_NAME").toUpperCase();
           result.addColumnMetaData(name, type);

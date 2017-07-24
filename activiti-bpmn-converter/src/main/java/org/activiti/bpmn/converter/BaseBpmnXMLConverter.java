@@ -327,7 +327,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
         if (StringUtils.isNotEmpty(property.getId())) {
 
-          if (didWriteExtensionStartElement == false) {
+          if (!didWriteExtensionStartElement) {
             xtw.writeStartElement(ELEMENT_EXTENSIONS);
             didWriteExtensionStartElement = true;
           }
@@ -344,7 +344,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
           if (property.isReadable() == false) {
             writeDefaultAttribute(ATTRIBUTE_FORM_READABLE, ATTRIBUTE_VALUE_FALSE, xtw);
           }
-          if (property.isWriteable() == false) {
+          if (!property.isWriteable()) {
             writeDefaultAttribute(ATTRIBUTE_FORM_WRITABLE, ATTRIBUTE_VALUE_FALSE, xtw);
           }
           if (property.isRequired()) {

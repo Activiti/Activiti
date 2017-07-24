@@ -222,7 +222,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   
   public void createMessages(BpmnModel bpmnModel) {
     for (Message messageElement : bpmnModel.getMessages()) {
-      if (messageDefinitionMap.containsKey(messageElement.getId()) == false) {
+      if (!messageDefinitionMap.containsKey(messageElement.getId())) {
         MessageDefinition messageDefinition = new MessageDefinition(messageElement.getId());
         if (StringUtils.isNotEmpty(messageElement.getItemRef())) {
           if (itemDefinitionMap.containsKey(messageElement.getItemRef())) {

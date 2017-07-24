@@ -113,7 +113,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
           continue;
         }
 
-        if (didWriteExtensionStartElement == false) {
+        if (!didWriteExtensionStartElement) {
           xtw.writeStartElement(ELEMENT_EXTENSIONS);
           didWriteExtensionStartElement = true;
         }
