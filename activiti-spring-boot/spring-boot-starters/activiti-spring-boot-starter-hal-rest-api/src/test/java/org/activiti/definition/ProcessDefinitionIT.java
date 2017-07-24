@@ -121,15 +121,10 @@ public class ProcessDefinitionIT {
         //then
         assertThat(entity).isNotNull();
         assertThat(entity.getBody()).isNotNull();
-        assertThat(entity.getBody().getVariables()).isNotNull();
-        assertThat(entity.getBody().getVariables().size()).isEqualTo(3);
-        assertThat(entity.getBody().getUsers()).isNotNull();
-        assertThat(entity.getBody().getUsers().size()).isEqualTo(4);
-        assertThat(entity.getBody().getGroups()).isNotNull();
-        assertThat(entity.getBody().getGroups().size()).isEqualTo(4);
-        assertThat(entity.getBody().getUserTasks()).isNotNull();
-        assertThat(entity.getBody().getUserTasks().size()).isEqualTo(2);
-        assertThat(entity.getBody().getServiceTasks()).isNotNull();
-        assertThat(entity.getBody().getServiceTasks().size()).isEqualTo(2);
+        assertThat(entity.getBody().getVariables()).hasSize(3);
+        assertThat(entity.getBody().getUsers()).hasSize(4);
+        assertThat(entity.getBody().getGroups()).hasSize(4);
+        assertThat(entity.getBody().getUserTasks()).hasSize(2);
+        assertThat(entity.getBody().getServiceTasks()).hasSize(2);
     }
 }
