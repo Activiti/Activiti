@@ -55,7 +55,7 @@ public class TriggerTimerEventJobHandler implements JobHandler {
       BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
       if (boundaryEvent.isCancelActivity() && boundaryEvent.getAttachedToRef() != null) {
 
-        if (processedElements.contains(boundaryEvent.getId()) == false) {
+        if (!processedElements.contains(boundaryEvent.getId())) {
           processedElements.add(boundaryEvent.getId());
           ExecutionEntity parentExecution = execution.getParent();
           dispatchExecutionTimeOut(timerEntity, parentExecution, processedElements, commandContext);
@@ -79,7 +79,7 @@ public class TriggerTimerEventJobHandler implements JobHandler {
       // subprocesses
       if (execution.getCurrentFlowElement() instanceof SubProcess) {
         for (ExecutionEntity subExecution : execution.getExecutions()) {
-          if (processedElements.contains(subExecution.getCurrentActivityId()) == false) {
+          if (!processedElements.contains(subExecution.getCurrentActivityId())) {
             dispatchExecutionTimeOut(timerEntity, subExecution, processedElements, commandContext);
           }
         }
@@ -90,7 +90,7 @@ public class TriggerTimerEventJobHandler implements JobHandler {
         if (subProcessInstance != null) {
           List<? extends ExecutionEntity> childExecutions = subProcessInstance.getExecutions();
           for (ExecutionEntity subExecution : childExecutions) {
-            if (processedElements.contains(subExecution.getCurrentActivityId()) == false) {
+            if (!processedElements.contains(subExecution.getCurrentActivityId())) {
               dispatchExecutionTimeOut(timerEntity, subExecution, processedElements, commandContext);
             }
           }

@@ -119,7 +119,7 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
 
     if (StringUtils.isNotEmpty(dataObject.getId()) && dataObject.getValue() != null) {
 
-      if (didWriteExtensionStartElement == false) {
+      if (!didWriteExtensionStartElement) {
         xtw.writeStartElement(ELEMENT_EXTENSIONS);
         didWriteExtensionStartElement = true;
       }
