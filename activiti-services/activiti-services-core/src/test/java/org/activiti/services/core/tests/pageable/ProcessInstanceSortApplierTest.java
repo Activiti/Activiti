@@ -13,7 +13,7 @@
  *
  */
 
-package org.activiti.services.core.pageable;
+package org.activiti.services.core.tests.pageable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.ProcessInstanceQueryProperty;

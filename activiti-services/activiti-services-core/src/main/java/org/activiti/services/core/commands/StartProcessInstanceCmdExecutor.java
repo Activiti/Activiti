@@ -5,16 +5,20 @@ import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.commands.Command;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class StartProcessInstanceCmdExecutor implements CommandExecutor {
 
     private ProcessEngineWrapper processEngine;
+    private MessageChannel commandResults;
 
     @Autowired
-    public StartProcessInstanceCmdExecutor(ProcessEngineWrapper processEngine) {
+    public StartProcessInstanceCmdExecutor(ProcessEngineWrapper processEngine, MessageChannel commandResults) {
         this.processEngine = processEngine;
+        this.commandResults = commandResults;
     }
 
     @Override

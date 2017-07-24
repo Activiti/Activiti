@@ -28,6 +28,7 @@ public class CommandEndpoint {
         CommandExecutor cmdExecutor = commandExecutors.get(cmd.getClass());
         if (cmdExecutor != null) {
             cmdExecutor.execute(cmd);
+            return;
         }
 
         System.out.println(">>> No Command Found for type: " + cmd.getClass());

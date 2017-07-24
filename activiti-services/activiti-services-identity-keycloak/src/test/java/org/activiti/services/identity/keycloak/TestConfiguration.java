@@ -28,7 +28,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
 @Configuration
-@PropertySources({@PropertySource("application.properties"),@PropertySource("application-test.properties")})
 public class TestConfiguration {
 
     @Bean
