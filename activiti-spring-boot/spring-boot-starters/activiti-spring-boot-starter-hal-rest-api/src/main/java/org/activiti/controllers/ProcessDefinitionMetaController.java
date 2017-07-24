@@ -51,9 +51,7 @@ public class ProcessDefinitionMetaController {
         List<String> users = new ArrayList<String>();
         List<String> groups = new ArrayList<String>();
         List<ProcessDefinitionUserTask> userTasks = new ArrayList<ProcessDefinitionUserTask>();
-//        List<String []> userTasks = new ArrayList<String []>();
         List<ProcessDefinitionServiceTask> serviceTasks = new ArrayList<ProcessDefinitionServiceTask>();
-//        List<String []> serviceTasks = new ArrayList<String []>();
         List<FlowElement> flowElementList = (List<FlowElement>) process.getFlowElements();
         for (FlowElement flowElement : flowElementList) {
         	if(flowElement.getClass().equals(UserTask.class))
@@ -62,10 +60,6 @@ public class ProcessDefinitionMetaController {
         		ProcessDefinitionUserTask task = new ProcessDefinitionUserTask(
         				userTask.getName(), userTask.getDocumentation());
         		userTasks.add(task);
-//        		String [] task = new String[2];
-//        		task[0] = userTask.getName();
-//        		task[1] = userTask.getDocumentation();
-//        		userTasks.add(task);
         		users.addAll(userTask.getCandidateUsers());
         		groups.addAll(userTask.getCandidateGroups());
         	}
@@ -75,10 +69,6 @@ public class ProcessDefinitionMetaController {
         		ProcessDefinitionServiceTask task = new ProcessDefinitionServiceTask(
         				serviceTask.getName(), serviceTask.getImplementation());
         		serviceTasks.add(task);
-//        		String [] task = new String[2];
-//        		task[0] = serviceTask.getName();
-//        		task[1] = serviceTask.getImplementation();
-//        		serviceTasks.add(task);
         	}
         }
         
