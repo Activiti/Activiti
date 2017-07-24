@@ -20,7 +20,6 @@ import java.util.List;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
-import org.activiti.engine.repository.DiagramLayout;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 import org.activiti.engine.repository.NativeDeploymentQuery;
@@ -314,20 +313,6 @@ public interface RepositoryService {
    * introspect the process definition using regular Java.
    */
   BpmnModel getBpmnModel(String processDefinitionId);
-
-  /**
-   * Provides positions and dimensions of elements in a process diagram as provided by {@link RepositoryService#getProcessDiagram(String)}.
-   * 
-   * This method requires a process model and a diagram image to be deployed.
-   * 
-   * @param processDefinitionId
-   *          id of a {@link ProcessDefinition}, cannot be null.
-   * @return Map with process element ids as keys and positions and dimensions as values.
-   * @return null when the input stream of a process diagram is null.
-   * @throws ActivitiObjectNotFoundException
-   *           when the process model or diagram doesn't exist.
-   */
-  DiagramLayout getProcessDiagramLayout(String processDefinitionId);
 
   /**
    * Creates a new model. The model is transient and must be saved using {@link #saveModel(Model)}.
