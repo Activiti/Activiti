@@ -38,27 +38,15 @@ public class TaskConverter implements ModelConverter<Task, org.activiti.client.m
     public org.activiti.client.model.Task from(Task source) {
         org.activiti.client.model.Task task = null;
         if (source != null) {
-            task = new org.activiti.client.model.Task(source.getId(),
-                                                      source.getOwner(),
-                                                      source.getAssignee(),
-                                                      source.getName(),
-                                                      source.getDescription(),
-                                                      source.getCreateTime(),
-                                                      source.getClaimTime(),
-                                                      source.getDueDate(),
-                                                      source.getPriority(),
-                                                      source.getProcessDefinitionId(),
-                                                      source.getProcessInstanceId(),
-                                                      source.getParentTaskId(),
-                                                      calculateStatus(source));
+            task = new org.activiti.client.model.Task(source.getId(), source.getOwner(), source.getAssignee(), source.getName(), source.getDescription(), source.getCreateTime(), source.getClaimTime(), source.getDueDate(), source.getPriority(), source.getProcessDefinitionId(), source.getProcessInstanceId(), source.getParentTaskId(), calculateStatus(source));
         }
         return task;
     }
 
     private String calculateStatus(Task source) {
-        if(source.isSuspended()){
+        if (source.isSuspended()) {
             return org.activiti.client.model.Task.TaskStatus.SUSPENDED.name();
-        }else if(source.getAssignee() != null && !source.getAssignee().isEmpty()) {
+        } else if (source.getAssignee() != null && !source.getAssignee().isEmpty()) {
             return org.activiti.client.model.Task.TaskStatus.ASSIGNED.name();
         }
         return org.activiti.client.model.Task.TaskStatus.CREATED.name();
@@ -66,7 +54,6 @@ public class TaskConverter implements ModelConverter<Task, org.activiti.client.m
 
     @Override
     public List<org.activiti.client.model.Task> from(List<Task> tasks) {
-        return listConverter.from(tasks,
-                                  this);
+        return listConverter.from(tasks, this);
     }
 }

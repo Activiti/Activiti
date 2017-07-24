@@ -15,6 +15,11 @@
 
 package org.activiti.services.sort;
 
+import static org.activiti.services.test.utils.MockUtils.selfReturningMock;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.ProcessInstanceQueryProperty;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -26,10 +31,6 @@ import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-
-import static org.activiti.services.test.utils.MockUtils.selfReturningMock;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
 

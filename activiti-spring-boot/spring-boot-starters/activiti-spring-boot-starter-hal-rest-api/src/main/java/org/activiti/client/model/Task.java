@@ -45,19 +45,7 @@ public class Task {
     public Task() {
     }
 
-    public Task(String id,
-                String owner,
-                String assignee,
-                String name,
-                String description,
-                Date createdDate,
-                Date claimedDate,
-                Date dueDate,
-                int priority,
-                String processDefinitionId,
-                String processInstanceId,
-                String parentTaskId,
-                String status) {
+    public Task(String id, String owner, String assignee, String name, String description, Date createdDate, Date claimedDate, Date dueDate, int priority, String processDefinitionId, String processInstanceId, String parentTaskId, String status) {
         this.id = id;
         this.owner = owner;
         this.assignee = assignee;

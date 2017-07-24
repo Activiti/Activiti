@@ -31,7 +31,7 @@ public class TaskSortApplier extends BaseSortApplier<TaskQuery> {
     private Map<String, TaskQueryProperty> orderByProperties = new HashMap<>();
 
     public TaskSortApplier() {
-        orderByProperties.put("id" , TaskQueryProperty.TASK_ID);
+        orderByProperties.put("id", TaskQueryProperty.TASK_ID);
         orderByProperties.put("name", TaskQueryProperty.NAME);
         orderByProperties.put("assignee", TaskQueryProperty.ASSIGNEE);
     }

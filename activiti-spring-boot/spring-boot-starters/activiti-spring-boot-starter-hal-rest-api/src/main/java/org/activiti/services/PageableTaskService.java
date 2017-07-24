@@ -16,6 +16,8 @@
 
 package org.activiti.services;
 
+import java.util.List;
+
 import org.activiti.client.model.Task;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.UserGroupLookupProxy;
@@ -26,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class PageableTaskService {
@@ -43,10 +43,7 @@ public class PageableTaskService {
     private AuthenticationWrapper authenticationWrapper = new AuthenticationWrapper();
 
     @Autowired
-    public PageableTaskService(TaskService taskService,
-                               TaskConverter taskConverter,
-                               PageRetriever pageRetriever,
-                               TaskSortApplier sortApplier) {
+    public PageableTaskService(TaskService taskService, TaskConverter taskConverter, PageRetriever pageRetriever, TaskSortApplier sortApplier) {
         this.taskService = taskService;
         this.taskConverter = taskConverter;
         this.pageRetriever = pageRetriever;
@@ -57,12 +54,12 @@ public class PageableTaskService {
 
         String userId = authenticationWrapper.getAuthenticatedUserId();
         TaskQuery query = taskService.createTaskQuery();
-        if(userId != null) {
+        if (userId != null) {
             List<String> groups = null;
-            if(userGroupLookupProxy!=null){
-               groups = userGroupLookupProxy.getGroupsForCandidateUser(userId);
+            if (userGroupLookupProxy != null) {
+                groups = userGroupLookupProxy.getGroupsForCandidateUser(userId);
             }
-            query = query.taskCandidateOrAssigned(userId,groups);
+            query = query.taskCandidateOrAssigned(userId, groups);
         }
         sortApplier.applySort(query, pageable);
         return pageRetriever.loadPage(query, pageable, taskConverter);

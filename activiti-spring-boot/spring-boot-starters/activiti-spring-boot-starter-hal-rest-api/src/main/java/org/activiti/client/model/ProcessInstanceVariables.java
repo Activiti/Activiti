@@ -29,8 +29,7 @@ public class ProcessInstanceVariables {
 
     private Map<String, Object> variables;
 
-    public ProcessInstanceVariables(String processInstanceId,
-                                    Map<String, Object> variables) {
+    public ProcessInstanceVariables(String processInstanceId, Map<String, Object> variables) {
         this.processInstanceId = processInstanceId;
         this.variables = variables;
     }

@@ -16,6 +16,11 @@
 
 package org.activiti.runtime;
 
+import static org.activiti.runtime.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -23,9 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.client.model.ProcessDefinition;
-import org.activiti.client.model.commands.CompleteTaskCmd;
 import org.activiti.client.model.ProcessInstance;
 import org.activiti.client.model.Task;
+import org.activiti.client.model.commands.CompleteTaskCmd;
 import org.activiti.controllers.TaskController;
 import org.activiti.definition.ProcessDefinitionIT;
 import org.activiti.engine.UserGroupLookupProxy;
@@ -45,11 +50,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.activiti.runtime.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -80,12 +80,11 @@ public class TasksIT {
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
-
     @Before
-    public void setUp(){
+    public void setUp() {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
-        for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
+        for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
             processDefinitionIds.put(pd.getName(), pd.getId());
         }
         pageableTaskService.setUserGroupLookupProxy(userGroupLookupProxy);
@@ -150,10 +149,7 @@ public class TasksIT {
         ResponseEntity<ProcessInstance> startProcessResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
-        ResponseEntity<PagedResources<Task>> tasksEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessResponse.getBody().getId() + "/tasks",
-                                                                                  HttpMethod.GET,
-                                                                                  null,
-                                                                                  PAGED_TASKS_RESPONSE_TYPE);
+        ResponseEntity<PagedResources<Task>> tasksEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessResponse.getBody().getId() + "/tasks", HttpMethod.GET, null, PAGED_TASKS_RESPONSE_TYPE);
 
         //then
         assertThat(tasksEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -161,10 +157,7 @@ public class TasksIT {
     }
 
     private ResponseEntity<PagedResources<Task>> executeRequestGetTasks() {
-        return testRestTemplate.exchange(TASKS_URL,
-                                         HttpMethod.GET,
-                                         null,
-                                         PAGED_TASKS_RESPONSE_TYPE);
+        return testRestTemplate.exchange(TASKS_URL, HttpMethod.GET, null, PAGED_TASKS_RESPONSE_TYPE);
     }
 
     @Test
@@ -174,10 +167,7 @@ public class TasksIT {
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         //when
-        ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId(),
-                                                                        HttpMethod.GET,
-                                                                        null,
-                                                                        TASK_RESPONSE_TYPE);
+        ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId(), HttpMethod.GET, null, TASK_RESPONSE_TYPE);
 
         //then
         assertThat(responseEntity).isNotNull();
@@ -196,7 +186,6 @@ public class TasksIT {
         //when
         ResponseEntity<Task> responseEntity = executeRequestClaim(task);
 
-
         //then
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -212,7 +201,6 @@ public class TasksIT {
         //when
         ResponseEntity<Task> responseEntity = executeRequestClaim(task);
 
-
         //then
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -220,10 +208,7 @@ public class TasksIT {
     }
 
     private ResponseEntity<Task> executeRequestClaim(Task task) {
-        return testRestTemplate.exchange(TASKS_URL + task.getId() + "/claim",
-                                         HttpMethod.POST,
-                                         null,
-                                         TASK_RESPONSE_TYPE);
+        return testRestTemplate.exchange(TASKS_URL + task.getId() + "/claim", HttpMethod.POST, null, TASK_RESPONSE_TYPE);
     }
 
     @Test
@@ -235,10 +220,7 @@ public class TasksIT {
         executeRequestClaim(task);
 
         //when
-        ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/release",
-                                                                        HttpMethod.POST,
-                                                                        null,
-                                                                        TASK_RESPONSE_TYPE);
+        ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/release", HttpMethod.POST, null, TASK_RESPONSE_TYPE);
 
         //then
         assertThat(responseEntity).isNotNull();
@@ -253,11 +235,8 @@ public class TasksIT {
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         //when
-        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",
-                                                                        HttpMethod.POST,
-                                                                        null,
-                                                                        new ParameterizedTypeReference<Void>() {
-                                                                        });
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete", HttpMethod.POST, null, new ParameterizedTypeReference<Void>() {
+        });
 
         //then
         assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -269,15 +248,11 @@ public class TasksIT {
         processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
-        CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd(Collections.singletonMap("myVar",
-                                                                                       "any"));
+        CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd(Collections.singletonMap("myVar", "any"));
 
         //when
-        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",
-                                                                        HttpMethod.POST,
-                                                                        new HttpEntity<>(completeTaskCmd),
-                                                                        new ParameterizedTypeReference<Void>() {
-                                                                        });
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete", HttpMethod.POST, new HttpEntity<>(completeTaskCmd), new ParameterizedTypeReference<Void>() {
+        });
 
         //then
         assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -286,9 +261,6 @@ public class TasksIT {
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        return testRestTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
-                                     HttpMethod.GET,
-                                     null,
-                                     responseType);
+        return testRestTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL, HttpMethod.GET, null, responseType);
     }
 }

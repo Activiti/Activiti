@@ -20,7 +20,7 @@ import java.util.List;
 /**
 
  */
-public interface ModelConverter <SOURCE, TARGET> {
+public interface ModelConverter<SOURCE, TARGET> {
 
     TARGET from(SOURCE source);
 

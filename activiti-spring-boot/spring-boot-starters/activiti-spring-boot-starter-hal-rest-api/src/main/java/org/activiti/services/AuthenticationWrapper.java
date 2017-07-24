@@ -23,11 +23,11 @@ import org.activiti.engine.impl.identity.Authentication;
  */
 public class AuthenticationWrapper {
 
-    public void setAuthenticatedUserId(String user){
+    public void setAuthenticatedUserId(String user) {
         Authentication.setAuthenticatedUserId(user);
     }
 
-    public String getAuthenticatedUserId(){
+    public String getAuthenticatedUserId() {
         return Authentication.getAuthenticatedUserId();
     }
 }

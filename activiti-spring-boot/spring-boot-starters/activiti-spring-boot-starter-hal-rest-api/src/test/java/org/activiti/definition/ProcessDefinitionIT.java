@@ -16,6 +16,10 @@
 
 package org.activiti.definition;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Iterator;
+
 import org.activiti.client.model.ProcessDefinition;
 import org.activiti.client.model.ProcessDefinitionMeta;
 import org.junit.Test;
@@ -28,10 +32,6 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.Iterator;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,20 +54,13 @@ public class ProcessDefinitionIT {
         //then
         assertThat(entity).isNotNull();
         assertThat(entity.getBody()).isNotNull();
-        assertThat(entity.getBody().getContent())
-                .extracting(
-                        ProcessDefinition::getName
-                ).contains("ProcessWithVariables", "ProcessWithVariables2",
-                           "SimpleProcess", "ProcessWithBoundarySignal");
+        assertThat(entity.getBody().getContent()).extracting(ProcessDefinition::getName).contains("ProcessWithVariables", "ProcessWithVariables2", "SimpleProcess", "ProcessWithBoundarySignal");
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
-                                          HttpMethod.GET,
-                                          null,
-                                          responseType);
+        return restTemplate.exchange(PROCESS_DEFINITIONS_URL, HttpMethod.GET, null, responseType);
     }
 
     @Test
@@ -83,20 +76,17 @@ public class ProcessDefinitionIT {
         ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
 
         //when
-        ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId(),
-                                                                              HttpMethod.GET,
-                                                                              null,
-                                                                              responseType);
+        ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId(), HttpMethod.GET, null, responseType);
 
         //then
         assertThat(entity).isNotNull();
         assertThat(entity.getBody()).isNotNull();
         assertThat(entity.getBody().getId()).isEqualTo(aProcessDefinition.getId());
     }
-    
+
     @Test
     public void shouldReturnProcessDefinitionMetadata() throws Exception {
-    	//given
+        //given
         ParameterizedTypeReference<ProcessDefinitionMeta> responseType = new ParameterizedTypeReference<ProcessDefinitionMeta>() {
         };
 
@@ -105,19 +95,14 @@ public class ProcessDefinitionIT {
         assertThat(processDefinitionsEntity.getBody()).isNotNull();
         assertThat(processDefinitionsEntity.getBody().getContent()).isNotEmpty();
         ProcessDefinition aProcessDefinition = null;
-        	
+
         Iterator<ProcessDefinition> it = processDefinitionsEntity.getBody().getContent().iterator();
-        do
-        {
-        	aProcessDefinition = it.next();
-        }
-        while(!aProcessDefinition.getName().equals(PROCESS_WITH_VARIABLES_2));
-        
+        do {
+            aProcessDefinition = it.next();
+        } while (!aProcessDefinition.getName().equals(PROCESS_WITH_VARIABLES_2));
+
         //when
-        ResponseEntity<ProcessDefinitionMeta> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/meta",
-                                                                              HttpMethod.GET,
-                                                                              null,
-                                                                              responseType);
+        ResponseEntity<ProcessDefinitionMeta> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/meta", HttpMethod.GET, null, responseType);
         //then
         assertThat(entity).isNotNull();
         assertThat(entity.getBody()).isNotNull();

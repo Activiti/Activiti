@@ -17,8 +17,8 @@ package org.activiti.controllers;
 
 import java.util.Map;
 
-import org.activiti.client.model.commands.CompleteTaskCmd;
 import org.activiti.client.model.Task;
+import org.activiti.client.model.commands.CompleteTaskCmd;
 import org.activiti.client.model.resources.TaskResource;
 import org.activiti.client.model.resources.assembler.TaskResourceAssembler;
 import org.activiti.engine.TaskService;
@@ -51,10 +51,7 @@ public class TaskController {
     private AuthenticationWrapper authenticationWrapper = new AuthenticationWrapper();
 
     @Autowired
-    public TaskController(TaskService taskService,
-                          TaskConverter taskConverter,
-                          TaskResourceAssembler taskResourceAssembler,
-                          PageableTaskService pageableTaskService) {
+    public TaskController(TaskService taskService, TaskConverter taskConverter, TaskResourceAssembler taskResourceAssembler, PageableTaskService pageableTaskService) {
         this.taskService = taskService;
         this.taskConverter = taskConverter;
         this.taskResourceAssembler = taskResourceAssembler;
@@ -76,30 +73,28 @@ public class TaskController {
     @RequestMapping(value = "/{taskId}/claim", method = RequestMethod.POST)
     public Resource<Task> claimTask(@PathVariable String taskId) {
         String assignee = authenticationWrapper.getAuthenticatedUserId();
-        if(assignee == null) {
+        if (assignee == null) {
             throw new IllegalStateException("Assignee must be resolved from the Identity/Security Layer");
         }
         taskService.claim(taskId, assignee);
         Task task = taskConverter.from(taskService.createTaskQuery().taskId(taskId).singleResult());
-        return  taskResourceAssembler.toResource(task);
+        return taskResourceAssembler.toResource(task);
     }
 
     @RequestMapping(value = "/{taskId}/release", method = RequestMethod.POST)
     public Resource<Task> releaseTask(@PathVariable String taskId) {
         taskService.unclaim(taskId);
         Task task = taskConverter.from(taskService.createTaskQuery().taskId(taskId).singleResult());
-        return  taskResourceAssembler.toResource(task);
+        return taskResourceAssembler.toResource(task);
     }
 
     @RequestMapping(value = "/{taskId}/complete", method = RequestMethod.POST)
-    public ResponseEntity<Void> completeTask(@PathVariable String taskId, @RequestBody(required = false)
-            CompleteTaskCmd completeTaskCmd) {
+    public ResponseEntity<Void> completeTask(@PathVariable String taskId, @RequestBody(required = false) CompleteTaskCmd completeTaskCmd) {
         Map<String, Object> inputVariables = null;
         if (completeTaskCmd != null) {
             inputVariables = completeTaskCmd.getOutputVariables();
         }
-        taskService.complete(taskId,
-                             inputVariables);
+        taskService.complete(taskId, inputVariables);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

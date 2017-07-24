@@ -16,6 +16,7 @@
 package org.activiti.client.model;
 
 import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -39,14 +40,7 @@ public class ProcessInstance {
     public ProcessInstance() {
     }
 
-    public ProcessInstance(String id,
-                           String name,
-                           String description,
-                           String processDefinitionId,
-                           String initiator,
-                           Date startDate,
-                           String businessKey,
-                           String status) {
+    public ProcessInstance(String id, String name, String description, String processDefinitionId, String initiator, Date startDate, String businessKey, String status) {
         this.id = id;
         this.name = name;
         this.description = description;

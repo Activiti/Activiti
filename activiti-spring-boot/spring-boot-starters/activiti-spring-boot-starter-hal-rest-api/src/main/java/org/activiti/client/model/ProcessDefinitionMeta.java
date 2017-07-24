@@ -9,8 +9,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProcessDefinitionMeta {
-	
-	private String id;
+
+    private String id;
     private String name;
     private String description;
     private int version;
@@ -22,58 +22,57 @@ public class ProcessDefinitionMeta {
     private List<ProcessDefinitionUserTask> userTasks;
     @JsonDeserialize(using = ProcessDefinitionServiceTask.class)
     private List<ProcessDefinitionServiceTask> serviceTasks;
-    
-    public ProcessDefinitionMeta() {};
-    
-	public ProcessDefinitionMeta(String id, String name, String description, int version, List<String> users,
-			List<String> groups, List<ProcessDefinitionVariable> variables, 
-			List<ProcessDefinitionUserTask> userTasks, List<ProcessDefinitionServiceTask> serviceTasks) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.description = description;
-		this.version = version;
-		this.users = users;
-		this.groups = groups;
-		this.variables = variables;
-		this.userTasks = userTasks;
-		this.serviceTasks = serviceTasks;
-	}
 
-	public String getId() {
-		return id;
-	}
+    public ProcessDefinitionMeta() {
+    };
 
-	public String getName() {
-		return name;
-	}
+    public ProcessDefinitionMeta(String id, String name, String description, int version, List<String> users, List<String> groups, List<ProcessDefinitionVariable> variables, List<ProcessDefinitionUserTask> userTasks, List<ProcessDefinitionServiceTask> serviceTasks) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.version = version;
+        this.users = users;
+        this.groups = groups;
+        this.variables = variables;
+        this.userTasks = userTasks;
+        this.serviceTasks = serviceTasks;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public int getVersion() {
-		return version;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public List<String> getUsers() {
-		return users;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public List<String> getGroups() {
-		return groups;
-	}
+    public int getVersion() {
+        return version;
+    }
 
-	public List<ProcessDefinitionVariable> getVariables() {
-		return variables;
-	}
+    public List<String> getUsers() {
+        return users;
+    }
 
-	public List<ProcessDefinitionUserTask> getUserTasks() {
-		return userTasks;
-	}
+    public List<String> getGroups() {
+        return groups;
+    }
 
-	public List<ProcessDefinitionServiceTask> getServiceTasks() {
-		return serviceTasks;
-	}
+    public List<ProcessDefinitionVariable> getVariables() {
+        return variables;
+    }
+
+    public List<ProcessDefinitionUserTask> getUserTasks() {
+        return userTasks;
+    }
+
+    public List<ProcessDefinitionServiceTask> getServiceTasks() {
+        return serviceTasks;
+    }
 
 }

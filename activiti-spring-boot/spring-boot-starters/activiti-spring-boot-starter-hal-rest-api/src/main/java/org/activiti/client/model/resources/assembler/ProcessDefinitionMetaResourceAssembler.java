@@ -14,28 +14,22 @@ import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProcessDefinitionMetaResourceAssembler extends ResourceAssemblerSupport<ProcessDefinitionMeta, ProcessDefinitionMetaResource>  {
+public class ProcessDefinitionMetaResourceAssembler extends ResourceAssemblerSupport<ProcessDefinitionMeta, ProcessDefinitionMetaResource> {
 
-	public ProcessDefinitionMetaResourceAssembler() {
-		super(ProcessDefinitionMetaController.class,
-	              ProcessDefinitionMetaResource.class);
-	}
+    public ProcessDefinitionMetaResourceAssembler() {
+        super(ProcessDefinitionMetaController.class, ProcessDefinitionMetaResource.class);
+    }
 
-	@Override
-	public ProcessDefinitionMetaResource toResource(ProcessDefinitionMeta processDefinitionMeta) {
-		
-		Link metadata = linkTo(methodOn(ProcessDefinitionMetaController.class).getProcessDefinitionMetadata(processDefinitionMeta.getId())).withRel("meta");
+    @Override
+    public ProcessDefinitionMetaResource toResource(ProcessDefinitionMeta processDefinitionMeta) {
+
+        Link metadata = linkTo(methodOn(ProcessDefinitionMetaController.class).getProcessDefinitionMetadata(processDefinitionMeta.getId())).withRel("meta");
         Link selfRel = linkTo(methodOn(ProcessDefinitionController.class).getProcessDefinition(processDefinitionMeta.getId())).withSelfRel();
         Link startProcessLink = linkTo(methodOn(ProcessInstanceController.class).startProcess(null)).withRel("startProcess");
         Link homeLink = linkTo(HomeController.class).withRel("home");
-        
-        return new ProcessDefinitionMetaResource(processDefinitionMeta,
-        		                             metadata,
-                                             selfRel,
-                                             startProcessLink,
-                                             homeLink);
-    
-	}
 
+        return new ProcessDefinitionMetaResource(processDefinitionMeta, metadata, selfRel, startProcessLink, homeLink);
+
+    }
 
 }

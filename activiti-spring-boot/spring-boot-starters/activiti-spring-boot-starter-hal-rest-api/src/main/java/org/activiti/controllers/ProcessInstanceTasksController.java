@@ -39,16 +39,14 @@ public class ProcessInstanceTasksController {
     private final TaskResourceAssembler taskResourceAssembler;
 
     @Autowired
-    public ProcessInstanceTasksController(PageableTaskService pageableTaskService,
-                                          TaskResourceAssembler taskResourceAssembler) {
+    public ProcessInstanceTasksController(PageableTaskService pageableTaskService, TaskResourceAssembler taskResourceAssembler) {
         this.pageableTaskService = pageableTaskService;
         this.taskResourceAssembler = taskResourceAssembler;
     }
 
     @RequestMapping("/tasks")
     public PagedResources<TaskResource> getTasks(@PathVariable String processInstanceId, Pageable pageable, PagedResourcesAssembler<Task> pagedResourcesAssembler) {
-        Page<Task> page = pageableTaskService.getTasks(processInstanceId,
-                                                        pageable);
+        Page<Task> page = pageableTaskService.getTasks(processInstanceId, pageable);
         return pagedResourcesAssembler.toResource(page, taskResourceAssembler);
     }
 

@@ -35,14 +35,7 @@ public class ProcessInstanceConverter implements ModelConverter<ProcessInstance,
     public org.activiti.client.model.ProcessInstance from(ProcessInstance source) {
         org.activiti.client.model.ProcessInstance processInstance = null;
         if (source != null) {
-            processInstance = new org.activiti.client.model.ProcessInstance(source.getId(),
-                                                                            source.getName(),
-                                                                            source.getDescription(),
-                                                                            source.getProcessDefinitionId(),
-                                                                            source.getStartUserId(),
-                                                                            source.getStartTime(),
-                                                                            source.getBusinessKey(),
-                                                                            calculateStatus(source));
+            processInstance = new org.activiti.client.model.ProcessInstance(source.getId(), source.getName(), source.getDescription(), source.getProcessDefinitionId(), source.getStartUserId(), source.getStartTime(), source.getBusinessKey(), calculateStatus(source));
         }
         return processInstance;
     }
@@ -58,7 +51,6 @@ public class ProcessInstanceConverter implements ModelConverter<ProcessInstance,
 
     @Override
     public List<org.activiti.client.model.ProcessInstance> from(List<ProcessInstance> processInstances) {
-        return listConverter.from(processInstances,
-                                  this);
+        return listConverter.from(processInstances, this);
     }
 }

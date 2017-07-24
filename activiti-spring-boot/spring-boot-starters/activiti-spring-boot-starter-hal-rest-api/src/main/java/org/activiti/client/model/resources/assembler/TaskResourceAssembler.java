@@ -15,6 +15,9 @@
 
 package org.activiti.client.model.resources.assembler;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +30,11 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 @Component
 public class TaskResourceAssembler extends ResourceAssemblerSupport<Task, TaskResource> {
 
     public TaskResourceAssembler() {
-        super(TaskController.class,
-              TaskResource.class);
+        super(TaskController.class, TaskResource.class);
     }
 
     @Override
@@ -46,15 +45,13 @@ public class TaskResourceAssembler extends ResourceAssemblerSupport<Task, TaskRe
             links.add(linkTo(methodOn(TaskController.class).claimTask(task.getId())).withRel("claim"));
         } else {
             links.add(linkTo(methodOn(TaskController.class).releaseTask(task.getId())).withRel("release"));
-            links.add(linkTo(methodOn(TaskController.class).completeTask(task.getId(),
-                                                                         null)).withRel("complete"));
+            links.add(linkTo(methodOn(TaskController.class).completeTask(task.getId(), null)).withRel("complete"));
         }
         links.add(linkTo(methodOn(ProcessInstanceController.class).getProcessInstanceById(task.getProcessInstanceId())).withRel("processInstance"));
-        if(task.getParentTaskId() !=null && !task.getParentTaskId().isEmpty()) {
+        if (task.getParentTaskId() != null && !task.getParentTaskId().isEmpty()) {
             links.add(linkTo(methodOn(TaskController.class).getTaskById(task.getParentTaskId())).withRel("parent"));
         }
         links.add(linkTo(HomeController.class).withRel("home"));
-        return new TaskResource(task,
-                                links);
+        return new TaskResource(task, links);
     }
 }

@@ -17,7 +17,7 @@ package org.activiti.client.model.commands;
 
 import java.util.Map;
 
-public class StartProcessInstanceCmd implements Command{
+public class StartProcessInstanceCmd implements Command {
 
     private String processDefinitionId;
     private Map<String, Object> variables;
@@ -25,8 +25,7 @@ public class StartProcessInstanceCmd implements Command{
     public StartProcessInstanceCmd() {
     }
 
-    public StartProcessInstanceCmd(String processDefinitionId,
-                                   Map<String, Object> variables) {
+    public StartProcessInstanceCmd(String processDefinitionId, Map<String, Object> variables) {
         this.processDefinitionId = processDefinitionId;
         this.variables = variables;
     }

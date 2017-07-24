@@ -15,40 +15,40 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class ProcessDefinitionVariable extends JsonDeserializer<List<ProcessDefinitionVariable>> {
 
-	@JsonProperty("variableName") private String variableName;
-	@JsonProperty("variableType") private String variableType;
-	
-	public ProcessDefinitionVariable() {};
-	
-	@JsonCreator
-	public ProcessDefinitionVariable(String variableName, String variableType) {
-		this.variableName = variableName;
-		this.variableType = variableType;
-	}
+    @JsonProperty("variableName")
+    private String variableName;
+    @JsonProperty("variableType")
+    private String variableType;
 
-	public String getVariableName() {
-		return variableName;
-	}
+    public ProcessDefinitionVariable() {
+    };
 
-	public String getVariableType() {
-		return variableType;
-	}
+    @JsonCreator
+    public ProcessDefinitionVariable(String variableName, String variableType) {
+        this.variableName = variableName;
+        this.variableType = variableType;
+    }
 
-	@Override
-	public List<ProcessDefinitionVariable> deserialize(JsonParser jp, DeserializationContext ctxt)
-			throws IOException, JsonProcessingException {
-		
-		List<ProcessDefinitionVariable> variables = new ArrayList<ProcessDefinitionVariable>();
-		ObjectCodec oc = jp.getCodec();
-	    JsonNode nodes = oc.readTree(jp);
-	    
-	    for(int i=0; i<nodes.size(); i++)
-	    {
-	    	ProcessDefinitionVariable variable = new ProcessDefinitionVariable(
-	    			nodes.get(i).get("variableName").asText(), nodes.get(i).get("variableType").asText());
-	    	variables.add(variable);
-	    }
+    public String getVariableName() {
+        return variableName;
+    }
 
-		return variables;
-	}
+    public String getVariableType() {
+        return variableType;
+    }
+
+    @Override
+    public List<ProcessDefinitionVariable> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+
+        List<ProcessDefinitionVariable> variables = new ArrayList<ProcessDefinitionVariable>();
+        ObjectCodec oc = jp.getCodec();
+        JsonNode nodes = oc.readTree(jp);
+
+        for (int i = 0; i < nodes.size(); i++) {
+            ProcessDefinitionVariable variable = new ProcessDefinitionVariable(nodes.get(i).get("variableName").asText(), nodes.get(i).get("variableType").asText());
+            variables.add(variable);
+        }
+
+        return variables;
+    }
 }

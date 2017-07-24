@@ -15,13 +15,13 @@
 
 package org.activiti.controllers;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
 import org.activiti.client.model.resources.HomeResource;
 import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @RestController
 @RequestMapping(value = "/")
@@ -29,10 +29,7 @@ public class HomeController {
 
     @RequestMapping(method = RequestMethod.GET)
     public Resource getHomeInfo() {
-        Resource resource = new Resource(new HomeResource(),
-                                         linkTo(ProcessDefinitionController.class).withRel("process-definitions"),
-                                         linkTo(ProcessInstanceController.class).withRel("process-instances"),
-                                         linkTo(TaskController.class).withRel("tasks"));
+        Resource resource = new Resource(new HomeResource(), linkTo(ProcessDefinitionController.class).withRel("process-definitions"), linkTo(ProcessInstanceController.class).withRel("process-instances"), linkTo(TaskController.class).withRel("tasks"));
 
         return resource;
     }

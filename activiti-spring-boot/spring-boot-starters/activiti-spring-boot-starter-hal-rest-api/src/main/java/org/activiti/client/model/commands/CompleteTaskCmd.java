@@ -18,7 +18,7 @@ package org.activiti.client.model.commands;
 
 import java.util.Map;
 
-public class CompleteTaskCmd implements Command{
+public class CompleteTaskCmd implements Command {
 
     private Map<String, Object> outputVariables;
 

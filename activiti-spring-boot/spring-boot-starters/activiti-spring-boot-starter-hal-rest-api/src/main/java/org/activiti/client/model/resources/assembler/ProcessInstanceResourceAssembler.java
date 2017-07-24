@@ -15,6 +15,9 @@
 
 package org.activiti.client.model.resources.assembler;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import org.activiti.client.model.ProcessInstance;
 import org.activiti.client.model.resources.ProcessInstanceResource;
 import org.activiti.controllers.HomeController;
@@ -23,9 +26,6 @@ import org.activiti.controllers.ProcessInstanceVariableController;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Component
 public class ProcessInstanceResourceAssembler extends ResourceAssemblerSupport<ProcessInstance, ProcessInstanceResource> {

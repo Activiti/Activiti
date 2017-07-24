@@ -27,8 +27,7 @@ public class SignalProcessInstanceCmd implements Command {
     public SignalProcessInstanceCmd() {
     }
 
-    public SignalProcessInstanceCmd(String name,
-                                    Map<String, Object> inputVariables) {
+    public SignalProcessInstanceCmd(String name, Map<String, Object> inputVariables) {
         this.name = name;
         this.inputVariables = inputVariables;
     }

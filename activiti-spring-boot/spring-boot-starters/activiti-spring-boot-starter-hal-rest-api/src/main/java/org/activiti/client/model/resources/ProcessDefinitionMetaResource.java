@@ -5,8 +5,8 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 
 public class ProcessDefinitionMetaResource extends Resource<ProcessDefinitionMeta> {
-	
-	public ProcessDefinitionMetaResource(ProcessDefinitionMeta content, Link... links) {
+
+    public ProcessDefinitionMetaResource(ProcessDefinitionMeta content, Link... links) {
         super(content, links);
     }
 

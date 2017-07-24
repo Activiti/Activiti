@@ -16,15 +16,15 @@
 
 package org.activiti.services;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.controllers.ProcessInstanceController;
 import org.activiti.engine.RuntimeService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ProcessInstanceControllerTest {
 

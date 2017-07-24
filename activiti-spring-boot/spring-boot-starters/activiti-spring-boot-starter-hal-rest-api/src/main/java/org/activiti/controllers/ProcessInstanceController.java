@@ -52,10 +52,7 @@ public class ProcessInstanceController {
     private PageableProcessInstanceService pageableProcessInstanceService;
 
     @Autowired
-    public ProcessInstanceController(ProcessInstanceConverter processInstanceConverter,
-                                     RuntimeService runtimeService,
-                                     ProcessInstanceResourceAssembler resourceAssembler,
-                                     PageableProcessInstanceService pageableProcessInstanceService) {
+    public ProcessInstanceController(ProcessInstanceConverter processInstanceConverter, RuntimeService runtimeService, ProcessInstanceResourceAssembler resourceAssembler, PageableProcessInstanceService pageableProcessInstanceService) {
         this.processInstanceConverter = processInstanceConverter;
         this.runtimeService = runtimeService;
         this.resourceAssembler = resourceAssembler;
@@ -63,11 +60,9 @@ public class ProcessInstanceController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public PagedResources<ProcessInstanceResource> getProcessInstances(Pageable pageable,
-                                                                       PagedResourcesAssembler<ProcessInstance> pagedResourcesAssembler) {
+    public PagedResources<ProcessInstanceResource> getProcessInstances(Pageable pageable, PagedResourcesAssembler<ProcessInstance> pagedResourcesAssembler) {
         Page<ProcessInstance> page = pageableProcessInstanceService.getProcessInstances(pageable);
-        return pagedResourcesAssembler.toResource(page,
-                                                  resourceAssembler);
+        return pagedResourcesAssembler.toResource(page, resourceAssembler);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -86,20 +81,19 @@ public class ProcessInstanceController {
     }
 
     @RequestMapping(value = "/signal")
-    public ResponseEntity<Void> signal(@RequestBody
-                                               SignalProcessInstanceCmd signalProcessInstanceCmd) {
+    public ResponseEntity<Void> signal(@RequestBody SignalProcessInstanceCmd signalProcessInstanceCmd) {
         runtimeService.signalEventReceived(signalProcessInstanceCmd.getName(), signalProcessInstanceCmd.getInputVariables());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "{processInstanceId}/suspend")
-    public ResponseEntity<Void> suspend(@PathVariable String processInstanceId){
+    public ResponseEntity<Void> suspend(@PathVariable String processInstanceId) {
         runtimeService.suspendProcessInstanceById(processInstanceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "{processInstanceId}/activate")
-    public ResponseEntity<Void> activate(@PathVariable String processInstanceId){
+    public ResponseEntity<Void> activate(@PathVariable String processInstanceId) {
         runtimeService.activateProcessInstanceById(processInstanceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

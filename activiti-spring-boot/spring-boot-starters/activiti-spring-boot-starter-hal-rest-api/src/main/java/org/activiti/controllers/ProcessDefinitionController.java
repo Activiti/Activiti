@@ -46,10 +46,7 @@ public class ProcessDefinitionController {
     private final PageableRepositoryService pageableRepositoryService;
 
     @Autowired
-    public ProcessDefinitionController(RepositoryService repositoryService,
-                                       ProcessDefinitionConverter processDefinitionConverter,
-                                       ProcessDefinitionResourceAssembler resourceAssembler,
-                                       PageableRepositoryService pageableRepositoryService) {
+    public ProcessDefinitionController(RepositoryService repositoryService, ProcessDefinitionConverter processDefinitionConverter, ProcessDefinitionResourceAssembler resourceAssembler, PageableRepositoryService pageableRepositoryService) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.resourceAssembler = resourceAssembler;
@@ -57,11 +54,9 @@ public class ProcessDefinitionController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public PagedResources<ProcessDefinitionResource> getProcessDefinitions(Pageable pageable,
-                                                                           PagedResourcesAssembler<ProcessDefinition> pagedResourcesAssembler) {
+    public PagedResources<ProcessDefinitionResource> getProcessDefinitions(Pageable pageable, PagedResourcesAssembler<ProcessDefinition> pagedResourcesAssembler) {
         Page<ProcessDefinition> page = pageableRepositoryService.getProcessDefinitions(pageable);
-        return pagedResourcesAssembler.toResource(page,
-                                                  resourceAssembler);
+        return pagedResourcesAssembler.toResource(page, resourceAssembler);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

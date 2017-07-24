@@ -16,6 +16,8 @@
 
 package org.activiti.runtime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,8 +38,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.*;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ProcessVariablesIT {
@@ -57,8 +57,7 @@ public class ProcessVariablesIT {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
-            processDefinitionIds.put(pd.getName(),
-                                     pd.getId());
+            processDefinitionIds.put(pd.getName(), pd.getId());
         }
     }
 
@@ -66,39 +65,23 @@ public class ProcessVariablesIT {
     public void shouldRetrieveProcessVariables() throws Exception {
         //given
         Map<String, Object> variables = new HashMap<>();
-        variables.put("firstName",
-                      "Pedro");
-        variables.put("lastName",
-                      "Silva");
-        variables.put("age",
-                      15);
-        ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS_WITH_VARIABLES),
-                                                                                                 variables);
+        variables.put("firstName", "Pedro");
+        variables.put("lastName", "Silva");
+        variables.put("age", 15);
+        ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS_WITH_VARIABLES), variables);
 
         //when
-        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables",
-                                                                                                HttpMethod.GET,
-                                                                                                null,
-                                                                                                new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
-                                                                                                });
+        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables", HttpMethod.GET, null, new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
+        });
 
         //then
         assertThat(variablesResponse).isNotNull();
-        assertThat(variablesResponse.getBody().getContent())
-                .containsEntry("firstName",
-                               "Pedro")
-                .containsEntry("lastName",
-                               "Silva")
-                .containsEntry("age",
-                               15);
+        assertThat(variablesResponse.getBody().getContent()).containsEntry("firstName", "Pedro").containsEntry("lastName", "Silva").containsEntry("age", 15);
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
-                                     HttpMethod.GET,
-                                     null,
-                                     responseType);
+        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL, HttpMethod.GET, null, responseType);
     }
 }
