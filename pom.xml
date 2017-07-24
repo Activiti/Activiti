@@ -869,11 +869,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>${maven-failsafe-plugin.version}</version>
-          <configuration>
-            <excludes>
-              <exclude>**/*Keycloak*.java</exclude>
-            </excludes>
-          </configuration>
           <executions>
             <execution>
               <id>integration-test</id>
