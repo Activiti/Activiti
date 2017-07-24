@@ -160,6 +160,21 @@
       <artifactId>hibernate-core</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>batik</groupId>
+      <artifactId>batik-svg-dom</artifactId>
+      <scope>test</scope>
+    </dependency>
+	<dependency>
+	  <groupId>batik</groupId>
+	  <artifactId>batik-anim</artifactId>
+	  <scope>test</scope>
+	</dependency>
+	<dependency>
+	    <groupId>batik</groupId>
+	    <artifactId>batik-parser</artifactId>
+	    <scope>test</scope>
+	</dependency>
 
   </dependencies>
 

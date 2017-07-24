@@ -116,6 +116,14 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>jboss-thirdparty-releases</id>
+      <name>JBOSS Maven Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <dependencyManagement>
@@ -408,7 +416,25 @@
         <artifactId>batik-svggen</artifactId>
         <version>${batik.version}</version>
       </dependency>
- 
+      <dependency>
+        <groupId>batik</groupId>
+        <artifactId>batik-svg-dom</artifactId>
+        <version>${batik.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>batik</groupId>
+        <artifactId>batik-anim</artifactId>
+        <version>${batik.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>batik</groupId>
+        <artifactId>batik-parser</artifactId>
+        <version>${batik.version}</version>
+        <scope>test</scope>
+      </dependency>
+
       <!-- Test -->
       <dependency>
         <groupId>junit</groupId>
