@@ -6,7 +6,6 @@ import org.activiti.services.core.model.commands.Command;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
