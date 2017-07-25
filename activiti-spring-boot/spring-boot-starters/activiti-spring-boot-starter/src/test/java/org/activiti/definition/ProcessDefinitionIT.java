@@ -60,10 +60,7 @@ public class ProcessDefinitionIT {
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
-                                     HttpMethod.GET,
-                                     null,
-                                     responseType);
+        return restTemplate.exchange(PROCESS_DEFINITIONS_URL, HttpMethod.GET, null, responseType);
     }
 
     @Test
@@ -79,17 +76,14 @@ public class ProcessDefinitionIT {
         ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
 
         //when
-        ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId(),
-                                                                         HttpMethod.GET,
-                                                                         null,
-                                                                         responseType);
+        ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId(), HttpMethod.GET, null, responseType);
 
         //then
         assertThat(entity).isNotNull();
         assertThat(entity.getBody()).isNotNull();
         assertThat(entity.getBody().getId()).isEqualTo(aProcessDefinition.getId());
     }
-    
+
     @Test
     public void shouldReturnProcessDefinitionMetadata() throws Exception {
         //given

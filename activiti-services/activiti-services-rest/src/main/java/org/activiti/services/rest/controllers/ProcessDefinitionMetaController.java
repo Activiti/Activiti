@@ -1,6 +1,5 @@
 package org.activiti.services.rest.controllers;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
