@@ -19,7 +19,7 @@
 
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-spring-boot-starter-hal-rest-api</artifactId>
+      <artifactId>activiti-spring-boot-starter</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
