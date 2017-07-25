@@ -397,6 +397,7 @@ public class DefaultProcessDiagramCanvas {
     }
 
     public void drawNoneEndEvent(String id,
+                                 String name,
                                  GraphicInfo graphicInfo) {
         Paint originalPaint = g.getPaint();
         Stroke originalStroke = g.getStroke();
@@ -414,20 +415,16 @@ public class DefaultProcessDiagramCanvas {
 
         // set element's id
         g.setCurrentGroupId(id);
-    }
 
-    public void drawErrorEndEvent(String id,
-                                  String name,
-                                  GraphicInfo graphicInfo) {
-        drawErrorEndEvent(id,
-                          graphicInfo);
         drawLabel(name,
                   graphicInfo);
     }
 
     public void drawErrorEndEvent(String id,
+                                  String name,
                                   GraphicInfo graphicInfo) {
         drawNoneEndEvent(id,
+                         name,
                          graphicInfo);
 
         int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 4));

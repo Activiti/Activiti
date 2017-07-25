@@ -124,7 +124,19 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
                                                          "lane4");
             checkDiagramElements(containerIdList,
                                  svg);
-            List<String> endEventIdList = Arrays.asList("errorendevent1"/*, "endevent1","endevent2","endevent3","endevent4","endevent5","endevent6","endevent7","endevent8","endevent9","endevent10","endevent11","endevent12"*/);
+            List<String> endEventIdList = Arrays.asList("errorendevent1",
+                                                        "endevent1",
+                                                        "endevent2",
+                                                        "endevent3",
+                                                        "endevent4",
+                                                        "endevent5",
+                                                        "endevent6",
+                                                        "endevent7",
+                                                        "endevent8",
+                                                        "endevent9",
+                                                        "endevent10",
+                                                        "endevent11",
+                                                        "endevent12");
             checkDiagramElements(endEventIdList,
                                  svg);
         }

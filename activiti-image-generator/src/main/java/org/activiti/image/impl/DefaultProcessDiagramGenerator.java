@@ -189,10 +189,12 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                                                                             graphicInfo);
                                                  } else {
                                                      processDiagramCanvas.drawNoneEndEvent(flowNode.getId(),
+                                                                                           flowNode.getName(),
                                                                                            graphicInfo);
                                                  }
                                              } else {
                                                  processDiagramCanvas.drawNoneEndEvent(flowNode.getId(),
+                                                                                       flowNode.getName(),
                                                                                        graphicInfo);
                                              }
                                          }
