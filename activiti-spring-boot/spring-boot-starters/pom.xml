@@ -17,7 +17,7 @@
     </properties>
     <modules>
         <module>activiti-spring-boot-starter-basic</module>
-        <module>activiti-spring-boot-starter-hal-rest-api</module>
+        <module>activiti-spring-boot-starter</module>
     </modules>
     <dependencies>
         <dependency>
