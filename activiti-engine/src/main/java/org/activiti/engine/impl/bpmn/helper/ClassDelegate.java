@@ -206,7 +206,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
         ObjectNode taskElementProperties = Context.getBpmnOverrideElementProperties(serviceTaskId, execution.getProcessDefinitionId());
         if (taskElementProperties != null && taskElementProperties.has(DynamicBpmnConstants.SERVICE_TASK_CLASS_NAME)) {
           String overrideClassName = taskElementProperties.get(DynamicBpmnConstants.SERVICE_TASK_CLASS_NAME).asText();
-          if (StringUtils.isNotEmpty(overrideClassName) && overrideClassName.equals(className) == false) {
+          if (StringUtils.isNotEmpty(overrideClassName) && !overrideClassName.equals(className)) {
             className = overrideClassName;
             activityBehaviorInstance = null;
           }

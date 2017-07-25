@@ -32,7 +32,7 @@ public class TerminateEventDefinitionParser extends BaseChildElementParser {
   }
 
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof EndEvent == false) {
+    if (!(parentElement instanceof EndEvent)) {
       return;
     }
 

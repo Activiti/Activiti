@@ -21,6 +21,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExtensionElement;
@@ -47,13 +49,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-/**
-
-
- */
 public class BpmnDeployer implements Deployer {
 
     private static final Logger log = LoggerFactory.getLogger(BpmnDeployer.class);
@@ -302,11 +297,12 @@ public class BpmnDeployer implements Deployer {
                     }
 
                     String processId = process.getId();
-                    if (isEqualToCurrentLocalizationValue(locale,
+                    if (!isEqualToCurrentLocalizationValue(locale,
                                                           processId,
                                                           "name",
                                                           name,
-                                                          infoNode) == false) {
+                                                          infoNode)) {
+
                         dynamicBpmnService.changeLocalizationName(locale,
                                                                   processId,
                                                                   name,
@@ -428,7 +424,8 @@ public class BpmnDeployer implements Deployer {
                                                         ObjectNode infoNode) {
         boolean isEqual = false;
         JsonNode localizationNode = infoNode.path("localization").path(language).path(id).path(propertyName);
-        if (localizationNode.isMissingNode() == false && localizationNode.isNull() == false && localizationNode.asText().equals(propertyValue)) {
+
+        if (!localizationNode.isMissingNode() && !localizationNode.isNull() && localizationNode.asText().equals(propertyValue)) {
             isEqual = true;
         }
         return isEqual;

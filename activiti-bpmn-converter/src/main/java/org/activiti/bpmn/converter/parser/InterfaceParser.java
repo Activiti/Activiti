@@ -41,7 +41,7 @@ public class InterfaceParser implements BpmnXMLConstants {
     boolean readyWithInterface = false;
     Operation operation = null;
     try {
-      while (readyWithInterface == false && xtr.hasNext()) {
+      while (!readyWithInterface && xtr.hasNext()) {
         xtr.next();
         if (xtr.isStartElement() && ELEMENT_OPERATION.equals(xtr.getLocalName())) {
           operation = new Operation();

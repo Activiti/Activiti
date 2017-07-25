@@ -12,6 +12,12 @@
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <activiti.artifact>
+      org.activiti.image
+    </activiti.artifact>
+  </properties>
+
   <build>
     <resources>
       <resource>

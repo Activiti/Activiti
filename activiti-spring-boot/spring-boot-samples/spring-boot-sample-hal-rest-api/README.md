@@ -6,7 +6,7 @@ The REST endpoints are also secured using keycloak as an identity provider.
 
 The keycloak integration for authentication is based upon https://developers.redhat.com/blog/2017/05/25/easily-secure-your-spring-boot-applications-with-keycloak/ 
 
-The keycloak setup used here can be replicated by importing the provided keycloak realm and users json files. The user 'testuser' with password 'password' is used for accessing endpoints. The user 'client'/'client' is for using admin client to look up groups.
+The keycloak setup used here can be replicated by importing the provided keycloak realm json file. The user 'testuser' with password 'password' is used for accessing endpoints. The user 'hr'/'password' is in the 'hr' group. The user 'client'/'client' is for using admin client to look up groups.
 
 The keycloak integration for passing the user on to Activiti is based upon https://dzone.com/articles/easily-secure-your-spring-boot-applications-with-k
 
@@ -18,9 +18,12 @@ To run using a standalone keycloak, download keycloak and run using the followin
 
 The port-offset is important as otherwise Activiti and Keycloak will have a port confllict.
 
-To hit an endpoint in the browser, go to http://localhost:8080/api/process-definitions
+To run the sample, run from IDE using the Application.java file. To hit an endpoint in the browser, go to http://localhost:8080/process-definitions
 
+A postman postman collection is provided which includes a call to get the keycloak token and use it on subsequent requests (based upon http://xpam.pl/blog/?p=154, http://keycloak-user.88327.x6.nabble.com/keycloak-user-Using-postman-to-test-keycloak-protected-app-td3250.html and http://blog.getpostman.com/2014/01/27/extracting-data-from-responses-and-chaining-requests/) - note that the token does expire so can then be necessary to make the call again.
 
-TODO: Would like  to configure postman to get the keycloak token and use it on subsequent requests - see http://xpam.pl/blog/?p=154 , seems like nobody has documented how to do this successfully for keycloak
+A reference dockerfile is also provided which applies the keycloak json configuration file for the realm to the jboss/keycloak:3.2.0.Final image.
 
-TODO: Provide a reference a docker image with the keycloak json files applied... See https://github.com/dfranssen/docker-keycloak-import-realm and https://github.com/keycloak/keycloak-test-docker-images/tree/master/keycloak-sssd-integration-tests for info on how to do this.
+To run it first have docker installed then go to the directory and do 'docker build . -t activitikeycloak' Then execute 'docker run -p 8180:8080 --name keycloak -i -t activitikeycloak'
+
+If you get a container already in use error when running the docker container then do a docker rm with the id of the running container and try again. To access the admin console for the container go to http://localhost:8180/auth/admin/springboot/console/ and log in as admin/admin. (This reference docker is based upon reference docker is based upon https://github.com/dfranssen/docker-keycloak-import-realm. Note that the admin user has been included in the springboot-realm.json.)
