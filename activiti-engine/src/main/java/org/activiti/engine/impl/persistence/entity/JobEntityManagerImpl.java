@@ -24,8 +24,6 @@ import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.JobDataManager;
 import org.activiti.engine.runtime.Job;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class JobEntityManagerImpl extends AbstractEntityManager<JobEntity> implements JobEntityManager {
 

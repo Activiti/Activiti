@@ -95,4 +95,6 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
         Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution,
                                                                    true);
     }
+
 }
+

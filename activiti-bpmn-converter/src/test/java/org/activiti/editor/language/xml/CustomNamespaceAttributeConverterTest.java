@@ -19,15 +19,17 @@ public class CustomNamespaceAttributeConverterTest extends AbstractConverterTest
   @Test
   public void convertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
+    assertNotNull("BPMN Model XML not found", bpmnModel);
     validateModel(bpmnModel);
   }
 
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
+    assertNotNull("BPMN Model XML not found", bpmnModel);
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
+    assertNotNull(parsedModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
 
   protected String getResource() {

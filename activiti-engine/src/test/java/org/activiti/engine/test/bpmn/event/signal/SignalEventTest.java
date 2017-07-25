@@ -672,6 +672,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testMultipleSignalStartEvents() {
+    assertNotNull(runtimeService);
     runtimeService.signalEventReceived("signal1");
     validateTaskCounts(1, 0, 0);
     

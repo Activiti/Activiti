@@ -209,6 +209,8 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
                          comment.getType());
             assertEquals(customType1,
                          customComment1.getType());
+            assertEquals(customType1,
+                    customComment2.getType());
             assertEquals(customType2,
                          customComment3.getType());
 

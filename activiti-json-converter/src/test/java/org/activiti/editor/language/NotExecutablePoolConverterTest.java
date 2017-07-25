@@ -2,6 +2,7 @@ package org.activiti.editor.language;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Pool;
@@ -13,12 +14,14 @@ public class NotExecutablePoolConverterTest extends AbstractConverterTest {
   @Test
   public void convertJsonToModel() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
+    assertNotNull(bpmnModel);
     validateModel(bpmnModel);
   }
 
   @Test
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
+    assertNotNull(bpmnModel);
     bpmnModel = convertToJsonAndBack(bpmnModel);
     validateModel(bpmnModel);
   }

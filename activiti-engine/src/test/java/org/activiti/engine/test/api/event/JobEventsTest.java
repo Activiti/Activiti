@@ -208,6 +208,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     listener.clearEventsReceived();
 
     Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
 
     taskService.complete(task.getId());
 
@@ -222,6 +223,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     listener.clearEventsReceived();
 
     Job job = managementService.createTimerJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(job);
 
     // WHEN
     managementService.deleteTimerJob(job.getId());

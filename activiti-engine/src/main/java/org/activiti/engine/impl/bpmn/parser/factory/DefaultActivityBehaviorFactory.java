@@ -299,10 +299,9 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                     businessRuleTask.getClassName(),
                                             e);
             }
-        } else {
+        } /*else {
             // no default behavior
-        }
-
+        }*/
         for (String ruleVariableInputObject : businessRuleTask.getInputVariables()) {
             ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleVariableInputObject.trim()));
         }

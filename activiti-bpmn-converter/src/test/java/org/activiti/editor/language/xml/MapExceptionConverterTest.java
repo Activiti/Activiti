@@ -67,6 +67,7 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
         resourceName = "mapException/mapExceptionModel.bpmn";
 
         BpmnModel bpmnModel = readXMLFile();
+        assertNotNull(bpmnModel);
         validateModel(bpmnModel);
     }
 
