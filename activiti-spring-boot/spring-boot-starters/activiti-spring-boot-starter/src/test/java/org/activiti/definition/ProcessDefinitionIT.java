@@ -37,7 +37,7 @@ public class ProcessDefinitionIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    public static final String PROCESS_DEFINITIONS_URL = "/process-definitions/";
+    public static final String PROCESS_DEFINITIONS_URL = "/v1/process-definitions/";
 
     @Test
     public void shouldRetrieveListOfProcessDefinition() throws Exception {

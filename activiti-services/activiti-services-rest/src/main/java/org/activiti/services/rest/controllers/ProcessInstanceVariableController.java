@@ -32,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
  */
 @RestController
-@RequestMapping(value = "process-instances/{processInstanceId}/variables", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/process-instances/{processInstanceId}/variables", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessInstanceVariableController {
 
     private final RuntimeService runtimeService;

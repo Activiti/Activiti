@@ -54,7 +54,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class TasksIT {
 
-    private static final String TASKS_URL = "/tasks/";
+    private static final String TASKS_URL = "/v1/tasks/";
     private static final String SIMPLE_PROCESS = "SimpleProcess";
     private static final ParameterizedTypeReference<Task> TASK_RESPONSE_TYPE = new ParameterizedTypeReference<Task>() {
     };
