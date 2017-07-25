@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "tasks", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/tasks", produces = MediaTypes.HAL_JSON_VALUE)
 public class TaskController {
 
     private final TaskService taskService;
