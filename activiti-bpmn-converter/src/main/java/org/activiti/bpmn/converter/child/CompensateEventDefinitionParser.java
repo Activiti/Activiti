@@ -31,7 +31,7 @@ public class CompensateEventDefinitionParser extends BaseChildElementParser {
   }
 
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof Event == false)
+    if (!(parentElement instanceof Event))
       return;
 
     CompensateEventDefinition eventDefinition = new CompensateEventDefinition();

@@ -41,7 +41,7 @@ public class IOSpecificationParser extends BaseChildElementParser {
     BpmnXMLUtil.addXMLLocation(ioSpecification, xtr);
     boolean readyWithIOSpecification = false;
     try {
-      while (readyWithIOSpecification == false && xtr.hasNext()) {
+      while (!readyWithIOSpecification && xtr.hasNext()) {
         xtr.next();
         if (xtr.isStartElement() && ELEMENT_DATA_INPUT.equalsIgnoreCase(xtr.getLocalName())) {
           DataSpec dataSpec = new DataSpec();

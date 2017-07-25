@@ -106,7 +106,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
       }
     }
 
-    if (fetchAllVariables == true) {
+    if (fetchAllVariables) {
 
       // getVariables() will go up the execution hierarchy, no need to do
       // it here also, the cached values will already be applied too

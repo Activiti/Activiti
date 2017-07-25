@@ -14,7 +14,7 @@ Activiti
   <a href='https://www.codacy.com/app/Activiti/Activiti?utm_source=github.com&utm_medium=referral&utm_content=Activiti/Activiti&utm_campaign=badger'>
       <img src='https://api.codacy.com/project/badge/Grade/f859f1bf542b43cab64e1e85706e5243' alt='codacy' />
     </a>
-  <a href='https://github.com/Activiti/Activiti/blob/master/LICENSE'>
+  <a href='https://github.com/Activiti/Activiti/blob/master/LICENSE.txt'>
        <img src='https://img.shields.io/hexpm/l/plug.svg' alt='license' />
     </a>
 </p>
