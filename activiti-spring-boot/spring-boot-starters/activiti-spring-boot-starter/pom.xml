@@ -132,5 +132,27 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <forkCount>0</forkCount>
+          <reuseForks>false</reuseForks>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <failIfNoTests>false</failIfNoTests>
+          <trimStackTrace>false</trimStackTrace>
+          <excludes>
+            <exclude>**/*TestCase.java</exclude>
+            <exclude>**/*IT.java</exclude>
+            <!--no longer exclude keycloak as travis should be running it
+            <exclude>**/*Keycloak*.java</exclude> -->
+          </excludes>
+          <runOrder>alphabetical</runOrder>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

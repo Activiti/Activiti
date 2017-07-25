@@ -110,6 +110,9 @@ public class CommandEndpointKeycloakIT extends KeycloakEnabledBaseTestIT {
 
         //then
         assertThat(processInstancesPage).isNotNull();
+        assertThat(processInstancesPage.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(processInstancesPage.getBody().getContent().size()).isGreaterThanOrEqualTo(1);
+        System.out.println(processInstancesPage.getBody().getContent());
         assertThat(processInstancesPage.getBody().getContent()).hasSize(1);
         assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isGreaterThanOrEqualTo(1);
     }
