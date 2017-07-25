@@ -54,7 +54,7 @@ public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
     }
 
     if (identityId == null && (identityIdType == IDENTITY_GROUP || 
-        (IdentityLinkType.ASSIGNEE.equals(identityType) == false && IdentityLinkType.OWNER.equals(identityType) == false))) {
+        (!IdentityLinkType.ASSIGNEE.equals(identityType) && !IdentityLinkType.OWNER.equals(identityType)))) {
       
       throw new ActivitiIllegalArgumentException("identityId is null");
     }

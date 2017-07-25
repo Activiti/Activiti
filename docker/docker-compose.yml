@@ -1,0 +1,10 @@
+rabbitmq:
+  image: rabbitmq:management
+  ports:
+    - "5672:5672"
+    - "15672:15672"
+#elasticsearch:
+#  image: docker.elastic.co/elasticsearch/elasticsearch:5.4.1 
+#  ports:
+#    - "9200:9200"
+#    - "9300:9300"

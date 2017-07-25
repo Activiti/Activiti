@@ -182,7 +182,7 @@ public class ErrorPropagation {
     if (event instanceof StartEvent) {
       ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
 
-      if (currentExecution.getParentId().equals(parentExecution.getId()) == false) {
+      if (!currentExecution.getParentId().equals(parentExecution.getId())) {
         Context.getAgenda().planDestroyScopeOperation(currentExecution);
       } else {
         executionEntityManager.deleteExecutionAndRelatedData(currentExecution, null, false);
@@ -240,7 +240,7 @@ public class ErrorPropagation {
 
         if (eventErrorCode == null || compareErrorCode == null || eventErrorCode.equals(compareErrorCode)) {
           List<Event> elementBoundaryEvents = null;
-          if (eventMap.containsKey(boundaryEvent.getAttachedToRefId()) == false) {
+          if (!eventMap.containsKey(boundaryEvent.getAttachedToRefId())) {
             elementBoundaryEvents = new ArrayList<Event>();
             eventMap.put(boundaryEvent.getAttachedToRefId(), elementBoundaryEvents);
           } else {
