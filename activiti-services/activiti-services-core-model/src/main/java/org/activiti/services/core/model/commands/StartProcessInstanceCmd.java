@@ -25,7 +25,8 @@ public class StartProcessInstanceCmd implements Command {
     public StartProcessInstanceCmd() {
     }
 
-    public StartProcessInstanceCmd(String processDefinitionId, Map<String, Object> variables) {
+    public StartProcessInstanceCmd(String processDefinitionId,
+                                   Map<String, Object> variables) {
         this.processDefinitionId = processDefinitionId;
         this.variables = variables;
     }

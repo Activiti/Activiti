@@ -13,11 +13,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         property = "commandType")
 @JsonSubTypes({@JsonSubTypes.Type(
         value = StartProcessInstanceCmd.class,
-        name = "StartProcessInstanceCmd"), @JsonSubTypes.Type(
-                value = SignalProcessInstancesCmd.class,
-                name = "SignalProcessInstancesCmd"), @JsonSubTypes.Type(
-                        value = CompleteTaskCmd.class,
-                        name = "CompleteTaskCmd")
+        name = "StartProcessInstanceCmd"), 
+    @JsonSubTypes.Type(
+        value = SignalProcessInstancesCmd.class,
+        name = "SignalProcessInstancesCmd"), 
+    @JsonSubTypes.Type(
+        value = CompleteTaskCmd.class,
+        name = "CompleteTaskCmd")
 })
 public interface Command {
 
