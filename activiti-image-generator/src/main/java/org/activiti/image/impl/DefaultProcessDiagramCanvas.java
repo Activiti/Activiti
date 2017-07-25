@@ -477,7 +477,7 @@ public class DefaultProcessDiagramCanvas {
         g.fill(outerCircle);
 
         g.setPaint(EVENT_BORDER_COLOR);
-        if (isInterrupting == false) {
+        if (!isInterrupting) {
             g.setStroke(NON_INTERRUPTING_EVENT_STROKE);
         }
         g.draw(outerCircle);
@@ -686,7 +686,8 @@ public class DefaultProcessDiagramCanvas {
                                 int[] yPoints,
                                 AssociationDirection associationDirection,
                                 boolean highLighted) {
-        boolean conditional = false, isDefault = false;
+        boolean conditional = false;
+        boolean isDefault = false;
         drawConnection(xPoints,
                        yPoints,
                        conditional,
@@ -722,7 +723,7 @@ public class DefaultProcessDiagramCanvas {
         Stroke originalStroke = g.getStroke();
 
         g.setPaint(CONNECTION_COLOR);
-        if (connectionType.equals("association")) {
+        if ("association".equals(connectionType)) {
             g.setStroke(ASSOCIATION_STROKE);
         } else if (highLighted) {
             g.setPaint(HIGHLIGHT_COLOR);
@@ -850,7 +851,8 @@ public class DefaultProcessDiagramCanvas {
     }
 
     public void drawDefaultSequenceFlowIndicator(Line2D.Double line) {
-        double length = DEFAULT_INDICATOR_WIDTH, halfOfLength = length / 2, f = 8;
+        double length = DEFAULT_INDICATOR_WIDTH;
+        double halfOfLength = length / 2, f = 8;
         Line2D.Double defaultIndicator = new Line2D.Double(-halfOfLength,
                                                            0,
                                                            halfOfLength,
@@ -858,8 +860,10 @@ public class DefaultProcessDiagramCanvas {
 
         double angle = Math.atan2(line.y2 - line.y1,
                                   line.x2 - line.x1);
-        double dx = f * Math.cos(angle), dy = f * Math.sin(angle),
-                x1 = line.x1 + dx, y1 = line.y1 + dy;
+        double dx = f * Math.cos(angle);
+        double dy = f * Math.sin(angle);
+        double x1 = line.x1 + dx;
+        double y1 = line.y1 + dy;
 
         AffineTransform transformation = new AffineTransform();
         transformation.setToIdentity();
@@ -1607,7 +1611,7 @@ public class DefaultProcessDiagramCanvas {
         int boxX = x + width / 2 - boxWidth / 2;
         int boxY = y + height / 2 - boxHeight / 2;
 
-        if (text != null && text.isEmpty() == false) {
+        if (text != null && !text.isEmpty()) {
             drawMultilineAnnotationText(text,
                                         boxX,
                                         boxY,
@@ -1776,9 +1780,8 @@ public class DefaultProcessDiagramCanvas {
                                         graphicInfo.getY(),
                                         graphicInfo.getWidth(),
                                         graphicInfo.getHeight());
-        } else {
-            // unknown source element, just do not correct coordinates
         }
+        // unknown source element, just do not correct coordinates
         return null;
     }
 
