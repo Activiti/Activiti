@@ -30,7 +30,10 @@ public class ProcessDefinition {
     public ProcessDefinition() {
     }
 
-    public ProcessDefinition(String id, String name, String description, int version) {
+    public ProcessDefinition(String id,
+                             String name,
+                             String description,
+                             int version) {
         this.id = id;
         this.name = name;
         this.version = version;

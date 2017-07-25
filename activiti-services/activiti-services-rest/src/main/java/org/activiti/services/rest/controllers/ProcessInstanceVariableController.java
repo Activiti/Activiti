@@ -39,7 +39,8 @@ public class ProcessInstanceVariableController {
     private final ProcessVariableResourceAssembler variableResourceBuilder;
 
     @Autowired
-    public ProcessInstanceVariableController(RuntimeService runtimeService, ProcessVariableResourceAssembler variableResourceBuilder) {
+    public ProcessInstanceVariableController(RuntimeService runtimeService,
+                                             ProcessVariableResourceAssembler variableResourceBuilder) {
         this.runtimeService = runtimeService;
         this.variableResourceBuilder = variableResourceBuilder;
     }

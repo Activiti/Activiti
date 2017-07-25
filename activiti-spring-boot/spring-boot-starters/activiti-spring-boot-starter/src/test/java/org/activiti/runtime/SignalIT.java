@@ -73,8 +73,11 @@ public class SignalIT {
         SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("go");
 
         //when
-        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal", HttpMethod.POST, new HttpEntity<>(signalProcessInstancesCmd), new ParameterizedTypeReference<Void>() {
-        });
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
+                                                                    HttpMethod.POST,
+                                                                    new HttpEntity<>(signalProcessInstancesCmd),
+                                                                    new ParameterizedTypeReference<Void>() {
+                                                                    });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -86,11 +89,16 @@ public class SignalIT {
     public void processShouldHaveVariablesSetWhenSignalCarriesVariables() throws Exception {
         //given
         ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS));
-        SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("go", Collections.singletonMap("myVar", "myContent"));
+        SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("go",
+                                                                                            Collections.singletonMap("myVar",
+                                                                                                                     "myContent"));
 
         //when
-        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal", HttpMethod.POST, new HttpEntity<>(signalProcessInstancesCmd), new ParameterizedTypeReference<Void>() {
-        });
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
+                                                                    HttpMethod.POST,
+                                                                    new HttpEntity<>(signalProcessInstancesCmd),
+                                                                    new ParameterizedTypeReference<Void>() {
+                                                                    });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

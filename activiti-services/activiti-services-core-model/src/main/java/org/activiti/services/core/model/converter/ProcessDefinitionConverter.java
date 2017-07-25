@@ -35,7 +35,10 @@ public class ProcessDefinitionConverter implements ModelConverter<org.activiti.e
     public ProcessDefinition from(org.activiti.engine.repository.ProcessDefinition source) {
         ProcessDefinition processDefinition = null;
         if (source != null) {
-            processDefinition = new ProcessDefinition(source.getId(), source.getName(), source.getDescription(), source.getVersion());
+            processDefinition = new ProcessDefinition(source.getId(),
+                                                      source.getName(),
+                                                      source.getDescription(),
+                                                      source.getVersion());
         }
         return processDefinition;
     }

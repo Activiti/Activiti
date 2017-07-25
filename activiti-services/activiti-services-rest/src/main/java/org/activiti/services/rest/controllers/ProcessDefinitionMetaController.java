@@ -32,14 +32,17 @@ public class ProcessDefinitionMetaController {
     private final ProcessDefinitionMetaResourceAssembler resourceAssembler;
 
     @Autowired
-    public ProcessDefinitionMetaController(RepositoryService repositoryService, ProcessDefinitionMetaResourceAssembler resourceAssembler) {
+    public ProcessDefinitionMetaController(RepositoryService repositoryService,
+                                           ProcessDefinitionMetaResourceAssembler resourceAssembler) {
         this.repositoryService = repositoryService;
         this.resourceAssembler = resourceAssembler;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public ProcessDefinitionMetaResource getProcessDefinitionMetadata(@PathVariable String id) {
-        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
+        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                                                                                              .processDefinitionId(id)
+                                                                                              .singleResult();
         if (processDefinition == null) {
             throw new ActivitiException("Unable to find process definition for the given id:'" + id + "'");
         }
@@ -55,19 +58,29 @@ public class ProcessDefinitionMetaController {
         for (FlowElement flowElement : flowElementList) {
             if (flowElement.getClass().equals(UserTask.class)) {
                 UserTask userTask = (UserTask) flowElement;
-                ProcessDefinitionUserTask task = new ProcessDefinitionUserTask(userTask.getName(), userTask.getDocumentation());
+                ProcessDefinitionUserTask task = new ProcessDefinitionUserTask(userTask.getName(),
+                                                                               userTask.getDocumentation());
                 userTasks.add(task);
                 users.addAll(userTask.getCandidateUsers());
                 groups.addAll(userTask.getCandidateGroups());
             }
             if (flowElement.getClass().equals(ServiceTask.class)) {
                 ServiceTask serviceTask = (ServiceTask) flowElement;
-                ProcessDefinitionServiceTask task = new ProcessDefinitionServiceTask(serviceTask.getName(), serviceTask.getImplementation());
+                ProcessDefinitionServiceTask task = new ProcessDefinitionServiceTask(serviceTask.getName(),
+                                                                                     serviceTask.getImplementation());
                 serviceTasks.add(task);
             }
         }
 
-        return resourceAssembler.toResource(new ProcessDefinitionMeta(processDefinition.getId(), processDefinition.getName(), processDefinition.getDescription(), processDefinition.getVersion(), users, groups, variables, userTasks, serviceTasks));
+        return resourceAssembler.toResource(new ProcessDefinitionMeta(processDefinition.getId(),
+                                                                      processDefinition.getName(),
+                                                                      processDefinition.getDescription(),
+                                                                      processDefinition.getVersion(),
+                                                                      users,
+                                                                      groups,
+                                                                      variables,
+                                                                      userTasks,
+                                                                      serviceTasks));
     }
 
     private List<ProcessDefinitionVariable> getVariables(Process process) {

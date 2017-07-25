@@ -38,14 +38,18 @@ public class ProcessDefinitionUserTask extends JsonDeserializer<List<ProcessDefi
     }
 
     @Override
-    public List<ProcessDefinitionUserTask> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public List<ProcessDefinitionUserTask> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+                                                                                                   JsonProcessingException {
 
         List<ProcessDefinitionUserTask> tasks = new ArrayList<ProcessDefinitionUserTask>();
         ObjectCodec oc = jp.getCodec();
         JsonNode nodes = oc.readTree(jp);
 
         for (int i = 0; i < nodes.size(); i++) {
-            ProcessDefinitionUserTask task = new ProcessDefinitionUserTask(nodes.get(i).get("taskName").asText(), nodes.get(i).get("taskDocumentation").asText());
+            ProcessDefinitionUserTask task = new ProcessDefinitionUserTask(nodes.get(i).get("taskName").asText(),
+                                                                           nodes.get(i)
+                                                                                .get("taskDocumentation")
+                                                                                .asText());
             tasks.add(task);
         }
 

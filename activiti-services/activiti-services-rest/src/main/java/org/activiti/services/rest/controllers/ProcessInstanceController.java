@@ -68,8 +68,7 @@ public class ProcessInstanceController {
     }
 
     @RequestMapping(value = "/signal")
-    public ResponseEntity<Void> sendSignal(@RequestBody
-                                                   SignalProcessInstancesCmd cmd) {
+    public ResponseEntity<Void> sendSignal(@RequestBody SignalProcessInstancesCmd cmd) {
         processEngine.signal(cmd);
         return new ResponseEntity<>(HttpStatus.OK);
     }

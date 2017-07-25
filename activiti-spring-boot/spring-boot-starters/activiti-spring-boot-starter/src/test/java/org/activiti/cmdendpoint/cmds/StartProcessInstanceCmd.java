@@ -24,5 +24,4 @@ public class StartProcessInstanceCmd implements org.activiti.cmdendpoint.cmds.Co
         return variables;
     }
 
-
 }

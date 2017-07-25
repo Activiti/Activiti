@@ -26,7 +26,15 @@ public class ProcessDefinitionMeta {
     public ProcessDefinitionMeta() {
     };
 
-    public ProcessDefinitionMeta(String id, String name, String description, int version, List<String> users, List<String> groups, List<ProcessDefinitionVariable> variables, List<ProcessDefinitionUserTask> userTasks, List<ProcessDefinitionServiceTask> serviceTasks) {
+    public ProcessDefinitionMeta(String id,
+                                 String name,
+                                 String description,
+                                 int version,
+                                 List<String> users,
+                                 List<String> groups,
+                                 List<ProcessDefinitionVariable> variables,
+                                 List<ProcessDefinitionUserTask> userTasks,
+                                 List<ProcessDefinitionServiceTask> serviceTasks) {
         super();
         this.id = id;
         this.name = name;

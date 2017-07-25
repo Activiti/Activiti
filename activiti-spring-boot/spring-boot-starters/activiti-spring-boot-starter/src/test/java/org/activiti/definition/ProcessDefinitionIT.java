@@ -54,7 +54,11 @@ public class ProcessDefinitionIT {
         //then
         assertThat(entity).isNotNull();
         assertThat(entity.getBody()).isNotNull();
-        assertThat(entity.getBody().getContent()).extracting(ProcessDefinition::getName).contains("ProcessWithVariables", "ProcessWithVariables2", "SimpleProcess", "ProcessWithBoundarySignal");
+        assertThat(entity.getBody().getContent()).extracting(ProcessDefinition::getName).contains(
+                                                                                                  "ProcessWithVariables",
+                                                                                                  "ProcessWithVariables2",
+                                                                                                  "SimpleProcess",
+                                                                                                  "ProcessWithBoundarySignal");
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
@@ -76,7 +80,10 @@ public class ProcessDefinitionIT {
         ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
 
         //when
-        ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId(), HttpMethod.GET, null, responseType);
+        ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId(),
+                                                                         HttpMethod.GET,
+                                                                         null,
+                                                                         responseType);
 
         //then
         assertThat(entity).isNotNull();
@@ -102,7 +109,10 @@ public class ProcessDefinitionIT {
         } while (!aProcessDefinition.getName().equals(PROCESS_WITH_VARIABLES_2));
 
         //when
-        ResponseEntity<ProcessDefinitionMeta> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/meta", HttpMethod.GET, null, responseType);
+        ResponseEntity<ProcessDefinitionMeta> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/meta",
+                                                                             HttpMethod.GET,
+                                                                             null,
+                                                                             responseType);
         //then
         assertThat(entity).isNotNull();
         assertThat(entity.getBody()).isNotNull();

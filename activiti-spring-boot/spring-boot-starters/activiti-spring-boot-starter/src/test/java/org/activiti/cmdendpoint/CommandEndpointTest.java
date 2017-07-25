@@ -1,5 +1,4 @@
 
-
 /*
  * Copyright 2017 Alfresco and/or its affiliates.
  *

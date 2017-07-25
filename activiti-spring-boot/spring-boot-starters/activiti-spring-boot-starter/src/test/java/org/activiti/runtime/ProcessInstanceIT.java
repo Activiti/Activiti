@@ -80,8 +80,12 @@ public class ProcessInstanceIT {
         ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
-        ResponseEntity<ProcessInstance> retrievedEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startedProcessEntity.getBody().getId(), HttpMethod.GET, null, new ParameterizedTypeReference<ProcessInstance>() {
-        });
+        ResponseEntity<ProcessInstance> retrievedEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startedProcessEntity.getBody()
+                                                                                                                                     .getId(),
+                                                                                HttpMethod.GET,
+                                                                                null,
+                                                                                new ParameterizedTypeReference<ProcessInstance>() {
+                                                                                });
 
         //then
         assertThat(retrievedEntity.getBody()).isNotNull();
@@ -95,8 +99,13 @@ public class ProcessInstanceIT {
         processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
-        ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}", HttpMethod.GET, null, new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
-        }, "0", "2");
+        ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
+                                                                                                     HttpMethod.GET,
+                                                                                                     null,
+                                                                                                     new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
+                                                                                                     },
+                                                                                                     "0",
+                                                                                                     "2");
 
         //then
         assertThat(processInstancesPage).isNotNull();
@@ -115,12 +124,17 @@ public class ProcessInstanceIT {
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity);
-        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.SUSPENDED.name());
+        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(
+                                                                          ProcessInstance.ProcessInstanceStatus.SUSPENDED.name());
     }
 
     private ResponseEntity<Void> executeRequestSuspendProcess(ResponseEntity<ProcessInstance> processInstanceEntity) {
-        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/suspend", HttpMethod.POST, null, new ParameterizedTypeReference<Void>() {
-        });
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody()
+                                                                                                                          .getId() + "/suspend",
+                                                                    HttpMethod.POST,
+                                                                    null,
+                                                                    new ParameterizedTypeReference<Void>() {
+                                                                    });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         return responseEntity;
     }
@@ -132,13 +146,18 @@ public class ProcessInstanceIT {
         executeRequestSuspendProcess(startProcessEntity);
 
         //when
-        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessEntity.getBody().getId() + "/activate", HttpMethod.POST, null, new ParameterizedTypeReference<Void>() {
-        });
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessEntity.getBody()
+                                                                                                                       .getId() + "/activate",
+                                                                    HttpMethod.POST,
+                                                                    null,
+                                                                    new ParameterizedTypeReference<Void>() {
+                                                                    });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity);
-        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING.name());
+        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING
+                                                                                                                       .name());
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {

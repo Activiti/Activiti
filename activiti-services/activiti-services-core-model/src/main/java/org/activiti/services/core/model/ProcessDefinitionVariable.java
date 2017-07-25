@@ -38,14 +38,20 @@ public class ProcessDefinitionVariable extends JsonDeserializer<List<ProcessDefi
     }
 
     @Override
-    public List<ProcessDefinitionVariable> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public List<ProcessDefinitionVariable> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+                                                                                                   JsonProcessingException {
 
         List<ProcessDefinitionVariable> variables = new ArrayList<ProcessDefinitionVariable>();
         ObjectCodec oc = jp.getCodec();
         JsonNode nodes = oc.readTree(jp);
 
         for (int i = 0; i < nodes.size(); i++) {
-            ProcessDefinitionVariable variable = new ProcessDefinitionVariable(nodes.get(i).get("variableName").asText(), nodes.get(i).get("variableType").asText());
+            ProcessDefinitionVariable variable = new ProcessDefinitionVariable(nodes.get(i)
+                                                                                    .get("variableName")
+                                                                                    .asText(),
+                                                                               nodes.get(i)
+                                                                                    .get("variableType")
+                                                                                    .asText());
             variables.add(variable);
         }
 

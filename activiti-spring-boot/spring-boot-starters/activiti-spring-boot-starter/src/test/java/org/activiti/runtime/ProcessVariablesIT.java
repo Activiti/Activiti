@@ -68,15 +68,22 @@ public class ProcessVariablesIT {
         variables.put("firstName", "Pedro");
         variables.put("lastName", "Silva");
         variables.put("age", 15);
-        ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS_WITH_VARIABLES), variables);
+        ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS_WITH_VARIABLES),
+                                                                                                 variables);
 
         //when
-        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables", HttpMethod.GET, null, new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
-        });
+        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody()
+                                                                                                                                                                          .getId() + "/variables",
+                                                                                                HttpMethod.GET,
+                                                                                                null,
+                                                                                                new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
+                                                                                                });
 
         //then
         assertThat(variablesResponse).isNotNull();
-        assertThat(variablesResponse.getBody().getContent()).containsEntry("firstName", "Pedro").containsEntry("lastName", "Silva").containsEntry("age", 15);
+        assertThat(variablesResponse.getBody().getContent()).containsEntry("firstName", "Pedro")
+                                                            .containsEntry("lastName", "Silva")
+                                                            .containsEntry("age", 15);
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {

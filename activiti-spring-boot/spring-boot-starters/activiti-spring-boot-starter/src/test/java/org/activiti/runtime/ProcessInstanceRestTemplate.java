@@ -46,8 +46,11 @@ public class ProcessInstanceRestTemplate {
         StartProcessInstanceCmd cmd = new StartProcessInstanceCmd(processDefinitionId, variables);
         HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(cmd);
 
-        ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL, HttpMethod.POST, requestEntity, new ParameterizedTypeReference<ProcessInstance>() {
-        });
+        ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL,
+                                                                                   HttpMethod.POST,
+                                                                                   requestEntity,
+                                                                                   new ParameterizedTypeReference<ProcessInstance>() {
+                                                                                   });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody().getId()).isNotNull();
         return responseEntity;
@@ -59,22 +62,35 @@ public class ProcessInstanceRestTemplate {
 
     public ResponseEntity<ProcessInstance> getProcessInstance(ResponseEntity<ProcessInstance> processInstanceEntity) {
 
-        ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId(), HttpMethod.GET, null, new ParameterizedTypeReference<ProcessInstance>() {
-        });
+        ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody()
+                                                                                                                                         .getId(),
+                                                                                   HttpMethod.GET,
+                                                                                   null,
+                                                                                   new ParameterizedTypeReference<ProcessInstance>() {
+                                                                                   });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         return responseEntity;
     }
 
     public ResponseEntity<PagedResources<Task>> getTasks(ResponseEntity<ProcessInstance> processInstanceEntity) {
-        ResponseEntity<PagedResources<Task>> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/tasks", HttpMethod.GET, null, new ParameterizedTypeReference<PagedResources<Task>>() {
-        });
+        ResponseEntity<PagedResources<Task>> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody()
+                                                                                                                                              .getId() + "/tasks",
+                                                                                        HttpMethod.GET,
+                                                                                        null,
+                                                                                        new ParameterizedTypeReference<PagedResources<Task>>() {
+                                                                                        });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         return responseEntity;
     }
 
-    public ResponseEntity<Resource<Map<String, Object>>> getVariables(ResponseEntity<ProcessInstance> processInstanceEntity) {
-        ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/variables", HttpMethod.GET, null, new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
-        });
+    public ResponseEntity<Resource<Map<String, Object>>> getVariables(
+                                                                      ResponseEntity<ProcessInstance> processInstanceEntity) {
+        ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody()
+                                                                                                                                                                                   .getId() + "/variables",
+                                                                                                 HttpMethod.GET,
+                                                                                                 null,
+                                                                                                 new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
+                                                                                                 });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         return responseEntity;
     }
