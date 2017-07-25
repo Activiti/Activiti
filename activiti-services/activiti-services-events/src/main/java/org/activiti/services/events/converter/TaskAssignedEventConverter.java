@@ -16,9 +16,9 @@
 
 package org.activiti.services.events.converter;
 
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEntityEventImpl;
 import org.activiti.engine.task.Task;
 import org.activiti.services.core.model.converter.TaskConverter;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
@@ -40,12 +40,12 @@ public class TaskAssignedEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println("Task Assigned : " + ((ActivitiEntityEventImpl) event).getEntity().getClass().getCanonicalName());
+        System.out.println("Task Assigned : " + ((ActivitiEntityEvent) event).getEntity().getClass().getCanonicalName());
 
         return new TaskAssignedEventImpl(event.getExecutionId(),
                                          event.getProcessDefinitionId(),
                                          event.getProcessInstanceId(),
-                                         taskConverter.from((Task) ((ActivitiEntityEventImpl) event).getEntity()));
+                                         taskConverter.from((Task) ((ActivitiEntityEvent) event).getEntity()));
     }
 
     @Override
