@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.cmdendpoint.cmds.StartProcessInstanceCmd;
+import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.junit.ClassRule;
@@ -36,6 +37,7 @@ import org.springframework.cloud.stream.binder.test.junit.rabbit.RabbitTestSuppo
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.SubscribableChannel;
@@ -51,7 +53,7 @@ import static org.assertj.core.api.Assertions.*;
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext
 @EnableBinding(MessageClientStream.class)
-public class CommandEndpointTest {
+public class CommandEndpointKeycloakIT extends KeycloakEnabledBaseTestIT {
 
     private static final String relativeMessagesEndpoint = "/api/messages";
 
@@ -77,10 +79,11 @@ public class CommandEndpointTest {
         };
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsResources = restTemplate.exchange(PROCESS_DEFINITIONS_URL,
                                                                                                               HttpMethod.GET,
-                                                                                                              null,
+                                                                                                              getRequestEntityWithHeaders(),
                                                                                                               responseType);
 
         assertThat(processDefinitionsResources).isNotNull();
+        assertThat(processDefinitionsResources.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(processDefinitionsResources.getBody()).isNotNull();
         assertThat(processDefinitionsResources.getBody().getContent()).isNotEmpty();
         ProcessDefinition aProcessDefinition = processDefinitionsResources.getBody().getContent().iterator().next();
@@ -99,7 +102,7 @@ public class CommandEndpointTest {
         //when
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                                                                      HttpMethod.GET,
-                                                                                                     null,
+                                                                                                     getRequestEntityWithHeaders(),
                                                                                                      new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                                                                                                      },
                                                                                                      "0",

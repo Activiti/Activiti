@@ -16,6 +16,7 @@
 
 package org.activiti.definition;
 
+import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,13 +27,15 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ProcessDefinitionIT {
+@TestPropertySource("classpath:application-test.properties")
+public class ProcessDefinitionKeycloakIT extends KeycloakEnabledBaseTestIT{
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -63,7 +66,7 @@ public class ProcessDefinitionIT {
         };
         return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
-                                     null,
+                                     getRequestEntityWithHeaders(),
                                      responseType);
     }
 
@@ -82,7 +85,7 @@ public class ProcessDefinitionIT {
         //when
         ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId(),
                                                                          HttpMethod.GET,
-                                                                         null,
+                                                                         getRequestEntityWithHeaders(),
                                                                          responseType);
 
         //then

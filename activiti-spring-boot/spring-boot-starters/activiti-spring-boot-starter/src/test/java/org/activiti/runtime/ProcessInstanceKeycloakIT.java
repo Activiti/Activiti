@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package org.activiti.services.identity.keycloak;
+package org.activiti.runtime;
 
+import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.junit.Before;
@@ -35,8 +37,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.activiti.services.identity.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
-import static org.assertj.core.api.Assertions.*;
+import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -58,7 +60,9 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
     public void setup() throws Exception{
         super.setUp();
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
-        assertThat(processDefinitions.getBody().getContent()).hasSize(1);
+        assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        assertThat(processDefinitions.getBody().getContent()).hasSize(3); //if a new definition is added then this is expected to be increased
         for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
             processDefinitionIds.put(pd.getName(), pd.getId());
         }
@@ -123,6 +127,49 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
         assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isGreaterThanOrEqualTo(2);
     }
 
+
+    @Test
+    public void suspendShouldPutProcessInstanceInSuspendedState() throws Exception {
+        //given
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+
+        //when
+        ResponseEntity<Void> responseEntity = executeRequestSuspendProcess(startProcessEntity);
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity,accessToken);
+        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.SUSPENDED.name());
+    }
+
+    private ResponseEntity<Void> executeRequestSuspendProcess(ResponseEntity<ProcessInstance> processInstanceEntity) {
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/suspend",
+                HttpMethod.POST,
+                getRequestEntityWithHeaders(),
+                new ParameterizedTypeReference<Void>() {
+                });
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        return responseEntity;
+    }
+
+    @Test
+    public void activateShouldPutASuspendedProcessInstanceBackToActiveState() throws Exception {
+        //given
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        executeRequestSuspendProcess(startProcessEntity);
+
+        //when
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessEntity.getBody().getId() + "/activate",
+                HttpMethod.POST,
+                getRequestEntityWithHeaders(),
+                new ParameterizedTypeReference<Void>() {
+                });
+
+        //then
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity,accessToken);
+        assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING.name());
+    }
 
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {

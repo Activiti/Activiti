@@ -11,6 +11,11 @@
   <artifactId>activiti-spring-boot-starter</artifactId>
 
   <dependencies>
+    <!-- keycloak included as default identity provider to be excluded if overridden -->
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-services-identity-keycloak</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-services-core-model</artifactId>

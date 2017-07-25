@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.services.identity.keycloak;
+package org.activiti.keycloak;
 
 import org.junit.Before;
 import org.keycloak.admin.client.Keycloak;
@@ -60,6 +60,6 @@ public class KeycloakEnabledBaseTestIT {
     }
 
     protected HttpEntity getRequestEntityWithHeaders(){
-        return new org.springframework.http.HttpEntity(getHeaders(accessToken.getToken()));
+        return new HttpEntity(getHeaders(accessToken.getToken()));
     }
 }

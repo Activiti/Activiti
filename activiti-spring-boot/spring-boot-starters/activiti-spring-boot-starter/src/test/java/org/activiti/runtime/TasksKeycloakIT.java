@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-package org.activiti.services.identity.keycloak;
+package org.activiti.runtime;
 
+import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
+import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
+import org.activiti.services.core.model.commands.CompleteTaskCmd;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,13 +30,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,6 +58,7 @@ public class TasksKeycloakIT extends KeycloakEnabledBaseTestIT {
     };
     public static final String PROCESS_DEFINITIONS_URL = "/process-definitions/";
 
+
     @Autowired
     private TestRestTemplate testRestTemplate;
 
@@ -67,7 +75,9 @@ public class TasksKeycloakIT extends KeycloakEnabledBaseTestIT {
         accessToken = authenticateUser();
 
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
-        assertThat(processDefinitions.getBody().getContent()).hasSize(1);
+        assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        assertThat(processDefinitions.getBody().getContent()).hasSize(3); //if a new definition is added then this is expected to be increased
         for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
             processDefinitionIds.put(pd.getName(), pd.getId());
         }
@@ -121,6 +131,41 @@ public class TasksKeycloakIT extends KeycloakEnabledBaseTestIT {
 
 
     @Test
+    public void shouldGetTasksRelatedToTheGivenProcessInstance() throws Exception {
+        //given
+        ResponseEntity<ProcessInstance> startProcessResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+
+        //when
+        ResponseEntity<PagedResources<Task>> tasksEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessResponse.getBody().getId() + "/tasks",
+                HttpMethod.GET,
+                getRequestEntityWithHeaders(),
+                PAGED_TASKS_RESPONSE_TYPE);
+
+        //then
+        assertThat(tasksEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(tasksEntity.getBody().getContent()).extracting(Task::getName).containsExactly("Perform action");
+    }
+
+
+    @Test
+    public void shouldGetTaskById() throws Exception {
+        //given
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        Task task = executeRequestGetTasks().getBody().iterator().next();
+
+        //when
+        ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId(),
+                HttpMethod.GET,
+                getRequestEntityWithHeaders(),
+                TASK_RESPONSE_TYPE);
+
+        //then
+        assertThat(responseEntity).isNotNull();
+        assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(task);
+    }
+
+
+    @Test
     public void claimTaskShouldSetAssignee() throws Exception {
         //given
         processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
@@ -164,6 +209,42 @@ public class TasksKeycloakIT extends KeycloakEnabledBaseTestIT {
     }
 
 
+    @Test
+    public void shouldCompleteATask() throws Exception {
+        //given
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        Task task = executeRequestGetTasks().getBody().iterator().next();
+
+        //when
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",
+                HttpMethod.POST,
+                getRequestEntityWithHeaders(),
+                new ParameterizedTypeReference<Void>() {
+                });
+
+        //then
+        assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    public void shouldCompleteATaskPassingInputVariables() throws Exception {
+        //given
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        Task task = executeRequestGetTasks().getBody().iterator().next();
+
+        CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd(Collections.singletonMap("myVar",
+                "any"));
+
+        //when
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",
+                HttpMethod.POST,
+                new HttpEntity(completeTaskCmd,getHeaders(accessToken.getToken())),
+                new ParameterizedTypeReference<Void>() {
+                });
+
+        //then
+        assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
+    }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
