@@ -412,12 +412,12 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
       ObjectNode languageNode = Context.getLocalizationElementProperties(locale, activityId, processDefinitionId, withLocalizationFallback);
       if (languageNode != null) {
         JsonNode languageNameNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_NAME);
-        if (languageNameNode != null && languageNameNode.isNull() == false) {
+        if (languageNameNode != null && !languageNameNode.isNull()) {
           executionEntity.setLocalizedName(languageNameNode.asText());
         }
 
         JsonNode languageDescriptionNode = languageNode.get(DynamicBpmnConstants.LOCALIZATION_DESCRIPTION);
-        if (languageDescriptionNode != null && languageDescriptionNode.isNull() == false) {
+        if (languageDescriptionNode != null && !languageDescriptionNode.isNull()) {
           executionEntity.setLocalizedDescription(languageDescriptionNode.asText());
         }
       }

@@ -28,7 +28,7 @@ public class TimeDurationParser extends BaseChildElementParser {
   }
 
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof TimerEventDefinition == false)
+    if (!(parentElement instanceof TimerEventDefinition))
       return;
 
     TimerEventDefinition eventDefinition = (TimerEventDefinition) parentElement;

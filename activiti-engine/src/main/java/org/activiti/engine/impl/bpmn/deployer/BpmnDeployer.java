@@ -287,11 +287,11 @@ public class BpmnDeployer implements Deployer {
                     }
 
                     String processId = process.getId();
-                    if (isEqualToCurrentLocalizationValue(locale,
+                    if (!isEqualToCurrentLocalizationValue(locale,
                                                           processId,
                                                           "name",
                                                           name,
-                                                          infoNode) == false) {
+                                                          infoNode)) {
                         dynamicBpmnService.changeLocalizationName(locale,
                                                                   processId,
                                                                   name,
@@ -413,7 +413,7 @@ public class BpmnDeployer implements Deployer {
                                                         ObjectNode infoNode) {
         boolean isEqual = false;
         JsonNode localizationNode = infoNode.path("localization").path(language).path(id).path(propertyName);
-        if (localizationNode.isMissingNode() == false && localizationNode.isNull() == false && localizationNode.asText().equals(propertyValue)) {
+        if (!localizationNode.isMissingNode() && !localizationNode.isNull() && localizationNode.asText().equals(propertyValue)) {
             isEqual = true;
         }
         return isEqual;
