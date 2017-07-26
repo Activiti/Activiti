@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <process id="EmergencyFireDepartment" name="Fire Department" isExecutable="true">
+    <startEvent id="startEvent1"></startEvent>
+    <userTask id="sid-CAEE00B0-B6FC-4A08-AA5E-BCB5072B77EA" name="Check and assign resources" activiti:formKey="FireDepartmentGettingDetails"></userTask>
+    <sequenceFlow id="sid-B2678B94-032A-4C4A-A09E-F3FC2BD7B160" sourceRef="startEvent1" targetRef="sid-CAEE00B0-B6FC-4A08-AA5E-BCB5072B77EA"></sequenceFlow>
+    <endEvent id="sid-8AF29DF8-8162-4436-B45F-E6F4B2A9FA27"></endEvent>
+    <serviceTask id="sid-5B97C749-534D-46AE-ABF1-9E5BC9296DAE" name="Send back details to Call Center" activiti:class="org.activiti.emergencycallcenter.delegates.FireDeptFeedbackDelegate"></serviceTask>
+    <sequenceFlow id="sid-82EECDE0-9627-4E0F-8BDE-BC6891A8F847" sourceRef="sid-CAEE00B0-B6FC-4A08-AA5E-BCB5072B77EA" targetRef="sid-5B97C749-534D-46AE-ABF1-9E5BC9296DAE"></sequenceFlow>
+    <sequenceFlow id="sid-CEAD3E9F-E299-4F8C-A8DF-9C4D2838DF78" sourceRef="sid-5B97C749-534D-46AE-ABF1-9E5BC9296DAE" targetRef="sid-8AF29DF8-8162-4436-B45F-E6F4B2A9FA27"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_EmergencyFireDepartment">
+    <bpmndi:BPMNPlane bpmnElement="EmergencyFireDepartment" id="BPMNPlane_EmergencyFireDepartment">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="365.0" y="75.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-CAEE00B0-B6FC-4A08-AA5E-BCB5072B77EA" id="BPMNShape_sid-CAEE00B0-B6FC-4A08-AA5E-BCB5072B77EA">
+        <omgdc:Bounds height="80.0" width="100.0" x="330.0" y="170.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-8AF29DF8-8162-4436-B45F-E6F4B2A9FA27" id="BPMNShape_sid-8AF29DF8-8162-4436-B45F-E6F4B2A9FA27">
+        <omgdc:Bounds height="28.0" width="28.0" x="366.0" y="450.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-5B97C749-534D-46AE-ABF1-9E5BC9296DAE" id="BPMNShape_sid-5B97C749-534D-46AE-ABF1-9E5BC9296DAE">
+        <omgdc:Bounds height="80.0" width="100.0" x="330.0" y="315.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-B2678B94-032A-4C4A-A09E-F3FC2BD7B160" id="BPMNEdge_sid-B2678B94-032A-4C4A-A09E-F3FC2BD7B160">
+        <omgdi:waypoint x="380.0" y="105.0"></omgdi:waypoint>
+        <omgdi:waypoint x="380.0" y="170.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-CEAD3E9F-E299-4F8C-A8DF-9C4D2838DF78" id="BPMNEdge_sid-CEAD3E9F-E299-4F8C-A8DF-9C4D2838DF78">
+        <omgdi:waypoint x="380.0" y="395.0"></omgdi:waypoint>
+        <omgdi:waypoint x="380.0" y="450.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-82EECDE0-9627-4E0F-8BDE-BC6891A8F847" id="BPMNEdge_sid-82EECDE0-9627-4E0F-8BDE-BC6891A8F847">
+        <omgdi:waypoint x="380.0" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="380.0" y="315.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

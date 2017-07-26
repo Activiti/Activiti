@@ -1,0 +1,31 @@
+#
+# Rename this file removing the sample extention and put it into the tomcat classpath.
+#
+
+# Call Center service.
+callCenter.activiti.baseurl = http://localhost:8080/activiti-rest
+callCenter.activiti.task.query.endpoint = /service/runtime/tasks
+callCenter.activiti.task.action.endpoint = /service/runtime/tasks/
+callCenter.activiti.user = admin
+callCenter.activiti.password = test
+
+# Fire Department service.
+fireDept.activiti.baseurl = http://localhost:8080/activiti-rest
+fireDept.activiti.process.start.endpoint = /service/runtime/process-instances
+fireDept.activiti.user = admin
+fireDept.activiti.password = test
+fireDept.activiti.definition.key = EmergencyFireDepartment
+
+# Police Department service.
+policeDept.activiti.baseurl = http://localhost:8080/activiti-rest
+policeDept.activiti.process.start.endpoint = /service/runtime/process-instances
+policeDept.activiti.user = admin
+policeDept.activiti.password = test
+policeDept.activiti.definition.key = EmergencyPoliceDepartment
+
+# Hospital service.
+hospital.activiti.baseurl = http://localhost:8080/activiti-rest
+hospital.activiti.process.start.endpoint = /service/runtime/process-instances
+hospital.activiti.user = admin
+hospital.activiti.password = test
+hospital.activiti.definition.key = EmergencyHospital
