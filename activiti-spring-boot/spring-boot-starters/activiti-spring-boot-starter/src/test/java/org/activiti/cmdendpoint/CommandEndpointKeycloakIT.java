@@ -40,7 +40,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.SubscribableChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
@@ -55,7 +54,6 @@ import static org.assertj.core.api.Assertions.*;
 @EnableBinding(MessageClientStream.class)
 public class CommandEndpointKeycloakIT extends KeycloakEnabledBaseTestIT {
 
-
     @ClassRule
     public static RabbitTestSupport rabbitTestSupport = new RabbitTestSupport();
 
@@ -65,8 +63,8 @@ public class CommandEndpointKeycloakIT extends KeycloakEnabledBaseTestIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    public static final String PROCESS_DEFINITIONS_URL = "/process-definitions/";
-    public static final String PROCESS_INSTANCES_RELATIVE_URL = "/process-instances/";
+    public static final String PROCESS_DEFINITIONS_URL = "/v1/process-definitions/";
+    public static final String PROCESS_INSTANCES_RELATIVE_URL = "/v1/process-instances/";
 
     @Test
     public void getAllMessagesTests() throws Exception {

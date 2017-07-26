@@ -25,7 +25,7 @@ import org.activiti.services.core.model.ProcessDefinitionUserTask;
 import org.activiti.services.core.model.ProcessDefinitionServiceTask;
 
 @RestController
-@RequestMapping(value = "process-definitions/{id}/meta", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/process-definitions/{id}/meta", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessDefinitionMetaController {
 
     private final RepositoryService repositoryService;
