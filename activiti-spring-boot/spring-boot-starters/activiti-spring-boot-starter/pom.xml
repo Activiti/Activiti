@@ -106,6 +106,10 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
+      <artifactId>activiti-bpmn-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-spring</artifactId>
     </dependency>
     <dependency>

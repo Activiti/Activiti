@@ -25,9 +25,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class ProcessInstance {
 
     public enum ProcessInstanceStatus {
-        RUNNING,
-        SUSPENDED,
-        COMPLETED
+                                       RUNNING,
+                                       SUSPENDED,
+                                       COMPLETED
     }
 
     private String id;

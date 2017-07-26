@@ -60,10 +60,9 @@ public class SignalIT {
     @Before
     public void setUp() {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
-        assertThat(processDefinitions.getBody().getContent()).hasSize(3);
+        assertThat(processDefinitions.getBody().getContent()).hasSize(4);
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
-            processDefinitionIds.put(pd.getName(),
-                                     pd.getId());
+            processDefinitionIds.put(pd.getName(), pd.getId());
         }
     }
 
@@ -92,7 +91,7 @@ public class SignalIT {
         ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS));
         SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("go",
                                                                                             Collections.singletonMap("myVar",
-                                                                                                                  "myContent"));
+                                                                                                                     "myContent"));
 
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
@@ -108,16 +107,12 @@ public class SignalIT {
         assertThat(taskEntity.getBody().getContent()).extracting(Task::getName).containsExactly("Boundary target");
 
         ResponseEntity<Resource<Map<String, Object>>> variablesEntity = processInstanceRestTemplate.getVariables(startProcessEntity);
-        assertThat(variablesEntity.getBody().getContent()).containsEntry("myVar",
-                                                                         "myContent");
+        assertThat(variablesEntity.getBody().getContent()).containsEntry("myVar", "myContent");
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
-                                     HttpMethod.GET,
-                                     null,
-                                     responseType);
+        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL, HttpMethod.GET, null, responseType);
     }
 }

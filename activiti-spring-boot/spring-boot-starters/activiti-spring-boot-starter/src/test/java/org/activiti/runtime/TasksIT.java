@@ -82,10 +82,9 @@ public class TasksIT {
     @Before
     public void setUp() {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
-        assertThat(processDefinitions.getBody().getContent()).hasSize(3);
+        assertThat(processDefinitions.getBody().getContent()).hasSize(4);
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
-            processDefinitionIds.put(pd.getName(),
-                                     pd.getId());
+            processDefinitionIds.put(pd.getName(), pd.getId());
         }
         pageableTaskService.setUserGroupLookupProxy(userGroupLookupProxy);
         pageableTaskService.setAuthenticationWrapper(authenticationWrapper);
@@ -148,7 +147,8 @@ public class TasksIT {
         ResponseEntity<ProcessInstance> startProcessResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
-        ResponseEntity<PagedResources<Task>> tasksEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessResponse.getBody().getId() + "/tasks",
+        ResponseEntity<PagedResources<Task>> tasksEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessResponse.getBody()
+                                                                                                                                          .getId() + "/tasks",
                                                                                      HttpMethod.GET,
                                                                                      null,
                                                                                      PAGED_TASKS_RESPONSE_TYPE);
@@ -159,10 +159,7 @@ public class TasksIT {
     }
 
     private ResponseEntity<PagedResources<Task>> executeRequestGetTasks() {
-        return testRestTemplate.exchange(TASKS_URL,
-                                         HttpMethod.GET,
-                                         null,
-                                         PAGED_TASKS_RESPONSE_TYPE);
+        return testRestTemplate.exchange(TASKS_URL, HttpMethod.GET, null, PAGED_TASKS_RESPONSE_TYPE);
     }
 
     @Test
@@ -265,8 +262,7 @@ public class TasksIT {
         processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
-        CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd(Collections.singletonMap("myVar",
-                                                                                       "any"));
+        CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd(Collections.singletonMap("myVar", "any"));
 
         //when
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",

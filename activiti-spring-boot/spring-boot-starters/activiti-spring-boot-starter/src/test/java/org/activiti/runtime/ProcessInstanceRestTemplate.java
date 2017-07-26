@@ -42,10 +42,8 @@ public class ProcessInstanceRestTemplate {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    public ResponseEntity<ProcessInstance> startProcess(String processDefinitionId,
-                                                        Map<String, Object> variables) {
-        StartProcessInstanceCmd cmd = new StartProcessInstanceCmd(processDefinitionId,
-                                                                  variables);
+    public ResponseEntity<ProcessInstance> startProcess(String processDefinitionId, Map<String, Object> variables) {
+        StartProcessInstanceCmd cmd = new StartProcessInstanceCmd(processDefinitionId, variables);
         HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(cmd);
 
         ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL,
@@ -59,13 +57,13 @@ public class ProcessInstanceRestTemplate {
     }
 
     public ResponseEntity<ProcessInstance> startProcess(String processDefinitionId) {
-        return startProcess(processDefinitionId,
-                            null);
+        return startProcess(processDefinitionId, null);
     }
 
     public ResponseEntity<ProcessInstance> getProcessInstance(ResponseEntity<ProcessInstance> processInstanceEntity) {
 
-        ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId(),
+        ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody()
+                                                                                                                                         .getId(),
                                                                                    HttpMethod.GET,
                                                                                    null,
                                                                                    new ParameterizedTypeReference<ProcessInstance>() {
@@ -75,7 +73,8 @@ public class ProcessInstanceRestTemplate {
     }
 
     public ResponseEntity<PagedResources<Task>> getTasks(ResponseEntity<ProcessInstance> processInstanceEntity) {
-        ResponseEntity<PagedResources<Task>> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/tasks",
+        ResponseEntity<PagedResources<Task>> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody()
+                                                                                                                                              .getId() + "/tasks",
                                                                                         HttpMethod.GET,
                                                                                         null,
                                                                                         new ParameterizedTypeReference<PagedResources<Task>>() {
@@ -84,8 +83,10 @@ public class ProcessInstanceRestTemplate {
         return responseEntity;
     }
 
-    public ResponseEntity<Resource<Map<String, Object>>> getVariables(ResponseEntity<ProcessInstance> processInstanceEntity) {
-        ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/variables",
+    public ResponseEntity<Resource<Map<String, Object>>> getVariables(
+                                                                      ResponseEntity<ProcessInstance> processInstanceEntity) {
+        ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody()
+                                                                                                                                                                                   .getId() + "/variables",
                                                                                                  HttpMethod.GET,
                                                                                                  null,
                                                                                                  new ParameterizedTypeReference<Resource<Map<String, Object>>>() {

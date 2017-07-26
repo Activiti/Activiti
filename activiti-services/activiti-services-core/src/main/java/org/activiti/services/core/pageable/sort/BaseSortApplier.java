@@ -26,11 +26,10 @@ import org.springframework.data.domain.Sort;
  */
 public abstract class BaseSortApplier<T extends Query<?, ?>> implements SortApplier<T> {
 
-    public void applySort(T query,
-                          Pageable pageable) {
+    @Override
+    public void applySort(T query, Pageable pageable) {
         if (pageable.getSort() != null && pageable.getSort() != Sort.unsorted()) {
-            applyPageableSort(query,
-                              pageable.getSort());
+            applyPageableSort(query, pageable.getSort());
         } else {
             applyDefaultSort(query);
         }
@@ -38,13 +37,10 @@ public abstract class BaseSortApplier<T extends Query<?, ?>> implements SortAppl
 
     protected abstract void applyDefaultSort(T query);
 
-    private void applyPageableSort(T query,
-                                   Sort sort) {
+    private void applyPageableSort(T query, Sort sort) {
         for (Sort.Order order : sort) {
-            applyOrder(query,
-                       order);
-            applyDirection(query,
-                           order.getDirection());
+            applyOrder(query, order);
+            applyDirection(query, order.getDirection());
         }
     }
 
@@ -59,8 +55,7 @@ public abstract class BaseSortApplier<T extends Query<?, ?>> implements SortAppl
 
     protected abstract QueryProperty getOrderByProperty(Sort.Order order);
 
-    private void applyDirection(T query,
-                                Sort.Direction direction) {
+    private void applyDirection(T query, Sort.Direction direction) {
         switch (direction) {
 
             case ASC:
