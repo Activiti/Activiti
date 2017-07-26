@@ -16,15 +16,11 @@
   <name>spring-boot-sample-hal-rest-api</name>
 
   <dependencies>
-
+<!-- keycloak included as default identity manager, to substitute another exclude activiti-services-identity-keycloak and its keycloak dependencies-->
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-boot-starter</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-services-identity-keycloak</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>

@@ -18,10 +18,12 @@
 
 package org.activiti.cmdendpoint;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.cmdendpoint.cmds.StartProcessInstanceCmd;
+import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.junit.ClassRule;
@@ -35,9 +37,9 @@ import org.springframework.cloud.stream.binder.test.junit.rabbit.RabbitTestSuppo
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.SubscribableChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
@@ -48,18 +50,15 @@ import static org.assertj.core.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @EnableBinding(MessageClientStream.class)
-public class CommandEndpointTest {
+public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
 
     @ClassRule
     public static RabbitTestSupport rabbitTestSupport = new RabbitTestSupport();
 
     @Autowired
     private MessageChannel myCmdProducer;
-
-    @Autowired
-    private SubscribableChannel myCmdResults;
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -74,10 +73,11 @@ public class CommandEndpointTest {
         };
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsResources = restTemplate.exchange(PROCESS_DEFINITIONS_URL,
                                                                                                               HttpMethod.GET,
-                                                                                                              null,
+                                                                                                              getRequestEntityWithHeaders(),
                                                                                                               responseType);
 
         assertThat(processDefinitionsResources).isNotNull();
+        assertThat(processDefinitionsResources.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(processDefinitionsResources.getBody()).isNotNull();
         assertThat(processDefinitionsResources.getBody().getContent()).isNotEmpty();
         ProcessDefinition aProcessDefinition = processDefinitionsResources.getBody().getContent().iterator().next();
@@ -88,6 +88,16 @@ public class CommandEndpointTest {
 
         StartProcessInstanceCmd startProcessInstanceCmd = new StartProcessInstanceCmd(aProcessDefinition.getId(),
                                                                                       vars);
+
+        //record what instances there were before starting this one - should be none but will check this later
+        ResponseEntity<PagedResources<ProcessInstance>> processInstancesPageBefore = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
+                HttpMethod.GET,
+                getRequestEntityWithHeaders(),
+                new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
+                },
+                "0",
+                "2");
+
         //given
         myCmdProducer.send(MessageBuilder.withPayload(startProcessInstanceCmd).build());
 
@@ -96,14 +106,33 @@ public class CommandEndpointTest {
         //when
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                                                                      HttpMethod.GET,
-                                                                                                     null,
+                                                                                                     getRequestEntityWithHeaders(),
                                                                                                      new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                                                                                                      },
                                                                                                      "0",
                                                                                                      "2");
 
+
+
         //then
         assertThat(processInstancesPage).isNotNull();
+        assertThat(processInstancesPage.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(processInstancesPage.getBody().getContent().size()).isGreaterThanOrEqualTo(1);
+
+        Collection<ProcessInstance> instances = processInstancesPage.getBody().getContent();
+        for(ProcessInstance instance:instances){
+            assertThat(instance.getProcessDefinitionId()).isEqualTo(aProcessDefinition.getId());
+            assertThat(instance.getId()).isNotNull();
+            assertThat(instance.getStartDate()).isNotNull();
+            assertThat(instance.getStatus()).isEqualToIgnoringCase(ProcessInstance.ProcessInstanceStatus.RUNNING.name());
+        }
+
+        //should have only started one
+        assertThat(processInstancesPage.getBody().getContent().size() - processInstancesPageBefore.getBody().getContent().size()).isEqualTo(1);
+
+        //expecting we started with none
+        assertThat(processInstancesPageBefore.getBody().getContent()).hasSize(0);
+
         assertThat(processInstancesPage.getBody().getContent()).hasSize(1);
         assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isGreaterThanOrEqualTo(1);
     }

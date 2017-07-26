@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.definition.ProcessDefinitionIT;
+import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.junit.Before;
@@ -36,24 +38,30 @@ import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ProcessVariablesIT {
+@TestPropertySource("classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+public class ProcessVariablesIT extends KeycloakEnabledBaseTestIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private ProcessInstanceRestTemplate processInstanceRestTemplate;
+    private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
     private static final String SIMPLE_PROCESS_WITH_VARIABLES = "ProcessWithVariables";
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        super.setUp();
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
@@ -65,30 +73,39 @@ public class ProcessVariablesIT {
     public void shouldRetrieveProcessVariables() throws Exception {
         //given
         Map<String, Object> variables = new HashMap<>();
-        variables.put("firstName", "Pedro");
-        variables.put("lastName", "Silva");
-        variables.put("age", 15);
+        variables.put("firstName",
+                      "Pedro");
+        variables.put("lastName",
+                      "Silva");
+        variables.put("age",
+                      15);
         ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS_WITH_VARIABLES),
-                                                                                                 variables);
+                                                                                                 variables,accessToken);
 
         //when
-        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody()
-                                                                                                                                                                          .getId() + "/variables",
+        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables",
                                                                                                 HttpMethod.GET,
-                                                                                                null,
+                                                                                                getRequestEntityWithHeaders(),
                                                                                                 new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
                                                                                                 });
 
         //then
         assertThat(variablesResponse).isNotNull();
-        assertThat(variablesResponse.getBody().getContent()).containsEntry("firstName", "Pedro")
-                                                            .containsEntry("lastName", "Silva")
-                                                            .containsEntry("age", 15);
+        assertThat(variablesResponse.getBody().getContent())
+                .containsEntry("firstName",
+                               "Pedro")
+                .containsEntry("lastName",
+                               "Silva")
+                .containsEntry("age",
+                               15);
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL, HttpMethod.GET, null, responseType);
+        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
+                                     HttpMethod.GET,
+                                     getRequestEntityWithHeaders(),
+                                     responseType);
     }
 }

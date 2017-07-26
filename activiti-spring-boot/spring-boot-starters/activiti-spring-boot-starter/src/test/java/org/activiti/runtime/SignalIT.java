@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.definition.ProcessDefinitionIT;
+import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
@@ -38,27 +40,32 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.runtime.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class SignalIT {
+@TestPropertySource("classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+public class SignalIT extends KeycloakEnabledBaseTestIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private ProcessInstanceRestTemplate processInstanceRestTemplate;
+    private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
 
     private static final String SIGNAL_PROCESS = "ProcessWithBoundarySignal";
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        super.setUp();
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getBody().getContent()).hasSize(4);
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
@@ -69,50 +76,54 @@ public class SignalIT {
     @Test
     public void processShouldTakeExceptionPathWhenSignalIsSent() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS));
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS),accessToken);
         SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("go");
 
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
                                                                     HttpMethod.POST,
-                                                                    new HttpEntity<>(signalProcessInstancesCmd),
+                                                                    new HttpEntity(signalProcessInstancesCmd,getHeaders(accessToken.getToken())),
                                                                     new ParameterizedTypeReference<Void>() {
                                                                     });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ResponseEntity<PagedResources<Task>> taskEntity = processInstanceRestTemplate.getTasks(startProcessEntity);
+        ResponseEntity<PagedResources<Task>> taskEntity = processInstanceRestTemplate.getTasks(startProcessEntity,accessToken);
         assertThat(taskEntity.getBody().getContent()).extracting(Task::getName).containsExactly("Boundary target");
     }
 
     @Test
     public void processShouldHaveVariablesSetWhenSignalCarriesVariables() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS));
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS),accessToken);
         SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("go",
                                                                                             Collections.singletonMap("myVar",
-                                                                                                                     "myContent"));
+                                                                                                                  "myContent"));
 
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
                                                                     HttpMethod.POST,
-                                                                    new HttpEntity<>(signalProcessInstancesCmd),
+                                                                    new HttpEntity(signalProcessInstancesCmd,getHeaders(accessToken.getToken())),
                                                                     new ParameterizedTypeReference<Void>() {
                                                                     });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        ResponseEntity<PagedResources<Task>> taskEntity = processInstanceRestTemplate.getTasks(startProcessEntity);
+        ResponseEntity<PagedResources<Task>> taskEntity = processInstanceRestTemplate.getTasks(startProcessEntity,accessToken);
         assertThat(taskEntity.getBody().getContent()).extracting(Task::getName).containsExactly("Boundary target");
 
-        ResponseEntity<Resource<Map<String, Object>>> variablesEntity = processInstanceRestTemplate.getVariables(startProcessEntity);
-        assertThat(variablesEntity.getBody().getContent()).containsEntry("myVar", "myContent");
+        ResponseEntity<Resource<Map<String, Object>>> variablesEntity = processInstanceRestTemplate.getVariables(startProcessEntity,accessToken);
+        assertThat(variablesEntity.getBody().getContent()).containsEntry("myVar",
+                                                                         "myContent");
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL, HttpMethod.GET, null, responseType);
+        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
+                                     HttpMethod.GET,
+                                     getRequestEntityWithHeaders(),
+                                     responseType);
     }
 }

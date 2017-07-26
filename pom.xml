@@ -631,7 +631,6 @@
           <excludes>
             <exclude>**/*TestCase.java</exclude>
             <exclude>**/*IT.java</exclude>
-            <exclude>**/*Keycloak*.java</exclude>
           </excludes>
           <runOrder>alphabetical</runOrder>
         </configuration>
@@ -869,11 +868,6 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
           <version>${maven-failsafe-plugin.version}</version>
-          <configuration>
-            <excludes>
-              <exclude>**/*Keycloak*.java</exclude>
-            </excludes>
-          </configuration>
           <executions>
             <execution>
               <id>integration-test</id>
