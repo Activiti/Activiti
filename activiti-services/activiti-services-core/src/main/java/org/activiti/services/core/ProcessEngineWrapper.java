@@ -5,6 +5,7 @@ import java.util.List;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.services.core.model.ProcessInstance;
+import org.activiti.services.core.model.commands.ActivateProcessInstanceCmd;
 import org.activiti.services.core.model.commands.SignalProcessInstancesCmd;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
