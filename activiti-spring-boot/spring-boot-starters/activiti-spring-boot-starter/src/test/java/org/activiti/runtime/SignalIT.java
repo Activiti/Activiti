@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.definition.ProcessDefinitionKeycloakIT;
+import org.activiti.definition.ProcessDefinitionIT;
 import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
@@ -51,7 +51,7 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class SignalKeycloakIT extends KeycloakEnabledBaseTestIT {
+public class SignalIT extends KeycloakEnabledBaseTestIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -121,7 +121,7 @@ public class SignalKeycloakIT extends KeycloakEnabledBaseTestIT {
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        return restTemplate.exchange(ProcessDefinitionKeycloakIT.PROCESS_DEFINITIONS_URL,
+        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
                                      getRequestEntityWithHeaders(),
                                      responseType);

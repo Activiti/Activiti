@@ -38,7 +38,7 @@ import java.util.Iterator;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
-public class ProcessDefinitionKeycloakIT extends KeycloakEnabledBaseTestIT{
+public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT{
 
     @Autowired
     private TestRestTemplate restTemplate;

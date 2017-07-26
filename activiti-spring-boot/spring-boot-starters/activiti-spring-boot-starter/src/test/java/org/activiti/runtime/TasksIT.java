@@ -50,7 +50,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class TasksKeycloakIT extends KeycloakEnabledBaseTestIT {
+public class TasksIT extends KeycloakEnabledBaseTestIT {
 
     private static final String TASKS_URL = "/v1/tasks/";
     private static final String SIMPLE_PROCESS = "SimpleProcess";

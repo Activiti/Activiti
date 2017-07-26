@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
+public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
 
     private static final String SIMPLE_PROCESS = "SimpleProcess";
     public static final String PROCESS_DEFINITIONS_URL = "/v1/process-definitions/";

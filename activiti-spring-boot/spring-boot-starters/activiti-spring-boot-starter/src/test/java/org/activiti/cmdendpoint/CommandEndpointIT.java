@@ -52,7 +52,7 @@ import static org.assertj.core.api.Assertions.*;
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @EnableBinding(MessageClientStream.class)
-public class CommandEndpointKeycloakIT extends KeycloakEnabledBaseTestIT {
+public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
 
     @ClassRule
     public static RabbitTestSupport rabbitTestSupport = new RabbitTestSupport();

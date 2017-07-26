@@ -148,8 +148,6 @@
           <excludes>
             <exclude>**/*TestCase.java</exclude>
             <exclude>**/*IT.java</exclude>
-            <!--no longer exclude keycloak as travis should be running it
-            <exclude>**/*Keycloak*.java</exclude> -->
           </excludes>
           <runOrder>alphabetical</runOrder>
         </configuration>

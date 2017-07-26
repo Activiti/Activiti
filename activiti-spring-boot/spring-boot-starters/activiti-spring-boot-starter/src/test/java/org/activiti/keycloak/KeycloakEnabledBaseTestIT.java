@@ -44,6 +44,10 @@ public class KeycloakEnabledBaseTestIT {
 
     protected AccessTokenResponse accessToken;
 
+    /**
+     *
+     * Get temporary token from keycloak and use for the life of the test (token unlikely to expire during test but if test were long-running could be renewed with authenticateUser).
+     */
     @Before
     public void setUp() throws Exception {
         accessToken = authenticateUser();
@@ -53,6 +57,9 @@ public class KeycloakEnabledBaseTestIT {
         return Keycloak.getInstance(authServer,realm,keycloaktestuser,keycloaktestpassword,resource).tokenManager().getAccessToken();
     }
 
+    /**
+     * helper method to add token to header
+     */
     protected HttpHeaders getHeaders(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);

@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.definition.ProcessDefinitionKeycloakIT;
+import org.activiti.definition.ProcessDefinitionIT;
 import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
@@ -47,7 +47,7 @@ import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ProcessVariablesKeycloakIT extends KeycloakEnabledBaseTestIT {
+public class ProcessVariablesIT extends KeycloakEnabledBaseTestIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -103,7 +103,7 @@ public class ProcessVariablesKeycloakIT extends KeycloakEnabledBaseTestIT {
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        return restTemplate.exchange(ProcessDefinitionKeycloakIT.PROCESS_DEFINITIONS_URL,
+        return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
                                      getRequestEntityWithHeaders(),
                                      responseType);
