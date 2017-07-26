@@ -48,7 +48,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
 
     private static final String SIMPLE_PROCESS = "SimpleProcess";
-    public static final String PROCESS_DEFINITIONS_URL = "/process-definitions/";
+    public static final String PROCESS_DEFINITIONS_URL = "/v1/process-definitions/";
 
     @Autowired
     private TestRestTemplate restTemplate;

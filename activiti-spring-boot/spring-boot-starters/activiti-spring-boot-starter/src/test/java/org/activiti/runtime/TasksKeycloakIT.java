@@ -52,13 +52,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class TasksKeycloakIT extends KeycloakEnabledBaseTestIT {
 
-    private static final String TASKS_URL = "/tasks/";
+    private static final String TASKS_URL = "/v1/tasks/";
     private static final String SIMPLE_PROCESS = "SimpleProcess";
     private static final ParameterizedTypeReference<Task> TASK_RESPONSE_TYPE = new ParameterizedTypeReference<Task>() {
     };
     public static final ParameterizedTypeReference<PagedResources<Task>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Task>>() {
     };
-    public static final String PROCESS_DEFINITIONS_URL = "/process-definitions/";
+    public static final String PROCESS_DEFINITIONS_URL = "/v1/process-definitions/";
 
 
     @Autowired

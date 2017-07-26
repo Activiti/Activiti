@@ -124,7 +124,7 @@ public class CommandEndpointKeycloakIT extends KeycloakEnabledBaseTestIT {
             assertThat(instance.getProcessDefinitionId()).isEqualTo(aProcessDefinition.getId());
             assertThat(instance.getId()).isNotNull();
             assertThat(instance.getStartDate()).isNotNull();
-            assertThat(instance.getStatus()).isEqualToIgnoringCase("RUNNING");
+            assertThat(instance.getStatus()).isEqualToIgnoringCase(ProcessInstance.ProcessInstanceStatus.RUNNING.name());
         }
 
         //should have only started one
