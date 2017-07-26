@@ -64,8 +64,9 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        assertThat(processDefinitions.getBody().getContent()).hasSize(3); //if a new definition is added then this is expected to be increased
-        for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
+
+        assertThat(processDefinitions.getBody().getContent()).hasSize(4);
+        for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
             processDefinitionIds.put(pd.getName(), pd.getId());
         }
     }
@@ -94,6 +95,7 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
         ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
 
         //when
+
         ResponseEntity<ProcessInstance> retrievedEntity = restTemplate.exchange(
                 PROCESS_INSTANCES_RELATIVE_URL + startedProcessEntity.getBody().getId(),
                 HttpMethod.GET,

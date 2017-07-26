@@ -96,8 +96,7 @@ public class TaskController {
 
     @RequestMapping(value = "/{taskId}/complete", method = RequestMethod.POST)
     public ResponseEntity<Void> completeTask(@PathVariable String taskId,
-                                             @RequestBody(required = false)
-                                                     CompleteTaskCmd completeTaskCmd) {
+                                             @RequestBody(required = false) CompleteTaskCmd completeTaskCmd) {
         Map<String, Object> inputVariables = null;
         if (completeTaskCmd != null) {
             inputVariables = completeTaskCmd.getOutputVariables();

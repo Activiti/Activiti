@@ -79,7 +79,7 @@ public class TasksKeycloakIT extends KeycloakEnabledBaseTestIT {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        assertThat(processDefinitions.getBody().getContent()).hasSize(3); //if a new definition is added then this is expected to be increased
+        assertThat(processDefinitions.getBody().getContent()).hasSize(4); //if a new definition is added then this is expected to be increased
         for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
             processDefinitionIds.put(pd.getName(), pd.getId());
         }

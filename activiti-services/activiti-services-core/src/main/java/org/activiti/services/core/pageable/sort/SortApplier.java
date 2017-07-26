@@ -18,7 +18,7 @@ package org.activiti.services.core.pageable.sort;
 import org.activiti.engine.query.Query;
 import org.springframework.data.domain.Pageable;
 
-public interface SortApplier<T extends Query<?,?>> {
+public interface SortApplier<T extends Query<?, ?>> {
 
     void applySort(T query, Pageable pageable);
 
