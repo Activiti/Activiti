@@ -52,7 +52,7 @@ import static org.assertj.core.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @EnableBinding(MessageClientStream.class)
 public class CommandEndpointKeycloakIT extends KeycloakEnabledBaseTestIT {
 
