@@ -138,8 +138,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
-          <forkCount>0</forkCount>
-          <reuseForks>false</reuseForks>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <failIfNoTests>false</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>

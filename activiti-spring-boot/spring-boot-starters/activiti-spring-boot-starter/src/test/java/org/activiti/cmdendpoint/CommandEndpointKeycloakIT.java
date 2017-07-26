@@ -19,6 +19,7 @@
 
 package org.activiti.cmdendpoint;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -94,6 +95,16 @@ public class CommandEndpointKeycloakIT extends KeycloakEnabledBaseTestIT {
 
         StartProcessInstanceCmd startProcessInstanceCmd = new StartProcessInstanceCmd(aProcessDefinition.getId(),
                                                                                       vars);
+
+        //record what instances there were before starting this one - should be none but will check this later
+        ResponseEntity<PagedResources<ProcessInstance>> processInstancesPageBefore = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
+                HttpMethod.GET,
+                getRequestEntityWithHeaders(),
+                new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
+                },
+                "0",
+                "2");
+
         //given
         myCmdProducer.send(MessageBuilder.withPayload(startProcessInstanceCmd).build());
 
@@ -108,11 +119,27 @@ public class CommandEndpointKeycloakIT extends KeycloakEnabledBaseTestIT {
                                                                                                      "0",
                                                                                                      "2");
 
+
+
         //then
         assertThat(processInstancesPage).isNotNull();
         assertThat(processInstancesPage.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(processInstancesPage.getBody().getContent().size()).isGreaterThanOrEqualTo(1);
-        System.out.println(processInstancesPage.getBody().getContent());
+
+        Collection<ProcessInstance> instances = processInstancesPage.getBody().getContent();
+        for(ProcessInstance instance:instances){
+            assertThat(instance.getProcessDefinitionId()).isEqualTo(aProcessDefinition.getId());
+            assertThat(instance.getId()).isNotNull();
+            assertThat(instance.getStartDate()).isNotNull();
+            assertThat(instance.getStatus()).isEqualToIgnoringCase("RUNNING");
+        }
+
+        //should have only started one
+        assertThat(processInstancesPage.getBody().getContent().size() - processInstancesPageBefore.getBody().getContent().size()).isEqualTo(1);
+
+        //expecting we started with none
+        assertThat(processInstancesPageBefore.getBody().getContent()).hasSize(0);
+
         assertThat(processInstancesPage.getBody().getContent()).hasSize(1);
         assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isGreaterThanOrEqualTo(1);
     }
