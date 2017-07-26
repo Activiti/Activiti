@@ -18,6 +18,7 @@ package org.activiti.image.impl;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Paint;
@@ -260,6 +261,8 @@ public class DefaultProcessDiagramCanvas {
 
         // Create an instance of the SVG Generator.
         this.g = new ProcessDiagramSVGGraphics2D(document);
+        
+        this.g.setSVGCanvasSize(new Dimension(this.canvasWidth, this.canvasHeight));
 
         this.g.setBackground(new Color(255,
                                        255,
