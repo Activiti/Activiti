@@ -11,10 +11,10 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @EnableBinding(ProcessEngineChannels.class)
 @ComponentScan("org.activiti")
-public class Application {
+public class SampleApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
+		SpringApplication.run(SampleApplication.class, args);
 	}
 
 }
