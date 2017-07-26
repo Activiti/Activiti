@@ -40,7 +40,7 @@ public class ProcessDefinitionIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    public static final String PROCESS_DEFINITIONS_URL = "/process-definitions/";
+    public static final String PROCESS_DEFINITIONS_URL = "/v1/process-definitions/";
     private static final String PROCESS_WITH_VARIABLES_2 = "ProcessWithVariables2";
 
     @Test

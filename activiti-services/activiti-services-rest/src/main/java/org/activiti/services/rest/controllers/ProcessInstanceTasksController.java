@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "process-instances/{processInstanceId}", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/process-instances/{processInstanceId}", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessInstanceTasksController {
 
     private final PageableTaskService pageableTaskService;

@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 
 @RestController
-@RequestMapping(value = "/")
+@RequestMapping(value = "/v1/")
 public class HomeController {
 
     @RequestMapping(method = RequestMethod.GET)
