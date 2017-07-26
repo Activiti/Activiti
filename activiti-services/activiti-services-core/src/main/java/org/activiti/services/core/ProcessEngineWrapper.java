@@ -7,6 +7,7 @@ import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.commands.SignalProcessInstancesCmd;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
+import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
 import org.activiti.services.core.model.converter.ProcessInstanceConverter;
 import org.activiti.services.core.pageable.PageableProcessInstanceService;
 import org.activiti.services.events.MessageProducerActivitiEventListener;
@@ -46,17 +47,17 @@ public class ProcessEngineWrapper {
         return processInstanceConverter.from(builder.start());
     }
 
-    public void signal(SignalProcessInstancesCmd signalInfo) {
-        runtimeService.signalEventReceived(signalInfo.getName(),
-                                           signalInfo.getInputVariables());
+    public void signal(SignalProcessInstancesCmd signalProcessInstancesCmd) {
+        runtimeService.signalEventReceived(signalProcessInstancesCmd.getName(),
+                                           signalProcessInstancesCmd.getInputVariables());
     }
 
-    public void suspend(String processInstanceId) {
-        runtimeService.suspendProcessInstanceById(processInstanceId);
+    public void suspend(SuspendProcessInstanceCmd suspendProcessInstanceCmd) {
+        runtimeService.suspendProcessInstanceById(suspendProcessInstanceCmd.getProcessInstanceId());
     }
 
-    public void activate(String processInstanceId) {
-        runtimeService.activateProcessInstanceById(processInstanceId);
+    public void activate(ActivateProcessInstanceCmd activateProcessInstanceCmd) {
+        runtimeService.activateProcessInstanceById(activateProcessInstanceCmd.getProcessInstanceId());
     }
 
     public ProcessInstance getProcessInstanceById(String processInstanceId) {
