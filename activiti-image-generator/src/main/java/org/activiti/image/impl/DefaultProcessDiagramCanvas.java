@@ -855,7 +855,8 @@ public class DefaultProcessDiagramCanvas {
 
     public void drawDefaultSequenceFlowIndicator(Line2D.Double line) {
         double length = DEFAULT_INDICATOR_WIDTH;
-        double halfOfLength = length / 2, f = 8;
+        double halfOfLength = length / 2;
+        double f = 8;
         Line2D.Double defaultIndicator = new Line2D.Double(-halfOfLength,
                                                            0,
                                                            halfOfLength,
