@@ -55,7 +55,7 @@ public class KeycloakEnabledBaseTestIT {
 
     protected HttpHeaders getHeaders(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + new String(token));
+        headers.add("Authorization", "Bearer " + token);
         return headers;
     }
 

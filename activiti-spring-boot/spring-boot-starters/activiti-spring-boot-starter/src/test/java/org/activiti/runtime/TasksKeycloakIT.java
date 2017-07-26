@@ -71,7 +71,7 @@ public class TasksKeycloakIT extends KeycloakEnabledBaseTestIT {
 
 
     @Before
-    public void setup() throws Exception{
+    public void setUp() throws Exception{
         keycloaktestuser = "hruser";
         //don't need to set password as same password as testuser
         accessToken = authenticateUser();

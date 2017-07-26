@@ -44,7 +44,7 @@ public class ProcessInstanceKeycloakRestTemplate {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    HttpHeaders getHeaders(String token) {
+    private HttpHeaders getHeaders(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization",
                     "Bearer " + new String(token));

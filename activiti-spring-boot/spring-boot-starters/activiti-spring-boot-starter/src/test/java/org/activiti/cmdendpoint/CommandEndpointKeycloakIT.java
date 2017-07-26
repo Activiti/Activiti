@@ -55,16 +55,12 @@ import static org.assertj.core.api.Assertions.*;
 @EnableBinding(MessageClientStream.class)
 public class CommandEndpointKeycloakIT extends KeycloakEnabledBaseTestIT {
 
-    private static final String relativeMessagesEndpoint = "/api/messages";
 
     @ClassRule
     public static RabbitTestSupport rabbitTestSupport = new RabbitTestSupport();
 
     @Autowired
     private MessageChannel myCmdProducer;
-
-    @Autowired
-    private SubscribableChannel myCmdResults;
 
     @Autowired
     private TestRestTemplate restTemplate;

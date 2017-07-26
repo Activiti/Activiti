@@ -59,7 +59,7 @@ public class ProcessInstanceKeycloakIT extends KeycloakEnabledBaseTestIT {
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
     @Before
-    public void setup() throws Exception{
+    public void setUp() throws Exception{
         super.setUp();
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
