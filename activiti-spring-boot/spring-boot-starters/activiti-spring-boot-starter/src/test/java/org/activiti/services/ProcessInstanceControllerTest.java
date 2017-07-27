@@ -17,6 +17,8 @@
 package org.activiti.services;
 
 import org.activiti.services.core.ProcessEngineWrapper;
+import org.activiti.services.core.model.commands.ActivateProcessInstanceCmd;
+import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
 import org.activiti.services.rest.controllers.ProcessInstanceController;
 import org.activiti.engine.RuntimeService;
 import org.junit.Before;
@@ -49,7 +51,7 @@ public class ProcessInstanceControllerTest {
         controller.suspend(processInstanceId);
 
         //then
-        verify(processEngine).suspend(processInstanceId);
+        verify(processEngine).suspend(new SuspendProcessInstanceCmd(processInstanceId));
     }
 
     @Test
@@ -61,7 +63,7 @@ public class ProcessInstanceControllerTest {
         controller.activate(processInstanceId);
 
         //then
-        verify(processEngine).activate(processInstanceId);
+        verify(processEngine).activate(new ActivateProcessInstanceCmd(processInstanceId));
     }
 
 }
