@@ -1,8 +1,10 @@
 package org.activiti.services.rest.controllers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
@@ -25,7 +27,8 @@ import org.activiti.services.core.model.ProcessDefinitionUserTask;
 import org.activiti.services.core.model.ProcessDefinitionServiceTask;
 
 @RestController
-@RequestMapping(value = "/v1/process-definitions/{id}/meta", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/process-definitions/{id}/meta",
+        produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessDefinitionMetaController {
 
     private final RepositoryService repositoryService;
@@ -47,28 +50,31 @@ public class ProcessDefinitionMetaController {
             throw new ActivitiException("Unable to find process definition for the given id:'" + id + "'");
         }
 
-        Process process = repositoryService.getBpmnModel(id).getMainProcess();
-        List<ProcessDefinitionVariable> variables = getVariables(process);
+        List<Process> processes = repositoryService.getBpmnModel(id).getProcesses();
+        Set<ProcessDefinitionVariable> variables = new HashSet<ProcessDefinitionVariable>();
+        Set<String> users = new HashSet<String>();
+        Set<String> groups = new HashSet<String>();
+        Set<ProcessDefinitionUserTask> userTasks = new HashSet<ProcessDefinitionUserTask>();
+        Set<ProcessDefinitionServiceTask> serviceTasks = new HashSet<ProcessDefinitionServiceTask>();
 
-        List<String> users = new ArrayList<String>();
-        List<String> groups = new ArrayList<String>();
-        List<ProcessDefinitionUserTask> userTasks = new ArrayList<ProcessDefinitionUserTask>();
-        List<ProcessDefinitionServiceTask> serviceTasks = new ArrayList<ProcessDefinitionServiceTask>();
-        List<FlowElement> flowElementList = (List<FlowElement>) process.getFlowElements();
-        for (FlowElement flowElement : flowElementList) {
-            if (flowElement.getClass().equals(UserTask.class)) {
-                UserTask userTask = (UserTask) flowElement;
-                ProcessDefinitionUserTask task = new ProcessDefinitionUserTask(userTask.getName(),
-                                                                               userTask.getDocumentation());
-                userTasks.add(task);
-                users.addAll(userTask.getCandidateUsers());
-                groups.addAll(userTask.getCandidateGroups());
-            }
-            if (flowElement.getClass().equals(ServiceTask.class)) {
-                ServiceTask serviceTask = (ServiceTask) flowElement;
-                ProcessDefinitionServiceTask task = new ProcessDefinitionServiceTask(serviceTask.getName(),
-                                                                                     serviceTask.getImplementation());
-                serviceTasks.add(task);
+        for (Process process : processes) {
+            variables.addAll(getVariables(process));
+            List<FlowElement> flowElementList = (List<FlowElement>) process.getFlowElements();
+            for (FlowElement flowElement : flowElementList) {
+                if (flowElement.getClass().equals(UserTask.class)) {
+                    UserTask userTask = (UserTask) flowElement;
+                    ProcessDefinitionUserTask task = new ProcessDefinitionUserTask(userTask.getName(),
+                                                                                   userTask.getDocumentation());
+                    userTasks.add(task);
+                    users.addAll(userTask.getCandidateUsers());
+                    groups.addAll(userTask.getCandidateGroups());
+                }
+                if (flowElement.getClass().equals(ServiceTask.class)) {
+                    ServiceTask serviceTask = (ServiceTask) flowElement;
+                    ProcessDefinitionServiceTask task = new ProcessDefinitionServiceTask(serviceTask.getName(),
+                                                                                         serviceTask.getImplementation());
+                    serviceTasks.add(task);
+                }
             }
         }
 
