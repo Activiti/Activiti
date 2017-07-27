@@ -1,19 +1,15 @@
-/*
- * Copyright 2017 Alfresco, Inc. and/or its affiliates.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
+/* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.activiti.engine.impl.bpmn.deployer;
 
 import java.util.Collection;
@@ -36,7 +32,6 @@ import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.IdGenerator;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
@@ -44,7 +39,6 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
-import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +51,6 @@ public class BpmnDeployer implements Deployer {
     protected ParsedDeploymentBuilderFactory parsedDeploymentBuilderFactory;
     protected BpmnDeploymentHelper bpmnDeploymentHelper;
     protected CachingAndArtifactsManager cachingAndArtifactsManager;
-    protected ProcessDefinitionDiagramHelper processDefinitionDiagramHelper;
 
     @Override
     public void deploy(DeploymentEntity deployment,
@@ -79,7 +72,7 @@ public class BpmnDeployer implements Deployer {
                 parsedDeployment.getAllProcessDefinitions());
         bpmnDeploymentHelper.setResourceNamesOnProcessDefinitions(parsedDeployment);
 
-        createAndPersistNewDiagramsIfNeeded(parsedDeployment);
+//    createAndPersistNewDiagramsIfNeeded(parsedDeployment);
         setProcessDefinitionDiagramNames(parsedDeployment);
 
         if (deployment.isNew()) {
@@ -103,35 +96,32 @@ public class BpmnDeployer implements Deployer {
                                      bpmnModel.getProcessById(processDefinition.getKey()));
         }
     }
-
-    /**
-     * Creates new diagrams for process definitions if the deployment is new, the process definition in
-     * question supports it, and the engine is configured to make new diagrams.
-     * <p>
-     * When this method creates a new diagram, it also persists it via the ResourceEntityManager
-     * and adds it to the resources of the deployment.
-     */
-    protected void createAndPersistNewDiagramsIfNeeded(ParsedDeployment parsedDeployment) {
-
-        final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-        final DeploymentEntity deploymentEntity = parsedDeployment.getDeployment();
-
-        final ResourceEntityManager resourceEntityManager = processEngineConfiguration.getResourceEntityManager();
-
-        for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
-            if (processDefinitionDiagramHelper.shouldCreateDiagram(processDefinition,
-                                                                   deploymentEntity)) {
-                ResourceEntity resource = processDefinitionDiagramHelper.createDiagramForProcessDefinition(
-                        processDefinition,
-                        parsedDeployment.getBpmnParseForProcessDefinition(processDefinition));
-                if (resource != null) {
-                    resourceEntityManager.insert(resource,
-                                                 false);
-                    deploymentEntity.addResource(resource);  // now we'll find it if we look for the diagram name later.
-                }
-            }
-        }
-    }
+//
+//  /**
+//   * Creates new diagrams for process definitions if the deployment is new, the process definition in
+//   * question supports it, and the engine is configured to make new diagrams.
+//   *
+//   * When this method creates a new diagram, it also persists it via the ResourceEntityManager
+//   * and adds it to the resources of the deployment.
+//   */
+//  protected void createAndPersistNewDiagramsIfNeeded(ParsedDeployment parsedDeployment) {
+//
+//    final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+//    final DeploymentEntity deploymentEntity = parsedDeployment.getDeployment();
+//
+//    final ResourceEntityManager resourceEntityManager = processEngineConfiguration.getResourceEntityManager();
+//
+//    for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+//      if (processDefinitionDiagramHelper.shouldCreateDiagram(processDefinition, deploymentEntity)) {
+//        ResourceEntity resource = processDefinitionDiagramHelper.createDiagramForProcessDefinition(
+//            processDefinition, parsedDeployment.getBpmnParseForProcessDefinition(processDefinition));
+//        if (resource != null) {
+//          resourceEntityManager.insert(resource, false);
+//          deploymentEntity.addResource(resource);  // now we'll find it if we look for the diagram name later.
+//        }
+//      }
+//    }
+//  }
 
     /**
      * Updates all the process definition entities to have the correct diagram resource name.  Must
@@ -302,7 +292,6 @@ public class BpmnDeployer implements Deployer {
                                                           "name",
                                                           name,
                                                           infoNode)) {
-
                         dynamicBpmnService.changeLocalizationName(locale,
                                                                   processId,
                                                                   name,
@@ -424,7 +413,6 @@ public class BpmnDeployer implements Deployer {
                                                         ObjectNode infoNode) {
         boolean isEqual = false;
         JsonNode localizationNode = infoNode.path("localization").path(language).path(id).path(propertyName);
-
         if (!localizationNode.isMissingNode() && !localizationNode.isNull() && localizationNode.asText().equals(propertyValue)) {
             isEqual = true;
         }
@@ -518,13 +506,5 @@ public class BpmnDeployer implements Deployer {
 
     public void setCachingAndArtifactsManager(CachingAndArtifactsManager manager) {
         this.cachingAndArtifactsManager = manager;
-    }
-
-    public ProcessDefinitionDiagramHelper getProcessDefinitionDiagramHelper() {
-        return processDefinitionDiagramHelper;
-    }
-
-    public void setProcessDefinitionDiagramHelper(ProcessDefinitionDiagramHelper processDefinitionDiagramHelper) {
-        this.processDefinitionDiagramHelper = processDefinitionDiagramHelper;
     }
 }

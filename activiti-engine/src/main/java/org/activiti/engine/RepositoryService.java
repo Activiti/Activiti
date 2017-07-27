@@ -283,17 +283,6 @@ public interface RepositoryService {
   InputStream getProcessModel(String processDefinitionId);
 
   /**
-   * Gives access to a deployed process diagram, e.g., a PNG image, through a stream of bytes.
-   * 
-   * @param processDefinitionId
-   *          id of a {@link ProcessDefinition}, cannot be null.
-   * @return null when the diagram resource name of a {@link ProcessDefinition} is null.
-   * @throws ActivitiObjectNotFoundException
-   *           when the process diagram doesn't exist.
-   */
-  InputStream getProcessDiagram(String processDefinitionId);
-
-  /**
    * Returns the {@link ProcessDefinition} including all BPMN information like additional Properties (e.g. documentation).
    */
   ProcessDefinition getProcessDefinition(String processDefinitionId);
