@@ -6,10 +6,16 @@ The goal is to define a very easy and initial process to demonstrate the power o
 The process must work with the one [Activiti](https://www.activiti.org/ "Activiti") installation only (not a “real” microservices architecture) because it must be easy to use and run with less possible dependencies.
 The project works with [Activiti](https://www.activiti.org/ "Activiti") version 6.0.
 
+* Description of the process
+  * The entities
+  * The actors
+
+<a name="description"></a>
 # Description of the process
 
 Below a brief introduction of the implemented process.
 
+<a name="entities"></a>
 ## The entities
 
 Below the entities involved in the process.
@@ -22,6 +28,7 @@ Below the entities involved in the process.
 
 * Hospital. This entity is responsible to take in charge the issues related to personal accidents, with the proper resources and level of emergency. In this example is supposed the hospital is one, but in general the solution could be easily scaled to managed different Public Entities with different specializations. The Hospital works independently from the rest of the Organizations.
 
+<a name="actors"></a>
 ## The actors
 
 Below the actors involved in the process.
