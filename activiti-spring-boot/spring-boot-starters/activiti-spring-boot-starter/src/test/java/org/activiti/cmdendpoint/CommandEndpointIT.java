@@ -26,6 +26,7 @@ import org.activiti.cmdendpoint.cmds.StartProcessInstanceCmd;
 import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
+import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,8 +64,9 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
     public static final String PROCESS_INSTANCES_RELATIVE_URL = "/v1/process-instances/";
 
     @Test
-    public void getAllMessagesTests() throws Exception {
+    public void eventBasedStartProcessTests() throws Exception {
 
+        // Get Available Process Definitions
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsResources = restTemplate.exchange(PROCESS_DEFINITIONS_URL,
@@ -78,12 +80,6 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         assertThat(processDefinitionsResources.getBody().getContent()).isNotEmpty();
         ProcessDefinition aProcessDefinition = processDefinitionsResources.getBody().getContent().iterator().next();
 
-        Map<String, String> vars = new HashMap<>();
-        vars.put("hey",
-                 "one");
-
-        StartProcessInstanceCmd startProcessInstanceCmd = new StartProcessInstanceCmd(aProcessDefinition.getId(),
-                                                                                      vars);
 
         //record what instances there were before starting this one - should be none but will check this later
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPageBefore = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
@@ -95,9 +91,16 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
                 "2");
 
         //given
+        Map<String, String> vars = new HashMap<>();
+        vars.put("hey",
+                 "one");
+
+        // Start New Process Instance
+        StartProcessInstanceCmd startProcessInstanceCmd = new StartProcessInstanceCmd(aProcessDefinition.getId(),
+                                                                                      vars);
+
         myCmdProducer.send(MessageBuilder.withPayload(startProcessInstanceCmd).build());
 
-        Thread.sleep(500);
 
         //when
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
@@ -131,5 +134,34 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
 
         assertThat(processInstancesPage.getBody().getContent()).hasSize(1);
         assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isGreaterThanOrEqualTo(1);
+
+        //given
+        SuspendProcessInstanceCmd suspendProcessInstanceCmd = new SuspendProcessInstanceCmd();
+        myCmdProducer.send(MessageBuilder.withPayload(suspendProcessInstanceCmd).build());
+
+        //when
+        processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
+                                                                                                     HttpMethod.GET,
+                                                                                                     getRequestEntityWithHeaders(),
+                                                                                                     new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
+                                                                                                     },
+                                                                                                     "0",
+                                                                                                     "2");
+
+
+
+        //then
+        assertThat(processInstancesPage).isNotNull();
+        assertThat(processInstancesPage.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(processInstancesPage.getBody().getContent().size()).isGreaterThanOrEqualTo(1);
+
+        instances = processInstancesPage.getBody().getContent();
+        for(ProcessInstance instance:instances){
+            assertThat(instance.getProcessDefinitionId()).isEqualTo(aProcessDefinition.getId());
+            assertThat(instance.getId()).isNotNull();
+            assertThat(instance.getStartDate()).isNotNull();
+            assertThat(instance.getStatus()).isEqualToIgnoringCase(ProcessInstance.ProcessInstanceStatus.SUSPENDED.name());
+        }
+
     }
 }

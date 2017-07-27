@@ -18,6 +18,7 @@ package org.activiti.services.rest.controllers;
 import java.util.Map;
 
 import org.activiti.engine.TaskService;
+import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.commands.CompleteTaskCmd;
 import org.activiti.services.core.model.converter.TaskConverter;
@@ -44,21 +45,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/v1/tasks", produces = MediaTypes.HAL_JSON_VALUE)
 public class TaskController {
 
-    private final TaskService taskService;
-    private final TaskConverter taskConverter;
+
+    private ProcessEngineWrapper processEngine;
+
     private final TaskResourceAssembler taskResourceAssembler;
-    private final PageableTaskService pageableTaskService;
+
     private AuthenticationWrapper authenticationWrapper = new AuthenticationWrapper();
 
     @Autowired
-    public TaskController(TaskService taskService,
-                          TaskConverter taskConverter,
-                          TaskResourceAssembler taskResourceAssembler,
-                          PageableTaskService pageableTaskService) {
-        this.taskService = taskService;
-        this.taskConverter = taskConverter;
+    public TaskController(ProcessEngineWrapper processEngine,
+                          TaskResourceAssembler taskResourceAssembler) {
+        this.processEngine = processEngine;
         this.taskResourceAssembler = taskResourceAssembler;
-        this.pageableTaskService = pageableTaskService;
+
     }
 
     @RequestMapping(method = RequestMethod.GET)
