@@ -31,16 +31,14 @@ public class TestConfiguration {
     @Bean
     public RestTemplateBuilder restTemplateBuilder() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                         false);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.registerModule(new Jackson2HalModule());
 
         MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        return new RestTemplateBuilder()
-                .additionalMessageConverters(converter);
+        return new RestTemplateBuilder().additionalMessageConverters(converter);
     }
 
 }

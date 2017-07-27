@@ -16,10 +16,14 @@
 
 package org.activiti.runtime;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.definition.ProcessDefinitionIT;
+import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.junit.Before;
@@ -32,32 +36,36 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ProcessVariablesIT {
+@TestPropertySource("classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+public class ProcessVariablesIT extends KeycloakEnabledBaseTestIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private ProcessInstanceRestTemplate processInstanceRestTemplate;
+    private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
     private static final String SIMPLE_PROCESS_WITH_VARIABLES = "ProcessWithVariables";
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
+        super.setUp();
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
-        assertThat(processDefinitions.getBody().getContent()).hasSize(3);
+        assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
-            processDefinitionIds.put(pd.getName(),
-                                     pd.getId());
+            processDefinitionIds.put(pd.getName(), pd.getId());
         }
     }
 
@@ -72,12 +80,12 @@ public class ProcessVariablesIT {
         variables.put("age",
                       15);
         ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS_WITH_VARIABLES),
-                                                                                                 variables);
+                                                                                                 variables,accessToken);
 
         //when
-        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables",
+        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables",
                                                                                                 HttpMethod.GET,
-                                                                                                null,
+                                                                                                getRequestEntityWithHeaders(),
                                                                                                 new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
                                                                                                 });
 
@@ -97,7 +105,7 @@ public class ProcessVariablesIT {
         };
         return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
-                                     null,
+                                     getRequestEntityWithHeaders(),
                                      responseType);
     }
 }

@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "process-definitions", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/process-definitions", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessDefinitionController {
 
     private final RepositoryService repositoryService;
@@ -60,13 +60,14 @@ public class ProcessDefinitionController {
     public PagedResources<ProcessDefinitionResource> getProcessDefinitions(Pageable pageable,
                                                                            PagedResourcesAssembler<ProcessDefinition> pagedResourcesAssembler) {
         Page<ProcessDefinition> page = pageableRepositoryService.getProcessDefinitions(pageable);
-        return pagedResourcesAssembler.toResource(page,
-                                                  resourceAssembler);
+        return pagedResourcesAssembler.toResource(page, resourceAssembler);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public ProcessDefinitionResource getProcessDefinition(@PathVariable String id) {
-        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
+        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+                                                                                              .processDefinitionId(id)
+                                                                                              .singleResult();
         if (processDefinition == null) {
             throw new ActivitiException("Unable to find process definition for the given id:'" + id + "'");
         }

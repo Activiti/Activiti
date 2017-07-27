@@ -11,6 +11,11 @@
   <artifactId>activiti-spring-boot-starter</artifactId>
 
   <dependencies>
+    <!-- keycloak included as default identity provider to be excluded if overridden -->
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-services-identity-keycloak</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-services-core-model</artifactId>
@@ -106,6 +111,10 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
+      <artifactId>activiti-bpmn-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-spring</artifactId>
     </dependency>
     <dependency>
@@ -127,5 +136,23 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <failIfNoTests>false</failIfNoTests>
+          <trimStackTrace>false</trimStackTrace>
+          <excludes>
+            <exclude>**/*TestCase.java</exclude>
+            <exclude>**/*IT.java</exclude>
+          </excludes>
+          <runOrder>alphabetical</runOrder>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

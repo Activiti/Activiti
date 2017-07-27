@@ -16,25 +16,15 @@
 
 package org.activiti.runtime;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.activiti.definition.ProcessDefinitionIT;
-import org.activiti.engine.UserGroupLookupProxy;
+import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.commands.CompleteTaskCmd;
-import org.activiti.services.core.pageable.AuthenticationWrapper;
-import org.activiti.services.core.pageable.PageableTaskService;
-import org.activiti.services.rest.controllers.TaskController;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -44,59 +34,64 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 
-import static org.activiti.runtime.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class TasksIT {
+@TestPropertySource("classpath:application-test.properties")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+public class TasksIT extends KeycloakEnabledBaseTestIT {
 
-    private static final String TASKS_URL = "/tasks/";
+    private static final String TASKS_URL = "/v1/tasks/";
     private static final String SIMPLE_PROCESS = "SimpleProcess";
     private static final ParameterizedTypeReference<Task> TASK_RESPONSE_TYPE = new ParameterizedTypeReference<Task>() {
     };
     public static final ParameterizedTypeReference<PagedResources<Task>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Task>>() {
     };
+    public static final String PROCESS_DEFINITIONS_URL = "/v1/process-definitions/";
+
 
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @Autowired
-    private ProcessInstanceRestTemplate processInstanceRestTemplate;
-
-    //mocking identity integration as that is to be supplied in implementation of starter (e.g. see sample)
-    private UserGroupLookupProxy userGroupLookupProxy = Mockito.mock(UserGroupLookupProxy.class);
-    private AuthenticationWrapper authenticationWrapper = Mockito.mock(AuthenticationWrapper.class);
-
-    @Autowired
-    private PageableTaskService pageableTaskService; //want to inject mocks for identity
-
-    @Autowired
-    private TaskController taskController;
+    private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
+
     @Before
-    public void setUp() {
+    public void setUp() throws Exception{
+        keycloaktestuser = "hruser";
+        //don't need to set password as same password as testuser
+        accessToken = authenticateUser();
+
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
-        assertThat(processDefinitions.getBody().getContent()).hasSize(3);
-        for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
-            processDefinitionIds.put(pd.getName(),
-                                     pd.getId());
+        assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        assertThat(processDefinitions.getBody().getContent()).hasSize(4); //if a new definition is added then this is expected to be increased
+        for(ProcessDefinition pd : processDefinitions.getBody().getContent()){
+            processDefinitionIds.put(pd.getName(), pd.getId());
         }
-        pageableTaskService.setUserGroupLookupProxy(userGroupLookupProxy);
-        pageableTaskService.setAuthenticationWrapper(authenticationWrapper);
-        taskController.setAuthenticationWrapper(authenticationWrapper);
     }
 
     @Test
     public void shouldGetAvailableTasks() throws Exception {
+        //we are hruser who is in hr group so we can see tasks
+
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
 
         //when
         ResponseEntity<PagedResources<Task>> responseEntity = executeRequestGetTasks();
@@ -109,29 +104,16 @@ public class TasksIT {
     }
 
     @Test
-    public void shouldGetAvailableTasksForUser() throws Exception {
-
-        //user is not candidate for task by id but set as candidate by groups
-        when(authenticationWrapper.getAuthenticatedUserId()).thenReturn("testuser");
-        when(userGroupLookupProxy.getGroupsForCandidateUser("testuser")).thenReturn(Arrays.asList("hr"));
-
-        //should now get all of the tasks for SIMPLE_PROCESS
-        shouldGetAvailableTasks();
-
-        //verify that the mock was used
-        verify(authenticationWrapper).getAuthenticatedUserId();
-        verify(userGroupLookupProxy).getGroupsForCandidateUser("testuser");
-    }
-
-    @Test
     public void shouldNotGetTasksWithoutPermission() throws Exception {
+        keycloaktestuser = "testuser";
+        //don't need to set password as same password as hruser
+        accessToken = authenticateUser();
 
-        //now authenticated as testuser who is not in hr group as not setting any groups
-        when(authenticationWrapper.getAuthenticatedUserId()).thenReturn("testuser");
-        when(userGroupLookupProxy.getGroupsForCandidateUser("testuser")).thenReturn(null);
+        //now authenticated as testuser who is not in hr group
 
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
 
         //when
         ResponseEntity<PagedResources<Task>> responseEntity = executeRequestGetTasks();
@@ -142,90 +124,76 @@ public class TasksIT {
         assertThat(tasks.size()).isEqualTo(0);
     }
 
+    private ResponseEntity<PagedResources<Task>> executeRequestGetTasks() {
+        return testRestTemplate.exchange(TASKS_URL,
+                                         HttpMethod.GET,
+                                            getRequestEntityWithHeaders(),
+                                         PAGED_TASKS_RESPONSE_TYPE);
+    }
+
+
     @Test
     public void shouldGetTasksRelatedToTheGivenProcessInstance() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        ResponseEntity<ProcessInstance> startProcessResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
 
         //when
         ResponseEntity<PagedResources<Task>> tasksEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessResponse.getBody().getId() + "/tasks",
-                                                                                     HttpMethod.GET,
-                                                                                     null,
-                                                                                     PAGED_TASKS_RESPONSE_TYPE);
+                HttpMethod.GET,
+                getRequestEntityWithHeaders(),
+                PAGED_TASKS_RESPONSE_TYPE);
 
         //then
         assertThat(tasksEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(tasksEntity.getBody().getContent()).extracting(Task::getName).containsExactly("Perform action");
     }
 
-    private ResponseEntity<PagedResources<Task>> executeRequestGetTasks() {
-        return testRestTemplate.exchange(TASKS_URL,
-                                         HttpMethod.GET,
-                                         null,
-                                         PAGED_TASKS_RESPONSE_TYPE);
-    }
 
     @Test
     public void shouldGetTaskById() throws Exception {
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         //when
         ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId(),
-                                                                        HttpMethod.GET,
-                                                                        null,
-                                                                        TASK_RESPONSE_TYPE);
+                HttpMethod.GET,
+                getRequestEntityWithHeaders(),
+                TASK_RESPONSE_TYPE);
 
         //then
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getBody()).isEqualToComparingFieldByField(task);
     }
 
+
     @Test
     public void claimTaskShouldSetAssignee() throws Exception {
-        when(authenticationWrapper.getAuthenticatedUserId()).thenReturn("testuser");
-        when(userGroupLookupProxy.getGroupsForCandidateUser("testuser")).thenReturn(Arrays.asList("hr"));
-
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         //when
         ResponseEntity<Task> responseEntity = executeRequestClaim(task);
+
 
         //then
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().getAssignee()).isEqualTo("testuser");
-    }
-
-    @Test
-    public void claimTaskShouldFailWhenNoUserAvailable() throws Exception {
-        //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
-        Task task = executeRequestGetTasks().getBody().iterator().next();
-
-        //when
-        ResponseEntity<Task> responseEntity = executeRequestClaim(task);
-
-        //then
-        assertThat(responseEntity).isNotNull();
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
-        // This is failing because the claim should use the Security/IDM layer
+        assertThat(responseEntity.getBody().getAssignee()).isEqualTo(keycloaktestuser);
     }
 
     private ResponseEntity<Task> executeRequestClaim(Task task) {
         return testRestTemplate.exchange(TASKS_URL + task.getId() + "/claim",
                                          HttpMethod.POST,
-                                         null,
+                                            getRequestEntityWithHeaders(),
                                          TASK_RESPONSE_TYPE);
     }
 
     @Test
     public void releaseTaskShouldSetAssigneeBackToNull() throws Exception {
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         executeRequestClaim(task);
@@ -233,7 +201,7 @@ public class TasksIT {
         //when
         ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/release",
                                                                         HttpMethod.POST,
-                                                                        null,
+                                                                        getRequestEntityWithHeaders(),
                                                                         TASK_RESPONSE_TYPE);
 
         //then
@@ -242,18 +210,19 @@ public class TasksIT {
         assertThat(responseEntity.getBody().getAssignee()).isNull();
     }
 
+
     @Test
     public void shouldCompleteATask() throws Exception {
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         //when
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",
-                                                                        HttpMethod.POST,
-                                                                        null,
-                                                                        new ParameterizedTypeReference<Void>() {
-                                                                        });
+                HttpMethod.POST,
+                getRequestEntityWithHeaders(),
+                new ParameterizedTypeReference<Void>() {
+                });
 
         //then
         assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -262,18 +231,18 @@ public class TasksIT {
     @Test
     public void shouldCompleteATaskPassingInputVariables() throws Exception {
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd(Collections.singletonMap("myVar",
-                                                                                       "any"));
+                "any"));
 
         //when
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",
-                                                                        HttpMethod.POST,
-                                                                        new HttpEntity<>(completeTaskCmd),
-                                                                        new ParameterizedTypeReference<Void>() {
-                                                                        });
+                HttpMethod.POST,
+                new HttpEntity(completeTaskCmd,getHeaders(accessToken.getToken())),
+                new ParameterizedTypeReference<Void>() {
+                });
 
         //then
         assertThat(responseEntity.getStatusCodeValue()).isEqualTo(HttpStatus.OK.value());
@@ -282,9 +251,10 @@ public class TasksIT {
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-        return testRestTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
-                                         HttpMethod.GET,
-                                         null,
-                                         responseType);
+
+        return testRestTemplate.exchange(PROCESS_DEFINITIONS_URL,
+                                     HttpMethod.GET,
+                                        getRequestEntityWithHeaders(),
+                                     responseType);
     }
 }
