@@ -6,9 +6,9 @@ The goal is to define a very easy and initial process to demonstrate the power o
 The process must work with the one [Activiti](https://www.activiti.org/ "Activiti") installation only (not a “real” microservices architecture) because it must be easy to use and run with less possible dependencies.
 The project works with [Activiti](https://www.activiti.org/ "Activiti") version 6.0.
 
-* Description of the process
-  * The entities
-  * The actors
+* [Description of the process](#description)
+  * [The entities](#entities)
+  * [The actors](#actors)
 
 <a name="description"></a>
 # Description of the process
