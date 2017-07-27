@@ -75,12 +75,12 @@ Below the BPNM 2.0 diagrams of the four processes included.
 <a name="diagram1"></a>
 ### The Emergency Call Center
 
-TODO
+![Diagram](doc/diagram.01.png)
 
 <a name="diagram2"></a>
 ### The Fire Dept, Police Dept, Hospital
 
-TODO
+![Diagram](doc/diagram.02.png)
 
 <a name="prerequisites"></a>
 # Prerequisites
@@ -122,14 +122,18 @@ Then start a new `Emergency Call Center` process and follow the tasks.
 <a name="compiling"></a>
 # Building the source code
 
-mvn clean compile; mvn package
+The source code of the project is available in this project.
+To compile it: clone the project into your environment, open a terminal and move into the `emergency-call-center` folder.
+Then execute `mvn clean compile` and `mvn package`.
+
+If you will see the `BUILD SUCCESS` message, move to the `target` forget and there you can find the `emergency-call-center-1.0.jar` file.
 
 <a name="screenshots"></a>
 # Screenshots
 
 Below some screenshots of the application as an example.
 
-![Emergency Call Center](doc/screenshot.01.png)
+![Screenshot1](doc/screenshot.01.png)
 
 <a name="support"></a>
 # Feedback, issues or support
