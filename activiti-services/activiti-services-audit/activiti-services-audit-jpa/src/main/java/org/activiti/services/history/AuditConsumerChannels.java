@@ -20,10 +20,10 @@ package org.activiti.services.history;
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.messaging.SubscribableChannel;
 
-public interface HistoryConsumerChannels {
+public interface AuditConsumerChannels {
 
-    String HISTORY_CONSUMER = "historyConsumer";
+    String AUDIT_CONSUMER = "auditConsumer";
 
-    @Input(HISTORY_CONSUMER)
-    SubscribableChannel historyConsumer();
+    @Input(AUDIT_CONSUMER)
+    SubscribableChannel auditConsumer();
 }

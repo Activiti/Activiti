@@ -28,7 +28,7 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-@EnableBinding(HistoryConsumerChannels.class)
+@EnableBinding(AuditConsumerChannels.class)
 public class JpaAuditApplication implements CommandLineRunner {
 
     private final EventsRepository eventsRepository;
@@ -48,7 +48,7 @@ public class JpaAuditApplication implements CommandLineRunner {
         System.out.println(">>> Starting Audit App... ");
     }
 
-    @StreamListener(HistoryConsumerChannels.HISTORY_CONSUMER)
+    @StreamListener(AuditConsumerChannels.AUDIT_CONSUMER)
     public synchronized void receive(ProcessEngineEventEntity event) {
         System.out.println(">>>> Recieved Event" + event);
         System.out.println(">>>> \t Event Meta Data: " + event.getTimestamp() + " > " + event.getEventType());
