@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-spring-boot-samples</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7-201707-EA-SNAPSHOT</version>
   </parent>
 
   <artifactId>spring-boot-sample-hal-rest-api</artifactId>
@@ -16,15 +16,11 @@
   <name>spring-boot-sample-hal-rest-api</name>
 
   <dependencies>
-
+<!-- keycloak included as default identity manager, to substitute another exclude activiti-services-identity-keycloak and its keycloak dependencies-->
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-spring-boot-starter-hal-rest-api</artifactId>
+      <artifactId>activiti-spring-boot-starter</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-services-identity-keycloak</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>

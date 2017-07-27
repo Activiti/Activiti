@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class Task {
 
     public enum TaskStatus {
-        CREATED, ASSIGNED, SUSPENDED
+                            CREATED, ASSIGNED, SUSPENDED
     }
 
     private String id;

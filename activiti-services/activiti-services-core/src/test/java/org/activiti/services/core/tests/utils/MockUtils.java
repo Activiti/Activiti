@@ -14,15 +14,14 @@
  */
 package org.activiti.services.core.tests.utils;
 
-import org.mockito.invocation.InvocationOnMock;
+import static org.mockito.Mockito.mock;
 
-import static org.mockito.Mockito.*;
+import org.mockito.invocation.InvocationOnMock;
 
 public class MockUtils {
 
     public static <T> T selfReturningMock(Class<T> clazz) {
-        return mock(clazz,
-                    InvocationOnMock::getMock);
+        return mock(clazz, InvocationOnMock::getMock);
     }
 
 }

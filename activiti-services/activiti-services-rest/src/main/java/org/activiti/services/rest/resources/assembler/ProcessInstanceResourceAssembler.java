@@ -36,7 +36,8 @@ public class ProcessInstanceResourceAssembler extends ResourceAssemblerSupport<P
 
     @Override
     public ProcessInstanceResource toResource(ProcessInstance processInstance) {
-        Link processInstancesRel = linkTo(methodOn(ProcessInstanceController.class).getProcessInstances(null, null)).withRel("processInstances");
+        Link processInstancesRel = linkTo(methodOn(ProcessInstanceController.class).getProcessInstances(null, null))
+                                                                                                                    .withRel("processInstances");
         Link selfLink = linkTo(methodOn(ProcessInstanceController.class).getProcessInstanceById(processInstance.getId())).withSelfRel();
         Link variablesLink = linkTo(methodOn(ProcessInstanceVariableController.class).getVariables(processInstance.getId())).withRel("variables");
         Link homeLink = linkTo(HomeController.class).withRel("home");
