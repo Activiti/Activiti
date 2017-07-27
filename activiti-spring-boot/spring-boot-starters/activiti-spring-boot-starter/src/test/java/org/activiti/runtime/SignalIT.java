@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.sun.mail.iap.Response;
 import org.activiti.definition.ProcessDefinitionIT;
 import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
