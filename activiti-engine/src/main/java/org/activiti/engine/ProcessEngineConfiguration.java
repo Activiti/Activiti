@@ -185,8 +185,6 @@ public abstract class ProcessEngineConfiguration {
    */
   protected boolean tablePrefixIsSchema;
 
-  protected boolean isCreateDiagramOnDeploy = true;
-
   protected String xmlEncoding = "UTF-8";
 
   protected String defaultCamelContext = "camelContext";
@@ -636,15 +634,6 @@ public abstract class ProcessEngineConfiguration {
 
   public ProcessEngineConfiguration setDefaultCamelContext(String defaultCamelContext) {
     this.defaultCamelContext = defaultCamelContext;
-    return this;
-  }
-
-  public boolean isCreateDiagramOnDeploy() {
-    return isCreateDiagramOnDeploy;
-  }
-
-  public ProcessEngineConfiguration setCreateDiagramOnDeploy(boolean createDiagramOnDeploy) {
-    this.isCreateDiagramOnDeploy = createDiagramOnDeploy;
     return this;
   }
 
