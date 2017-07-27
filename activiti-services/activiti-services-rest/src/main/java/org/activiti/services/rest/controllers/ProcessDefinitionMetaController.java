@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
@@ -50,11 +51,11 @@ public class ProcessDefinitionMetaController {
         }
 
         List<Process> processes = repositoryService.getBpmnModel(id).getProcesses();
-        HashSet<ProcessDefinitionVariable> variables = new HashSet<ProcessDefinitionVariable>();
-        HashSet<String> users = new HashSet<String>();
-        HashSet<String> groups = new HashSet<String>();
-        HashSet<ProcessDefinitionUserTask> userTasks = new HashSet<ProcessDefinitionUserTask>();
-        HashSet<ProcessDefinitionServiceTask> serviceTasks = new HashSet<ProcessDefinitionServiceTask>();
+        Set<ProcessDefinitionVariable> variables = new HashSet<ProcessDefinitionVariable>();
+        Set<String> users = new HashSet<String>();
+        Set<String> groups = new HashSet<String>();
+        Set<ProcessDefinitionUserTask> userTasks = new HashSet<ProcessDefinitionUserTask>();
+        Set<ProcessDefinitionServiceTask> serviceTasks = new HashSet<ProcessDefinitionServiceTask>();
 
         for (Process process : processes) {
             variables.addAll(getVariables(process));

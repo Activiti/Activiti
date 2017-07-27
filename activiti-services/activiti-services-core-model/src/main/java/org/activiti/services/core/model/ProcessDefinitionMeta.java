@@ -31,11 +31,11 @@ public class ProcessDefinitionMeta {
                                  String name,
                                  String description,
                                  int version,
-                                 HashSet<String> users,
-                                 HashSet<String> groups,
-                                 HashSet<ProcessDefinitionVariable> variables,
-                                 HashSet<ProcessDefinitionUserTask> userTasks,
-                                 HashSet<ProcessDefinitionServiceTask> serviceTasks) {
+                                 Set<String> users,
+                                 Set<String> groups,
+                                 Set<ProcessDefinitionVariable> variables,
+                                 Set<ProcessDefinitionUserTask> userTasks,
+                                 Set<ProcessDefinitionServiceTask> serviceTasks) {
         super();
         this.id = id;
         this.name = name;

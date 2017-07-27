@@ -2,6 +2,7 @@ package org.activiti.services.core.model;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +13,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class ProcessDefinitionVariable extends JsonDeserializer<HashSet<ProcessDefinitionVariable>> {
+public class ProcessDefinitionVariable extends JsonDeserializer<Set<ProcessDefinitionVariable>> {
 
     @JsonProperty("variableName")
     private String variableName;
@@ -37,10 +38,10 @@ public class ProcessDefinitionVariable extends JsonDeserializer<HashSet<ProcessD
     }
 
     @Override
-    public HashSet<ProcessDefinitionVariable> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
+    public Set<ProcessDefinitionVariable> deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException,
                                                                                                    JsonProcessingException {
 
-        HashSet<ProcessDefinitionVariable> variables = new HashSet<ProcessDefinitionVariable>();
+        Set<ProcessDefinitionVariable> variables = new HashSet<ProcessDefinitionVariable>();
         ObjectCodec oc = jp.getCodec();
         JsonNode nodes = oc.readTree(jp);
 
