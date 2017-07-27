@@ -189,10 +189,6 @@ public abstract class ProcessEngineConfiguration {
 
   protected String defaultCamelContext = "camelContext";
 
-  protected String activityFontName = "Arial";
-  protected String labelFontName = "Arial";
-  protected String annotationFontName = "Arial";
-
   protected ClassLoader classLoader;
   /**
    * Either use Class.forName or ClassLoader.loadClass for class loading. See http://forums.activiti.org/content/reflectutilloadclass-and-custom- classloader
@@ -637,15 +633,6 @@ public abstract class ProcessEngineConfiguration {
     return this;
   }
 
-  public String getActivityFontName() {
-    return activityFontName;
-  }
-
-  public ProcessEngineConfiguration setActivityFontName(String activityFontName) {
-    this.activityFontName = activityFontName;
-    return this;
-  }
-
   public ProcessEngineConfiguration setProcessEngineLifecycleListener(ProcessEngineLifecycleListener processEngineLifecycleListener) {
     this.processEngineLifecycleListener = processEngineLifecycleListener;
     return this;
@@ -653,24 +640,6 @@ public abstract class ProcessEngineConfiguration {
 
   public ProcessEngineLifecycleListener getProcessEngineLifecycleListener() {
     return processEngineLifecycleListener;
-  }
-
-  public String getLabelFontName() {
-    return labelFontName;
-  }
-
-  public ProcessEngineConfiguration setLabelFontName(String labelFontName) {
-    this.labelFontName = labelFontName;
-    return this;
-  }
-
-  public String getAnnotationFontName() {
-    return annotationFontName;
-  }
-
-  public ProcessEngineConfiguration setAnnotationFontName(String annotationFontName) {
-    this.annotationFontName = annotationFontName;
-    return this;
   }
 
   public String getDatabaseTablePrefix() {
