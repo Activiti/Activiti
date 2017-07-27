@@ -9,8 +9,19 @@ The project works with [Activiti](https://www.activiti.org/ "Activiti") version 
 * [Description of the process](#description)
   * [The entities](#entities)
   * [The actors](#actors)
+  * [The lifecycle](#lifecycle)
+  * [The diagrams](#diagrams)
+    * [The Emergency Call Center](#diagram1)
+    * [The Fire Dept, Police Dept, Hospital](#diagram2)
+* [Prerequisites](#prerequisites)
+* [Installing the Emergency Call Center and Departments App](#installing)
+* [Running the Emergency Call Center process](#running)
+* [Building the source code](#compiling)
+* [Screenshots](#screenshots)
+* [Feedback, issues or support](#support)
+* [Disclaimer](#disclaimer)
+* [License](#license)
 
-<a name="description"></a>
 # Description of the process
 
 Below a brief introduction of the implemented process.
@@ -41,6 +52,7 @@ Below the actors involved in the process.
 
 * The Employee of the Hospital. This is a known Employee of the Hospital using the software (and BPM) to manage the internal Doctors and resources of the like Ambulances, etc.
 
+<a name="lifecycle"></a>
 ## The lifecycle
 
 The process to face starts with a contact from outside the organization where a Citizen, a Public Employee (a policeman for example) or an automatic software (using an authorized service over internet) contact the Call Center to raise an issue.
@@ -55,18 +67,22 @@ In each Organization, an internal Employee will take in charge the issue with th
 
 The Call Center will receive the feedback with a collection of details describing the solution (or denial) from the various Organizations and gives back a feedback to the external stakeholder. In case of denial, the Call Center will face the issue with another suggested solution (and this will cause an iteration in the process).
 
+<a name="diagrams"></a>
 ## The diagrams
 
 Below the BPNM 2.0 diagrams of the four processes included.
 
+<a name="diagram1"></a>
 ### The Emergency Call Center
 
 TODO
 
+<a name="diagram2"></a>
 ### The Fire Dept, Police Dept, Hospital
 
 TODO
 
+<a name="prerequisites"></a>
 # Prerequisites
 
 Before running the application, please check the assumptions listed below.
@@ -77,7 +93,7 @@ Before running the application, please check the assumptions listed below.
 
 - Java version 1.8.0_131.
 
-<a name="install"></a>
+<a name="installing"></a>
 # Installing the Emergency Call Center and Departments App
 
 Into the `build` folder you can find all the requested libraries, configuration files and Activiti App packages (in ZIP format).
@@ -95,6 +111,7 @@ Starting from a standard Activiti installation, with `activiti-app` and `activit
 
 * Once in the Emergency Call Center and Departments App, don't forget to click on the `Publish` button to make it available.
 
+<a name="running"></a>
 # Running the Emergency Call Center process
 
 If you did not install the Emergency Call Center and Departments App, please follow the [instructions at this link](#install).
@@ -102,16 +119,19 @@ Once done, go back to the main dahsboard and click on the Emergency Call Center 
 
 Then start a new `Emergency Call Center` process and follow the tasks.
 
+<a name="compiling"></a>
 # Building the source code
 
 mvn clean compile; mvn package
 
+<a name="screenshots"></a>
 # Screenshots
 
 Below some screenshots of the application as an example.
 
 ![Emergency Call Center](doc/screenshot.01.png)
 
+<a name="support"></a>
 # Feedback, issues or support
 
 If something doesn't work for you, you'd probably need support.
@@ -121,11 +141,13 @@ This is not the right place to ask (and receive) support because exists a better
 
 Feel free to ask there.
 
+<a name="disclaimer"></a>
 # Disclaimer
 
 All the content available in this tutorial has been developed and tested using Activiti 6.0 release, Java 8 on a Linux Ubuntu 16.04.01 LTS as Operating System.
 Each variation to the listed versions and tools could affect the success of the execution, even if the involved technologies and tasks have been defined to be as more general as possible, not related to any specific context or platform.
 
+<a name="license"></a>
 # License
 
 Copyright (C) 2017 Alfresco Software Limited
