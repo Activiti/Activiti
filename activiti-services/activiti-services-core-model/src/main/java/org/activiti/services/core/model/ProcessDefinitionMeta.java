@@ -1,6 +1,7 @@
 package org.activiti.services.core.model;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,14 +15,14 @@ public class ProcessDefinitionMeta {
     private String name;
     private String description;
     private int version;
-    private HashSet<String> users;
-    private HashSet<String> groups;
+    private Set<String> users;
+    private Set<String> groups;
     @JsonDeserialize(using = ProcessDefinitionVariable.class)
-    private HashSet<ProcessDefinitionVariable> variables;
+    private Set<ProcessDefinitionVariable> variables;
     @JsonDeserialize(using = ProcessDefinitionUserTask.class)
-    private HashSet<ProcessDefinitionUserTask> userTasks;
+    private Set<ProcessDefinitionUserTask> userTasks;
     @JsonDeserialize(using = ProcessDefinitionServiceTask.class)
-    private HashSet<ProcessDefinitionServiceTask> serviceTasks;
+    private Set<ProcessDefinitionServiceTask> serviceTasks;
 
     public ProcessDefinitionMeta() {
     };
@@ -63,23 +64,23 @@ public class ProcessDefinitionMeta {
         return version;
     }
 
-    public HashSet<String> getUsers() {
+    public Set<String> getUsers() {
         return users;
     }
 
-    public HashSet<String> getGroups() {
+    public Set<String> getGroups() {
         return groups;
     }
 
-    public HashSet<ProcessDefinitionVariable> getVariables() {
+    public Set<ProcessDefinitionVariable> getVariables() {
         return variables;
     }
 
-    public HashSet<ProcessDefinitionUserTask> getUserTasks() {
+    public Set<ProcessDefinitionUserTask> getUserTasks() {
         return userTasks;
     }
 
-    public HashSet<ProcessDefinitionServiceTask> getServiceTasks() {
+    public Set<ProcessDefinitionServiceTask> getServiceTasks() {
         return serviceTasks;
     }
 
