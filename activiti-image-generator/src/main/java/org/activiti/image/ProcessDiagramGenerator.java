@@ -57,4 +57,10 @@ public interface ProcessDiagramGenerator {
                                        String activityFontName,
                                        String labelFontName,
                                        String annotationFontName);
+
+    public String getDefaultActivityFontName();
+
+    public String getDefaultLabelFontName();
+
+    public String getDefaultAnnotationFontName();
 }
