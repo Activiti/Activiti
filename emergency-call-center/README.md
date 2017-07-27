@@ -2,9 +2,9 @@
 
 The process implemented is related to an Emergency Call Center, coordinating the requests with different others Organizations (Fire Department, Police, Hospitals).
 The idea is to be able to run the processes with a microservice architecture.
-The goal is to define a very easy and initial process to demonstrate the power of Activiti and how it’s easy to manage (and possibly extend) the solution.
-The process must work with the one Activiti installation only (not a “real” microservices architecture) because it must be easy to use and run with less possible dependencies.
-The project works with Activiti version 6.0.
+The goal is to define a very easy and initial process to demonstrate the power of [Activiti](https://www.activiti.org/ "Activiti") and how it’s easy to manage (and possibly extend) the solution.
+The process must work with the one [Activiti](https://www.activiti.org/ "Activiti") installation only (not a “real” microservices architecture) because it must be easy to use and run with less possible dependencies.
+The project works with [Activiti](https://www.activiti.org/ "Activiti") version 6.0.
 
 # Description of the process
 
@@ -64,23 +64,42 @@ TODO
 
 Before running the application, please check the assumptions listed below.
 
-- Activiti 6.0 released on tomcat, running on `localhost` on port `8080`.
+- [Activiti](https://www.activiti.org/ "Activiti") 6.0 released on tomcat, running on `localhost` on port `8080`.
 
 - MySql Ver 14.14 Distrib 5.7.19, for Linux (x86_64) using EditLine wrapper.
 
-- Java version "1.8.0_131".
+- Java version 1.8.0_131.
 
-# Building the process
+<a name="install"></a>
+# Installing the Emergency Call Center and Departments App
 
-TODO
+Into the `build` folder you can find all the requested libraries, configuration files and Activiti App packages (in ZIP format).
+Starting from a standard Activiti installation, with `activiti-app` and `activiti-rest` up and running, follow the tasks below to install the Emergency Call Center.
 
-# Installing and running the process
+* Stop Activiti Tomcat (or Application Server).
 
-TODO
+* Copy the `emergency-call-center-1.0.jar` file into the `<ativiti-app>/WEB-INF/lib` folder.
+
+* Copy the `emergencyCallCenter.properties` file into a folder of the classpath (for example the `<tomcat>/lib`).
+
+* Start Activiti again.
+
+* Access to the the `Kickstart App` | `App` and click on `Import App`. A modal window will ask you to point on a ZIP file containing the App package to import. Select the `Emergency Call Center.zip` from the `build` folder.
+
+* Once in the Emergency Call Center and Departments App, don't forget to click on the `Publish` button to make it available.
+
+# Running the Emergency Call Center process
+
+If you did not install the Emergency Call Center and Departments App, please follow the [instructions at this link](#install).
+Once done, go back to the main dahsboard and click on the Emergency Call Center and Departments App.
+
+Then start a new `Emergency Call Center` process and follow the tasks.
+
+# Building the source code
+
+mvn clean compile; mvn package
 
 # Screenshots
-
-TODO
 
 Below some screenshots of the application as an example.
 
