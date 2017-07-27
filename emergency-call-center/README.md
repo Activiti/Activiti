@@ -133,7 +133,13 @@ If you will see the `BUILD SUCCESS` message, move to the `target` forget and the
 
 Below some screenshots of the application as an example.
 
-![Screenshot1](doc/screenshot.01.png)
+![Dahboard](doc/screenshot.01.png)
+
+![Call center details](doc/screenshot.02.png)
+
+![The processes created](doc/screenshot.03.png)
+
+![The diagram](doc/screenshot.04.png)
 
 <a name="support"></a>
 # Feedback, issues or support
