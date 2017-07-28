@@ -6,7 +6,7 @@
   <groupId>org.activiti</groupId>
   <artifactId>activiti-root</artifactId>
   <packaging>pom</packaging>
-  <version>7-201707-EA</version>
+  <version>7-201708-EA-SNAPSHOT</version>
   <properties>
     <!-- Spring Boot / Cloud / Stream deps -->
     <spring.boot.version>2.0.0.M2</spring.boot.version>
@@ -988,6 +988,6 @@
     <url>https://github.com/Activiti/Activiti</url>
     <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
     <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
-    <tag>activiti-7-201707-EA</tag>
+    <tag>HEAD</tag>
   </scm>
 </project>
