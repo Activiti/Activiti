@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.activiti.services.events;
+package org.activiti.services.events.converter;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiSequenceFlowTakenEventImpl;
-import org.activiti.services.events.converter.EventConverter;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.activiti.services.events.SequenceFlowTakenEventImpl;
 import org.springframework.stereotype.Component;
 
 import static org.activiti.engine.delegate.event.ActivitiEventType.SEQUENCEFLOW_TAKEN;
@@ -30,17 +30,16 @@ public class SequenceFlowTakenEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println(event.getType() + "---> Sequence Flow Taken??? " + event.getClass().getCanonicalName());
         return new SequenceFlowTakenEventImpl(event.getExecutionId(),
-                                                  event.getProcessDefinitionId(),
-                                                  event.getProcessInstanceId(),
-                                                  ((ActivitiSequenceFlowTakenEventImpl)event).getId(),
-                                                  ((ActivitiSequenceFlowTakenEventImpl)event).getSourceActivityId(),
-                                                  ((ActivitiSequenceFlowTakenEventImpl)event).getSourceActivityName(),
-                                                  ((ActivitiSequenceFlowTakenEventImpl)event).getSourceActivityType(),
-                                                  ((ActivitiSequenceFlowTakenEventImpl)event).getTargetActivityId(),
-                                                  ((ActivitiSequenceFlowTakenEventImpl)event).getTargetActivityName(),
-                                                  ((ActivitiSequenceFlowTakenEventImpl)event).getTargetActivityType());
+                                              event.getProcessDefinitionId(),
+                                              event.getProcessInstanceId(),
+                                              ((ActivitiSequenceFlowTakenEventImpl)event).getId(),
+                                              ((ActivitiSequenceFlowTakenEventImpl)event).getSourceActivityId(),
+                                              ((ActivitiSequenceFlowTakenEventImpl)event).getSourceActivityName(),
+                                              ((ActivitiSequenceFlowTakenEventImpl)event).getSourceActivityType(),
+                                              ((ActivitiSequenceFlowTakenEventImpl)event).getTargetActivityId(),
+                                              ((ActivitiSequenceFlowTakenEventImpl)event).getTargetActivityName(),
+                                              ((ActivitiSequenceFlowTakenEventImpl)event).getTargetActivityType());
     }
 
     @Override
