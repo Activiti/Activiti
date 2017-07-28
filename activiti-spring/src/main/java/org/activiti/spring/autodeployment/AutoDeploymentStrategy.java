@@ -38,7 +38,7 @@ public interface AutoDeploymentStrategy {
   /**
    * Performs deployment for the provided resources, using the provided name as a hint and the provided {@link RepositoryService} to perform deployment(s).
    * 
-   * @param deploymentName
+   * @param deploymentNameHint
    *          the hint for the name of deployment(s) performed
    * @param resources
    *          the resources to be deployed

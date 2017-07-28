@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * The idea behind this module is that Spring Security could
- * talk to the {@link org.activiti.engine.IdentityService}
+ * talk to the org.activiti.engine.IdentityService
  * as required.
  */
 @Configuration

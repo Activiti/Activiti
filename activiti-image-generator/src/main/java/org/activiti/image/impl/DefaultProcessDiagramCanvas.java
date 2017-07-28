@@ -80,7 +80,7 @@ import org.w3c.dom.Document;
 /**
  * Represents a canvas on which BPMN 2.0 constructs can be drawn.
  * <p>
- * @see org.activiti.engine.impl.bpmn.diagram.DefaultProcessDiagramGenerator
+ * @see org.activiti.image.impl.DefaultProcessDiagramGenerator
  */
 public class DefaultProcessDiagramCanvas {
 
@@ -311,7 +311,7 @@ public class DefaultProcessDiagramCanvas {
     /**
      * Generates an image of what currently is drawn on the canvas.
      * <p>
-     * Throws an {@link ActivitiException} when {@link #close()} is already
+     * Throws an {@link ActivitiImageException} when {@link #close()} is already
      * called.
      */
     public InputStream generateImage() {

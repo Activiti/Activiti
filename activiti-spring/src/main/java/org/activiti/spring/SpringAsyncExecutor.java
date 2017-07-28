@@ -22,7 +22,7 @@ import org.springframework.core.task.TaskExecutor;
 
 /**
  * <p>
- * This is a spring based implementation of the {@link JobExecutor} using spring abstraction {@link TaskExecutor} for performing background task execution.
+ * This is a spring based implementation of the Job Executor using spring abstraction {@link TaskExecutor} for performing background task execution.
  * </p>
  * <p>
  * The idea behind this implementation is to externalize the configuration of the task executor, so it can leverage to Application servers controller thread pools, for example using the commonj API.
@@ -62,9 +62,9 @@ public class SpringAsyncExecutor extends DefaultAsyncJobExecutor {
   }
 
   /**
-   * Required spring injected {@link RejectedJobsHandler} implementation that will be used when jobs were rejected by the task executor.
+   * Required spring injected {@link SpringRejectedJobsHandler} implementation that will be used when jobs were rejected by the task executor.
    * 
-   * @param taskExecutor
+   * @param rejectedJobsHandler
    */
   public void setRejectedJobsHandler(SpringRejectedJobsHandler rejectedJobsHandler) {
     this.rejectedJobsHandler = rejectedJobsHandler;
