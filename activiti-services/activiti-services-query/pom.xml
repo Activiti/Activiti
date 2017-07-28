@@ -5,21 +5,18 @@
 
   <parent>
     <groupId>org.activiti</groupId>
-    <artifactId>activiti-root</artifactId>
+    <artifactId>activiti-services</artifactId>
     <version>7-201707-EA-SNAPSHOT</version>
   </parent>
 
 
-  <artifactId>activiti-services</artifactId>
+  <artifactId>activiti-services-query</artifactId>
   <packaging>pom</packaging>
 
   <modules>
-    <module>activiti-services-core-model</module>
-    <module>activiti-services-core</module>
-    <module>activiti-services-events</module>
-    <module>activiti-services-rest</module>
-    <module>activiti-services-identity-keycloak</module>
-    <module>activiti-services-query</module>
+    <module>activiti-services-query-model</module>
+    <module>activiti-services-query-repo</module>
+    <module>activiti-services-query-app</module>
   </modules>
 
 </project>
