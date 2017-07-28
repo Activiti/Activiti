@@ -989,7 +989,7 @@
   </ciManagement>
   <scm>
     <url>https://github.com/Activiti/Activiti</url>
-    <connection>scm:git:git@github.com:Activiti/Activiti.git</connection>
-    <developerConnection>scm:git:git@github.com:Activiti/Activiti.git</developerConnection>
+    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
+    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
   </scm>
 </project>
