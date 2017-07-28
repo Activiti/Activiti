@@ -26,6 +26,9 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 @Component
 public class TaskQueryResourceAssembler extends ResourceAssemblerSupport<Task, TaskQueryResource> {
 
@@ -37,7 +40,7 @@ public class TaskQueryResourceAssembler extends ResourceAssemblerSupport<Task, T
     @Override
     public TaskQueryResource toResource(Task task) {
         List<Link> links = new ArrayList<>();
-
+        links.add(linkTo(methodOn(TaskQueryController.class).getTaskById(task.getId())).withSelfRel());
         return new TaskQueryResource(task, links);
     }
 }

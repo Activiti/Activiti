@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Alfresco, Inc. and/or its affiliates.
  *
@@ -17,9 +16,9 @@
 
 package org.activiti.services.query.app.assembler;
 
-import org.activiti.services.query.app.controller.ProcessInstanceQueryController;
-import org.activiti.services.query.app.model.ProcessInstance;
-import org.activiti.services.query.app.resource.ProcessInstanceQueryResource;
+import org.activiti.services.query.app.controller.VariableQueryController;
+import org.activiti.services.query.app.model.Variable;
+import org.activiti.services.query.app.resource.VariableQueryResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -31,17 +30,17 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Component
-public class ProcessInstanceQueryResourceAssembler extends ResourceAssemblerSupport<ProcessInstance,ProcessInstanceQueryResource> {
+public class VariableQueryResourceAssembler extends ResourceAssemblerSupport<Variable, VariableQueryResource> {
 
-
-    public ProcessInstanceQueryResourceAssembler() {
-        super(ProcessInstanceQueryController.class, ProcessInstanceQueryResource.class);
+    public VariableQueryResourceAssembler() {
+        super(VariableQueryController.class,
+                VariableQueryResource.class);
     }
 
     @Override
-    public ProcessInstanceQueryResource toResource(ProcessInstance processInstance) {
+    public VariableQueryResource toResource(Variable variable) {
         List<Link> links = new ArrayList<>();
-        links.add(linkTo(methodOn(ProcessInstanceQueryController.class).getProcessInstanceById(processInstance.getProcessInstanceId())).withSelfRel());
-        return new ProcessInstanceQueryResource(processInstance,links);
+        links.add(linkTo(methodOn(VariableQueryController.class).getVariableById(variable.getId())).withSelfRel());
+        return new VariableQueryResource(variable, links);
     }
 }

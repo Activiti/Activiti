@@ -73,8 +73,9 @@ public class QueryApplication {
 
             //TODO:temporary hack to test querying for nested attributes
             List<Variable> variables = new ArrayList<Variable>();
-            Variable variable = new Variable(""+id++,"type","name","procInstId","taskId",new Date(),new Date(),"executionId");
+            Variable variable = new Variable(""+id++,"type","name","procInstId","taskId",null,null,"executionId");
             variableRepository.save(variable);
+            System.out.println("Variable id "+variable.getId());
             variables.add(variable);
 
             processInstanceQueryRestResource.save(
@@ -84,7 +85,7 @@ public class QueryApplication {
                                         new Date(startedEvent.getTimestamp()),variables));
         } else if (event instanceof ProcessCompletedEvent) {
             ProcessCompletedEvent completedEvent = (ProcessCompletedEvent) event;
-            Optional<ProcessInstance> processInstancebyId = processInstanceQueryRestResource.findById(completedEvent.getProcessInstanceId());
+            Optional<ProcessInstance> processInstancebyId = processInstanceQueryRestResource.findById(Long.parseLong(completedEvent.getProcessInstanceId()));
             ProcessInstance processInstance = processInstancebyId.get();
             processInstance.setStatus("COMPLETED");
             processInstance.setLastModified(new Date(completedEvent.getTimestamp()));
@@ -92,12 +93,13 @@ public class QueryApplication {
         } else if (event instanceof TaskCreatedEvent) {
             TaskCreatedEvent taskCreatedEvent = (TaskCreatedEvent) event;
             Task task = taskCreatedEvent.getTask();
+            System.out.println("Task id "+task.getId());
             task.setStatus("CREATED");
             task.setLastModified(new Date(taskCreatedEvent.getTimestamp()));
 
-            //TODO:temporary hack to test querying for nested attributes
+            //TODO:temporary hack to test querying for nested attributes (dates are null because new Date() results in deserialisation error on endpoint, need to check if that happens when event integrated as not problem for task or procinst)
             List<Variable> variables = new ArrayList<Variable>();
-            Variable variable = new Variable(""+id++,"type","name","procInstId","taskId",new Date(),new Date(),"executionId");
+            Variable variable = new Variable(""+id++,"type","name","procInstId","taskId",null,null,"executionId");
             variableRepository.save(variable);
             variables.add(variable);
             task.setVariables(variables);

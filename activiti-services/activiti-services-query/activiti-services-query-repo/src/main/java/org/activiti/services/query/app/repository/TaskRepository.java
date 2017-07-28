@@ -23,7 +23,9 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+@RepositoryRestResource(exported = false)
 public interface TaskRepository extends CrudRepository<Task, String> , QuerydslPredicateExecutor<Task>, QuerydslBinderCustomizer<QTask> {
 
     @Override
