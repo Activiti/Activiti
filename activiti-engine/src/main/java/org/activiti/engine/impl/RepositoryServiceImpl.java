@@ -31,8 +31,6 @@ import org.activiti.engine.impl.cmd.DeleteModelCmd;
 import org.activiti.engine.impl.cmd.DeployCmd;
 import org.activiti.engine.impl.cmd.GetBpmnModelCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
-import org.activiti.engine.impl.cmd.GetDeploymentProcessDiagramCmd;
-import org.activiti.engine.impl.cmd.GetDeploymentProcessDiagramLayoutCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessModelCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceCmd;
 import org.activiti.engine.impl.cmd.GetDeploymentResourceNamesCmd;
@@ -55,7 +53,6 @@ import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
-import org.activiti.engine.repository.DiagramLayout;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 import org.activiti.engine.repository.NativeDeploymentQuery;
@@ -212,14 +209,6 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
 
   public InputStream getProcessModel(String processDefinitionId) {
     return commandExecutor.execute(new GetDeploymentProcessModelCmd(processDefinitionId));
-  }
-
-  public InputStream getProcessDiagram(String processDefinitionId) {
-    return commandExecutor.execute(new GetDeploymentProcessDiagramCmd(processDefinitionId));
-  }
-
-  public DiagramLayout getProcessDiagramLayout(String processDefinitionId) {
-    return commandExecutor.execute(new GetDeploymentProcessDiagramLayoutCmd(processDefinitionId));
   }
 
   public Model newModel() {

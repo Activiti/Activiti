@@ -181,37 +181,6 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
     }
   }
 
-  public void testDiagramCreationDisabled() {
-    // disable diagram generation
-    processEngineConfiguration.setCreateDiagramOnDeploy(false);
-
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/parse/BpmnParseTest.testParseDiagramInterchangeElements.bpmn20.xml").deploy();
-
-      // Graphical information is not yet exposed publicly, so we need to
-      // do some plumbing
-      CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-      ProcessDefinition processDefinition = commandExecutor.execute(new Command<ProcessDefinition>() {
-        public ProcessDefinition execute(CommandContext commandContext) {
-          return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey("myProcess");
-        }
-      });
-
-      assertNotNull(processDefinition);
-      BpmnModel processModel = repositoryService.getBpmnModel(processDefinition.getId());
-      assertEquals(14, processModel.getMainProcess().getFlowElements().size());
-      assertEquals(7, processModel.getMainProcess().findFlowElementsOfType(SequenceFlow.class).size());
-
-      // Check that no diagram has been created
-      List<String> resourceNames = repositoryService.getDeploymentResourceNames(processDefinition.getDeploymentId());
-      assertEquals(1, resourceNames.size());
-
-      repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
-    } finally {
-      processEngineConfiguration.setCreateDiagramOnDeploy(true);
-    }
-  }
-
   @Deployment(resources = { "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.bpmn20.xml",
       "org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg" })
   public void testProcessDiagramResource() {

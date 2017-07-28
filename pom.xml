@@ -72,6 +72,7 @@
     <jetty-util.version>8.1.16.v20140903</jetty-util.version>
     <swagger.version>1.5.10</swagger.version>
     <resteasy.version>3.0.21.Final</resteasy.version>
+    <batik.version>1.7</batik.version>
 
     <!--keycloak snapshot that was used to build boot2 adapter
     the original snapshot doesn't contain the boot2 adapter, just this particular build
@@ -126,6 +127,14 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>jboss-thirdparty-releases</id>
+      <name>JBOSS Maven Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <distributionManagement>
@@ -157,6 +166,11 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-image-generator</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -456,6 +470,40 @@
         <scope>compile</scope>
       </dependency>
 
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-awt-util</artifactId>
+        <version>${batik.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-dom</artifactId>
+        <version>${batik.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-svggen</artifactId>
+        <version>${batik.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>batik</groupId>
+        <artifactId>batik-svg-dom</artifactId>
+        <version>${batik.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>batik</groupId>
+        <artifactId>batik-anim</artifactId>
+        <version>${batik.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>batik</groupId>
+        <artifactId>batik-parser</artifactId>
+        <version>${batik.version}</version>
+        <scope>test</scope>
+      </dependency>
+
       <!-- Test -->
       <dependency>
         <groupId>junit</groupId>
@@ -600,6 +648,7 @@
     <module>activiti-bpmn-model</module>
     <module>activiti-process-validation</module>
     <module>activiti-bpmn-layout</module>
+    <module>activiti-image-generator</module>
     <module>activiti-json-converter</module>
     <module>activiti-bpmn-converter</module>
     <module>activiti-engine</module>
