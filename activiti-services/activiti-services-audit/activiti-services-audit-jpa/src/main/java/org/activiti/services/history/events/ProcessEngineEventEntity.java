@@ -45,8 +45,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = TaskAssignedEventEntity.class, name = "TaskAssignedEvent"),
         @JsonSubTypes.Type(value = TaskCompletedEventEntity.class, name = "TaskCompletedEvent"),
         @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = "VariableCreatedEvent"),
-        @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = "VariableUpdatedEvent"),
-        @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = "VariableDeletedEvent"),
+        @JsonSubTypes.Type(value = VariableUpdatedEventEntity.class, name = "VariableUpdatedEvent"),
+        @JsonSubTypes.Type(value = VariableDeletedEventEntity.class, name = "VariableDeletedEvent"),
         @JsonSubTypes.Type(value = SequenceFlowTakenEventEntity.class, name = "SequenceFlowTakenEvent")
 })
 @Entity
