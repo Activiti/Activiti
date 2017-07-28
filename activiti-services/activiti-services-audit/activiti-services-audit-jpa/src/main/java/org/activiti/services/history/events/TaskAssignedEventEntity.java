@@ -34,13 +34,15 @@ public class TaskAssignedEventEntity extends ProcessEngineEventEntity {
     public TaskAssignedEventEntity() {
     }
 
-    public TaskAssignedEventEntity(Long timestamp,
+    public TaskAssignedEventEntity(Long id,
+                                   Long timestamp,
                                    String eventType,
                                    String executionId,
                                    String processDefinitionId,
                                    String processInstanceId,
                                    Task task) {
-        super(timestamp,
+        super(id,
+              timestamp,
               eventType,
               executionId,
               processDefinitionId,

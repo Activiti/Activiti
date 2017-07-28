@@ -22,8 +22,8 @@ import org.springframework.messaging.MessageChannel;
 
 public interface StreamProducer {
 
-    String HISTORY_PRODUCER = "historyProducer";
+    String PRODUCER = "producer";
 
-    @Output(HISTORY_PRODUCER)
-    MessageChannel historyProducer();
+    @Output(PRODUCER)
+    MessageChannel producer();
 }

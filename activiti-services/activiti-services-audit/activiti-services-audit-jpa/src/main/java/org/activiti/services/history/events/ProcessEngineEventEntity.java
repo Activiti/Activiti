@@ -24,7 +24,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -68,11 +67,12 @@ public abstract class ProcessEngineEventEntity {
     public ProcessEngineEventEntity() {
     }
 
-    public ProcessEngineEventEntity(Long timestamp,
+    public ProcessEngineEventEntity(Long id, Long timestamp,
                                     String eventType,
                                     String executionId,
                                     String processDefinitionId,
                                     String processInstanceId) {
+        this.id = id;
         this.timestamp = timestamp;
         this.eventType = eventType;
         this.executionId = executionId;
@@ -100,7 +100,6 @@ public abstract class ProcessEngineEventEntity {
         return processInstanceId;
     }
 
-    @JsonIgnore
     public Long getId() {
         return id;
     }

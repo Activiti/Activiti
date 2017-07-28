@@ -24,14 +24,15 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value = "ActivityCompletedEvent")
 public class ActivityCompletedEventEntity extends ProcessEngineEventEntity {
 
-    protected String activityId;
-    protected String activityName;
-    protected String activityType;
+    private String activityId;
+    private String activityName;
+    private String activityType;
 
     public ActivityCompletedEventEntity() {
     }
 
-    public ActivityCompletedEventEntity(Long timestamp,
+    public ActivityCompletedEventEntity(Long id,
+                                        Long timestamp,
                                         String eventType,
                                         String executionId,
                                         String processDefinitionId,
@@ -39,7 +40,8 @@ public class ActivityCompletedEventEntity extends ProcessEngineEventEntity {
                                         String activityId,
                                         String activityName,
                                         String activityType) {
-        super(timestamp,
+        super(id,
+              timestamp,
               eventType,
               executionId,
               processDefinitionId,

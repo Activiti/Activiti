@@ -24,14 +24,15 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value = "VariableDeletedEvent")
 public class VariableDeletedEventEntity extends ProcessEngineEventEntity {
 
-    protected String variableName;
-    protected String variableType;
-    protected String taskId;
+    private String variableName;
+    private String variableType;
+    private String taskId;
 
     public VariableDeletedEventEntity() {
     }
 
-    public VariableDeletedEventEntity(Long timestamp,
+    public VariableDeletedEventEntity(Long id,
+                                      Long timestamp,
                                       String eventType,
                                       String executionId,
                                       String processDefinitionId,
@@ -39,7 +40,8 @@ public class VariableDeletedEventEntity extends ProcessEngineEventEntity {
                                       String variableName,
                                       String variableType,
                                       String taskId) {
-        super(timestamp,
+        super(id,
+              timestamp,
               eventType,
               executionId,
               processDefinitionId,

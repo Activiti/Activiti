@@ -32,11 +32,11 @@ public class SequenceFlowTakenEventEntity extends ProcessEngineEventEntity {
     private String targetActivityName;
     private String targetActivityType;
 
-
     public SequenceFlowTakenEventEntity() {
     }
 
-    public SequenceFlowTakenEventEntity(Long timestamp,
+    public SequenceFlowTakenEventEntity(Long id,
+                                        Long timestamp,
                                         String eventType,
                                         String executionId,
                                         String processDefinitionId,
@@ -48,7 +48,8 @@ public class SequenceFlowTakenEventEntity extends ProcessEngineEventEntity {
                                         String targetActivityId,
                                         String targetActivityName,
                                         String targetActivityType) {
-        super(timestamp,
+        super(id,
+              timestamp,
               eventType,
               executionId,
               processDefinitionId,

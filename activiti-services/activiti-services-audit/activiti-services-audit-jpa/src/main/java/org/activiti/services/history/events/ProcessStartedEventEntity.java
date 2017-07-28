@@ -30,14 +30,16 @@ public class ProcessStartedEventEntity extends ProcessEngineEventEntity {
     public ProcessStartedEventEntity() {
     }
 
-    public ProcessStartedEventEntity(Long timestamp,
+    public ProcessStartedEventEntity(Long id,
+                                     Long timestamp,
                                      String eventType,
                                      String executionId,
                                      String processDefinitionId,
                                      String processInstanceId,
                                      String nestedProcessDefinitionId,
                                      String nestedProcessInstanceId) {
-        super(timestamp,
+        super(id,
+              timestamp,
               eventType,
               executionId,
               processDefinitionId,

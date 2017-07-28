@@ -24,15 +24,16 @@ import javax.persistence.Entity;
 @DiscriminatorValue(value = "VariableUpdatedEvent")
 public class VariableUpdatedEventEntity extends ProcessEngineEventEntity {
 
-    protected String variableName;
-    protected String variableValue;
-    protected String variableType;
-    protected String taskId;
+    private String variableName;
+    private String variableValue;
+    private String variableType;
+    private String taskId;
 
     public VariableUpdatedEventEntity() {
     }
 
-    public VariableUpdatedEventEntity(Long timestamp,
+    public VariableUpdatedEventEntity(Long id,
+                                      Long timestamp,
                                       String eventType,
                                       String executionId,
                                       String processDefinitionId,
@@ -41,7 +42,8 @@ public class VariableUpdatedEventEntity extends ProcessEngineEventEntity {
                                       String variableValue,
                                       String variableType,
                                       String taskId) {
-        super(timestamp,
+        super(id,
+              timestamp,
               eventType,
               executionId,
               processDefinitionId,

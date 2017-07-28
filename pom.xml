@@ -9,7 +9,7 @@
   <version>7-201708-EA-SNAPSHOT</version>
   <properties>
     <!-- Spring Boot / Cloud / Stream deps -->
-    <spring.boot.version>2.0.0.M2</spring.boot.version>
+    <spring.boot.version>2.0.0.M3</spring.boot.version>
     <spring.cloud.version>Finchley.BUILD-SNAPSHOT</spring.cloud.version>
     <spring.cloud.stream.version>Elmhurst.BUILD-SNAPSHOT</spring.cloud.stream.version>
     <!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
@@ -17,6 +17,7 @@
 
     <!--configuration properties-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <jdk.version>1.8</jdk.version>
 

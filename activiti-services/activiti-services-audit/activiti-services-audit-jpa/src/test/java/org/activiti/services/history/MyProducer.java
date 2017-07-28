@@ -29,10 +29,10 @@ import org.springframework.stereotype.Component;
 public class MyProducer {
 
     @Autowired
-    private MessageChannel historyProducer;
+    private MessageChannel producer;
 
     public void send(ProcessEngineEvent newEvent) {
         System.out.println("Sending Event: " + newEvent);
-        historyProducer.send(MessageBuilder.withPayload(newEvent).build());
+        producer.send(MessageBuilder.withPayload(newEvent).build());
     }
 }

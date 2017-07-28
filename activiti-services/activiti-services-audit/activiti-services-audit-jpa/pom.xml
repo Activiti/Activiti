@@ -125,11 +125,6 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-stream-test-support</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-stream-binder-rabbit-test-support</artifactId>
       <scope>test</scope>
     </dependency>
@@ -175,8 +170,12 @@
         <configuration>
 
           <packages>
-            <param>org.activiti.services.core.model</param>
+            <package>org.activiti.services.core.model</package>
+            <package>org.activiti.services.history.events</package>
           </packages>
+          <classes>
+            <class>org.springframework.http.ResponseEntity</class>
+          </classes>
 
           <!-- whether generated assertions classes can be inherited with consistent assertion chaining -->
           <hierarchical>true</hierarchical>
