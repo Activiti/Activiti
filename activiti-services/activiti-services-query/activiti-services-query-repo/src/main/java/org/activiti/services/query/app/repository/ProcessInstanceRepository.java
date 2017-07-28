@@ -35,6 +35,10 @@ public interface ProcessInstanceRepository extends CrudRepository<ProcessInstanc
 
         bindings.bind(String.class).first(
                 (StringPath path, String value) -> path.containsIgnoreCase(value));
+        bindings.bind(root.lastModifiedFrom).first((path, value) ->
+                root.lastModified.after(value));
+        bindings.bind(root.lastModifiedTo).first((path, value) ->
+                root.lastModified.before(value));
 
     }
 }

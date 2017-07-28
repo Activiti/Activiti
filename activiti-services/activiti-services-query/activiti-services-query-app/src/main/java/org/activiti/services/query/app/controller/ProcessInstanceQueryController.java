@@ -50,6 +50,9 @@ public class ProcessInstanceQueryController {
     private ProcessInstanceQueryResourceAssembler resourceAssembler;
 
 
+    // this endpoint demonstrates date filtering following https://stackoverflow.com/a/43852346 (see repo and entity and note transient has to be on getter)
+    // parameter format ?lastModifiedFrom=2017-07-20&lastModifiedTo=2017-07-30
+    // similar custom bindings can be applied to repo for in, contains, notIn, like etc.
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public PagedResources<ProcessInstanceQueryResource> findAllByWebQuerydsl(
@@ -74,9 +77,6 @@ public class ProcessInstanceQueryController {
 
         return pagedResourcesAssembler.toResource(dao.findAll(predicate,pageable), resourceAssembler);
     }
-
-    //TODO: in addition to above for ORs we can also use transient attributes as suggested in https://stackoverflow.com/questions/35155824/can-spring-data-rests-querydsl-integration-be-used-to-perform-more-complex-quer
-    // and we can combine this with in, contains, notIn, like etc. in the path bindings in the customizer of the repository
 
 
     @RequestMapping(value = "/{processInstanceId}", method = RequestMethod.GET)
