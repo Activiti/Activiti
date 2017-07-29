@@ -1,14 +1,13 @@
 package org.activiti.services.core.commands;
 
 import org.activiti.services.core.ProcessEngineWrapper;
-import org.activiti.services.core.model.commands.Command;
 import org.activiti.services.core.model.commands.SignalProcessInstancesCmd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SignalProcessInstancesCmdExecutor implements CommandExecutor {
+public class SignalProcessInstancesCmdExecutor implements CommandExecutor<SignalProcessInstancesCmd> {
 
     private ProcessEngineWrapper processEngine;
     private MessageChannel commandResults;
@@ -26,7 +25,7 @@ public class SignalProcessInstancesCmdExecutor implements CommandExecutor {
     }
 
     @Override
-    public void execute(Command cmd) {
-        processEngine.signal((SignalProcessInstancesCmd) cmd);
+    public void execute(SignalProcessInstancesCmd cmd) {
+        processEngine.signal(cmd);
     }
 }

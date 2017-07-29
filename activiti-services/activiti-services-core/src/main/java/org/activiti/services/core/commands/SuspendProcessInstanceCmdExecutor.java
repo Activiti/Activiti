@@ -8,7 +8,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SuspendProcessInstanceCmdExecutor implements CommandExecutor {
+public class SuspendProcessInstanceCmdExecutor implements CommandExecutor<SuspendProcessInstanceCmd> {
 
     private ProcessEngineWrapper processEngine;
     private MessageChannel commandResults;
@@ -26,7 +26,7 @@ public class SuspendProcessInstanceCmdExecutor implements CommandExecutor {
     }
 
     @Override
-    public void execute(Command cmd) {
-        processEngine.suspend((SuspendProcessInstanceCmd) cmd);
+    public void execute(SuspendProcessInstanceCmd cmd) {
+        processEngine.suspend(cmd);
     }
 }

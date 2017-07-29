@@ -8,7 +8,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CompleteTaskCmdExecutor implements CommandExecutor {
+public class CompleteTaskCmdExecutor implements CommandExecutor<CompleteTaskCmd> {
 
     private ProcessEngineWrapper processEngine;
     private MessageChannel commandResults;
@@ -26,7 +26,7 @@ public class CompleteTaskCmdExecutor implements CommandExecutor {
     }
 
     @Override
-    public void execute(Command cmd) {
-        processEngine.completeTask((CompleteTaskCmd) cmd);
+    public void execute(CompleteTaskCmd cmd) {
+        processEngine.completeTask(cmd);
     }
 }

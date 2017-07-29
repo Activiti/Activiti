@@ -1,16 +1,13 @@
 package org.activiti.services.core.commands;
 
 import org.activiti.services.core.ProcessEngineWrapper;
-import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.commands.ClaimTaskCmd;
-import org.activiti.services.core.model.commands.Command;
-import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ClaimTaskCmdExecutor implements CommandExecutor {
+public class ClaimTaskCmdExecutor implements CommandExecutor<ClaimTaskCmd> {
 
     private ProcessEngineWrapper processEngine;
     private MessageChannel commandResults;
@@ -28,7 +25,7 @@ public class ClaimTaskCmdExecutor implements CommandExecutor {
     }
 
     @Override
-    public void execute(Command cmd) {
-        processEngine.claimTask((ClaimTaskCmd) cmd);
+    public void execute(ClaimTaskCmd cmd) {
+        processEngine.claimTask(cmd);
     }
 }

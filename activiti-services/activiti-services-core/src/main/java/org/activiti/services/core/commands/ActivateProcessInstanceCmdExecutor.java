@@ -8,7 +8,7 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ActivateProcessInstanceCmdExecutor implements CommandExecutor {
+public class ActivateProcessInstanceCmdExecutor implements CommandExecutor<ActivateProcessInstanceCmd> {
 
     private ProcessEngineWrapper processEngine;
     private MessageChannel commandResults;
@@ -26,7 +26,7 @@ public class ActivateProcessInstanceCmdExecutor implements CommandExecutor {
     }
 
     @Override
-    public void execute(Command cmd) {
-        processEngine.activate((ActivateProcessInstanceCmd) cmd);
+    public void execute(ActivateProcessInstanceCmd cmd) {
+        processEngine.activate(cmd);
     }
 }

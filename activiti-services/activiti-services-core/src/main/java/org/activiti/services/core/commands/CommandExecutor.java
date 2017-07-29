@@ -2,9 +2,9 @@ package org.activiti.services.core.commands;
 
 import org.activiti.services.core.model.commands.Command;
 
-public interface CommandExecutor {
+public interface CommandExecutor<T extends Command> {
 
     Class getHandledType();
 
-    void execute(Command cmd);
+    void execute(T cmd);
 }

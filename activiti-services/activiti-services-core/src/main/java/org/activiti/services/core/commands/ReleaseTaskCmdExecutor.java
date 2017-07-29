@@ -1,14 +1,13 @@
 package org.activiti.services.core.commands;
 
 import org.activiti.services.core.ProcessEngineWrapper;
-import org.activiti.services.core.model.commands.Command;
 import org.activiti.services.core.model.commands.ReleaseTaskCmd;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ReleaseTaskCmdExecutor implements CommandExecutor {
+public class ReleaseTaskCmdExecutor implements CommandExecutor<ReleaseTaskCmd> {
 
     private ProcessEngineWrapper processEngine;
     private MessageChannel commandResults;
@@ -26,7 +25,7 @@ public class ReleaseTaskCmdExecutor implements CommandExecutor {
     }
 
     @Override
-    public void execute(Command cmd) {
-        processEngine.releaseTask((ReleaseTaskCmd) cmd);
+    public void execute(ReleaseTaskCmd cmd) {
+        processEngine.releaseTask(cmd);
     }
 }
