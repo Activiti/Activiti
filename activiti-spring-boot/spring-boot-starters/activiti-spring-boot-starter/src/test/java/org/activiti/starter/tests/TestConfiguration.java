@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti;
+package org.activiti.starter.tests;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

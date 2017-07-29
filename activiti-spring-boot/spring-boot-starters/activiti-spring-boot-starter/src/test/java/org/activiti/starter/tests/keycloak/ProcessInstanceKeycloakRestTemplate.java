@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.keycloak;
+package org.activiti.starter.tests.keycloak;
 
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;

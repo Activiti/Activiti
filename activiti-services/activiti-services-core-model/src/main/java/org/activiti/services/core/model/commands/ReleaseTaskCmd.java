@@ -16,24 +16,15 @@
 
 package org.activiti.services.core.model.commands;
 
-import java.util.Map;
-
-public class CompleteTaskCmd implements Command {
+public class ReleaseTaskCmd implements Command {
 
     private String taskId;
-    private Map<String, Object> outputVariables;
 
-    public CompleteTaskCmd() {
+    public ReleaseTaskCmd() {
     }
 
-    public CompleteTaskCmd(String taskId,
-                           Map<String, Object> outputVariables) {
+    public ReleaseTaskCmd(String taskId) {
         this.taskId = taskId;
-        this.outputVariables = outputVariables;
-    }
-
-    public Map<String, Object> getOutputVariables() {
-        return outputVariables;
     }
 
     public String getTaskId() {

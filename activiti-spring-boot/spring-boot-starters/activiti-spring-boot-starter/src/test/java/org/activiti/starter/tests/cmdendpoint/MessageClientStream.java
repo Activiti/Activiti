@@ -1,4 +1,4 @@
-package org.activiti.cmdendpoint;
+package org.activiti.starter.tests.cmdendpoint;
 
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.cloud.stream.annotation.Output;

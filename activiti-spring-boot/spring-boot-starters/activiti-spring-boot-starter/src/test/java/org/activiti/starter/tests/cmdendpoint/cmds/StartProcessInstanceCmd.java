@@ -1,8 +1,8 @@
-package org.activiti.cmdendpoint.cmds;
+package org.activiti.starter.tests.cmdendpoint.cmds;
 
 import java.util.Map;
 
-public class StartProcessInstanceCmd implements org.activiti.cmdendpoint.cmds.Command {
+public class StartProcessInstanceCmd implements org.activiti.starter.tests.cmdendpoint.cmds.Command {
 
     private String processDefinitionId;
     private Map<String, String> variables;

@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime;
+package org.activiti.starter.tests.runtime;
 
-import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
-import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
+import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
@@ -37,7 +37,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -49,7 +49,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class TasksIT extends KeycloakEnabledBaseTestIT {
 
     private static final String TASKS_URL = "/v1/tasks/";
@@ -234,7 +234,7 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
         processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
-        CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd(Collections.singletonMap("myVar",
+        CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd(task.getId(), Collections.singletonMap("myVar",
                 "any"));
 
         //when

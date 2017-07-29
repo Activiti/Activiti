@@ -1,4 +1,4 @@
-package org.activiti.cmdendpoint.cmds;
+package org.activiti.starter.tests.cmdendpoint.cmds;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

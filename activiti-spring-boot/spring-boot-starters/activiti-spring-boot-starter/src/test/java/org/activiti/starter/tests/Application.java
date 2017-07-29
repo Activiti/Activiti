@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti;
+package org.activiti.starter.tests;
 
 import org.activiti.services.events.ProcessEngineChannels;
 import org.springframework.boot.SpringApplication;

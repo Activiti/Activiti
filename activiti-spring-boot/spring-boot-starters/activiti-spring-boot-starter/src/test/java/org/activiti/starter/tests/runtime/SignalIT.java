@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime;
+package org.activiti.starter.tests.runtime;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.definition.ProcessDefinitionIT;
-import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
-import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
+import org.activiti.starter.tests.definition.ProcessDefinitionIT;
+import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
@@ -44,13 +44,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class SignalIT extends KeycloakEnabledBaseTestIT {
 
     @Autowired

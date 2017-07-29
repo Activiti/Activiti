@@ -15,15 +15,12 @@
 
 package org.activiti.services.rest.controllers;
 
-import java.util.Map;
-
-import org.activiti.engine.TaskService;
 import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.core.model.Task;
+import org.activiti.services.core.model.commands.ClaimTaskCmd;
 import org.activiti.services.core.model.commands.CompleteTaskCmd;
-import org.activiti.services.core.model.converter.TaskConverter;
+import org.activiti.services.core.model.commands.ReleaseTaskCmd;
 import org.activiti.services.core.pageable.AuthenticationWrapper;
-import org.activiti.services.core.pageable.PageableTaskService;
 import org.activiti.services.rest.resources.TaskResource;
 import org.activiti.services.rest.resources.assembler.TaskResourceAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +42,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/v1/tasks", produces = MediaTypes.HAL_JSON_VALUE)
 public class TaskController {
 
-
     private ProcessEngineWrapper processEngine;
 
     private final TaskResourceAssembler taskResourceAssembler;
@@ -57,21 +53,19 @@ public class TaskController {
                           TaskResourceAssembler taskResourceAssembler) {
         this.processEngine = processEngine;
         this.taskResourceAssembler = taskResourceAssembler;
-
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public PagedResources<TaskResource> getTasks(Pageable pageable,
                                                  PagedResourcesAssembler<Task> pagedResourcesAssembler) {
-        Page<Task> page = pageableTaskService.getTasks(pageable);
+        Page<Task> page = processEngine.getTasks(pageable);
         return pagedResourcesAssembler.toResource(page,
                                                   taskResourceAssembler);
     }
 
     @RequestMapping(value = "/{taskId}", method = RequestMethod.GET)
     public Resource<Task> getTaskById(@PathVariable String taskId) {
-        org.activiti.engine.task.Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        return taskResourceAssembler.toResource(taskConverter.from(task));
+        return taskResourceAssembler.toResource(processEngine.getTaskById(taskId));
     }
 
     @RequestMapping(value = "/{taskId}/claim", method = RequestMethod.POST)
@@ -80,28 +74,22 @@ public class TaskController {
         if (assignee == null) {
             throw new IllegalStateException("Assignee must be resolved from the Identity/Security Layer");
         }
-        taskService.claim(taskId,
-                          assignee);
-        Task task = taskConverter.from(taskService.createTaskQuery().taskId(taskId).singleResult());
-        return taskResourceAssembler.toResource(task);
+
+        return taskResourceAssembler.toResource(processEngine.claimTask(new ClaimTaskCmd(taskId,
+                                                                                         assignee)));
     }
 
     @RequestMapping(value = "/{taskId}/release", method = RequestMethod.POST)
     public Resource<Task> releaseTask(@PathVariable String taskId) {
-        taskService.unclaim(taskId);
-        Task task = taskConverter.from(taskService.createTaskQuery().taskId(taskId).singleResult());
-        return taskResourceAssembler.toResource(task);
+
+        return taskResourceAssembler.toResource(processEngine.releaseTask(new ReleaseTaskCmd(taskId)));
     }
 
     @RequestMapping(value = "/{taskId}/complete", method = RequestMethod.POST)
     public ResponseEntity<Void> completeTask(@PathVariable String taskId,
                                              @RequestBody(required = false) CompleteTaskCmd completeTaskCmd) {
-        Map<String, Object> inputVariables = null;
-        if (completeTaskCmd != null) {
-            inputVariables = completeTaskCmd.getOutputVariables();
-        }
-        taskService.complete(taskId,
-                             inputVariables);
+        processEngine.completeTask(new CompleteTaskCmd(taskId,
+                                                       completeTaskCmd.getOutputVariables()));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
