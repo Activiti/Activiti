@@ -56,7 +56,7 @@ public class DecisionTaskJsonConverter extends BaseBpmnJsonConverter implements 
     serviceTask.setType(ServiceTask.DMN_TASK);
     
     JsonNode decisionTableReferenceNode = getProperty(PROPERTY_DECISIONTABLE_REFERENCE, elementNode);
-    if (decisionTableReferenceNode != null && decisionTableReferenceNode.has("id") && decisionTableReferenceNode.get("id").isNull() == false) {
+    if (decisionTableReferenceNode != null && decisionTableReferenceNode.has("id") && !(decisionTableReferenceNode.get("id").isNull())) {
 
       String decisionTableId = decisionTableReferenceNode.get("id").asText();
       if (decisionTableMap != null) {

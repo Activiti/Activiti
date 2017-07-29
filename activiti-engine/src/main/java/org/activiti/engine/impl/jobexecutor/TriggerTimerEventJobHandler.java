@@ -90,7 +90,7 @@ public class TriggerTimerEventJobHandler implements JobHandler {
         if (subProcessInstance != null) {
           List<? extends ExecutionEntity> childExecutions = subProcessInstance.getExecutions();
           for (ExecutionEntity subExecution : childExecutions) {
-            if (processedElements.contains(subExecution.getCurrentActivityId()) == false) {
+            if (!processedElements.contains(subExecution.getCurrentActivityId())) {
               dispatchExecutionTimeOut(timerEntity, subExecution, processedElements, commandContext);
             }
           }

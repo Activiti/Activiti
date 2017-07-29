@@ -306,7 +306,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
     for (JsonNode listenerNode : listenersNode) {
       listenerNode = validateIfNodeIsTextual(listenerNode);
       JsonNode eventNode = listenerNode.get(PROPERTY_LISTENER_EVENT);
-      if (eventNode != null && eventNode.isNull() == false && StringUtils.isNotEmpty(eventNode.asText())) {
+      if (eventNode != null && !eventNode.isNull() && StringUtils.isNotEmpty(eventNode.asText())) {
         
         ActivitiListener listener = new ActivitiListener();
         listener.setEvent(eventNode.asText());
@@ -325,7 +325,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
         if (fieldsNode != null) {
           for (JsonNode fieldNode : fieldsNode) {
             JsonNode nameNode = fieldNode.get(PROPERTY_FIELD_NAME);
-            if (nameNode != null && nameNode.isNull() == false && StringUtils.isNotEmpty(nameNode.asText())) {
+            if (nameNode != null && !nameNode.isNull() && StringUtils.isNotEmpty(nameNode.asText())) {
               FieldExtension fieldExtension = new FieldExtension();
               fieldExtension.setFieldName(nameNode.asText());
               fieldExtension.setStringValue(getValueAsString(PROPERTY_FIELD_STRING_VALUE, fieldNode));
@@ -394,7 +394,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
           StringBuilder eventsBuilder = new StringBuilder();
           for (JsonNode eventNode : eventsNode) {
               JsonNode eventValueNode = eventNode.get(PROPERTY_EVENTLISTENER_EVENT);
-              if (eventValueNode != null && eventValueNode.isNull() == false && StringUtils.isNotEmpty(eventValueNode.asText())) {
+              if (eventValueNode != null && !eventValueNode.isNull() && StringUtils.isNotEmpty(eventValueNode.asText())) {
                   if (eventsBuilder.length() > 0) {
                       eventsBuilder.append(",");
                   }
@@ -598,7 +598,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
   }
   
   public static JsonNode validateIfNodeIsTextual(JsonNode node) {
-    if (node != null && node.isNull() == false && node.isTextual() && StringUtils.isNotEmpty(node.asText())) {
+    if (node != null && !node.isNull() && node.isTextual() && StringUtils.isNotEmpty(node.asText())) {
       try {
         node = validateIfNodeIsTextual(objectMapper.readTree(node.asText()));
       } catch(Exception e) {
@@ -611,7 +611,7 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
   public static String getValueAsString(String name, JsonNode objectNode) {
     String propertyValue = null;
     JsonNode propertyNode = objectNode.get(name);
-    if (propertyNode != null && propertyNode.isNull() == false) {
+    if (propertyNode != null && !propertyNode.isNull()) {
       propertyValue = propertyNode.asText();
     }
     return propertyValue;

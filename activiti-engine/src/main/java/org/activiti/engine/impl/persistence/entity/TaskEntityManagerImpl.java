@@ -168,7 +168,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     List<TaskEntity> tasks = findTasksByProcessInstanceId(processInstanceId);
 
     for (TaskEntity task : tasks) {
-    	if (getEventDispatcher().isEnabled() && task.isCanceled() == false) {
+    	if (getEventDispatcher().isEnabled() && !task.isCanceled()) {
     		task.setCanceled(true);
         getEventDispatcher().dispatchEvent(
               ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution().getActivityId(), task.getName(), 
@@ -206,7 +206,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       delete(task, false);
 
       if (getEventDispatcher().isEnabled()) {
-    	  if (cancel && task.isCanceled() == false) {
+    	  if (cancel && !task.isCanceled()) {
     		  task.setCanceled(true);
           getEventDispatcher().dispatchEvent(
                   ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution() != null ? task.getExecution().getActivityId() : null, 
