@@ -26,6 +26,9 @@ import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.commands.ActivateProcessInstanceCmd;
+import org.activiti.services.core.model.commands.ClaimTaskCmd;
+import org.activiti.services.core.model.commands.CompleteTaskCmd;
+import org.activiti.services.core.model.commands.ReleaseTaskCmd;
 import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
 import org.activiti.starter.tests.cmdendpoint.cmds.StartProcessInstanceCmd;
 import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
@@ -134,7 +137,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         assertThat(processInstancesPageBefore.getBody().getContent()).hasSize(0);
 
         assertThat(processInstancesPage.getBody().getContent()).hasSize(1);
-        assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isGreaterThanOrEqualTo(1);
+        assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isEqualTo(1);
 
         // Get Tasks
 
@@ -145,10 +148,73 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         assertThat(responseEntity).isNotNull();
         Collection<Task> tasks = responseEntity.getBody().getContent();
         assertThat(tasks).extracting(Task::getName).contains("Perform action");
+        assertThat(tasks).extracting(Task::getStatus).contains(Task.TaskStatus.CREATED.name());
         assertThat(tasks.size()).isEqualTo(1);
 
+        Task task = tasks.iterator().next();
+
+        // Claim Task
+        claimTask(task);
+
+        // Release Task
+        releaseTask(task);
+
+        // Reclaim Task to be able to complete it
+        claimTask(task);
+
+        // Complete Task
+        completeTask(task);
+
+        responseEntity = getTasks();
+        tasks = responseEntity.getBody().getContent();
+        assertThat(tasks.size()).isEqualTo(0);
 
 
+        // Checking that the process is finished
+        processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
+                                                     HttpMethod.GET,
+                                                     getRequestEntityWithHeaders(),
+                                                     new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
+                                                     },
+                                                     "0",
+                                                     "2");
+
+        assertThat(processInstancesPage.getBody().getContent()).hasSize(0);
+        assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isEqualTo(0);
+
+    }
+
+    private void completeTask(Task task) {
+        Map<String, Object> variables = new HashMap<>();
+
+        CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd(task.getId(), variables);
+        myCmdProducer.send(MessageBuilder.withPayload(completeTaskCmd).build());
+    }
+
+    private void releaseTask(Task task) {
+        ResponseEntity<PagedResources<Task>> responseEntity;
+        Collection<Task> tasks;ReleaseTaskCmd releaseTaskCmd = new ReleaseTaskCmd(task.getId());
+
+        myCmdProducer.send(MessageBuilder.withPayload(releaseTaskCmd).build());
+
+        responseEntity = getTasks();
+        tasks = responseEntity.getBody().getContent();
+        assertThat(tasks).extracting(Task::getName).contains("Perform action");
+        assertThat(tasks).extracting(Task::getStatus).contains(Task.TaskStatus.CREATED.name());
+        assertThat(tasks.size()).isEqualTo(1);
+    }
+
+    private void claimTask(Task task) {
+        ResponseEntity<PagedResources<Task>> responseEntity;
+        Collection<Task> tasks;ClaimTaskCmd claimTaskCmd = new ClaimTaskCmd(task.getId(), "hruser");
+
+        myCmdProducer.send(MessageBuilder.withPayload(claimTaskCmd).build());
+
+        responseEntity = getTasks();
+        tasks = responseEntity.getBody().getContent();
+        assertThat(tasks).extracting(Task::getName).contains("Perform action");
+        assertThat(tasks).extracting(Task::getStatus).contains(Task.TaskStatus.ASSIGNED.name());
+        assertThat(tasks.size()).isEqualTo(1);
     }
 
     private void activateProcessInstance(String processDefinitionId,
