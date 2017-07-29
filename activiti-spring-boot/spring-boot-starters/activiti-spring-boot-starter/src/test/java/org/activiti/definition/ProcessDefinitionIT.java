@@ -16,9 +16,11 @@
 
 package org.activiti.definition;
 
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessDefinitionMeta;
+import org.activiti.services.core.model.ProcessModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 
 @RunWith(SpringRunner.class)
@@ -162,5 +166,33 @@ return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
         assertThat(entity.getBody().getGroups()).hasSize(4);
         assertThat(entity.getBody().getUserTasks()).hasSize(3);
         assertThat(entity.getBody().getServiceTasks()).hasSize(3);
+    }
+
+    @Test
+    public void shouldRetriveProcessModel() throws Exception {
+        //given
+        ParameterizedTypeReference<ProcessModel> responseType = new ParameterizedTypeReference<ProcessModel>() {
+        };
+
+        ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsEntity = getProcessDefinitions();
+        assertThat(processDefinitionsEntity).isNotNull();
+        assertThat(processDefinitionsEntity.getBody()).isNotNull();
+        assertThat(processDefinitionsEntity.getBody().getContent()).isNotEmpty();
+        ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
+
+        //when
+        ResponseEntity<ProcessModel> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/xml", HttpMethod.GET, getRequestEntityWithHeaders(), responseType);
+
+        //then
+        assertThat(entity).isNotNull();
+        assertThat(entity.getBody()).isNotNull();
+        assertThat(entity.getBody().getId()).isEqualTo(aProcessDefinition.getId());
+        assertThat(entity.getBody().getContent()).isEqualTo(getProcessXml(aProcessDefinition.getId().split(":")[0]));
+    }
+
+    private String getProcessXml(final String processDefinitionKey) throws IOException {
+        try (InputStream is = ClassLoader.getSystemResourceAsStream("processes/" + processDefinitionKey + ".bpmn20.xml")) {
+            return new String(IoUtil.readInputStream(is, null), "UTF-8");
+        }
     }
 }

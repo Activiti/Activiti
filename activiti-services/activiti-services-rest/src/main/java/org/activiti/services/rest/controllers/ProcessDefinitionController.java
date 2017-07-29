@@ -15,13 +15,21 @@
 
 package org.activiti.services.rest.controllers;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.services.core.model.ProcessDefinition;
+import org.activiti.services.core.model.ProcessModel;
 import org.activiti.services.core.model.converter.ProcessDefinitionConverter;
 import org.activiti.services.core.pageable.PageableRepositoryService;
 import org.activiti.services.rest.resources.ProcessDefinitionResource;
+import org.activiti.services.rest.resources.ProcessModelResource;
 import org.activiti.services.rest.resources.assembler.ProcessDefinitionResourceAssembler;
+import org.activiti.services.rest.resources.assembler.ProcessModelResourceAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -43,16 +51,20 @@ public class ProcessDefinitionController {
 
     private final ProcessDefinitionResourceAssembler resourceAssembler;
 
+    private final ProcessModelResourceAssembler processModelResourceAssembler;
+
     private final PageableRepositoryService pageableRepositoryService;
 
     @Autowired
     public ProcessDefinitionController(RepositoryService repositoryService,
                                        ProcessDefinitionConverter processDefinitionConverter,
                                        ProcessDefinitionResourceAssembler resourceAssembler,
+                                       ProcessModelResourceAssembler processModelResourceAssembler,
                                        PageableRepositoryService pageableRepositoryService) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.resourceAssembler = resourceAssembler;
+        this.processModelResourceAssembler = processModelResourceAssembler;
         this.pageableRepositoryService = pageableRepositoryService;
     }
 
@@ -72,5 +84,15 @@ public class ProcessDefinitionController {
             throw new ActivitiException("Unable to find process definition for the given id:'" + id + "'");
         }
         return resourceAssembler.toResource(processDefinitionConverter.from(processDefinition));
+    }
+
+    @RequestMapping(value = "/{id}/xml", method = RequestMethod.GET)
+    public ProcessModelResource getProcessModel(@PathVariable String id) {
+        try (final InputStream resourceStream = repositoryService.getProcessModel(id)) {
+            String xml = new String(IoUtil.readInputStream(resourceStream, null), StandardCharsets.UTF_8);
+            return processModelResourceAssembler.toResource(new ProcessModel(id, xml));
+        } catch (IOException e) {
+            throw new ActivitiException("Error occured while getting process model '" + id + "' : " + e.getMessage(), e);
+        }
     }
 }
