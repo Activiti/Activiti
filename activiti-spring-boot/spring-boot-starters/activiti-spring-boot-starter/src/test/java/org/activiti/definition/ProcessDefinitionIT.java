@@ -151,7 +151,7 @@ return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
         //when
         ResponseEntity<ProcessDefinitionMeta> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/meta",
                                                                              HttpMethod.GET,
-                                                                             getRequestEntityWithHeaders(),
+                                                                             null,
                                                                              responseType);
         //then
         assertThat(entity).isNotNull();
