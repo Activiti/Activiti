@@ -9,6 +9,7 @@ import org.activiti.services.core.model.commands.Command;
 import org.activiti.services.events.ProcessEngineChannels;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -23,11 +24,11 @@ public class CommandEndpoint {
     }
 
     @StreamListener(ProcessEngineChannels.COMMAND_CONSUMER)
-    public void consumeCommand(Command cmd) {
+    public void consumeCommand(Command cmd, @Header("cmdId") String cmdId) {
 
         CommandExecutor cmdExecutor = commandExecutors.get(cmd.getClass());
         if (cmdExecutor != null) {
-            cmdExecutor.execute(cmd);
+            cmdExecutor.execute(cmdId, cmd);
             return;
         }
 

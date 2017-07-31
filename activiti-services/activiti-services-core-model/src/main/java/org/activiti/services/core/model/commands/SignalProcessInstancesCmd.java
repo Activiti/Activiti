@@ -17,24 +17,33 @@
 package org.activiti.services.core.model.commands;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class SignalProcessInstancesCmd implements Command {
 
+    private String id;
     private String name;
-
     private Map<String, Object> inputVariables;
 
     public SignalProcessInstancesCmd() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public SignalProcessInstancesCmd(String name,
                                      Map<String, Object> inputVariables) {
+        this();
         this.name = name;
         this.inputVariables = inputVariables;
     }
 
     public SignalProcessInstancesCmd(String name) {
+        this();
         this.name = name;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public String getName() {

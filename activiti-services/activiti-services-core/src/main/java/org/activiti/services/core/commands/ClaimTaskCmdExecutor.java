@@ -25,7 +25,7 @@ public class ClaimTaskCmdExecutor implements CommandExecutor<ClaimTaskCmd> {
     }
 
     @Override
-    public void execute(ClaimTaskCmd cmd) {
+    public void execute(String cmdId, ClaimTaskCmd cmd) {
         processEngine.claimTask(cmd);
     }
 }

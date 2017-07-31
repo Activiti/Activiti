@@ -16,23 +16,33 @@
 package org.activiti.services.core.model.commands;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class StartProcessInstanceCmd implements Command {
 
+    private String id;
     private String processDefinitionId;
     private Map<String, Object> variables;
 
     public StartProcessInstanceCmd() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public StartProcessInstanceCmd(String processDefinitionId,
                                    Map<String, Object> variables) {
+        this();
         this.processDefinitionId = processDefinitionId;
         this.variables = variables;
     }
 
     public StartProcessInstanceCmd(String processDefinitionId) {
+        this();
         this.processDefinitionId = processDefinitionId;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public String getProcessDefinitionId() {

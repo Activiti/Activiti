@@ -26,7 +26,7 @@ public class SuspendProcessInstanceCmdExecutor implements CommandExecutor<Suspen
     }
 
     @Override
-    public void execute(SuspendProcessInstanceCmd cmd) {
+    public void execute(String cmdId, SuspendProcessInstanceCmd cmd) {
         processEngine.suspend(cmd);
     }
 }

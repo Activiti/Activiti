@@ -16,15 +16,25 @@
 
 package org.activiti.services.core.model.commands;
 
+import java.util.UUID;
+
 public class ReleaseTaskCmd implements Command {
 
+    private String id;
     private String taskId;
 
     public ReleaseTaskCmd() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public ReleaseTaskCmd(String taskId) {
+        this();
         this.taskId = taskId;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public String getTaskId() {

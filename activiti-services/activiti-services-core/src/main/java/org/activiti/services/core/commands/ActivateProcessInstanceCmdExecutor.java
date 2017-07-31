@@ -26,7 +26,7 @@ public class ActivateProcessInstanceCmdExecutor implements CommandExecutor<Activ
     }
 
     @Override
-    public void execute(ActivateProcessInstanceCmd cmd) {
+    public void execute(String cmdId, ActivateProcessInstanceCmd cmd) {
         processEngine.activate(cmd);
     }
 }

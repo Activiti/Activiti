@@ -17,19 +17,27 @@
 package org.activiti.services.core.model.commands;
 
 import java.util.Map;
+import java.util.UUID;
 
 public class CompleteTaskCmd implements Command {
-
+    private String id;
     private String taskId;
     private Map<String, Object> outputVariables;
 
     public CompleteTaskCmd() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public CompleteTaskCmd(String taskId,
                            Map<String, Object> outputVariables) {
+        this();
         this.taskId = taskId;
         this.outputVariables = outputVariables;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public Map<String, Object> getOutputVariables() {

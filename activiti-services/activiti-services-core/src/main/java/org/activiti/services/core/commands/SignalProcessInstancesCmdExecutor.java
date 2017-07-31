@@ -25,7 +25,7 @@ public class SignalProcessInstancesCmdExecutor implements CommandExecutor<Signal
     }
 
     @Override
-    public void execute(SignalProcessInstancesCmd cmd) {
+    public void execute(String cmdId, SignalProcessInstancesCmd cmd) {
         processEngine.signal(cmd);
     }
 }

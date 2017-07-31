@@ -16,18 +16,28 @@
 
 package org.activiti.services.core.model.commands;
 
+import java.util.UUID;
+
 public class ClaimTaskCmd implements Command {
 
+    private String id;
     private String taskId;
     private String assignee;
 
     public ClaimTaskCmd() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public ClaimTaskCmd(String taskId,
                         String assignee) {
+        this();
         this.taskId = taskId;
         this.assignee = assignee;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public String getTaskId() {

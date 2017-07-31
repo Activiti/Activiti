@@ -26,7 +26,7 @@ public class CompleteTaskCmdExecutor implements CommandExecutor<CompleteTaskCmd>
     }
 
     @Override
-    public void execute(CompleteTaskCmd cmd) {
+    public void execute(String cmdId, CompleteTaskCmd cmd) {
         processEngine.completeTask(cmd);
     }
 }

@@ -36,5 +36,5 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
                         name = "CompleteTaskCmd")
         })
 public interface Command {
-
+        String getId();
 }
