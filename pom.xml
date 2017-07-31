@@ -885,27 +885,27 @@
                   <module name="Checker">
                     <!-- Checks for whitespace. -->
                     <module name="FileTabCharacter">
-                      <property name="severity" value="error" />
-                      <property name="eachLine" value="true" />
+                      <property name="severity" value="error"/>
+                      <property name="eachLine" value="true"/>
                     </module>
                     <module name="TreeWalker">
                       <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
-                      <module name="RedundantImport" />
+                      <module name="RedundantImport"/>
                       <module name="AvoidStarImport">
-                        <property name="excludes" value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito" />
-                        <property name="allowClassImports" value="false" />
-                        <property name="allowStaticMemberImports" value="false" />
+                        <property name="excludes" value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito"/>
+                        <property name="allowClassImports" value="false"/>
+                        <property name="allowStaticMemberImports" value="false"/>
                       </module>
                       <module name="CustomImportOrder">
-                        <property name="customImportOrderRules" value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC" />
-                        <property name="sortImportsInGroupAlphabetically" value="true" />
-                        <property name="separateLineBetweenGroups" value="true" />
+                        <property name="customImportOrderRules" value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC"/>
+                        <property name="sortImportsInGroupAlphabetically" value="true"/>
+                        <property name="separateLineBetweenGroups" value="true"/>
                       </module>
 
                       <module name="NeedBraces">
-                        <property name="tokens" value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO" />
+                        <property name="tokens" value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
                       </module>
-                      <module name="EqualsHashCode" />
+                      <module name="EqualsHashCode"/>
                     </module>
                   </module>
                 </checkstyleRules>
@@ -990,4 +990,28 @@
     <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
+  <developers>
+    <developer>
+      <id>salaboy</id>
+      <name>Mauricio Salatino</name>
+      <email>mauricio.salatino@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>erdemedeiros</id>
+      <name>Elias De Medeiros</name>
+      <email>elias.demedeiros@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>ryandawsonuk</id>
+      <name>Ryan Dawson</name>
+      <email>ryan.dawson@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+  </developers>
+
 </project>
