@@ -31,5 +31,7 @@ After starting a process you can query for tasks by going to e.g. http://localho
 //TODO: choose representative queries from the engine's java query API as rest queries. See TaskQueryTest, ProcessInstanceQueryTest etc.
 //TODO: implement chosen queries. See ProcessInstanceQueryController for implementing ORs and INs.
 //TODO: handle a wider range of events to support the above. See e.g. ActivitiStartedEventConverter for how events are emitted.
-//TODO: add identity to this API just as it is added to the spring-boot-starter
+//TODO: some problems with dates - how to handle times in searches? why do we get Could not write JSON: java.sql.Timestamp cannot be cast to java.lang.String error if certain dates are not annotated with JsonIgnore but only those dates? Maybe used zoned dates as in https://codexample.org/questions/620133/using-spring-restcontroller-with-querydslpredicate-to-handle-get-with-zoneddatetime-parameters.c ?
+// or LocalDateTime https://spring.io/blog/2011/04/26/advanced-spring-data-jpa-specifications-and-querydsl/ ?
 //TODO: use same testing approach as with https://github.com/Activiti/Activiti/tree/history-refactoring/activiti-services/activiti-services-query/src/test/java/org/activiti/services/query ? Or test differently now?
+//TODO: haven't given an example of an IN condition but it would be same as example we do have that shows adding OR condition except the parameter would need to be a list

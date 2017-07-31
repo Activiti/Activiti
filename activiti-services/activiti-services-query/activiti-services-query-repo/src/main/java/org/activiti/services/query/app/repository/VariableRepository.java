@@ -33,7 +33,7 @@ public interface VariableRepository extends CrudRepository<Variable, String> , Q
 
 
         bindings.bind(String.class).first(
-                (StringPath path, String value) -> path.containsIgnoreCase(value));
+                (StringPath path, String value) -> path.eq(value));
 
     }
 }

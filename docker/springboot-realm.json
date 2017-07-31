@@ -381,7 +381,10 @@
     "enabled" : true,
     "clientAuthenticatorType" : "client-secret",
     "secret" : "f80d93b4-9039-4012-99c8-a45663485862",
-    "redirectUris" : [ "http://localhost:8080/*" ],
+    "redirectUris": [
+      "http://localhost:8081/*",
+      "http://localhost:8080/*"
+    ],
     "webOrigins" : [ ],
     "notBefore" : 0,
     "bearerOnly" : false,

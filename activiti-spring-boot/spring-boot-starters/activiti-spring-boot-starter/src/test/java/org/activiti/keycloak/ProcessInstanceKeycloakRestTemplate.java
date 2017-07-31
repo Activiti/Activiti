@@ -19,14 +19,12 @@ package org.activiti.keycloak;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
-import org.keycloak.representations.AccessTokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,21 +42,13 @@ public class ProcessInstanceKeycloakRestTemplate {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    private HttpHeaders getHeaders(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization",
-                    "Bearer " + new String(token));
-        return headers;
-    }
 
     public ResponseEntity<ProcessInstance> startProcess(String processDefinitionId,
-                                                        Map<String, Object> variables,
-                                                        AccessTokenResponse accessToken) {
+                                                        Map<String, Object> variables) {
         StartProcessInstanceCmd cmd = new StartProcessInstanceCmd(processDefinitionId,
                                                                   variables);
 
-        HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(cmd,
-                                                                             getHeaders(accessToken.getToken()));
+        HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(cmd);
 
         ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL,
                                                                                    HttpMethod.POST,
@@ -70,47 +60,41 @@ public class ProcessInstanceKeycloakRestTemplate {
         return responseEntity;
     }
 
-    public ResponseEntity<ProcessInstance> startProcess(String processDefinitionKey,
-                                                        AccessTokenResponse accessToken) {
+    public ResponseEntity<ProcessInstance> startProcess(String processDefinitionKey) {
 
         return startProcess(processDefinitionKey,
-                            null,
-                            accessToken);
+                            null);
     }
 
-    public ResponseEntity<PagedResources<Task>> getTasks(ResponseEntity<ProcessInstance> processInstanceEntity,
-                                                         AccessTokenResponse accessToken) {
+    public ResponseEntity<PagedResources<Task>> getTasks(ResponseEntity<ProcessInstance> processInstanceEntity) {
 
-        HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(
-                getHeaders(accessToken.getToken()));
+
         ResponseEntity<PagedResources<Task>> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/tasks",
                                                                                         HttpMethod.GET,
-                                                                                        requestEntity,
+                                                                                        null,
                                                                                         new ParameterizedTypeReference<PagedResources<Task>>() {
                                                                                         });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         return responseEntity;
     }
 
-    public ResponseEntity<Resource<Map<String, Object>>> getVariables(ResponseEntity<ProcessInstance> processInstanceEntity, AccessTokenResponse accessToken) {
-        HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(
-                getHeaders(accessToken.getToken()));
+    public ResponseEntity<Resource<Map<String, Object>>> getVariables(ResponseEntity<ProcessInstance> processInstanceEntity) {
+
         ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/variables",
                                                                                                  HttpMethod.GET,
-                                                                                                 requestEntity,
+                                                                                                 null,
                                                                                                  new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
                                                                                                  });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         return responseEntity;
     }
 
-    public ResponseEntity<ProcessInstance> getProcessInstance(ResponseEntity<ProcessInstance> processInstanceEntity, AccessTokenResponse accessToken) {
-        HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(
-                getHeaders(accessToken.getToken()));
+    public ResponseEntity<ProcessInstance> getProcessInstance(ResponseEntity<ProcessInstance> processInstanceEntity) {
+
 
         ResponseEntity<ProcessInstance> responseEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId(),
                 HttpMethod.GET,
-                requestEntity,
+                null,
                 new ParameterizedTypeReference<ProcessInstance>() {
                 });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

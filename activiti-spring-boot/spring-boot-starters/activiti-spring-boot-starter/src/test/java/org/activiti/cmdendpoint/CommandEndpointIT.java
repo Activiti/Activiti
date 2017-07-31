@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.cmdendpoint.cmds.StartProcessInstanceCmd;
-import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.junit.ClassRule;
@@ -52,7 +51,7 @@ import static org.assertj.core.api.Assertions.*;
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @EnableBinding(MessageClientStream.class)
-public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
+public class CommandEndpointIT  {
 
     @ClassRule
     public static RabbitTestSupport rabbitTestSupport = new RabbitTestSupport();
@@ -66,6 +65,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
     public static final String PROCESS_DEFINITIONS_URL = "/v1/process-definitions/";
     public static final String PROCESS_INSTANCES_RELATIVE_URL = "/v1/process-instances/";
 
+
     @Test
     public void getAllMessagesTests() throws Exception {
 
@@ -73,7 +73,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         };
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsResources = restTemplate.exchange(PROCESS_DEFINITIONS_URL,
                                                                                                               HttpMethod.GET,
-                                                                                                              getRequestEntityWithHeaders(),
+                                                                                                              null,
                                                                                                               responseType);
 
         assertThat(processDefinitionsResources).isNotNull();
@@ -92,7 +92,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         //record what instances there were before starting this one - should be none but will check this later
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPageBefore = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                 HttpMethod.GET,
-                getRequestEntityWithHeaders(),
+                null,
                 new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                 },
                 "0",
@@ -106,7 +106,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         //when
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                                                                      HttpMethod.GET,
-                                                                                                     getRequestEntityWithHeaders(),
+                                                                                                     null,
                                                                                                      new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                                                                                                      },
                                                                                                      "0",

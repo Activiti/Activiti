@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.definition.ProcessDefinitionIT;
-import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
@@ -47,7 +46,7 @@ import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ProcessVariablesIT extends KeycloakEnabledBaseTestIT {
+public class ProcessVariablesIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -61,7 +60,6 @@ public class ProcessVariablesIT extends KeycloakEnabledBaseTestIT {
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
@@ -80,12 +78,12 @@ public class ProcessVariablesIT extends KeycloakEnabledBaseTestIT {
         variables.put("age",
                       15);
         ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS_WITH_VARIABLES),
-                                                                                                 variables,accessToken);
+                                                                                                 variables);
 
         //when
         ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables",
                                                                                                 HttpMethod.GET,
-                                                                                                getRequestEntityWithHeaders(),
+                                                                                                null,
                                                                                                 new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
                                                                                                 });
 
@@ -105,7 +103,7 @@ public class ProcessVariablesIT extends KeycloakEnabledBaseTestIT {
         };
         return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
-                                     getRequestEntityWithHeaders(),
+                                     null,
                                      responseType);
     }
 }

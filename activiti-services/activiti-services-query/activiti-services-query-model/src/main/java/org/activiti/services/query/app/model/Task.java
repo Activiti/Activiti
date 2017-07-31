@@ -21,12 +21,14 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 
 @Entity
@@ -39,14 +41,26 @@ public class Task {
     private String assignee;
     private String name;
     private String description;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date createTime;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date dueDate;
     private String priority;
     private String category;
     private String processDefinitionId;
     private String processInstanceId;
     private String status;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastModified;
+
+    //only for querying on status (getter is transient, has to be getter so that included in QProcessInstance)
+    private String nameLike;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private Date lastModifiedTo;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private Date lastModifiedFrom;
 
     @OneToMany
     private List<Variable> variables;
@@ -127,6 +141,7 @@ public class Task {
         return status;
     }
 
+    @JsonIgnore //TODO: without ignore keep getting Could not write JSON: java.sql.Timestamp cannot be cast to java.lang.String error - why?
     public Date getLastModified() {
         return lastModified;
     }
@@ -186,5 +201,33 @@ public class Task {
 
     public void setVariables(List<Variable> variables) {
         this.variables = variables;
+    }
+
+
+    @Transient
+    public Date getLastModifiedTo() {
+        return lastModifiedTo;
+    }
+
+    public void setLastModifiedTo(Date lastModifiedTo) {
+        this.lastModifiedTo = lastModifiedTo;
+    }
+
+    @Transient
+    public Date getLastModifiedFrom() {
+        return lastModifiedFrom;
+    }
+
+    public void setLastModifiedFrom(Date lastModifiedFrom) {
+        this.lastModifiedFrom = lastModifiedFrom;
+    }
+
+    @Transient
+    public String getNameLike() {
+        return nameLike;
+    }
+
+    public void setNameLike(String nameLike) {
+        this.nameLike = nameLike;
     }
 }

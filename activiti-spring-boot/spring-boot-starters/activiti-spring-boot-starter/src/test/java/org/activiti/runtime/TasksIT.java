@@ -16,8 +16,8 @@
 
 package org.activiti.runtime;
 
-import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
+import org.activiti.services.identity.keycloak.interceptor.KeycloakSecurityContextClientRequestInterceptor;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
@@ -50,7 +50,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class TasksIT extends KeycloakEnabledBaseTestIT {
+public class TasksIT  {
 
     private static final String TASKS_URL = "/v1/tasks/";
     private static final String SIMPLE_PROCESS = "SimpleProcess";
@@ -67,14 +67,16 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
     @Autowired
     private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
 
+    @Autowired
+    private KeycloakSecurityContextClientRequestInterceptor keycloakSecurityContextClientRequestInterceptor;
+
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
 
     @Before
     public void setUp() throws Exception{
-        keycloaktestuser = "hruser";
-        //don't need to set password as same password as testuser
-        accessToken = authenticateUser();
+        keycloakSecurityContextClientRequestInterceptor.setKeycloaktestuser("hruser");
+
 
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -90,8 +92,8 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
         //we are hruser who is in hr group so we can see tasks
 
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
         ResponseEntity<PagedResources<Task>> responseEntity = executeRequestGetTasks();
@@ -105,15 +107,13 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
 
     @Test
     public void shouldNotGetTasksWithoutPermission() throws Exception {
-        keycloaktestuser = "testuser";
-        //don't need to set password as same password as hruser
-        accessToken = authenticateUser();
+        keycloakSecurityContextClientRequestInterceptor.setKeycloaktestuser("testuser");
 
         //now authenticated as testuser who is not in hr group
 
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
         ResponseEntity<PagedResources<Task>> responseEntity = executeRequestGetTasks();
@@ -122,12 +122,13 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
         assertThat(responseEntity).isNotNull();
         Collection<Task> tasks = responseEntity.getBody().getContent();
         assertThat(tasks.size()).isEqualTo(0);
+
     }
 
     private ResponseEntity<PagedResources<Task>> executeRequestGetTasks() {
         return testRestTemplate.exchange(TASKS_URL,
                                          HttpMethod.GET,
-                                            getRequestEntityWithHeaders(),
+                                            null,
                                          PAGED_TASKS_RESPONSE_TYPE);
     }
 
@@ -135,12 +136,12 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
     @Test
     public void shouldGetTasksRelatedToTheGivenProcessInstance() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        ResponseEntity<ProcessInstance> startProcessResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
         ResponseEntity<PagedResources<Task>> tasksEntity = testRestTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessResponse.getBody().getId() + "/tasks",
                 HttpMethod.GET,
-                getRequestEntityWithHeaders(),
+                null,
                 PAGED_TASKS_RESPONSE_TYPE);
 
         //then
@@ -152,13 +153,13 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
     @Test
     public void shouldGetTaskById() throws Exception {
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         //when
         ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId(),
                 HttpMethod.GET,
-                getRequestEntityWithHeaders(),
+                null,
                 TASK_RESPONSE_TYPE);
 
         //then
@@ -170,7 +171,7 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
     @Test
     public void claimTaskShouldSetAssignee() throws Exception {
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         //when
@@ -180,20 +181,20 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
         //then
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody().getAssignee()).isEqualTo(keycloaktestuser);
+        assertThat(responseEntity.getBody().getAssignee()).isEqualTo(keycloakSecurityContextClientRequestInterceptor.getKeycloaktestuser());
     }
 
     private ResponseEntity<Task> executeRequestClaim(Task task) {
         return testRestTemplate.exchange(TASKS_URL + task.getId() + "/claim",
                                          HttpMethod.POST,
-                                            getRequestEntityWithHeaders(),
+                                            null,
                                          TASK_RESPONSE_TYPE);
     }
 
     @Test
     public void releaseTaskShouldSetAssigneeBackToNull() throws Exception {
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         executeRequestClaim(task);
@@ -201,7 +202,7 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
         //when
         ResponseEntity<Task> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/release",
                                                                         HttpMethod.POST,
-                                                                        getRequestEntityWithHeaders(),
+                                                                        null,
                                                                         TASK_RESPONSE_TYPE);
 
         //then
@@ -214,13 +215,13 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
     @Test
     public void shouldCompleteATask() throws Exception {
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         //when
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",
                 HttpMethod.POST,
-                getRequestEntityWithHeaders(),
+                null,
                 new ParameterizedTypeReference<Void>() {
                 });
 
@@ -231,7 +232,7 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
     @Test
     public void shouldCompleteATaskPassingInputVariables() throws Exception {
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
         Task task = executeRequestGetTasks().getBody().iterator().next();
 
         CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd(Collections.singletonMap("myVar",
@@ -240,7 +241,7 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
         //when
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TASKS_URL + task.getId() + "/complete",
                 HttpMethod.POST,
-                new HttpEntity(completeTaskCmd,getHeaders(accessToken.getToken())),
+                new HttpEntity(completeTaskCmd),
                 new ParameterizedTypeReference<Void>() {
                 });
 
@@ -254,7 +255,7 @@ public class TasksIT extends KeycloakEnabledBaseTestIT {
 
         return testRestTemplate.exchange(PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
-                                        getRequestEntityWithHeaders(),
+                                        null,
                                      responseType);
     }
 }

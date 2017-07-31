@@ -18,6 +18,8 @@ package org.activiti;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.services.identity.keycloak.interceptor.KeycloakSecurityContextClientRequestInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,9 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 
 @Configuration
 public class TestConfiguration {
+
+    @Autowired
+    private KeycloakSecurityContextClientRequestInterceptor keycloakSecurityContextClientRequestInterceptor;
 
     @Bean
     public RestTemplateBuilder restTemplateBuilder() {
@@ -38,7 +43,7 @@ public class TestConfiguration {
         converter.setSupportedMediaTypes(MediaType.parseMediaTypes("application/hal+json"));
         converter.setObjectMapper(mapper);
 
-        return new RestTemplateBuilder().additionalMessageConverters(converter);
+        return new RestTemplateBuilder().additionalMessageConverters(converter).additionalInterceptors(keycloakSecurityContextClientRequestInterceptor);
     }
 
 }

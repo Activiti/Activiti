@@ -16,7 +16,6 @@
 
 package org.activiti.runtime;
 
-import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
@@ -24,6 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
+public class ProcessInstanceIT {
 
     private static final String SIMPLE_PROCESS = "SimpleProcess";
     public static final String PROCESS_DEFINITIONS_URL = "/v1/process-definitions/";
@@ -56,11 +56,13 @@ public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
     @Autowired
     private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
 
+    @Value("${keycloaktestuser}")
+    protected String keycloaktestuser;
+
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
     @Before
     public void setUp() throws Exception{
-        super.setUp();
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
 
@@ -75,7 +77,7 @@ public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
     @Test
     public void shouldStartProcess() throws Exception {
         //when
-        ResponseEntity<ProcessInstance> entity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS), accessToken);
+        ResponseEntity<ProcessInstance> entity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //then
         assertThat(entity).isNotNull();
@@ -92,14 +94,14 @@ public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
 
 
         //given
-        ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
 
         ResponseEntity<ProcessInstance> retrievedEntity = restTemplate.exchange(
                 PROCESS_INSTANCES_RELATIVE_URL + startedProcessEntity.getBody().getId(),
                 HttpMethod.GET,
-                getRequestEntityWithHeaders(),
+                null,
                 new ParameterizedTypeReference<ProcessInstance>() {
                 });
 
@@ -113,14 +115,14 @@ public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
     public void shouldRetrieveListOfProcessInstances() throws Exception {
 
         //given
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
-        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
+        processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page=0&size=2",
                                                                                                           HttpMethod.GET,
-                                                                                                            getRequestEntityWithHeaders(),
+                                                                                                            null,
                                                                                                           new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                                                                                                           });
 
@@ -135,21 +137,21 @@ public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
     @Test
     public void suspendShouldPutProcessInstanceInSuspendedState() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
 
         //when
         ResponseEntity<Void> responseEntity = executeRequestSuspendProcess(startProcessEntity);
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity,accessToken);
+        ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity);
         assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.SUSPENDED.name());
     }
 
     private ResponseEntity<Void> executeRequestSuspendProcess(ResponseEntity<ProcessInstance> processInstanceEntity) {
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + processInstanceEntity.getBody().getId() + "/suspend",
                 HttpMethod.POST,
-                getRequestEntityWithHeaders(),
+                null,
                 new ParameterizedTypeReference<Void>() {
                 });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -159,19 +161,19 @@ public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
     @Test
     public void activateShouldPutASuspendedProcessInstanceBackToActiveState() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),accessToken);
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS));
         executeRequestSuspendProcess(startProcessEntity);
 
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startProcessEntity.getBody().getId() + "/activate",
                 HttpMethod.POST,
-                getRequestEntityWithHeaders(),
+                null,
                 new ParameterizedTypeReference<Void>() {
                 });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity,accessToken);
+        ResponseEntity<ProcessInstance> processInstanceEntity = processInstanceRestTemplate.getProcessInstance(startProcessEntity);
         assertThat(processInstanceEntity.getBody().getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING.name());
     }
 
@@ -182,7 +184,7 @@ public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
 
         return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
                 HttpMethod.GET,
-                getRequestEntityWithHeaders(),
+                null,
                 responseType);
     }
 }

@@ -16,7 +16,6 @@
 
 package org.activiti.definition;
 
-import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessDefinitionMeta;
 import org.junit.Test;
@@ -38,7 +37,7 @@ import java.util.Iterator;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
-public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT{
+public class ProcessDefinitionIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -69,7 +68,7 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT{
         };
 return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
-                                     getRequestEntityWithHeaders(),
+                                     null,
                                      responseType);
 
     }
@@ -89,7 +88,7 @@ return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
         //when
         ResponseEntity<ProcessDefinition> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId(),
                                                                          HttpMethod.GET,
-                                                                         getRequestEntityWithHeaders(),
+                                                                         null,
                                                                          responseType);
 
         //then
@@ -118,7 +117,7 @@ return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
         //when
         ResponseEntity<ProcessDefinitionMeta> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/meta",
                                                                              HttpMethod.GET,
-                                                                             getRequestEntityWithHeaders(),
+                                                                             null,
                                                                              responseType);
         //then
         assertThat(entity).isNotNull();

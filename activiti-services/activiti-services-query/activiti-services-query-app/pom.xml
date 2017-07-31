@@ -11,6 +11,11 @@
   <artifactId>activiti-services-query-app</artifactId>
 
   <dependencies>
+    <!-- keycloak included as default identity provider to be excluded if overridden -->
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-services-identity-keycloak</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-services-query-model</artifactId>
@@ -135,6 +140,11 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring-boot-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
