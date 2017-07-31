@@ -46,7 +46,7 @@ import static org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTem
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ProcessVariablesIT extends KeycloakEnabledBaseTestIT {
 
     @Autowired
