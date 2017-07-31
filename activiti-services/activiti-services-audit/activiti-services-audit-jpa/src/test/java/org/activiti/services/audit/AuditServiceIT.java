@@ -38,8 +38,6 @@ import static org.assertj.core.api.Assertions.*;
 @DirtiesContext
 public class AuditServiceIT {
 
-    private static final String relativeQueryEndpoint = "/audit/events";
-
     @ClassRule
     public static RabbitTestSupport rabbitTestSupport = new RabbitTestSupport();
 

@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package org.activiti.services.audit;
+package org.activiti;
 
+import org.activiti.services.audit.AuditConsumerChannels;
+import org.activiti.services.audit.EventsRepository;
 import org.activiti.services.audit.events.ProcessEngineEventEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
