@@ -15,6 +15,8 @@
 
 package org.activiti.services.rest.controllers;
 
+import java.util.Map;
+
 import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.commands.ClaimTaskCmd;
@@ -88,8 +90,12 @@ public class TaskController {
     @RequestMapping(value = "/{taskId}/complete", method = RequestMethod.POST)
     public ResponseEntity<Void> completeTask(@PathVariable String taskId,
                                              @RequestBody(required = false) CompleteTaskCmd completeTaskCmd) {
+        Map<String, Object> outputVariables = null;
+        if (completeTaskCmd != null) {
+            outputVariables = completeTaskCmd.getOutputVariables();
+        }
         processEngine.completeTask(new CompleteTaskCmd(taskId,
-                                                       completeTaskCmd.getOutputVariables()));
+                                                       outputVariables));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
