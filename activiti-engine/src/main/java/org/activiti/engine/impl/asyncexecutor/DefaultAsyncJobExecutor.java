@@ -194,7 +194,7 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
   }
 
   protected void executeTemporaryJobs() {
-    while (temporaryJobQueue.isEmpty() == false) {
+    while (!temporaryJobQueue.isEmpty()) {
       Job job = temporaryJobQueue.pop();
       executeAsyncJob(job);
     }

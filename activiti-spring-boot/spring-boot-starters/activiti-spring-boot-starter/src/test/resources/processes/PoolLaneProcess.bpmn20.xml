@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <collaboration id="Collaboration">
+    <participant id="pool1" name="Pool1" processRef="process_pool1"></participant>
+    <participant id="pool2" name="Pool2" processRef="process_pool2"></participant>
+    <messageFlow id="messageflow2" sourceRef="servicetask2" targetRef="usertask3"></messageFlow>
+    <messageFlow id="messageflow3" sourceRef="usertask2" targetRef="servicetask2"></messageFlow>
+  </collaboration>
+  <process id="process_pool1" name="process_pool1" isExecutable="true" activiti:candidateStarterUsers="user1,user2" activiti:candidateStarterGroups="group1,group2">
+    <extensionElements>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="firstName" modeler:variableType="string"></modeler:executionvariables>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="lastName" modeler:variableType="string"></modeler:executionvariables>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="age" modeler:variableType="integer"></modeler:executionvariables>
+    </extensionElements>
+    <laneSet id="laneSet_process_pool1">
+      <lane id="lane1" name="Lane1">
+        <flowNodeRef>startevent1</flowNodeRef>
+        <flowNodeRef>usertask3</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="startevent1" name="Start1"></startEvent>
+    <userTask id="usertask1" name="User Task1" activiti:candidateUsers="user1,user2" activiti:candidateGroups="group1,group2">
+      <documentation>This is a sample of user task.</documentation>
+    </userTask>
+    <sequenceFlow id="flow5" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
+    <serviceTask id="servicetask2" name="Service Task2" activiti:class="org.activiti.delegate.DummyServiceTask2"></serviceTask>
+    <endEvent id="endevent4" name="End"></endEvent>
+    <serviceTask id="servicetask1" name="Service Task1" activiti:class="org.activiti.delegate.DummyServiceTask1"></serviceTask>
+    <sequenceFlow id="flow15" sourceRef="usertask1" targetRef="servicetask1"></sequenceFlow>
+    <sequenceFlow id="flow16" sourceRef="servicetask1" targetRef="endevent4"></sequenceFlow>
+  </process>
+  <process id="process_pool2" name="process_pool2" isExecutable="true" activiti:candidateStarterUsers="user1,user2,user3,user4" activiti:candidateStarterGroups="group1,group2,group3,group4">
+    <extensionElements>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="firstName" modeler:variableType="string"></modeler:executionvariables>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="lastName" modeler:variableType="string"></modeler:executionvariables>
+      <modeler:executionvariables xmlns:modeler="http://activiti.com/modeler" modeler:variableName="age" modeler:variableType="integer"></modeler:executionvariables>
+    </extensionElements>
+    <laneSet id="laneSet_process_pool2">
+      <lane id="lane2" name="Lane2">
+        <flowNodeRef>startevent3</flowNodeRef>
+        <flowNodeRef>usertask1</flowNodeRef>
+        <flowNodeRef>usertask2</flowNodeRef>
+        <flowNodeRef>servicetask2</flowNodeRef>
+      </lane>
+      <lane id="lane3" name="Lane3">
+        <flowNodeRef>endevent3</flowNodeRef>
+        <flowNodeRef>usertask3</flowNodeRef>
+        <flowNodeRef>servicetask3</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="startevent3" name="Start3"></startEvent>
+    <userTask id="usertask2" name="User Task2" activiti:candidateUsers="user1,user2" activiti:candidateGroups="group1,group2">
+      <documentation>This is a sample of user task.</documentation>
+    </userTask>
+    <userTask id="usertask3" name="User Task3" activiti:candidateUsers="user3,user4" activiti:candidateGroups="group3,group4">
+      <documentation>This is a sample of user task.</documentation>
+    </userTask>
+    <sequenceFlow id="flow7" sourceRef="startevent3" targetRef="usertask2"></sequenceFlow>
+    <serviceTask id="servicetask3" name="Service Task3" activiti:class="org.activiti.delegate.DummyServiceTask2">
+      <documentation>This is a sample of service task.</documentation>
+    </serviceTask>
+    <sequenceFlow id="flow11" sourceRef="servicetask3" targetRef="endevent3"></sequenceFlow>
+    <endEvent id="endevent3" name="End3"></endEvent>
+    <sequenceFlow id="flow14" sourceRef="usertask3" targetRef="servicetask3"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Collaboration">
+    <bpmndi:BPMNPlane bpmnElement="Collaboration" id="BPMNPlane_Collaboration">
+      <bpmndi:BPMNShape bpmnElement="pool1" id="BPMNShape_pool1">
+        <omgdc:Bounds height="150.0" width="891.0" x="140.0" y="60.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="lane1" id="BPMNShape_lane1">
+        <omgdc:Bounds height="150.0" width="871.0" x="160.0" y="60.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="pool2" id="BPMNShape_pool2">
+        <omgdc:Bounds height="300.0" width="891.0" x="140.0" y="209.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="lane2" id="BPMNShape_lane2">
+        <omgdc:Bounds height="150.0" width="871.0" x="160.0" y="209.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="lane3" id="BPMNShape_lane3">
+        <omgdc:Bounds height="150.0" width="871.0" x="160.0" y="359.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="220.0" y="130.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="300.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask2" id="BPMNShape_servicetask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="450.0" y="260.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent4" id="BPMNShape_endevent4">
+        <omgdc:Bounds height="35.0" width="35.0" x="600.0" y="130.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask1" id="BPMNShape_servicetask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="450.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent3" id="BPMNShape_startevent3">
+        <omgdc:Bounds height="35.0" width="35.0" x="220.0" y="270.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask2" id="BPMNShape_usertask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="300.0" y="260.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask3" id="BPMNShape_usertask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="450.0" y="410.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask3" id="BPMNShape_servicetask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="670.0" y="410.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
+        <omgdc:Bounds height="35.0" width="35.0" x="860.0" y="420.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="messageflow2" id="BPMNEdge_messageflow2">
+        <omgdi:waypoint x="502.0" y="315.0"></omgdi:waypoint>
+        <omgdi:waypoint x="502.0" y="410.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="messageflow3" id="BPMNEdge_messageflow3">
+        <omgdi:waypoint x="405.0" y="287.0"></omgdi:waypoint>
+        <omgdi:waypoint x="450.0" y="287.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="255.0" y="147.0"></omgdi:waypoint>
+        <omgdi:waypoint x="300.0" y="147.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
+        <omgdi:waypoint x="405.0" y="147.0"></omgdi:waypoint>
+        <omgdi:waypoint x="450.0" y="147.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow16" id="BPMNEdge_flow16">
+        <omgdi:waypoint x="555.0" y="147.0"></omgdi:waypoint>
+        <omgdi:waypoint x="600.0" y="147.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow7" id="BPMNEdge_flow7">
+        <omgdi:waypoint x="255.0" y="287.0"></omgdi:waypoint>
+        <omgdi:waypoint x="300.0" y="287.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow11" id="BPMNEdge_flow11">
+        <omgdi:waypoint x="775.0" y="437.0"></omgdi:waypoint>
+        <omgdi:waypoint x="860.0" y="437.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
+        <omgdi:waypoint x="555.0" y="437.0"></omgdi:waypoint>
+        <omgdi:waypoint x="670.0" y="437.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

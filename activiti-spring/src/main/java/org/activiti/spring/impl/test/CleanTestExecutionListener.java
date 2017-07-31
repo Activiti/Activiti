@@ -11,9 +11,9 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
  * Use this as follows in a Spring test:
  * 
 
- * @RunWith(SpringJUnit4ClassRunner.class)
- * @TestExecutionListeners(CleanTestExecutionListener.class)
- * @ContextConfiguration("...")
+ * {@literal @}RunWith(SpringJUnit4ClassRunner.class)
+ * {@literal @}TestExecutionListeners(CleanTestExecutionListener.class)
+ * {@literal @}ContextConfiguration("...")
  */
 public class CleanTestExecutionListener extends AbstractTestExecutionListener {
 

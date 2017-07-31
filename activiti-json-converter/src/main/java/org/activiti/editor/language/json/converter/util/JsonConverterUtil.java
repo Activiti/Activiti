@@ -57,7 +57,7 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
   public static List<String> getPropertyValueAsList(String name, JsonNode objectNode) {
     List<String> resultList = new ArrayList<String>();
     JsonNode propertyNode = getProperty(name, objectNode);
-    if (propertyNode != null && "null".equalsIgnoreCase(propertyNode.asText()) == false) {
+    if (propertyNode != null && !"null".equalsIgnoreCase(propertyNode.asText())) {
       String propertyValue = propertyNode.asText();
       String[] valueList = propertyValue.split(",");
       for (String value : valueList) {

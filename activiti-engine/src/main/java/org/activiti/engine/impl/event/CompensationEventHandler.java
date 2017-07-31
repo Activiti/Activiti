@@ -55,7 +55,7 @@ public class CompensationEventHandler implements EventHandler {
 
     FlowElement flowElement = process.getFlowElement(eventSubscription.getActivityId(), true);
 
-    if (flowElement instanceof SubProcess && ((SubProcess) flowElement).isForCompensation() == false) {
+    if (flowElement instanceof SubProcess && !((SubProcess) flowElement).isForCompensation()) {
 
       // descend into scope:
       compensatingExecution.setScope(true);

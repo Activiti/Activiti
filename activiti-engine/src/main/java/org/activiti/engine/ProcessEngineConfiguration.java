@@ -185,15 +185,9 @@ public abstract class ProcessEngineConfiguration {
    */
   protected boolean tablePrefixIsSchema;
 
-  protected boolean isCreateDiagramOnDeploy = true;
-
   protected String xmlEncoding = "UTF-8";
 
   protected String defaultCamelContext = "camelContext";
-
-  protected String activityFontName = "Arial";
-  protected String labelFontName = "Arial";
-  protected String annotationFontName = "Arial";
 
   protected ClassLoader classLoader;
   /**
@@ -639,24 +633,6 @@ public abstract class ProcessEngineConfiguration {
     return this;
   }
 
-  public boolean isCreateDiagramOnDeploy() {
-    return isCreateDiagramOnDeploy;
-  }
-
-  public ProcessEngineConfiguration setCreateDiagramOnDeploy(boolean createDiagramOnDeploy) {
-    this.isCreateDiagramOnDeploy = createDiagramOnDeploy;
-    return this;
-  }
-
-  public String getActivityFontName() {
-    return activityFontName;
-  }
-
-  public ProcessEngineConfiguration setActivityFontName(String activityFontName) {
-    this.activityFontName = activityFontName;
-    return this;
-  }
-
   public ProcessEngineConfiguration setProcessEngineLifecycleListener(ProcessEngineLifecycleListener processEngineLifecycleListener) {
     this.processEngineLifecycleListener = processEngineLifecycleListener;
     return this;
@@ -664,24 +640,6 @@ public abstract class ProcessEngineConfiguration {
 
   public ProcessEngineLifecycleListener getProcessEngineLifecycleListener() {
     return processEngineLifecycleListener;
-  }
-
-  public String getLabelFontName() {
-    return labelFontName;
-  }
-
-  public ProcessEngineConfiguration setLabelFontName(String labelFontName) {
-    this.labelFontName = labelFontName;
-    return this;
-  }
-
-  public String getAnnotationFontName() {
-    return annotationFontName;
-  }
-
-  public ProcessEngineConfiguration setAnnotationFontName(String annotationFontName) {
-    this.annotationFontName = annotationFontName;
-    return this;
   }
 
   public String getDatabaseTablePrefix() {

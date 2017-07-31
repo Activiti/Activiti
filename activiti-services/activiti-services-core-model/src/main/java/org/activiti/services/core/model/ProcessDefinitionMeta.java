@@ -1,6 +1,7 @@
 package org.activiti.services.core.model;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,14 +15,14 @@ public class ProcessDefinitionMeta {
     private String name;
     private String description;
     private int version;
-    private List<String> users;
-    private List<String> groups;
+    private Set<String> users;
+    private Set<String> groups;
     @JsonDeserialize(using = ProcessDefinitionVariable.class)
-    private List<ProcessDefinitionVariable> variables;
+    private Set<ProcessDefinitionVariable> variables;
     @JsonDeserialize(using = ProcessDefinitionUserTask.class)
-    private List<ProcessDefinitionUserTask> userTasks;
+    private Set<ProcessDefinitionUserTask> userTasks;
     @JsonDeserialize(using = ProcessDefinitionServiceTask.class)
-    private List<ProcessDefinitionServiceTask> serviceTasks;
+    private Set<ProcessDefinitionServiceTask> serviceTasks;
 
     public ProcessDefinitionMeta() {
     };
@@ -30,11 +31,11 @@ public class ProcessDefinitionMeta {
                                  String name,
                                  String description,
                                  int version,
-                                 List<String> users,
-                                 List<String> groups,
-                                 List<ProcessDefinitionVariable> variables,
-                                 List<ProcessDefinitionUserTask> userTasks,
-                                 List<ProcessDefinitionServiceTask> serviceTasks) {
+                                 Set<String> users,
+                                 Set<String> groups,
+                                 Set<ProcessDefinitionVariable> variables,
+                                 Set<ProcessDefinitionUserTask> userTasks,
+                                 Set<ProcessDefinitionServiceTask> serviceTasks) {
         super();
         this.id = id;
         this.name = name;
@@ -63,23 +64,23 @@ public class ProcessDefinitionMeta {
         return version;
     }
 
-    public List<String> getUsers() {
+    public Set<String> getUsers() {
         return users;
     }
 
-    public List<String> getGroups() {
+    public Set<String> getGroups() {
         return groups;
     }
 
-    public List<ProcessDefinitionVariable> getVariables() {
+    public Set<ProcessDefinitionVariable> getVariables() {
         return variables;
     }
 
-    public List<ProcessDefinitionUserTask> getUserTasks() {
+    public Set<ProcessDefinitionUserTask> getUserTasks() {
         return userTasks;
     }
 
-    public List<ProcessDefinitionServiceTask> getServiceTasks() {
+    public Set<ProcessDefinitionServiceTask> getServiceTasks() {
         return serviceTasks;
     }
 

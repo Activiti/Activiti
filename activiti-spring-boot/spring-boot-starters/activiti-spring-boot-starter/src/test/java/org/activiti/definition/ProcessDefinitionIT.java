@@ -44,6 +44,7 @@ public class ProcessDefinitionIT {
 
     public static final String PROCESS_DEFINITIONS_URL = "/v1/process-definitions/";
     private static final String PROCESS_WITH_VARIABLES_2 = "ProcessWithVariables2";
+    private static final String PROCESS_POOL_LANE = "process_pool1";
 
     @Test
     public void shouldRetrieveListOfProcessDefinition() throws Exception {
@@ -59,6 +60,7 @@ public class ProcessDefinitionIT {
         assertThat(entity.getBody().getContent()).extracting(ProcessDefinition::getName).contains(
                                                                                                   "ProcessWithVariables",
                                                                                                   "ProcessWithVariables2",
+                                                                                                  "process_pool1",
                                                                                                   "SimpleProcess",
                                                                                                   "ProcessWithBoundarySignal");
     }
@@ -96,7 +98,7 @@ return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
         assertThat(entity.getBody()).isNotNull();
         assertThat(entity.getBody().getId()).isEqualTo(aProcessDefinition.getId());
     }
-
+    
     @Test
     public void shouldReturnProcessDefinitionMetadata() throws Exception {
         //given
@@ -127,5 +129,37 @@ return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
         assertThat(entity.getBody().getGroups()).hasSize(4);
         assertThat(entity.getBody().getUserTasks()).hasSize(2);
         assertThat(entity.getBody().getServiceTasks()).hasSize(2);
+    }
+
+    @Test
+    public void shouldReturnProcessDefinitionMetadataForPoolLane() throws Exception {
+        //given
+        ParameterizedTypeReference<ProcessDefinitionMeta> responseType = new ParameterizedTypeReference<ProcessDefinitionMeta>() {
+        };
+
+        ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsEntity = getProcessDefinitions();
+        assertThat(processDefinitionsEntity).isNotNull();
+        assertThat(processDefinitionsEntity.getBody()).isNotNull();
+        assertThat(processDefinitionsEntity.getBody().getContent()).isNotEmpty();
+        ProcessDefinition aProcessDefinition = null;
+
+        Iterator<ProcessDefinition> it = processDefinitionsEntity.getBody().getContent().iterator();
+        do {
+            aProcessDefinition = it.next();
+        } while (!aProcessDefinition.getName().equals(PROCESS_POOL_LANE));
+
+        //when
+        ResponseEntity<ProcessDefinitionMeta> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/meta",
+                                                                             HttpMethod.GET,
+                                                                             getRequestEntityWithHeaders(),
+                                                                             responseType);
+        //then
+        assertThat(entity).isNotNull();
+        assertThat(entity.getBody()).isNotNull();
+        assertThat(entity.getBody().getVariables()).hasSize(6);
+        assertThat(entity.getBody().getUsers()).hasSize(4);
+        assertThat(entity.getBody().getGroups()).hasSize(4);
+        assertThat(entity.getBody().getUserTasks()).hasSize(3);
+        assertThat(entity.getBody().getServiceTasks()).hasSize(3);
     }
 }

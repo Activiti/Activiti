@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <name>Activiti</name>
@@ -7,7 +6,7 @@
   <groupId>org.activiti</groupId>
   <artifactId>activiti-root</artifactId>
   <packaging>pom</packaging>
-  <version>7-201707-EA-SNAPSHOT</version>
+  <version>7-201708-EA-SNAPSHOT</version>
   <properties>
     <!-- Spring Boot / Cloud / Stream deps -->
     <spring.boot.version>2.0.0.M2</spring.boot.version>
@@ -73,6 +72,7 @@
     <swagger.version>1.5.10</swagger.version>
     <resteasy.version>3.0.21.Final</resteasy.version>
     <querydsl.version>4.1.4</querydsl.version>
+    <batik.version>1.7</batik.version>
 
     <!--keycloak snapshot that was used to build boot2 adapter
     the original snapshot doesn't contain the boot2 adapter, just this particular build
@@ -87,6 +87,7 @@
     <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
     <maven-failsafe-plugin.version>2.20</maven-failsafe-plugin.version>
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven.enforcer.plugin.version>1.4.1</maven.enforcer.plugin.version>
@@ -128,6 +129,14 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
+    <repository>
+      <id>jboss-thirdparty-releases</id>
+      <name>JBOSS Maven Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <distributionManagement>
@@ -165,6 +174,11 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-image-generator</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -484,6 +498,40 @@
         <scope>compile</scope>
       </dependency>
 
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-awt-util</artifactId>
+        <version>${batik.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-dom</artifactId>
+        <version>${batik.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>batik-svggen</artifactId>
+        <version>${batik.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>batik</groupId>
+        <artifactId>batik-svg-dom</artifactId>
+        <version>${batik.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>batik</groupId>
+        <artifactId>batik-anim</artifactId>
+        <version>${batik.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>batik</groupId>
+        <artifactId>batik-parser</artifactId>
+        <version>${batik.version}</version>
+        <scope>test</scope>
+      </dependency>
+
       <!-- Test -->
       <dependency>
         <groupId>junit</groupId>
@@ -628,6 +676,7 @@
     <module>activiti-bpmn-model</module>
     <module>activiti-process-validation</module>
     <module>activiti-bpmn-layout</module>
+    <module>activiti-image-generator</module>
     <module>activiti-json-converter</module>
     <module>activiti-bpmn-converter</module>
     <module>activiti-engine</module>
@@ -715,6 +764,15 @@
 
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven-javadoc-plugin.version}</version>
+          <configuration>
+            <additionalparam>-Xdoclint:none</additionalparam>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <version>${maven-release-plugin.version}</version>
           <configuration>
@@ -762,8 +820,7 @@
               </goals>
               <configuration>
                 <rules>
-                  <illegalTransitiveDependencyCheck
-                      implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
+                  <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
                     <regexIgnoredClasses combine.children="append">
                       <!-- The marshalling classes are generated by Errai during GWT compilation. These classes
                                                  usually contain references to other dependencies which are not part of the project
@@ -855,29 +912,29 @@
                 <checkstyleRules>
                   <module name="Checker">
                     <!-- Checks for whitespace. -->
+                    
                     <module name="FileTabCharacter">
-                      <property name="severity" value="error"/>
-                      <property name="eachLine" value="true"/>
+                      <property name="severity" value="error" />
+                      <property name="eachLine" value="true" />
                     </module>
                     <module name="TreeWalker">
                       <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
-                      <module name="RedundantImport"/>
+                      <module name="RedundantImport" />
                       <module name="AvoidStarImport">
-                        <property name="excludes" value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito"/>
-                        <property name="allowClassImports" value="false"/>
-                        <property name="allowStaticMemberImports" value="false"/>
+                        <property name="excludes" value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito" />
+                        <property name="allowClassImports" value="false" />
+                        <property name="allowStaticMemberImports" value="false" />
                       </module>
                       <module name="CustomImportOrder">
-                        <property name="customImportOrderRules"
-                                  value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC"/>
-                        <property name="sortImportsInGroupAlphabetically" value="true"/>
-                        <property name="separateLineBetweenGroups" value="true"/>
+                        <property name="customImportOrderRules" value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC" />
+                        <property name="sortImportsInGroupAlphabetically" value="true" />
+                        <property name="separateLineBetweenGroups" value="true" />
                       </module>
 
                       <module name="NeedBraces">
-                        <property name="tokens" value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
+                        <property name="tokens" value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO" />
                       </module>
-                      <module name="EqualsHashCode"/>
+                      <module name="EqualsHashCode" />
                     </module>
                   </module>
                 </checkstyleRules>
@@ -958,7 +1015,8 @@
   </ciManagement>
   <scm>
     <url>https://github.com/Activiti/Activiti</url>
-    <connection>scm:git:git@github.com:Activiti/Activiti.git</connection>
-    <developerConnection>scm:git:git@github.com:Activiti/Activiti.git</developerConnection>
+    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
+    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
+    <tag>HEAD</tag>
   </scm>
 </project>

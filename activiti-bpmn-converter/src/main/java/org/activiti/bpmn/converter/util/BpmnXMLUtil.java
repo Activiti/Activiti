@@ -330,7 +330,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
    * 
    * @param xtr
    * @param element
-   * @param blackList
+   * @param blackLists
    */
   public static void addCustomAttributes(XMLStreamReader xtr, BaseElement element, List<ExtensionAttribute>... blackLists) {
     for (int i = 0; i < xtr.getAttributeCount(); i++) {
@@ -358,7 +358,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
    * 
    * @param attributes
    * @param xtw
-   * @param blackList
+   * @param blackLists
    */
   public static void writeCustomAttributes(Collection<List<ExtensionAttribute>> attributes, XMLStreamWriter xtw, Map<String, String> namespaceMap, List<ExtensionAttribute>... blackLists)
       throws XMLStreamException {
