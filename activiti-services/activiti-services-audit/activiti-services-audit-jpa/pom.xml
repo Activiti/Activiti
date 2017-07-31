@@ -171,7 +171,7 @@
 
           <packages>
             <package>org.activiti.services.core.model</package>
-            <package>org.activiti.services.history.events</package>
+            <package>org.activiti.services.audit.events</package>
           </packages>
           <classes>
             <class>org.springframework.http.ResponseEntity</class>
