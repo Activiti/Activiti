@@ -842,7 +842,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         if (jdbcMaxWaitTime > 0) {
           pooledDataSource.setPoolTimeToWait(jdbcMaxWaitTime);
         }
-        if (jdbcPingEnabled == true) {
+        if (jdbcPingEnabled) {
           pooledDataSource.setPoolPingEnabled(true);
           if (jdbcPingQuery != null) {
             pooledDataSource.setPoolPingQuery(jdbcPingQuery);
@@ -1779,7 +1779,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public int getMaxLengthString() {
     if (maxLengthStringVariableType == -1) {
-      if ("oracle".equalsIgnoreCase(databaseType) == true) {
+      if ("oracle".equalsIgnoreCase(databaseType)) {
         return DEFAULT_ORACLE_MAX_LENGTH_STRING;
       } else {
         return DEFAULT_GENERIC_MAX_LENGTH_STRING;

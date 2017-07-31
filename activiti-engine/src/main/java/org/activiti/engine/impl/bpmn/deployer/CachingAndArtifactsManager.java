@@ -63,7 +63,7 @@ public class CachingAndArtifactsManager {
   protected void addDefinitionInfoToCache(ProcessDefinitionEntity processDefinition, 
       ProcessEngineConfigurationImpl processEngineConfiguration, CommandContext commandContext) {
     
-    if (processEngineConfiguration.isEnableProcessDefinitionInfoCache() == false) {
+    if (!processEngineConfiguration.isEnableProcessDefinitionInfoCache()) {
       return;
     }
     

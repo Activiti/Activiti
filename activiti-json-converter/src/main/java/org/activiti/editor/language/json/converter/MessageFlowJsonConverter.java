@@ -103,7 +103,7 @@ public class MessageFlowJsonConverter extends BaseBpmnJsonConverter {
     if (sourceRef != null) {
       flow.setSourceRef(sourceRef);
       JsonNode targetNode = elementNode.get("target");
-      if (targetNode != null && targetNode.isNull() == false) {
+      if (targetNode != null && !targetNode.isNull()) {
         String targetId = targetNode.get(EDITOR_SHAPE_ID).asText();
         if (shapeMap.get(targetId) != null) {
           flow.setTargetRef(BpmnJsonConverterUtil.getElementId(shapeMap.get(targetId)));
