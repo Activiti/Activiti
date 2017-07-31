@@ -28,12 +28,10 @@ public class StartProcessInstanceCmdExecutor implements CommandExecutor<StartPro
     }
 
     @Override
-    public void execute(String cmdId,
-                        StartProcessInstanceCmd cmd) {
+    public void execute(StartProcessInstanceCmd cmd) {
         ProcessInstance processInstance = processEngine.startProcess(cmd);
-        StartProcessInstanceResults cmdResult = new StartProcessInstanceResults(cmdId,
+        StartProcessInstanceResults cmdResult = new StartProcessInstanceResults(cmd.getId(),
                                                                                 processInstance.getId());
-        commandResults.send(MessageBuilder.withPayload(cmdResult).setHeader("cmdId",
-                                                                            cmdId).build());
+        commandResults.send(MessageBuilder.withPayload(cmdResult).build());
     }
 }

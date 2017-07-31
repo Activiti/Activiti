@@ -2,7 +2,6 @@ package org.activiti.services.core.commands;
 
 import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.core.model.commands.ActivateProcessInstanceCmd;
-import org.activiti.services.core.model.commands.Command;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.stereotype.Component;
@@ -26,7 +25,7 @@ public class ActivateProcessInstanceCmdExecutor implements CommandExecutor<Activ
     }
 
     @Override
-    public void execute(String cmdId, ActivateProcessInstanceCmd cmd) {
+    public void execute(ActivateProcessInstanceCmd cmd) {
         processEngine.activate(cmd);
     }
 }

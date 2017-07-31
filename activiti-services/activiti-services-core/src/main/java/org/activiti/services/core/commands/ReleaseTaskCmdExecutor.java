@@ -25,7 +25,7 @@ public class ReleaseTaskCmdExecutor implements CommandExecutor<ReleaseTaskCmd> {
     }
 
     @Override
-    public void execute(String cmdId, ReleaseTaskCmd cmd) {
+    public void execute(ReleaseTaskCmd cmd) {
         processEngine.releaseTask(cmd);
     }
 }

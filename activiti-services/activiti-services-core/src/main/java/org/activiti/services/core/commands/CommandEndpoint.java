@@ -24,11 +24,11 @@ public class CommandEndpoint {
     }
 
     @StreamListener(ProcessEngineChannels.COMMAND_CONSUMER)
-    public void consumeCommand(Command cmd, @Header("cmdId") String cmdId) {
+    public void consumeCommand(Command cmd) {
 
         CommandExecutor cmdExecutor = commandExecutors.get(cmd.getClass());
         if (cmdExecutor != null) {
-            cmdExecutor.execute(cmdId, cmd);
+            cmdExecutor.execute(cmd);
             return;
         }
 

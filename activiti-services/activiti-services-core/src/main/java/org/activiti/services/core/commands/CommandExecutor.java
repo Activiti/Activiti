@@ -6,5 +6,5 @@ public interface CommandExecutor<T extends Command> {
 
     Class getHandledType();
 
-    void execute(String cmdId, T cmd);
+    void execute(T cmd);
 }

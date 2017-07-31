@@ -32,7 +32,6 @@ import org.activiti.services.core.model.commands.CompleteTaskCmd;
 import org.activiti.services.core.model.commands.ReleaseTaskCmd;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
-import org.activiti.services.core.model.commands.results.StartProcessInstanceResults;
 import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -96,6 +95,8 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
 
     private static boolean startedProcessInstanceAck = false;
 
+    private StartProcessInstanceCmd startProcessInstanceCmd;
+
     @Before
     public void setUp() throws Exception {
         keycloaktestuser = "hruser";
@@ -124,6 +125,25 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
                                                                                                            },
                                                                                                            "0",
                                                                                                            "2");
+        Map<String, Object> vars = new HashMap<>();
+        vars.put("hey",
+                 "one");
+
+        // Start New Process Instance
+        startProcessInstanceCmd = new StartProcessInstanceCmd(processDefinitionIds.get(SIMPLE_PROCESS),
+                                                              vars);
+
+        myCmdResults.subscribe(new MessageHandler() {
+            @Override
+            public void handleMessage(Message<?> message) throws MessagingException {
+
+                assertThat(message.getPayload()).isNotNull();
+                String resultString = message.getPayload().toString();
+                if (resultString.contains("StartProcessInstanceResults") && resultString.contains(startProcessInstanceCmd.getId())) {
+                    startedProcessInstanceAck = true;
+                }
+            }
+        });
 
         // Start a Process Instance sending a message
         String processInstanceId = startProcessInstance(processDefinitionIds.get(SIMPLE_PROCESS),
@@ -310,27 +330,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
     private String startProcessInstance(String processDefinitionId,
                                         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPageBefore) throws InterruptedException {
         //given
-        Map<String, Object> vars = new HashMap<>();
-        vars.put("hey",
-                 "one");
-
-        // Start New Process Instance
-        StartProcessInstanceCmd startProcessInstanceCmd = new StartProcessInstanceCmd(processDefinitionId,
-                                                                                      vars);
-
-        myCmdResults.subscribe(new MessageHandler() {
-            @Override
-            public void handleMessage(Message<?> message) throws MessagingException {
-
-                assertThat(message.getHeaders().containsKey("cmdId")).isTrue();
-                assertThat(message.getHeaders().get("cmdId")).isEqualTo(startProcessInstanceCmd.getId());
-                assertThat(message.getPayload()).isNotNull();
-                startedProcessInstanceAck = true;
-            }
-        });
-
-        myCmdProducer.send(MessageBuilder.withPayload(startProcessInstanceCmd).setHeader("cmdId",
-                                                                                         startProcessInstanceCmd.getId()).build());
+        myCmdProducer.send(MessageBuilder.withPayload(startProcessInstanceCmd).build());
 
         while (!startedProcessInstanceAck) {
             Thread.sleep(100);
