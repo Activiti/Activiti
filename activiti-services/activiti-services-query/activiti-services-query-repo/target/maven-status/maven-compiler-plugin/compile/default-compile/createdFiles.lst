@@ -1,0 +1,3 @@
+org/activiti/services/query/app/repository/TaskRepository.class
+org/activiti/services/query/app/repository/VariableRepository.class
+org/activiti/services/query/app/repository/ProcessInstanceRepository.class

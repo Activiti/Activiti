@@ -1,0 +1,2 @@
+org/activiti/test/TestConfiguration.class
+org/activiti/services/identity/keycloak/interceptor/KeycloakSecurityContextClientRequestInterceptor.class
