@@ -31,37 +31,6 @@ public class SequenceFlowTakenEventEntity extends ProcessEngineEventEntity {
     private String targetActivityName;
     private String targetActivityType;
 
-    public SequenceFlowTakenEventEntity() {
-    }
-
-    public SequenceFlowTakenEventEntity(Long id,
-                                        Long timestamp,
-                                        String eventType,
-                                        String executionId,
-                                        String processDefinitionId,
-                                        String processInstanceId,
-                                        String sequenceFlowId,
-                                        String sourceActivityId,
-                                        String sourceActivityName,
-                                        String sourceActivityType,
-                                        String targetActivityId,
-                                        String targetActivityName,
-                                        String targetActivityType) {
-        super(id,
-              timestamp,
-              eventType,
-              executionId,
-              processDefinitionId,
-              processInstanceId);
-        this.sequenceFlowId = sequenceFlowId;
-        this.sourceActivityId = sourceActivityId;
-        this.sourceActivityName = sourceActivityName;
-        this.sourceActivityType = sourceActivityType;
-        this.targetActivityId = targetActivityId;
-        this.targetActivityName = targetActivityName;
-        this.targetActivityType = targetActivityType;
-    }
-
     public String getSequenceFlowId() {
         return sequenceFlowId;
     }

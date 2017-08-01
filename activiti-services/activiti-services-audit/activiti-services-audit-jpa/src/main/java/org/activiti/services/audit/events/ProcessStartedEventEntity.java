@@ -26,27 +26,6 @@ public class ProcessStartedEventEntity extends ProcessEngineEventEntity {
     private String nestedProcessDefinitionId;
     private String nestedProcessInstanceId;
 
-    public ProcessStartedEventEntity() {
-    }
-
-    public ProcessStartedEventEntity(Long id,
-                                     Long timestamp,
-                                     String eventType,
-                                     String executionId,
-                                     String processDefinitionId,
-                                     String processInstanceId,
-                                     String nestedProcessDefinitionId,
-                                     String nestedProcessInstanceId) {
-        super(id,
-              timestamp,
-              eventType,
-              executionId,
-              processDefinitionId,
-              processInstanceId);
-        this.nestedProcessDefinitionId = nestedProcessDefinitionId;
-        this.nestedProcessInstanceId = nestedProcessInstanceId;
-    }
-
     public String getNestedProcessDefinitionId() {
         return nestedProcessDefinitionId;
     }

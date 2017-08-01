@@ -27,29 +27,6 @@ public class ActivityStartedEventEntity extends ProcessEngineEventEntity {
     private String activityName;
     private String activityType;
 
-    public ActivityStartedEventEntity() {
-    }
-
-    public ActivityStartedEventEntity(Long id,
-                                      Long timestamp,
-                                      String eventType,
-                                      String executionId,
-                                      String processDefinitionId,
-                                      String processInstanceId,
-                                      String activityId,
-                                      String activityName,
-                                      String activityType) {
-        super(id,
-              timestamp,
-              eventType,
-              executionId,
-              processDefinitionId,
-              processInstanceId);
-        this.activityId = activityId;
-        this.activityName = activityName;
-        this.activityType = activityType;
-    }
-
     public String getActivityId() {
         return activityId;
     }

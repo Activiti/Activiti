@@ -30,25 +30,6 @@ public class ProcessCompletedEventEntity extends ProcessEngineEventEntity {
     @Convert(converter = ProcessInstanceJpaJsonConverter.class)
     private ProcessInstance processInstance;
 
-    public ProcessCompletedEventEntity() {
-    }
-
-    public ProcessCompletedEventEntity(Long id,
-                                       Long timestamp,
-                                       String eventType,
-                                       String executionId,
-                                       String processDefinitionId,
-                                       String processInstanceId,
-                                       ProcessInstance processInstance) {
-        super(id,
-              timestamp,
-              eventType,
-              executionId,
-              processDefinitionId,
-              processInstanceId);
-        this.processInstance = processInstance;
-    }
-
     public ProcessInstance getProcessInstance() {
         return processInstance;
     }

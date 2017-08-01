@@ -27,29 +27,6 @@ public class VariableDeletedEventEntity extends ProcessEngineEventEntity {
     private String variableType;
     private String taskId;
 
-    public VariableDeletedEventEntity() {
-    }
-
-    public VariableDeletedEventEntity(Long id,
-                                      Long timestamp,
-                                      String eventType,
-                                      String executionId,
-                                      String processDefinitionId,
-                                      String processInstanceId,
-                                      String variableName,
-                                      String variableType,
-                                      String taskId) {
-        super(id,
-              timestamp,
-              eventType,
-              executionId,
-              processDefinitionId,
-              processInstanceId);
-        this.variableName = variableName;
-        this.variableType = variableType;
-        this.taskId = taskId;
-    }
-
     public String getVariableName() {
         return variableName;
     }

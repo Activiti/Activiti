@@ -63,22 +63,6 @@ public abstract class ProcessEngineEventEntity {
     private String processDefinitionId;
     private String processInstanceId;
 
-    public ProcessEngineEventEntity() {
-    }
-
-    public ProcessEngineEventEntity(Long id, Long timestamp,
-                                    String eventType,
-                                    String executionId,
-                                    String processDefinitionId,
-                                    String processInstanceId) {
-        this.id = id;
-        this.timestamp = timestamp;
-        this.eventType = eventType;
-        this.executionId = executionId;
-        this.processDefinitionId = processDefinitionId;
-        this.processInstanceId = processInstanceId;
-    }
-
     public Long getTimestamp() {
         return timestamp;
     }

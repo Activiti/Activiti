@@ -28,31 +28,6 @@ public class VariableCreatedEventEntity extends ProcessEngineEventEntity {
     private String variableType;
     private String taskId;
 
-    public VariableCreatedEventEntity() {
-    }
-
-    public VariableCreatedEventEntity(Long id,
-                                      Long timestamp,
-                                      String eventType,
-                                      String executionId,
-                                      String processDefinitionId,
-                                      String processInstanceId,
-                                      String variableName,
-                                      String variableValue,
-                                      String variableType,
-                                      String taskId) {
-        super(id,
-              timestamp,
-              eventType,
-              executionId,
-              processDefinitionId,
-              processInstanceId);
-        this.variableName = variableName;
-        this.variableValue = variableValue;
-        this.variableType = variableType;
-        this.taskId = taskId;
-    }
-
     public String getVariableName() {
         return variableName;
     }
