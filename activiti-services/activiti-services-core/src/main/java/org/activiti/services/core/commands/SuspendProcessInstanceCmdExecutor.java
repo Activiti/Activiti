@@ -1,10 +1,11 @@
 package org.activiti.services.core.commands;
 
 import org.activiti.services.core.ProcessEngineWrapper;
-import org.activiti.services.core.model.commands.Command;
 import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
+import org.activiti.services.core.model.commands.results.SuspendProcessInstanceResults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,5 +29,7 @@ public class SuspendProcessInstanceCmdExecutor implements CommandExecutor<Suspen
     @Override
     public void execute(SuspendProcessInstanceCmd cmd) {
         processEngine.suspend(cmd);
+        SuspendProcessInstanceResults cmdResult = new SuspendProcessInstanceResults(cmd.getId());
+        commandResults.send(MessageBuilder.withPayload(cmdResult).build());
     }
 }

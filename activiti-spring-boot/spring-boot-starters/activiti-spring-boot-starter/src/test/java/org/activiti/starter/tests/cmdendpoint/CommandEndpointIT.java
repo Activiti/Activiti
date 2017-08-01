@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
@@ -32,27 +33,32 @@ import org.activiti.services.core.model.commands.CompleteTaskCmd;
 import org.activiti.services.core.model.commands.ReleaseTaskCmd;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
+import org.activiti.services.core.model.commands.results.ActivateProcessInstanceResults;
+import org.activiti.services.core.model.commands.results.ClaimTaskResults;
+import org.activiti.services.core.model.commands.results.CommandResults;
+import org.activiti.services.core.model.commands.results.CompleteTaskResults;
+import org.activiti.services.core.model.commands.results.ReleaseTaskResults;
+import org.activiti.services.core.model.commands.results.StartProcessInstanceResults;
+import org.activiti.services.core.model.commands.results.SuspendProcessInstanceResults;
 import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.cloud.sleuth.Tracer;
 import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.cloud.stream.binder.test.junit.rabbit.RabbitTestSupport;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.MessagingException;
-import org.springframework.messaging.SubscribableChannel;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
@@ -74,9 +80,6 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
     private MessageChannel myCmdProducer;
 
     @Autowired
-    private SubscribableChannel myCmdResults;
-
-    @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
@@ -93,9 +96,20 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
 
     private static final String SIMPLE_PROCESS = "SimpleProcess";
 
-    private static boolean startedProcessInstanceAck = false;
+    private static AtomicBoolean startedProcessInstanceAck = new AtomicBoolean(false);
+    private static AtomicBoolean suspendedProcessInstanceAck = new AtomicBoolean(false);
+    private static AtomicBoolean activatedProcessInstanceAck = new AtomicBoolean(false);
+    private static AtomicBoolean claimedTaskAck = new AtomicBoolean(false);
+    private static AtomicBoolean releasedTaskAck = new AtomicBoolean(false);
+    private static AtomicBoolean completedTaskAck = new AtomicBoolean(false);
+
+
 
     private StartProcessInstanceCmd startProcessInstanceCmd;
+
+    private SuspendProcessInstanceCmd suspendProcessInstanceCmd;
+
+    private static String testProcessInstanceId;
 
     @Before
     public void setUp() throws Exception {
@@ -107,10 +121,34 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        assertThat(processDefinitions.getBody().getContent()).hasSize(4); //if a new definition is added then this is expected to be increased
+        assertThat(processDefinitions.getBody().getContent()).hasSize(6); //if a new definition is added then this is expected to be increased
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
             processDefinitionIds.put(pd.getName(),
                                      pd.getId());
+        }
+    }
+
+    @EnableAutoConfiguration
+    public static class StreamHandler {
+
+        @StreamListener(MessageClientStream.MY_CMD_RESULTS)
+        public void consumeResults(CommandResults results) {
+            assertThat(results).isNotNull();
+            if (results instanceof StartProcessInstanceResults) {
+                assertThat(((StartProcessInstanceResults) results).getProcessInstanceId()).isNotEmpty();
+                testProcessInstanceId = ((StartProcessInstanceResults) results).getProcessInstanceId();
+                startedProcessInstanceAck.set(true);
+            } else if (results instanceof SuspendProcessInstanceResults) {
+                suspendedProcessInstanceAck.set(true);
+            } else if (results instanceof ActivateProcessInstanceResults) {
+                activatedProcessInstanceAck.set(true);
+            } else if (results instanceof ClaimTaskResults) {
+                claimedTaskAck.set(true);
+            } else if (results instanceof ReleaseTaskResults) {
+                releasedTaskAck.set(true);
+            } else if (results instanceof CompleteTaskResults) {
+                completedTaskAck.set(true);
+            }
         }
     }
 
@@ -129,26 +167,14 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         vars.put("hey",
                  "one");
 
-        // Start New Process Instance
         startProcessInstanceCmd = new StartProcessInstanceCmd(processDefinitionIds.get(SIMPLE_PROCESS),
                                                               vars);
-
-        myCmdResults.subscribe(new MessageHandler() {
-            @Override
-            public void handleMessage(Message<?> message) throws MessagingException {
-
-                assertThat(message.getPayload()).isNotNull();
-                String resultString = message.getPayload().toString();
-                if (resultString.contains("StartProcessInstanceResults") && resultString.contains(startProcessInstanceCmd.getId())) {
-                    startedProcessInstanceAck = true;
-                }
-            }
-        });
 
         // Start a Process Instance sending a message
         String processInstanceId = startProcessInstance(processDefinitionIds.get(SIMPLE_PROCESS),
                                                         processInstancesPageBefore);
 
+        suspendProcessInstanceCmd = new SuspendProcessInstanceCmd(testProcessInstanceId);
         // Suspending a Process Instance sending a message
         suspendProcessInstance(processDefinitionIds.get(SIMPLE_PROCESS),
                                processInstanceId);
@@ -217,6 +243,11 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         assertThat(processInstancesPage.getBody().getMetadata().getTotalPages()).isEqualTo(0);
 
         assertThat(startedProcessInstanceAck).isTrue();
+        assertThat(suspendedProcessInstanceAck).isTrue();
+        assertThat(activatedProcessInstanceAck).isTrue();
+        assertThat(claimedTaskAck).isTrue();
+        assertThat(releasedTaskAck).isTrue();
+        assertThat(completedTaskAck).isTrue();
     }
 
     private void completeTask(Task task) throws InterruptedException {
@@ -227,7 +258,8 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         String cmdId = UUID.randomUUID().toString();
         myCmdProducer.send(MessageBuilder.withPayload(completeTaskCmd).setHeader("cmdId",
                                                                                  cmdId).build());
-        Thread.sleep(500);
+        WaitUtil.waitFor(CommandEndpointIT.completedTaskAck,
+                         1000);
     }
 
     private void releaseTask(Task task) throws InterruptedException {
@@ -237,8 +269,8 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         String cmdId = UUID.randomUUID().toString();
         myCmdProducer.send(MessageBuilder.withPayload(releaseTaskCmd).setHeader("cmdId",
                                                                                 cmdId).build());
-        Thread.sleep(500);
-
+        WaitUtil.waitFor(CommandEndpointIT.releasedTaskAck,
+                         1000);
         responseEntity = getTasks();
         tasks = responseEntity.getBody().getContent();
         assertThat(tasks).extracting(Task::getName).contains("Perform action");
@@ -254,7 +286,9 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         String cmdId = UUID.randomUUID().toString();
         myCmdProducer.send(MessageBuilder.withPayload(claimTaskCmd).setHeader("cmdId",
                                                                               cmdId).build());
-        Thread.sleep(500);
+
+        WaitUtil.waitFor(CommandEndpointIT.claimedTaskAck,
+                         1000);
 
         responseEntity = getTasks();
         tasks = responseEntity.getBody().getContent();
@@ -272,7 +306,8 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         myCmdProducer.send(MessageBuilder.withPayload(activateProcessInstanceCmd).setHeader("cmdId",
                                                                                             cmdId).build());
 
-        Thread.sleep(500);
+        WaitUtil.waitFor(CommandEndpointIT.activatedProcessInstanceAck,
+                         1000);
         //when
         processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                      HttpMethod.GET,
@@ -299,12 +334,11 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
                                         String processInstanceId) throws InterruptedException {
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage;
         Collection<ProcessInstance> instances;//given
-        SuspendProcessInstanceCmd suspendProcessInstanceCmd = new SuspendProcessInstanceCmd(processInstanceId);
-        String cmdId = UUID.randomUUID().toString();
-        myCmdProducer.send(MessageBuilder.withPayload(suspendProcessInstanceCmd).setHeader("cmdId",
-                                                                                           cmdId).build());
 
-        Thread.sleep(500);
+        myCmdProducer.send(MessageBuilder.withPayload(suspendProcessInstanceCmd).build());
+
+        WaitUtil.waitFor(CommandEndpointIT.suspendedProcessInstanceAck,
+                         3000);
         //when
         processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                      HttpMethod.GET,
@@ -332,10 +366,9 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         //given
         myCmdProducer.send(MessageBuilder.withPayload(startProcessInstanceCmd).build());
 
-        while (!startedProcessInstanceAck) {
-            Thread.sleep(100);
-            System.out.println("Waiting for startedProcessInstanceAck ...");
-        }
+        WaitUtil.waitFor(CommandEndpointIT.startedProcessInstanceAck,
+                         3000);
+
         //when
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                                                                      HttpMethod.GET,
