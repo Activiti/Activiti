@@ -19,15 +19,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.services.core.model.MetaBpmnModel;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessModel;
 import org.activiti.services.core.model.converter.ProcessDefinitionConverter;
 import org.activiti.services.core.pageable.PageableRepositoryService;
+import org.activiti.services.rest.resources.BpmnModelResource;
 import org.activiti.services.rest.resources.ProcessDefinitionResource;
 import org.activiti.services.rest.resources.ProcessModelResource;
+import org.activiti.services.rest.resources.assembler.BpmnModelResourceAssembler;
 import org.activiti.services.rest.resources.assembler.ProcessDefinitionResourceAssembler;
 import org.activiti.services.rest.resources.assembler.ProcessModelResourceAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +46,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/v1/process-definitions", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/process-definitions",
+        produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessDefinitionController {
 
     private final RepositoryService repositoryService;
@@ -53,6 +58,8 @@ public class ProcessDefinitionController {
 
     private final ProcessModelResourceAssembler processModelResourceAssembler;
 
+    private final BpmnModelResourceAssembler bpmnModelResourceAssembler;
+
     private final PageableRepositoryService pageableRepositoryService;
 
     @Autowired
@@ -60,11 +67,13 @@ public class ProcessDefinitionController {
                                        ProcessDefinitionConverter processDefinitionConverter,
                                        ProcessDefinitionResourceAssembler resourceAssembler,
                                        ProcessModelResourceAssembler processModelResourceAssembler,
+                                       BpmnModelResourceAssembler bpmnModelResourceAssembler,
                                        PageableRepositoryService pageableRepositoryService) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.resourceAssembler = resourceAssembler;
         this.processModelResourceAssembler = processModelResourceAssembler;
+        this.bpmnModelResourceAssembler = bpmnModelResourceAssembler;
         this.pageableRepositoryService = pageableRepositoryService;
     }
 
@@ -75,7 +84,8 @@ public class ProcessDefinitionController {
         return pagedResourcesAssembler.toResource(page, resourceAssembler);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}",
+            method = RequestMethod.GET)
     public ProcessDefinitionResource getProcessDefinition(@PathVariable String id) {
         org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                                                                                               .processDefinitionId(id)
@@ -86,13 +96,22 @@ public class ProcessDefinitionController {
         return resourceAssembler.toResource(processDefinitionConverter.from(processDefinition));
     }
 
-    @RequestMapping(value = "/{id}/xml", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}/xml",
+            method = RequestMethod.GET)
     public ProcessModelResource getProcessModel(@PathVariable String id) {
         try (final InputStream resourceStream = repositoryService.getProcessModel(id)) {
             String xml = new String(IoUtil.readInputStream(resourceStream, null), StandardCharsets.UTF_8);
             return processModelResourceAssembler.toResource(new ProcessModel(id, xml));
         } catch (IOException e) {
-            throw new ActivitiException("Error occured while getting process model '" + id + "' : " + e.getMessage(), e);
+            throw new ActivitiException("Error occured while getting process model '" + id + "' : " + e.getMessage(),
+                                        e);
         }
+    }
+
+    @RequestMapping(value = "/{id}/json",
+            method = RequestMethod.GET)
+    public BpmnModelResource getBpmnModel(@PathVariable String id) {
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
+        return bpmnModelResourceAssembler.toResource(new MetaBpmnModel(id, bpmnModel));
     }
 }
