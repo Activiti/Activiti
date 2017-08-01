@@ -94,6 +94,8 @@
     <extra-enforcer-rules.version>1.0-beta-6</extra-enforcer-rules.version>
     <illegal-transitive-dependency-check.version>1.7.4</illegal-transitive-dependency-check.version>
     <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
+    <docker.maven.plugin.version>0.21.0</docker.maven.plugin.version>
+    <directory.maven.plugin.version>0.1</directory.maven.plugin.version>
   </properties>
 
   <repositories>

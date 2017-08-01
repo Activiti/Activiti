@@ -151,6 +151,86 @@
           <runOrder>alphabetical</runOrder>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.commonjava.maven.plugins</groupId>
+        <artifactId>directory-maven-plugin</artifactId>
+        <version>${directory.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>directories</id>
+            <goals>
+              <goal>highest-basedir</goal>
+            </goals>
+            <phase>initialize</phase>
+            <configuration>
+              <property>main.basedir</property>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>${docker.maven.plugin.version}</version>
+
+        <configuration>
+          <images>
+            <!-- A single's image configuration -->
+            <image>
+              <name>activiti-keycloak</name>
+              <alias>keycloak</alias>
+              <build>
+                <dockerFile>${main.basedir}/docker/Dockerfile</dockerFile>
+                <cleanup>remove</cleanup>
+                <nocache>false</nocache>
+                <compression>gzip</compression>
+                <skip>false</skip>
+              </build>
+              <run>
+                <ports>
+                  <port>8180:8080</port>
+                </ports>
+              </run>
+            </image>
+            <image>
+              <name>rabbitmq:management</name>
+              <alias>activiti-rabbitmq</alias>
+              <run>
+                <ports>
+                  <port>5672:5672</port>
+                  <port>15672:15672</port>
+                </ports>
+              </run>
+            </image>
+
+          </images>
+        </configuration>
+
+        <!-- Connect start/stop to pre- and
+             post-integration-test phase, respectively if you want to start
+             your docker containers during integration tests -->
+        <executions>
+          <execution>
+            <id>start</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <!-- "build" should be used to create the images with the
+                   artifact -->
+              <goal>build</goal>
+              <goal>start</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>stop</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
