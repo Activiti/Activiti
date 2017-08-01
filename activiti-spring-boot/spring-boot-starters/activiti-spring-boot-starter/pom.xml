@@ -182,7 +182,7 @@
               <name>activiti-keycloak</name>
               <alias>keycloak</alias>
               <build>
-                <dockerFile>${main.basedir}/docker/Dockerfile</dockerFile>
+                <dockerFile>${main.basedir}/docker/keycloak/Dockerfile</dockerFile>
                 <cleanup>remove</cleanup>
                 <nocache>false</nocache>
                 <compression>gzip</compression>
@@ -227,6 +227,13 @@
             <phase>post-integration-test</phase>
             <goals>
               <goal>stop</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>build</id>
+            <phase>install</phase>
+            <goals>
+              <goal>build</goal>
             </goals>
           </execution>
         </executions>
