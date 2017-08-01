@@ -16,6 +16,7 @@
 
 package org.activiti.services.events.converter;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -40,6 +41,10 @@ public class EventConverterContext {
     public EventConverterContext(Set<EventConverter> converters) {
         this.convertersMap = converters.stream().collect(Collectors.toMap(EventConverter::handledType,
                                                                           Function.identity()));
+    }
+
+    Map<ActivitiEventType, EventConverter> getConvertersMap() {
+        return Collections.unmodifiableMap(convertersMap);
     }
 
     public ProcessEngineEvent from(ActivitiEvent activitiEvent) {
