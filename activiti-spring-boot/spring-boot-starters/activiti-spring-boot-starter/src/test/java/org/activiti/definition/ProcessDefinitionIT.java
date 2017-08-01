@@ -16,8 +16,20 @@
 
 package org.activiti.definition;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.converter.util.InputStreamProvider;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.services.core.model.MetaBpmnModel;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessDefinitionMeta;
 import org.activiti.services.core.model.ProcessModel;
@@ -33,16 +45,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
-public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT{
+public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -73,7 +79,7 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT{
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
+        return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
                                      getRequestEntityWithHeaders(),
                                      responseType);
@@ -103,7 +109,7 @@ return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
         assertThat(entity.getBody()).isNotNull();
         assertThat(entity.getBody().getId()).isEqualTo(aProcessDefinition.getId());
     }
-    
+
     @Test
     public void shouldReturnProcessDefinitionMetadata() throws Exception {
         //given
@@ -181,7 +187,10 @@ return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
         ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
 
         //when
-        ResponseEntity<ProcessModel> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/xml", HttpMethod.GET, getRequestEntityWithHeaders(), responseType);
+        ResponseEntity<ProcessModel> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/xml",
+                                                                    HttpMethod.GET,
+                                                                    getRequestEntityWithHeaders(),
+                                                                    responseType);
 
         //then
         assertThat(entity).isNotNull();
@@ -193,6 +202,46 @@ return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
     private String getProcessXml(final String processDefinitionKey) throws IOException {
         try (InputStream is = ClassLoader.getSystemResourceAsStream("processes/" + processDefinitionKey + ".bpmn20.xml")) {
             return new String(IoUtil.readInputStream(is, null), "UTF-8");
+        }
+    }
+
+    @Test
+    public void shouldRetriveBpmnModel() throws Exception {
+        //given
+        ParameterizedTypeReference<MetaBpmnModel> responseType = new ParameterizedTypeReference<MetaBpmnModel>() {
+        };
+        BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
+
+        ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsEntity = getProcessDefinitions();
+        assertThat(processDefinitionsEntity).isNotNull();
+        assertThat(processDefinitionsEntity.getBody()).isNotNull();
+        assertThat(processDefinitionsEntity.getBody().getContent()).isNotEmpty();
+        ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
+
+        //when
+        ResponseEntity<MetaBpmnModel> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/json",
+                                                                     HttpMethod.GET,
+                                                                     getRequestEntityWithHeaders(),
+                                                                     responseType);
+
+        //then
+        assertThat(entity).isNotNull();
+        assertThat(entity.getBody()).isNotNull();
+        assertThat(entity.getBody().getId()).isEqualTo(aProcessDefinition.getId());
+
+        BpmnModel targetModel = entity.getBody().getContent();
+        final InputStream byteArrayInputStream = new ByteArrayInputStream(getProcessXml(aProcessDefinition.getId()
+                                                                                                          .split(":")[0]).getBytes());
+        BpmnModel sourceModel = bpmnXMLConverter.convertToBpmnModel(new InputStreamProvider() {
+
+            @Override
+            public InputStream getInputStream() {
+                return byteArrayInputStream;
+            }
+        }, false, false);
+        assertThat(targetModel.getMainProcess().getId().equals(sourceModel.getMainProcess().getId()));
+        for (FlowElement element : targetModel.getMainProcess().getFlowElements()) {
+            assertThat(sourceModel.getFlowElement(element.getId()) != null);
         }
     }
 }
