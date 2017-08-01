@@ -46,4 +46,14 @@ public class EventsRestTemplate {
         return eventsResponse;
     }
 
+    public ResponseEntity<ProcessEngineEventEntity> executeFindById(long id) {
+        ResponseEntity<ProcessEngineEventEntity> responseEntity = restTemplate.exchange(RELATIVE_EVENTS_ENDPOINT + id,
+                                                                                  HttpMethod.GET,
+                                                                                  null,
+                                                                                  new ParameterizedTypeReference<ProcessEngineEventEntity>() {
+                                                                                  });
+        assertThat(responseEntity).hasStatusCode(HttpStatus.OK);
+        return responseEntity;
+    }
+
 }

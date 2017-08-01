@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.activiti.services.audit.events.ActivityStartedEventEntity;
+import org.activiti.services.audit.events.ActivityStartedEventEntityAssert;
 import org.activiti.services.audit.events.ProcessEngineEventEntity;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.junit.Before;
@@ -153,4 +155,33 @@ public class AuditServiceIT {
         //FIXME improve the waiting mechanism
         Thread.sleep(500);
     }
+
+    @Test
+    public void findByIdShouldReturnTheEventIdentifiedByTheGivenId() throws Exception {
+        //given
+        producer.send(new MockProcessEngineEvent(System.currentTimeMillis(),
+                                                 "ActivityStartedEvent",
+                                                 "2",
+                                                 "3",
+                                                 "4"));
+
+        waitForMessage();
+
+        ResponseEntity<PagedResources<ProcessEngineEventEntity>> eventsPagedResources = eventsRestTemplate.executeFindAll();
+        assertThat(eventsPagedResources.getBody().getContent()).isNotEmpty();
+        ProcessEngineEventEntity event = eventsPagedResources.getBody().getContent().iterator().next();
+
+        //when
+        ResponseEntity<ProcessEngineEventEntity> responseEntity = eventsRestTemplate.executeFindById(event.getId());
+
+        //then
+        assertThat(responseEntity.getBody()).isInstanceOf(ActivityStartedEventEntity.class);
+        ActivityStartedEventEntityAssert.assertThat((ActivityStartedEventEntity) responseEntity.getBody())
+                .hasId(event.getId())
+                .hasEventType("ActivityStartedEvent")
+                .hasExecutionId("2")
+                .hasProcessDefinitionId("3")
+                .hasProcessInstanceId("4");
+    }
+
 }
