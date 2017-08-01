@@ -1,4 +1,4 @@
-/target
+target
 /local
 
 # Eclipse, Netbeans and IntelliJ files
@@ -7,7 +7,7 @@
 /nbproject
 /*.ipr
 /*.iws
-/*.iml
+*.iml
 
 # Repository wide ignore mac DS_Store files
 .DS_Store
