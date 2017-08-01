@@ -8,7 +8,8 @@ public class BpmnModelResource extends Resource<MetaBpmnModel> {
 
     public BpmnModelResource(MetaBpmnModel model,
                              Link... links) {
-        super(model);
+        super(model,
+              links);
     }
 
 }
