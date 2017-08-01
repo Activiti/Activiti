@@ -20,8 +20,10 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = "VariableDeletedEvent")
+@DiscriminatorValue(value = VariableDeletedEventEntity.VARIABLE_DELETED_EVENT)
 public class VariableDeletedEventEntity extends ProcessEngineEventEntity {
+
+    protected static final String VARIABLE_DELETED_EVENT = "VariableDeletedEvent";
 
     private String variableName;
     private String variableType;

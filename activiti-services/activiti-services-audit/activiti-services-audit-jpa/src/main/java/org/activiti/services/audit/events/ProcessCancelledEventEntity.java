@@ -16,23 +16,19 @@
 
 package org.activiti.services.audit.events;
 
-import javax.persistence.Convert;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-import org.activiti.services.audit.converter.TaskJpaJsonConverter;
-import org.activiti.services.core.model.Task;
-
 @Entity
-@DiscriminatorValue(value = TaskAssignedEventEntity.TASK_ASSIGNED_EVENT)
-public class TaskAssignedEventEntity extends ProcessEngineEventEntity {
+@DiscriminatorValue(value = ProcessCancelledEventEntity.PROCESS_CANCELLED_EVENT)
+public class ProcessCancelledEventEntity extends BaseProcessEventEntity {
 
-    protected static final String TASK_ASSIGNED_EVENT = "TaskAssignedEvent";
+    protected static final String PROCESS_CANCELLED_EVENT = "ProcessCancelledEvent";
 
-    @Convert(converter = TaskJpaJsonConverter.class)
-    private Task task;
+    private String cause;
 
-    public Task getTask() {
-        return task;
+    public String getCause() {
+        return cause;
     }
+
 }

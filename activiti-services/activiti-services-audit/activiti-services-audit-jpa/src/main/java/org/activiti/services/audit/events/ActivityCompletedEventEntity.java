@@ -20,22 +20,9 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = "ActivityCompletedEvent")
-public class ActivityCompletedEventEntity extends ProcessEngineEventEntity {
+@DiscriminatorValue(value = ActivityCompletedEventEntity.ACTIVITY_COMPLETED_EVENT)
+public class ActivityCompletedEventEntity extends BaseActivityEventEntity {
 
-    private String activityId;
-    private String activityName;
-    private String activityType;
+    protected static final String ACTIVITY_COMPLETED_EVENT = "ActivityCompletedEvent";
 
-    public String getActivityId() {
-        return activityId;
-    }
-
-    public String getActivityName() {
-        return activityName;
-    }
-
-    public String getActivityType() {
-        return activityType;
-    }
 }

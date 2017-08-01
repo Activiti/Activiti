@@ -24,8 +24,10 @@ import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.audit.converter.ProcessInstanceJpaJsonConverter;
 
 @Entity
-@DiscriminatorValue(value = "ProcessCompletedEvent")
+@DiscriminatorValue(value = ProcessCompletedEventEntity.PROCESS_COMPLETED_EVENT)
 public class ProcessCompletedEventEntity extends ProcessEngineEventEntity {
+
+    protected static final String PROCESS_COMPLETED_EVENT = "ProcessCompletedEvent";
 
     @Convert(converter = ProcessInstanceJpaJsonConverter.class)
     private ProcessInstance processInstance;

@@ -16,23 +16,16 @@
 
 package org.activiti.services.audit.events;
 
-import javax.persistence.Convert;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+public abstract class BaseProcessEventEntity extends ProcessEngineEventEntity {
 
-import org.activiti.services.audit.converter.TaskJpaJsonConverter;
-import org.activiti.services.core.model.Task;
+    private String nestedProcessDefinitionId;
+    private String nestedProcessInstanceId;
 
-@Entity
-@DiscriminatorValue(value = TaskAssignedEventEntity.TASK_ASSIGNED_EVENT)
-public class TaskAssignedEventEntity extends ProcessEngineEventEntity {
+    public String getNestedProcessDefinitionId() {
+        return nestedProcessDefinitionId;
+    }
 
-    protected static final String TASK_ASSIGNED_EVENT = "TaskAssignedEvent";
-
-    @Convert(converter = TaskJpaJsonConverter.class)
-    private Task task;
-
-    public Task getTask() {
-        return task;
+    public String getNestedProcessInstanceId() {
+        return nestedProcessInstanceId;
     }
 }

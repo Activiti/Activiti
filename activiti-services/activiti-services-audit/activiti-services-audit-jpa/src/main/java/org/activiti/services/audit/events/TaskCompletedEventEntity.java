@@ -24,8 +24,10 @@ import org.activiti.services.audit.converter.TaskJpaJsonConverter;
 import org.activiti.services.core.model.Task;
 
 @Entity
-@DiscriminatorValue(value = "TaskCompletedEvent")
+@DiscriminatorValue(value = TaskCompletedEventEntity.TASK_COMPLETED_EVENT)
 public class TaskCompletedEventEntity extends ProcessEngineEventEntity {
+
+    protected static final String TASK_COMPLETED_EVENT = "TaskCompletedEvent";
 
     @Convert(converter = TaskJpaJsonConverter.class)
     private Task task;

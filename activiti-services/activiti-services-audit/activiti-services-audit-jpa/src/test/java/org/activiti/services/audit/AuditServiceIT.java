@@ -94,6 +94,11 @@ public class AuditServiceIT {
     private List<ProcessEngineEvent> getCoveredEvents() {
         List<ProcessEngineEvent> coveredEvents = new ArrayList<>();
         coveredEvents.add(new MockProcessEngineEvent(System.currentTimeMillis(),
+                                                     "ActivityCancelledEvent",
+                                                     "100",
+                                                     "103",
+                                                     "104"));
+        coveredEvents.add(new MockProcessEngineEvent(System.currentTimeMillis(),
                                                      "ActivityStartedEvent",
                                                      "2",
                                                      "3",
@@ -108,6 +113,11 @@ public class AuditServiceIT {
                                                      "12",
                                                      "24",
                                                      "43"));
+        coveredEvents.add(new MockProcessEngineEvent(System.currentTimeMillis(),
+                                                     "ProcessCancelledEvent",
+                                                     "112",
+                                                     "124",
+                                                     "143"));
         coveredEvents.add(new MockProcessEngineEvent(System.currentTimeMillis(),
                                                      "ProcessStartedEvent",
                                                      "13",

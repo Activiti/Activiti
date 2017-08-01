@@ -36,17 +36,19 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         property = "eventType",
         visible = true)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = ActivityStartedEventEntity.class, name = "ActivityStartedEvent"),
-        @JsonSubTypes.Type(value = ActivityCompletedEventEntity.class, name = "ActivityCompletedEvent"),
-        @JsonSubTypes.Type(value = ProcessStartedEventEntity.class, name = "ProcessStartedEvent"),
-        @JsonSubTypes.Type(value = ProcessCompletedEventEntity.class, name = "ProcessCompletedEvent"),
-        @JsonSubTypes.Type(value = TaskCreatedEventEntity.class, name = "TaskCreatedEvent"),
-        @JsonSubTypes.Type(value = TaskAssignedEventEntity.class, name = "TaskAssignedEvent"),
-        @JsonSubTypes.Type(value = TaskCompletedEventEntity.class, name = "TaskCompletedEvent"),
-        @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = "VariableCreatedEvent"),
-        @JsonSubTypes.Type(value = VariableUpdatedEventEntity.class, name = "VariableUpdatedEvent"),
-        @JsonSubTypes.Type(value = VariableDeletedEventEntity.class, name = "VariableDeletedEvent"),
-        @JsonSubTypes.Type(value = SequenceFlowTakenEventEntity.class, name = "SequenceFlowTakenEvent")
+        @JsonSubTypes.Type(value = ActivityStartedEventEntity.class, name = ActivityStartedEventEntity.ACTIVITY_STARTED_EVENT),
+        @JsonSubTypes.Type(value = ActivityCompletedEventEntity.class, name = ActivityCompletedEventEntity.ACTIVITY_COMPLETED_EVENT),
+        @JsonSubTypes.Type(value = ActivityCancelledEventEntity.class, name = ActivityCancelledEventEntity.ACTIVITY_CANCELLED_EVENT),
+        @JsonSubTypes.Type(value = ProcessStartedEventEntity.class, name = ProcessStartedEventEntity.PROCESS_STARTED_EVENT),
+        @JsonSubTypes.Type(value = ProcessCompletedEventEntity.class, name = ProcessCompletedEventEntity.PROCESS_COMPLETED_EVENT),
+        @JsonSubTypes.Type(value = ProcessCancelledEventEntity.class, name = ProcessCancelledEventEntity.PROCESS_CANCELLED_EVENT),
+        @JsonSubTypes.Type(value = TaskCreatedEventEntity.class, name = TaskCreatedEventEntity.TASK_CREATED_EVENT),
+        @JsonSubTypes.Type(value = TaskAssignedEventEntity.class, name = TaskAssignedEventEntity.TASK_ASSIGNED_EVENT),
+        @JsonSubTypes.Type(value = TaskCompletedEventEntity.class, name = TaskCompletedEventEntity.TASK_COMPLETED_EVENT),
+        @JsonSubTypes.Type(value = VariableCreatedEventEntity.class, name = VariableCreatedEventEntity.VARIABLE_CREATED_EVENT),
+        @JsonSubTypes.Type(value = VariableUpdatedEventEntity.class, name = VariableUpdatedEventEntity.VARIABLE_UPDATED_EVENT),
+        @JsonSubTypes.Type(value = VariableDeletedEventEntity.class, name = VariableDeletedEventEntity.VARIABLE_DELETED_EVENT),
+        @JsonSubTypes.Type(value = SequenceFlowTakenEventEntity.class, name = SequenceFlowTakenEventEntity.SEQUENCE_FLOW_TAKEN_EVENT)
 })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

@@ -20,22 +20,9 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = "ActivityStartedEvent")
-public class ActivityStartedEventEntity extends ProcessEngineEventEntity {
+@DiscriminatorValue(value = ActivityStartedEventEntity.ACTIVITY_STARTED_EVENT)
+public class ActivityStartedEventEntity extends BaseActivityEventEntity {
 
-    private String activityId;
-    private String activityName;
-    private String activityType;
+    protected static final String ACTIVITY_STARTED_EVENT = "ActivityStartedEvent";
 
-    public String getActivityId() {
-        return activityId;
-    }
-
-    public String getActivityName() {
-        return activityName;
-    }
-
-    public String getActivityType() {
-        return activityType;
-    }
 }

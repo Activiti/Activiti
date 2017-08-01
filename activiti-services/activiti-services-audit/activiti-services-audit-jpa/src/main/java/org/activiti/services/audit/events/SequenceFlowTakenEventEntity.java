@@ -20,8 +20,10 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = "SequenceFlowTakenEvent")
+@DiscriminatorValue(value = SequenceFlowTakenEventEntity.SEQUENCE_FLOW_TAKEN_EVENT)
 public class SequenceFlowTakenEventEntity extends ProcessEngineEventEntity {
+
+    protected static final String SEQUENCE_FLOW_TAKEN_EVENT = "SequenceFlowTakenEvent";
 
     private String sequenceFlowId;
     private String sourceActivityId;

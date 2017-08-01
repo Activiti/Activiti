@@ -20,17 +20,9 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 @Entity
-@DiscriminatorValue(value = "ProcessStartedEvent")
-public class ProcessStartedEventEntity extends ProcessEngineEventEntity {
+@DiscriminatorValue(value = ProcessStartedEventEntity.PROCESS_STARTED_EVENT)
+public class ProcessStartedEventEntity extends BaseProcessEventEntity {
 
-    private String nestedProcessDefinitionId;
-    private String nestedProcessInstanceId;
+    protected static final String PROCESS_STARTED_EVENT = "ProcessStartedEvent";
 
-    public String getNestedProcessDefinitionId() {
-        return nestedProcessDefinitionId;
-    }
-
-    public String getNestedProcessInstanceId() {
-        return nestedProcessInstanceId;
-    }
 }

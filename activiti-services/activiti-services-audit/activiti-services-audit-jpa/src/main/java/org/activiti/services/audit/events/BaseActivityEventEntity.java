@@ -16,23 +16,22 @@
 
 package org.activiti.services.audit.events;
 
-import javax.persistence.Convert;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+public abstract class BaseActivityEventEntity extends ProcessEngineEventEntity {
 
-import org.activiti.services.audit.converter.TaskJpaJsonConverter;
-import org.activiti.services.core.model.Task;
+    private String activityId;
+    private String activityName;
+    private String activityType;
 
-@Entity
-@DiscriminatorValue(value = TaskAssignedEventEntity.TASK_ASSIGNED_EVENT)
-public class TaskAssignedEventEntity extends ProcessEngineEventEntity {
-
-    protected static final String TASK_ASSIGNED_EVENT = "TaskAssignedEvent";
-
-    @Convert(converter = TaskJpaJsonConverter.class)
-    private Task task;
-
-    public Task getTask() {
-        return task;
+    public String getActivityId() {
+        return activityId;
     }
+
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public String getActivityType() {
+        return activityType;
+    }
+
 }
