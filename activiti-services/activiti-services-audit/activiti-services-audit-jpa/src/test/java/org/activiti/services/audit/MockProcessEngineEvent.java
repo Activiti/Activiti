@@ -29,9 +29,6 @@ public class MockProcessEngineEvent implements ProcessEngineEvent {
     private String processDefinitionId;
     private String processInstanceId;
 
-    public MockProcessEngineEvent() {
-    }
-
     public MockProcessEngineEvent(Long timestamp,
                                   String eventType,
                                   String executionId,
