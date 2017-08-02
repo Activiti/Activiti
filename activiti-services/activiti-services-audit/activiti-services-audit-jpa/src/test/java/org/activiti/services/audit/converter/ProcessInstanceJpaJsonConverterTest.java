@@ -31,8 +31,14 @@ public class ProcessInstanceJpaJsonConverterTest {
     @Test
     public void convertToDatabaseColumnShouldReturnTheEntityJsonRepresentation() throws Exception {
         //given
-        ProcessInstance processInstance = new ProcessInstance("20", "My instance", "This is my process instance", "proc-def-id",
-        "initiator", new Date(), "business-key", "running");
+        ProcessInstance processInstance = new ProcessInstance("20",
+                                                              "My instance",
+                                                              "This is my process instance",
+                                                              "proc-def-id",
+                                                              "initiator",
+                                                              new Date(),
+                                                              "business-key",
+                                                              "running");
 
         //when
         String jsonRepresentation = converter.convertToDatabaseColumn(processInstance);
@@ -51,9 +57,9 @@ public class ProcessInstanceJpaJsonConverterTest {
         //given
         String jsonRepresentation =
                 "{\"id\":\"20\"," +
-                "\"status\":\"running\"," +
-                "\"name\":\"My instance\"," +
-                "\"processDefinitionId\":\"proc-def-id\"}";
+                        "\"status\":\"running\"," +
+                        "\"name\":\"My instance\"," +
+                        "\"processDefinitionId\":\"proc-def-id\"}";
 
         //when
         ProcessInstance processInstance = converter.convertToEntityAttribute(jsonRepresentation);
@@ -65,5 +71,4 @@ public class ProcessInstanceJpaJsonConverterTest {
                 .hasStatus("running")
                 .hasProcessDefinitionId("proc-def-id");
     }
-
 }

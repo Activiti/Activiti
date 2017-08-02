@@ -46,14 +46,10 @@ public class JpaAuditApplication implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
-        System.out.println(">>> Starting Audit App... ");
     }
 
     @StreamListener(AuditConsumerChannels.AUDIT_CONSUMER)
     public synchronized void receive(ProcessEngineEventEntity event) {
-        System.out.println(">>>> Recieved Event" + event);
-        System.out.println(">>>> \t Event Meta Data: " + event.getTimestamp() + " > " + event.getEventType());
-        System.out.println(">>>> \t Event Class: " + event.getClass().getCanonicalName());
         eventsRepository.save(event);
     }
 

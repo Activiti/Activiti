@@ -31,7 +31,6 @@ public class MyProducer {
     private MessageChannel producer;
 
     public void send(ProcessEngineEvent newEvent) {
-        System.out.println("Sending Event: " + newEvent);
         producer.send(MessageBuilder.withPayload(newEvent).build());
     }
 }
