@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.definition;
+package org.activiti.starter.tests.definition;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +31,8 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.image.ProcessDiagramGenerator;
-import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
+
+import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessDefinitionMeta;
 import org.activiti.test.util.TestResourceUtil;
