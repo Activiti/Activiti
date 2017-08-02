@@ -25,12 +25,10 @@ import org.activiti.services.audit.events.ActivityStartedEventEntityAssert;
 import org.activiti.services.audit.events.ProcessEngineEventEntity;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cloud.stream.binder.test.junit.rabbit.RabbitTestSupport;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
@@ -44,9 +42,6 @@ import static org.assertj.core.api.Assertions.*;
 @TestPropertySource("classpath:application-producer-test.properties")
 @DirtiesContext
 public class AuditServiceIT {
-
-    @ClassRule
-    public static RabbitTestSupport rabbitTestSupport = new RabbitTestSupport();
 
     @Autowired
     private EventsRestTemplate eventsRestTemplate;

@@ -92,7 +92,7 @@
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
-    <maven-failsafe-plugin.version>2.20</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
@@ -771,6 +771,82 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>${docker.maven.plugin.version}</version>
+
+          <configuration>
+            <images>
+              <!-- A single's image configuration -->
+              <image>
+                <name>activiti-keycloak</name>
+                <alias>keycloak</alias>
+                <build>
+                  <dockerFile>${main.basedir}/docker/keycloak/Dockerfile</dockerFile>
+                  <cleanup>remove</cleanup>
+                  <nocache>false</nocache>
+                  <compression>gzip</compression>
+                  <skip>false</skip>
+                </build>
+                <run>
+                  <ports>
+                    <port>8080:8080</port>
+                  </ports>
+                  <wait>
+                    <log>Keycloak .* started in</log>
+                    <time>40000</time>
+                  </wait>
+                </run>
+              </image>
+              <image>
+                <name>rabbitmq:management</name>
+                <alias>activiti-rabbitmq</alias>
+                <run>
+                  <ports>
+                    <port>5672:5672</port>
+                    <port>15672:15672</port>
+                  </ports>
+                  <wait>
+                    <log>Server startup complete</log>
+                    <time>15000</time>
+                  </wait>
+                </run>
+              </image>
+
+            </images>
+          </configuration>
+
+          <!-- Connect start/stop to pre- and
+               post-integration-test phase, respectively if you want to start
+               your docker containers during integration tests -->
+          <executions>
+            <execution>
+              <id>start</id>
+              <phase>pre-integration-test</phase>
+              <goals>
+                <!-- "build" should be used to create the images with the
+                     artifact -->
+                <goal>build</goal>
+                <goal>start</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>stop</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>stop</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>build</id>
+              <phase>install</phase>
+              <goals>
+                <goal>build</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <version>${maven-jar-plugin.version}</version>
@@ -980,6 +1056,23 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>${build-helper-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.commonjava.maven.plugins</groupId>
+          <artifactId>directory-maven-plugin</artifactId>
+          <version>${directory.maven.plugin.version}</version>
+          <executions>
+            <execution>
+              <id>directories</id>
+              <goals>
+                <goal>highest-basedir</goal>
+              </goals>
+              <phase>initialize</phase>
+              <configuration>
+                <property>main.basedir</property>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <groupId>org.springframework.boot</groupId>
