@@ -23,16 +23,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.converter.util.InputStreamProvider;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
-import org.activiti.services.core.model.MetaBpmnModel;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessDefinitionMeta;
-import org.activiti.services.core.model.ProcessModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +42,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResponseExtractor;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -176,10 +179,6 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
 
     @Test
     public void shouldRetriveProcessModel() throws Exception {
-        //given
-        ParameterizedTypeReference<ProcessModel> responseType = new ParameterizedTypeReference<ProcessModel>() {
-        };
-
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsEntity = getProcessDefinitions();
         assertThat(processDefinitionsEntity).isNotNull();
         assertThat(processDefinitionsEntity.getBody()).isNotNull();
@@ -187,16 +186,12 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
         ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
 
         //when
-        ResponseEntity<ProcessModel> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/xml",
-                                                                    HttpMethod.GET,
-                                                                    getRequestEntityWithHeaders(),
-                                                                    responseType);
+        String responseData = executeRequest(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/xml",
+                                             HttpMethod.GET);
 
         //then
-        assertThat(entity).isNotNull();
-        assertThat(entity.getBody()).isNotNull();
-        assertThat(entity.getBody().getId()).isEqualTo(aProcessDefinition.getId());
-        assertThat(entity.getBody().getContent()).isEqualTo(getProcessXml(aProcessDefinition.getId().split(":")[0]));
+        assertThat(responseData).isNotNull();
+        assertThat(responseData).isEqualTo(getProcessXml(aProcessDefinition.getId().split(":")[0]));
     }
 
     private String getProcessXml(final String processDefinitionKey) throws IOException {
@@ -208,10 +203,6 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
     @Test
     public void shouldRetriveBpmnModel() throws Exception {
         //given
-        ParameterizedTypeReference<MetaBpmnModel> responseType = new ParameterizedTypeReference<MetaBpmnModel>() {
-        };
-        BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
-
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsEntity = getProcessDefinitions();
         assertThat(processDefinitionsEntity).isNotNull();
         assertThat(processDefinitionsEntity.getBody()).isNotNull();
@@ -219,20 +210,16 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
         ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
 
         //when
-        ResponseEntity<MetaBpmnModel> entity = restTemplate.exchange(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/json",
-                                                                     HttpMethod.GET,
-                                                                     getRequestEntityWithHeaders(),
-                                                                     responseType);
+        String responseData = executeRequest(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/json",
+                                             HttpMethod.GET);
 
         //then
-        assertThat(entity).isNotNull();
-        assertThat(entity.getBody()).isNotNull();
-        assertThat(entity.getBody().getId()).isEqualTo(aProcessDefinition.getId());
+        assertThat(responseData).isNotNull();
 
-        BpmnModel targetModel = entity.getBody().getContent();
+        BpmnModel targetModel = new BpmnJsonConverter().convertToBpmnModel(new ObjectMapper().readTree(responseData));
         final InputStream byteArrayInputStream = new ByteArrayInputStream(getProcessXml(aProcessDefinition.getId()
                                                                                                           .split(":")[0]).getBytes());
-        BpmnModel sourceModel = bpmnXMLConverter.convertToBpmnModel(new InputStreamProvider() {
+        BpmnModel sourceModel = new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
 
             @Override
             public InputStream getInputStream() {
@@ -243,5 +230,28 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
         for (FlowElement element : targetModel.getMainProcess().getFlowElements()) {
             assertThat(sourceModel.getFlowElement(element.getId()) != null);
         }
+    }
+
+    private String executeRequest(String url, HttpMethod method) {
+        return restTemplate.execute(url,
+                                    method,
+                                    new RequestCallback() {
+
+                                        @Override
+                                        public void doWithRequest(
+                                                                  org.springframework.http.client.ClientHttpRequest request) throws IOException {
+                                            request.getHeaders().addAll(getHeaders(accessToken
+                                                                                              .getToken()));
+                                        }
+                                    },
+                                    new ResponseExtractor<String>() {
+
+                                        @Override
+                                        public String extractData(ClientHttpResponse response)
+                                                                                               throws IOException {
+                                            return new String(IoUtil.readInputStream(response.getBody(),
+                                                                                     null), "UTF-8");
+                                        }
+                                    });
     }
 }
