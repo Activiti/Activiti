@@ -3,21 +3,27 @@ package org.activiti.utils;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
+import org.activiti.engine.RuntimeService;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.ClientRepresentation;
 import org.keycloak.representations.idm.CredentialRepresentation;
+import org.keycloak.representations.idm.GroupRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -38,7 +44,12 @@ public class KeycloakUtil {
     @Value("${keycloakclientpassword}")
     private String clientPassword;
 
-    Keycloak keycloak;
+    @Autowired
+    private RuntimeService runtimeService;
+
+    private Keycloak keycloak;
+
+    private Map<String, String> groupsIds;
 
     @PostConstruct
     public void init() {
@@ -48,13 +59,13 @@ public class KeycloakUtil {
                                         clientUser,
                                         clientPassword,
                                         keycloakadminclientapp);
+        groupsIds = new HashMap<>();
 
     }
 
     public void createRole(String roleID, String roleName) {
         // Create the role
         RoleRepresentation clientRoleRepresentation = new RoleRepresentation();
-
         clientRoleRepresentation.setName(roleID);
         clientRoleRepresentation.setDescription(roleName);
         clientRoleRepresentation.setClientRole(true);
@@ -64,6 +75,17 @@ public class KeycloakUtil {
                                                                                                                        .get(clientRepresentation.getId())
                                                                                                                        .roles()
                                                                                                                        .create(clientRoleRepresentation));
+    }
+
+    public void createGroup(String groupId, String groupName) {
+        GroupRepresentation group = new GroupRepresentation();
+        group.setName(groupId);
+        Response response = keycloak.realms().realm(realm).groups().add(group);
+        groupsIds.put(groupId, getCreatedId(response));
+    }
+
+    public String getGroupCreatedId(String groupName) {
+        return groupsIds.get(groupName);
     }
 
     public void createUserWithRoles(String userName,
@@ -81,11 +103,34 @@ public class KeycloakUtil {
         user.setLastName(lastName);
         user.setCredentials(Arrays.asList(credential));
         user.setEnabled(true);
+
         Response response = keycloak.realms().realm(realm).users().create(user);
         String userId = getCreatedId(response);
 
         // Assign role to the user
         assignClientRoles(keycloak.realms().realm(realm), userId, keycloakadminclientapp, roles);
+
+    }
+
+    public void createUserWithGroups(String userName,
+                                     String firstName,
+                                     String lastName,
+                                     String password,
+                                     List<String> groups) {
+
+        CredentialRepresentation credential = new CredentialRepresentation();
+        credential.setType(CredentialRepresentation.PASSWORD);
+        credential.setValue(password);
+        UserRepresentation user = new UserRepresentation();
+        user.setUsername(userName);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setCredentials(Arrays.asList(credential));
+        user.setEnabled(true);
+        Response response = keycloak.realms().realm(realm).users().create(user);
+        for (String groupId : groups) {
+            keycloak.realms().realm(realm).users().get(getCreatedId(response)).joinGroup(groupId);
+        }
 
     }
 
@@ -125,6 +170,10 @@ public class KeycloakUtil {
 
             userResource.roles().clientLevel(clientId).add(roleRepresentations);
         }
+    }
+
+    public void starMigration() {
+        runtimeService.startProcessInstanceByKey("migration");
     }
 
 }
