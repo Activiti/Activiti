@@ -33,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.binder.test.junit.rabbit.RabbitTestSupport;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
@@ -53,9 +52,6 @@ import static org.assertj.core.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @EnableBinding(MessageClientStream.class)
 public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
-
-    @ClassRule
-    public static RabbitTestSupport rabbitTestSupport = new RabbitTestSupport();
 
     @Autowired
     private MessageChannel myCmdProducer;
