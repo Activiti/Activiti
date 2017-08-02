@@ -73,9 +73,6 @@ import static org.assertj.core.api.Assertions.*;
 @EnableBinding(MessageClientStream.class)
 public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
 
-    @ClassRule
-    public static RabbitTestSupport rabbitTestSupport = new RabbitTestSupport();
-
     @Autowired
     private MessageChannel myCmdProducer;
 
