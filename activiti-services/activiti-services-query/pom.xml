@@ -18,5 +18,13 @@
     <module>activiti-services-query-repo</module>
     <module>activiti-services-query-app</module>
   </modules>
+  
+  <repositories>
+  	<repository>
+	  <id>spring-libs-snapshot</id>
+	  <name>Spring Snapshot Repository</name>
+	  <url>http://repo.spring.io/libs-snapshot</url>
+	</repository>
+  </repositories>
 
 </project>

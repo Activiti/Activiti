@@ -23,6 +23,16 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
     </dependency>
+    <!-- Elasticsearch dependency -->
+    <dependency>
+	    <groupId>org.springframework.data</groupId>
+	    <artifactId>spring-data-elasticsearch</artifactId>
+	    <version>3.0.0.RC2</version>
+	</dependency>
+		<dependency>
+	    <groupId>org.elasticsearch.client</groupId>
+	    <artifactId>transport</artifactId>
+	</dependency>
     <dependency>
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-commons</artifactId>
@@ -79,22 +89,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-rest</artifactId>
     </dependency>
-    <!--<dependency>-->
-    <!--<groupId>org.springframework.data</groupId>-->
-    <!--<artifactId>spring-data-elasticsearch</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.elasticsearch</groupId>-->
-    <!--<artifactId>elasticsearch</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.elasticsearch.client</groupId>-->
-    <!--<artifactId>transport</artifactId>-->
-    <!--</dependency>-->
-    <!--<dependency>-->
-    <!--<groupId>org.springframework.boot</groupId>-->
-    <!--<artifactId>spring-boot-starter-data-elasticsearch</artifactId>-->
-    <!--</dependency>-->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
