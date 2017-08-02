@@ -19,6 +19,7 @@
     <module>activiti-services-rest</module>
     <module>activiti-services-identity-keycloak</module>
     <module>activiti-services-registry</module>
+    <module>activiti-services-gateway</module>
   </modules>
 
 </project>
