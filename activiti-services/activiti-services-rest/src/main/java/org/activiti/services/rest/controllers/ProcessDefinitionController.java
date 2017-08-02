@@ -15,8 +15,16 @@
 
 package org.activiti.services.rest.controllers;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.converter.ProcessDefinitionConverter;
 import org.activiti.services.core.pageable.PageableRepositoryService;
@@ -31,10 +39,12 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/v1/process-definitions", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/process-definitions",
+        produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessDefinitionController {
 
     private final RepositoryService repositoryService;
@@ -63,7 +73,8 @@ public class ProcessDefinitionController {
         return pagedResourcesAssembler.toResource(page, resourceAssembler);
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{id}",
+            method = RequestMethod.GET)
     public ProcessDefinitionResource getProcessDefinition(@PathVariable String id) {
         org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                                                                                               .processDefinitionId(id)
@@ -72,5 +83,28 @@ public class ProcessDefinitionController {
             throw new ActivitiException("Unable to find process definition for the given id:'" + id + "'");
         }
         return resourceAssembler.toResource(processDefinitionConverter.from(processDefinition));
+    }
+
+    @RequestMapping(value = "/{id}/xml",
+            method = RequestMethod.GET,
+            produces = "application/xml")
+    @ResponseBody
+    public String getProcessModel(@PathVariable String id) {
+        try (final InputStream resourceStream = repositoryService.getProcessModel(id)) {
+            return new String(IoUtil.readInputStream(resourceStream, null), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new ActivitiException("Error occured while getting process model '" + id + "' : " + e.getMessage(),
+                                        e);
+        }
+    }
+
+    @RequestMapping(value = "/{id}/json",
+            method = RequestMethod.GET,
+            produces = "application/json")
+    @ResponseBody
+    public String getBpmnModel(@PathVariable String id) {
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
+        ObjectNode json = new BpmnJsonConverter().convertToJson(bpmnModel);
+        return json.toString();
     }
 }

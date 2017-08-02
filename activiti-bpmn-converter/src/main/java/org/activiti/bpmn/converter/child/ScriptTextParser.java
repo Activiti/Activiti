@@ -28,7 +28,7 @@ public class ScriptTextParser extends BaseChildElementParser {
   }
 
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof ScriptTask == false)
+    if (!(parentElement instanceof ScriptTask))
       return;
 
     ((ScriptTask) parentElement).setScript(xtr.getElementText());

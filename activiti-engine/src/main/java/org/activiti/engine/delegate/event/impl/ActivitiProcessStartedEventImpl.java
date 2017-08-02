@@ -33,7 +33,7 @@ public class ActivitiProcessStartedEventImpl extends ActivitiEntityWithVariables
     super(entity, variables, localScope, ActivitiEventType.PROCESS_STARTED);
     if (entity instanceof ExecutionEntity) {
       ExecutionEntity executionEntity = (ExecutionEntity) entity;
-      if (executionEntity.isProcessInstanceType() == false) {
+      if (!executionEntity.isProcessInstanceType()) {
         executionEntity = executionEntity.getParent();
       }
       

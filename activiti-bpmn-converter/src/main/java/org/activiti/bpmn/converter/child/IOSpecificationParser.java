@@ -34,7 +34,7 @@ public class IOSpecificationParser extends BaseChildElementParser {
 
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
 
-    if (parentElement instanceof Activity == false && parentElement instanceof Process == false)
+    if (!(parentElement instanceof Activity) && !(parentElement instanceof Process))
       return;
 
     IOSpecification ioSpecification = new IOSpecification();

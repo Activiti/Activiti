@@ -33,7 +33,7 @@ public abstract class BaseChildElementParser implements BpmnXMLConstants {
 
   protected void parseChildElements(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model, BaseChildElementParser parser) throws Exception {
     boolean readyWithChildElements = false;
-    while (readyWithChildElements == false && xtr.hasNext()) {
+    while (!readyWithChildElements  && xtr.hasNext()) {
       xtr.next();
       if (xtr.isStartElement()) {
         if (parser.getElementName().equals(xtr.getLocalName())) {

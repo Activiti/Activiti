@@ -299,11 +299,11 @@ public class BpmnDeployer implements Deployer {
                         localizationValuesChanged = true;
                     }
 
-                    if (documentation != null && isEqualToCurrentLocalizationValue(locale,
+                    if (documentation != null && !isEqualToCurrentLocalizationValue(locale,
                                                                                    processId,
                                                                                    "description",
                                                                                    documentation,
-                                                                                   infoNode) == false) {
+                                                                                   infoNode)) {
                         dynamicBpmnService.changeLocalizationDescription(locale,
                                                                          processId,
                                                                          documentation,

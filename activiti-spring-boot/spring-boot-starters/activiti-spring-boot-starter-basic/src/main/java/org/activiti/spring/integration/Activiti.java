@@ -43,7 +43,7 @@ public class Activiti {
     /**
      * Any message that enters this {@link org.springframework.messaging.MessageHandler}
      * containing a {@code executionId} parameter will trigger a
-     * {@link org.activiti.engine.RuntimeService#signal(String)}.
+     * {@link org.activiti.engine.RuntimeService#signalEventReceived(String)}.
      */
     public static MessageHandler signallingMessageHandler(final ProcessEngine processEngine) {
         return new MessageHandler() {

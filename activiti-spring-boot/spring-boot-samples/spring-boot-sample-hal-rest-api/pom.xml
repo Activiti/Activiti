@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-spring-boot-samples</artifactId>
-    <version>7-201707-EA-SNAPSHOT</version>
+    <version>7-201708-EA-SNAPSHOT</version>
   </parent>
 
   <artifactId>spring-boot-sample-hal-rest-api</artifactId>
@@ -61,6 +60,40 @@
           <execution>
             <goals>
               <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <configuration>
+          <images>
+            <image>
+              <name>activiti-sample</name>
+              <alias>sample</alias>
+              <build>
+                <from>openjdk:latest</from>
+                <assembly>
+                  <descriptorRef>artifact</descriptorRef>
+                </assembly>
+                <cmd>java -jar maven/${project.name}-${project.version}.jar</cmd>
+              </build>
+              <run>
+                <wait>
+                  <log>org.activiti.*Started Application</log>
+                  <time>40000</time>
+                </wait>
+              </run>
+            </image>
+          </images>
+        </configuration>
+        <executions>
+          <execution>
+            <id>docker:build</id>
+            <phase>install</phase>
+            <goals>
+              <goal>build</goal>
             </goals>
           </execution>
         </executions>

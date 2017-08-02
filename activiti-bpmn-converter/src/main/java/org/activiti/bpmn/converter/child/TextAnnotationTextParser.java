@@ -28,7 +28,7 @@ public class TextAnnotationTextParser extends BaseChildElementParser {
   }
 
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof TextAnnotation == false)
+    if (!(parentElement instanceof TextAnnotation))
       return;
 
     ((TextAnnotation) parentElement).setText(xtr.getElementText());

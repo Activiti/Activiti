@@ -1,12 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
 
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <version>7-201707-EA-SNAPSHOT</version>
+    <version>7-201708-EA-SNAPSHOT</version>
   </parent>
 
 
@@ -19,7 +18,8 @@
     <module>activiti-services-events</module>
     <module>activiti-services-rest</module>
     <module>activiti-services-identity-keycloak</module>
-    <module>activiti-services-query</module>
+    <module>activiti-services-registry</module>
+    <module>activiti-services-gateway</module>
   </modules>
 
 </project>
