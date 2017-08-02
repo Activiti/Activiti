@@ -1,11 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.activiti</groupId>
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-examples-root</artifactId>
+    <version>7-201708-EA-SNAPSHOT</version>
+  </parent>
+
   <artifactId>emergency-call-center</artifactId>
+  <description>This is an example of Activiti process to be deployed in a microservices environemnt.</description>
   <packaging>jar</packaging>
-  <version>1.0</version>
   <name>Emergency Call Center</name>
   <url>http://www.activiti.org</url>
 
@@ -82,5 +87,5 @@
     </plugins>
   </build>
 
-  <description>This is an example of Activiti process to be deployed in a microservices environemnt.</description>
+
 </project>
