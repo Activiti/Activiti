@@ -385,8 +385,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 				
 			if (i == 14 || i == 15) {
 			  assertEquals(entry.getType(), ActivitiEventType.VARIABLE_DELETED.name());
-			  // process definition Id can't be recognized in  DB flush
-			  assertNull(entry.getProcessDefinitionId());
+			  assertNotNull(entry.getProcessDefinitionId());
 			  assertNotNull(entry.getProcessInstanceId());
 			  assertNotNull(entry.getTimeStamp());
 			  assertNull(entry.getTaskId());
