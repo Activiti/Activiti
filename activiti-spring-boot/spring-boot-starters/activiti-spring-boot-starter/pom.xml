@@ -182,7 +182,7 @@
               <name>activiti-keycloak</name>
               <alias>keycloak</alias>
               <build>
-                <dockerFile>${main.basedir}/docker/Dockerfile</dockerFile>
+                <dockerFile>${main.basedir}/docker/keycloak/Dockerfile</dockerFile>
                 <cleanup>remove</cleanup>
                 <nocache>false</nocache>
                 <compression>gzip</compression>
@@ -190,8 +190,12 @@
               </build>
               <run>
                 <ports>
-                  <port>8180:8080</port>
+                  <port>8080:8080</port>
                 </ports>
+                <wait>
+                  <log>Keycloak .* started in</log>
+                  <time>40000</time>
+                </wait>
               </run>
             </image>
             <image>
@@ -202,6 +206,10 @@
                   <port>5672:5672</port>
                   <port>15672:15672</port>
                 </ports>
+                <wait>
+                  <log>Server startup complete</log>
+                  <time>15000</time>
+                </wait>
               </run>
             </image>
 
@@ -227,6 +235,13 @@
             <phase>post-integration-test</phase>
             <goals>
               <goal>stop</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>build</id>
+            <phase>install</phase>
+            <goals>
+              <goal>build</goal>
             </goals>
           </execution>
         </executions>

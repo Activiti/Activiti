@@ -20,7 +20,7 @@
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8090",
 							"path": [
 								"api",
 								"process-definitions"
@@ -131,7 +131,7 @@
 				{
 					"name": "getProcessInstances",
 					"request": {
-						"url": "http://localhost:8080/api/runtime/process-instances",
+						"url": "http://localhost:8090/api/runtime/process-instances",
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -145,7 +145,7 @@
 				{
 					"name": "startProcess",
 					"request": {
-						"url": "http://localhost:8080/process-instances",
+						"url": "http://localhost:8090/process-instances",
 						"method": "POST",
 						"header": [
 							{
@@ -170,7 +170,7 @@
 				{
 					"name": "getProcessVariables",
 					"request": {
-						"url": "http://localhost:8080/api/runtime/process-instances/19/variables",
+						"url": "http://localhost:8090/api/runtime/process-instances/19/variables",
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -185,12 +185,12 @@
 					"name": "getTasks",
 					"request": {
 						"url": {
-							"raw": "http://localhost:8080/api/runtime/tasks?page=0&size=10",
+							"raw": "http://localhost:8090/api/runtime/tasks?page=0&size=10",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8090",
 							"path": [
 								"api",
 								"runtime",
@@ -225,7 +225,7 @@
 				{
 					"name": "getTask",
 					"request": {
-						"url": "http://localhost:8080/api/runtime/tasks/16",
+						"url": "http://localhost:8090/api/runtime/tasks/16",
 						"method": "GET",
 						"header": [],
 						"body": {
@@ -240,12 +240,12 @@
 					"name": "claimTask",
 					"request": {
 						"url": {
-							"raw": "http://localhost:8080/api/runtime/tasks/17/claim?assignee=john",
+							"raw": "http://localhost:8090/api/runtime/tasks/17/claim?assignee=john",
 							"protocol": "http",
 							"host": [
 								"localhost"
 							],
-							"port": "8080",
+							"port": "8090",
 							"path": [
 								"api",
 								"runtime",
@@ -276,7 +276,7 @@
 				{
 					"name": "completeTask",
 					"request": {
-						"url": "http://localhost:8080/api/runtime/tasks/17/complete",
+						"url": "http://localhost:8090/api/runtime/tasks/17/complete",
 						"method": "POST",
 						"header": [
 							{

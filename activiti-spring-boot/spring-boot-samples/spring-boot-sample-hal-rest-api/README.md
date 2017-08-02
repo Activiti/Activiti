@@ -18,7 +18,7 @@ To run the sample, run from IDE using the Application.java file but first ensure
 
 A reference dockerfile is also provided (separately) which applies the keycloak json configuration file for the realm to the jboss/keycloak:3.2.0.Final image.
 
-To run it first have docker installed then go to the docker directory and do 'docker build . -t activitikeycloak' Then execute 'docker run -p 8180:8080 --name keycloak -i -t activitikeycloak'
+To run it first have docker installed then go to the docker directory and do 'docker build . -t activiti-keycloak' Then execute 'docker run -p 8180:8080 --name keycloak -i -t activiti-keycloak'
 
 If you get a container already in use error when running the docker container then do a docker rm with the id of the running container and try again. To access the admin console for the container go to http://localhost:8180/auth/admin/springboot/console/ and log in as admin/admin. (This reference docker is based upon reference docker is based upon https://github.com/dfranssen/docker-keycloak-import-realm. Note that the admin user has been included in the springboot-realm.json.)
 
