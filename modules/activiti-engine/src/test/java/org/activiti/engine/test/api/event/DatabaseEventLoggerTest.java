@@ -541,5 +541,33 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 		
 	}
 	
+
+	public void testStandaloneTaskWithVariableEvents() throws JsonParseException, JsonMappingException, IOException {
+		
+		Task task = taskService.newTask();
+		task.setAssignee("kermit");
+		task.setTenantId("myTenant");
+		taskService.saveTask(task);
+		
+		taskService.setVariable(task.getId(), "test", "test");
+		taskService.setVariable(task.getId(), "test", "newValue");
+		taskService.removeVariable(task.getId(), "test");
+		
+		List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
+		assertEquals(5, events.size());
+		assertEquals("TASK_CREATED", events.get(0).getType());
+		assertEquals("TASK_ASSIGNED", events.get(1).getType());
+		assertEquals("VARIABLE_CREATED", events.get(2).getType());
+		assertEquals("VARIABLE_UPDATED", events.get(3).getType());
+		assertEquals("VARIABLE_DELETED", events.get(4).getType());
+		
+		// Cleanup
+		taskService.deleteTask(task.getId(),true);
+		for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
+			managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
+		}
+		
+	}
+	
 	
 }
