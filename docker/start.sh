@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #stop if already running
 docker-compose down
 
