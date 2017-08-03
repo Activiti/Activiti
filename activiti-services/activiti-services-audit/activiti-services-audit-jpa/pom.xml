@@ -158,7 +158,7 @@
               </build>
               <run>
                 <ports>
-                  <port>8080:8080</port>
+                  <port>8180:8180</port>
                 </ports>
                 <wait>
                   <log>Keycloak .* started in</log>

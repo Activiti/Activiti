@@ -6,7 +6,7 @@ rabbitmq:
 activiti-keycloak:
   image: activiti-keycloak:latest
   ports:
-    - "8080:8080"
+    - "8180:8180"
 activiti-audit:
   image: activiti-audit:latest
   ports:
