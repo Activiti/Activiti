@@ -16,10 +16,28 @@
 
 package org.activiti.runtime;
 
+import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.converter.util.InputStreamProvider;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
+import org.activiti.test.util.TestResourceUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,15 +49,12 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResponseExtractor;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,10 +69,14 @@ public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
     private TestRestTemplate restTemplate;
 
     @Autowired
+    private ProcessDiagramGenerator processDiagramGenerator;
+
+    @Autowired
     private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
 
-
     private Map<String, String> processDefinitionIds = new HashMap<>();
+
+    @Override
     @Before
     public void setUp() throws Exception{
         super.setUp();
@@ -107,6 +126,47 @@ public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
         assertThat(retrievedEntity.getBody()).isNotNull();
         assertThat(retrievedEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(retrievedEntity.getBody().getId()).isNotNull();
+    }
+
+    @Test
+    public void shouldRetrieveProcessInstanceDiagram() throws Exception {
+
+        //given
+        ResponseEntity<ProcessInstance> startedProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),
+                                                                                                        accessToken);
+
+        //when
+        String responseData = executeRequest(
+                                             PROCESS_INSTANCES_RELATIVE_URL + startedProcessEntity.getBody()
+                                                                                                  .getId() + "/svg",
+                                             HttpMethod.GET);
+
+        //then
+        assertThat(responseData).isNotNull();
+
+        final InputStream byteArrayInputStream = new ByteArrayInputStream(TestResourceUtil.getProcessXml(startedProcessEntity.getBody()
+                                                                                                            .getProcessDefinitionId()
+                                                                                                            .split(":")[0]).getBytes());
+        BpmnModel sourceModel = new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
+
+            @Override
+            public InputStream getInputStream() {
+                return byteArrayInputStream;
+            }
+        }, false, false);
+        String activityFontName = processDiagramGenerator.getDefaultActivityFontName();
+        String labelFontName = processDiagramGenerator.getDefaultLabelFontName();
+        String annotationFontName = processDiagramGenerator.getDefaultAnnotationFontName();
+        List<String> activityIds = Arrays.asList("sid-CDFE7219-4627-43E9-8CA8-866CC38EBA94");
+        try (InputStream is = processDiagramGenerator.generateDiagram(sourceModel,
+                                                                      activityIds,
+                                                                      Collections.emptyList(),
+                                                                      activityFontName,
+                                                                      labelFontName,
+                                                                      annotationFontName)) {
+            String sourceSvg = new String(IoUtil.readInputStream(is, null), "UTF-8");
+            assertThat(responseData).isEqualTo(sourceSvg);
+        }
     }
 
     @Test
@@ -181,8 +241,31 @@ public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
         };
 
         return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
-                HttpMethod.GET,
-                getRequestEntityWithHeaders(),
-                responseType);
+                                     HttpMethod.GET,
+                                     getRequestEntityWithHeaders(),
+                                     responseType);
+    }
+
+    private String executeRequest(String url, HttpMethod method) {
+        return restTemplate.execute(url,
+                                    method,
+                                    new RequestCallback() {
+
+                                        @Override
+                                        public void doWithRequest(
+                                                                  org.springframework.http.client.ClientHttpRequest request) throws IOException {
+                                            request.getHeaders().addAll(getHeaders(accessToken
+                                                                                              .getToken()));
+                                        }
+                                    },
+                                    new ResponseExtractor<String>() {
+
+                                        @Override
+                                        public String extractData(ClientHttpResponse response)
+                                                                                               throws IOException {
+                                            return new String(IoUtil.readInputStream(response.getBody(),
+                                                                                     null), "UTF-8");
+                                        }
+                                    });
     }
 }
