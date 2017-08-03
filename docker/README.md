@@ -12,6 +12,8 @@ See the example repository on how to run a sample application in which all the c
 
 The keycloak and rabbitmq containers are used in integration tests through fabric8 docker maven plugin.
 
+In tests that start the containers independently localhost is used in .properties files instead of container names since container names only apply when a docker-compose is used.
+
 ## Running Containers independently
 
 The keycloak directory contains a Dockerfile for keycloak. It uses springboot-realm.json as a config file. See sample project. It can be run in that directory using  'docker build . -t activiti-keycloak' Then execute 'docker run -p 8080:8080 --name keycloak -i -t activiti-keycloak'
