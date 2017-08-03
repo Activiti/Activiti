@@ -19,16 +19,10 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-services-query-model</artifactId>
-      <version>7-201707-EA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-services-query-repo</artifactId>
-      <version>7-201707-EA-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-    	<groupId>org.activiti</groupId>
-    	<artifactId>activiti-services-events</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

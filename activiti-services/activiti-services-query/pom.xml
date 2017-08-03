@@ -13,9 +13,6 @@
   <artifactId>activiti-services-query</artifactId>
   <packaging>pom</packaging>
   
-  <properties>
-  	<apt-maven-plugin.version>1.1.3</apt-maven-plugin.version>
-  </properties>
 
   <modules>
     <module>activiti-services-query-model</module>

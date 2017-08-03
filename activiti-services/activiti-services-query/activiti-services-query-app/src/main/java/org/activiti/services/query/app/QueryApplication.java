@@ -49,7 +49,8 @@ public class QueryApplication {
     private static Logger logger = LoggerFactory.getLogger(QueryApplication.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(QueryApplication.class, args);
+        SpringApplication.run(QueryApplication.class,
+                              args);
     }
 
     @Autowired
