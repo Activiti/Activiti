@@ -25,6 +25,7 @@ import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.converter.ProcessDefinitionConverter;
 import org.activiti.services.core.pageable.PageableRepositoryService;
@@ -49,6 +50,8 @@ public class ProcessDefinitionController {
 
     private final RepositoryService repositoryService;
 
+    private final ProcessDiagramGenerator processDiagramGenerator;
+
     private final ProcessDefinitionConverter processDefinitionConverter;
 
     private final ProcessDefinitionResourceAssembler resourceAssembler;
@@ -57,10 +60,12 @@ public class ProcessDefinitionController {
 
     @Autowired
     public ProcessDefinitionController(RepositoryService repositoryService,
+                                       ProcessDiagramGenerator processDiagramGenerator,
                                        ProcessDefinitionConverter processDefinitionConverter,
                                        ProcessDefinitionResourceAssembler resourceAssembler,
                                        PageableRepositoryService pageableRepositoryService) {
         this.repositoryService = repositoryService;
+        this.processDiagramGenerator = processDiagramGenerator;
         this.processDefinitionConverter = processDefinitionConverter;
         this.resourceAssembler = resourceAssembler;
         this.pageableRepositoryService = pageableRepositoryService;
@@ -106,5 +111,25 @@ public class ProcessDefinitionController {
         BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
         ObjectNode json = new BpmnJsonConverter().convertToJson(bpmnModel);
         return json.toString();
+    }
+
+    @RequestMapping(value = "/{id}/svg",
+            method = RequestMethod.GET,
+            produces = "image/svg+xml")
+    @ResponseBody
+    public String getDiagram(@PathVariable String id) {
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
+        String activityFontName = processDiagramGenerator.getDefaultActivityFontName();
+        String labelFontName = processDiagramGenerator.getDefaultLabelFontName();
+        String annotationFontName = processDiagramGenerator.getDefaultAnnotationFontName();
+        try (final InputStream imageStream = processDiagramGenerator.generateDiagram(bpmnModel,
+                                                                                     activityFontName,
+                                                                                     labelFontName,
+                                                                                     annotationFontName)) {
+            return new String(IoUtil.readInputStream(imageStream, null), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new ActivitiException("Error occured while getting process model '" + id + "' : " + e.getMessage(),
+                                        e);
+        }
     }
 }

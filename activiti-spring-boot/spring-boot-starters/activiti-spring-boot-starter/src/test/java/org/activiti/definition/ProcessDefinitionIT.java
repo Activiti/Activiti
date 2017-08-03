@@ -30,6 +30,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessDefinitionMeta;
@@ -55,6 +56,9 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Autowired
+    private ProcessDiagramGenerator processDiagramGenerator;
 
     public static final String PROCESS_DEFINITIONS_URL = "/v1/process-definitions/";
     private static final String PROCESS_WITH_VARIABLES_2 = "ProcessWithVariables2";
@@ -229,6 +233,41 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
         assertThat(targetModel.getMainProcess().getId().equals(sourceModel.getMainProcess().getId()));
         for (FlowElement element : targetModel.getMainProcess().getFlowElements()) {
             assertThat(sourceModel.getFlowElement(element.getId()) != null);
+        }
+    }
+
+    @Test
+    public void shouldRetriveDiagram() throws Exception {
+        ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsEntity = getProcessDefinitions();
+        assertThat(processDefinitionsEntity).isNotNull();
+        assertThat(processDefinitionsEntity.getBody()).isNotNull();
+        assertThat(processDefinitionsEntity.getBody().getContent()).isNotEmpty();
+        ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
+
+        //when
+        String responseData = executeRequest(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/svg",
+                                             HttpMethod.GET);
+
+        //then
+        assertThat(responseData).isNotNull();
+        final InputStream byteArrayInputStream = new ByteArrayInputStream(getProcessXml(aProcessDefinition.getId()
+                                                                                                          .split(":")[0]).getBytes());
+        BpmnModel sourceModel = new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
+
+            @Override
+            public InputStream getInputStream() {
+                return byteArrayInputStream;
+            }
+        }, false, false);
+        String activityFontName = processDiagramGenerator.getDefaultActivityFontName();
+        String labelFontName = processDiagramGenerator.getDefaultLabelFontName();
+        String annotationFontName = processDiagramGenerator.getDefaultAnnotationFontName();
+        try (InputStream is = processDiagramGenerator.generateDiagram(sourceModel,
+                                                                      activityFontName,
+                                                                      labelFontName,
+                                                                      annotationFontName)) {
+            String sourceSvg = new String(IoUtil.readInputStream(is, null), "UTF-8");
+            assertThat(responseData).isEqualTo(sourceSvg);
         }
     }
 

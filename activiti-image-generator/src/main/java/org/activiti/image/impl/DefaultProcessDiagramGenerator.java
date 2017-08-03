@@ -68,11 +68,13 @@ import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.image.ProcessDiagramGenerator;
+import org.springframework.stereotype.Component;
 
 /**
  * Class to generate an svg based the diagram interchange information in a
  * BPMN 2.0 process.
  */
+@Component
 public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
     private String activityFontName = "Arial";
