@@ -40,8 +40,6 @@ public class CompleteTaskCmdExecutorTest {
         CompleteTaskCmd completeTaskCmd = new CompleteTaskCmd("taskId",
                                                               variables);
 
-        assertThat(completeTaskCmdExecutor).isNotNull();
-
         assertThat(completeTaskCmdExecutor.getHandledType()).isEqualTo(CompleteTaskCmd.class);
 
         completeTaskCmdExecutor.execute(completeTaskCmd);

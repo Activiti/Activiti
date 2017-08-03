@@ -35,8 +35,6 @@ public class SignalProcessInstancesCmdExecutorTest {
     public void signalProcessInstancesCmdExecutorTest() {
         SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("x");
 
-        assertThat(signalProcessInstancesCmdExecutor).isNotNull();
-
         assertThat(signalProcessInstancesCmdExecutor.getHandledType()).isEqualTo(SignalProcessInstancesCmd.class);
 
         signalProcessInstancesCmdExecutor.execute(signalProcessInstancesCmd);

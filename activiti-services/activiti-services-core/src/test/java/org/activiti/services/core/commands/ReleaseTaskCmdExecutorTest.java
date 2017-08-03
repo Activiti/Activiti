@@ -36,8 +36,6 @@ public class ReleaseTaskCmdExecutorTest {
 
         ReleaseTaskCmd releaseTaskCmd = new ReleaseTaskCmd("taskId");
 
-        assertThat(releaseTaskCmdExecutor).isNotNull();
-
         assertThat(releaseTaskCmdExecutor.getHandledType()).isEqualTo(ReleaseTaskCmd.class);
 
         releaseTaskCmdExecutor.execute(releaseTaskCmd);

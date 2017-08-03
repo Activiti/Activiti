@@ -35,8 +35,6 @@ public class SuspendProcessInstanceCmdExecutorTest {
     public void suspendProcessInstanceCmdExecutorTest() {
         SuspendProcessInstanceCmd suspendProcessInstanceCmd = new SuspendProcessInstanceCmd("x");
 
-        assertThat(suspendProcessInstanceCmdExecutor).isNotNull();
-
         assertThat(suspendProcessInstanceCmdExecutor.getHandledType()).isEqualTo(SuspendProcessInstanceCmd.class);
 
         suspendProcessInstanceCmdExecutor.execute(suspendProcessInstanceCmd);

@@ -36,8 +36,6 @@ public class ClaimTaskCmdExecutorTest {
         ClaimTaskCmd claimTaskCmd = new ClaimTaskCmd("taskId",
                                                      "assignee");
 
-        assertThat(claimTaskCmdExecutor).isNotNull();
-
         assertThat(claimTaskCmdExecutor.getHandledType()).isEqualTo(ClaimTaskCmd.class);
 
         claimTaskCmdExecutor.execute(claimTaskCmd);

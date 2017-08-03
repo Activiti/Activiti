@@ -50,8 +50,6 @@ public class StartProcessInstanceCmdExecutorTest {
 
         given(processEngine.startProcess(any())).willReturn(fakeProcessInstance);
 
-        assertThat(startProcessInstanceCmdExecutor).isNotNull();
-
         assertThat(startProcessInstanceCmdExecutor.getHandledType()).isEqualTo(StartProcessInstanceCmd.class);
 
         startProcessInstanceCmdExecutor.execute(startProcessInstanceCmd);
