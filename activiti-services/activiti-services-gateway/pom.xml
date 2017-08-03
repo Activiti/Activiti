@@ -38,11 +38,6 @@
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-eureka</artifactId>
     </dependency>
-    <!-- keycloak included as default identity provider to be excluded if overridden -->
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-services-identity-keycloak</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
