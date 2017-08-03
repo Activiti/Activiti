@@ -18,6 +18,8 @@ The keycloak directory contains a Dockerfile for keycloak. It uses springboot-re
 
 rabbitmq directory contains a docker-compose file for rabbitmq. It can be run in that directory using docker-compose up
 
+If the containers are run independently then docker names from the docker-compose need to be replaced in property files with localhost or the hosts file updated.
+
 ## Replacing Individual Services
 
 The keycloak setup used by this example can be replicated by importing the provided keycloak realm json file. The user 'testuser' with password 'password' is used for accessing endpoints. The user 'hr'/'password' is in the 'hr' group. The user 'client'/'client' is for using admin client to look up groups.

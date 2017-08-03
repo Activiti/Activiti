@@ -180,6 +180,17 @@
                 </wait>
               </run>
             </image>
+            <image>
+              <name>activiti-audit</name>
+              <alias>activiti-audit</alias>
+              <build>
+                <from>openjdk:latest</from>
+                <assembly>
+                  <descriptorRef>artifact</descriptorRef>
+                </assembly>
+                <cmd>java -jar maven/${project.artifactId}-${project.version}.jar</cmd>
+              </build>
+            </image>
 
           </images>
         </configuration>
