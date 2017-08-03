@@ -3,14 +3,13 @@ rabbitmq:
   ports:
     - "5672:5672"
     - "15672:15672"
-  links:
-    - activiti-sample:activiti-sample
 activiti-sample:
   image: activiti-sample:latest
   ports:
     - "8090:8090"
   links:
     - activiti-keycloak:activiti-keycloak
+    - rabbitmq:rabbitmq
 activiti-keycloak:
   image: activiti-keycloak:latest
   ports:
