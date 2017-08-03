@@ -105,6 +105,8 @@ Starting from a standard Activiti installation, with `activiti-app` and `activit
 
 * Copy the `emergencyCallCenter.properties` file into a folder of the classpath (for example the `<tomcat>/lib`).
 
+* From a terminal, move on the build folder and execute `./run_departments.sh`.
+
 * Start Activiti again.
 
 * Access to the the `Kickstart App` | `App` and click on `Import App`. A modal window will ask you to point on a ZIP file containing the App package to import. Select the `Emergency Call Center.zip` from the `build` folder.
