@@ -4,13 +4,18 @@
   <parent>
     <artifactId>activiti-services-query</artifactId>
     <groupId>org.activiti</groupId>
-    <version>7-201707-EA-SNAPSHOT</version>
+    <version>7-201708-EA-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>activiti-services-query-app</artifactId>
 
   <dependencies>
+    <!-- keycloak included as default identity provider to be excluded if overridden -->
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-services-identity-keycloak</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-services-query-model</artifactId>
@@ -128,6 +133,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring-boot-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
     </dependency>
@@ -146,23 +156,6 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>com.mysema.maven</groupId>
-        <artifactId>apt-maven-plugin</artifactId>
-        <version>${apt-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>process</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
-              <processor>com.querydsl.apt.jpa.JPAAnnotationProcessor</processor>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

@@ -23,16 +23,22 @@ import org.springframework.data.repository.CrudRepository;
 import org.activiti.services.query.app.model.QProcessInstance;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.web.bind.annotation.RestController;
 
-
-public interface ProcessInstanceRepository extends CrudRepository<ProcessInstance, String>, QuerydslPredicateExecutor<ProcessInstance>, QuerydslBinderCustomizer<QProcessInstance> {
+@RepositoryRestResource(exported = false)
+public interface ProcessInstanceRepository extends CrudRepository<ProcessInstance, Long>, QuerydslPredicateExecutor<ProcessInstance>, QuerydslBinderCustomizer<QProcessInstance> {
 
     @Override
     default public void customize(QuerydslBindings bindings, QProcessInstance root) {
 
 
         bindings.bind(String.class).first(
-                (StringPath path, String value) -> path.containsIgnoreCase(value));
+                (StringPath path, String value) -> path.eq(value));
+        bindings.bind(root.lastModifiedFrom).first((path, value) ->
+                root.lastModified.after(value));
+        bindings.bind(root.lastModifiedTo).first((path, value) ->
+                root.lastModified.before(value));
 
     }
 }

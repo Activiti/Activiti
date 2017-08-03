@@ -18,6 +18,7 @@ package org.activiti.services.query.app.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -34,7 +35,9 @@ public class Variable {
     private String name;
     private String processInstanceId;
     private String taskId;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date createTime;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastUpdatedTime;
     private String executionId;
 

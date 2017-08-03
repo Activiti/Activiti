@@ -21,9 +21,12 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -36,7 +39,16 @@ public class ProcessInstance {
     private String processDefinitionId;
     private String status;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastModified;
+
+    //only for querying (getter is transient, has to be getter so that included in QProcessInstance)
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private Date lastModifiedTo;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private Date lastModifiedFrom;
 
     @OneToMany
     private List<Variable> variables;
@@ -88,6 +100,7 @@ public class ProcessInstance {
         this.lastModified = lastModified;
     }
 
+    @JsonIgnore
     public List<Variable> getVariables() {
         return variables;
     }
@@ -95,4 +108,23 @@ public class ProcessInstance {
     public void setVariables(List<Variable> variables) {
         this.variables = variables;
     }
+
+    @Transient
+    public Date getLastModifiedTo() {
+        return lastModifiedTo;
+    }
+
+    public void setLastModifiedTo(Date lastModifiedTo) {
+        this.lastModifiedTo = lastModifiedTo;
+    }
+
+    @Transient
+    public Date getLastModifiedFrom() {
+        return lastModifiedFrom;
+    }
+
+    public void setLastModifiedFrom(Date lastModifiedFrom) {
+        this.lastModifiedFrom = lastModifiedFrom;
+    }
+
 }

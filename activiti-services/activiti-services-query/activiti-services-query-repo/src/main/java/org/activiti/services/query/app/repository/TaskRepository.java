@@ -23,7 +23,9 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+@RepositoryRestResource(exported = false)
 public interface TaskRepository extends CrudRepository<Task, String> , QuerydslPredicateExecutor<Task>, QuerydslBinderCustomizer<QTask> {
 
     @Override
@@ -31,7 +33,12 @@ public interface TaskRepository extends CrudRepository<Task, String> , QuerydslP
 
 
         bindings.bind(String.class).first(
-                (StringPath path, String value) -> path.containsIgnoreCase(value));
-
+                (StringPath path, String value) -> path.eq(value));
+        bindings.bind(root.lastModifiedFrom).first((path, value) ->
+                root.lastModified.after(value));
+        bindings.bind(root.lastModifiedTo).first((path, value) ->
+                root.lastModified.before(value));
+        bindings.bind(root.nameLike).first((path, value) ->
+                root.name.contains(value));
     }
 }

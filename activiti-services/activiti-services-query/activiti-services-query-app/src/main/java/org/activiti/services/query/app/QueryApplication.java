@@ -16,14 +16,10 @@
 
 package org.activiti.services.query.app;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import org.activiti.services.query.app.repository.TaskRepository;
-import org.activiti.services.query.app.repository.VariableRepository;
-import org.activiti.services.query.app.model.Variable;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.events.ProcessCompletedEvent;
 import org.activiti.services.query.events.ProcessEngineEvent;
@@ -33,15 +29,24 @@ import org.activiti.services.query.events.TaskCompletedEvent;
 import org.activiti.services.query.events.TaskCreatedEvent;
 import org.activiti.services.query.app.model.ProcessInstance;
 import org.activiti.services.query.app.model.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableBinding(QueryConsumerChannels.class)
+@ComponentScan(basePackages = {
+        "org.activiti",
+        "org.activiti.services.identity.keycloak"
+})
 public class QueryApplication {
+
+    private static Logger logger = LoggerFactory.getLogger(QueryApplication.class);
 
     public static void main(String[] args) {
         SpringApplication.run(QueryApplication.class, args);
@@ -53,37 +58,29 @@ public class QueryApplication {
     @Autowired
     TaskRepository taskQueryRestResource;
 
-    @Autowired
-    VariableRepository variableRepository;
 
     private int id=0;
 
     @StreamListener(QueryConsumerChannels.QUERY_CONSUMER)
     public synchronized void receive(ProcessEngineEvent event) {
 
-        System.out.println("Event: " + event);
-        System.out.println("Class: " + event.getClass().getCanonicalName());
+        logger.info("Event: " + event);
+        logger.info("Class: " + event.getClass().getCanonicalName());
 
 
         //@TODO: improve selection mechanism
         if (event instanceof ProcessStartedEvent) {
             ProcessStartedEvent startedEvent = (ProcessStartedEvent) event;
-            System.out.println("Process Instance Id " + startedEvent.getProcessInstanceId());
-
-            //TODO:temporary hack to test querying for nested attributes
-            List<Variable> variables = new ArrayList<Variable>();
-            Variable variable = new Variable(""+id++,"type","name","procInstId","taskId",new Date(),new Date(),"executionId");
-            variableRepository.save(variable);
-            variables.add(variable);
+            logger.info("Process Instance Id " + startedEvent.getProcessInstanceId());
 
             processInstanceQueryRestResource.save(
                     new ProcessInstance(Long.parseLong(startedEvent.getProcessInstanceId()),
                                         startedEvent.getProcessDefinitionId(),
                                         "RUNNING",
-                                        new Date(startedEvent.getTimestamp()),variables));
+                                        new Date(startedEvent.getTimestamp()),null));
         } else if (event instanceof ProcessCompletedEvent) {
             ProcessCompletedEvent completedEvent = (ProcessCompletedEvent) event;
-            Optional<ProcessInstance> processInstancebyId = processInstanceQueryRestResource.findById(completedEvent.getProcessInstanceId());
+            Optional<ProcessInstance> processInstancebyId = processInstanceQueryRestResource.findById(Long.parseLong(completedEvent.getProcessInstanceId()));
             ProcessInstance processInstance = processInstancebyId.get();
             processInstance.setStatus("COMPLETED");
             processInstance.setLastModified(new Date(completedEvent.getTimestamp()));
@@ -91,15 +88,10 @@ public class QueryApplication {
         } else if (event instanceof TaskCreatedEvent) {
             TaskCreatedEvent taskCreatedEvent = (TaskCreatedEvent) event;
             Task task = taskCreatedEvent.getTask();
+            logger.info("Task id "+task.getId());
             task.setStatus("CREATED");
             task.setLastModified(new Date(taskCreatedEvent.getTimestamp()));
 
-            //TODO:temporary hack to test querying for nested attributes
-            List<Variable> variables = new ArrayList<Variable>();
-            Variable variable = new Variable(""+id++,"type","name","procInstId","taskId",new Date(),new Date(),"executionId");
-            variableRepository.save(variable);
-            variables.add(variable);
-            task.setVariables(variables);
 
             taskQueryRestResource.save(task);
         } else if (event instanceof TaskAssignedEvent) {

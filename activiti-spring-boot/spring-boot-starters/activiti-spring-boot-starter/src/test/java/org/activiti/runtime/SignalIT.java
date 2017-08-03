@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.definition.ProcessDefinitionIT;
-import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
@@ -51,7 +50,7 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class SignalIT extends KeycloakEnabledBaseTestIT {
+public class SignalIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
@@ -65,7 +64,6 @@ public class SignalIT extends KeycloakEnabledBaseTestIT {
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getBody().getContent()).isNotNull();
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
@@ -76,26 +74,26 @@ public class SignalIT extends KeycloakEnabledBaseTestIT {
     @Test
     public void processShouldTakeExceptionPathWhenSignalIsSent() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS),accessToken);
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS));
         SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("go");
 
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
                                                                     HttpMethod.POST,
-                                                                    new HttpEntity(signalProcessInstancesCmd,getHeaders(accessToken.getToken())),
+                                                                    new HttpEntity(signalProcessInstancesCmd),
                                                                     new ParameterizedTypeReference<Void>() {
                                                                     });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        ResponseEntity<PagedResources<Task>> taskEntity = processInstanceRestTemplate.getTasks(startProcessEntity,accessToken);
+        ResponseEntity<PagedResources<Task>> taskEntity = processInstanceRestTemplate.getTasks(startProcessEntity);
         assertThat(taskEntity.getBody().getContent()).extracting(Task::getName).containsExactly("Boundary target");
     }
 
     @Test
     public void processShouldHaveVariablesSetWhenSignalCarriesVariables() throws Exception {
         //given
-        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS),accessToken);
+        ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS));
         SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("go",
                                                                                             Collections.singletonMap("myVar",
                                                                                                                   "myContent"));
@@ -103,17 +101,17 @@ public class SignalIT extends KeycloakEnabledBaseTestIT {
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
                                                                     HttpMethod.POST,
-                                                                    new HttpEntity(signalProcessInstancesCmd,getHeaders(accessToken.getToken())),
+                                                                    new HttpEntity(signalProcessInstancesCmd),
                                                                     new ParameterizedTypeReference<Void>() {
                                                                     });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        ResponseEntity<PagedResources<Task>> taskEntity = processInstanceRestTemplate.getTasks(startProcessEntity,accessToken);
+        ResponseEntity<PagedResources<Task>> taskEntity = processInstanceRestTemplate.getTasks(startProcessEntity);
         assertThat(taskEntity.getBody().getContent()).extracting(Task::getName).containsExactly("Boundary target");
 
-        ResponseEntity<Resource<Map<String, Object>>> variablesEntity = processInstanceRestTemplate.getVariables(startProcessEntity,accessToken);
+        ResponseEntity<Resource<Map<String, Object>>> variablesEntity = processInstanceRestTemplate.getVariables(startProcessEntity);
         assertThat(variablesEntity.getBody().getContent()).containsEntry("myVar",
                                                                          "myContent");
     }
@@ -123,7 +121,7 @@ public class SignalIT extends KeycloakEnabledBaseTestIT {
         };
         return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
-                                     getRequestEntityWithHeaders(),
+                                     null,
                                      responseType);
     }
 }

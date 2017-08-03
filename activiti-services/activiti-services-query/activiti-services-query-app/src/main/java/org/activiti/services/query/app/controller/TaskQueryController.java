@@ -16,8 +16,12 @@
 
 package org.activiti.services.query.app.controller;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import org.activiti.engine.UserGroupLookupProxy;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.services.query.app.assembler.TaskQueryResourceAssembler;
+import org.activiti.services.query.app.model.QTask;
 import org.activiti.services.query.app.model.Task;
 import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.app.resource.TaskQueryResource;
@@ -27,13 +31,14 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.stereotype.Controller;
+import org.springframework.hateoas.Resource;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 
-@Controller
+@RestController
 @RequestMapping(value = "/query/tasks", produces = MediaTypes.HAL_JSON_VALUE)
 public class TaskQueryController {
 
@@ -43,14 +48,37 @@ public class TaskQueryController {
     @Autowired
     private TaskQueryResourceAssembler resourceAssembler;
 
+    @Autowired
+    private UserGroupLookupProxy userGroupLookupProxy; //to look up groups for user
 
-    @RequestMapping(method = RequestMethod.GET, value = "")
-    @ResponseBody
+
+    @RequestMapping(method = RequestMethod.GET)
     public PagedResources<TaskQueryResource> findAllByWebQuerydsl(
             @QuerydslPredicate(root = Task.class) Predicate predicate, Pageable pageable, PagedResourcesAssembler<Task> pagedResourcesAssembler) {
         return pagedResourcesAssembler.toResource(dao.findAll(predicate,pageable), resourceAssembler);
     }
 
-    //TODO: implement for a single task using findOne and include links from the findAll to individual records like runtime does - see TaskResourceAssembler
+    @RequestMapping(value = "/{taskId}", method = RequestMethod.GET)
+    public Resource<Task> getTaskById(@PathVariable String taskId) {
+        return resourceAssembler.toResource(dao.findById(taskId).get());
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/assignedToMe")
+    public PagedResources<TaskQueryResource> findAllAssignedToMe(
+            @QuerydslPredicate(root = Task.class) Predicate predicate, Pageable pageable, PagedResourcesAssembler<Task> pagedResourcesAssembler) {
+
+        String authenticatedUser = Authentication.getAuthenticatedUserId();
+        //TODO: authenticatedUser is always null, despite being set by KeycloakActivitiAuthenticationProvider
+        // why does it work for sample-hal-rest-api and not for this?
+        // could go to spring security context instead?
+
+        if(authenticatedUser!=null) {
+            BooleanBuilder builder = new BooleanBuilder();
+            QTask qTask = QTask.task;
+            predicate = qTask.assignee.eq(authenticatedUser).and(predicate);
+        }
+
+        return pagedResourcesAssembler.toResource(dao.findAll(predicate,pageable), resourceAssembler);
+    }
 
 }
