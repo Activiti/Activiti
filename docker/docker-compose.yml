@@ -3,17 +3,17 @@ rabbitmq:
   ports:
     - "5672:5672"
     - "15672:15672"
-activiti-keycloak:
-  image: activiti-keycloak:latest
+activiti-sample:
+  image: activiti-sample:latest
   ports:
-    - "8180:8180"
-activiti-audit:
-  image: activiti-audit:latest
-  ports:
-    - "8082:8082"
+    - "8090:8090"
   links:
     - activiti-keycloak:activiti-keycloak
     - rabbitmq:rabbitmq
+activiti-keycloak:
+  image: activiti-keycloak:latest
+  ports:
+    - "8080:8080"
 #elasticsearch:
 #  image: docker.elastic.co/elasticsearch/elasticsearch:5.4.1
 #  ports:
