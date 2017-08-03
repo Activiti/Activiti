@@ -198,12 +198,6 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
         assertThat(responseData).isEqualTo(getProcessXml(aProcessDefinition.getId().split(":")[0]));
     }
 
-    private String getProcessXml(final String processDefinitionKey) throws IOException {
-        try (InputStream is = ClassLoader.getSystemResourceAsStream("processes/" + processDefinitionKey + ".bpmn20.xml")) {
-            return new String(IoUtil.readInputStream(is, null), "UTF-8");
-        }
-    }
-
     @Test
     public void shouldRetriveBpmnModel() throws Exception {
         //given

@@ -117,7 +117,7 @@ public class ProcessDefinitionController {
             method = RequestMethod.GET,
             produces = "image/svg+xml")
     @ResponseBody
-    public String getDiagram(@PathVariable String id) {
+    public String getProcessDiagram(@PathVariable String id) {
         BpmnModel bpmnModel = repositoryService.getBpmnModel(id);
         String activityFontName = processDiagramGenerator.getDefaultActivityFontName();
         String labelFontName = processDiagramGenerator.getDefaultLabelFontName();
@@ -128,7 +128,7 @@ public class ProcessDefinitionController {
                                                                                      annotationFontName)) {
             return new String(IoUtil.readInputStream(imageStream, null), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new ActivitiException("Error occured while getting process model '" + id + "' : " + e.getMessage(),
+            throw new ActivitiException("Error occured while getting process diagram '" + id + "' : " + e.getMessage(),
                                         e);
         }
     }

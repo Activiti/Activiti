@@ -15,6 +15,17 @@
 
 package org.activiti.services.rest.controllers;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.List;
+
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.commands.SignalProcessInstancesCmd;
@@ -33,6 +44,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -41,12 +53,20 @@ public class ProcessInstanceController {
 
     private ProcessEngineWrapper processEngine;
 
+    private final RepositoryService repositoryService;
+
+    private final ProcessDiagramGenerator processDiagramGenerator;
+
     private final ProcessInstanceResourceAssembler resourceAssembler;
 
     @Autowired
     public ProcessInstanceController(ProcessEngineWrapper processEngine,
+                                     RepositoryService repositoryService,
+                                     ProcessDiagramGenerator processDiagramGenerator,
                                      ProcessInstanceResourceAssembler resourceAssembler) {
         this.processEngine = processEngine;
+        this.repositoryService = repositoryService;
+        this.processDiagramGenerator = processDiagramGenerator;
         this.resourceAssembler = resourceAssembler;
     }
 
@@ -65,6 +85,30 @@ public class ProcessInstanceController {
     @RequestMapping(value = "/{processInstanceId}", method = RequestMethod.GET)
     public Resource<ProcessInstance> getProcessInstanceById(@PathVariable String processInstanceId) {
         return resourceAssembler.toResource(processEngine.getProcessInstanceById(processInstanceId));
+    }
+
+    @RequestMapping(value = "/{processInstanceId}/svg",
+            method = RequestMethod.GET,
+            produces = "image/svg+xml")
+    @ResponseBody
+    public String getProcessDiagram(@PathVariable String processInstanceId) {
+        ProcessInstance processInstance = processEngine.getProcessInstanceById(processInstanceId);
+        List<String> activityIds = processEngine.getActiveActivityIds(processInstanceId);
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+        String activityFontName = processDiagramGenerator.getDefaultActivityFontName();
+        String labelFontName = processDiagramGenerator.getDefaultLabelFontName();
+        String annotationFontName = processDiagramGenerator.getDefaultAnnotationFontName();
+        try (final InputStream imageStream = processDiagramGenerator.generateDiagram(bpmnModel,
+                                                                                     activityIds,
+                                                                                     Collections.emptyList(),
+                                                                                     activityFontName,
+                                                                                     labelFontName,
+                                                                                     annotationFontName)) {
+            return new String(IoUtil.readInputStream(imageStream, null), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new ActivitiException("Error occured while getting process diagram '" + processInstanceId + "' : " + e.getMessage(),
+                                        e);
+        }
     }
 
     @RequestMapping(value = "/signal")
