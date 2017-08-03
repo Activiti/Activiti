@@ -30,8 +30,12 @@ public class StartProcessInstanceCmdExecutor implements CommandExecutor<StartPro
     @Override
     public void execute(StartProcessInstanceCmd cmd) {
         ProcessInstance processInstance = processEngine.startProcess(cmd);
-        StartProcessInstanceResults cmdResult = new StartProcessInstanceResults(cmd.getId(),
-                                                                                processInstance.getId());
-        commandResults.send(MessageBuilder.withPayload(cmdResult).build());
+        if(processInstance != null) {
+            StartProcessInstanceResults cmdResult = new StartProcessInstanceResults(cmd.getId(),
+                                                                                    processInstance.getId());
+            commandResults.send(MessageBuilder.withPayload(cmdResult).build());
+        }else{
+            throw new IllegalStateException("Failed to start processInstance");
+        }
     }
 }

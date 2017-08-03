@@ -12,7 +12,7 @@
  * limitations under the License.
  *
  */
-package org.activiti.services.core.tests.utils;
+package org.activiti.services.core.utils;
 
 import static org.mockito.Mockito.mock;
 

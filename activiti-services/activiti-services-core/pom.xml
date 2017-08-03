@@ -87,6 +87,11 @@
       <artifactId>spring-boot-test</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <version>5.0.0.RC2</version>
+    </dependency>
   </dependencies>
 
 

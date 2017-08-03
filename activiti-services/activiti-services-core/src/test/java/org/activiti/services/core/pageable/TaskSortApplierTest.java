@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package org.activiti.services.core.tests.pageable;
+package org.activiti.services.core.pageable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.task.TaskQuery;
+import org.activiti.services.core.utils.MockUtils;
 import org.activiti.services.core.pageable.sort.TaskSortApplier;
 import org.junit.Before;
 import org.junit.Rule;
@@ -29,7 +30,6 @@ import org.mockito.InjectMocks;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
-import static org.activiti.services.core.tests.utils.MockUtils.selfReturningMock;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -49,7 +49,7 @@ public class TaskSortApplierTest {
     @Test
     public void applySort_should_oder_by_task_id_asc_by_default() throws Exception {
         //given
-        TaskQuery query = selfReturningMock(TaskQuery.class);
+        TaskQuery query = MockUtils.selfReturningMock(TaskQuery.class);
         PageRequest pageRequest = PageRequest.of(0,
                                                  10);
 
@@ -65,7 +65,7 @@ public class TaskSortApplierTest {
     @Test
     public void applySort_should_use_the_criteria_defined_by_pageable_object() throws Exception {
         //given
-        TaskQuery query = selfReturningMock(TaskQuery.class);
+        TaskQuery query = MockUtils.selfReturningMock(TaskQuery.class);
         Sort.Order processDefinitionOrder = new Sort.Order(Sort.Direction.ASC,
                                                            "name");
         Sort.Order processInstanceOrder = new Sort.Order(Sort.Direction.DESC,
@@ -90,7 +90,7 @@ public class TaskSortApplierTest {
     @Test
     public void applySort_should_throw_exception_when_using_invalid_property_to_sort() throws Exception {
         //given
-        TaskQuery query = selfReturningMock(TaskQuery.class);
+        TaskQuery query = MockUtils.selfReturningMock(TaskQuery.class);
         Sort.Order invalidProperty = new Sort.Order(Sort.Direction.ASC,
                                                     "invalidProperty");
         PageRequest pageRequest = PageRequest.of(0,
