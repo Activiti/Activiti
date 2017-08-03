@@ -28,8 +28,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class QueryApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(QueryApplication.class,
-                              args);
+        SpringApplication.run(QueryApplication.class, args);
     }
 
 }
