@@ -3,7 +3,6 @@
 The process implemented is related to an Emergency Call Center, coordinating the requests with different others Organizations (Fire Department, Police, Hospitals).
 The idea is to be able to run the processes with a microservice architecture.
 The goal is to define a very easy and initial process to demonstrate the power of [Activiti](https://www.activiti.org/ "Activiti") and how it’s easy to manage (and possibly extend) the solution.
-The process must work with the one [Activiti](https://www.activiti.org/ "Activiti") installation only (not a “real” microservices architecture) because it must be easy to use and run with less possible dependencies.
 The project works with [Activiti](https://www.activiti.org/ "Activiti") version 6.0.
 
 * [Description of the process](#description)
@@ -80,7 +79,7 @@ Below the BPNM 2.0 diagrams of the four processes included.
 <a name="diagram2"></a>
 ### The Fire Dept, Police Dept, Hospital
 
-![Diagram](doc/diagram.02.png)
+The departments are managedas REST services available by default at port 9090, 9091 and 9092 and running in three different instances of Apache Tomcat.
 
 <a name="prerequisites"></a>
 # Prerequisites
@@ -88,8 +87,6 @@ Below the BPNM 2.0 diagrams of the four processes included.
 Before running the application, please check the assumptions listed below.
 
 - [Activiti](https://www.activiti.org/ "Activiti") 6.0 released on tomcat, running on `localhost` on port `8080`.
-
-- MySql Ver 14.14 Distrib 5.7.19, for Linux (x86_64) using EditLine wrapper.
 
 - Java version 1.8.0_131.
 
@@ -124,11 +121,14 @@ Then start a new `Emergency Call Center` process and follow the tasks.
 <a name="compiling"></a>
 # Building the source code
 
-The source code of the project is available in this project.
-To compile it: clone the project into your environment, open a terminal and move into the `emergency-call-center` folder.
-Then execute `mvn clean compile` and `mvn package`.
+The source code of the project is available in this folder, more precisely in two subfolders: `emergency-call-center` implementing the Activiti process and `emergency-department` implementing the generic service for a Department, running on a Apache Tomcat instance.
 
+To compile the `emergency-call-center` project, clone the project into your environment, open a terminal and move into the `emergency-call-center` sub-folder.
+Then execute `mvn clean compile` and `mvn package`.
 If you will see the `BUILD SUCCESS` message, move to the `target` forget and there you can find the `emergency-call-center-1.0.jar` file.
+
+To compile the `emergency-department` project, clone the project into your environment, open a terminal and move into the `emergency-department` sub-folder.
+Then execute the `package.sh` script, move to the `target` forget and there you can find the `emergency-department-1.0-SNAPSHOT.jar` file.
 
 <a name="screenshots"></a>
 # Screenshots
@@ -139,9 +139,7 @@ Below some screenshots of the application as an example.
 
 ![Call center details](doc/screenshot.02.png)
 
-![The processes created](doc/screenshot.03.png)
-
-![The diagram](doc/screenshot.04.png)
+![The diagram](doc/screenshot.03.png)
 
 <a name="support"></a>
 # Feedback, issues or support
