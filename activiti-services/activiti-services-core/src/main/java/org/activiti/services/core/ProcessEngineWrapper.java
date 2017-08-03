@@ -1,5 +1,7 @@
 package org.activiti.services.core;
 
+import java.util.List;
+
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.services.core.model.ProcessInstance;
@@ -61,5 +63,9 @@ public class ProcessEngineWrapper {
         org.activiti.engine.runtime.ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
                 .processInstanceId(processInstanceId).singleResult();
         return processInstanceConverter.from(processInstance);
+    }
+
+    public List<String> getActiveActivityIds(String executionId) {
+        return runtimeService.getActiveActivityIds(executionId);
     }
 }
