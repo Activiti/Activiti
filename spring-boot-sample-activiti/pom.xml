@@ -78,12 +78,6 @@
                 </assembly>
                 <cmd>java -jar maven/${project.artifactId}-${project.version}.jar</cmd>
               </build>
-              <run>
-                <wait>
-                  <log>org.activiti.*Started Application</log>
-                  <time>40000</time>
-                </wait>
-              </run>
             </image>
           </images>
         </configuration>
