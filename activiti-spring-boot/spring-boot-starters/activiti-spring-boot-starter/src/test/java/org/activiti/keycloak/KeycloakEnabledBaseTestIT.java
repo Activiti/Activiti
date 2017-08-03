@@ -16,7 +16,6 @@
 
 package org.activiti.keycloak;
 
-import org.activiti.engine.impl.util.IoUtil;
 import org.junit.Before;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.representations.AccessTokenResponse;
@@ -25,7 +24,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 public class KeycloakEnabledBaseTestIT {
 
@@ -70,11 +68,5 @@ public class KeycloakEnabledBaseTestIT {
 
     protected HttpEntity getRequestEntityWithHeaders(){
         return new HttpEntity(getHeaders(accessToken.getToken()));
-    }
-
-    protected String getProcessXml(final String processDefinitionKey) throws IOException {
-        try (InputStream is = ClassLoader.getSystemResourceAsStream("processes/" + processDefinitionKey + ".bpmn20.xml")) {
-            return new String(IoUtil.readInputStream(is, null), "UTF-8");
-        }
     }
 }

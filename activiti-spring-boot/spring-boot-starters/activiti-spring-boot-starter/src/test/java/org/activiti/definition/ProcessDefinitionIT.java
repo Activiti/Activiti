@@ -34,6 +34,7 @@ import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessDefinitionMeta;
+import org.activiti.test.util.TestResourceUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,7 +196,7 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
 
         //then
         assertThat(responseData).isNotNull();
-        assertThat(responseData).isEqualTo(getProcessXml(aProcessDefinition.getId().split(":")[0]));
+        assertThat(responseData).isEqualTo(TestResourceUtil.getProcessXml(aProcessDefinition.getId().split(":")[0]));
     }
 
     @Test
@@ -215,7 +216,7 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
         assertThat(responseData).isNotNull();
 
         BpmnModel targetModel = new BpmnJsonConverter().convertToBpmnModel(new ObjectMapper().readTree(responseData));
-        final InputStream byteArrayInputStream = new ByteArrayInputStream(getProcessXml(aProcessDefinition.getId()
+        final InputStream byteArrayInputStream = new ByteArrayInputStream(TestResourceUtil.getProcessXml(aProcessDefinition.getId()
                                                                                                           .split(":")[0]).getBytes());
         BpmnModel sourceModel = new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
 
@@ -244,7 +245,7 @@ public class ProcessDefinitionIT extends KeycloakEnabledBaseTestIT {
 
         //then
         assertThat(responseData).isNotNull();
-        final InputStream byteArrayInputStream = new ByteArrayInputStream(getProcessXml(aProcessDefinition.getId()
+        final InputStream byteArrayInputStream = new ByteArrayInputStream(TestResourceUtil.getProcessXml(aProcessDefinition.getId()
                                                                                                           .split(":")[0]).getBytes());
         BpmnModel sourceModel = new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
 

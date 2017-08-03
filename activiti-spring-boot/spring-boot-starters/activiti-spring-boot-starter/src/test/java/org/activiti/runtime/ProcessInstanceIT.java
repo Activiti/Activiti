@@ -37,6 +37,7 @@ import org.activiti.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
+import org.activiti.test.util.TestResourceUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -143,7 +144,7 @@ public class ProcessInstanceIT extends KeycloakEnabledBaseTestIT {
         //then
         assertThat(responseData).isNotNull();
 
-        final InputStream byteArrayInputStream = new ByteArrayInputStream(getProcessXml(startedProcessEntity.getBody()
+        final InputStream byteArrayInputStream = new ByteArrayInputStream(TestResourceUtil.getProcessXml(startedProcessEntity.getBody()
                                                                                                             .getProcessDefinitionId()
                                                                                                             .split(":")[0]).getBytes());
         BpmnModel sourceModel = new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
