@@ -9,7 +9,6 @@ import org.activiti.services.core.model.commands.Command;
 import org.activiti.services.events.ProcessEngineChannels;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.stereotype.Component;
 
 @Component

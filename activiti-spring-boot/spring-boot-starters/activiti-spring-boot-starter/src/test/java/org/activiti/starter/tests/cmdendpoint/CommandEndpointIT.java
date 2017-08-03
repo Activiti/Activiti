@@ -42,7 +42,6 @@ import org.activiti.services.core.model.commands.results.StartProcessInstanceRes
 import org.activiti.services.core.model.commands.results.SuspendProcessInstanceResults;
 import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
 import org.junit.Before;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,9 +77,6 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Autowired
-    private Tracer tracer;
-
     public static final ParameterizedTypeReference<PagedResources<Task>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Task>>() {
     };
 
@@ -98,8 +94,6 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
     private static AtomicBoolean claimedTaskAck = new AtomicBoolean(false);
     private static AtomicBoolean releasedTaskAck = new AtomicBoolean(false);
     private static AtomicBoolean completedTaskAck = new AtomicBoolean(false);
-
-
 
     private StartProcessInstanceCmd startProcessInstanceCmd;
 
@@ -172,8 +166,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
 
         suspendProcessInstanceCmd = new SuspendProcessInstanceCmd(testProcessInstanceId);
         // Suspending a Process Instance sending a message
-        suspendProcessInstance(processDefinitionIds.get(SIMPLE_PROCESS),
-                               processInstanceId);
+        suspendProcessInstance(processDefinitionIds.get(SIMPLE_PROCESS));
 
         // Activating a Process Instance sending a message
         activateProcessInstance(processDefinitionIds.get(SIMPLE_PROCESS),
@@ -326,8 +319,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         assertThat(instance.getStatus()).isEqualToIgnoringCase(ProcessInstance.ProcessInstanceStatus.RUNNING.name());
     }
 
-    private void suspendProcessInstance(String processDefinitionid,
-                                        String processInstanceId) throws InterruptedException {
+    private void suspendProcessInstance(String processDefinitionid) throws InterruptedException {
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage;
         Collection<ProcessInstance> instances;//given
 
