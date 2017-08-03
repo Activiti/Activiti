@@ -4,25 +4,23 @@ This sample program demonstrates the use of a HAL REST API for the Activiti BPM 
 
 The REST endpoints are also secured using keycloak as an identity provider.
 
-## Assumed Keycloak Setup
+## Pre-requisites
 
-The keycloak setup used by this example can be replicated by importing the provided keycloak realm json file. The user 'testuser' with password 'password' is used for accessing endpoints. The user 'hr'/'password' is in the 'hr' group. The user 'client'/'client' is for using admin client to look up groups.
+Check out the equivalent branch of the main Activiti project and run mvn clean install -DskipTests
 
-To run using a standalone keycloak, download keycloak and run using the following from the keycloak bin directory - ./standalone.sh -Djboss.socket.binding.port-offset=100
+## Quickstart
 
-The port-offset is important as otherwise Activiti and Keycloak will have a port confllict.
+1) Add this entry to your hosts file - 127.0.0.1       activiti-keycloak
+2) Run start.sh or start.bat from this directory
+3) Go to http://localhost:8090/v1/process-instances
+4) To reach the endpoint you'll need to enter testuser/password at the keycloak prompt
+5) To create process instances you'll need to use the postman collection
 
-## How to run
+## Alternative Setups
 
-To run the sample, run from IDE using the Application.java file but first ensure you have keycloak and rabbitmq docker containers running (see below). To hit an endpoint in the browser, go to http://localhost:8080/process-definitions
+It is also possible to just start the core services directly from the main Activiti project and then start only this sample application using the IDE. To do this rabbitmq also needs to be added to hosts file or changed in application.properties to localhost.
 
-A reference dockerfile is also provided (separately) which applies the keycloak json configuration file for the realm to the jboss/keycloak:3.2.0.Final image.
-
-To run it first have docker installed then go to the docker directory and do 'docker build . -t activiti-keycloak' Then execute 'docker run -p 8180:8080 --name keycloak -i -t activiti-keycloak'
-
-If you get a container already in use error when running the docker container then do a docker rm with the id of the running container and try again. To access the admin console for the container go to http://localhost:8180/auth/admin/springboot/console/ and log in as admin/admin. (This reference docker is based upon reference docker is based upon https://github.com/dfranssen/docker-keycloak-import-realm. Note that the admin user has been included in the springboot-realm.json.)
-
-To run the rabbitmq container to go the docker directory and run docker-compose up.
+It is also possible to run keycloak and rabbitmq standalone. See the main Activiti project's docker notes for this.
 
 ## Postman
 
