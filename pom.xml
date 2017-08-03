@@ -78,10 +78,7 @@
     <jetty-util.version>8.1.16.v20140903</jetty-util.version>
     <swagger.version>1.5.10</swagger.version>
     <resteasy.version>3.0.21.Final</resteasy.version>
-<<<<<<< HEAD
-=======
     <querydsl.version>4.1.4</querydsl.version>
->>>>>>> ryan-1259-queryservice
     <batik.version>1.7</batik.version>
 
     <!--keycloak snapshot that was used to build boot2 adapter
