@@ -16,7 +16,7 @@ In tests that start the containers independently localhost is used in .propertie
 
 ## Running Containers independently
 
-The keycloak directory contains a Dockerfile for keycloak. It uses springboot-realm.json as a config file. See sample project. It can be run in that directory using  'docker build . -t activiti-keycloak' Then execute 'docker run -p 8080:8080 --name keycloak -i -t activiti-keycloak'
+The keycloak directory contains a Dockerfile for keycloak. It uses springboot-realm.json as a config file. See sample project. It can be run in that directory using  'docker build . -t activiti-keycloak' Then execute 'docker run -p 8180:8180 --name keycloak -i -t activiti-keycloak'
 
 rabbitmq directory contains a docker-compose file for rabbitmq. It can be run in that directory using docker-compose up
 
