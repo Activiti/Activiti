@@ -10,6 +10,13 @@ activiti-sample:
   links:
     - activiti-keycloak:activiti-keycloak
     - rabbitmq:rabbitmq
+activiti-audit:
+  image: activiti-audit:latest
+  ports:
+    - "8082:8082"
+  links:
+    - activiti-keycloak:activiti-keycloak
+    - rabbitmq:rabbitmq
 activiti-keycloak:
   image: activiti-keycloak:latest
   ports:
