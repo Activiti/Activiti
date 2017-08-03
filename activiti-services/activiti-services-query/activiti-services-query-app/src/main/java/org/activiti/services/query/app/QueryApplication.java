@@ -44,8 +44,7 @@ import org.springframework.cloud.stream.annotation.StreamListener;
 public class QueryApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(QueryApplication.class,
-                              args);
+        SpringApplication.run(QueryApplication.class, args);
     }
 
     @Autowired

@@ -11,3 +11,17 @@
 
 # Repository wide ignore mac DS_Store files
 .DS_Store
+.project
+activiti-services/activiti-services-query/.settings
+.classpath
+activiti-services/activiti-services-query/activiti-services-query-app/.settings
+activiti-services/activiti-services-query/activiti-services-query-model/.settings
+activiti-services/activiti-services-query/activiti-services-query-repo/.settings
+activiti-spring-boot/activiti-spring-boot-test/.settings
+activiti-spring-boot/activiti-spring-boot-test/target
+activiti-services/activiti-services-query/activiti-services-query-app/target
+activiti-services/activiti-services-query/activiti-services-query-model/target
+activiti-services/activiti-services-query/activiti-services-query-repo/target
+activiti-services/activiti-services-query/target
+activiti-services/activiti-services-query/activiti-services-query-es/.settings
+activiti-services/activiti-services-query/activiti-services-query-es/target

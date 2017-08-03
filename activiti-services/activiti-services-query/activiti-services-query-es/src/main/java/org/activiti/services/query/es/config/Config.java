@@ -1,4 +1,4 @@
-package org.activiti.services.query.app;
+package org.activiti.services.query.es.config;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,22 +20,18 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
-@EnableElasticsearchRepositories(basePackages = "")
-@ComponentScan(basePackages = {""})
-public class ElasticsearchConfig {
+@EnableElasticsearchRepositories(basePackages = "org.activiti.services.query.app.model")
+@ComponentScan(basePackages = {"org.activiti.services.query.app.model"})
+public class Config {
 
-    @Value("${elasticsearch.home:/usr/local/Cellar/elasticsearch/2.3.2}")
+private static Logger logger = LoggerFactory.getLogger(Config.class);
+    
+    @Value("${elasticsearch.home:/Users/gmalanga/Desktop/elasticsearch-5.5.0}")
     private String elasticsearchHome;
+    
+    @Value("${elasticsearch.clusterName:my-application")
+    private String clusterName;
 
-    private static Logger logger = LoggerFactory.getLogger(ElasticsearchConfig.class);
-
-    
-    
-    Settings settings = Settings.settingsBuilder().put("cluster.name", clusterName).put("client.transport.sniff", true).build();
-    TransportClient transportClient = TransportClient.builder().settings(settings).build();
-    transportClient = transportClient.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(host), port));
-    
-    
     @Bean
     public Client client() {
         try {
@@ -44,6 +40,8 @@ public class ElasticsearchConfig {
             logger.debug(tmpDir.toAbsolutePath().toString());
 
             final Settings elasticsearchSettings = Settings.builder()
+                                                           .put("cluster.name", clusterName)
+                                                           .put("client.transport.sniff", true)
                                                            .put("http.enabled", "false")
                                                            .put("path.data", tmpDir.toAbsolutePath().toString())
                                                            .put("path.home", elasticsearchHome)
