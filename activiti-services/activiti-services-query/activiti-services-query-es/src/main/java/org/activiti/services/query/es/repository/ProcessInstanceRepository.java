@@ -7,9 +7,7 @@ import org.springframework.data.elasticsearch.annotations.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 
-public class ProcessInstanceRepository extends ElasticsearchRepository<ProcessInstanceES, String> {
-    
-    Page<ProcessInstanceES> findAll(String id, Pageable pageable);
+public class ProcessInstanceRepository {
 
 
 }

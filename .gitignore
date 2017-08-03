@@ -27,3 +27,4 @@ activiti-services/activiti-services-query/activiti-services-query-es/.settings
 activiti-services/activiti-services-query/activiti-services-query-es/target
 activiti-spring-boot/spring-boot-samples/spring-boot-sample-hal-rest-api/.settings
 .springBeans
+.settings
