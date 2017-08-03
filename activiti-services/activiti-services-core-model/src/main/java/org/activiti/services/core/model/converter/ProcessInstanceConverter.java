@@ -36,13 +36,13 @@ public class ProcessInstanceConverter implements ModelConverter<ProcessInstance,
         org.activiti.services.core.model.ProcessInstance processInstance = null;
         if (source != null) {
             processInstance = new org.activiti.services.core.model.ProcessInstance(source.getId(),
-                                                                                   source.getName(),
-                                                                                   source.getDescription(),
-                                                                                   source.getProcessDefinitionId(),
-                                                                                   source.getStartUserId(),
-                                                                                   source.getStartTime(),
-                                                                                   source.getBusinessKey(),
-                                                                                   calculateStatus(source));
+                                                                                                 source.getName(),
+                                                                                                 source.getDescription(),
+                                                                                                 source.getProcessDefinitionId(),
+                                                                                                 source.getStartUserId(),
+                                                                                                 source.getStartTime(),
+                                                                                                 source.getBusinessKey(),
+                                                                                                 calculateStatus(source));
         }
         return processInstance;
     }
