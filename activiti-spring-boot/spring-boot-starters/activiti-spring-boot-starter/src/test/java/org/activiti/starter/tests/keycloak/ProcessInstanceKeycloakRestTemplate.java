@@ -47,7 +47,7 @@ public class ProcessInstanceKeycloakRestTemplate {
     private HttpHeaders getHeaders(String token) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization",
-                    "Bearer " + new String(token));
+                    "Bearer " + token);
         return headers;
     }
 

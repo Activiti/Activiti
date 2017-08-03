@@ -8,11 +8,10 @@ import org.springframework.messaging.SubscribableChannel;
 public interface MessageClientStream {
 
     String MY_CMD_PRODUCER = "myCmdProducer";
+    String MY_CMD_RESULTS = "myCmdResults";
 
     @Output(MY_CMD_PRODUCER)
     MessageChannel myCmdProducer();
-
-    String MY_CMD_RESULTS = "myCmdResults";
 
     @Input(MY_CMD_RESULTS)
     SubscribableChannel myCmdResults();
