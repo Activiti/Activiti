@@ -1,14 +1,12 @@
 # Docker containers for Activiti
 
-## Run Sample App
+## Run Core Engine Services
 
-To run sample application using docker:
+To run core engine services using docker just run the start.sh script. 
 
-1) Add this entry to your hosts file - 127.0.0.1       activiti-keycloak
-2) Run start.sh or start.bat from this directory
-3) Go to http://localhost:8090/v1/process-instances
-4) To reach the endpoint you'll need to enter testuser/password at the keycloak prompt
-5) To create process instances you'll need to use the postman collection
+## Run a Sample Application
+
+See the example repository on how to run a sample application in which all the core services are used and the engine can be interacted with using REST.
 
 ## Integration Tests
 
@@ -19,3 +17,11 @@ The keycloak and rabbitmq containers are used in integration tests through fabri
 The keycloak directory contains a Dockerfile for keycloak. It uses springboot-realm.json as a config file. See sample project. It can be run in that directory using  'docker build . -t activiti-keycloak' Then execute 'docker run -p 8080:8080 --name keycloak -i -t activiti-keycloak'
 
 rabbitmq directory contains a docker-compose file for rabbitmq. It can be run in that directory using docker-compose up
+
+## Replacing Individual Services
+
+The keycloak setup used by this example can be replicated by importing the provided keycloak realm json file. The user 'testuser' with password 'password' is used for accessing endpoints. The user 'hr'/'password' is in the 'hr' group. The user 'client'/'client' is for using admin client to look up groups.
+
+To run using a standalone keycloak, download keycloak and run using the following from the keycloak bin directory - ./standalone.sh 
+
+Rabbitmq can also be run standalone. If this is done then the hostnames referring to 'activiti-keycloak' and 'rabbitmq' need to be replaced with localhost as those are docker names.
