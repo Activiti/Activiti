@@ -21,6 +21,7 @@
     <module>activiti-services-registry</module>
     <module>activiti-services-gateway</module>
     <module>activiti-services-audit</module>
+    <module>activiti-services-query</module>
   </modules>
 
 </project>
