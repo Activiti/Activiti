@@ -93,6 +93,9 @@ public class ProcessInstanceController {
     @ResponseBody
     public String getProcessDiagram(@PathVariable String processInstanceId) {
         ProcessInstance processInstance = processEngine.getProcessInstanceById(processInstanceId);
+        if (processInstance == null) {
+            throw new ActivitiException("Unable to find process instance for the given id:'" + processInstanceId + "'");
+        }
         List<String> activityIds = processEngine.getActiveActivityIds(processInstanceId);
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
         String activityFontName = processDiagramGenerator.getDefaultActivityFontName();
