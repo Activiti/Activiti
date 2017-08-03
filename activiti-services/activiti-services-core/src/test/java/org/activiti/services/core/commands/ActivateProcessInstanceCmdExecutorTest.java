@@ -35,8 +35,6 @@ public class ActivateProcessInstanceCmdExecutorTest {
     public void activateProcessInstanceCmdExecutorTest() {
         ActivateProcessInstanceCmd activateProcessInstanceCmd = new ActivateProcessInstanceCmd("x");
 
-        assertThat(activateProcessInstanceCmdExecutor).isNotNull();
-
         assertThat(activateProcessInstanceCmdExecutor.getHandledType()).isEqualTo(ActivateProcessInstanceCmd.class);
 
         activateProcessInstanceCmdExecutor.execute(activateProcessInstanceCmd);
