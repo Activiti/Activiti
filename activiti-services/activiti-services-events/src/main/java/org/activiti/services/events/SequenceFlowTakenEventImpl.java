@@ -18,7 +18,7 @@
 package org.activiti.services.events;
 
 public class SequenceFlowTakenEventImpl extends AbstractProcessEngineEvent implements SequenceFlowTakenEvent {
-    private String id;
+    private String sequenceFlowId;
     private String sourceActivityId;
     private String sourceActivityName;
     private String sourceActivityType;
@@ -29,7 +29,7 @@ public class SequenceFlowTakenEventImpl extends AbstractProcessEngineEvent imple
     public SequenceFlowTakenEventImpl(String executionId,
                                       String processDefinitionId,
                                       String processInstanceId,
-                                      String id,
+                                      String sequenceFlowId,
                                       String sourceActivityId,
                                       String sourceActivityName,
                                       String sourceActivityType,
@@ -39,7 +39,7 @@ public class SequenceFlowTakenEventImpl extends AbstractProcessEngineEvent imple
         super(executionId,
               processDefinitionId,
               processInstanceId);
-        this.id = id;
+        this.sequenceFlowId = sequenceFlowId;
         this.sourceActivityId = sourceActivityId;
         this.sourceActivityName = sourceActivityName;
         this.sourceActivityType = sourceActivityType;
@@ -54,8 +54,8 @@ public class SequenceFlowTakenEventImpl extends AbstractProcessEngineEvent imple
     }
 
     @Override
-    public String getId() {
-        return id;
+    public String getSequenceFlowId() {
+        return sequenceFlowId;
     }
 
     @Override

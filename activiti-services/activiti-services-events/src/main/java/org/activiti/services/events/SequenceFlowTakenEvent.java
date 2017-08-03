@@ -21,17 +21,17 @@ import org.activiti.services.core.model.events.ProcessEngineEvent;
 
 public interface SequenceFlowTakenEvent extends ProcessEngineEvent {
 
-    String getId();
+    String getSequenceFlowId();
 
-    public String getSourceActivityId();
+    String getSourceActivityId();
 
-    public String getSourceActivityName();
+    String getSourceActivityName();
 
-    public String getSourceActivityType();
+    String getSourceActivityType();
 
-    public String getTargetActivityId();
+    String getTargetActivityId();
 
-    public String getTargetActivityName();
+    String getTargetActivityName();
 
-    public String getTargetActivityType();
+    String getTargetActivityType();
 }

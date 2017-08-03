@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package org.activiti.services.events.converter;
+package org.activiti.services.audit;
 
-import org.activiti.engine.delegate.event.ActivitiEvent;
-import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
-import static org.activiti.engine.delegate.event.ActivitiEventType.PROCESS_COMPLETED_WITH_ERROR_END_EVENT;
-
 @Component
-public class ProcessCompletedErrorEventConverter implements EventConverter {
+@EnableBinding(StreamProducer.class)
+public class MyProducer {
 
-    @Override
-    public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println(event.getType() + "---> Completed With Error??? " + event.getClass().getCanonicalName());
-        return null;
-    }
+    @Autowired
+    private MessageChannel producer;
 
-    @Override
-    public ActivitiEventType handledType() {
-        return PROCESS_COMPLETED_WITH_ERROR_END_EVENT;
+    public void send(ProcessEngineEvent newEvent) {
+        producer.send(MessageBuilder.withPayload(newEvent).build());
     }
 }

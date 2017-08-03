@@ -16,7 +16,13 @@ The port-offset is important as otherwise Activiti and Keycloak will have a port
 
 To run the sample, run from IDE using the Application.java file but first ensure you have keycloak and rabbitmq docker containers running (see below). To hit an endpoint in the browser, go to e.g. http://localhost:8080/process-definitions
 
-A reference dockerfile is also provided (separately) which applies the keycloak json configuration file for the realm. See the docker directory for how to build and run. To access the admin console for the container go to http://localhost:8180/auth/admin/springboot/console/ and log in as admin/admin. 
+A reference dockerfile is also provided (separately) which applies the keycloak json configuration file for the realm to the jboss/keycloak:3.2.0.Final image.
+
+To run it first have docker installed then go to the docker directory and do 'docker build . -t activiti-keycloak' Then execute 'docker run -p 8180:8080 --name keycloak -i -t activiti-keycloak'
+
+If you get a container already in use error when running the docker container then do a docker rm with the id of the running container and try again. To access the admin console for the container go to http://localhost:8180/auth/admin/springboot/console/ and log in as admin/admin. (This reference docker is based upon reference docker is based upon https://github.com/dfranssen/docker-keycloak-import-realm. Note that the admin user has been included in the springboot-realm.json.)
+
+To run the rabbitmq container to go the docker directory and run docker-compose up.
 
 ## Postman
 

@@ -16,6 +16,20 @@
 
 package org.activiti.definition;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.converter.util.InputStreamProvider;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.editor.language.json.converter.BpmnJsonConverter;
+import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessDefinitionMeta;
 import org.junit.Test;
@@ -27,12 +41,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.*;
-
-import java.util.Iterator;
+import org.springframework.web.client.RequestCallback;
+import org.springframework.web.client.ResponseExtractor;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -68,7 +81,7 @@ public class ProcessDefinitionIT {
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
-return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
+        return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
                                      null,
                                      responseType);
@@ -98,7 +111,7 @@ return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
         assertThat(entity.getBody()).isNotNull();
         assertThat(entity.getBody().getId()).isEqualTo(aProcessDefinition.getId());
     }
-    
+
     @Test
     public void shouldReturnProcessDefinitionMetadata() throws Exception {
         //given
@@ -161,5 +174,83 @@ return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
         assertThat(entity.getBody().getGroups()).hasSize(4);
         assertThat(entity.getBody().getUserTasks()).hasSize(3);
         assertThat(entity.getBody().getServiceTasks()).hasSize(3);
+    }
+
+    @Test
+    public void shouldRetriveProcessModel() throws Exception {
+        ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsEntity = getProcessDefinitions();
+        assertThat(processDefinitionsEntity).isNotNull();
+        assertThat(processDefinitionsEntity.getBody()).isNotNull();
+        assertThat(processDefinitionsEntity.getBody().getContent()).isNotEmpty();
+        ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
+
+        //when
+        String responseData = executeRequest(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/xml",
+                                             HttpMethod.GET);
+
+        //then
+        assertThat(responseData).isNotNull();
+        assertThat(responseData).isEqualTo(getProcessXml(aProcessDefinition.getId().split(":")[0]));
+    }
+
+    private String getProcessXml(final String processDefinitionKey) throws IOException {
+        try (InputStream is = ClassLoader.getSystemResourceAsStream("processes/" + processDefinitionKey + ".bpmn20.xml")) {
+            return new String(IoUtil.readInputStream(is, null), "UTF-8");
+        }
+    }
+
+    @Test
+    public void shouldRetriveBpmnModel() throws Exception {
+        //given
+        ResponseEntity<PagedResources<ProcessDefinition>> processDefinitionsEntity = getProcessDefinitions();
+        assertThat(processDefinitionsEntity).isNotNull();
+        assertThat(processDefinitionsEntity.getBody()).isNotNull();
+        assertThat(processDefinitionsEntity.getBody().getContent()).isNotEmpty();
+        ProcessDefinition aProcessDefinition = processDefinitionsEntity.getBody().getContent().iterator().next();
+
+        //when
+        String responseData = executeRequest(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/json",
+                                             HttpMethod.GET);
+
+        //then
+        assertThat(responseData).isNotNull();
+
+        BpmnModel targetModel = new BpmnJsonConverter().convertToBpmnModel(new ObjectMapper().readTree(responseData));
+        final InputStream byteArrayInputStream = new ByteArrayInputStream(getProcessXml(aProcessDefinition.getId()
+                                                                                                          .split(":")[0]).getBytes());
+        BpmnModel sourceModel = new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
+
+            @Override
+            public InputStream getInputStream() {
+                return byteArrayInputStream;
+            }
+        }, false, false);
+        assertThat(targetModel.getMainProcess().getId().equals(sourceModel.getMainProcess().getId()));
+        for (FlowElement element : targetModel.getMainProcess().getFlowElements()) {
+            assertThat(sourceModel.getFlowElement(element.getId()) != null);
+        }
+    }
+
+    private String executeRequest(String url, HttpMethod method) {
+        return restTemplate.execute(url,
+                                    method,
+                                    new RequestCallback() {
+
+                                        @Override
+                                        public void doWithRequest(
+                                                                  org.springframework.http.client.ClientHttpRequest request) throws IOException {
+                                            request.getHeaders().addAll(getHeaders(accessToken
+                                                                                              .getToken()));
+                                        }
+                                    },
+                                    new ResponseExtractor<String>() {
+
+                                        @Override
+                                        public String extractData(ClientHttpResponse response)
+                                                                                               throws IOException {
+                                            return new String(IoUtil.readInputStream(response.getBody(),
+                                                                                     null), "UTF-8");
+                                        }
+                                    });
     }
 }

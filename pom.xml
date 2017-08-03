@@ -9,7 +9,7 @@
   <version>7-201708-EA-SNAPSHOT</version>
   <properties>
     <!-- Spring Boot / Cloud / Stream deps -->
-    <spring.boot.version>2.0.0.M2</spring.boot.version>
+    <spring.boot.version>2.0.0.M3</spring.boot.version>
     <spring.cloud.version>Finchley.BUILD-SNAPSHOT</spring.cloud.version>
     <spring.cloud.stream.version>Elmhurst.BUILD-SNAPSHOT</spring.cloud.stream.version>
     <!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
@@ -17,8 +17,14 @@
 
     <!--configuration properties-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <jdk.version>1.8</jdk.version>
+
+    <!-- configuration properties for tests-->
+    <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
+    <generated-assertions-package>org.activiti.test</generated-assertions-package>
+
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
 
@@ -26,6 +32,7 @@
     <mockito.version>2.7.22</mockito.version>
     <junit.version>4.12</junit.version>
     <assertj.version>3.8.0</assertj.version>
+    <jsonunit.version>1.24.0</jsonunit.version>
     <el-api.version>2.2</el-api.version>
     <slf4j.version>1.7.6</slf4j.version>
     <hibernate-core.version>5.2.2.Final</hibernate-core.version>
@@ -83,9 +90,10 @@
     <keycloak.version>3.2.0.Final</keycloak.version>
 
     <!-- plugins -->
+    <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
     <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
-    <maven-failsafe-plugin.version>2.20</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
@@ -96,6 +104,9 @@
     <illegal-transitive-dependency-check.version>1.7.4</illegal-transitive-dependency-check.version>
     <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
     <apt-maven-plugin.version>1.1.3</apt-maven-plugin.version>
+    <docker.maven.plugin.version>0.21.0</docker.maven.plugin.version>
+    <directory.maven.plugin.version>0.1</directory.maven.plugin.version>
+    <assertions-generator-plugin.version>2.0.0</assertions-generator-plugin.version>
   </properties>
 
   <repositories>
@@ -138,6 +149,25 @@
       </snapshots>
     </repository>
   </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>spring-snapshots</id>
+      <name>Spring Snapshots</name>
+      <url>http://repo.spring.io/snapshot</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>spring-milestones</id>
+      <name>Spring Milestones</name>
+      <url>http://repo.spring.io/milestone</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
 
   <distributionManagement>
     <repository>
@@ -540,6 +570,12 @@
         <scope>test</scope>
       </dependency>
       <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-spring-boot-test</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
         <version>${assertj.version}</version>
@@ -549,6 +585,12 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>${mockito.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-fluent</artifactId>
+        <version>${jsonunit.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -757,6 +799,11 @@
     <pluginManagement>
       <plugins>
         <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>${docker.maven.plugin.version}</version>
+        </plugin>
+        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
           <version>${maven-jar-plugin.version}</version>
@@ -914,27 +961,27 @@
                     <!-- Checks for whitespace. -->
                     
                     <module name="FileTabCharacter">
-                      <property name="severity" value="error" />
-                      <property name="eachLine" value="true" />
+                      <property name="severity" value="error"/>
+                      <property name="eachLine" value="true"/>
                     </module>
                     <module name="TreeWalker">
                       <!-- Import settings: getting rid of redundant import, forbid star notation, defined order of imports. -->
-                      <module name="RedundantImport" />
+                      <module name="RedundantImport"/>
                       <module name="AvoidStarImport">
-                        <property name="excludes" value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito" />
-                        <property name="allowClassImports" value="false" />
-                        <property name="allowStaticMemberImports" value="false" />
+                        <property name="excludes" value="org.junit.Assert,org.assertj.core.api.Assertions,org.mockito.Mockito"/>
+                        <property name="allowClassImports" value="false"/>
+                        <property name="allowStaticMemberImports" value="false"/>
                       </module>
                       <module name="CustomImportOrder">
-                        <property name="customImportOrderRules" value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC" />
-                        <property name="sortImportsInGroupAlphabetically" value="true" />
-                        <property name="separateLineBetweenGroups" value="true" />
+                        <property name="customImportOrderRules" value="STANDARD_JAVA_PACKAGE###THIRD_PARTY_PACKAGE###STATIC"/>
+                        <property name="sortImportsInGroupAlphabetically" value="true"/>
+                        <property name="separateLineBetweenGroups" value="true"/>
                       </module>
 
                       <module name="NeedBraces">
-                        <property name="tokens" value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO" />
+                        <property name="tokens" value="LITERAL_IF, LITERAL_ELSE, LITERAL_FOR, LITERAL_WHILE, LITERAL_DO"/>
                       </module>
-                      <module name="EqualsHashCode" />
+                      <module name="EqualsHashCode"/>
                     </module>
                   </module>
                 </checkstyleRules>
@@ -963,7 +1010,45 @@
             </execution>
           </executions>
         </plugin>
-
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>${build-helper-maven-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.commonjava.maven.plugins</groupId>
+          <artifactId>directory-maven-plugin</artifactId>
+          <version>${directory.maven.plugin.version}</version>
+          <executions>
+            <execution>
+              <id>directories</id>
+              <goals>
+                <goal>highest-basedir</goal>
+              </goals>
+              <phase>initialize</phase>
+              <configuration>
+                <property>main.basedir</property>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring.boot.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>repackage</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.assertj</groupId>
+          <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
+          <version>${assertions-generator-plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -1019,4 +1104,28 @@
     <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
+  <developers>
+    <developer>
+      <id>salaboy</id>
+      <name>Mauricio Salatino</name>
+      <email>mauricio.salatino@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>erdemedeiros</id>
+      <name>Elias De Medeiros</name>
+      <email>elias.demedeiros@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>ryandawsonuk</id>
+      <name>Ryan Dawson</name>
+      <email>ryan.dawson@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+  </developers>
+
 </project>

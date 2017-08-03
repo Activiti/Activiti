@@ -16,7 +16,6 @@
     <module>spring-boot-starters</module>
     <module>spring-boot-samples</module>
     <module>activiti-spring-boot-test</module>
-
   </modules>
 
   <properties>
