@@ -8,18 +8,16 @@
   <packaging>pom</packaging>
   <version>7-201708-EA-SNAPSHOT</version>
   <properties>
-    <!-- Spring Boot / Cloud / Stream deps -->
-    <spring.boot.version>2.0.0.M3</spring.boot.version>
-    <spring.cloud.version>Finchley.BUILD-SNAPSHOT</spring.cloud.version>
-    <spring.cloud.stream.version>Elmhurst.BUILD-SNAPSHOT</spring.cloud.stream.version>
-    <!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
-    <spring.hateoas.version>0.24.0.BUILD-SNAPSHOT</spring.hateoas.version>
-
     <!--configuration properties-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <jdk.version>1.8</jdk.version>
+    <docker.keycloak.port>8180</docker.keycloak.port>
+    <docker.keycloak.start.timeout>40000</docker.keycloak.start.timeout>
+    <docker.rabbitmq.tcp.port>5672</docker.rabbitmq.tcp.port>
+    <docker.rabbitmq.cli.port>15672</docker.rabbitmq.cli.port>
+    <docker.rabbitmq.start.timeout>15000</docker.rabbitmq.start.timeout>
 
     <!-- configuration properties for tests-->
     <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
@@ -27,6 +25,13 @@
 
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
+
+    <!-- Spring Boot / Cloud / Stream deps -->
+    <spring.boot.version>2.0.0.M3</spring.boot.version>
+    <spring.cloud.version>Finchley.BUILD-SNAPSHOT</spring.cloud.version>
+    <spring.cloud.stream.version>Elmhurst.BUILD-SNAPSHOT</spring.cloud.stream.version>
+    <!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
+    <spring.hateoas.version>0.24.0.BUILD-SNAPSHOT</spring.hateoas.version>
 
     <springfox.version>2.7.0</springfox.version>
     <mockito.version>2.7.22</mockito.version>

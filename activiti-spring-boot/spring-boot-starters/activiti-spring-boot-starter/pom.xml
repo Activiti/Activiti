@@ -179,11 +179,11 @@
               </build>
               <run>
                 <ports>
-                  <port>8180:8180</port>
+                  <port>${docker.keycloak.port}:${docker.keycloak.port}</port>
                 </ports>
                 <wait>
                   <log>Keycloak .* started in</log>
-                  <time>40000</time>
+                  <time>${docker.keycloak.start.timeout}</time>
                 </wait>
               </run>
             </image>
@@ -192,12 +192,12 @@
               <alias>activiti-rabbitmq</alias>
               <run>
                 <ports>
-                  <port>5672:5672</port>
-                  <port>15672:15672</port>
+                  <port>${docker.rabbitmq.tcp.port}:${docker.rabbitmq.tcp.port}</port>
+                  <port>${docker.rabbitmq.cli.port}:${docker.rabbitmq.cli.port}</port>
                 </ports>
                 <wait>
                   <log>Server startup complete</log>
-                  <time>15000</time>
+                  <time>${docker.rabbitmq.start.timeout}</time>
                 </wait>
               </run>
             </image>
