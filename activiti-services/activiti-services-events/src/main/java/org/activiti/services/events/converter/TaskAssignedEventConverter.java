@@ -40,8 +40,6 @@ public class TaskAssignedEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println("Task Assigned : " + ((ActivitiEntityEvent) event).getEntity().getClass().getCanonicalName());
-
         return new TaskAssignedEventImpl(event.getExecutionId(),
                                          event.getProcessDefinitionId(),
                                          event.getProcessInstanceId(),

@@ -30,7 +30,6 @@ public class VariableUpdatedEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println(event.getType() + "---> Variable Updated??? " + event.getClass().getCanonicalName());
         return new VariableUpdatedEventImpl(event.getExecutionId(),
                                                 event.getProcessDefinitionId(),
                                                 event.getProcessInstanceId(),

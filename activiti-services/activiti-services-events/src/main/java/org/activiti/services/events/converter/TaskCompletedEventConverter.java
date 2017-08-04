@@ -40,7 +40,6 @@ public class TaskCompletedEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println(event.getType() + "---> Task Completed??? " + event.getClass().getCanonicalName());
         return new TaskCompletedEventImpl(event.getExecutionId(),
                                           event.getProcessDefinitionId(),
                                           event.getProcessInstanceId(),

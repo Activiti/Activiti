@@ -30,7 +30,6 @@ public class VariableDeletedEventConveter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println(event.getType() + "---> Variable Deleted??? " + event.getClass().getCanonicalName());
         return new VariableDeletedEventImpl(event.getExecutionId(),
                                                 event.getProcessDefinitionId(),
                                                 event.getProcessInstanceId(),

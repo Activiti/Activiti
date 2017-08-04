@@ -48,6 +48,7 @@ public class JpaAuditApplication implements CommandLineRunner {
 
     @Override
     public void run(String... strings) throws Exception {
+
     }
 
     @StreamListener(AuditConsumerChannels.AUDIT_CONSUMER)

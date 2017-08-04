@@ -40,8 +40,6 @@ public class TaskCreatedEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println("Task Created : " + ((ActivitiEntityEventImpl) event).getEntity().getClass().getCanonicalName());
-
         return new TaskCreatedEventImpl(event.getExecutionId(),
                                         event.getProcessDefinitionId(),
                                         event.getProcessInstanceId(),
