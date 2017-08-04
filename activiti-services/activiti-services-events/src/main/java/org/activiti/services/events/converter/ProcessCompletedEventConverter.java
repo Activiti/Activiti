@@ -40,8 +40,6 @@ public class ProcessCompletedEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println(event.getType() + "---> Completed??? " + event.getClass().getCanonicalName());
-        System.out.println("Completed Entity: " + ((ActivitiEntityEvent) event).getEntity().getClass().getCanonicalName());
         return new ProcessCompletedEventImpl(event.getExecutionId(),
                                              event.getProcessDefinitionId(),
                                              event.getProcessInstanceId(),
