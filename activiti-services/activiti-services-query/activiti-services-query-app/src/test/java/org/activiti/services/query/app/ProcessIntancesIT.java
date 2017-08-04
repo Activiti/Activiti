@@ -16,6 +16,11 @@
 
 package org.activiti.services.query.app;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.activiti.services.query.app.model.ProcessInstance;
 import org.activiti.services.query.app.model.Variable;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
@@ -35,13 +40,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -49,10 +48,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ProcessIntancesIT {
 
-    private static final String PROC_URL = "/query/processinstances";
-    private static final ParameterizedTypeReference<ProcessInstance> TASK_RESPONSE_TYPE = new ParameterizedTypeReference<ProcessInstance>() {
-    };
-    public static final ParameterizedTypeReference<PagedResources<ProcessInstance>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
+    private static final String PROC_URL = "/v1/query/process-instances";
+    private static final ParameterizedTypeReference<PagedResources<ProcessInstance>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
     };
 
     @Autowired
@@ -72,7 +69,7 @@ public class ProcessIntancesIT {
 
         Variable variable = new Variable(""+1,"type","name","procInstId","taskId",null,null,"executionId");
         variableRepository.save(variable);
-        List<Variable> variables = new ArrayList<Variable>();
+        List<Variable> variables = new ArrayList<>();
         variables.add(variable);
         processInstance.setVariables(variables);
         processInstanceRepository.save(processInstance);

@@ -39,18 +39,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(value = "/query/tasks", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/query/tasks", produces = MediaTypes.HAL_JSON_VALUE)
 public class TaskQueryController {
 
-    @Autowired
-    private TaskRepository dao;
+    private final TaskRepository dao;
+
+    private final TaskQueryResourceAssembler resourceAssembler;
+
+    private final UserGroupLookupProxy userGroupLookupProxy; //to look up groups for user
 
     @Autowired
-    private TaskQueryResourceAssembler resourceAssembler;
-
-    @Autowired
-    private UserGroupLookupProxy userGroupLookupProxy; //to look up groups for user
-
+    public TaskQueryController(TaskRepository dao,
+                               TaskQueryResourceAssembler resourceAssembler,
+                               UserGroupLookupProxy userGroupLookupProxy) {
+        this.dao = dao;
+        this.resourceAssembler = resourceAssembler;
+        this.userGroupLookupProxy = userGroupLookupProxy;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public PagedResources<TaskQueryResource> findAllByWebQuerydsl(

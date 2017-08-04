@@ -16,6 +16,9 @@
 
 package org.activiti.services.query.app;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.activiti.services.query.app.model.Variable;
 import org.activiti.services.query.app.repository.VariableRepository;
 import org.junit.Before;
@@ -33,10 +36,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Collection;
-import java.util.Iterator;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -44,10 +44,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class VariablesIT {
 
-    private static final String TASKS_URL = "/query/variables?name=name";
+    private static final String TASKS_URL = "/v1/query/variables?name=name";
     private static final ParameterizedTypeReference<Variable> VAR_RESPONSE_TYPE = new ParameterizedTypeReference<Variable>() {
     };
-    public static final ParameterizedTypeReference<PagedResources<Variable>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Variable>>() {
+    private static final ParameterizedTypeReference<PagedResources<Variable>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Variable>>() {
     };
 
     @Autowired

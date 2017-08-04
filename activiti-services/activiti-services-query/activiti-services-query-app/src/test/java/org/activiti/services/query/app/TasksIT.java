@@ -16,6 +16,11 @@
 
 package org.activiti.services.query.app;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.activiti.services.query.app.model.Task;
 import org.activiti.services.query.app.model.Variable;
 import org.activiti.services.query.app.repository.TaskRepository;
@@ -35,13 +40,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -49,10 +48,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class TasksIT {
 
-    private static final String TASKS_URL = "/query/tasks?nameLike=na&priority=priority&variables.name=name";
+    private static final String TASKS_URL = "/v1/query/tasks?nameLike=na&priority=priority&variables.name=name";
     private static final ParameterizedTypeReference<Task> TASK_RESPONSE_TYPE = new ParameterizedTypeReference<Task>() {
     };
-    public static final ParameterizedTypeReference<PagedResources<Task>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Task>>() {
+    private static final ParameterizedTypeReference<PagedResources<Task>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Task>>() {
     };
 
     @Autowired
@@ -68,7 +67,7 @@ public class TasksIT {
         Task task = new Task("1","hruser","name","description",null,null,"priority","category","processDefinitionId","processInstanceId","RUNNING",null,null);
         Variable variable = new Variable(""+1,"type","name","procInstId","taskId",null,null,"executionId");
         variableRepository.save(variable);
-        List<Variable> variables = new ArrayList<Variable>();
+        List<Variable> variables = new ArrayList<>();
         variables.add(variable);
         task.setVariables(variables);
         taskRepository.save(task);

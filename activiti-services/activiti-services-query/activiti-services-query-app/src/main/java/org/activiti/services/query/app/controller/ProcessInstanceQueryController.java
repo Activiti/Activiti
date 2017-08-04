@@ -40,15 +40,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(value = "/query/processinstances", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/query/process-instances", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessInstanceQueryController {
 
-    @Autowired
-    private ProcessInstanceRepository dao;
+    private final ProcessInstanceRepository dao;
+
+    private final ProcessInstanceQueryResourceAssembler resourceAssembler;
 
     @Autowired
-    private ProcessInstanceQueryResourceAssembler resourceAssembler;
-
+    public ProcessInstanceQueryController(ProcessInstanceRepository dao,
+                                          ProcessInstanceQueryResourceAssembler resourceAssembler) {
+        this.dao = dao;
+        this.resourceAssembler = resourceAssembler;
+    }
 
     // this endpoint demonstrates date filtering following https://stackoverflow.com/a/43852346 (see repo and entity and note transient has to be on getter)
     // parameter format ?lastModifiedFrom=2017-07-20&lastModifiedTo=2017-07-30

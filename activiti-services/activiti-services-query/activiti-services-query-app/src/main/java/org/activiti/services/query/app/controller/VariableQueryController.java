@@ -35,15 +35,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(value = "/query/variables", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/query/variables", produces = MediaTypes.HAL_JSON_VALUE)
 public class VariableQueryController {
 
-    @Autowired
-    private VariableRepository dao;
+    private final VariableRepository dao;
+
+    private final VariableQueryResourceAssembler resourceAssembler;
 
     @Autowired
-    private VariableQueryResourceAssembler resourceAssembler;
-
+    public VariableQueryController(VariableRepository dao,
+                                   VariableQueryResourceAssembler resourceAssembler) {
+        this.dao = dao;
+        this.resourceAssembler = resourceAssembler;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
     public PagedResources<VariableQueryResource> findAllByWebQuerydsl(
