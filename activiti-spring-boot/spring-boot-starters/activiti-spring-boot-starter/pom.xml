@@ -40,6 +40,10 @@
       <artifactId>spring-boot-starter-hateoas</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-sleuth</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework.hateoas</groupId>
       <artifactId>spring-hateoas</artifactId>
     </dependency>
@@ -175,7 +179,7 @@
               </build>
               <run>
                 <ports>
-                  <port>8080:8080</port>
+                  <port>8180:8180</port>
                 </ports>
                 <wait>
                   <log>Keycloak .* started in</log>

@@ -24,7 +24,7 @@
         <modeler:editor-resource-id>sid-D1DB4AC7-AEB0-4872-BCD7-EE7D762D3997</modeler:editor-resource-id>
       </extensionElements>
     </sequenceFlow>
-    <serviceTask id="servicetask1" name="Service Task1" activiti:class="org.activiti.delegate.DummyServiceTask1">
+    <serviceTask id="servicetask1" name="Service Task1" activiti:class="org.activiti.starter.tests.delegate.DummyServiceTask1">
       <documentation>This is a sample of service task.</documentation>
     </serviceTask>
     <sequenceFlow id="flow1" sourceRef="usertask1" targetRef="servicetask1"></sequenceFlow>

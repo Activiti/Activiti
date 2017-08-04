@@ -19,7 +19,6 @@ package org.activiti.services.events.converter;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiActivityEventImpl;
 import org.activiti.services.events.ActivityCompletedEventImpl;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.springframework.stereotype.Component;

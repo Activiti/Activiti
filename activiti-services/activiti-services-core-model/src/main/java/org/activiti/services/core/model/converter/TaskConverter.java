@@ -36,18 +36,18 @@ public class TaskConverter implements ModelConverter<Task, org.activiti.services
         org.activiti.services.core.model.Task task = null;
         if (source != null) {
             task = new org.activiti.services.core.model.Task(source.getId(),
-                                                             source.getOwner(),
-                                                             source.getAssignee(),
-                                                             source.getName(),
-                                                             source.getDescription(),
-                                                             source.getCreateTime(),
-                                                             source.getClaimTime(),
-                                                             source.getDueDate(),
-                                                             source.getPriority(),
-                                                             source.getProcessDefinitionId(),
-                                                             source.getProcessInstanceId(),
-                                                             source.getParentTaskId(),
-                                                             calculateStatus(source));
+                                                                           source.getOwner(),
+                                                                           source.getAssignee(),
+                                                                           source.getName(),
+                                                                           source.getDescription(),
+                                                                           source.getCreateTime(),
+                                                                           source.getClaimTime(),
+                                                                           source.getDueDate(),
+                                                                           source.getPriority(),
+                                                                           source.getProcessDefinitionId(),
+                                                                           source.getProcessInstanceId(),
+                                                                           source.getParentTaskId(),
+                                                                           calculateStatus(source));
         }
         return task;
     }

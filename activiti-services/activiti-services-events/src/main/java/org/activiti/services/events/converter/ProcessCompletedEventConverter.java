@@ -19,7 +19,6 @@ package org.activiti.services.events.converter;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEntityEventImpl;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.services.core.model.converter.ProcessInstanceConverter;
 import org.activiti.services.core.model.events.ProcessEngineEvent;

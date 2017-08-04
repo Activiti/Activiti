@@ -28,8 +28,10 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.core.model.ProcessInstance;
+import org.activiti.services.core.model.commands.ActivateProcessInstanceCmd;
 import org.activiti.services.core.model.commands.SignalProcessInstancesCmd;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
+import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
 import org.activiti.services.rest.resources.ProcessInstanceResource;
 import org.activiti.services.rest.resources.assembler.ProcessInstanceResourceAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -122,13 +124,13 @@ public class ProcessInstanceController {
 
     @RequestMapping(value = "{processInstanceId}/suspend")
     public ResponseEntity<Void> suspend(@PathVariable String processInstanceId) {
-        processEngine.suspend(processInstanceId);
+        processEngine.suspend(new SuspendProcessInstanceCmd(processInstanceId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(value = "{processInstanceId}/activate")
     public ResponseEntity<Void> activate(@PathVariable String processInstanceId) {
-        processEngine.activate(processInstanceId);
+        processEngine.activate(new ActivateProcessInstanceCmd(processInstanceId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
