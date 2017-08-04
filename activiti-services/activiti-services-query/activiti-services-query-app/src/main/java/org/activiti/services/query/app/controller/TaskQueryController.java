@@ -16,9 +16,7 @@
 
 package org.activiti.services.query.app.controller;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
-import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.services.query.app.assembler.TaskQueryResourceAssembler;
 import org.activiti.services.query.app.model.QTask;
@@ -46,15 +44,11 @@ public class TaskQueryController {
 
     private final TaskQueryResourceAssembler resourceAssembler;
 
-    private final UserGroupLookupProxy userGroupLookupProxy; //to look up groups for user
-
     @Autowired
     public TaskQueryController(TaskRepository dao,
-                               TaskQueryResourceAssembler resourceAssembler,
-                               UserGroupLookupProxy userGroupLookupProxy) {
+                               TaskQueryResourceAssembler resourceAssembler) {
         this.dao = dao;
         this.resourceAssembler = resourceAssembler;
-        this.userGroupLookupProxy = userGroupLookupProxy;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -78,7 +72,6 @@ public class TaskQueryController {
         // could go to spring security context instead?
 
         if(authenticatedUser!=null) {
-            BooleanBuilder builder = new BooleanBuilder();
             QTask qTask = QTask.task;
             predicate = qTask.assignee.eq(authenticatedUser).and(predicate);
         }

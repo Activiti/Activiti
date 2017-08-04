@@ -48,19 +48,23 @@ public class QueryApplication {
 
     private static Logger logger = LoggerFactory.getLogger(QueryApplication.class);
 
+    private final ProcessInstanceRepository processInstanceQueryRestResource;
+
+    private final TaskRepository taskQueryRestResource;
+
+    @Autowired
+    public QueryApplication(ProcessInstanceRepository processInstanceQueryRestResource,
+                            TaskRepository taskQueryRestResource) {
+        this.processInstanceQueryRestResource = processInstanceQueryRestResource;
+        this.taskQueryRestResource = taskQueryRestResource;
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(QueryApplication.class,
                               args);
     }
 
-    @Autowired
-    ProcessInstanceRepository processInstanceQueryRestResource;
 
-    @Autowired
-    TaskRepository taskQueryRestResource;
-
-
-    private int id=0;
 
     @StreamListener(QueryConsumerChannels.QUERY_CONSUMER)
     public synchronized void receive(ProcessEngineEvent event) {

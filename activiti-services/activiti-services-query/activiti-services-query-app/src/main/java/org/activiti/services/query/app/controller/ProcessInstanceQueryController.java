@@ -16,11 +16,9 @@
 
 package org.activiti.services.query.app.controller;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 import org.activiti.services.query.app.assembler.ProcessInstanceQueryResourceAssembler;
 import org.activiti.services.query.app.model.ProcessInstance;
-
 import org.activiti.services.query.app.model.QProcessInstance;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.app.resource.ProcessInstanceQueryResource;
@@ -74,7 +72,6 @@ public class ProcessInstanceQueryController {
 
         if(orStatus!=null && predicate!=null) {
             //if the OR condition is specified then we add it to the predicate
-            BooleanBuilder builder = new BooleanBuilder();
             QProcessInstance qProcessInstance = QProcessInstance.processInstance;
             predicate = qProcessInstance.status.eq(orStatus).or(predicate);
         } //don't handle case where OR is provided without predicate as doesn't make sense unless you've something to OR against

@@ -26,7 +26,6 @@ import javax.persistence.Transient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -126,5 +125,4 @@ public class ProcessInstance {
     public void setLastModifiedFrom(Date lastModifiedFrom) {
         this.lastModifiedFrom = lastModifiedFrom;
     }
-
 }
