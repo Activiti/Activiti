@@ -27,14 +27,16 @@ public class ActivityCancelledEventImpl extends AbstractProcessEngineEvent imple
     public ActivityCancelledEventImpl() {
     }
 
-    public ActivityCancelledEventImpl(String executionId,
+    public ActivityCancelledEventImpl(String applicationName,
+                                      String executionId,
                                       String processDefinitionId,
                                       String processInstanceId,
                                       String activityId,
                                       String activityName,
                                       String activityType,
                                       String cause) {
-        super(executionId,
+        super(applicationName,
+              executionId,
               processDefinitionId,
               processInstanceId);
         this.activityId = activityId;

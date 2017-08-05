@@ -26,11 +26,12 @@ import org.springframework.stereotype.Component;
 import static org.activiti.engine.delegate.event.ActivitiEventType.ACTIVITY_CANCELLED;
 
 @Component
-public class ActivityCancelledEventConverter implements EventConverter {
+public class ActivityCancelledEventConverter extends AbstractEventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        return new ActivityCancelledEventImpl(event.getExecutionId(),
+        return new ActivityCancelledEventImpl(getApplicationName(),
+                                              event.getExecutionId(),
                                               event.getProcessDefinitionId(),
                                               event.getProcessInstanceId(),
                                               ((ActivitiActivityCancelledEvent) event).getActivityId(),

@@ -15,6 +15,7 @@
  */
 
 package org.activiti.services.audit;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
@@ -25,9 +26,24 @@ public class MockProcessEngineEvent implements ProcessEngineEvent {
 
     private Long timestamp;
     private String eventType;
+    private String applicationName;
     private String executionId;
     private String processDefinitionId;
     private String processInstanceId;
+
+    public MockProcessEngineEvent(Long timestamp,
+                                  String eventType,
+                                  String applicationName,
+                                  String executionId,
+                                  String processDefinitionId,
+                                  String processInstanceId) {
+        this.timestamp = timestamp;
+        this.eventType = eventType;
+        this.applicationName = applicationName;
+        this.executionId = executionId;
+        this.processDefinitionId = processDefinitionId;
+        this.processInstanceId = processInstanceId;
+    }
 
     public MockProcessEngineEvent(Long timestamp,
                                   String eventType,
@@ -36,6 +52,7 @@ public class MockProcessEngineEvent implements ProcessEngineEvent {
                                   String processInstanceId) {
         this.timestamp = timestamp;
         this.eventType = eventType;
+        this.applicationName = "mock-app-name";
         this.executionId = executionId;
         this.processDefinitionId = processDefinitionId;
         this.processInstanceId = processInstanceId;
@@ -64,5 +81,10 @@ public class MockProcessEngineEvent implements ProcessEngineEvent {
     @Override
     public String getProcessInstanceId() {
         return processInstanceId;
+    }
+
+    @Override
+    public String getApplicationName() {
+        return applicationName;
     }
 }

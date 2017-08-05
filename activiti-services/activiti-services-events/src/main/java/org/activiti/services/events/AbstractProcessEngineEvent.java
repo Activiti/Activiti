@@ -20,6 +20,8 @@ package org.activiti.services.events;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
 
 public abstract class AbstractProcessEngineEvent implements ProcessEngineEvent {
+
+    private String applicationName;
     private String executionId;
     private String processDefinitionId;
     private String processInstanceId;
@@ -28,22 +30,32 @@ public abstract class AbstractProcessEngineEvent implements ProcessEngineEvent {
     public AbstractProcessEngineEvent() {
     }
 
-    public AbstractProcessEngineEvent(String executionId,
+    public AbstractProcessEngineEvent(String applicationName,
+                                      String executionId,
                                       String processDefinitionId,
                                       String processInstanceId) {
+        this.applicationName = applicationName;
         this.executionId = executionId;
         this.processDefinitionId = processDefinitionId;
         this.processInstanceId = processInstanceId;
         this.timestamp = System.currentTimeMillis();
     }
 
-    public AbstractProcessEngineEvent(String executionId,
+    public AbstractProcessEngineEvent(String applicationName,
+                                      String executionId,
                                       String processDefinitionId,
-                                      String processInstanceId, Long timestamp) {
+                                      String processInstanceId,
+                                      Long timestamp) {
+        this.applicationName = applicationName;
         this.executionId = executionId;
         this.processDefinitionId = processDefinitionId;
         this.processInstanceId = processInstanceId;
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public String getApplicationName() {
+        return applicationName;
     }
 
     @Override
@@ -65,7 +77,7 @@ public abstract class AbstractProcessEngineEvent implements ProcessEngineEvent {
     public abstract String getEventType();
 
     @Override
-    public Long getTimestamp(){
+    public Long getTimestamp() {
         return timestamp;
     }
 }
