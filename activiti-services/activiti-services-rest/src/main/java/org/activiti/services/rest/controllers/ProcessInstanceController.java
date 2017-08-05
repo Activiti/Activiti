@@ -61,6 +61,7 @@ public class ProcessInstanceController {
 
     private final ProcessInstanceResourceAssembler resourceAssembler;
 
+
     @Autowired
     public ProcessInstanceController(ProcessEngineWrapper processEngine,
                                      RepositoryService repositoryService,
@@ -81,6 +82,7 @@ public class ProcessInstanceController {
 
     @RequestMapping(method = RequestMethod.POST)
     public Resource<ProcessInstance> startProcess(@RequestBody StartProcessInstanceCmd cmd) {
+
         return resourceAssembler.toResource(processEngine.startProcess(cmd));
     }
 

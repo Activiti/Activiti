@@ -1,4 +1,4 @@
-package org.activiti.test.util;
+package org.activiti.starter.tests.util;
 
 import java.io.IOException;
 import java.io.InputStream;
