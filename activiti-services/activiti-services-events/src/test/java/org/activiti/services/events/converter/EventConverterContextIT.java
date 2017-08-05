@@ -20,8 +20,6 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
-import org.activiti.engine.delegate.event.impl.ActivitiEventImpl;
-import org.activiti.engine.delegate.event.impl.ActivitiProcessStartedEventImpl;
 import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,8 +31,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = EventConverterContextIT.SpringConfig.class)
@@ -87,8 +84,5 @@ public class EventConverterContextIT {
         assertThat(processEngineEvent.getApplicationName()).isNotEmpty();
         // this comes from the application.properties (test-application.properties) spring app name configuration
         assertThat(processEngineEvent.getApplicationName()).isEqualTo("test-app");
-
     }
-
-
 }
