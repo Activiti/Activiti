@@ -17,6 +17,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<docker.maven.plugin.version>0.21.0</docker.maven.plugin.version>
+		<directory.maven.plugin.version>0.1</directory.maven.plugin.version>
+		<junit.version>4.12</junit.version>
 	</properties>
 
 	<dependencies>
@@ -42,8 +45,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.keycloak</groupId>
-			<artifactId>keycloak-spring-boot-2-adapter</artifactId>
-			<version>3.2.0.CR1-SNAPSHOT</version>
+			<artifactId>keycloak-spring-boot-adapter</artifactId>
+			<version>3.2.1.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.keycloak</groupId>
@@ -71,10 +74,39 @@
 			<artifactId>activiti-spring-boot-starter-basic</artifactId>
 			<version>5.21.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.springtestdbunit/spring-test-dbunit -->
+		<dependency>
+			<groupId>com.github.springtestdbunit</groupId>
+			<artifactId>spring-test-dbunit</artifactId>
+			<version>1.3.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.dbunit</groupId>
+			<artifactId>dbunit</artifactId>
+			<version>2.5.0</version>
+			<scope>test</scope>
+		</dependency>
 
 	</dependencies>
-
 
 	<build>
 		<plugins>
@@ -82,8 +114,77 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.commonjava.maven.plugins</groupId>
+				<artifactId>directory-maven-plugin</artifactId>
+				<version>${directory.maven.plugin.version}</version>
+				<executions>
+					<execution>
+						<id>directories</id>
+						<goals>
+							<goal>highest-basedir</goal>
+						</goals>
+						<phase>initialize</phase>
+						<configuration>
+							<property>main.basedir</property>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>io.fabric8</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<version>${docker.maven.plugin.version}</version>
+				<configuration>
+					<images>
+						<image>
+							<name>testkeycloack</name>
+							<alias>testkeycloack</alias>
+							<build>
+								<cleanup>true</cleanup>
+								<tags>
+									<tag>latest</tag>
+								</tags>
+
+								<dockerFile>${main.basedir}/docker/Dockerfile</dockerFile>
+
+							</build>
+							<run>
+								<namingStrategy>none</namingStrategy>
+								<ports>
+									<port>8180:8080</port>
+									<port>9090:9090</port>
+								</ports>
+								<wait>
+									<http>
+										<url>http://localhost:8180/auth</url>
+									</http>
+									<time>30000</time>
+								</wait>
+							</run>
+						</image>
+					</images>
+				</configuration>
+				<executions>
+					<execution>
+						<id>start</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>start</goal>
+						</goals>
+					</execution>
+				 <execution>
+						<id>stop</id>
+						<phase>install</phase>
+						<goals>
+							<goal>stop</goal>
+						</goals>
+					</execution> 
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
+
 
 
 </project>

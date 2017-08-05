@@ -23,7 +23,6 @@ import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -84,6 +83,10 @@ public class KeycloakUtil {
         groupsIds.put(groupId, getCreatedId(response));
     }
 
+    public int getAllGroupsSize() {
+        return keycloak.realms().realm(realm).groups().groups().size();
+    }
+
     public String getGroupCreatedId(String groupName) {
         return groupsIds.get(groupName);
     }
@@ -134,6 +137,10 @@ public class KeycloakUtil {
 
     }
 
+    public UserResource getUser(String userId) {
+        return keycloak.realms().realm(realm).users().get(userId);
+    }
+
     private String getCreatedId(Response response) {
         URI location = response.getLocation();
         if (!response.getStatusInfo().equals(Response.Status.CREATED)) {
@@ -174,6 +181,21 @@ public class KeycloakUtil {
 
     public void starMigration() {
         runtimeService.startProcessInstanceByKey("migration");
+    }
+
+    public Keycloak getKeycloak() {
+        return keycloak;
+    }
+
+    public void setKeycloak(Keycloak keycloak) {
+        this.keycloak = keycloak;
+    }
+
+    public Response createUser(String username) {
+        UserRepresentation user = new UserRepresentation();
+        user.setUsername(username);
+        Response response = keycloak.realms().realm(realm).users().create(user);
+        return response;
     }
 
 }
