@@ -54,12 +54,8 @@ public class KeycloakFilterRoute extends ZuulFilter {
     private void addKeycloakTokenToHeader(RequestContext ctx) {
         RefreshableKeycloakSecurityContext securityContext = getRefreshableKeycloakSecurityContext(ctx);
         if (securityContext != null) {
-            System.out.println("KeycloakFilterRoute adding Authorization header");
             ctx.addZuulRequestHeader(AUTHORIZATION_HEADER, buildBearerToken(securityContext));
-            System.out.println("KeycloakFilterRoute added token");
-        } else{
-            System.out.println("KeycloakFilterRoute found securityContext is null");
-        }
+        } 
     }
 
     private RefreshableKeycloakSecurityContext getRefreshableKeycloakSecurityContext(RequestContext ctx) {
