@@ -248,6 +248,11 @@
         <artifactId>activiti-services-identity-keycloak</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-identity-basic</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- Spring Boot / Cloud / Stream dependencies -->
       <dependency>
