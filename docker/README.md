@@ -2,11 +2,13 @@
 
 ## Run Core Engine Services
 
-To run core engine services using docker just run the start.sh script. 
+To use keycloak docker the entry 127.0.0.1       activiti-keycloak will be needed in hosts file.
+
+To run core engine services (inc keycloak as IDM) using docker then run the start.sh script.
 
 ## Run a Sample Application
 
-See the example repository on how to run a sample application in which all the core services are used and the engine can be interacted with using REST.
+See the spring boot sample app in the example repository on how to run a sample application in which all the core services are used and the engine can be interacted with using REST.
 
 ## Integration Tests
 
@@ -28,4 +30,4 @@ The keycloak setup used by this example can be replicated by importing the provi
 
 To run using a standalone keycloak, download keycloak and run using the following from the keycloak bin directory - ./standalone.sh 
 
-Rabbitmq can also be run standalone. If this is done then the hostnames referring to 'activiti-keycloak' and 'rabbitmq' need to be replaced with localhost as those are docker names.
+Rabbitmq can also be run standalone. If this is done then the hostnames referring to 'activiti-keycloak' and 'rabbitmq' need to be replaced with localhost (or host file modified) as those are docker names.
