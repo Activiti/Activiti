@@ -35,7 +35,7 @@ import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessDefinitionMeta;
-import org.activiti.test.util.TestResourceUtil;
+import org.activiti.starter.tests.util.TestResourceUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

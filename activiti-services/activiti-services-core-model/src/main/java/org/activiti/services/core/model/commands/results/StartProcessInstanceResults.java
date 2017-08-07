@@ -4,12 +4,13 @@ import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.activiti.services.core.model.ProcessInstance;
 
 public class StartProcessInstanceResults implements CommandResults {
 
     private String id;
     private String commandId;
-    private String processInstanceId;
+    private ProcessInstance processInstance;
 
 
     public StartProcessInstanceResults() {
@@ -19,17 +20,17 @@ public class StartProcessInstanceResults implements CommandResults {
     @JsonCreator
     public StartProcessInstanceResults(@JsonProperty("id") String id,
                                        @JsonProperty("commandId") String commandId,
-                                       @JsonProperty("processInstanceId") String processInstanceId) {
+                                       @JsonProperty("processInstance") ProcessInstance processInstance) {
         this.id = id;
         this.commandId = commandId;
-        this.processInstanceId = processInstanceId;
+        this.processInstance = processInstance;
     }
 
     public StartProcessInstanceResults(String commandId,
-                                       String processInstanceId) {
+                                       ProcessInstance processInstance) {
         this();
         this.commandId = commandId;
-        this.processInstanceId = processInstanceId;
+        this.processInstance = processInstance;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class StartProcessInstanceResults implements CommandResults {
         return commandId;
     }
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
+    public ProcessInstance getProcessInstance() {
+        return processInstance;
     }
 }

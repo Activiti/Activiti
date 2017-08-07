@@ -32,7 +32,7 @@ public class StartProcessInstanceCmdExecutor implements CommandExecutor<StartPro
         ProcessInstance processInstance = processEngine.startProcess(cmd);
         if(processInstance != null) {
             StartProcessInstanceResults cmdResult = new StartProcessInstanceResults(cmd.getId(),
-                                                                                    processInstance.getId());
+                                                                                    processInstance);
             commandResults.send(MessageBuilder.withPayload(cmdResult).build());
         }else{
             throw new IllegalStateException("Failed to start processInstance");

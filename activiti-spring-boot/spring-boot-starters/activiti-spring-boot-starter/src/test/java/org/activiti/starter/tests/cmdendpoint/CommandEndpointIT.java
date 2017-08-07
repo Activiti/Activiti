@@ -124,8 +124,9 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         public void consumeResults(CommandResults results) {
             assertThat(results).isNotNull();
             if (results instanceof StartProcessInstanceResults) {
-                assertThat(((StartProcessInstanceResults) results).getProcessInstanceId()).isNotEmpty();
-                testProcessInstanceId = ((StartProcessInstanceResults) results).getProcessInstanceId();
+                assertThat(((StartProcessInstanceResults) results).getProcessInstance()).isNotNull();
+                assertThat(((StartProcessInstanceResults) results).getProcessInstance().getId()).isNotEmpty();
+                testProcessInstanceId = ((StartProcessInstanceResults) results).getProcessInstance().getId();
                 startedProcessInstanceAck.set(true);
             } else if (results instanceof SuspendProcessInstanceResults) {
                 suspendedProcessInstanceAck.set(true);
