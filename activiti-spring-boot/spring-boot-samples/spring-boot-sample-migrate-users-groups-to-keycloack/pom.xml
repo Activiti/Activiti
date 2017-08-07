@@ -3,15 +3,26 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>spring-boot-sample-migrate-users-groups-to-keycloack</artifactId>
-	<packaging>jar</packaging>
+
 
 	<name>spring-boot-sample-migrate-users-groups-to-keycloack</name>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.6.RELEASE</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<groupId>org.activiti</groupId>
+		<artifactId>activiti-spring-boot-samples</artifactId>
+		<version>7-201708-EA-SNAPSHOT</version>
 	</parent>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-parent</artifactId>
+				<version>1.5.6.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,42 +37,31 @@
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-admin-client</artifactId>
-			<version>3.2.0.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-core</artifactId>
-			<version>3.2.0.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-adapter-core</artifactId>
-			<version>3.2.0.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-spring-security-adapter</artifactId>
-			<version>3.2.0.Final</version>
 		</dependency>
-		<dependency>
-			<groupId>org.keycloak</groupId>
-			<artifactId>keycloak-spring-boot-adapter</artifactId>
-			<version>3.2.1.Final</version>
-		</dependency>
+		
 		<dependency>
 			<groupId>org.keycloak</groupId>
 			<artifactId>keycloak-jetty94-adapter</artifactId>
-			<version>3.2.0.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-client</artifactId>
-			<version>3.0.21.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jackson2-provider</artifactId>
-			<version>3.0.21.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -75,8 +75,43 @@
 			<version>5.21.0</version>
 		</dependency>
 		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-engine</artifactId>
+			<version>5.21.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-bpmn-converter</artifactId>
+			<version>5.21.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-bpmn-model</artifactId>
+			<version>5.21.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-image-generator</artifactId>
+			<version>5.21.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-process-validation</artifactId>
+			<version>5.21.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.activiti</groupId>
+			<artifactId>activiti-spring</artifactId>
+			<version>5.21.0</version>
+		</dependency>
+		
+		
+
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+			<version>1.5.6.RELEASE</version>
 		</dependency>
 
 		<dependency>
@@ -88,7 +123,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.github.springtestdbunit/spring-test-dbunit -->
@@ -117,7 +151,6 @@
 			<plugin>
 				<groupId>org.commonjava.maven.plugins</groupId>
 				<artifactId>directory-maven-plugin</artifactId>
-				<version>${directory.maven.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>directories</id>
@@ -134,20 +167,17 @@
 			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
-				<version>${docker.maven.plugin.version}</version>
 				<configuration>
 					<images>
 						<image>
-							<name>testkeycloack</name>
-							<alias>testkeycloack</alias>
+							<name>activiti-keycloak</name>
+							<alias>keycloak</alias>
 							<build>
-								<cleanup>true</cleanup>
-								<tags>
-									<tag>latest</tag>
-								</tags>
-
 								<dockerFile>${main.basedir}/docker/Dockerfile</dockerFile>
-
+								<cleanup>remove</cleanup>
+								<nocache>false</nocache>
+								<compression>gzip</compression>
+								<skip>false</skip>
 							</build>
 							<run>
 								<namingStrategy>none</namingStrategy>
@@ -156,10 +186,8 @@
 									<port>9090:9090</port>
 								</ports>
 								<wait>
-									<http>
-										<url>http://localhost:8180/auth</url>
-									</http>
-									<time>30000</time>
+									<log>Keycloak .* started in</log>
+									<time>40000</time>
 								</wait>
 							</run>
 						</image>
@@ -170,21 +198,21 @@
 						<id>start</id>
 						<phase>process-test-classes</phase>
 						<goals>
+							<goal>build</goal>
 							<goal>start</goal>
 						</goals>
 					</execution>
-				 <execution>
+					<execution>
 						<id>stop</id>
 						<phase>install</phase>
 						<goals>
 							<goal>stop</goal>
 						</goals>
-					</execution> 
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
 	</build>
-
 
 
 </project>

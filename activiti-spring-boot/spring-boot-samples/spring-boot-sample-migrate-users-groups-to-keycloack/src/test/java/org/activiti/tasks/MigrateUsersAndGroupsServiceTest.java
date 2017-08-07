@@ -54,6 +54,8 @@ public class MigrateUsersAndGroupsServiceTest {
         Response response = keycloakUtil.createUser("developer");
         assertThat(409,is(response.getStatus()));
         response.close();
+        
+        assertThat(7,is(keycloakUtil.getAllGroupsSize()));
 
     }
 
