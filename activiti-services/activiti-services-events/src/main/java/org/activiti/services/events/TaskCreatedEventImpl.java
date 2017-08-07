@@ -26,11 +26,13 @@ public class TaskCreatedEventImpl extends AbstractProcessEngineEvent implements 
     public TaskCreatedEventImpl() {
     }
 
-    public TaskCreatedEventImpl(String executionId,
+    public TaskCreatedEventImpl(String applicationName,
+                                String executionId,
                                 String processDefinitionId,
                                 String processInstanceId,
                                 Task task) {
-        super(executionId,
+        super(applicationName,
+              executionId,
               processDefinitionId,
               processInstanceId);
         this.task = task;

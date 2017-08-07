@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 import static org.activiti.engine.delegate.event.ActivitiEventType.TASK_COMPLETED;
 
 @Component
-public class TaskCompletedEventConverter implements EventConverter {
+public class TaskCompletedEventConverter extends AbstractEventConverter {
 
     private final TaskConverter taskConverter;
 
@@ -40,7 +40,8 @@ public class TaskCompletedEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        return new TaskCompletedEventImpl(event.getExecutionId(),
+        return new TaskCompletedEventImpl(getApplicationName(),
+                                          event.getExecutionId(),
                                           event.getProcessDefinitionId(),
                                           event.getProcessInstanceId(),
                                           taskConverter.from((Task) ((ActivitiEntityEventImpl) event).getEntity()));
