@@ -20,6 +20,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import org.activiti.services.core.model.TaskVariables;
+import org.activiti.services.core.model.TaskVariables.TaskVariableScope;
 import org.activiti.services.rest.controllers.HomeController;
 import org.activiti.services.rest.controllers.TaskController;
 import org.activiti.services.rest.controllers.TaskVariableController;
@@ -38,7 +39,12 @@ public class TaskVariableResourceAssembler extends ResourceAssemblerSupport<Task
 
     @Override
     public VariablesResource toResource(TaskVariables taskVariables) {
-        Link selfRel = linkTo(methodOn(TaskVariableController.class).getVariables(taskVariables.getTaskId())).withSelfRel();
+        Link selfRel;
+        if (TaskVariableScope.GLOBAL.equals(taskVariables.getScope())) {
+            selfRel = linkTo(methodOn(TaskVariableController.class).getVariables(taskVariables.getTaskId())).withSelfRel();
+        } else {
+            selfRel = linkTo(methodOn(TaskVariableController.class).getVariablesLocal(taskVariables.getTaskId())).withSelfRel();
+        }
         Link taskRel = linkTo(methodOn(TaskController.class).getTaskById(taskVariables.getTaskId())).withRel("task");
         Link homeLink = linkTo(HomeController.class).withRel("home");
         return new VariablesResource(taskVariables.getVariables(),

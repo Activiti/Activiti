@@ -20,6 +20,7 @@ import java.util.Map;
 import org.activiti.engine.TaskService;
 import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.core.model.TaskVariables;
+import org.activiti.services.core.model.TaskVariables.TaskVariableScope;
 import org.activiti.services.core.model.commands.SetTaskVariablesCmd;
 import org.activiti.services.rest.resources.assembler.TaskVariableResourceAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,14 +58,14 @@ public class TaskVariableController {
             method = RequestMethod.GET)
     public Resource<Map<String, Object>> getVariables(@PathVariable String taskId) {
         Map<String, Object> variables = taskService.getVariables(taskId);
-        return variableResourceBuilder.toResource(new TaskVariables(taskId, variables));
+        return variableResourceBuilder.toResource(new TaskVariables(taskId, variables, TaskVariableScope.GLOBAL));
     }
 
     @RequestMapping(value = "/variables-local",
             method = RequestMethod.GET)
     public Resource<Map<String, Object>> getVariablesLocal(@PathVariable String taskId) {
         Map<String, Object> variables = taskService.getVariablesLocal(taskId);
-        return variableResourceBuilder.toResource(new TaskVariables(taskId, variables));
+        return variableResourceBuilder.toResource(new TaskVariables(taskId, variables, TaskVariableScope.LOCAL));
     }
 
     @RequestMapping(value = "/variables",

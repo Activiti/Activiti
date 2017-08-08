@@ -25,14 +25,22 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class TaskVariables {
 
+    public enum TaskVariableScope {
+        LOCAL, GLOBAL
+    }
+
     private String taskId;
 
     private Map<String, Object> variables;
 
+    private TaskVariableScope scope;
+
     public TaskVariables(String taskId,
-                         Map<String, Object> variables) {
+                         Map<String, Object> variables,
+                         TaskVariableScope scope) {
         this.taskId = taskId;
         this.variables = variables;
+        this.scope = scope;
     }
 
     public Map<String, Object> getVariables() {
@@ -41,5 +49,9 @@ public class TaskVariables {
 
     public String getTaskId() {
         return taskId;
+    }
+
+    public TaskVariableScope getScope() {
+        return scope;
     }
 }
