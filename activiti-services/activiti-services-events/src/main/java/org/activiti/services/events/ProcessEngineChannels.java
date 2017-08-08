@@ -9,15 +9,15 @@ public interface ProcessEngineChannels {
 
     String COMMAND_CONSUMER = "commandConsumer";
 
+    String COMMAND_RESULTS = "commandResults";
+
+    String AUDIT_PRODUCER = "auditProducer";
+
     @Input(COMMAND_CONSUMER)
     SubscribableChannel commandConsumer();
 
-    String COMMAND_RESULTS = "commandResults";
-
     @Output(COMMAND_RESULTS)
     MessageChannel commandResults();
-    
-    String AUDIT_PRODUCER = "auditProducer";
 
     @Output(AUDIT_PRODUCER)
     MessageChannel auditProducer();

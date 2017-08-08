@@ -20,6 +20,7 @@ import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.core.model.commands.ActivateProcessInstanceCmd;
 import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
 import org.activiti.services.rest.controllers.ProcessInstanceController;
+import org.activiti.services.rest.controllers.ProcessInstanceControllerImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -28,10 +29,10 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class ProcessInstanceControllerTest {
+public class ProcessInstanceControllerImplTest {
 
     @InjectMocks
-    private ProcessInstanceController controller;
+    private ProcessInstanceControllerImpl controller;
 
     @Mock
     private ProcessEngineWrapper processEngineWrapper;

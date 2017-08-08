@@ -18,8 +18,8 @@ package org.activiti.services.rest.resources.assembler;
 import org.activiti.services.core.model.ProcessInstanceVariables;
 import org.activiti.services.rest.resources.VariablesResource;
 import org.activiti.services.rest.controllers.HomeController;
-import org.activiti.services.rest.controllers.ProcessInstanceController;
-import org.activiti.services.rest.controllers.ProcessInstanceVariableController;
+import org.activiti.services.rest.controllers.ProcessInstanceControllerImpl;
+import org.activiti.services.rest.controllers.ProcessInstanceVariableControllerImpl;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -31,14 +31,14 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 public class ProcessVariableResourceAssembler extends ResourceAssemblerSupport<ProcessInstanceVariables, VariablesResource> {
 
     public ProcessVariableResourceAssembler() {
-        super(ProcessInstanceVariableController.class,
+        super(ProcessInstanceVariableControllerImpl.class,
               VariablesResource.class);
     }
 
     @Override
     public VariablesResource toResource(ProcessInstanceVariables processInstanceVariables) {
-        Link selfRel = linkTo(methodOn(ProcessInstanceVariableController.class).getVariables(processInstanceVariables.getProcessInstanceId())).withSelfRel();
-        Link processInstanceRel = linkTo(methodOn(ProcessInstanceController.class).getProcessInstanceById(processInstanceVariables.getProcessInstanceId())).withRel("processInstance");
+        Link selfRel = linkTo(methodOn(ProcessInstanceVariableControllerImpl.class).getVariables(processInstanceVariables.getProcessInstanceId())).withSelfRel();
+        Link processInstanceRel = linkTo(methodOn(ProcessInstanceControllerImpl.class).getProcessInstanceById(processInstanceVariables.getProcessInstanceId())).withRel("processInstance");
         Link homeLink = linkTo(HomeController.class).withRel("home");
         return new VariablesResource(processInstanceVariables.getVariables(),
                                      selfRel,

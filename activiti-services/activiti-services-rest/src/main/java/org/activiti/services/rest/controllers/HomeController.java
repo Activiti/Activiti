@@ -30,9 +30,9 @@ public class HomeController {
     @RequestMapping(method = RequestMethod.GET)
     public Resource getHomeInfo() {
         Resource resource = new Resource(new HomeResource(),
-                                         linkTo(ProcessDefinitionController.class).withRel("process-definitions"),
-                                         linkTo(ProcessInstanceController.class).withRel("process-instances"),
-                                         linkTo(TaskController.class).withRel("tasks"));
+                                         linkTo(ProcessDefinitionControllerImpl.class).withRel("process-definitions"),
+                                         linkTo(ProcessInstanceControllerImpl.class).withRel("process-instances"),
+                                         linkTo(TaskControllerImpl.class).withRel("tasks"));
 
         return resource;
     }

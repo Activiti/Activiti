@@ -18,8 +18,8 @@ package org.activiti.services.rest.resources.assembler;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.rest.resources.ProcessDefinitionResource;
 import org.activiti.services.rest.controllers.HomeController;
-import org.activiti.services.rest.controllers.ProcessDefinitionController;
-import org.activiti.services.rest.controllers.ProcessInstanceController;
+import org.activiti.services.rest.controllers.ProcessDefinitionControllerImpl;
+import org.activiti.services.rest.controllers.ProcessInstanceControllerImpl;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -31,14 +31,14 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 public class ProcessDefinitionResourceAssembler extends ResourceAssemblerSupport<ProcessDefinition, ProcessDefinitionResource> {
 
     public ProcessDefinitionResourceAssembler() {
-        super(ProcessDefinitionController.class,
+        super(ProcessDefinitionControllerImpl.class,
               ProcessDefinitionResource.class);
     }
 
     @Override
     public ProcessDefinitionResource toResource(ProcessDefinition processDefinition) {
-        Link selfRel = linkTo(methodOn(ProcessDefinitionController.class).getProcessDefinition(processDefinition.getId())).withSelfRel();
-        Link startProcessLink = linkTo(methodOn(ProcessInstanceController.class).startProcess(null)).withRel("startProcess");
+        Link selfRel = linkTo(methodOn(ProcessDefinitionControllerImpl.class).getProcessDefinition(processDefinition.getId())).withSelfRel();
+        Link startProcessLink = linkTo(methodOn(ProcessInstanceControllerImpl.class).startProcess(null)).withRel("startProcess");
         Link homeLink = linkTo(HomeController.class).withRel("home");
         return new ProcessDefinitionResource(processDefinition,
                                              selfRel,
