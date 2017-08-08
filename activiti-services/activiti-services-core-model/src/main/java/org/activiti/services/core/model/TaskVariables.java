@@ -29,9 +29,9 @@ public class TaskVariables {
 
     private Map<String, Object> variables;
 
-    public TaskVariables(String processInstanceId,
+    public TaskVariables(String taskId,
                          Map<String, Object> variables) {
-        taskId = processInstanceId;
+        this.taskId = taskId;
         this.variables = variables;
     }
 
