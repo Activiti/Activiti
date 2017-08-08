@@ -31,6 +31,16 @@ services:
       - activiti-keycloak:activiti-keycloak
       - rabbitmq:rabbitmq
       - activiti-services-registry:activiti-services-registry
+    depends_on:
+      - mypostgres
+  mypostgres:
+      image: postgres
+      ports:
+       - "5432:5432"
+      environment:
+       - POSTGRES_PASSWORD=password
+       - POSTGRES_USER=postgres
+       - POSTGRES_DB=mydb
   #elasticsearch:
   #  image: docker.elastic.co/elasticsearch/elasticsearch:5.4.1
   #  ports:
