@@ -57,7 +57,7 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
     private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
 
     @Autowired
-    TaskRestTemplate taskKeycloakRestTemplate;
+    private TaskRestTemplate taskRestTemplate;
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
@@ -91,10 +91,10 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
         Map<String, Object> taskVariables = new HashMap<>();
         taskVariables.put("var2",
                           "test2");
-        taskKeycloakRestTemplate.setVariablesLocal(taskId, taskVariables, accessToken);
+        taskRestTemplate.setVariablesLocal(taskId, taskVariables, accessToken);
 
         //when
-        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = taskKeycloakRestTemplate.getVariablesLocal(taskId,
+        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = taskRestTemplate.getVariablesLocal(taskId,
                                                                                                                      accessToken);
 
         //then
@@ -105,7 +105,7 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
                                                             .doesNotContainKey("var1");
 
         // when
-        variablesResponse = taskKeycloakRestTemplate.getVariables(taskId, accessToken);
+        variablesResponse = taskRestTemplate.getVariables(taskId, accessToken);
 
         // then
         assertThat(variablesResponse).isNotNull();
@@ -121,10 +121,10 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
                           "test2-update");
         taskVariables.put("var3",
                           "test3");
-        taskKeycloakRestTemplate.setVariables(taskId, taskVariables, accessToken);
+        taskRestTemplate.setVariables(taskId, taskVariables, accessToken);
 
         // when
-        variablesResponse = taskKeycloakRestTemplate.getVariables(taskId, accessToken);
+        variablesResponse = taskRestTemplate.getVariables(taskId, accessToken);
 
         // then
         assertThat(variablesResponse).isNotNull();
@@ -137,7 +137,7 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
                                                                            "test3");
 
         // when
-        variablesResponse = taskKeycloakRestTemplate.getVariablesLocal(taskId, accessToken);
+        variablesResponse = taskRestTemplate.getVariablesLocal(taskId, accessToken);
 
         // then
         assertThat(variablesResponse).isNotNull();
