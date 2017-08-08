@@ -19,7 +19,6 @@ package org.activiti.starter.tests.services;
 import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.core.model.commands.ActivateProcessInstanceCmd;
 import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
-import org.activiti.services.rest.controllers.ProcessInstanceController;
 import org.activiti.services.rest.controllers.ProcessInstanceControllerImpl;
 import org.junit.Before;
 import org.junit.Test;

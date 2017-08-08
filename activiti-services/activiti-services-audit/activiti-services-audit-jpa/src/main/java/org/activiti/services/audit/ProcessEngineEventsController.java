@@ -56,7 +56,7 @@ public class ProcessEngineEventsController {
     public EventResource findById(@PathVariable long eventId) {
         Optional<ProcessEngineEventEntity> findResult = eventsRepository.findById(eventId);
         if (!findResult.isPresent()) {
-            throw new ActivitiException("Unable to find event for the given id:'" + eventId + "'");
+            throw new ActivitiException("Unable to find events for the given id:'" + eventId + "'");
         }
         return eventResourceAssembler.toResource(findResult.get());
     }

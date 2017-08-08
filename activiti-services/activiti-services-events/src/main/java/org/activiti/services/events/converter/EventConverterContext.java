@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.services.core.model.converter.ProcessInstanceConverter;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.events.ProcessCompletedEventImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

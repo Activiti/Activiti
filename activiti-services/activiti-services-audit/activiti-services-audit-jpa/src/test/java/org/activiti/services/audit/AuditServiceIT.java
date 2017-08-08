@@ -23,7 +23,7 @@ import java.util.List;
 import org.activiti.services.audit.events.ActivityStartedEventEntity;
 import org.activiti.services.audit.events.ActivityStartedEventEntityAssert;
 import org.activiti.services.audit.events.ProcessEngineEventEntity;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -17,17 +17,17 @@
 
 package org.activiti.services.events;
 
-import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 
 public interface ActivityCompensateEvent extends ProcessEngineEvent {
 
     /**
-     * @return the id of the activity this event is related to. This corresponds to an id defined in the process definition.
+     * @return the id of the activity this events is related to. This corresponds to an id defined in the process definition.
      */
     String getActivityId();
 
     /**
-     * @return the name of the activity this event is related to.
+     * @return the name of the activity this events is related to.
      */
     String getActivityName();
 

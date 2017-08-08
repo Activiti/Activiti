@@ -14,8 +14,7 @@
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-services-core-model</artifactId>
-      <version>${project.version}</version>
+      <artifactId>activiti-services-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>

@@ -1,24 +1,16 @@
 package org.activiti.services.core.model.commands;
 
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ActivateProcessInstanceCmd implements Command {
+public class ActivateProcessInstanceCmd extends AbstractCommand {
 
-    private final String id;
     private String processInstanceId;
 
-    public ActivateProcessInstanceCmd() {
-        this.id = UUID.randomUUID().toString();
-    }
-
-    public ActivateProcessInstanceCmd(String processInstanceId) {
-        this();
+    @JsonCreator
+    public ActivateProcessInstanceCmd(@JsonProperty("processInstanceId") String processInstanceId) {
+        super();
         this.processInstanceId = processInstanceId;
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     public String getProcessInstanceId() {
