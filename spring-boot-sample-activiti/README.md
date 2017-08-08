@@ -4,17 +4,20 @@ This sample program demonstrates the use of a HAL REST API for the Activiti BPM 
 
 The REST endpoints are also secured using keycloak as an identity provider.
 
-## Pre-requisites
-
-Check out the equivalent branch of the main Activiti project and run mvn clean install -DskipTests
-
 ## Quickstart
 
-1) Add this entry to your hosts file - 127.0.0.1       activiti-keycloak
-2) Run start.sh or start.bat from this directory
-3) Go to http://localhost:8090/v1/process-instances
-4) To reach the endpoint you'll need to enter testuser/password at the keycloak prompt
-5) To create process instances you'll need to use the postman collection
+1) Check out the equivalent branch of the main Activiti project and run mvn clean install -DskipTests
+2) Add this entry to your hosts file - 127.0.0.1       activiti-keycloak
+3) Run start.sh or start.bat from this directory
+4) Go to http://localhost:8080/my-activiti-app/v1/process-instances in browser or postman. If using postman collection hit keycloak token endpoint (on host activiti-keycloak) first.
+5) For browser to reach the endpoint you'll need to enter testuser/password at the keycloak prompt
+6) To create process instances you'll need to use the postman collection
+
+## Gateway and Service Registration
+
+The project uses spring cloud to provide a gateway and service registration.
+
+To see registered services, go to the registry service (by default on http://localhost:8761/). To see gateway routes to services, go to the gateway routes endpoint (should be configured as 8080/application/routes in the Activiti project).
 
 ## Alternative Setups
 
