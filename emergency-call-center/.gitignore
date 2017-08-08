@@ -1,5 +1,6 @@
 /target
 /local
+/bin
 
 # Eclipse, Netbeans and IntelliJ files
 /.*

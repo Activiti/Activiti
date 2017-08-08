@@ -93,20 +93,20 @@ Before running the application, please check the assumptions listed below.
 <a name="installing"></a>
 # Installing the Emergency Call Center and Departments App
 
-Into the `build` folder you can find all the requested libraries, configuration files and Activiti App packages (in ZIP format).
-Starting from a standard Activiti installation, with `activiti-app` and `activiti-rest` up and running, follow the tasks below to install the Emergency Call Center.
+If you did not build the solution, the first task is to follow the [compiling instructions](#compiling) before continuing.
+Once done, starting from a standard Activiti installation with `activiti-app` and `activiti-rest` up and running, follow the tasks below to install the Emergency Call Center example.
 
 * Stop Activiti Tomcat (or Application Server).
 
-* Copy the `emergency-call-center-1.0.jar` file into the `<ativiti-app>/WEB-INF/lib` folder.
+* Copy the `emergency-call-center-process-<version>.jar` file from `./emergency-call-center-process/target` into `<ativiti-app>/WEB-INF/lib`.
 
-* Copy the `emergencyCallCenter.properties` file into a folder of the classpath (for example the `<tomcat>/lib`).
+* Copy the `./script/emergencyCallCenter.properties` file into a folder of the classpath (for example the `<tomcat>/lib`).
 
-* From a terminal, move on the build folder and execute `./run_departments.sh`.
+* From a terminal, move on the `script` folder and execute `./run_departments.sh`.
 
 * Start Activiti again.
 
-* Access to the the `Kickstart App` | `App` and click on `Import App`. A modal window will ask you to point on a ZIP file containing the App package to import. Select the `Emergency Call Center.zip` from the `build` folder.
+* Access to the the `Kickstart App` | `App` and click on `Import App`. A modal window will ask you to point on a ZIP file containing the App package to import. Select the `Emergency Call Center.zip` from the `./emergency-call-center-process/app` folder.
 
 * Once in the Emergency Call Center and Departments App, don't forget to click on the `Publish` button to make it available.
 
@@ -121,14 +121,11 @@ Then start a new `Emergency Call Center` process and follow the tasks.
 <a name="compiling"></a>
 # Building the source code
 
-The source code of the project is available in this folder, more precisely in two subfolders: `emergency-call-center` implementing the Activiti process and `emergency-department` implementing the generic service for a Department, running on a Apache Tomcat instance.
+The source code of the project is available in this folder, more precisely in two subfolders: `emergency-call-center-process` implementing the Activiti process and `emergency-department` implementing the generic service for a Department, running on a Apache Tomcat instance.
 
-To compile the `emergency-call-center` project, clone the project into your environment, open a terminal and move into the `emergency-call-center` sub-folder.
-Then execute `mvn clean compile` and `mvn package`.
-If you will see the `BUILD SUCCESS` message, move to the `target` forget and there you can find the `emergency-call-center-1.0.jar` file.
-
-To compile the `emergency-department` project, clone the project into your environment, open a terminal and move into the `emergency-department` sub-folder.
-Then execute the `package.sh` script, move to the `target` forget and there you can find the `emergency-department-1.0-SNAPSHOT.jar` file.
+To compile and build the two projects, clone this repository into your environment, open a terminal and move into the `emergency-call-center` sub-folder.
+Then execute `mvn clean package`.
+If you will see the `BUILD SUCCESS` message, follow the [installing instructions](#installing) to install the example.
 
 <a name="screenshots"></a>
 # Screenshots
