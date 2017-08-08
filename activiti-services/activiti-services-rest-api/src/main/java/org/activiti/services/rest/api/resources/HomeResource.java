@@ -4,10 +4,7 @@ import org.springframework.hateoas.ResourceSupport;
 
 public class HomeResource extends ResourceSupport {
 
-    private String welcome = "Welcome to an instance of the Activiti Process Engine";
-
-    public HomeResource() {
-    }
+    private final String welcome = "Welcome to an instance of the Activiti Process Engine";
 
     public String getWelcome() {
         return welcome;

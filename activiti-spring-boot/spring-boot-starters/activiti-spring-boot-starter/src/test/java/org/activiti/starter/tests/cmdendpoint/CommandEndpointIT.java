@@ -36,7 +36,6 @@ import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
 import org.activiti.services.core.model.commands.results.AbstractCommandResults;
 import org.activiti.services.core.model.commands.results.ActivateProcessInstanceResults;
 import org.activiti.services.core.model.commands.results.ClaimTaskResults;
-import org.activiti.services.api.commands.results.CommandResults;
 import org.activiti.services.core.model.commands.results.CompleteTaskResults;
 import org.activiti.services.core.model.commands.results.ReleaseTaskResults;
 import org.activiti.services.core.model.commands.results.StartProcessInstanceResults;

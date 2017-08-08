@@ -21,7 +21,6 @@ import org.activiti.services.rest.api.ProcessInstanceController;
 import org.activiti.services.rest.api.ProcessInstanceVariableController;
 import org.activiti.services.rest.api.resources.ProcessInstanceResource;
 import org.springframework.hateoas.Link;
-import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
 
@@ -41,8 +40,8 @@ public class ProcessInstanceResourceAssembler extends ResourceAssemblerSupport<P
         Link processInstancesRel = linkTo(methodOn(ProcessInstanceController.class).getProcessInstances(null,
                                                                                                         null))
                 .withRel("processInstances");
-        Link selfLink = ControllerLinkBuilder.linkTo(methodOn(ProcessInstanceController.class).getProcessInstanceById(processInstance.getId())).withSelfRel();
-        Link variablesLink = ControllerLinkBuilder.linkTo(methodOn(ProcessInstanceVariableController.class).getVariables(processInstance.getId())).withRel("variables");
+        Link selfLink = linkTo(methodOn(ProcessInstanceController.class).getProcessInstanceById(processInstance.getId())).withSelfRel();
+        Link variablesLink = linkTo(methodOn(ProcessInstanceVariableController.class).getVariables(processInstance.getId())).withRel("variables");
         Link homeLink = linkTo(HomeController.class).withRel("home");
         return new ProcessInstanceResource(processInstance,
                                            selfLink,

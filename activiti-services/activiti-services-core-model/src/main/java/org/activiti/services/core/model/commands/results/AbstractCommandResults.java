@@ -3,7 +3,6 @@ package org.activiti.services.core.model.commands.results;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.activiti.services.api.commands.results.CommandResults;
 
 @JsonSubTypes(

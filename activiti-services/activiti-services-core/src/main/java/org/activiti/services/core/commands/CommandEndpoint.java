@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.activiti.services.api.commands.Command;
 import org.activiti.services.core.model.commands.AbstractCommand;
 import org.activiti.services.events.ProcessEngineChannels;
 import org.slf4j.Logger;
