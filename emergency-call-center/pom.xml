@@ -9,9 +9,14 @@
   </parent>
 
   <artifactId>emergency-call-center</artifactId>
-  <description>This is an example of Activiti process to be deployed in a microservices environemnt.</description>
+  <description>This is an example of Activiti process to be deployed in a microservices environment.</description>
   <packaging>pom</packaging>
   <name>Emergency Call Center</name>
   <url>http://www.activiti.org</url>
+
+  <modules>
+    <module>emergency-call-center</module>
+    <module>emergency-department</module>
+  </modules>
 
 </project>
