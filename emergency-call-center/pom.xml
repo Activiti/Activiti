@@ -15,7 +15,7 @@
   <url>http://www.activiti.org</url>
 
   <modules>
-    <module>emergency-call-center</module>
+    <module>emergency-call-center-process</module>
     <module>emergency-department</module>
   </modules>
 
