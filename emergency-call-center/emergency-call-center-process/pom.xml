@@ -2,9 +2,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>emergency-call-center</artifactId>
+  <artifactId>emergency-call-center-process</artifactId>
   <packaging>jar</packaging>
-  <name>Emergency Call Center</name>
+  <name>Emergency Call Center process</name>
 
   <dependencies>
     <dependency>
@@ -20,8 +20,7 @@
     <dependency>
     	<groupId>org.activiti</groupId>
     	<artifactId>activiti-bpmn-converter</artifactId>
-    	<version>6.0.0</version>
-    </dependency>
+    	</dependency>
     <dependency>
     	<groupId>org.activiti</groupId>
     	<artifactId>activiti-image-generator</artifactId>
