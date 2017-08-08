@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+	<!--Define role -->
+	<ACT_ID_GROUP ID_="visitor" NAME_="visitor" />
+	<ACT_ID_GROUP ID_="developer" NAME_="developer" />
+	<ACT_ID_GROUP ID_="tester" NAME_="tester" />
+	<ACT_ID_GROUP ID_="designer" NAME_="designer" />
+	<ACT_ID_GROUP ID_="manager" NAME_="manager" />
+
+
+	<ACT_ID_USER ID_="visitor" EMAIL_="visitor@testing.co" FIRST_="visitor"
+		LAST_="visitor" PWD_="123456" />
+	<ACT_ID_MEMBERSHIP USER_ID_="visitor" GROUP_ID_="visitor" />
+
+
+	<ACT_ID_USER ID_="developer" EMAIL_="developer@testing.co"
+		FIRST_="developer" LAST_="developer" PWD_="123456" />
+	<ACT_ID_MEMBERSHIP USER_ID_="developer" GROUP_ID_="developer" />
+
+
+	<ACT_ID_USER ID_="tester" EMAIL_="tester@testing.co"
+		FIRST_="tester" LAST_="tester" PWD_="123456" />
+	<ACT_ID_MEMBERSHIP USER_ID_="tester" GROUP_ID_="tester" />
+
+	<ACT_ID_USER ID_="designer" EMAIL_="designer@testing.co" FIRST_="designer"
+		LAST_="designer" PWD_="123456" />
+	<ACT_ID_MEMBERSHIP USER_ID_="designer" GROUP_ID_="designer" />
+
+	<ACT_ID_USER ID_="manager" EMAIL_="manager@testing.co"
+		FIRST_="manager" LAST_="manager" PWD_="123456" />
+	<ACT_ID_MEMBERSHIP USER_ID_="manager" GROUP_ID_="manager" />
+
+
+</dataset>
