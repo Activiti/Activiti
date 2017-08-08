@@ -2,49 +2,50 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.activiti</groupId>
   <artifactId>emergency-call-center</artifactId>
   <packaging>jar</packaging>
-  <version>1.0</version>
   <name>Emergency Call Center</name>
-  <url>http://www.activiti.org</url>
 
   <dependencies>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-engine</artifactId>
-      <version>6.0.0</version>
-    </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-dmn-engine</artifactId>
       <version>6.0.0</version>
     </dependency>
     <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-spring</artifactId>
-      <version>6.0.0</version>
+    	<groupId>org.activiti</groupId>
+    	<artifactId>activiti-engine</artifactId>
+    	<version>6.0.0</version>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.21</version>
+    	<groupId>org.activiti</groupId>
+    	<artifactId>activiti-bpmn-converter</artifactId>
+    	<version>6.0.0</version>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.21</version>
+    	<groupId>org.activiti</groupId>
+    	<artifactId>activiti-image-generator</artifactId>
+    	<version>6.0.0</version>
     </dependency>
     <dependency>
-      <groupId>com.h2database</groupId>
-      <artifactId>h2</artifactId>
-      <version>1.4.193</version>
+    	<groupId>org.activiti</groupId>
+    	<artifactId>activiti-process-validation</artifactId>
+    	<version>6.0.0</version>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
+    	<groupId>org.activiti</groupId>
+    	<artifactId>activiti-bpmn-model</artifactId>
+    	<version>6.0.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>junit</groupId>
+    	<artifactId>junit</artifactId>
+    	<scope>test</scope>
+    	</dependency>
+    <dependency>
+    	<groupId>com.h2database</groupId>
+    	<artifactId>h2</artifactId>
+    	<scope>runtime</scope>
     </dependency>
   </dependencies>
 
@@ -82,5 +83,9 @@
     </plugins>
   </build>
 
-  <description>This is an example of Activiti process to be deployed in a microservices environemnt.</description>
+  <parent>
+  	<groupId>org.activiti</groupId>
+  	<artifactId>emergency-call-center</artifactId>
+  	<version>7-201708-EA-SNAPSHOT</version>
+  </parent>
 </project>
