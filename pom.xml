@@ -1084,6 +1084,13 @@
           <groupId>org.assertj</groupId>
           <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
           <version>${assertions-generator-plugin.version}</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+              </dependency>
+          </dependencies>
         </plugin>
       </plugins>
     </pluginManagement>
