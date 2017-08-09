@@ -13,6 +13,7 @@ import org.activiti.services.core.model.commands.ActivateProcessInstanceCmd;
 import org.activiti.services.core.model.commands.ClaimTaskCmd;
 import org.activiti.services.core.model.commands.CompleteTaskCmd;
 import org.activiti.services.core.model.commands.ReleaseTaskCmd;
+import org.activiti.services.core.model.commands.SetTaskVariablesCmd;
 import org.activiti.services.core.model.commands.SignalProcessInstancesCmd;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
@@ -114,5 +115,13 @@ public class ProcessEngineWrapper {
         }
         taskService.complete(completeTaskCmd.getTaskId(),
                              outputVariables);
+    }
+
+    public void setTaskVariables(SetTaskVariablesCmd setTaskVariablesCmd) {
+        taskService.setVariables(setTaskVariablesCmd.getTaskId(), setTaskVariablesCmd.getVariables());
+    }
+
+    public void setTaskVariablesLocal(SetTaskVariablesCmd setTaskVariablesCmd) {
+        taskService.setVariablesLocal(setTaskVariablesCmd.getTaskId(), setTaskVariablesCmd.getVariables());
     }
 }
