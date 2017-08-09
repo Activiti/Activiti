@@ -28,8 +28,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         include = JsonTypeInfo.As.PROPERTY,
         property = "eventType")
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = ActivityStartedEvent.class, name = "ActivityStartedEvent"),
-        @JsonSubTypes.Type(value = ActivityCompletedEvent.class, name = "ActivityCompletedEvent"),
         @JsonSubTypes.Type(value = ProcessStartedEvent.class, name = "ProcessStartedEvent"),
         @JsonSubTypes.Type(value = ProcessCompletedEvent.class, name = "ProcessCompletedEvent"),
         @JsonSubTypes.Type(value = TaskCreatedEvent.class, name = "TaskCreatedEvent"),
