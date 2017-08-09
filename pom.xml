@@ -37,6 +37,7 @@
     <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
     <docker.maven.plugin.version>0.21.0</docker.maven.plugin.version>
     <directory.maven.plugin.version>0.1</directory.maven.plugin.version>
+    <postgres.version>9.4.1212.jre7</postgres.version>
   </properties>
 
   <repositories>
@@ -189,7 +190,11 @@
         <artifactId>spring-hateoas</artifactId>
         <version>${spring.hateoas.version}</version>
       </dependency>
-
+      <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+        <version>${postgres.version}</version>
+      </dependency>
 
 
 
