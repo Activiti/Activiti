@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Component
 public class TaskRestTemplate {
 
-    public static final String TASK_VAR_RELATIVE_URL = "/v1/";
+    public static final String TASK_VAR_RELATIVE_URL = "/v1/tasks/";
 
     @Autowired
     private TestRestTemplate testRestTemplate;

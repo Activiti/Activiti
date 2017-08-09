@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/v1/{taskId}/variables",
+@RequestMapping(value = "/v1/tasks/{taskId}/variables",
         produces = MediaTypes.HAL_JSON_VALUE)
 public class TaskVariableController {
 
