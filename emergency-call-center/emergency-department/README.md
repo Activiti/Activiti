@@ -3,14 +3,10 @@
 This project implements the external services defining the Departments (Police, Fire Dept and Hospital) used by the Emergency Call Center Use Case described and documented [here](..).
 Please refer to the [complete documentation](..) for further details.
 
-Use the following scripts to use the project.
+To build this project only, follow the instructions below.
 
-* `compile.sh` to compile the source code.
+* Open a terminal and move into this folder.
 
-* `package.sh` to compile and then create the jar file of the project.
+* Run `mvn clean package` to compile it, running the tests and package it.
 
-* `run.sh` to compile and then run the jar file of the project bundled with a tomcat server. The service will run on port 8080.
-
-* `package.sh` to compile and then create the jar file of the project.
-
-* `run_depts_in_background.sh` to compile and then launch thre instances of tomcat on port 9090, 9091 and 9092.
+The result is a jar library into the `target` folder, named `emergency-department-<version>.jar`.

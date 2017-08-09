@@ -27,9 +27,6 @@ public class CallCenter1Test
 
     // Resources.
     activitiRule.getRepositoryService().createDeployment().name("EmergencyCallCenter").addClasspathResource("org/activiti/test/Emergency_Call_Center.bpmn20.xml").deploy();
-    activitiRule.getRepositoryService().createDeployment().name("EmergencyFireDepartment").addClasspathResource("org/activiti/test/Fire_Department.bpmn20.xml").deploy();
-    activitiRule.getRepositoryService().createDeployment().name("EmergencyHospital").addClasspathResource("org/activiti/test/Hospital.bpmn20.xml").deploy();
-    activitiRule.getRepositoryService().createDeployment().name("EmergencyPoliceDepartment").addClasspathResource("org/activiti/test/Police_Department.bpmn20.xml").deploy();
     activitiRule.getRepositoryService().createDeployment().name("EmergencyCallCenterDecisionaboutOrganizations").addClasspathResource("org/activiti/test/Emergency Call Center - Decision about Organizations.dmn").deploy();
 
     ProcessInstance processInstance = activitiRule.getRuntimeService().startProcessInstanceByKey("EmergencyCallCenter");

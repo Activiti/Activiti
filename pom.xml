@@ -597,6 +597,13 @@
       <organization>Alfresco</organization>
       <organizationUrl>http://alfresco.com</organizationUrl>
     </developer>
+    <developer>
+      <id>fcorti</id>
+      <name>Francesco Corti</name>
+      <email>francesco.corti@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
   </developers>
 
 </project>
