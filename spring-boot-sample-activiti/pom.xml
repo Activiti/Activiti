@@ -75,7 +75,7 @@
               <name>activiti-sample</name>
               <alias>sample</alias>
               <build>
-                <from>openjdk:latest</from>
+                <from>openjdk:alpine</from>
                 <assembly>
                   <descriptorRef>artifact</descriptorRef>
                 </assembly>
