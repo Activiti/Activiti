@@ -71,7 +71,7 @@ public class TaskVariableController {
     @RequestMapping(value = "/",
             method = RequestMethod.POST)
     public ResponseEntity<Void> setVariables(@PathVariable String taskId,
-                                             @RequestBody(required = false) SetTaskVariablesCmd setTaskVariablesCmd) {
+                                             @RequestBody(required = true) SetTaskVariablesCmd setTaskVariablesCmd) {
         processEngine.setTaskVariables(setTaskVariablesCmd);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -80,7 +80,7 @@ public class TaskVariableController {
             method = RequestMethod.POST)
     public ResponseEntity<Void> setVariablesLocal(@PathVariable String taskId,
                                                   @RequestBody(
-                                                          required = false) SetTaskVariablesCmd setTaskVariablesCmd) {
+                                                          required = true) SetTaskVariablesCmd setTaskVariablesCmd) {
         processEngine.setTaskVariablesLocal(setTaskVariablesCmd);
         return new ResponseEntity<>(HttpStatus.OK);
     }
