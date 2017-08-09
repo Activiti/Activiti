@@ -37,7 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Component
 public class TaskRestTemplate {
 
-    public static final String TASK_VAR_RELATIVE_URL = "/v1/taskId";
+    public static final String TASK_VAR_RELATIVE_URL = "/v1/";
 
     @Autowired
     private TestRestTemplate testRestTemplate;
@@ -55,7 +55,7 @@ public class TaskRestTemplate {
         HttpEntity<SetTaskVariablesCmd> requestEntity = new HttpEntity<>(
                 setTaskVariablesCmd,
                 getHeaders(accessToken.getToken()));
-        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + "/" + taskId + "/variables",
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + taskId + "/variables/",
                                                                                                  HttpMethod.POST,
                                                                                                  requestEntity,
                                                                                                  new ParameterizedTypeReference<Void>() {
@@ -70,7 +70,7 @@ public class TaskRestTemplate {
         HttpEntity<SetTaskVariablesCmd> requestEntity = new HttpEntity<>(
                 setTaskVariablesCmd, 
                 getHeaders(accessToken.getToken()));
-        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + "/" + taskId + "/variables-local",
+        ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + taskId + "/variables/local",
                                                                                                  HttpMethod.POST,
                                                                                                  requestEntity,
                                                                                                  new ParameterizedTypeReference<Void>() {
@@ -82,7 +82,7 @@ public class TaskRestTemplate {
     public ResponseEntity<Resource<Map<String, Object>>> getVariables(String taskId, AccessTokenResponse accessToken) {
         HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(
                 getHeaders(accessToken.getToken()));
-        ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + "/" + taskId + "/variables",
+        ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + taskId + "/variables/",
                                                                                                  HttpMethod.GET,
                                                                                                  requestEntity,
                                                                                                  new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
@@ -94,7 +94,7 @@ public class TaskRestTemplate {
     public ResponseEntity<Resource<Map<String, Object>>> getVariablesLocal(String taskId, AccessTokenResponse accessToken) {
         HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(
                 getHeaders(accessToken.getToken()));
-        ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + "/" + taskId + "/variables-local",
+        ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + taskId + "/variables/local",
                                                                                                  HttpMethod.GET,
                                                                                                  requestEntity,
                                                                                                  new ParameterizedTypeReference<Resource<Map<String, Object>>>() {

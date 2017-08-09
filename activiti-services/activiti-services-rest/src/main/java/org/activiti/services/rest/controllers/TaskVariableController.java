@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/v1/taskId/{taskId}",
+@RequestMapping(value = "/v1/{taskId}/variables",
         produces = MediaTypes.HAL_JSON_VALUE)
 public class TaskVariableController {
 
@@ -54,21 +54,21 @@ public class TaskVariableController {
         this.variableResourceBuilder = variableResourceBuilder;
     }
 
-    @RequestMapping(value = "/variables",
+    @RequestMapping(value = "/",
             method = RequestMethod.GET)
     public Resource<Map<String, Object>> getVariables(@PathVariable String taskId) {
         Map<String, Object> variables = taskService.getVariables(taskId);
         return variableResourceBuilder.toResource(new TaskVariables(taskId, variables, TaskVariableScope.GLOBAL));
     }
 
-    @RequestMapping(value = "/variables-local",
+    @RequestMapping(value = "/local",
             method = RequestMethod.GET)
     public Resource<Map<String, Object>> getVariablesLocal(@PathVariable String taskId) {
         Map<String, Object> variables = taskService.getVariablesLocal(taskId);
         return variableResourceBuilder.toResource(new TaskVariables(taskId, variables, TaskVariableScope.LOCAL));
     }
 
-    @RequestMapping(value = "/variables",
+    @RequestMapping(value = "/",
             method = RequestMethod.POST)
     public ResponseEntity<Void> setVariables(@PathVariable String taskId,
                                              @RequestBody(required = false) SetTaskVariablesCmd setTaskVariablesCmd) {
@@ -76,7 +76,7 @@ public class TaskVariableController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/variables-local",
+    @RequestMapping(value = "/local",
             method = RequestMethod.POST)
     public ResponseEntity<Void> setVariablesLocal(@PathVariable String taskId,
                                                   @RequestBody(
