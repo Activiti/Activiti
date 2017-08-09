@@ -68,7 +68,7 @@
               <name>activiti-services-gateway</name>
               <alias>activiti-services-gateway</alias>
               <build>
-                <from>openjdk:latest</from>
+                <from>openjdk:alpine</from>
                 <assembly>
                   <descriptorRef>artifact</descriptorRef>
                 </assembly>

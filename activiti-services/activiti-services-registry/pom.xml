@@ -69,7 +69,7 @@
               <name>activiti-services-registry</name>
               <alias>activiti-services-registry</alias>
               <build>
-                <from>openjdk:latest</from>
+                <from>openjdk:alpine</from>
                 <assembly>
                   <descriptorRef>artifact</descriptorRef>
                 </assembly>
