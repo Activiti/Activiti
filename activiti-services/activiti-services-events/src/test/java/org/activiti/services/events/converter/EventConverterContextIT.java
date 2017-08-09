@@ -30,7 +30,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = EventConverterContextIT.SpringConfig.class)
+@ContextConfiguration(classes = EventConverterContextIT.EventConverterContextConfig.class)
 public class EventConverterContextIT {
 
     @Autowired
@@ -38,7 +38,7 @@ public class EventConverterContextIT {
 
     @Configuration
     @ComponentScan({"org.activiti.services.events.converter", "org.activiti.services.core.model.converter"})
-    public static class SpringConfig {
+    public static class EventConverterContextConfig {
 
     }
 

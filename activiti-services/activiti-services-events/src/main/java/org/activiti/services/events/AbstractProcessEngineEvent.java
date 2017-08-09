@@ -62,9 +62,6 @@ public abstract class AbstractProcessEngineEvent implements ProcessEngineEvent {
     }
 
     @Override
-    public abstract String getEventType();
-
-    @Override
     public Long getTimestamp(){
         return timestamp;
     }

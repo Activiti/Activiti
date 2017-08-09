@@ -58,13 +58,11 @@ public class ProcessInstance {
     public ProcessInstance(Long processInstanceId,
                            String processDefinitionId,
                            String status,
-                           Date lastModified,
-                           List<Variable> variables) {
+                           Date lastModified) {
         this.processInstanceId = processInstanceId;
         this.processDefinitionId = processDefinitionId;
         this.status = status;
         this.lastModified = lastModified;
-        this.variables = variables;
     }
 
     public Long getProcessInstanceId() {

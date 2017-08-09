@@ -65,7 +65,7 @@ public class ProcessIntancesIT {
         ProcessInstance processInstance = new ProcessInstance(1L,
                 "processDefinitionId",
                 "RUNNING",
-                null,null);
+                null);
 
         Variable variable = new Variable(""+1,"type","name","procInstId","taskId",null,null,"executionId");
         variableRepository.save(variable);

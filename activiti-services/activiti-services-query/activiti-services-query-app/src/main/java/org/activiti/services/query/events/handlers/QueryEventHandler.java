@@ -14,22 +14,14 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app;
+package org.activiti.services.query.events.handlers;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.activiti.services.query.events.ProcessEngineEvent;
 
-@SpringBootApplication
-@ComponentScan(basePackages = {
-        "org.activiti",
-        "org.activiti.services.identity.keycloak"
-})
-public class QueryApplication {
+public interface QueryEventHandler {
 
-    public static void main(String[] args) {
-        SpringApplication.run(QueryApplication.class,
-                              args);
-    }
+    void handle(ProcessEngineEvent event);
+
+    Class<? extends ProcessEngineEvent> getHandledEventClass();
 
 }

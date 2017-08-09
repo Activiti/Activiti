@@ -240,6 +240,57 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-generated-assertions-folder</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>add-test-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${generated-assertions-folder}</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
+
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate-assertions</goal>
+            </goals>
+          </execution>
+        </executions>
+
+        <configuration>
+
+          <packages>
+            <package>org.activiti.services.query.app.model</package>
+          </packages>
+
+          <!-- whether generated assertions classes can be inherited with consistent assertion chaining -->
+          <hierarchical>true</hierarchical>
+
+          <!-- where to generate assertions entry point classes -->
+          <entryPointClassPackage>${generated-assertions-package}</entryPointClassPackage>
+
+          <targetDir>${generated-assertions-folder}</targetDir>
+          <generateAssertions>true</generateAssertions>
+          <generateBddAssertions>false</generateBddAssertions>
+          <generateSoftAssertions>false</generateSoftAssertions>
+          <generateJUnitSoftAssertions>false</generateJUnitSoftAssertions>
+
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
