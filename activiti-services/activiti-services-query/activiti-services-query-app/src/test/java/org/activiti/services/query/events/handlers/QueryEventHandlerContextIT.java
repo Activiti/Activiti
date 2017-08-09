@@ -33,20 +33,27 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.activiti.services.query.events.handlers.QueryEventHandlerContextIT.MOCK_DEPENDENCIES_PROFILE;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = QueryEventHandlerContextIT.QueryEventHandlerContextConfig.class)
+@ActiveProfiles(MOCK_DEPENDENCIES_PROFILE)
 public class QueryEventHandlerContextIT {
+
+    public static final String MOCK_DEPENDENCIES_PROFILE = "mockDependencies";
 
     @Autowired
     private QueryEventHandlerContext context;
 
     @Configuration
+    @Profile(MOCK_DEPENDENCIES_PROFILE)
     @ComponentScan(basePackages = {"org.activiti.services.query.events.handlers",  "org.activiti.services.query.app.repository"})
     public static class QueryEventHandlerContextConfig {
 
