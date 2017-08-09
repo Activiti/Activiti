@@ -31,7 +31,7 @@ import static org.activiti.test.Assertions.assertThat;
 @Component
 public class EventsRestTemplate {
 
-    private static final String RELATIVE_EVENTS_ENDPOINT = "/v1/audit/events/";
+    private static final String RELATIVE_EVENTS_ENDPOINT = "/v1/events/";
 
     @Autowired
     private TestRestTemplate restTemplate;
