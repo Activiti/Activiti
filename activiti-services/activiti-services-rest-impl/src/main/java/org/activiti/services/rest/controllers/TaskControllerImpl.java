@@ -96,12 +96,11 @@ public class TaskControllerImpl implements TaskController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Override
+
     public AuthenticationWrapper getAuthenticationWrapper() {
         return authenticationWrapper;
     }
-
-    @Override
+    
     public void setAuthenticationWrapper(AuthenticationWrapper authenticationWrapper) {
         this.authenticationWrapper = authenticationWrapper;
     }

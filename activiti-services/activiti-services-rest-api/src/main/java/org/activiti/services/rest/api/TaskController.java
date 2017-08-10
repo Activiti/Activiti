@@ -35,7 +35,5 @@ public interface TaskController {
     ResponseEntity<Void> completeTask(@PathVariable String taskId,
                                       @RequestBody(required = false) CompleteTaskCmd completeTaskCmd);
 
-    AuthenticationWrapper getAuthenticationWrapper();
 
-    void setAuthenticationWrapper(AuthenticationWrapper authenticationWrapper);
 }

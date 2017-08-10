@@ -22,12 +22,12 @@ import org.activiti.services.api.events.ProcessEngineEvent;
 public interface ActivityStartedEvent extends ProcessEngineEvent {
 
     /**
-     * @return the id of the activity this events is related to. This corresponds to an id defined in the process definition.
+     * @return the id of the activity this event is related to. This corresponds to an id defined in the process definition.
      */
     String getActivityId();
 
     /**
-     * @return the name of the activity this events is related to.
+     * @return the name of the activity this event is related to.
      */
     String getActivityName();
 

@@ -28,7 +28,7 @@ public class EventsRelProvider implements RelProvider {
 
     public static final String COLLECTION_RESOURCE_REL = "events";
 
-    private static final String ITEM_RESOURCE_REL = "events";
+    private static final String ITEM_RESOURCE_REL = "event";
 
     @Override
     public String getItemResourceRelFor(Class<?> aClass) {
