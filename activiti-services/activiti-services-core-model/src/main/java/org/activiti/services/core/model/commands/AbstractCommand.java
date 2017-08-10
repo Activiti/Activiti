@@ -27,7 +27,10 @@ import org.activiti.services.api.commands.Command;
                         name = "ReleaseTaskCmd"),
                 @JsonSubTypes.Type(
                         value = CompleteTaskCmd.class,
-                        name = "CompleteTaskCmd")
+                        name = "CompleteTaskCmd"),
+                @JsonSubTypes.Type(
+                        value = SetTaskVariablesCmd.class,
+                        name = "SetTaskVariablesCmd")
         })
 public abstract class AbstractCommand implements Command {
 

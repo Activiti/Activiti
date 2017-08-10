@@ -28,6 +28,9 @@ import org.activiti.services.api.commands.results.CommandResults;
                 @JsonSubTypes.Type(
                         value = ReleaseTaskResults.class,
                         name = "ReleaseTaskResults"),
+                @JsonSubTypes.Type(
+                        value = SetTaskVariablesResults.class,
+                        name = "SetTaskVariablesResults")
         }
 )
 public abstract class AbstractCommandResults implements CommandResults {

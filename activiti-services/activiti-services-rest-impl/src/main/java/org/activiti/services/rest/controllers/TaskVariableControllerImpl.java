@@ -22,7 +22,8 @@ import org.activiti.services.core.ProcessEngineWrapper;
 import org.activiti.services.core.model.TaskVariables;
 import org.activiti.services.core.model.TaskVariables.TaskVariableScope;
 import org.activiti.services.core.model.commands.SetTaskVariablesCmd;
-import org.activiti.services.rest.resources.assembler.TaskVariableResourceAssembler;
+import org.activiti.services.rest.api.TaskVariableController;
+import org.activiti.services.rest.api.resources.assembler.TaskVariableResourceAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.Resource;
@@ -37,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "/v1/tasks/{taskId}/variables",
         produces = MediaTypes.HAL_JSON_VALUE)
-public class TaskVariableController {
+public class TaskVariableControllerImpl implements TaskVariableController {
 
     private ProcessEngineWrapper processEngine;
 
@@ -46,14 +47,15 @@ public class TaskVariableController {
     private final TaskVariableResourceAssembler variableResourceBuilder;
 
     @Autowired
-    public TaskVariableController(ProcessEngineWrapper processEngine,
-                                  TaskService taskService,
-                                  TaskVariableResourceAssembler variableResourceBuilder) {
+    public TaskVariableControllerImpl(ProcessEngineWrapper processEngine,
+                                      TaskService taskService,
+                                      TaskVariableResourceAssembler variableResourceBuilder) {
         this.processEngine = processEngine;
         this.taskService = taskService;
         this.variableResourceBuilder = variableResourceBuilder;
     }
 
+    @Override
     @RequestMapping(value = "/",
             method = RequestMethod.GET)
     public Resource<Map<String, Object>> getVariables(@PathVariable String taskId) {
@@ -61,6 +63,7 @@ public class TaskVariableController {
         return variableResourceBuilder.toResource(new TaskVariables(taskId, variables, TaskVariableScope.GLOBAL));
     }
 
+    @Override
     @RequestMapping(value = "/local",
             method = RequestMethod.GET)
     public Resource<Map<String, Object>> getVariablesLocal(@PathVariable String taskId) {
@@ -68,6 +71,7 @@ public class TaskVariableController {
         return variableResourceBuilder.toResource(new TaskVariables(taskId, variables, TaskVariableScope.LOCAL));
     }
 
+    @Override
     @RequestMapping(value = "/",
             method = RequestMethod.POST)
     public ResponseEntity<Void> setVariables(@PathVariable String taskId,
@@ -76,6 +80,7 @@ public class TaskVariableController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Override
     @RequestMapping(value = "/local",
             method = RequestMethod.POST)
     public ResponseEntity<Void> setVariablesLocal(@PathVariable String taskId,

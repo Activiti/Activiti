@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.activiti.services.rest.resources.assembler;
+package org.activiti.services.rest.api.resources.assembler;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import org.activiti.services.core.model.TaskVariables;
 import org.activiti.services.core.model.TaskVariables.TaskVariableScope;
-import org.activiti.services.rest.controllers.HomeController;
-import org.activiti.services.rest.controllers.TaskController;
-import org.activiti.services.rest.controllers.TaskVariableController;
-import org.activiti.services.rest.resources.VariablesResource;
+import org.activiti.services.rest.api.HomeController;
+import org.activiti.services.rest.api.TaskController;
+import org.activiti.services.rest.api.TaskVariableController;
+import org.activiti.services.rest.api.resources.VariablesResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
