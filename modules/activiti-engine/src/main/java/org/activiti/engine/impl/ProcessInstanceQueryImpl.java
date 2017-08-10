@@ -342,8 +342,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   }
   
   public ProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups) {
-    
-	if (involvedGroups == null || involvedGroups.isEmpty()) {
+    if (involvedGroups == null || involvedGroups.isEmpty()) {
       throw new ActivitiIllegalArgumentException("Involved groups list is null or empty.");
     }
     
@@ -706,7 +705,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     return involvedUser;
   }
   public List<String> getInvolvedGroups() {
-	    return involvedGroups;
+    return involvedGroups;
   }
   public SuspensionState getSuspensionState() {
     return suspensionState;

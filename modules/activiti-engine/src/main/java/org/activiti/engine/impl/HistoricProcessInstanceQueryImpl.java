@@ -321,8 +321,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   
   public HistoricProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups) {
-    
-	if (involvedGroups == null || involvedGroups.isEmpty()) {
+    if (involvedGroups == null || involvedGroups.isEmpty()) {
       throw new ActivitiIllegalArgumentException("Involved groups list is null or empty.");
     }
 

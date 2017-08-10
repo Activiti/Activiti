@@ -437,7 +437,7 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     this.involvedUser = involvedUser;
   }
   public List<String> getInvolvedGroups() {
-	 return involvedGroups;
+    return involvedGroups;
   }
   public void setInvolvedGroups(List<String> involvedGroups) {
     this.involvedGroups = involvedGroups;
