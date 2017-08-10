@@ -84,7 +84,7 @@ public class EventsRelProviderTest {
         String itemRel = relProvider.getItemResourceRelFor(aClass);
 
         //then
-        assertThat(itemRel).isEqualTo("events");
+        assertThat(itemRel).isEqualTo("event");
     }
 
 }
