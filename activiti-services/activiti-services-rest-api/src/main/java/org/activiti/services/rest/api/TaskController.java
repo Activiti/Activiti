@@ -2,7 +2,6 @@ package org.activiti.services.rest.api;
 
 import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.commands.CompleteTaskCmd;
-import org.activiti.services.api.util.AuthenticationWrapper;
 import org.activiti.services.rest.api.resources.TaskResource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -34,6 +33,4 @@ public interface TaskController {
     @RequestMapping(value = "/{taskId}/complete", method = RequestMethod.POST)
     ResponseEntity<Void> completeTask(@PathVariable String taskId,
                                       @RequestBody(required = false) CompleteTaskCmd completeTaskCmd);
-
-
 }
