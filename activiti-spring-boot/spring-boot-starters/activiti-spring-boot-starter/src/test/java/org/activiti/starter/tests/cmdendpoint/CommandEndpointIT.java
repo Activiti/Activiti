@@ -33,9 +33,9 @@ import org.activiti.services.core.model.commands.CompleteTaskCmd;
 import org.activiti.services.core.model.commands.ReleaseTaskCmd;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
+import org.activiti.services.core.model.commands.results.AbstractCommandResults;
 import org.activiti.services.core.model.commands.results.ActivateProcessInstanceResults;
 import org.activiti.services.core.model.commands.results.ClaimTaskResults;
-import org.activiti.services.core.model.commands.results.CommandResults;
 import org.activiti.services.core.model.commands.results.CompleteTaskResults;
 import org.activiti.services.core.model.commands.results.ReleaseTaskResults;
 import org.activiti.services.core.model.commands.results.StartProcessInstanceResults;
@@ -121,7 +121,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
     public static class StreamHandler {
 
         @StreamListener(MessageClientStream.MY_CMD_RESULTS)
-        public void consumeResults(CommandResults results) {
+        public void consumeResults(AbstractCommandResults results) {
             assertThat(results).isNotNull();
             if (results instanceof StartProcessInstanceResults) {
                 assertThat(((StartProcessInstanceResults) results).getProcessInstance()).isNotNull();

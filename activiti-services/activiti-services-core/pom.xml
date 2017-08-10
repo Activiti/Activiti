@@ -28,7 +28,7 @@
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-engine</artifactId>
+      <artifactId>activiti-services-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>

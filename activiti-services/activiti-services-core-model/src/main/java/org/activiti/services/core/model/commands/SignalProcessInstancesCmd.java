@@ -17,33 +17,26 @@
 package org.activiti.services.core.model.commands;
 
 import java.util.Map;
-import java.util.UUID;
 
-public class SignalProcessInstancesCmd implements Command {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private String id;
+public class SignalProcessInstancesCmd extends AbstractCommand {
+
     private String name;
     private Map<String, Object> inputVariables;
 
-    public SignalProcessInstancesCmd() {
-        this.id = UUID.randomUUID().toString();
-    }
-
-    public SignalProcessInstancesCmd(String name,
-                                     Map<String, Object> inputVariables) {
-        this();
+    @JsonCreator
+    public SignalProcessInstancesCmd(@JsonProperty("name") String name,
+                                     @JsonProperty("inputVariables") Map<String, Object> inputVariables) {
+        super();
         this.name = name;
         this.inputVariables = inputVariables;
     }
 
     public SignalProcessInstancesCmd(String name) {
-        this();
+        super();
         this.name = name;
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     public String getName() {

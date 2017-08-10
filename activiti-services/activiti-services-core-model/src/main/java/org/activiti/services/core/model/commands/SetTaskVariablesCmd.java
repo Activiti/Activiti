@@ -17,27 +17,21 @@
 package org.activiti.services.core.model.commands;
 
 import java.util.Map;
-import java.util.UUID;
 
-public class SetTaskVariablesCmd implements Command {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private String id;
+public class SetTaskVariablesCmd extends AbstractCommand {
+
     private String taskId;
     private Map<String, ? extends Object> variables;
 
-    public SetTaskVariablesCmd() {
-        id = UUID.randomUUID().toString();
-    }
-
-    public SetTaskVariablesCmd(String taskId, Map<String, ? extends Object> variables) {
-        this();
+    @JsonCreator
+    public SetTaskVariablesCmd(@JsonProperty("taskId") String taskId,
+                               @JsonProperty("variables") Map<String, ? extends Object> variables) {
+        super();
         this.taskId = taskId;
         this.variables = variables;
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     public String getTaskId() {

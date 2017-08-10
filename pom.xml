@@ -225,6 +225,11 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-services-core</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -236,6 +241,11 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-services-events</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-rest-api</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

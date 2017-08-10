@@ -16,7 +16,7 @@
 
 package org.activiti.services.audit.converter;
 
-import org.activiti.services.core.model.Task;
+import org.activiti.services.audit.events.model.Task;
 
 public class TaskJpaJsonConverter extends JpaJsonConverter<Task> {
 

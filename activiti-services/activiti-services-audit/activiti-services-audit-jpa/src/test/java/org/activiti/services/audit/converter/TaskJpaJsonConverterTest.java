@@ -18,7 +18,7 @@ package org.activiti.services.audit.converter;
 
 import java.util.Date;
 
-import org.activiti.services.core.model.Task;
+import org.activiti.services.audit.events.model.Task;
 import org.junit.Test;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;

@@ -18,7 +18,7 @@ package org.activiti.services.audit;
 
 import org.activiti.services.audit.events.ActivityCompletedEventEntity;
 import org.activiti.services.audit.events.ProcessEngineEventEntity;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.*;

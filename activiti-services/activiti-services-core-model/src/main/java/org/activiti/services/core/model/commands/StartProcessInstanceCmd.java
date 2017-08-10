@@ -16,33 +16,26 @@
 package org.activiti.services.core.model.commands;
 
 import java.util.Map;
-import java.util.UUID;
 
-public class StartProcessInstanceCmd implements Command {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private String id;
+public class StartProcessInstanceCmd extends AbstractCommand {
+
     private String processDefinitionId;
     private Map<String, Object> variables;
 
-    public StartProcessInstanceCmd() {
-        this.id = UUID.randomUUID().toString();
-    }
-
-    public StartProcessInstanceCmd(String processDefinitionId,
-                                   Map<String, Object> variables) {
-        this();
+    @JsonCreator
+    public StartProcessInstanceCmd(@JsonProperty("processDefinitionId") String processDefinitionId,
+                                   @JsonProperty("variables") Map<String, Object> variables) {
+        super();
         this.processDefinitionId = processDefinitionId;
         this.variables = variables;
     }
 
     public StartProcessInstanceCmd(String processDefinitionId) {
-        this();
+        super();
         this.processDefinitionId = processDefinitionId;
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     public String getProcessDefinitionId() {

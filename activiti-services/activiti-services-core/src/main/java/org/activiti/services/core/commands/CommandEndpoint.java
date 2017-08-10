@@ -5,7 +5,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.activiti.services.core.model.commands.Command;
+import org.activiti.services.core.model.commands.AbstractCommand;
 import org.activiti.services.events.ProcessEngineChannels;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +26,7 @@ public class CommandEndpoint {
     }
 
     @StreamListener(ProcessEngineChannels.COMMAND_CONSUMER)
-    public void consumeCommand(Command cmd) {
+    public void consumeCommand(AbstractCommand cmd) {
 
         CommandExecutor cmdExecutor = commandExecutors.get(cmd.getClass());
         if (cmdExecutor != null) {

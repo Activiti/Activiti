@@ -1,38 +1,18 @@
 package org.activiti.services.core.model.commands.results;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SignalProcessInstancesResults implements CommandResults {
+public class SignalProcessInstancesResults extends AbstractCommandResults {
 
-    private String id;
-    private String commandId;
-
-    public SignalProcessInstancesResults() {
-        this.id = UUID.randomUUID().toString();
+    public SignalProcessInstancesResults(String commandId) {
+        super(commandId);
     }
 
     @JsonCreator
     public SignalProcessInstancesResults(@JsonProperty("id") String id,
                                          @JsonProperty("commandId") String commandId) {
-        this.id = id;
-        this.commandId = commandId;
-    }
-
-    public SignalProcessInstancesResults(String commandId) {
-        this();
-        this.commandId = commandId;
-    }
-
-    @Override
-    public String getId() {
-        return id;
-    }
-
-    @Override
-    public String getCommandId() {
-        return commandId;
+        super(id,
+              commandId);
     }
 }
