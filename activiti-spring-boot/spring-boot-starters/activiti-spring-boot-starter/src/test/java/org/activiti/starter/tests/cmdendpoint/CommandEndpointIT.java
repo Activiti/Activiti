@@ -40,7 +40,7 @@ import org.activiti.services.core.model.commands.results.CompleteTaskResults;
 import org.activiti.services.core.model.commands.results.ReleaseTaskResults;
 import org.activiti.services.core.model.commands.results.StartProcessInstanceResults;
 import org.activiti.services.core.model.commands.results.SuspendProcessInstanceResults;
-import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.services.identity.keycloak.interceptor.KeycloakSecurityContextClientRequestInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -68,7 +68,7 @@ import static org.assertj.core.api.Assertions.*;
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @EnableBinding(MessageClientStream.class)
-public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
+public class CommandEndpointIT {
 
     @Autowired
     private MessageChannel myCmdProducer;
@@ -100,11 +100,12 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
 
     private static String testProcessInstanceId;
 
+    @Autowired
+    private KeycloakSecurityContextClientRequestInterceptor keycloakSecurityContextClientRequestInterceptor;
+
     @Before
     public void setUp() throws Exception {
-        keycloaktestuser = "hruser";
-        //don't need to set password as same password as testuser
-        accessToken = authenticateUser();
+        keycloakSecurityContextClientRequestInterceptor.setKeycloaktestuser("hruser");
 
         // Get Available Process Definitions
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
@@ -148,7 +149,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         //record what instances there were before starting this one - should be none but will check this later
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPageBefore = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                                                                            HttpMethod.GET,
-                                                                                                           getRequestEntityWithHeaders(),
+                                                                                                           null,
                                                                                                            new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                                                                                                            },
                                                                                                            "0",
@@ -174,7 +175,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
 
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                                                                      HttpMethod.GET,
-                                                                                                     getRequestEntityWithHeaders(),
+                                                                                                     null,
                                                                                                      new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                                                                                                      },
                                                                                                      "0",
@@ -222,7 +223,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         // Checking that the process is finished
         processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                      HttpMethod.GET,
-                                                     getRequestEntityWithHeaders(),
+                                                     null,
                                                      new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                                                      },
                                                      "0",
@@ -300,7 +301,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         //when
         processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                      HttpMethod.GET,
-                                                     getRequestEntityWithHeaders(),
+                                                     null,
                                                      new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                                                      },
                                                      "0",
@@ -330,7 +331,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         //when
         processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                      HttpMethod.GET,
-                                                     getRequestEntityWithHeaders(),
+                                                     null,
                                                      new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                                                      },
                                                      "0",
@@ -360,7 +361,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
         //when
         ResponseEntity<PagedResources<ProcessInstance>> processInstancesPage = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "?page={page}&size={size}",
                                                                                                      HttpMethod.GET,
-                                                                                                     getRequestEntityWithHeaders(),
+                                                                                                     null,
                                                                                                      new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
                                                                                                      },
                                                                                                      "0",
@@ -393,7 +394,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
     private ResponseEntity<PagedResources<Task>> getTasks() {
         return restTemplate.exchange(TASKS_URL,
                                      HttpMethod.GET,
-                                     getRequestEntityWithHeaders(),
+                                     null,
                                      PAGED_TASKS_RESPONSE_TYPE);
     }
 
@@ -403,7 +404,7 @@ public class CommandEndpointIT extends KeycloakEnabledBaseTestIT {
 
         return restTemplate.exchange(PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
-                                     getRequestEntityWithHeaders(),
+                                     null,
                                      responseType);
     }
 }

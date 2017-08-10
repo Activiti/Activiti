@@ -16,16 +16,13 @@
 
 package org.activiti.starter.tests.runtime;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.starter.tests.definition.ProcessDefinitionIT;
-import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
-import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
+import org.activiti.starter.tests.definition.ProcessDefinitionIT;
+import org.activiti.starter.tests.helper.ProcessInstanceRestTemplate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,19 +38,21 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import static org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+
+import static org.activiti.starter.tests.helper.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class ProcessVariablesIT extends KeycloakEnabledBaseTestIT {
+public class ProcessVariablesIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
+    private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
@@ -61,7 +60,6 @@ public class ProcessVariablesIT extends KeycloakEnabledBaseTestIT {
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
@@ -74,38 +72,38 @@ public class ProcessVariablesIT extends KeycloakEnabledBaseTestIT {
         //given
         Map<String, Object> variables = new HashMap<>();
         variables.put("firstName",
-                      "Pedro");
+                "Pedro");
         variables.put("lastName",
-                      "Silva");
+                "Silva");
         variables.put("age",
-                      15);
+                15);
         ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS_WITH_VARIABLES),
-                                                                                                 variables,accessToken);
+                variables);
 
         //when
         ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables",
-                                                                                                HttpMethod.GET,
-                                                                                                getRequestEntityWithHeaders(),
-                                                                                                new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
-                                                                                                });
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
+                });
 
         //then
         assertThat(variablesResponse).isNotNull();
         assertThat(variablesResponse.getBody().getContent())
                 .containsEntry("firstName",
-                               "Pedro")
+                        "Pedro")
                 .containsEntry("lastName",
-                               "Silva")
+                        "Silva")
                 .containsEntry("age",
-                               15);
+                        15);
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
         ParameterizedTypeReference<PagedResources<ProcessDefinition>> responseType = new ParameterizedTypeReference<PagedResources<ProcessDefinition>>() {
         };
         return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
-                                     HttpMethod.GET,
-                                     getRequestEntityWithHeaders(),
-                                     responseType);
+                HttpMethod.GET,
+                null,
+                responseType);
     }
 }

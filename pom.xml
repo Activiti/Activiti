@@ -263,6 +263,16 @@
         <artifactId>activiti-services-identity-basic</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-audit-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- Spring Boot / Cloud / Stream dependencies -->
       <dependency>
@@ -558,7 +568,7 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-spring-boot-test</artifactId>
+        <artifactId>activiti-services-test</artifactId>
         <version>${project.version}</version>
         <scope>test</scope>
       </dependency>

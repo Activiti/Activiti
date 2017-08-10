@@ -13,6 +13,7 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>activiti-services-test</module>
     <module>activiti-services-api</module>
     <module>activiti-services-core-model</module>
     <module>activiti-services-core</module>
