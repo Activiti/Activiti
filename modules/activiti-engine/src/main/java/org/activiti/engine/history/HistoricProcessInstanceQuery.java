@@ -93,6 +93,11 @@ public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInsta
   /** Only select the historic process instances with which the user with the given id is involved. */
   HistoricProcessInstanceQuery involvedUser(String userId);
   
+  /**
+   * Only select the historic process instances with which the given groups are involved. 
+   */
+  HistoricProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups);
+  
   /** Only select process instances which had a global variable with the given value
    * when they ended. The type only applies to already ended
    * process instances, otherwise use a {@link ProcessInstanceQuery} instead! of
