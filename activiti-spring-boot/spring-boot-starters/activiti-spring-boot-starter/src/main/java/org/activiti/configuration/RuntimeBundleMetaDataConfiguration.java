@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RuntimeBundleMetaDataConfiguration implements BeanClassLoaderAware {
-    
+
     @Autowired
     public RuntimeBundleMetaDataConfiguration(ApplicationInfoManager appInfoManager) {
         Map<String, String> metadata = new HashMap<>();
@@ -20,5 +20,6 @@ public class RuntimeBundleMetaDataConfiguration implements BeanClassLoaderAware 
     }
 
     public void setBeanClassLoader(ClassLoader classLoader) {
+        // Do nothing for now
     }
 }

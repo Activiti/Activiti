@@ -10,6 +10,11 @@
   <artifactId>activiti-spring-boot-starter</artifactId>
 
   <dependencies>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring-boot-starter-basic</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <!-- keycloak included as default identity provider to be excluded if overridden -->
     <dependency>
       <groupId>org.activiti</groupId>
@@ -109,25 +114,8 @@
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-commons</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-spring-boot-starter-basic</artifactId>
-      <version>${project.version}</version>
-    </dependency>
 
-    <!-- common -->
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-engine</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-bpmn-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-spring</artifactId>
-    </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -137,10 +125,12 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
