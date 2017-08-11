@@ -25,6 +25,7 @@ import org.activiti.services.query.app.model.Task;
 import org.activiti.services.query.app.model.Variable;
 import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.app.repository.VariableRepository;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +37,6 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -45,7 +45,6 @@ import static org.assertj.core.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:test-application.properties")
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class TasksIT {
 
     private static final String TASKS_URL = "/v1/tasks?nameLike=na&priority=priority&variables.name=name";
@@ -88,6 +87,12 @@ public class TasksIT {
         variables.add(variable);
         task.setVariables(variables);
         taskRepository.save(task);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        taskRepository.deleteAll();
+        variableRepository.deleteAll();
     }
 
     @Test
