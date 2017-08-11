@@ -16,8 +16,6 @@
 
 package org.activiti.starter.tests.runtime;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,9 +23,9 @@ import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
 import org.activiti.starter.tests.definition.ProcessDefinitionIT;
+import org.activiti.starter.tests.helper.TaskRestTemplate;
 import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
-import org.activiti.starter.tests.helper.TaskRestTemplate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,8 +39,12 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
+
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

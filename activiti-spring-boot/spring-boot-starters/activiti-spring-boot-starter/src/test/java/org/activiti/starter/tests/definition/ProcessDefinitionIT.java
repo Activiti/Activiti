@@ -16,8 +16,6 @@
 
 package org.activiti.starter.tests.definition;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,10 +29,9 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.image.ProcessDiagramGenerator;
-
-import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessDefinitionMeta;
+import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
 import org.activiti.starter.tests.util.TestResourceUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,6 +47,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
+
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

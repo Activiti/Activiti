@@ -20,13 +20,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.starter.tests.definition.ProcessDefinitionIT;
-import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
-import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.commands.SignalProcessInstancesCmd;
+import org.activiti.starter.tests.definition.ProcessDefinitionIT;
+import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

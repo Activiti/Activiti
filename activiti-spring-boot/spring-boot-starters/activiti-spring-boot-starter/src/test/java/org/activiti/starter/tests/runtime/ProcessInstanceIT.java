@@ -16,10 +16,6 @@
 
 package org.activiti.starter.tests.runtime;
 
-import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
-import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +32,8 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
+import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
+import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
 import org.activiti.starter.tests.util.TestResourceUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,11 +50,11 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
-import static org.assertj.core.api.Assertions.assertThat;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
+
+import static org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
