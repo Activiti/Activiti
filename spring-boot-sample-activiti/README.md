@@ -7,11 +7,12 @@ The REST endpoints are also secured using keycloak as an identity provider.
 ## Quickstart
 
 1) Check out the equivalent branch of the main Activiti project and run mvn clean install -DskipTests
-2) Add this entry to your hosts file - 127.0.0.1       activiti-keycloak
-3) Run start.sh or start.bat from this directory
-4) Go to http://localhost:8080/my-activiti-app/v1/process-instances in browser or postman. If using postman collection hit keycloak token endpoint (on host activiti-keycloak) first.
+2) Check out the equivalent branch of the main Activiti starters project and run mvn clean install -DskipTests
+3) Add this entry to your hosts file - 127.0.0.1       activiti-keycloak
+4) Run start.sh or start.bat from this directory
+5) Go to http://localhost:8080/my-activiti-app/v1/process-instances in browser or postman. If using postman collection hit keycloak token endpoint (on host activiti-keycloak) first.
 5) For browser to reach the endpoint you'll need to enter testuser/password at the keycloak prompt
-6) To create process instances you'll need to use the postman collection
+7) To create process instances you'll need to use the postman collection
 
 ## Gateway and Service Registration
 
