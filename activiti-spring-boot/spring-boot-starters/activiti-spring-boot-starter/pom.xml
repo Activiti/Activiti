@@ -10,6 +10,12 @@
   <artifactId>activiti-spring-boot-starter</artifactId>
 
   <dependencies>
+
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+      <scope>runtime</scope>
+    </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-boot-starter-basic</artifactId>

@@ -6,9 +6,12 @@ import java.util.Map;
 import com.netflix.appinfo.ApplicationInfoManager;
 import org.springframework.beans.factory.BeanClassLoaderAware;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ConditionalOnBean(com.netflix.appinfo.ApplicationInfoManager.class)
 public class RuntimeBundleMetaDataConfiguration implements BeanClassLoaderAware {
 
     @Autowired
