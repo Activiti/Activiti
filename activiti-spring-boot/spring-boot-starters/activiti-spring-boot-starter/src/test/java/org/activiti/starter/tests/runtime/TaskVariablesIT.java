@@ -39,10 +39,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -74,7 +72,8 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
-            processDefinitionIds.put(pd.getName(), pd.getId());
+            processDefinitionIds.put(pd.getName(),
+                                     pd.getId());
         }
     }
 
@@ -87,35 +86,39 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
         ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),
                                                                                                  variables,
                                                                                                  accessToken);
-        ResponseEntity<PagedResources<Task>> tasks = processInstanceRestTemplate.getTasks(startResponse, accessToken);
+        ResponseEntity<PagedResources<Task>> tasks = processInstanceRestTemplate.getTasks(startResponse,
+                                                                                          accessToken);
 
         String taskId = tasks.getBody().getContent().iterator().next().getId();
         Map<String, Object> taskVariables = new HashMap<>();
         taskVariables.put("var2",
                           "test2");
-        taskRestTemplate.setVariablesLocal(taskId, taskVariables, accessToken);
+        taskRestTemplate.setVariablesLocal(taskId,
+                                           taskVariables,
+                                           accessToken);
 
         //when
         ResponseEntity<Resource<Map<String, Object>>> variablesResponse = taskRestTemplate.getVariablesLocal(taskId,
-                                                                                                                     accessToken);
+                                                                                                             accessToken);
 
         //then
         assertThat(variablesResponse).isNotNull();
         assertThat(variablesResponse.getBody().getContent())
-                                                            .containsEntry("var2",
-                                                                           "test2")
-                                                            .doesNotContainKey("var1");
+                .containsEntry("var2",
+                               "test2")
+                .doesNotContainKey("var1");
 
         // when
-        variablesResponse = taskRestTemplate.getVariables(taskId, accessToken);
+        variablesResponse = taskRestTemplate.getVariables(taskId,
+                                                          accessToken);
 
         // then
         assertThat(variablesResponse).isNotNull();
         assertThat(variablesResponse.getBody().getContent())
-                                                            .containsEntry("var2",
-                                                                           "test2")
-                                                            .containsEntry("var1",
-                                                                           "test1");
+                .containsEntry("var2",
+                               "test2")
+                .containsEntry("var1",
+                               "test1");
 
         // give
         taskVariables = new HashMap<>();
@@ -123,31 +126,35 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
                           "test2-update");
         taskVariables.put("var3",
                           "test3");
-        taskRestTemplate.setVariables(taskId, taskVariables, accessToken);
+        taskRestTemplate.setVariables(taskId,
+                                      taskVariables,
+                                      accessToken);
 
         // when
-        variablesResponse = taskRestTemplate.getVariables(taskId, accessToken);
+        variablesResponse = taskRestTemplate.getVariables(taskId,
+                                                          accessToken);
 
         // then
         assertThat(variablesResponse).isNotNull();
         assertThat(variablesResponse.getBody().getContent())
-                                                            .containsEntry("var1",
-                                                                           "test1")
-                                                            .containsEntry("var2",
-                                                                           "test2-update")
-                                                            .containsEntry("var3",
-                                                                           "test3");
+                .containsEntry("var1",
+                               "test1")
+                .containsEntry("var2",
+                               "test2-update")
+                .containsEntry("var3",
+                               "test3");
 
         // when
-        variablesResponse = taskRestTemplate.getVariablesLocal(taskId, accessToken);
+        variablesResponse = taskRestTemplate.getVariablesLocal(taskId,
+                                                               accessToken);
 
         // then
         assertThat(variablesResponse).isNotNull();
         assertThat(variablesResponse.getBody().getContent())
-                                                            .containsEntry("var2",
-                                                                           "test2-update")
-                                                            .doesNotContainKey("var1")
-                                                            .doesNotContainKey("var3");
+                .containsEntry("var2",
+                               "test2-update")
+                .doesNotContainKey("var1")
+                .doesNotContainKey("var3");
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
