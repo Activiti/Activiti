@@ -44,7 +44,7 @@ import static org.assertj.core.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class VariablesIT {
 
-    private static final String TASKS_URL = "/v1/query/variables?name=name";
+    private static final String TASKS_URL = "/v1/variables?name=name";
     private static final ParameterizedTypeReference<PagedResources<Variable>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Variable>>() {
     };
 

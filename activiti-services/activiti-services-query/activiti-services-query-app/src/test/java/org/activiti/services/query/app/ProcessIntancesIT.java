@@ -48,7 +48,7 @@ import static org.assertj.core.api.Assertions.*;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ProcessIntancesIT {
 
-    private static final String PROC_URL = "/v1/query/process-instances";
+    private static final String PROC_URL = "/v1/process-instances";
     private static final ParameterizedTypeReference<PagedResources<ProcessInstance>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
     };
 

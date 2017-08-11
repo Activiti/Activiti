@@ -37,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(value = "/v1/query/tasks", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/tasks", produces = MediaTypes.HAL_JSON_VALUE)
 public class TaskQueryController {
 
     private final TaskRepository dao;

@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(value = "/v1/query/variables", produces = MediaTypes.HAL_JSON_VALUE)
+@RequestMapping(value = "/v1/variables", produces = MediaTypes.HAL_JSON_VALUE)
 public class VariableQueryController {
 
     private final VariableRepository variableRepository;
