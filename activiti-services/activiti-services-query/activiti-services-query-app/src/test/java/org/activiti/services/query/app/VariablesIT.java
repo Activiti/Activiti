@@ -55,14 +55,20 @@ public class VariablesIT {
     private VariableRepository variableRepository;
 
     @Before
-    public void setUp() throws Exception{
-        Variable variable = new Variable(""+1,"type","name","procInstId","taskId",null,null,"executionId");
+    public void setUp() throws Exception {
+        Variable variable = new Variable("type",
+                                         "name",
+                                         "procInstId",
+                                         "taskId",
+                                         null,
+                                         null,
+                                         "executionId",
+                                         "content");
         variableRepository.save(variable);
     }
 
     @Test
     public void shouldGetAvailableVariables() throws Exception {
-
 
         Iterator<Variable> variableIterator = variableRepository.findAll().iterator();
         assertThat(variableIterator.hasNext()); //there should be records
@@ -82,9 +88,7 @@ public class VariablesIT {
     private ResponseEntity<PagedResources<Variable>> executeRequestGetVariables() {
         return testRestTemplate.exchange(TASKS_URL,
                                          HttpMethod.GET,
-                                            null,
+                                         null,
                                          PAGED_TASKS_RESPONSE_TYPE);
     }
-
-
 }

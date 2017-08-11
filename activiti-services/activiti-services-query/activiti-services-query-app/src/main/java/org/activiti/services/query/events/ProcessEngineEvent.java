@@ -85,4 +85,9 @@ public abstract class ProcessEngineEvent {
     public String getProcessInstanceId() {
         return processInstanceId;
     }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
 }

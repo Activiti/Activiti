@@ -61,9 +61,28 @@ public class TasksIT {
     private VariableRepository variableRepository;
 
     @Before
-    public void setUp() throws Exception{
-        Task task = new Task("1","hruser","name","description",null,null,"priority","category","processDefinitionId","processInstanceId","RUNNING",null,null);
-        Variable variable = new Variable(""+1,"type","name","procInstId","taskId",null,null,"executionId");
+    public void setUp() throws Exception {
+        Task task = new Task("1",
+                             "hruser",
+                             "name",
+                             "description",
+                             null,
+                             null,
+                             "priority",
+                             "category",
+                             "processDefinitionId",
+                             "processInstanceId",
+                             "RUNNING",
+                             null,
+                             null);
+        Variable variable = new Variable("type",
+                                         "name",
+                                         "procInstId",
+                                         "taskId",
+                                         null,
+                                         null,
+                                         "executionId",
+                                         "content");
         variableRepository.save(variable);
         List<Variable> variables = new ArrayList<>();
         variables.add(variable);
@@ -73,7 +92,6 @@ public class TasksIT {
 
     @Test
     public void shouldGetAvailableTasks() throws Exception {
-
 
         Iterator<Task> tasksFromRep = taskRepository.findAll().iterator();
         assertThat(tasksFromRep.hasNext()); //there should be tasks
@@ -93,9 +111,7 @@ public class TasksIT {
     private ResponseEntity<PagedResources<Task>> executeRequestGetTasks() {
         return testRestTemplate.exchange(TASKS_URL,
                                          HttpMethod.GET,
-                                            null,
+                                         null,
                                          PAGED_TASKS_RESPONSE_TYPE);
     }
-
-
 }

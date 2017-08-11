@@ -16,13 +16,14 @@
 
 package org.activiti.services.query.app.model;
 
+import java.util.Date;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.format.annotation.DateTimeFormat;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import java.util.Date;
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -30,7 +31,8 @@ import java.util.Date;
 public class Variable {
 
     @Id
-    private String id;
+    @GeneratedValue
+    private long id;
     private String type; //TODO: this needs to be an entity
     private String name;
     private String processInstanceId;
@@ -40,12 +42,19 @@ public class Variable {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastUpdatedTime;
     private String executionId;
+    private String value;
 
     public Variable() {
     }
 
-    public Variable(String id, String type, String name, String processInstanceId, String taskId, Date createTime, Date lastUpdatedTime, String executionId) {
-        this.id = id;
+    public Variable(String type,
+                    String name,
+                    String processInstanceId,
+                    String taskId,
+                    Date createTime,
+                    Date lastUpdatedTime,
+                    String executionId,
+                    String value) {
         this.type = type;
         this.name = name;
         this.processInstanceId = processInstanceId;
@@ -53,14 +62,11 @@ public class Variable {
         this.createTime = createTime;
         this.lastUpdatedTime = lastUpdatedTime;
         this.executionId = executionId;
+        this.value = value;
     }
 
-    public String getId() {
+    public long getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getType() {
@@ -118,4 +124,13 @@ public class Variable {
     public void setExecutionId(String executionId) {
         this.executionId = executionId;
     }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
 }

@@ -19,6 +19,7 @@ package org.activiti.services.query.app.controller;
 import com.querydsl.core.types.Predicate;
 import org.activiti.services.query.app.assembler.VariableQueryResourceAssembler;
 import org.activiti.services.query.app.model.Variable;
+import org.activiti.services.query.app.repository.EntityFinder;
 import org.activiti.services.query.app.repository.VariableRepository;
 import org.activiti.services.query.app.resource.VariableQueryResource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,26 +39,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/v1/query/variables", produces = MediaTypes.HAL_JSON_VALUE)
 public class VariableQueryController {
 
-    private final VariableRepository dao;
+    private final VariableRepository variableRepository;
 
     private final VariableQueryResourceAssembler resourceAssembler;
 
+    private EntityFinder entityFinder;
+
     @Autowired
-    public VariableQueryController(VariableRepository dao,
-                                   VariableQueryResourceAssembler resourceAssembler) {
-        this.dao = dao;
+    public VariableQueryController(VariableRepository variableRepository,
+                                   VariableQueryResourceAssembler resourceAssembler,
+                                   EntityFinder entityFinder) {
+        this.variableRepository = variableRepository;
         this.resourceAssembler = resourceAssembler;
+        this.entityFinder = entityFinder;
     }
 
     @RequestMapping(method = RequestMethod.GET)
     public PagedResources<VariableQueryResource> findAllByWebQuerydsl(
             @QuerydslPredicate(root = Variable.class) Predicate predicate, Pageable pageable, PagedResourcesAssembler<Variable> pagedResourcesAssembler) {
-        return pagedResourcesAssembler.toResource(dao.findAll(predicate,pageable), resourceAssembler);
+        return pagedResourcesAssembler.toResource(variableRepository.findAll(predicate, pageable), resourceAssembler);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Resource<Variable> getVariableById(@PathVariable String id) {
-        return resourceAssembler.toResource(dao.findById(id).get());
+    public Resource<Variable> getVariableById(@PathVariable long id) {
+        return resourceAssembler.toResource(entityFinder.findById(variableRepository, id, "Unable to find variable with id: " + id));
     }
 
 }

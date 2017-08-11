@@ -26,10 +26,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(exported = false)
-public interface VariableRepository extends CrudRepository<Variable, String> , QuerydslPredicateExecutor<Variable>, QuerydslBinderCustomizer<QVariable> {
+public interface VariableRepository extends CrudRepository<Variable, Long> , QuerydslPredicateExecutor<Variable>, QuerydslBinderCustomizer<QVariable> {
 
     @Override
-    default public void customize(QuerydslBindings bindings, QVariable root) {
+    default void customize(QuerydslBindings bindings,
+                           QVariable root) {
 
 
         bindings.bind(String.class).first(

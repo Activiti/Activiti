@@ -16,6 +16,7 @@
 
 package org.activiti.services.query.app.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Entity;
@@ -203,6 +204,18 @@ public class Task {
         this.variables = variables;
     }
 
+    @JsonIgnore
+    public void addVariable(Variable variable) {
+        if (variables == null) {
+            variables = new ArrayList<>();
+        }
+        variables.add(variable);
+    }
+
+    @JsonIgnore
+    public boolean removeVariable(Variable variable) {
+        return variables != null && variables.remove(variable);
+    }
 
     @Transient
     public Date getLastModifiedTo() {

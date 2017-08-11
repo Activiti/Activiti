@@ -20,12 +20,16 @@ import java.util.Map;
 
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.app.repository.TaskRepository;
+import org.activiti.services.query.app.repository.VariableRepository;
 import org.activiti.services.query.events.ProcessCompletedEvent;
 import org.activiti.services.query.events.ProcessEngineEvent;
 import org.activiti.services.query.events.ProcessStartedEvent;
 import org.activiti.services.query.events.TaskAssignedEvent;
 import org.activiti.services.query.events.TaskCompletedEvent;
 import org.activiti.services.query.events.TaskCreatedEvent;
+import org.activiti.services.query.events.VariableCreatedEvent;
+import org.activiti.services.query.events.VariableDeletedEvent;
+import org.activiti.services.query.events.VariableUpdatedEvent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +74,12 @@ public class QueryEventHandlerContextIT {
         public TaskRepository getTaskRepository() {
             return mock(TaskRepository.class);
         }
+
+        @Primary
+        @Bean
+        public VariableRepository getVariableRepository() {
+            return mock(VariableRepository.class);
+        }
     }
 
     @Test
@@ -85,12 +95,18 @@ public class QueryEventHandlerContextIT {
                 ProcessCompletedEvent.class,
                 TaskCreatedEvent.class,
                 TaskAssignedEvent.class,
-                TaskCompletedEvent.class
+                TaskCompletedEvent.class,
+                VariableCreatedEvent.class,
+                VariableUpdatedEvent.class,
+                VariableDeletedEvent.class
         );
         assertThat(handlers.get(ProcessStartedEvent.class)).isInstanceOf(ProcessStartedHandler.class);
         assertThat(handlers.get(ProcessCompletedEvent.class)).isInstanceOf(ProcessCompletedEventHandler.class);
         assertThat(handlers.get(TaskCreatedEvent.class)).isInstanceOf(TaskCreatedEventHandler.class);
         assertThat(handlers.get(TaskAssignedEvent.class)).isInstanceOf(TaskAssignedEventHandler.class);
         assertThat(handlers.get(TaskCompletedEvent.class)).isInstanceOf(TaskCompletedEventHandler.class);
+        assertThat(handlers.get(VariableCreatedEvent.class)).isInstanceOf(VariableCreatedEventHandler.class);
+        assertThat(handlers.get(VariableUpdatedEvent.class)).isInstanceOf(VariableUpdatedEventHandler.class);
+        assertThat(handlers.get(VariableDeletedEvent.class)).isInstanceOf(VariableDeletedEventHandler.class);
     }
 }

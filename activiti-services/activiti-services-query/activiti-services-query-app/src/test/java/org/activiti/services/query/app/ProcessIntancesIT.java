@@ -67,7 +67,7 @@ public class ProcessIntancesIT {
                 "RUNNING",
                 null);
 
-        Variable variable = new Variable(""+1,"type","name","procInstId","taskId",null,null,"executionId");
+        Variable variable = new Variable("type","name","procInstId","taskId",null,null,"executionId", "content");
         variableRepository.save(variable);
         List<Variable> variables = new ArrayList<>();
         variables.add(variable);
