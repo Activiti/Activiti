@@ -13,11 +13,15 @@
   <packaging>pom</packaging>
 
   <modules>
+    <module>activiti-services-test</module>
+    <module>activiti-services-api</module>
     <module>activiti-services-core-model</module>
     <module>activiti-services-core</module>
     <module>activiti-services-events</module>
-    <module>activiti-services-rest</module>
+    <module>activiti-services-rest-api</module>
+    <module>activiti-services-rest-impl</module>
     <module>activiti-services-identity-keycloak</module>
+    <module>activiti-services-identity-basic</module>
     <module>activiti-services-query</module>
     <module>activiti-services-registry</module>
     <module>activiti-services-gateway</module>

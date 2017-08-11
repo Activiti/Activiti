@@ -28,7 +28,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.services.core.model.converter.ListConverter;
 import org.activiti.services.core.model.converter.ProcessInstanceConverter;
 import org.activiti.services.core.model.converter.TaskConverter;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.events.ActivityCancelledEvent;
 import org.activiti.services.events.ActivityCompletedEventImpl;
 import org.activiti.services.events.ProcessCancelledEvent;

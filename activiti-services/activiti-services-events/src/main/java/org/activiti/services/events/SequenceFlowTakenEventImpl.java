@@ -26,7 +26,8 @@ public class SequenceFlowTakenEventImpl extends AbstractProcessEngineEvent imple
     private String targetActivityName;
     private String targetActivityType;
 
-    public SequenceFlowTakenEventImpl(String executionId,
+    public SequenceFlowTakenEventImpl(String applicatioName,
+                                      String executionId,
                                       String processDefinitionId,
                                       String processInstanceId,
                                       String sequenceFlowId,
@@ -36,7 +37,8 @@ public class SequenceFlowTakenEventImpl extends AbstractProcessEngineEvent imple
                                       String targetActivityId,
                                       String targetActivityName,
                                       String targetActivityType) {
-        super(executionId,
+        super(applicatioName,
+              executionId,
               processDefinitionId,
               processInstanceId);
         this.sequenceFlowId = sequenceFlowId;

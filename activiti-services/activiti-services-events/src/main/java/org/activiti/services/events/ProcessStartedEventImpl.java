@@ -25,12 +25,14 @@ public class ProcessStartedEventImpl  extends AbstractProcessEngineEvent impleme
     public ProcessStartedEventImpl() {
     }
 
-    public ProcessStartedEventImpl(String executionId,
+    public ProcessStartedEventImpl(String applicationName,
+                                   String executionId,
                                    String processDefinitionId,
                                    String processInstanceId,
                                    String nestedProcessDefinitionId,
                                    String nestedProcessInstanceId) {
-        super(executionId,
+        super(applicationName,
+              executionId,
               processDefinitionId,
               processInstanceId);
         this.nestedProcessDefinitionId = nestedProcessDefinitionId;

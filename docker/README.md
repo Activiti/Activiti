@@ -2,11 +2,13 @@
 
 ## Run Core Engine Services
 
-To run core engine services using docker just run the start.sh script. 
+To use keycloak docker the entry 127.0.0.1       activiti-keycloak will be needed in hosts file.
+
+To run core services used by engine using docker then run the start.sh script.
 
 ## Run a Sample Application
 
-See the example repository on how to run a sample application in which all the core services are used and the engine can be interacted with using REST.
+See the spring boot sample app in the example repository on how to run a sample application in which all the core services are used and the engine can be interacted with using REST.
 
 ## Integration Tests
 
@@ -16,7 +18,7 @@ In tests that start the containers independently localhost is used in .propertie
 
 ## Running Containers independently
 
-The keycloak directory contains a Dockerfile for keycloak. It uses springboot-realm.json as a config file. See sample project. It can be run in that directory using  'docker build . -t activiti-keycloak' Then execute 'docker run -p 8180:8180 --name keycloak -i -t activiti-keycloak'
+The keycloak directory contains a Dockerfile for keycloak. It uses springboot-realm.json as a config file. See sample project. It can be run in that directory using  'docker build . -t activiti-keycloak' Then execute 'docker run -p 8180:8180 --name activiti-keycloak -i -t activiti-keycloak'
 
 rabbitmq directory contains a docker-compose file for rabbitmq. It can be run in that directory using docker-compose up
 
@@ -28,4 +30,4 @@ The keycloak setup used by this example can be replicated by importing the provi
 
 To run using a standalone keycloak, download keycloak and run using the following from the keycloak bin directory - ./standalone.sh 
 
-Rabbitmq can also be run standalone. If this is done then the hostnames referring to 'activiti-keycloak' and 'rabbitmq' need to be replaced with localhost as those are docker names.
+Rabbitmq can also be run standalone. If this is done then the hostnames referring to 'activiti-keycloak' and 'rabbitmq' need to be replaced with localhost (or host file modified) as those are docker names.

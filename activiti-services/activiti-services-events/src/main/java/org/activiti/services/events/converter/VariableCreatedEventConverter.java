@@ -19,24 +19,25 @@ package org.activiti.services.events.converter;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiVariableEventImpl;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.events.VariableCreatedEventImpl;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.springframework.stereotype.Component;
 
 import static org.activiti.engine.delegate.event.ActivitiEventType.VARIABLE_CREATED;
 
 @Component
-public class VariableCreatedEventConverter implements EventConverter {
+public class VariableCreatedEventConverter extends AbstractEventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        return new VariableCreatedEventImpl(event.getExecutionId(),
-                                                       event.getProcessDefinitionId(),
-                                                       event.getProcessInstanceId(),
-                                                       ((ActivitiVariableEventImpl) event).getVariableName(),
-                                                       ((ActivitiVariableEventImpl) event).getVariableValue().toString(),
-                                                       ((ActivitiVariableEventImpl) event).getVariableType().getTypeName(),
-                                                       ((ActivitiVariableEventImpl) event).getTaskId());
+        return new VariableCreatedEventImpl(getApplicationName(),
+                                            event.getExecutionId(),
+                                            event.getProcessDefinitionId(),
+                                            event.getProcessInstanceId(),
+                                            ((ActivitiVariableEventImpl) event).getVariableName(),
+                                            ((ActivitiVariableEventImpl) event).getVariableValue().toString(),
+                                            ((ActivitiVariableEventImpl) event).getVariableType().getTypeName(),
+                                            ((ActivitiVariableEventImpl) event).getTaskId());
     }
 
     @Override

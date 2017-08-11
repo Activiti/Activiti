@@ -31,7 +31,7 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessDefinitionMeta;
-import org.activiti.test.util.TestResourceUtil;
+import org.activiti.starter.tests.util.TestResourceUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,11 +75,11 @@ public class ProcessDefinitionIT {
         assertThat(entity).isNotNull();
         assertThat(entity.getBody()).isNotNull();
         assertThat(entity.getBody().getContent()).extracting(ProcessDefinition::getName).contains(
-                                                                                                  "ProcessWithVariables",
-                                                                                                  "ProcessWithVariables2",
-                                                                                                  "process_pool1",
-                                                                                                  "SimpleProcess",
-                                                                                                  "ProcessWithBoundarySignal");
+                "ProcessWithVariables",
+                "ProcessWithVariables2",
+                "process_pool1",
+                "SimpleProcess",
+                "ProcessWithBoundarySignal");
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {
@@ -190,7 +190,7 @@ public class ProcessDefinitionIT {
 
         //when
         String responseData = executeRequest(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/xml",
-                                             HttpMethod.GET);
+                HttpMethod.GET);
 
         //then
         assertThat(responseData).isNotNull();
@@ -208,14 +208,14 @@ public class ProcessDefinitionIT {
 
         //when
         String responseData = executeRequest(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/json",
-                                             HttpMethod.GET);
+                HttpMethod.GET);
 
         //then
         assertThat(responseData).isNotNull();
 
         BpmnModel targetModel = new BpmnJsonConverter().convertToBpmnModel(new ObjectMapper().readTree(responseData));
         final InputStream byteArrayInputStream = new ByteArrayInputStream(TestResourceUtil.getProcessXml(aProcessDefinition.getId()
-                                                                                                          .split(":")[0]).getBytes());
+                .split(":")[0]).getBytes());
         BpmnModel sourceModel = new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
 
             @Override
@@ -239,12 +239,12 @@ public class ProcessDefinitionIT {
 
         //when
         String responseData = executeRequest(PROCESS_DEFINITIONS_URL + aProcessDefinition.getId() + "/svg",
-                                             HttpMethod.GET);
+                HttpMethod.GET);
 
         //then
         assertThat(responseData).isNotNull();
         final InputStream byteArrayInputStream = new ByteArrayInputStream(TestResourceUtil.getProcessXml(aProcessDefinition.getId()
-                                                                                                          .split(":")[0]).getBytes());
+                .split(":")[0]).getBytes());
         BpmnModel sourceModel = new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
 
             @Override
@@ -256,9 +256,9 @@ public class ProcessDefinitionIT {
         String labelFontName = processDiagramGenerator.getDefaultLabelFontName();
         String annotationFontName = processDiagramGenerator.getDefaultAnnotationFontName();
         try (InputStream is = processDiagramGenerator.generateDiagram(sourceModel,
-                                                                      activityFontName,
-                                                                      labelFontName,
-                                                                      annotationFontName)) {
+                activityFontName,
+                labelFontName,
+                annotationFontName)) {
             String sourceSvg = new String(IoUtil.readInputStream(is, null), "UTF-8");
             assertThat(responseData).isEqualTo(sourceSvg);
         }
@@ -270,12 +270,12 @@ public class ProcessDefinitionIT {
                                     null,
                                     new ResponseExtractor<String>() {
 
-                                        @Override
-                                        public String extractData(ClientHttpResponse response)
-                                                                                               throws IOException {
-                                            return new String(IoUtil.readInputStream(response.getBody(),
-                                                                                     null), "UTF-8");
-                                        }
-                                    });
+                    @Override
+                    public String extractData(ClientHttpResponse response)
+                            throws IOException {
+                        return new String(IoUtil.readInputStream(response.getBody(),
+                                null), "UTF-8");
+                    }
+                });
     }
 }

@@ -19,18 +19,23 @@ package org.activiti.services.events.converter;
 import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiProcessStartedEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = EventConverterContextIT.EventConverterContextConfig.class)
+@TestPropertySource("classpath:test-application.properties")
 public class EventConverterContextIT {
 
     @Autowired
@@ -63,4 +68,21 @@ public class EventConverterContextIT {
                                                 ActivitiEventType.VARIABLE_UPDATED);
     }
 
+    @Test
+    public void shouldIncludeApplicationNameInConvertedEvents() throws Exception {
+
+        //when
+        Map<ActivitiEventType, EventConverter> converters = converterContext.getConvertersMap();
+
+        //then
+        assertThat(converters).containsKey(ActivitiEventType.PROCESS_STARTED);
+        ActivitiProcessStartedEvent activitiEvent = mock(ActivitiProcessStartedEvent.class);
+
+        ProcessEngineEvent processEngineEvent = converters.get(ActivitiEventType.PROCESS_STARTED).from(activitiEvent);
+
+        assertThat(processEngineEvent).isNotNull();
+        assertThat(processEngineEvent.getApplicationName()).isNotEmpty();
+        // this comes from the application.properties (test-application.properties) spring app name configuration
+        assertThat(processEngineEvent.getApplicationName()).isEqualTo("test-app");
+    }
 }

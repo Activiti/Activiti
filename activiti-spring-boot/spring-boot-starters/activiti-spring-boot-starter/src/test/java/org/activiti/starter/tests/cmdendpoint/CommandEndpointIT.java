@@ -33,13 +33,14 @@ import org.activiti.services.core.model.commands.CompleteTaskCmd;
 import org.activiti.services.core.model.commands.ReleaseTaskCmd;
 import org.activiti.services.core.model.commands.StartProcessInstanceCmd;
 import org.activiti.services.core.model.commands.SuspendProcessInstanceCmd;
+import org.activiti.services.core.model.commands.results.AbstractCommandResults;
 import org.activiti.services.core.model.commands.results.ActivateProcessInstanceResults;
 import org.activiti.services.core.model.commands.results.ClaimTaskResults;
-import org.activiti.services.core.model.commands.results.CommandResults;
 import org.activiti.services.core.model.commands.results.CompleteTaskResults;
 import org.activiti.services.core.model.commands.results.ReleaseTaskResults;
 import org.activiti.services.core.model.commands.results.StartProcessInstanceResults;
 import org.activiti.services.core.model.commands.results.SuspendProcessInstanceResults;
+import org.activiti.services.identity.keycloak.interceptor.KeycloakSecurityContextClientRequestInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,8 +100,13 @@ public class CommandEndpointIT {
 
     private static String testProcessInstanceId;
 
+    @Autowired
+    private KeycloakSecurityContextClientRequestInterceptor keycloakSecurityContextClientRequestInterceptor;
+
     @Before
     public void setUp() throws Exception {
+        keycloakSecurityContextClientRequestInterceptor.setKeycloaktestuser("hruser");
+
         // Get Available Process Definitions
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -116,11 +122,12 @@ public class CommandEndpointIT {
     public static class StreamHandler {
 
         @StreamListener(MessageClientStream.MY_CMD_RESULTS)
-        public void consumeResults(CommandResults results) {
+        public void consumeResults(AbstractCommandResults results) {
             assertThat(results).isNotNull();
             if (results instanceof StartProcessInstanceResults) {
-                assertThat(((StartProcessInstanceResults) results).getProcessInstanceId()).isNotEmpty();
-                testProcessInstanceId = ((StartProcessInstanceResults) results).getProcessInstanceId();
+                assertThat(((StartProcessInstanceResults) results).getProcessInstance()).isNotNull();
+                assertThat(((StartProcessInstanceResults) results).getProcessInstance().getId()).isNotEmpty();
+                testProcessInstanceId = ((StartProcessInstanceResults) results).getProcessInstance().getId();
                 startedProcessInstanceAck.set(true);
             } else if (results instanceof SuspendProcessInstanceResults) {
                 suspendedProcessInstanceAck.set(true);

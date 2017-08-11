@@ -26,13 +26,15 @@ public class ActivityCompletedEventImpl extends AbstractProcessEngineEvent imple
     public ActivityCompletedEventImpl() {
     }
 
-    public ActivityCompletedEventImpl(String executionId,
+    public ActivityCompletedEventImpl(String applicationName,
+                                      String executionId,
                                       String processDefinitionId,
                                       String processInstanceId,
                                       String activityId,
                                       String activityName,
                                       String activityType) {
-        super(executionId,
+        super(applicationName,
+              executionId,
               processDefinitionId,
               processInstanceId);
         this.activityId = activityId;

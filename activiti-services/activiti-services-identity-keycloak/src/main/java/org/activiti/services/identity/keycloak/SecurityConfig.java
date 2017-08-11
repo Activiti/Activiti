@@ -74,6 +74,6 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         super.configure(http);
         http.authorizeRequests()
                 .antMatchers("/*").hasRole("user") //could optionally set these by autowiring and parsing keycloakSpringBootProperties
-                .anyRequest().authenticated().and().csrf().disable();
+                .anyRequest().authenticated().and().csrf().disable().httpBasic().disable();
     }
 }

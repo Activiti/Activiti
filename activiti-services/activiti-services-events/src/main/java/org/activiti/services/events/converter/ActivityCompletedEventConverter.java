@@ -19,24 +19,24 @@ package org.activiti.services.events.converter;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.events.ActivityCompletedEventImpl;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.springframework.stereotype.Component;
 
 import static org.activiti.engine.delegate.event.ActivitiEventType.ACTIVITY_COMPLETED;
 
 @Component
-public class ActivityCompletedEventConverter implements EventConverter {
+public class ActivityCompletedEventConverter extends AbstractEventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        return new ActivityCompletedEventImpl(event.getExecutionId(),
-                                                  event.getProcessDefinitionId(),
-                                                  event.getProcessInstanceId(),
-                                                  ((ActivitiActivityEvent) event).getActivityId(),
-                                                  ((ActivitiActivityEvent) event).getActivityName(),
-                                                  ((ActivitiActivityEvent) event).getActivityType());
-
+        return new ActivityCompletedEventImpl(getApplicationName(),
+                                              event.getExecutionId(),
+                                              event.getProcessDefinitionId(),
+                                              event.getProcessInstanceId(),
+                                              ((ActivitiActivityEvent) event).getActivityId(),
+                                              ((ActivitiActivityEvent) event).getActivityName(),
+                                              ((ActivitiActivityEvent) event).getActivityType());
     }
 
     @Override

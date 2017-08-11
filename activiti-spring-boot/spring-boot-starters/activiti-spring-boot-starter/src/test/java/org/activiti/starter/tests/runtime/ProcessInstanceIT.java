@@ -32,8 +32,8 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
-import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
-import org.activiti.test.util.TestResourceUtil;
+import org.activiti.starter.tests.helper.ProcessInstanceRestTemplate;
+import org.activiti.starter.tests.util.TestResourceUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,7 +52,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.ResponseExtractor;
 
-import static org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.activiti.starter.tests.helper.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
@@ -71,7 +71,7 @@ public class ProcessInstanceIT {
     private ProcessDiagramGenerator processDiagramGenerator;
 
     @Autowired
-    private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
+    private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
     @Value("${keycloaktestuser}")
     protected String keycloaktestuser;
@@ -136,16 +136,16 @@ public class ProcessInstanceIT {
 
         //when
         String responseData = executeRequest(
-                                             PROCESS_INSTANCES_RELATIVE_URL + startedProcessEntity.getBody()
-                                                                                                  .getId() + "/svg",
-                                             HttpMethod.GET);
+                PROCESS_INSTANCES_RELATIVE_URL + startedProcessEntity.getBody()
+                        .getId() + "/svg",
+                HttpMethod.GET);
 
         //then
         assertThat(responseData).isNotNull();
 
         final InputStream byteArrayInputStream = new ByteArrayInputStream(TestResourceUtil.getProcessXml(startedProcessEntity.getBody()
-                                                                                                            .getProcessDefinitionId()
-                                                                                                            .split(":")[0]).getBytes());
+                .getProcessDefinitionId()
+                .split(":")[0]).getBytes());
         BpmnModel sourceModel = new BpmnXMLConverter().convertToBpmnModel(new InputStreamProvider() {
 
             @Override
@@ -158,11 +158,11 @@ public class ProcessInstanceIT {
         String annotationFontName = processDiagramGenerator.getDefaultAnnotationFontName();
         List<String> activityIds = Arrays.asList("sid-CDFE7219-4627-43E9-8CA8-866CC38EBA94");
         try (InputStream is = processDiagramGenerator.generateDiagram(sourceModel,
-                                                                      activityIds,
-                                                                      Collections.emptyList(),
-                                                                      activityFontName,
-                                                                      labelFontName,
-                                                                      annotationFontName)) {
+                activityIds,
+                Collections.emptyList(),
+                activityFontName,
+                labelFontName,
+                annotationFontName)) {
             String sourceSvg = new String(IoUtil.readInputStream(is, null), "UTF-8");
             assertThat(responseData).isEqualTo(sourceSvg);
         }
@@ -251,12 +251,12 @@ public class ProcessInstanceIT {
                                     null,
                                     new ResponseExtractor<String>() {
 
-                                        @Override
-                                        public String extractData(ClientHttpResponse response)
-                                                                                               throws IOException {
-                                            return new String(IoUtil.readInputStream(response.getBody(),
-                                                                                     null), "UTF-8");
-                                        }
-                                    });
+                    @Override
+                    public String extractData(ClientHttpResponse response)
+                            throws IOException {
+                        return new String(IoUtil.readInputStream(response.getBody(),
+                                null), "UTF-8");
+                    }
+                });
     }
 }

@@ -17,6 +17,7 @@
     <modules>
         <module>activiti-spring-boot-starter-basic</module>
         <module>activiti-spring-boot-starter</module>
+        <module>activiti-spring-boot-audit-starter</module>
     </modules>
     <dependencies>
         <dependency>

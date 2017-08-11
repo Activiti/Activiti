@@ -22,7 +22,7 @@ import java.util.Map;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.starter.tests.definition.ProcessDefinitionIT;
-import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
+import org.activiti.starter.tests.helper.ProcessInstanceRestTemplate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +39,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.activiti.starter.tests.helper.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
@@ -52,7 +52,7 @@ public class ProcessVariablesIT {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
+    private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
     private Map<String, String> processDefinitionIds = new HashMap<>();
 
@@ -72,13 +72,13 @@ public class ProcessVariablesIT {
         //given
         Map<String, Object> variables = new HashMap<>();
         variables.put("firstName",
-                      "Pedro");
+                "Pedro");
         variables.put("lastName",
-                      "Silva");
+                "Silva");
         variables.put("age",
-                      15);
+                15);
         ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS_WITH_VARIABLES),
-                                                                                                 variables);
+                variables);
 
         //when
         ResponseEntity<Resource<Map<String, Object>>> variablesResponse = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + startResponse.getBody().getId() + "/variables",
@@ -91,11 +91,11 @@ public class ProcessVariablesIT {
         assertThat(variablesResponse).isNotNull();
         assertThat(variablesResponse.getBody().getContent())
                 .containsEntry("firstName",
-                               "Pedro")
+                        "Pedro")
                 .containsEntry("lastName",
-                               "Silva")
+                        "Silva")
                 .containsEntry("age",
-                               15);
+                        15);
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {

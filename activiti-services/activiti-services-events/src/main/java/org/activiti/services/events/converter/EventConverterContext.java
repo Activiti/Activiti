@@ -24,12 +24,16 @@ import java.util.stream.Collectors;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EventConverterContext {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EventConverterContext.class);
 
     private Map<ActivitiEventType, EventConverter> convertersMap;
 
@@ -53,8 +57,7 @@ public class EventConverterContext {
         if (converter != null) {
             newEvent = converter.from(activitiEvent);
         } else {
-            System.out.println(" -----> "+ activitiEvent.getType() + " we are ommiting this event type, fix this right now :) ");
-            System.out.println(" ------> Class for the ommited event"+ activitiEvent.getClass().getCanonicalName());
+            LOGGER.debug(">> Ommited Event Type: " + activitiEvent.getClass().getCanonicalName());
         }
         return newEvent;
     }

@@ -21,7 +21,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
 import org.activiti.services.audit.converter.TaskJpaJsonConverter;
-import org.activiti.services.core.model.Task;
+import org.activiti.services.audit.events.model.Task;
 
 @Entity
 @DiscriminatorValue(value = TaskAssignedEventEntity.TASK_ASSIGNED_EVENT)

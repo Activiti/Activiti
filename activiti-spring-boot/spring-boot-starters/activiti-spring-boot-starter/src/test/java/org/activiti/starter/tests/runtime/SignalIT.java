@@ -25,7 +25,7 @@ import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.commands.SignalProcessInstancesCmd;
 import org.activiti.starter.tests.definition.ProcessDefinitionIT;
-import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
+import org.activiti.starter.tests.helper.ProcessInstanceRestTemplate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +43,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.activiti.starter.tests.helper.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
@@ -56,7 +56,7 @@ public class SignalIT {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
+    private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
     private static final String SIGNAL_PROCESS = "ProcessWithBoundarySignal";
 
@@ -79,10 +79,10 @@ public class SignalIT {
 
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
-                                                                    HttpMethod.POST,
-                                                                    new HttpEntity(signalProcessInstancesCmd),
-                                                                    new ParameterizedTypeReference<Void>() {
-                                                                    });
+                HttpMethod.POST,
+                new HttpEntity(signalProcessInstancesCmd),
+                new ParameterizedTypeReference<Void>() {
+                });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -95,15 +95,15 @@ public class SignalIT {
         //given
         ResponseEntity<ProcessInstance> startProcessEntity = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIGNAL_PROCESS));
         SignalProcessInstancesCmd signalProcessInstancesCmd = new SignalProcessInstancesCmd("go",
-                                                                                            Collections.singletonMap("myVar",
-                                                                                                                  "myContent"));
+                Collections.singletonMap("myVar",
+                        "myContent"));
 
         //when
         ResponseEntity<Void> responseEntity = restTemplate.exchange(PROCESS_INSTANCES_RELATIVE_URL + "/signal",
-                                                                    HttpMethod.POST,
-                                                                    new HttpEntity(signalProcessInstancesCmd),
-                                                                    new ParameterizedTypeReference<Void>() {
-                                                                    });
+                HttpMethod.POST,
+                new HttpEntity(signalProcessInstancesCmd),
+                new ParameterizedTypeReference<Void>() {
+                });
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -113,7 +113,7 @@ public class SignalIT {
 
         ResponseEntity<Resource<Map<String, Object>>> variablesEntity = processInstanceRestTemplate.getVariables(startProcessEntity);
         assertThat(variablesEntity.getBody().getContent()).containsEntry("myVar",
-                                                                         "myContent");
+                "myContent");
     }
 
     private ResponseEntity<PagedResources<ProcessDefinition>> getProcessDefinitions() {

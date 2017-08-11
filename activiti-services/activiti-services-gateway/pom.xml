@@ -38,6 +38,10 @@
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-eureka</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-services-identity-keycloak</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
@@ -50,6 +54,37 @@
           <execution>
             <goals>
               <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <configuration>
+          <images>
+            <image>
+              <name>activiti-services-gateway</name>
+              <alias>activiti-services-gateway</alias>
+              <build>
+                <from>openjdk:alpine</from>
+                <assembly>
+                  <descriptorRef>artifact</descriptorRef>
+                </assembly>
+                <cmd>java -jar maven/${project.artifactId}-${project.version}.jar</cmd>
+              </build>
+            </image>
+
+          </images>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>build</id>
+            <phase>install</phase>
+            <goals>
+              <goal>build</goal>
             </goals>
           </execution>
         </executions>

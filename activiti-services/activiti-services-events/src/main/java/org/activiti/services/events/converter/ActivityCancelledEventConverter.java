@@ -19,18 +19,19 @@ package org.activiti.services.events.converter;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.events.ActivityCancelledEventImpl;
 import org.springframework.stereotype.Component;
 
 import static org.activiti.engine.delegate.event.ActivitiEventType.ACTIVITY_CANCELLED;
 
 @Component
-public class ActivityCancelledEventConverter implements EventConverter {
+public class ActivityCancelledEventConverter extends AbstractEventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        return new ActivityCancelledEventImpl(event.getExecutionId(),
+        return new ActivityCancelledEventImpl(getApplicationName(),
+                                              event.getExecutionId(),
                                               event.getProcessDefinitionId(),
                                               event.getProcessInstanceId(),
                                               ((ActivitiActivityCancelledEvent) event).getActivityId(),

@@ -26,7 +26,7 @@ import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.commands.CompleteTaskCmd;
 import org.activiti.services.identity.keycloak.interceptor.KeycloakSecurityContextClientRequestInterceptor;
-import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
+import org.activiti.starter.tests.helper.ProcessInstanceRestTemplate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -43,7 +43,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
+import static org.activiti.starter.tests.helper.ProcessInstanceRestTemplate.PROCESS_INSTANCES_RELATIVE_URL;
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
@@ -65,7 +65,7 @@ public class TasksIT  {
     private TestRestTemplate testRestTemplate;
 
     @Autowired
-    private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
+    private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
     @Autowired
     private KeycloakSecurityContextClientRequestInterceptor keycloakSecurityContextClientRequestInterceptor;

@@ -18,7 +18,7 @@
 package org.activiti.services.events;
 
 import org.activiti.services.core.model.ProcessInstance;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 
 public interface ProcessCompletedEvent extends ProcessEngineEvent {
 
