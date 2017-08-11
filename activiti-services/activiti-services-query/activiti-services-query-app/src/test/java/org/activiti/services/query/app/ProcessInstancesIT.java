@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:test-application.properties")
-public class ProcessIntancesIT {
+public class ProcessInstancesIT {
 
     private static final String PROC_URL = "/v1/process-instances";
     private static final ParameterizedTypeReference<PagedResources<ProcessInstance>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<ProcessInstance>>() {
