@@ -346,7 +346,7 @@
   
   <sql id="commonSelectHistoricProcessInstancesByQueryCriteriaSql">
     <if test="involvedGroups != null">
-      left join ${prefix}ACT_HI_IDENTITYLINK I on I.PROC_INST_ID_ = RES.ID_
+      inner join ${prefix}ACT_HI_IDENTITYLINK I on I.PROC_INST_ID_ = RES.ID_
     </if>
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
       inner join ${prefix}ACT_HI_VARINST  A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_
