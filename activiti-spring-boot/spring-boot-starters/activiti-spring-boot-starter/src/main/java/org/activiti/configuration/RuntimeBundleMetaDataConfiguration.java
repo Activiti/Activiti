@@ -10,21 +10,15 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RuntimeBundleMetaDataConfiguration implements BeanClassLoaderAware {
-
-    private ClassLoader classLoader;
-
-
-    private ApplicationInfoManager appInfoManager;
-
-    public void setBeanClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-    }
-
+    
     @Autowired
     public RuntimeBundleMetaDataConfiguration(ApplicationInfoManager appInfoManager) {
-        this.appInfoManager = appInfoManager;
         Map<String, String> metadata = new HashMap<>();
-        metadata.put("type", "runtime-bundle");
-        this.appInfoManager.registerAppMetadata(metadata);
+        metadata.put("type",
+                     "runtime-bundle");
+        appInfoManager.registerAppMetadata(metadata);
+    }
+
+    public void setBeanClassLoader(ClassLoader classLoader) {
     }
 }
