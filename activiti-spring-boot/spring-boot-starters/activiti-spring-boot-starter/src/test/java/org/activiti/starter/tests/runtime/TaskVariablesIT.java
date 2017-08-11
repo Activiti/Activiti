@@ -25,8 +25,7 @@ import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.Task;
 import org.activiti.starter.tests.definition.ProcessDefinitionIT;
-import org.activiti.starter.tests.keycloak.KeycloakEnabledBaseTestIT;
-import org.activiti.starter.tests.keycloak.ProcessInstanceKeycloakRestTemplate;
+import org.activiti.starter.tests.helper.ProcessInstanceRestTemplate;
 import org.activiti.starter.tests.helper.TaskRestTemplate;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,13 +47,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:application-test.properties")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
+public class TaskVariablesIT {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private ProcessInstanceKeycloakRestTemplate processInstanceRestTemplate;
+    private ProcessInstanceRestTemplate processInstanceRestTemplate;
 
     @Autowired
     private TaskRestTemplate taskRestTemplate;
@@ -65,10 +64,8 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
 
     public static final String TASK_VARIABLES_URL = "/v1/taskId/";
 
-    @Override
     @Before
     public void setUp() throws Exception {
-        super.setUp();
         ResponseEntity<PagedResources<ProcessDefinition>> processDefinitions = getProcessDefinitions();
         assertThat(processDefinitions.getStatusCode()).isEqualTo(HttpStatus.OK);
         for (ProcessDefinition pd : processDefinitions.getBody().getContent()) {
@@ -83,19 +80,17 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
         variables.put("var1",
                       "test1");
         ResponseEntity<ProcessInstance> startResponse = processInstanceRestTemplate.startProcess(processDefinitionIds.get(SIMPLE_PROCESS),
-                                                                                                 variables,
-                                                                                                 accessToken);
-        ResponseEntity<PagedResources<Task>> tasks = processInstanceRestTemplate.getTasks(startResponse, accessToken);
+                                                                                                 variables);
+        ResponseEntity<PagedResources<Task>> tasks = processInstanceRestTemplate.getTasks(startResponse);
 
         String taskId = tasks.getBody().getContent().iterator().next().getId();
         Map<String, Object> taskVariables = new HashMap<>();
         taskVariables.put("var2",
                           "test2");
-        taskRestTemplate.setVariablesLocal(taskId, taskVariables, accessToken);
+        taskRestTemplate.setVariablesLocal(taskId, taskVariables);
 
         //when
-        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = taskRestTemplate.getVariablesLocal(taskId,
-                                                                                                                     accessToken);
+        ResponseEntity<Resource<Map<String, Object>>> variablesResponse = taskRestTemplate.getVariablesLocal(taskId);
 
         //then
         assertThat(variablesResponse).isNotNull();
@@ -105,7 +100,7 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
                                                             .doesNotContainKey("var1");
 
         // when
-        variablesResponse = taskRestTemplate.getVariables(taskId, accessToken);
+        variablesResponse = taskRestTemplate.getVariables(taskId);
 
         // then
         assertThat(variablesResponse).isNotNull();
@@ -121,10 +116,10 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
                           "test2-update");
         taskVariables.put("var3",
                           "test3");
-        taskRestTemplate.setVariables(taskId, taskVariables, accessToken);
+        taskRestTemplate.setVariables(taskId, taskVariables);
 
         // when
-        variablesResponse = taskRestTemplate.getVariables(taskId, accessToken);
+        variablesResponse = taskRestTemplate.getVariables(taskId);
 
         // then
         assertThat(variablesResponse).isNotNull();
@@ -137,7 +132,7 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
                                                                            "test3");
 
         // when
-        variablesResponse = taskRestTemplate.getVariablesLocal(taskId, accessToken);
+        variablesResponse = taskRestTemplate.getVariablesLocal(taskId);
 
         // then
         assertThat(variablesResponse).isNotNull();
@@ -153,7 +148,7 @@ public class TaskVariablesIT extends KeycloakEnabledBaseTestIT {
         };
         return restTemplate.exchange(ProcessDefinitionIT.PROCESS_DEFINITIONS_URL,
                                      HttpMethod.GET,
-                                     getRequestEntityWithHeaders(),
+                                     null,
                                      responseType);
     }
 }

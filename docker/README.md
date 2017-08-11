@@ -4,7 +4,7 @@
 
 To use keycloak docker the entry 127.0.0.1       activiti-keycloak will be needed in hosts file.
 
-To run core engine services (inc keycloak as IDM) using docker then run the start.sh script.
+To run core services used by engine using docker then run the start.sh script.
 
 ## Run a Sample Application
 
@@ -18,7 +18,7 @@ In tests that start the containers independently localhost is used in .propertie
 
 ## Running Containers independently
 
-The keycloak directory contains a Dockerfile for keycloak. It uses springboot-realm.json as a config file. See sample project. It can be run in that directory using  'docker build . -t activiti-keycloak' Then execute 'docker run -p 8180:8180 --name keycloak -i -t activiti-keycloak'
+The keycloak directory contains a Dockerfile for keycloak. It uses springboot-realm.json as a config file. See sample project. It can be run in that directory using  'docker build . -t activiti-keycloak' Then execute 'docker run -p 8180:8180 --name activiti-keycloak -i -t activiti-keycloak'
 
 rabbitmq directory contains a docker-compose file for rabbitmq. It can be run in that directory using docker-compose up
 

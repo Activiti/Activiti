@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package org.activiti;
+package org.activiti.services.audit;
 
-import org.activiti.services.audit.AuditConsumerChannels;
-import org.activiti.services.audit.EventsRepository;
 import org.activiti.services.audit.events.ProcessEngineEventEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -28,9 +26,10 @@ import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@EnableDiscoveryClient
+@ComponentScan("org.activiti")
 @EnableBinding(AuditConsumerChannels.class)
 public class JpaAuditApplication implements CommandLineRunner {
 

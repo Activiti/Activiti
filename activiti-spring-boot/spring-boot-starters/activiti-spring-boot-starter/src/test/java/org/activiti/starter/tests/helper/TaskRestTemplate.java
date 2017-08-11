@@ -42,19 +42,12 @@ public class TaskRestTemplate {
     @Autowired
     private TestRestTemplate testRestTemplate;
 
-    private HttpHeaders getHeaders(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization",
-                    "Bearer " + token);
-        return headers;
-    }
-
-    public ResponseEntity<Void> setVariables(String taskId, Map<String, Object> variables, AccessTokenResponse accessToken) {
+    public ResponseEntity<Void> setVariables(String taskId, Map<String, Object> variables) {
         SetTaskVariablesCmd setTaskVariablesCmd = new SetTaskVariablesCmd(taskId, variables);
         
         HttpEntity<SetTaskVariablesCmd> requestEntity = new HttpEntity<>(
                 setTaskVariablesCmd,
-                getHeaders(accessToken.getToken()));
+                null);
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + taskId + "/variables/",
                                                                                                  HttpMethod.POST,
                                                                                                  requestEntity,
@@ -64,12 +57,12 @@ public class TaskRestTemplate {
         return responseEntity;
     }
 
-    public ResponseEntity<Void> setVariablesLocal(String taskId, Map<String, Object> variables, AccessTokenResponse accessToken) {
+    public ResponseEntity<Void> setVariablesLocal(String taskId, Map<String, Object> variables) {
         SetTaskVariablesCmd setTaskVariablesCmd = new SetTaskVariablesCmd(taskId, variables);
         
         HttpEntity<SetTaskVariablesCmd> requestEntity = new HttpEntity<>(
                 setTaskVariablesCmd, 
-                getHeaders(accessToken.getToken()));
+                null);
         ResponseEntity<Void> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + taskId + "/variables/local",
                                                                                                  HttpMethod.POST,
                                                                                                  requestEntity,
@@ -79,24 +72,22 @@ public class TaskRestTemplate {
         return responseEntity;
     }
 
-    public ResponseEntity<Resource<Map<String, Object>>> getVariables(String taskId, AccessTokenResponse accessToken) {
-        HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(
-                getHeaders(accessToken.getToken()));
+    public ResponseEntity<Resource<Map<String, Object>>> getVariables(String taskId) {
+
         ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + taskId + "/variables/",
                                                                                                  HttpMethod.GET,
-                                                                                                 requestEntity,
+                                                                                                 null,
                                                                                                  new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
                                                                                                  });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         return responseEntity;
     }
 
-    public ResponseEntity<Resource<Map<String, Object>>> getVariablesLocal(String taskId, AccessTokenResponse accessToken) {
-        HttpEntity<StartProcessInstanceCmd> requestEntity = new HttpEntity<>(
-                getHeaders(accessToken.getToken()));
+    public ResponseEntity<Resource<Map<String, Object>>> getVariablesLocal(String taskId) {
+
         ResponseEntity<Resource<Map<String, Object>>> responseEntity = testRestTemplate.exchange(TaskRestTemplate.TASK_VAR_RELATIVE_URL + taskId + "/variables/local",
                                                                                                  HttpMethod.GET,
-                                                                                                 requestEntity,
+                                                                                                 null,
                                                                                                  new ParameterizedTypeReference<Resource<Map<String, Object>>>() {
                                                                                                  });
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
