@@ -66,6 +66,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected Integer processDefinitionVersion;
   protected Set<String> processInstanceIds;
   protected String involvedUser;
+  protected List<String> involvedGroups;
   protected boolean includeProcessVariables;
   protected Integer processInstanceVariablesLimit;
   protected boolean withJobException;
@@ -320,6 +321,19 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     return this;
   }
   
+  public HistoricProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups) {
+    if (involvedGroups == null || involvedGroups.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Involved groups list is null or empty.");
+    }
+
+    if (inOrStatement) {
+      this.currentOrQueryObject.involvedGroups = involvedGroups;
+    } else {
+      this.involvedGroups = involvedGroups;
+    }
+    return this;
+  }
+
   public HistoricProcessInstanceQuery includeProcessVariables() {
     this.includeProcessVariables = true;
     return this;
@@ -706,6 +720,11 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   public String getInvolvedUser() {
     return involvedUser;
   }
+  
+  public List<String> getInvolvedGroups() {
+    return involvedGroups;
+  }
+
   public String getName() {
     return name;
   }
