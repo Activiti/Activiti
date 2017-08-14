@@ -291,11 +291,6 @@
         <artifactId>activiti-services-audit-jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-api</artifactId>
-        <version>${project.version}</version>
-      </dependency>
 
       <!-- Spring Boot / Cloud / Stream dependencies -->
       <dependency>
@@ -835,14 +830,6 @@
 				<lifecycleMappingMetadata>
 					<pluginExecutions>
 						<pluginExecution>
-							<pluginExecutionFilter>
-								<groupId>org.commonjava.maven.plugins</groupId>
-								<artifactId>directory-maven-plugin</artifactId>
-								<versionRange>[0.1,)</versionRange>
-								<goals>
-									<goal>highest-basedir</goal>
-								</goals>
-							</pluginExecutionFilter>
 							<action>
 								<execute>
 									<runOnIncremental>true</runOnIncremental>
@@ -1103,23 +1090,6 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>${build-helper-maven-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.commonjava.maven.plugins</groupId>
-          <artifactId>directory-maven-plugin</artifactId>
-          <version>${directory.maven.plugin.version}</version>
-          <executions>
-            <execution>
-              <id>directories</id>
-              <goals>
-                <goal>highest-basedir</goal>
-              </goals>
-              <phase>initialize</phase>
-              <configuration>
-                <property>main.basedir</property>
-              </configuration>
-            </execution>
-          </executions>
         </plugin>
         <plugin>
           <groupId>org.springframework.boot</groupId>
