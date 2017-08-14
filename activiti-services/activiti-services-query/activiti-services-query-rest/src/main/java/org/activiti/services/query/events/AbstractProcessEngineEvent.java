@@ -37,7 +37,6 @@ import org.activiti.services.api.events.ProcessEngineEvent;
         @JsonSubTypes.Type(value = VariableCreatedEvent.class, name = "VariableCreatedEvent"),
         @JsonSubTypes.Type(value = VariableUpdatedEvent.class, name = "VariableUpdatedEvent"),
         @JsonSubTypes.Type(value = VariableDeletedEvent.class, name = "VariableDeletedEvent"),
-        @JsonSubTypes.Type(value = SequenceFlowTakenEvent.class, name = "SequenceFlowTakenEvent")
 
 })
 public abstract class AbstractProcessEngineEvent implements ProcessEngineEvent {
