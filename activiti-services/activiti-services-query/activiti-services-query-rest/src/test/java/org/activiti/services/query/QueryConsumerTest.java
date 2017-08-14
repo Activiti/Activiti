@@ -28,8 +28,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class
-QueryConsumerTest {
+public class QueryConsumerTest {
 
     @InjectMocks
     private QueryConsumer consumer;
