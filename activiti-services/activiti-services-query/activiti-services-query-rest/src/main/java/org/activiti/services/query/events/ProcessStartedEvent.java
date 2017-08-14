@@ -16,7 +16,7 @@
 
 package org.activiti.services.query.events;
 
-public class ProcessStartedEvent extends ProcessEngineEvent {
+public class ProcessStartedEvent extends AbstractProcessEngineEvent {
 
     private String nestedProcessDefinitionId;
     private String nestedProcessInstanceId;

@@ -16,7 +16,7 @@
 
 package org.activiti.services.query.events;
 
-public class VariableUpdatedEvent extends ProcessEngineEvent {
+public class VariableUpdatedEvent extends AbstractProcessEngineEvent {
 
     protected String variableName;
     protected String variableValue;

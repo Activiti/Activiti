@@ -18,11 +18,11 @@ package org.activiti.services.query.events.handlers;
 
 import java.util.Map;
 
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.app.repository.VariableRepository;
 import org.activiti.services.query.events.ProcessCompletedEvent;
-import org.activiti.services.query.events.ProcessEngineEvent;
 import org.activiti.services.query.events.ProcessStartedEvent;
 import org.activiti.services.query.events.TaskAssignedEvent;
 import org.activiti.services.query.events.TaskCompletedEvent;

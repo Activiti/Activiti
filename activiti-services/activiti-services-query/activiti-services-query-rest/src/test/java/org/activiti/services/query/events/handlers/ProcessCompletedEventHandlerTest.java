@@ -20,10 +20,10 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.query.app.model.ProcessInstance;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.events.ProcessCompletedEvent;
-import org.activiti.services.query.events.ProcessEngineEvent;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

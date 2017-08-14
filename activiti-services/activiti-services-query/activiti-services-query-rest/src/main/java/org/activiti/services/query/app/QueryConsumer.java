@@ -16,7 +16,7 @@
 
 package org.activiti.services.query.app;
 
-import org.activiti.services.query.events.ProcessEngineEvent;
+import org.activiti.services.query.events.AbstractProcessEngineEvent;
 import org.activiti.services.query.events.handlers.QueryEventHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
@@ -33,7 +33,7 @@ public class QueryConsumer {
     }
 
     @StreamListener(QueryConsumerChannels.QUERY_CONSUMER)
-    public synchronized void receive(ProcessEngineEvent event) {
+    public synchronized void receive(AbstractProcessEngineEvent event) {
         eventHandlerContext.handle(event);
     }
 

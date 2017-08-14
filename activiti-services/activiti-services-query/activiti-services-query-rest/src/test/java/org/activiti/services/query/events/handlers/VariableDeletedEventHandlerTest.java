@@ -16,15 +16,15 @@
 
 package org.activiti.services.query.events.handlers;
 
-import org.activiti.services.query.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.query.events.VariableDeletedEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class VariableDeletedEventHandlerTest {

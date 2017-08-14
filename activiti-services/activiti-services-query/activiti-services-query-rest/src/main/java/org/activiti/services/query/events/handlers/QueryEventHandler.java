@@ -16,7 +16,7 @@
 
 package org.activiti.services.query.events.handlers;
 
-import org.activiti.services.query.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 
 public interface QueryEventHandler {
 

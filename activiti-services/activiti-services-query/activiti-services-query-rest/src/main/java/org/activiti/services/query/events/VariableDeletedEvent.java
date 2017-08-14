@@ -16,7 +16,7 @@
 
 package org.activiti.services.query.events;
 
-public class VariableDeletedEvent extends ProcessEngineEvent {
+public class VariableDeletedEvent extends AbstractProcessEngineEvent {
 
     private String variableName;
     private String variableValue;

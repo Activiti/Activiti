@@ -20,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.activiti.services.api.events.ProcessEngineEvent;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -39,22 +40,23 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = SequenceFlowTakenEvent.class, name = "SequenceFlowTakenEvent")
 
 })
-public abstract class ProcessEngineEvent {
+public abstract class AbstractProcessEngineEvent implements ProcessEngineEvent {
 
     private Long timestamp;
     private String eventType;
     private String executionId;
     private String processDefinitionId;
     private String processInstanceId;
+    private String applicationName;
 
-    public ProcessEngineEvent() {
+    public AbstractProcessEngineEvent() {
     }
 
-    public ProcessEngineEvent(Long timestamp,
-                              String eventType,
-                              String executionId,
-                              String processDefinitionId,
-                              String processInstanceId) {
+    public AbstractProcessEngineEvent(Long timestamp,
+                                      String eventType,
+                                      String executionId,
+                                      String processDefinitionId,
+                                      String processInstanceId) {
         this.timestamp = timestamp;
         this.eventType = eventType;
         this.executionId = executionId;
@@ -88,6 +90,11 @@ public abstract class ProcessEngineEvent {
 
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
+    }
+
+    @Override
+    public String getApplicationName() {
+        return applicationName;
     }
 
 }

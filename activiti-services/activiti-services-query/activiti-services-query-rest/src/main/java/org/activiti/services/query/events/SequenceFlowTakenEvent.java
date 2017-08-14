@@ -16,7 +16,7 @@
 
 package org.activiti.services.query.events;
 
-public class SequenceFlowTakenEvent extends ProcessEngineEvent {
+public class SequenceFlowTakenEvent extends AbstractProcessEngineEvent {
 
     private String id;
     private String sourceActivityId;

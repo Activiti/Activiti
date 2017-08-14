@@ -21,7 +21,8 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.activiti.services.query.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
+import org.activiti.services.query.events.AbstractProcessEngineEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -35,7 +36,7 @@ public class QueryEventHandlerContext {
         this.handlers = handlers.stream().collect(Collectors.toMap(QueryEventHandler::getHandledEventClass,
                                                                    Function.identity()));
     }
-    public void handle(ProcessEngineEvent event) {
+    public void handle(AbstractProcessEngineEvent event) {
         QueryEventHandler handler = handlers.get(event.getClass());
         if (handler != null) {
             handler.handle(event);

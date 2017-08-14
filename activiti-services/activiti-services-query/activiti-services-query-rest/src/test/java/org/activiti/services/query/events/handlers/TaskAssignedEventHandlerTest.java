@@ -20,9 +20,9 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.query.app.model.Task;
 import org.activiti.services.query.app.repository.TaskRepository;
-import org.activiti.services.query.events.ProcessEngineEvent;
 import org.activiti.services.query.events.TaskAssignedEvent;
 import org.junit.Before;
 import org.junit.Rule;

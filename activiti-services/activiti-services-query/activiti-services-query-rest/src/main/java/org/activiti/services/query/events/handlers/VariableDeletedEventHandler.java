@@ -16,7 +16,7 @@
 
 package org.activiti.services.query.events.handlers;
 
-import org.activiti.services.query.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.query.events.VariableDeletedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -14,6 +14,10 @@
     <!-- keycloak included as default identity provider to be excluded if overridden -->
     <dependency>
       <groupId>org.activiti</groupId>
+      <artifactId>activiti-services-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-services-identity-keycloak</artifactId>
     </dependency>
     <dependency>
