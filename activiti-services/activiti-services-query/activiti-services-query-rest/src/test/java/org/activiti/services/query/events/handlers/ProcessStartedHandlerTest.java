@@ -20,6 +20,7 @@ import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.query.app.model.ProcessInstance;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.events.ProcessStartedEvent;
+import org.activiti.test.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -62,7 +63,7 @@ public class ProcessStartedHandlerTest {
         verify(processInstanceRepository).save(argumentCaptor.capture());
 
         ProcessInstance processInstance = argumentCaptor.getValue();
-        org.activiti.test.Assertions.assertThat(processInstance)
+        Assertions.assertThat(processInstance)
                 .hasProcessInstanceId(200L)
                 .hasProcessDefinitionId("100")
                 .hasStatus("RUNNING");

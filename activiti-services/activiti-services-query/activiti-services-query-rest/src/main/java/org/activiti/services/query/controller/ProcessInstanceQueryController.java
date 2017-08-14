@@ -17,10 +17,10 @@
 package org.activiti.services.query.controller;
 
 import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.assembler.ProcessInstanceQueryResourceAssembler;
 import org.activiti.services.query.app.model.ProcessInstance;
-import org.activiti.services.query.app.model.QProcessInstance;
+import org.activiti.services.query.app.repository.EntityFinder;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
+import org.activiti.services.query.assembler.ProcessInstanceQueryResourceAssembler;
 import org.activiti.services.query.resource.ProcessInstanceQueryResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -32,23 +32,25 @@ import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 
 @RestController
 @RequestMapping(value = "/v1/process-instances", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessInstanceQueryController {
 
-    private final ProcessInstanceRepository dao;
+    private final ProcessInstanceRepository processInstanceRepository;
+
+    private final EntityFinder entityFinder;
 
     private final ProcessInstanceQueryResourceAssembler resourceAssembler;
 
     @Autowired
-    public ProcessInstanceQueryController(ProcessInstanceRepository dao,
+    public ProcessInstanceQueryController(ProcessInstanceRepository processInstanceRepository,
+                                          EntityFinder entityFinder,
                                           ProcessInstanceQueryResourceAssembler resourceAssembler) {
-        this.dao = dao;
+        this.processInstanceRepository = processInstanceRepository;
+        this.entityFinder = entityFinder;
         this.resourceAssembler = resourceAssembler;
     }
 
@@ -58,30 +60,18 @@ public class ProcessInstanceQueryController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     public PagedResources<ProcessInstanceQueryResource> findAllByWebQuerydsl(
-            @QuerydslPredicate(root = ProcessInstance.class) Predicate predicate, Pageable pageable, PagedResourcesAssembler<ProcessInstance> pagedResourcesAssembler) {
-        return pagedResourcesAssembler.toResource(dao.findAll(predicate,pageable), resourceAssembler);
+            @QuerydslPredicate(root = ProcessInstance.class) Predicate predicate,
+            Pageable pageable,
+            PagedResourcesAssembler<ProcessInstance> pagedResourcesAssembler) {
+        return pagedResourcesAssembler.toResource(processInstanceRepository.findAll(predicate,
+                                                                                    pageable),
+                                                  resourceAssembler);
     }
-
-    //this shows that we can add an OR condition to a query with an extra parameter
-    //it could replace the basic processinstances endpoint but instead put it on new endpoint as it's only a POC without real value
-    @RequestMapping(method = RequestMethod.GET, value = "or")
-    public PagedResources<ProcessInstanceQueryResource> findAllByWebQuerydslWithOr(
-            @QuerydslPredicate(root = ProcessInstance.class) Predicate predicate, @RequestParam(value = "orStatus", required = false) String orStatus, Pageable pageable, PagedResourcesAssembler<ProcessInstance> pagedResourcesAssembler) {
-
-        //could maybe use ExpressionUtils.anyOf but BooleanBuilder is simpler - see http://www.querydsl.com/static/querydsl/3.2.0/apidocs/com/mysema/query/BooleanBuilder.html
-
-        if(orStatus!=null && predicate!=null) {
-            //if the OR condition is specified then we add it to the predicate
-            QProcessInstance qProcessInstance = QProcessInstance.processInstance;
-            predicate = qProcessInstance.status.eq(orStatus).or(predicate);
-        } //don't handle case where OR is provided without predicate as doesn't make sense unless you've something to OR against
-
-        return pagedResourcesAssembler.toResource(dao.findAll(predicate,pageable), resourceAssembler);
-    }
-
 
     @RequestMapping(value = "/{processInstanceId}", method = RequestMethod.GET)
     public Resource<ProcessInstance> getProcessInstanceById(@PathVariable Long processInstanceId) {
-        return resourceAssembler.toResource(dao.findById(processInstanceId).get());
+        return resourceAssembler.toResource(entityFinder.findById(processInstanceRepository,
+                                                                  processInstanceId,
+                                                                  "Unable to find process instance: " + processInstanceId));
     }
 }
