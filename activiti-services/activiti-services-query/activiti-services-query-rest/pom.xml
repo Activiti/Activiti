@@ -8,7 +8,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>activiti-services-query-app</artifactId>
+  <artifactId>activiti-services-query-rest</artifactId>
 
   <dependencies>
     <!-- keycloak included as default identity provider to be excluded if overridden -->
