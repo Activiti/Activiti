@@ -754,7 +754,6 @@
     <module>activiti-engine</module>
     <module>activiti-services</module>
     <module>activiti-spring</module>
-    <module>activiti-spring-boot</module>
   </modules>
 
   <build>
