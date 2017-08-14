@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app.resource;
+package org.activiti.services.query.resource;
 
 import org.activiti.services.query.app.model.ProcessInstance;
 import org.springframework.hateoas.Link;

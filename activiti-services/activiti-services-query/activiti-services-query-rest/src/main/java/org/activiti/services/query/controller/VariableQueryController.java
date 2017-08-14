@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app.controller;
+package org.activiti.services.query.controller;
 
 import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.app.assembler.VariableQueryResourceAssembler;
+import org.activiti.services.query.assembler.VariableQueryResourceAssembler;
 import org.activiti.services.query.app.model.Variable;
 import org.activiti.services.query.app.repository.EntityFinder;
 import org.activiti.services.query.app.repository.VariableRepository;
-import org.activiti.services.query.app.resource.VariableQueryResource;
+import org.activiti.services.query.resource.VariableQueryResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;

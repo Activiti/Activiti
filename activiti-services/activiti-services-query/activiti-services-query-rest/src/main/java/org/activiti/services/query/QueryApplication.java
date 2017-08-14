@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app.resource;
+package org.activiti.services.query;
 
-import org.activiti.services.query.app.model.Variable;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
+@SpringBootApplication
+@ComponentScan(basePackages = {
+        "org.activiti",
+        "org.activiti.services.identity.keycloak"
+})
+public class QueryApplication {
 
-public class VariableQueryResource extends Resource<Variable> {
-
-    public VariableQueryResource(Variable content, Iterable<Link> links) {
-        super(content, links);
+    public static void main(String[] args) {
+        SpringApplication.run(QueryApplication.class,
+                              args);
     }
+
 }

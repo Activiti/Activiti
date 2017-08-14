@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app.assembler;
+package org.activiti.services.query.assembler;
 
-import org.activiti.services.query.app.controller.VariableQueryController;
+import org.activiti.services.query.controller.VariableQueryController;
 import org.activiti.services.query.app.model.Variable;
-import org.activiti.services.query.app.resource.VariableQueryResource;
+import org.activiti.services.query.resource.VariableQueryResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;

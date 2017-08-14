@@ -14,16 +14,12 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app;
+package org.activiti.services.query;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
-import org.activiti.services.query.app.model.Task;
 import org.activiti.services.query.app.model.Variable;
-import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.app.repository.VariableRepository;
 import org.junit.After;
 import org.junit.Before;
@@ -45,35 +41,20 @@ import static org.assertj.core.api.Assertions.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("classpath:test-application.properties")
-public class TasksIT {
+public class QueryVariablesIT {
 
-    private static final String TASKS_URL = "/v1/tasks?nameLike=na&priority=priority&variables.name=name";
-    private static final ParameterizedTypeReference<PagedResources<Task>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Task>>() {
+    private static final String TASKS_URL = "/v1/variables?name=name";
+    private static final ParameterizedTypeReference<PagedResources<Variable>> PAGED_TASKS_RESPONSE_TYPE = new ParameterizedTypeReference<PagedResources<Variable>>() {
     };
 
     @Autowired
     private TestRestTemplate testRestTemplate;
 
     @Autowired
-    private TaskRepository taskRepository;
-    @Autowired
     private VariableRepository variableRepository;
 
     @Before
     public void setUp() throws Exception {
-        Task task = new Task("1",
-                             "hruser",
-                             "name",
-                             "description",
-                             null,
-                             null,
-                             "priority",
-                             "category",
-                             "processDefinitionId",
-                             "processInstanceId",
-                             "RUNNING",
-                             null,
-                             null);
         Variable variable = new Variable("type",
                                          "name",
                                          "procInstId",
@@ -83,37 +64,32 @@ public class TasksIT {
                                          "executionId",
                                          "content");
         variableRepository.save(variable);
-        List<Variable> variables = new ArrayList<>();
-        variables.add(variable);
-        task.setVariables(variables);
-        taskRepository.save(task);
     }
 
     @After
     public void tearDown() throws Exception {
-        taskRepository.deleteAll();
         variableRepository.deleteAll();
     }
 
     @Test
-    public void shouldGetAvailableTasks() throws Exception {
+    public void shouldGetAvailableVariables() throws Exception {
 
-        Iterator<Task> tasksFromRep = taskRepository.findAll().iterator();
-        assertThat(tasksFromRep.hasNext()); //there should be tasks
+        Iterator<Variable> variableIterator = variableRepository.findAll().iterator();
+        assertThat(variableIterator.hasNext()); //there should be records
 
         //when
-        ResponseEntity<PagedResources<Task>> responseEntity = executeRequestGetTasks();
+        ResponseEntity<PagedResources<Variable>> responseEntity = executeRequestGetVariables();
 
         //then
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        Collection<Task> tasks = responseEntity.getBody().getContent();
-        assertThat(tasks).extracting(Task::getName).contains("name");
-        assertThat(tasks.size()).isGreaterThanOrEqualTo(1);
+        Collection<Variable> variables = responseEntity.getBody().getContent();
+        assertThat(variables).extracting(Variable::getName).contains("name");
+        assertThat(variables.size()).isGreaterThanOrEqualTo(1);
     }
 
-    private ResponseEntity<PagedResources<Task>> executeRequestGetTasks() {
+    private ResponseEntity<PagedResources<Variable>> executeRequestGetVariables() {
         return testRestTemplate.exchange(TASKS_URL,
                                          HttpMethod.GET,
                                          null,

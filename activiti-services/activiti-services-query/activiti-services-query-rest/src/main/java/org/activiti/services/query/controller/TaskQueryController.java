@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app.controller;
+package org.activiti.services.query.controller;
 
 import com.querydsl.core.types.Predicate;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.services.query.app.assembler.TaskQueryResourceAssembler;
+import org.activiti.services.query.assembler.TaskQueryResourceAssembler;
 import org.activiti.services.query.app.model.QTask;
 import org.activiti.services.query.app.model.Task;
 import org.activiti.services.query.app.repository.TaskRepository;
-import org.activiti.services.query.app.resource.TaskQueryResource;
+import org.activiti.services.query.resource.TaskQueryResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;

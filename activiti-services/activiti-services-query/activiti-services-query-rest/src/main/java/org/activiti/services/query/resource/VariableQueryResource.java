@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app.resource;
+package org.activiti.services.query.resource;
 
-import org.activiti.services.query.app.model.Task;
+import org.activiti.services.query.app.model.Variable;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 
 
-public class TaskQueryResource extends Resource<Task> {
+public class VariableQueryResource extends Resource<Variable> {
 
-    public TaskQueryResource(Task content, Iterable<Link> links) {
+    public VariableQueryResource(Variable content, Iterable<Link> links) {
         super(content, links);
     }
 }

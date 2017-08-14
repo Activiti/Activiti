@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app;
+package org.activiti.services.query;
 
+import org.activiti.services.query.app.QueryConsumer;
 import org.activiti.services.query.events.ProcessEngineEvent;
 import org.activiti.services.query.events.handlers.QueryEventHandlerContext;
 import org.junit.Before;

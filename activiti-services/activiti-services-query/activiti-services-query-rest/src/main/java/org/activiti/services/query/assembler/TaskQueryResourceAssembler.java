@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app.assembler;
+package org.activiti.services.query.assembler;
 
-import org.activiti.services.query.app.controller.TaskQueryController;
+import org.activiti.services.query.controller.TaskQueryController;
 import org.activiti.services.query.app.model.Task;
-import org.activiti.services.query.app.resource.TaskQueryResource;
+import org.activiti.services.query.resource.TaskQueryResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;

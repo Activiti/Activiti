@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app.assembler;
+package org.activiti.services.query.assembler;
 
-import org.activiti.services.query.app.controller.ProcessInstanceQueryController;
+import org.activiti.services.query.controller.ProcessInstanceQueryController;
 import org.activiti.services.query.app.model.ProcessInstance;
-import org.activiti.services.query.app.resource.ProcessInstanceQueryResource;
+import org.activiti.services.query.resource.ProcessInstanceQueryResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
