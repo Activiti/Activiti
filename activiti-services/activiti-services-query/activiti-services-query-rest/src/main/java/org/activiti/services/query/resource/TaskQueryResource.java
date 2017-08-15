@@ -16,7 +16,7 @@
 
 package org.activiti.services.query.resource;
 
-import org.activiti.services.query.app.model.Task;
+import org.activiti.services.query.model.Task;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 

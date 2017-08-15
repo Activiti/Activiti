@@ -19,7 +19,7 @@ package org.activiti.services.query.events.handlers;
 import java.util.Date;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.app.model.ProcessInstance;
+import org.activiti.services.query.model.ProcessInstance;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.events.ProcessStartedEvent;
 import org.slf4j.Logger;

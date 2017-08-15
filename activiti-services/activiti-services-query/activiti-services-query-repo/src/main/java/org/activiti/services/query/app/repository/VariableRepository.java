@@ -17,8 +17,8 @@
 package org.activiti.services.query.app.repository;
 
 import com.querydsl.core.types.dsl.StringPath;
-import org.activiti.services.query.app.model.QVariable;
-import org.activiti.services.query.app.model.Variable;
+import org.activiti.services.query.model.QVariable;
+import org.activiti.services.query.model.Variable;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;

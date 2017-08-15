@@ -16,7 +16,7 @@
 
 package org.activiti.services.query.events;
 
-import org.activiti.services.query.app.model.Task;
+import org.activiti.services.query.model.Task;
 
 public class TaskCreatedEvent extends AbstractProcessEngineEvent {
 

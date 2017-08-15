@@ -19,7 +19,7 @@ package org.activiti.services.query.events.handlers;
 import java.util.Date;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.app.model.Variable;
+import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.events.VariableUpdatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

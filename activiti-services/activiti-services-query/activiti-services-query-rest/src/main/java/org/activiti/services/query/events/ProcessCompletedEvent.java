@@ -16,7 +16,7 @@
 
 package org.activiti.services.query.events;
 
-import org.activiti.services.query.app.model.ProcessInstance;
+import org.activiti.services.query.model.ProcessInstance;
 
 public class ProcessCompletedEvent extends AbstractProcessEngineEvent {
 

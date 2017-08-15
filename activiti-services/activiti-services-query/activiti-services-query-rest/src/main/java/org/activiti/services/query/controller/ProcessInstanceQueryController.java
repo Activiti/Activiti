@@ -17,7 +17,7 @@
 package org.activiti.services.query.controller;
 
 import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.app.model.ProcessInstance;
+import org.activiti.services.query.model.ProcessInstance;
 import org.activiti.services.query.app.repository.EntityFinder;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.assembler.ProcessInstanceQueryResourceAssembler;

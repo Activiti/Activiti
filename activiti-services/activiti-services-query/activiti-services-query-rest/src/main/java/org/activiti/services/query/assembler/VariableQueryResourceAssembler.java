@@ -16,31 +16,16 @@
 
 package org.activiti.services.query.assembler;
 
-import org.activiti.services.query.controller.VariableQueryController;
-import org.activiti.services.query.app.model.Variable;
+import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.resource.VariableQueryResource;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
+import org.springframework.hateoas.ResourceAssembler;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 @Component
-public class VariableQueryResourceAssembler extends ResourceAssemblerSupport<Variable, VariableQueryResource> {
-
-    public VariableQueryResourceAssembler() {
-        super(VariableQueryController.class,
-                VariableQueryResource.class);
-    }
+public class VariableQueryResourceAssembler implements ResourceAssembler<Variable, VariableQueryResource> {
 
     @Override
     public VariableQueryResource toResource(Variable variable) {
-        List<Link> links = new ArrayList<>();
-        links.add(linkTo(methodOn(VariableQueryController.class).getVariableById(variable.getId())).withSelfRel());
-        return new VariableQueryResource(variable, links);
+        return new VariableQueryResource(variable);
     }
 }

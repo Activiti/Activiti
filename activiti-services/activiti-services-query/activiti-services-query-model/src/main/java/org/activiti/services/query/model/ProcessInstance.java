@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app.model;
+package org.activiti.services.query.model;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.app.model.Task;
+import org.activiti.services.query.model.Task;
 import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.events.TaskCompletedEvent;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,15 +16,15 @@
 
 package org.activiti.services.query.assembler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.services.query.controller.TaskQueryController;
-import org.activiti.services.query.app.model.Task;
+import org.activiti.services.query.model.Task;
 import org.activiti.services.query.resource.TaskQueryResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;

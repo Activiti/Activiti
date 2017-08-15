@@ -16,7 +16,7 @@
 
 package org.activiti.services.query.events.handlers;
 
-import org.activiti.services.query.app.model.Task;
+import org.activiti.services.query.model.Task;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

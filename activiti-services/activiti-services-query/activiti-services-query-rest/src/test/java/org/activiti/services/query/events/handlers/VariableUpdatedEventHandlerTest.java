@@ -17,7 +17,7 @@
 package org.activiti.services.query.events.handlers;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.app.model.Variable;
+import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.events.VariableUpdatedEvent;
 import org.activiti.test.Assertions;
 import org.junit.Before;

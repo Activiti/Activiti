@@ -17,9 +17,7 @@
 package org.activiti.services.query.controller;
 
 import com.querydsl.core.types.Predicate;
-import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.services.query.app.model.QTask;
-import org.activiti.services.query.app.model.Task;
+import org.activiti.services.query.model.Task;
 import org.activiti.services.query.app.repository.EntityFinder;
 import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.assembler.TaskQueryResourceAssembler;
@@ -72,24 +70,4 @@ public class TaskQueryController {
                                                                   "Unable to find task: " + taskId));
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/assignedToMe")
-    public PagedResources<TaskQueryResource> findAllAssignedToMe(
-            @QuerydslPredicate(root = Task.class) Predicate predicate,
-            Pageable pageable,
-            PagedResourcesAssembler<Task> pagedResourcesAssembler) {
-
-        String authenticatedUser = Authentication.getAuthenticatedUserId();
-        //TODO: authenticatedUser is always null, despite being set by KeycloakActivitiAuthenticationProvider
-        // why does it work for sample-hal-rest-api and not for this?
-        // could go to spring security context instead?
-
-        if (authenticatedUser != null) {
-            QTask qTask = QTask.task;
-            predicate = qTask.assignee.eq(authenticatedUser).and(predicate);
-        }
-
-        return pagedResourcesAssembler.toResource(dao.findAll(predicate,
-                                                              pageable),
-                                                  resourceAssembler);
-    }
 }

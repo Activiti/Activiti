@@ -16,8 +16,8 @@
 
 package org.activiti.services.query.events.handlers;
 
-import org.activiti.services.query.app.model.Task;
-import org.activiti.services.query.app.model.Variable;
+import org.activiti.services.query.model.Task;
+import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.app.repository.EntityFinder;
 import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.app.repository.VariableRepository;

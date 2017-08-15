@@ -17,10 +17,11 @@
 package org.activiti.services.query.controller;
 
 import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.assembler.VariableQueryResourceAssembler;
-import org.activiti.services.query.app.model.Variable;
-import org.activiti.services.query.app.repository.EntityFinder;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import org.activiti.services.query.model.QVariable;
+import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.app.repository.VariableRepository;
+import org.activiti.services.query.assembler.VariableQueryResourceAssembler;
 import org.activiti.services.query.resource.VariableQueryResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -28,41 +29,36 @@ import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.Resource;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @RestController
-@RequestMapping(value = "/v1/variables", produces = MediaTypes.HAL_JSON_VALUE)
-public class VariableQueryController {
+@RequestMapping(value = "/v1/tasks/{taskId}/variables", produces = MediaTypes.HAL_JSON_VALUE)
+public class TaskVariableQueryController {
 
     private final VariableRepository variableRepository;
 
     private final VariableQueryResourceAssembler resourceAssembler;
 
-    private EntityFinder entityFinder;
-
     @Autowired
-    public VariableQueryController(VariableRepository variableRepository,
-                                   VariableQueryResourceAssembler resourceAssembler,
-                                   EntityFinder entityFinder) {
+    public TaskVariableQueryController(VariableRepository variableRepository,
+                                       VariableQueryResourceAssembler resourceAssembler) {
         this.variableRepository = variableRepository;
         this.resourceAssembler = resourceAssembler;
-        this.entityFinder = entityFinder;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public PagedResources<VariableQueryResource> findAllByWebQuerydsl(
-            @QuerydslPredicate(root = Variable.class) Predicate predicate, Pageable pageable, PagedResourcesAssembler<Variable> pagedResourcesAssembler) {
-        return pagedResourcesAssembler.toResource(variableRepository.findAll(predicate, pageable), resourceAssembler);
+    public PagedResources<VariableQueryResource> findAll(String taskId,
+                                                         @QuerydslPredicate(root = Variable.class) Predicate predicate,
+                                                         Pageable pageable,
+                                                         PagedResourcesAssembler<Variable> pagedResourcesAssembler) {
+        BooleanExpression filterOnTask = QVariable.variable.taskId.eq(taskId);
+        if (predicate != null) {
+            filterOnTask = filterOnTask.and(predicate);
+        }
+        return pagedResourcesAssembler.toResource(variableRepository.findAll(filterOnTask,
+                                                                             pageable),
+                                                  resourceAssembler);
     }
-
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Resource<Variable> getVariableById(@PathVariable long id) {
-        return resourceAssembler.toResource(entityFinder.findById(variableRepository, id, "Unable to find variable with id: " + id));
-    }
-
 }

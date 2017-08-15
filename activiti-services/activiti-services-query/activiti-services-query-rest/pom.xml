@@ -185,7 +185,7 @@
         <configuration>
 
           <packages>
-            <package>org.activiti.services.query.app.model</package>
+            <package>org.activiti.services.query.model</package>
           </packages>
 
           <!-- whether generated assertions classes can be inherited with consistent assertion chaining -->

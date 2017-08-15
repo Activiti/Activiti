@@ -17,8 +17,8 @@
 package org.activiti.services.query.app.repository;
 
 import com.querydsl.core.types.dsl.StringPath;
-import org.activiti.services.query.app.model.ProcessInstance;
-import org.activiti.services.query.app.model.QProcessInstance;
+import org.activiti.services.query.model.ProcessInstance;
+import org.activiti.services.query.model.QProcessInstance;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;

@@ -19,7 +19,7 @@ package org.activiti.services.query.events.handlers;
 import java.util.Date;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.app.model.Task;
+import org.activiti.services.query.model.Task;
 import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.events.TaskCreatedEvent;
 import org.junit.Before;

@@ -16,14 +16,16 @@
 
 package org.activiti.services.query.resource;
 
-import org.activiti.services.query.app.model.Variable;
+import org.activiti.services.query.model.Variable;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 
 
 public class VariableQueryResource extends Resource<Variable> {
 
-    public VariableQueryResource(Variable content, Iterable<Link> links) {
-        super(content, links);
+    public VariableQueryResource(Variable content,
+                                 Link... links) {
+        super(content,
+              links);
     }
 }

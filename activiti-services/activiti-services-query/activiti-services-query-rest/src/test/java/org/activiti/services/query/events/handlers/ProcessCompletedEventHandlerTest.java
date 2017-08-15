@@ -21,7 +21,7 @@ import java.util.Optional;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.app.model.ProcessInstance;
+import org.activiti.services.query.model.ProcessInstance;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.events.ProcessCompletedEvent;
 import org.junit.Before;

@@ -17,8 +17,8 @@
 package org.activiti.services.query.events.handlers;
 
 import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.app.model.ProcessInstance;
-import org.activiti.services.query.app.model.Variable;
+import org.activiti.services.query.model.ProcessInstance;
+import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.app.repository.EntityFinder;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.app.repository.VariableRepository;

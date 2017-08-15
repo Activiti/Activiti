@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app.model;
+package org.activiti.services.query.model;
 
 import java.util.Date;
 import javax.persistence.Entity;
@@ -33,7 +33,7 @@ public class Variable {
     @Id
     @GeneratedValue
     private long id;
-    private String type; //TODO: this needs to be an entity
+    private String type;
     private String name;
     private String processInstanceId;
     private String taskId;

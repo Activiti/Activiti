@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import com.querydsl.core.types.Predicate;
 import org.activiti.engine.ActivitiException;
-import org.activiti.services.query.app.model.ProcessInstance;
+import org.activiti.services.query.model.ProcessInstance;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

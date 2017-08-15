@@ -17,7 +17,7 @@
 package org.activiti.services.query.events.handlers;
 
 import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.app.model.Variable;
+import org.activiti.services.query.model.Variable;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;

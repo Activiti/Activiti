@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app.model;
+package org.activiti.services.query.model;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,9 +54,6 @@ public class Task {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastModified;
 
-    //only for querying on status (getter is transient, has to be getter so that included in QProcessInstance)
-    private String nameLike;
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastModifiedTo;
 
@@ -77,7 +74,7 @@ public class Task {
                 @JsonProperty("createTime") Date createTime,
                 @JsonProperty("dueDate") Date dueDate,
                 @JsonProperty("priority") String priority,
-                @JsonProperty("category") String category, //TODO: what is this? it doesn't get populated
+                @JsonProperty("category") String category,
                 @JsonProperty("processDefinitionId") String processDefinitionId,
                 @JsonProperty("processInstanceId") String processInstanceId,
                 @JsonProperty("status") String status,
@@ -95,7 +92,7 @@ public class Task {
         this.processInstanceId = processInstanceId;
         this.status = status;
         this.lastModified = lastModified;
-        this.variables=variables;
+        this.variables = variables;
     }
 
     public String getId() {
@@ -142,7 +139,8 @@ public class Task {
         return status;
     }
 
-    @JsonIgnore //TODO: without ignore keep getting Could not write JSON: java.sql.Timestamp cannot be cast to java.lang.String error - why?
+    @JsonIgnore
+    //TODO: without ignore keep getting Could not write JSON: java.sql.Timestamp cannot be cast to java.lang.String error - why?
     public Date getLastModified() {
         return lastModified;
     }
@@ -235,12 +233,4 @@ public class Task {
         this.lastModifiedFrom = lastModifiedFrom;
     }
 
-    @Transient
-    public String getNameLike() {
-        return nameLike;
-    }
-
-    public void setNameLike(String nameLike) {
-        this.nameLike = nameLike;
-    }
 }
