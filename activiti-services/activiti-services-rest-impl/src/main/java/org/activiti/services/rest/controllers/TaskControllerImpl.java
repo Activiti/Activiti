@@ -22,7 +22,7 @@ import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.commands.ClaimTaskCmd;
 import org.activiti.services.core.model.commands.CompleteTaskCmd;
 import org.activiti.services.core.model.commands.ReleaseTaskCmd;
-import org.activiti.services.api.util.AuthenticationWrapper;
+import org.activiti.services.core.AuthenticationWrapper;
 import org.activiti.services.rest.api.TaskController;
 import org.activiti.services.rest.api.resources.TaskResource;
 import org.activiti.services.rest.api.resources.assembler.TaskResourceAssembler;
