@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = EventConverterContextIT.SpringConfig.class)
+@ContextConfiguration(classes = EventConverterContextIT.EventConverterContextConfig.class)
 @TestPropertySource("classpath:test-application.properties")
 public class EventConverterContextIT {
 
@@ -43,7 +43,7 @@ public class EventConverterContextIT {
 
     @Configuration
     @ComponentScan({"org.activiti.services.events.converter", "org.activiti.services.core.model.converter"})
-    public static class SpringConfig {
+    public static class EventConverterContextConfig {
 
     }
 

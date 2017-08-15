@@ -8,18 +8,16 @@
   <packaging>pom</packaging>
   <version>7-201708-EA-SNAPSHOT</version>
   <properties>
-    <!-- Spring Boot / Cloud / Stream deps -->
-    <spring.boot.version>2.0.0.M3</spring.boot.version>
-    <spring.cloud.version>Finchley.BUILD-SNAPSHOT</spring.cloud.version>
-    <spring.cloud.stream.version>Elmhurst.BUILD-SNAPSHOT</spring.cloud.stream.version>
-    <!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
-    <spring.hateoas.version>0.24.0.BUILD-SNAPSHOT</spring.hateoas.version>
-
     <!--configuration properties-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <jdk.version>1.8</jdk.version>
+    <docker.keycloak.port>8180</docker.keycloak.port>
+    <docker.keycloak.start.timeout>40000</docker.keycloak.start.timeout>
+    <docker.rabbitmq.tcp.port>5672</docker.rabbitmq.tcp.port>
+    <docker.rabbitmq.cli.port>15672</docker.rabbitmq.cli.port>
+    <docker.rabbitmq.start.timeout>15000</docker.rabbitmq.start.timeout>
 
     <!-- configuration properties for tests-->
     <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
@@ -27,6 +25,13 @@
 
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
+
+    <!-- Spring Boot / Cloud / Stream deps -->
+    <spring.boot.version>2.0.0.M3</spring.boot.version>
+    <spring.cloud.version>Finchley.BUILD-SNAPSHOT</spring.cloud.version>
+    <spring.cloud.stream.version>Elmhurst.BUILD-SNAPSHOT</spring.cloud.stream.version>
+    <!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
+    <spring.hateoas.version>0.24.0.BUILD-SNAPSHOT</spring.hateoas.version>
 
     <springfox.version>2.7.0</springfox.version>
     <mockito.version>2.7.22</mockito.version>
@@ -78,6 +83,7 @@
     <jetty-util.version>8.1.16.v20140903</jetty-util.version>
     <swagger.version>1.5.10</swagger.version>
     <resteasy.version>3.0.21.Final</resteasy.version>
+    <querydsl.version>4.1.4</querydsl.version>
     <batik.version>1.7</batik.version>
 
     <!--keycloak snapshot that was used to build boot2 adapter
@@ -102,6 +108,7 @@
     <extra-enforcer-rules.version>1.0-beta-6</extra-enforcer-rules.version>
     <illegal-transitive-dependency-check.version>1.7.4</illegal-transitive-dependency-check.version>
     <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
+    <apt-maven-plugin.version>1.1.3</apt-maven-plugin.version>
     <docker.maven.plugin.version>0.21.0</docker.maven.plugin.version>
     <directory.maven.plugin.version>0.1</directory.maven.plugin.version>
     <assertions-generator-plugin.version>2.0.0</assertions-generator-plugin.version>
@@ -195,6 +202,12 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-spring-boot-test</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-model</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -240,6 +253,16 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-query-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-query-repo</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-services-events</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -266,11 +289,6 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-services-audit-jpa</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-api</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -425,6 +443,16 @@
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-jdk14</artifactId>
         <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.querydsl</groupId>
+        <artifactId>querydsl-apt</artifactId>
+        <version>${querydsl.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.querydsl</groupId>
+        <artifactId>querydsl-jpa</artifactId>
+        <version>${querydsl.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -802,14 +830,6 @@
 				<lifecycleMappingMetadata>
 					<pluginExecutions>
 						<pluginExecution>
-							<pluginExecutionFilter>
-								<groupId>org.commonjava.maven.plugins</groupId>
-								<artifactId>directory-maven-plugin</artifactId>
-								<versionRange>[0.1,)</versionRange>
-								<goals>
-									<goal>highest-basedir</goal>
-								</goals>
-							</pluginExecutionFilter>
 							<action>
 								<execute>
 									<runOnIncremental>true</runOnIncremental>
@@ -1015,6 +1035,7 @@
                 <checkstyleRules>
                   <module name="Checker">
                     <!-- Checks for whitespace. -->
+                    
                     <module name="FileTabCharacter">
                       <property name="severity" value="error"/>
                       <property name="eachLine" value="true"/>
@@ -1069,23 +1090,6 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>build-helper-maven-plugin</artifactId>
           <version>${build-helper-maven-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.commonjava.maven.plugins</groupId>
-          <artifactId>directory-maven-plugin</artifactId>
-          <version>${directory.maven.plugin.version}</version>
-          <executions>
-            <execution>
-              <id>directories</id>
-              <goals>
-                <goal>highest-basedir</goal>
-              </goals>
-              <phase>initialize</phase>
-              <configuration>
-                <property>main.basedir</property>
-              </configuration>
-            </execution>
-          </executions>
         </plugin>
         <plugin>
           <groupId>org.springframework.boot</groupId>
