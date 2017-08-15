@@ -43,8 +43,6 @@ public class ProcessInstance {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastModified;
 
-    //only for querying (getter is transient, has to be getter so that included in QProcessInstance)
-
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastModifiedTo;
 
