@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.services.api.util;
+package org.activiti.services.core;
 
 import org.activiti.engine.impl.identity.Authentication;
 

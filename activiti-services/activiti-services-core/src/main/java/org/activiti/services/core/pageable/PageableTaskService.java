@@ -21,7 +21,7 @@ import java.util.List;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.services.api.util.AuthenticationWrapper;
+import org.activiti.services.core.AuthenticationWrapper;
 import org.activiti.services.core.model.Task;
 import org.activiti.services.core.model.converter.TaskConverter;
 import org.activiti.services.core.pageable.sort.TaskSortApplier;
