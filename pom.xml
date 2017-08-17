@@ -37,7 +37,6 @@
     <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
     <docker.maven.plugin.version>0.21.0</docker.maven.plugin.version>
     <directory.maven.plugin.version>0.1</directory.maven.plugin.version>
-    <postgres.version>9.4.1212.jre7</postgres.version>
   </properties>
 
   <repositories>
@@ -171,30 +170,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring.cloud.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-stream-dependencies</artifactId>
-        <version>${spring.cloud.stream.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.hateoas</groupId>
-        <artifactId>spring-hateoas</artifactId>
-        <version>${spring.hateoas.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>${postgres.version}</version>
-      </dependency>
 
 
 
@@ -237,7 +212,6 @@
   </dependencyManagement>
 
   <modules>
-    <module>spring-boot-sample-activiti</module>
     <module>emergency-call-center</module>
 
   </modules>
