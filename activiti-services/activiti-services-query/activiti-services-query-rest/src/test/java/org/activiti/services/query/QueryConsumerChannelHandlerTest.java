@@ -16,7 +16,7 @@
 
 package org.activiti.services.query;
 
-import org.activiti.services.query.app.QueryConsumer;
+import org.activiti.services.query.app.QueryConsumerChannelHandler;
 import org.activiti.services.query.events.AbstractProcessEngineEvent;
 import org.activiti.services.query.events.handlers.QueryEventHandlerContext;
 import org.junit.Before;
@@ -28,10 +28,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class QueryConsumerTest {
+public class QueryConsumerChannelHandlerTest {
 
     @InjectMocks
-    private QueryConsumer consumer;
+    private QueryConsumerChannelHandler consumer;
 
     @Mock
     private QueryEventHandlerContext eventHandlerContext;

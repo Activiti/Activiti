@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.assembler;
+package org.activiti.services.query.rest.assembler;
 
 import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.resource.VariableQueryResource;

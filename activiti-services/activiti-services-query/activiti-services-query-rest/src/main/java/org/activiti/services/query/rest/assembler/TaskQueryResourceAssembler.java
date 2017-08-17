@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2017 Alfresco, Inc. and/or its affiliates.
  *
@@ -15,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.assembler;
+package org.activiti.services.query.rest.assembler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.services.query.controller.ProcessInstanceQueryController;
-import org.activiti.services.query.model.ProcessInstance;
-import org.activiti.services.query.resource.ProcessInstanceQueryResource;
+import org.activiti.services.query.rest.controller.TaskQueryController;
+import org.activiti.services.query.model.Task;
+import org.activiti.services.query.resource.TaskQueryResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
 import org.springframework.stereotype.Component;
@@ -31,17 +30,17 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Component
-public class ProcessInstanceQueryResourceAssembler extends ResourceAssemblerSupport<ProcessInstance,ProcessInstanceQueryResource> {
+public class TaskQueryResourceAssembler extends ResourceAssemblerSupport<Task, TaskQueryResource> {
 
-
-    public ProcessInstanceQueryResourceAssembler() {
-        super(ProcessInstanceQueryController.class, ProcessInstanceQueryResource.class);
+    public TaskQueryResourceAssembler() {
+        super(TaskQueryController.class,
+                TaskQueryResource.class);
     }
 
     @Override
-    public ProcessInstanceQueryResource toResource(ProcessInstance processInstance) {
+    public TaskQueryResource toResource(Task task) {
         List<Link> links = new ArrayList<>();
-        links.add(linkTo(methodOn(ProcessInstanceQueryController.class).getProcessInstanceById(processInstance.getProcessInstanceId())).withSelfRel());
-        return new ProcessInstanceQueryResource(processInstance,links);
+        links.add(linkTo(methodOn(TaskQueryController.class).getTaskById(task.getId())).withSelfRel());
+        return new TaskQueryResource(task, links);
     }
 }
