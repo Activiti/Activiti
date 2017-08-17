@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.controller;
+package org.activiti.services.query.rest.controller;
 
 import com.querydsl.core.types.Predicate;
 import org.activiti.services.query.model.ProcessInstance;
 import org.activiti.services.query.app.repository.EntityFinder;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
-import org.activiti.services.query.assembler.ProcessInstanceQueryResourceAssembler;
+import org.activiti.services.query.rest.assembler.ProcessInstanceQueryResourceAssembler;
 import org.activiti.services.query.resource.ProcessInstanceQueryResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

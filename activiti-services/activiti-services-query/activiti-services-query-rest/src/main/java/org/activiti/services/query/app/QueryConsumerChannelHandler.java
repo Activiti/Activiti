@@ -25,12 +25,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 @EnableBinding(QueryConsumerChannels.class)
-public class QueryConsumer {
+public class QueryConsumerChannelHandler {
 
     private QueryEventHandlerContext eventHandlerContext;
 
     @Autowired
-    public QueryConsumer(QueryEventHandlerContext eventHandlerContext) {
+    public QueryConsumerChannelHandler(QueryEventHandlerContext eventHandlerContext) {
         this.eventHandlerContext = eventHandlerContext;
     }
 

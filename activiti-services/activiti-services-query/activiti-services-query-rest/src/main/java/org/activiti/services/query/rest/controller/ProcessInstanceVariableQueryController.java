@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.controller;
+package org.activiti.services.query.rest.controller;
 
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.activiti.services.query.model.QVariable;
 import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.app.repository.VariableRepository;
-import org.activiti.services.query.assembler.VariableQueryResourceAssembler;
+import org.activiti.services.query.rest.assembler.VariableQueryResourceAssembler;
 import org.activiti.services.query.resource.VariableQueryResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -34,30 +34,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/v1/tasks/{taskId}/variables", produces = MediaTypes.HAL_JSON_VALUE)
-public class TaskVariableQueryController {
+@RequestMapping(value = "/v1/process-instances/{processInstanceId}/variables", produces = MediaTypes.HAL_JSON_VALUE)
+public class ProcessInstanceVariableQueryController {
 
     private final VariableRepository variableRepository;
 
     private final VariableQueryResourceAssembler resourceAssembler;
 
     @Autowired
-    public TaskVariableQueryController(VariableRepository variableRepository,
-                                       VariableQueryResourceAssembler resourceAssembler) {
+    public ProcessInstanceVariableQueryController(VariableRepository variableRepository,
+                                                  VariableQueryResourceAssembler resourceAssembler) {
         this.variableRepository = variableRepository;
         this.resourceAssembler = resourceAssembler;
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public PagedResources<VariableQueryResource> findAll(String taskId,
+    public PagedResources<VariableQueryResource> findAll(String processInstanceId,
                                                          @QuerydslPredicate(root = Variable.class) Predicate predicate,
                                                          Pageable pageable,
                                                          PagedResourcesAssembler<Variable> pagedResourcesAssembler) {
-        BooleanExpression filterOnTask = QVariable.variable.taskId.eq(taskId);
+        BooleanExpression filterOnProcess = QVariable.variable.processInstanceId.eq(processInstanceId);
         if (predicate != null) {
-            filterOnTask = filterOnTask.and(predicate);
+            filterOnProcess = filterOnProcess.and(predicate);
         }
-        return pagedResourcesAssembler.toResource(variableRepository.findAll(filterOnTask,
+        return pagedResourcesAssembler.toResource(variableRepository.findAll(filterOnProcess,
                                                                              pageable),
                                                   resourceAssembler);
     }
