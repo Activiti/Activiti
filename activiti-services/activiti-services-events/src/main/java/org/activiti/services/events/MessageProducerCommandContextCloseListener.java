@@ -35,13 +35,16 @@ public class MessageProducerCommandContextCloseListener implements CommandContex
 
     @Override
     public void closing(CommandContext commandContext) {
+        // No need to implement this method in this class
     }
 
     @Override
     public void afterSessionsFlush(CommandContext commandContext) {
+        // No need to implement this method in this class
     }
 
     @Override
     public void closeFailure(CommandContext commandContext) {
+        // No need to implement this method in this class
     }
 }
