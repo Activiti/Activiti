@@ -27,7 +27,8 @@ import org.activiti.services.api.events.ProcessEngineEvent;
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
-        property = "eventType")
+        property = "eventType",
+        defaultImpl = IgnoredProcessEngineEvent.class)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = ProcessStartedEvent.class, name = "ProcessStartedEvent"),
         @JsonSubTypes.Type(value = ProcessCompletedEvent.class, name = "ProcessCompletedEvent"),
