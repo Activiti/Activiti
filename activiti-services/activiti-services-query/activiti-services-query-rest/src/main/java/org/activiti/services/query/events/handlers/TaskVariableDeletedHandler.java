@@ -17,13 +17,11 @@
 package org.activiti.services.query.events.handlers;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import org.activiti.services.query.model.QVariable;
-import org.activiti.services.query.model.Task;
-import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.app.repository.EntityFinder;
-import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.app.repository.VariableRepository;
 import org.activiti.services.query.events.VariableDeletedEvent;
+import org.activiti.services.query.model.QVariable;
+import org.activiti.services.query.model.Variable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,16 +30,12 @@ public class TaskVariableDeletedHandler {
 
     private final VariableRepository variableRepository;
 
-    private final TaskRepository taskRepository;
-
     private final EntityFinder entityFinder;
 
     @Autowired
     public TaskVariableDeletedHandler(VariableRepository variableRepository,
-                                      TaskRepository taskRepository,
                                       EntityFinder entityFinder) {
         this.variableRepository = variableRepository;
-        this.taskRepository = taskRepository;
         this.entityFinder = entityFinder;
     }
 
@@ -55,12 +49,6 @@ public class TaskVariableDeletedHandler {
         Variable variable = entityFinder.findOne(variableRepository,
                                             predicate,
                                             "Unable to find variable with name '" + variableName + "' for task '" + taskId + "'");
-        Task task = entityFinder.findById(taskRepository,
-                                                     taskId,
-                                                     "Unable to find task: " + taskId);
-
-        task.removeVariable(variable);
-        taskRepository.save(task);
 
         variableRepository.delete(variable);
     }

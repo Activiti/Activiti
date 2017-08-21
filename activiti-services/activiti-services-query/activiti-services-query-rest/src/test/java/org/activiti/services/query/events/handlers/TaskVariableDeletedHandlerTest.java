@@ -17,12 +17,11 @@
 package org.activiti.services.query.events.handlers;
 
 import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.model.Task;
-import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.app.repository.EntityFinder;
 import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.app.repository.VariableRepository;
 import org.activiti.services.query.events.VariableDeletedEvent;
+import org.activiti.services.query.model.Variable;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -57,24 +56,18 @@ public class TaskVariableDeletedHandlerTest {
     @Test
     public void handleShouldRemoveVariableFromProcessAndDeleteIt() throws Exception {
         //given
-        String taskId = "10";
         VariableDeletedEvent event = new VariableDeletedEvent();
-        event.setTaskId(taskId);
+        event.setTaskId("10");
         event.setVariableName("var");
 
         Variable variable = new Variable();
         given(entityFinder.findOne(eq(variableRepository), any(Predicate.class), anyString())).willReturn(variable);
-
-        Task task = mock(Task.class);
-        given(entityFinder.findById(eq(taskRepository), eq(taskId), anyString())).willReturn(task);
 
 
         //when
         handler.handle(event);
 
         //then
-        verify(task).removeVariable(variable);
-        verify(taskRepository).save(task);
         verify(variableRepository).delete(variable);
     }
 
