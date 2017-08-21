@@ -17,8 +17,9 @@
 package org.activiti.services.query.events.handlers;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.Variable;
+import org.activiti.services.query.app.repository.VariableRepository;
 import org.activiti.services.query.events.VariableCreatedEvent;
+import org.activiti.services.query.model.Variable;
 import org.activiti.test.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,10 +37,7 @@ public class VariableCreatedEventHandlerTest {
     private VariableCreatedEventHandler handler;
 
     @Mock
-    private TaskVariableCreatedHandler taskVariableCreatedHandler;
-
-    @Mock
-    private ProcessVariableCreatedHandler processVariableCreatedHandler;
+    private VariableRepository variableRepository;
 
     @Before
     public void setUp() throws Exception {
@@ -47,10 +45,11 @@ public class VariableCreatedEventHandlerTest {
     }
 
     @Test
-    public void handleShouldCreateUserProcessInstanceVariableCreatedHandlerWhenNoTaskId() throws Exception {
+    public void handleShouldCreateAndStoreVariable() throws Exception {
         //given
         String executionId = "10";
         long processInstanceId = 30L;
+        String taskId = "50";
         String variableName = "var";
         String variableType = String.class.getName();
         VariableCreatedEvent event = new VariableCreatedEvent(System.currentTimeMillis(),
@@ -61,40 +60,6 @@ public class VariableCreatedEventHandlerTest {
                                                               variableName,
                                                               "content",
                                                               variableType,
-                                                              null);
-
-        //when
-        handler.handle(event);
-
-        //then
-        ArgumentCaptor<Variable> captor = ArgumentCaptor.forClass(Variable.class);
-        verify(processVariableCreatedHandler).handle(captor.capture());
-
-        Variable variable = captor.getValue();
-        Assertions.assertThat(variable)
-                .hasExecutionId(executionId)
-                .hasProcessInstanceId(String.valueOf(processInstanceId))
-                .hasName(variableName)
-                .hasTaskId(null)
-                .hasType(variableType);
-    }
-
-    @Test
-    public void handleShouldUseTaskVariableCreatedHandlerWhenTaskIdIsProvided() throws Exception {
-        //given
-        String executionId = "10";
-        String processInstanceId = "30";
-        String variableName = "var";
-        String variableType = String.class.getName();
-        String taskId = "40";
-        VariableCreatedEvent event = new VariableCreatedEvent(System.currentTimeMillis(),
-                                                              "variableCreated",
-                                                              executionId,
-                                                              "20",
-                                                              processInstanceId,
-                                                              variableName,
-                                                              "content",
-                                                              variableType,
                                                               taskId);
 
         //when
@@ -102,12 +67,12 @@ public class VariableCreatedEventHandlerTest {
 
         //then
         ArgumentCaptor<Variable> captor = ArgumentCaptor.forClass(Variable.class);
-        verify(taskVariableCreatedHandler).handle(captor.capture());
+        verify(variableRepository).save(captor.capture());
 
         Variable variable = captor.getValue();
         Assertions.assertThat(variable)
                 .hasExecutionId(executionId)
-                .hasProcessInstanceId(processInstanceId)
+                .hasProcessInstanceId(String.valueOf(processInstanceId))
                 .hasName(variableName)
                 .hasTaskId(taskId)
                 .hasType(variableType);

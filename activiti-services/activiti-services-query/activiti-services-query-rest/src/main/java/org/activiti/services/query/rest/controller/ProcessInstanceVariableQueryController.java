@@ -18,17 +18,18 @@ package org.activiti.services.query.rest.controller;
 
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import org.activiti.services.query.app.repository.VariableRepository;
 import org.activiti.services.query.model.QVariable;
 import org.activiti.services.query.model.Variable;
-import org.activiti.services.query.app.repository.VariableRepository;
-import org.activiti.services.query.rest.assembler.VariableQueryResourceAssembler;
 import org.activiti.services.query.resource.VariableQueryResource;
+import org.activiti.services.query.rest.assembler.VariableQueryResourceAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,7 +50,7 @@ public class ProcessInstanceVariableQueryController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public PagedResources<VariableQueryResource> findAll(String processInstanceId,
+    public PagedResources<VariableQueryResource> findAll(@PathVariable String processInstanceId,
                                                          @QuerydslPredicate(root = Variable.class) Predicate predicate,
                                                          Pageable pageable,
                                                          PagedResourcesAssembler<Variable> pagedResourcesAssembler) {

@@ -19,23 +19,20 @@ package org.activiti.services.query.events.handlers;
 import java.util.Date;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.Variable;
+import org.activiti.services.query.app.repository.VariableRepository;
 import org.activiti.services.query.events.VariableCreatedEvent;
+import org.activiti.services.query.model.Variable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class VariableCreatedEventHandler implements QueryEventHandler {
 
-    private TaskVariableCreatedHandler taskVariableCreatedHandler;
-
-    private ProcessVariableCreatedHandler processVariableCreatedHandler;
+    private final VariableRepository variableRepository;
 
     @Autowired
-    public VariableCreatedEventHandler(TaskVariableCreatedHandler taskVariableCreatedHandler,
-                                       ProcessVariableCreatedHandler processVariableCreatedHandler) {
-        this.taskVariableCreatedHandler = taskVariableCreatedHandler;
-        this.processVariableCreatedHandler = processVariableCreatedHandler;
+    public VariableCreatedEventHandler(VariableRepository variableRepository) {
+        this.variableRepository = variableRepository;
     }
 
     @Override
@@ -50,11 +47,7 @@ public class VariableCreatedEventHandler implements QueryEventHandler {
                                          now,
                                          variableCreatedEvent.getExecutionId(),
                                          variableCreatedEvent.getVariableValue());
-        if (variableCreatedEvent.getTaskId() != null) {
-            taskVariableCreatedHandler.handle(variable);
-        } else {
-            processVariableCreatedHandler.handle(variable);
-        }
+        variableRepository.save(variable);
     }
 
     @Override

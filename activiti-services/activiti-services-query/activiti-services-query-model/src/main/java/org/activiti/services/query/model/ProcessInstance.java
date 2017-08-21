@@ -16,16 +16,11 @@
 
 package org.activiti.services.query.model;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -48,9 +43,6 @@ public class ProcessInstance {
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastModifiedFrom;
-
-    @OneToMany
-    private List<Variable> variables;
 
     public ProcessInstance() {
     }
@@ -95,29 +87,6 @@ public class ProcessInstance {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
-    }
-
-    @JsonIgnore
-    public List<Variable> getVariables() {
-        return Collections.unmodifiableList(variables);
-    }
-
-
-    public void setVariables(List<Variable> variables) {
-        this.variables = variables;
-    }
-
-    @JsonIgnore
-    public void addVariable(Variable variable) {
-        if (variables == null) {
-            variables = new ArrayList<>();
-        }
-        variables.add(variable);
-    }
-
-    @JsonIgnore
-    public boolean removeVariable(Variable variable) {
-        return variables != null && variables.remove(variable);
     }
 
     @Transient

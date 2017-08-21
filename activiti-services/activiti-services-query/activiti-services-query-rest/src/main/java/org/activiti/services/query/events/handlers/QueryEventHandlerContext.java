@@ -23,11 +23,15 @@ import java.util.stream.Collectors;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.query.events.AbstractProcessEngineEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class QueryEventHandlerContext {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(QueryEventHandlerContext.class);
 
     private Map<Class<? extends ProcessEngineEvent>, QueryEventHandler> handlers;
 
@@ -39,6 +43,7 @@ public class QueryEventHandlerContext {
     public void handle(AbstractProcessEngineEvent event) {
         QueryEventHandler handler = handlers.get(event.getClass());
         if (handler != null) {
+            LOGGER.debug("Handling event: " + handler.getHandledEventClass().getName());
             handler.handle(event);
         }
     }
