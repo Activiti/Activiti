@@ -7,7 +7,6 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.events.converter.EventConverterContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,15 +15,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class MessageProducerActivitiEventListener implements ActivitiEventListener {
 
-    private final ProcessEngineChannels producer;
-
     private final EventConverterContext converterContext;
 
+    private final MessageProducerCommandContextCloseListener messageListener;
+
     @Autowired
-    public MessageProducerActivitiEventListener(ProcessEngineChannels producer,
-                                                EventConverterContext converterContext) {
-        this.producer = producer;
+    public MessageProducerActivitiEventListener(EventConverterContext converterContext,
+                                                MessageProducerCommandContextCloseListener messageListener) {
         this.converterContext = converterContext;
+        this.messageListener = messageListener;
     }
 
     @Override
@@ -34,29 +33,20 @@ public class MessageProducerActivitiEventListener implements ActivitiEventListen
         if (newEvent == null) {
             return;
         }
-        @SuppressWarnings("unchecked")
-        List<ProcessEngineEvent> events = (List<ProcessEngineEvent>) currentCommandContext
-                                                                                          .getAttribute(MessageProducerCommandContextCloseListener.PROCESS_ENGINE_EVENTS);
+
+        List<ProcessEngineEvent> events = currentCommandContext.getGenericAttribute(MessageProducerCommandContextCloseListener.PROCESS_ENGINE_EVENTS);
         if (events != null) {
             events.add(newEvent);
         } else {
-            events = new ArrayList<ProcessEngineEvent>();
+            events = new ArrayList<>();
             events.add(newEvent);
             currentCommandContext.addAttribute(MessageProducerCommandContextCloseListener.PROCESS_ENGINE_EVENTS,
                                                events);
         }
 
-        List<CommandContextCloseListener> listeners = currentCommandContext.getCloseListeners();
-        if (listeners.size() != 0) {
-            for (CommandContextCloseListener listener : listeners) {
-                if (listener instanceof MessageProducerCommandContextCloseListener) {
-                    return;
-                }
-            }
+        if (!currentCommandContext.hasCloseListener(MessageProducerCommandContextCloseListener.class)) {
+            currentCommandContext.addCloseListener(messageListener);
         }
-        MessageProducerCommandContextCloseListener messageListener = new MessageProducerCommandContextCloseListener(
-                                                                                                                    producer);
-        currentCommandContext.addCloseListener(messageListener);
     }
 
     @Override

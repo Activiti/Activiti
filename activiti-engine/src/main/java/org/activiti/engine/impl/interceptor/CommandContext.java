@@ -12,6 +12,14 @@
  */
 package org.activiti.engine.impl.interceptor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.engine.ActivitiEngineAgenda;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiTaskAlreadyClaimedException;
@@ -23,13 +31,36 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti.engine.impl.persistence.cache.EntityCache;
-import org.activiti.engine.impl.persistence.entity.*;
-import org.activiti.engine.ActivitiEngineAgenda;
+import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
+import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
+import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
+import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityManager;
+import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
+import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManager;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
+import org.activiti.engine.impl.persistence.entity.JobEntityManager;
+import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
+import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
+import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
+import org.activiti.engine.impl.persistence.entity.SuspendedJobEntityManager;
+import org.activiti.engine.impl.persistence.entity.TableDataManager;
+import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti.engine.impl.persistence.entity.TimerJobEntityManager;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.logging.LogMDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /**
 
@@ -144,6 +175,17 @@ public class CommandContext {
     return closeListeners;
   }
 
+    public boolean hasCloseListener(Class<?> type) {
+        if (closeListeners != null && closeListeners.size() != 0) {
+            for (CommandContextCloseListener listener : closeListeners) {
+                if (type.isInstance(listener)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
   protected void executeCloseListenersClosing() {
     if (closeListeners != null) {
       try {
@@ -237,6 +279,14 @@ public class CommandContext {
     }
     return null;
   }
+
+    @SuppressWarnings("unchecked")
+    public <T> T getGenericAttribute(String key) {
+        if (attributes != null) {
+            return (T) getAttribute(key);
+        }
+        return null;
+    }
 
   @SuppressWarnings({ "unchecked" })
   public <T> T getSession(Class<T> sessionClass) {

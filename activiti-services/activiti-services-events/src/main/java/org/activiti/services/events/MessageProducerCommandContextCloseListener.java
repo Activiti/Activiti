@@ -6,14 +6,18 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.services.api.events.ProcessEngineEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MessageProducerCommandContextCloseListener implements CommandContextCloseListener {
 
     public static final String PROCESS_ENGINE_EVENTS = "processEngineEvents";
 
     private final ProcessEngineChannels producer;
 
+    @Autowired
     public MessageProducerCommandContextCloseListener(ProcessEngineChannels producer) {
         this.producer = producer;
     }
@@ -21,9 +25,8 @@ public class MessageProducerCommandContextCloseListener implements CommandContex
     @Override
     public void closed(CommandContext commandContext) {
         CommandContext currentCommandContext = Context.getCommandContext();
-        @SuppressWarnings("unchecked")
-        List<ProcessEngineEvent> events = (List<ProcessEngineEvent>) currentCommandContext
-                                                                                          .getAttribute(PROCESS_ENGINE_EVENTS);
+        List<ProcessEngineEvent> events = currentCommandContext
+                                                               .getGenericAttribute(PROCESS_ENGINE_EVENTS);
         if (events != null && events.size() != 0) {
             producer.auditProducer().send(MessageBuilder.withPayload(events.toArray(new ProcessEngineEvent[events
                                                                                                                  .size()]))
