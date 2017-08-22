@@ -821,51 +821,51 @@
 
     </plugins>
     <pluginManagement>
-	      <plugins>
-		<plugin>
-			<groupId>org.eclipse.m2e</groupId>
-			<artifactId>lifecycle-mapping</artifactId>
-			<version>1.0.0</version>
-			<configuration>
-				<lifecycleMappingMetadata>
-					<pluginExecutions>
-						<pluginExecution>
-							<pluginExecutionFilter>
-								<groupId>org.codehaus.mojo</groupId>
-								<artifactId>exec-maven-plugin</artifactId>
-								<versionRange>[1.5.0,)</versionRange>
-								<goals>
-									<goal>java</goal>
-									<goal>exec</goal>
-								</goals>
-							</pluginExecutionFilter>
-							<action>
-								<execute>
-									<runOnIncremental>true</runOnIncremental>
-									<runOnConfiguration>true</runOnConfiguration>
-								</execute>
-							</action>
-						</pluginExecution>
-						<pluginExecution>
-							<pluginExecutionFilter>
-						        <groupId>org.assertj</groupId>
-						        <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
-								<versionRange>[2.0.0,)</versionRange>
-								<goals>
-									<goal>generate-assertions</goal>
-								</goals>
-							</pluginExecutionFilter>
-							<action>
-								<execute>
-									<runOnIncremental>true</runOnIncremental>
-									<runOnConfiguration>true</runOnConfiguration>
-								</execute>
-							</action>
-						</pluginExecution>
-					</pluginExecutions>
-				</lifecycleMappingMetadata>
-			</configuration>
-		</plugin>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <versionRange>[1.5.0,)</versionRange>
+                    <goals>
+                      <goal>java</goal>
+                      <goal>exec</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute>
+                      <runOnIncremental>true</runOnIncremental>
+                      <runOnConfiguration>true</runOnConfiguration>
+                    </execute>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.assertj</groupId>
+                    <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
+                    <versionRange>[2.0.0,)</versionRange>
+                    <goals>
+                      <goal>generate-assertions</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <execute>
+                      <runOnIncremental>true</runOnIncremental>
+                      <runOnConfiguration>true</runOnConfiguration>
+                    </execute>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>io.fabric8</groupId>
           <artifactId>docker-maven-plugin</artifactId>
@@ -1027,7 +1027,7 @@
                 <checkstyleRules>
                   <module name="Checker">
                     <!-- Checks for whitespace. -->
-                    
+
                     <module name="FileTabCharacter">
                       <property name="severity" value="error"/>
                       <property name="eachLine" value="true"/>
@@ -1099,12 +1099,12 @@
           <groupId>org.assertj</groupId>
           <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
           <version>${assertions-generator-plugin.version}</version>
-            <dependencies>
-              <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-core</artifactId>
-                <version>${assertj.version}</version>
-              </dependency>
+          <dependencies>
+            <dependency>
+              <groupId>org.assertj</groupId>
+              <artifactId>assertj-core</artifactId>
+              <version>${assertj.version}</version>
+            </dependency>
           </dependencies>
         </plugin>
       </plugins>
