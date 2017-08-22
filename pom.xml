@@ -830,14 +830,6 @@
 				<lifecycleMappingMetadata>
 					<pluginExecutions>
 						<pluginExecution>
-							<action>
-								<execute>
-									<runOnIncremental>true</runOnIncremental>
-									<runOnConfiguration>true</runOnConfiguration>
-								</execute>
-							</action>
-						</pluginExecution>
-						<pluginExecution>
 							<pluginExecutionFilter>
 								<groupId>org.codehaus.mojo</groupId>
 								<artifactId>exec-maven-plugin</artifactId>
