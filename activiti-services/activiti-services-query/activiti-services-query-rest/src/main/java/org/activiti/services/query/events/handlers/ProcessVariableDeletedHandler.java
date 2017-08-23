@@ -17,13 +17,11 @@
 package org.activiti.services.query.events.handlers;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import org.activiti.services.query.model.ProcessInstance;
-import org.activiti.services.query.model.QVariable;
-import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.app.repository.EntityFinder;
-import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.app.repository.VariableRepository;
 import org.activiti.services.query.events.VariableDeletedEvent;
+import org.activiti.services.query.model.QVariable;
+import org.activiti.services.query.model.Variable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,16 +30,12 @@ public class ProcessVariableDeletedHandler {
 
     private final VariableRepository variableRepository;
 
-    private final ProcessInstanceRepository processInstanceRepository;
-
     private final EntityFinder entityFinder;
 
     @Autowired
     public ProcessVariableDeletedHandler(VariableRepository variableRepository,
-                                         ProcessInstanceRepository processInstanceRepository,
                                          EntityFinder entityFinder) {
         this.variableRepository = variableRepository;
-        this.processInstanceRepository = processInstanceRepository;
         this.entityFinder = entityFinder;
     }
 
@@ -55,13 +49,6 @@ public class ProcessVariableDeletedHandler {
         Variable variable = entityFinder.findOne(variableRepository,
                                             predicate,
                                             "Unable to find variable with name '" + variableName + "' for process instance '" + processInstanceId + "'");
-        ProcessInstance processInstance = entityFinder.findById(processInstanceRepository,
-                                                     Long.parseLong(processInstanceId),
-                                                     "Unable to find process instance: " + processInstanceId);
-
-        processInstance.removeVariable(variable);
-        processInstanceRepository.save(processInstance);
-
         variableRepository.delete(variable);
     }
 }

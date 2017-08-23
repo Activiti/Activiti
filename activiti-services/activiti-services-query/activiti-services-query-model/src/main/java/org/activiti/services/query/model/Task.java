@@ -16,16 +16,12 @@
 
 package org.activiti.services.query.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -60,9 +56,6 @@ public class Task {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastModifiedFrom;
 
-    @OneToMany
-    private List<Variable> variables;
-
     public Task() {
     }
 
@@ -78,8 +71,7 @@ public class Task {
                 @JsonProperty("processDefinitionId") String processDefinitionId,
                 @JsonProperty("processInstanceId") String processInstanceId,
                 @JsonProperty("status") String status,
-                @JsonProperty("lastModified") Date lastModified,
-                @JsonProperty("variables") List<Variable> variables) {
+                @JsonProperty("lastModified") Date lastModified) {
         this.id = id;
         this.assignee = assignee;
         this.name = name;
@@ -92,7 +84,6 @@ public class Task {
         this.processInstanceId = processInstanceId;
         this.status = status;
         this.lastModified = lastModified;
-        this.variables = variables;
     }
 
     public String getId() {
@@ -139,8 +130,6 @@ public class Task {
         return status;
     }
 
-    @JsonIgnore
-    //TODO: without ignore keep getting Could not write JSON: java.sql.Timestamp cannot be cast to java.lang.String error - why?
     public Date getLastModified() {
         return lastModified;
     }
@@ -191,28 +180,6 @@ public class Task {
 
     public void setLastModified(Date lastModified) {
         this.lastModified = lastModified;
-    }
-
-    @JsonIgnore
-    public List<Variable> getVariables() {
-        return variables;
-    }
-
-    public void setVariables(List<Variable> variables) {
-        this.variables = variables;
-    }
-
-    @JsonIgnore
-    public void addVariable(Variable variable) {
-        if (variables == null) {
-            variables = new ArrayList<>();
-        }
-        variables.add(variable);
-    }
-
-    @JsonIgnore
-    public boolean removeVariable(Variable variable) {
-        return variables != null && variables.remove(variable);
     }
 
     @Transient

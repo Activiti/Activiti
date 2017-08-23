@@ -77,6 +77,10 @@ public class Task {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getOwner() {
         return owner;
     }
@@ -87,6 +91,10 @@ public class Task {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {

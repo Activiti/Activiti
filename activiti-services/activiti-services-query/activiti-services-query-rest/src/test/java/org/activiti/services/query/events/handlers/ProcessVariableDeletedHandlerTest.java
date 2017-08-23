@@ -17,12 +17,10 @@
 package org.activiti.services.query.events.handlers;
 
 import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.model.ProcessInstance;
-import org.activiti.services.query.model.Variable;
 import org.activiti.services.query.app.repository.EntityFinder;
-import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.app.repository.VariableRepository;
 import org.activiti.services.query.events.VariableDeletedEvent;
+import org.activiti.services.query.model.Variable;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -44,9 +42,6 @@ public class ProcessVariableDeletedHandlerTest {
     private VariableRepository variableRepository;
 
     @Mock
-    private ProcessInstanceRepository processInstanceRepository;
-
-    @Mock
     private EntityFinder entityFinder;
 
     @Before
@@ -64,15 +59,11 @@ public class ProcessVariableDeletedHandlerTest {
         Variable variable = new Variable();
         given(entityFinder.findOne(eq(variableRepository), any(Predicate.class), anyString())).willReturn(variable);
 
-        ProcessInstance processInstance = mock(ProcessInstance.class);
-        given(entityFinder.findById(eq(processInstanceRepository), eq(10L), anyString())).willReturn(processInstance);
-
         //when
         handler.handle(event);
 
         //then
-        verify(processInstance).removeVariable(variable);
-        verify(processInstanceRepository).save(processInstance);
         verify(variableRepository).delete(variable);
     }
+
 }
