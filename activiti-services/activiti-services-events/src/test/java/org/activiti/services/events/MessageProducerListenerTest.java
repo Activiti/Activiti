@@ -2,14 +2,9 @@ package org.activiti.services.events;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.io.InputStream;
 
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.EndEvent;
-import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.services.api.events.ProcessEngineEvent;
@@ -38,12 +33,13 @@ public class MessageProducerListenerTest {
     }
 
     @Test
-    public void executeListener() {
+    public void executeListener() throws Exception {
         ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration().buildProcessEngine();
-        processEngine.getRepositoryService().createDeployment().addBpmnModel("simpleTestProcess.bpmn",
-                                                                             getSimpleTestProcess()).deploy();
+        deploy("SimpleProcess", processEngine);
+        deploy("RollbackProcess", processEngine);
+        deploy("AsyncErrorProcess", processEngine);
         processEngine.getRuntimeService().addEventListener(eventListener);
-        processEngine.getRuntimeService().startProcessInstanceByKey("simpleTestProcess");
+        processEngine.getRuntimeService().startProcessInstanceByKey("simpleProcess");
 
         ProcessEngineEvent[] events = (ProcessEngineEvent[]) MockMessageChannel.messageResult.getPayload();
         assertThat(events.length).isEqualTo(7);
@@ -54,35 +50,34 @@ public class MessageProducerListenerTest {
         assertThat(events[4].getClass()).isEqualTo(ActivityStartedEventImpl.class);
         assertThat(events[5].getClass()).isEqualTo(ActivityCompletedEventImpl.class);
         assertThat(events[6].getClass()).isEqualTo(ProcessCompletedEventImpl.class);
+
+        MockMessageChannel.messageResult = null;
+        try {
+            processEngine.getRuntimeService().startProcessInstanceByKey("rollbackProcess");
+        } catch (Exception e) {
+        }
+        assertThat(MockMessageChannel.messageResult).isEqualTo(null);
+
+        MockMessageChannel.messageResult = null;
+        try {
+            processEngine.getRuntimeService().startProcessInstanceByKey("asyncErrorProcess");
+        } catch (Exception e) {
+        }
+        assertThat(MockMessageChannel.messageResult).isNotNull();
+        events = (ProcessEngineEvent[]) MockMessageChannel.messageResult.getPayload();
+        assertThat(events.length).isEqualTo(4);
+        assertThat(events[0].getClass()).isEqualTo(ProcessStartedEventImpl.class);
+        assertThat(events[1].getClass()).isEqualTo(ActivityStartedEventImpl.class);
+        assertThat(events[2].getClass()).isEqualTo(ActivityCompletedEventImpl.class);
+        assertThat(events[3].getClass()).isEqualTo(SequenceFlowTakenEventImpl.class);
     }
 
-    private BpmnModel getSimpleTestProcess() {
-        Process p = new Process();
-        p.setId("simpleTestProcess");
-        p.setName("Simple Test Process");
-
-        StartEvent startEvent = new StartEvent();
-        startEvent.setName("start");
-        startEvent.setId("start");
-
-        EndEvent endEvent = new EndEvent();
-        endEvent.setName("end");
-        endEvent.setId("end");
-
-        SequenceFlow flow = new SequenceFlow();
-        flow.setId("flow1");
-        flow.setSourceRef("start");
-        flow.setTargetRef("end");
-        p.addFlowElement(startEvent);
-        p.addFlowElement(endEvent);
-        p.addFlowElement(flow);
-
-        List<SequenceFlow> startEventoutgoingFlows = new ArrayList<>();
-        startEventoutgoingFlows.add(flow);
-        startEvent.setOutgoingFlows(startEventoutgoingFlows);
-
-        BpmnModel model = new BpmnModel();
-        model.addProcess(p);
-        return model;
+    public static void deploy(final String processDefinitionKey, ProcessEngine processEngine) throws IOException {
+        try (InputStream is = ClassLoader.getSystemResourceAsStream("processes/" + processDefinitionKey + ".bpmn")) {
+            processEngine.getRepositoryService()
+                         .createDeployment()
+                         .addInputStream(processDefinitionKey + ".bpmn", is)
+                         .deploy();
+        }
     }
 }
