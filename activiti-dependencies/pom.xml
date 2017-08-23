@@ -7,11 +7,11 @@
     <version>7-201708-EA-SNAPSHOT</version>
   </parent>
 
-  <artifactId>activiti-bom</artifactId>
+  <artifactId>activiti-dependencies</artifactId>
   <packaging>pom</packaging>
 
-  <name>Activiti BOM (Bill Of Materials)</name>
-  <description>Activiti BOM (Bill Of Materials)</description>
+  <name>Activiti Dependencies BOM (Bill Of Materials)</name>
+  <description>Activiti Dependencies BOM (Bill Of Materials)</description>
 
   <repositories>
     <repository>

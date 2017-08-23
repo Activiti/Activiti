@@ -103,7 +103,7 @@
     <dependencies>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-bom</artifactId>
+        <artifactId>activiti-dependencies</artifactId>
         <version>${version.activiti}</version>
         <type>pom</type>
         <scope>import</scope>

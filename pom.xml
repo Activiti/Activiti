@@ -129,9 +129,9 @@
     </snapshotRepository>
   </distributionManagement>
   <modules>
-    <module>activiti-bom</module>
+    <module>activiti-dependencies</module>
     <module>activiti-cloud-parent</module>
-    <module>activiti-cloud-bom</module>
+    <module>activiti-cloud-dependencies</module>
   </modules>
 
   <repositories>

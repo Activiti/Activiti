@@ -5,13 +5,14 @@
     <groupId>org.activiti.cloud</groupId>
     <artifactId>activiti-cloud-parent</artifactId>
     <version>7-201708-EA-SNAPSHOT</version>
+    <relativePath>../activiti-cloud-parent/</relativePath>
   </parent>
 
-  <artifactId>activiti-cloud-bom</artifactId>
+  <artifactId>activiti-cloud-dependencies</artifactId>
   <packaging>pom</packaging>
 
-  <name>Activiti Cloud BOM (Bill Of Materials)</name>
-  <description>Activiti Cloud BOM(Bill Of Materials)</description>
+  <name>Activiti Cloud Dependencies - BOM (Bill Of Materials)</name>
+  <description>Activiti Cloud Dependencies - BOM(Bill Of Materials)</description>
 
   <repositories>
     <repository>
