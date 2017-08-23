@@ -8,7 +8,8 @@
   <packaging>pom</packaging>
   <version>7-201708-EA-SNAPSHOT</version>
   <properties>
-    <version.activiti>7-201708-EA-SNAPSHOT</version.activiti>
+    <version.activiti>${project.version}</version.activiti>
+    <version.activiti.cloud>${project.version}</version.activiti.cloud>
     <!--configuration properties-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -129,6 +130,8 @@
   </distributionManagement>
   <modules>
     <module>activiti-bom</module>
+    <module>activiti-cloud-parent</module>
+    <module>activiti-cloud-bom</module>
   </modules>
 
   <repositories>

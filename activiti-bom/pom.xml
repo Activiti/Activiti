@@ -10,7 +10,7 @@
   <artifactId>activiti-bom</artifactId>
   <packaging>pom</packaging>
 
-  <name>Activiti BOM (Bill Of Materials</name>
+  <name>Activiti BOM (Bill Of Materials)</name>
   <description>Activiti BOM (Bill Of Materials)</description>
 
   <repositories>

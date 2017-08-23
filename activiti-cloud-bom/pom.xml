@@ -77,109 +77,33 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- Activiti Modules for managed dependencies -->
+      <!-- Activiti Cloud Modules for managed dependencies -->
       <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-engine</artifactId>
-        <version>${version.activiti}</version>
+        <groupId>org.activiti.cloud</groupId>
+        <artifactId>activiti-cloud-starter-runtime-bundle</artifactId>
+        <version>${version.activiti.cloud}</version>
       </dependency>
       <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-spring</artifactId>
-        <version>${version.activiti}</version>
+        <groupId>org.activiti.cloud</groupId>
+        <artifactId>activiti-cloud-starter-configure</artifactId>
+        <version>${version.activiti.cloud}</version>
       </dependency>
       <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-bpmn-model</artifactId>
-        <version>${version.activiti}</version>
+        <groupId>org.activiti.cloud</groupId>
+        <artifactId>activiti-cloud-starter-audit</artifactId>
+        <version>${version.activiti.cloud}</version>
       </dependency>
       <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-image-generator</artifactId>
-        <version>${version.activiti}</version>
+        <groupId>org.activiti.cloud</groupId>
+        <artifactId>activiti-cloud-starter-query</artifactId>
+        <version>${version.activiti.cloud}</version>
       </dependency>
       <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-bpmn-converter</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-json-converter</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-bpmn-layout</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-process-validation</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-api</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-core</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-core-model</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-query-model</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-query-repo</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-events</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-rest-api</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-rest</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-identity-keycloak</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-identity-basic</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-audit-jpa</artifactId>
-        <version>${version.activiti}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-spring-boot-test</artifactId>
-        <version>${version.activiti}</version>
+        <groupId>org.activiti.cloud</groupId>
+        <artifactId>activiti-cloud-starters-test</artifactId>
+        <version>${version.activiti.cloud}</version>
         <scope>test</scope>
       </dependency>
-
     </dependencies>
   </dependencyManagement>
 
