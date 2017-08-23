@@ -145,6 +145,11 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-services-query-rest</artifactId>
+        <version>${version.activiti}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-services-events</artifactId>
         <version>${version.activiti}</version>
       </dependency>
