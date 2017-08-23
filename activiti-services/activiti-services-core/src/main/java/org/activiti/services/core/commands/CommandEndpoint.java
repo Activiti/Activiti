@@ -5,8 +5,10 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.activiti.services.core.model.commands.Command;
+import org.activiti.services.core.model.commands.AbstractCommand;
 import org.activiti.services.events.ProcessEngineChannels;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.stereotype.Component;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommandEndpoint {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommandEndpoint.class);
     private Map<Class, CommandExecutor> commandExecutors;
 
     @Autowired
@@ -23,7 +26,7 @@ public class CommandEndpoint {
     }
 
     @StreamListener(ProcessEngineChannels.COMMAND_CONSUMER)
-    public void consumeCommand(Command cmd) {
+    public void consumeCommand(AbstractCommand cmd) {
 
         CommandExecutor cmdExecutor = commandExecutors.get(cmd.getClass());
         if (cmdExecutor != null) {
@@ -31,6 +34,6 @@ public class CommandEndpoint {
             return;
         }
 
-        System.out.println(">>> No Command Found for type: " + cmd.getClass());
+        LOGGER.debug(">>> No Command Found for type: " + cmd.getClass());
     }
 }

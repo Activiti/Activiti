@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.activiti.services.audit.EventsRelProvider.COLLECTION_RESOURCE_REL;
 
 @RestController
-@RequestMapping(value = "/v1/audit/" + COLLECTION_RESOURCE_REL)
+@RequestMapping(value = "/v1/" + COLLECTION_RESOURCE_REL)
 public class ProcessEngineEventsController {
 
     private final EventsRepository eventsRepository;

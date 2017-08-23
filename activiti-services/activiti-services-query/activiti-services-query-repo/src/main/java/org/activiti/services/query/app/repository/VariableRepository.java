@@ -17,8 +17,8 @@
 package org.activiti.services.query.app.repository;
 
 import com.querydsl.core.types.dsl.StringPath;
-import org.activiti.services.query.app.model.QVariable;
-import org.activiti.services.query.app.model.Variable;
+import org.activiti.services.query.model.QVariable;
+import org.activiti.services.query.model.Variable;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
@@ -26,10 +26,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(exported = false)
-public interface VariableRepository extends CrudRepository<Variable, String> , QuerydslPredicateExecutor<Variable>, QuerydslBinderCustomizer<QVariable> {
+public interface VariableRepository extends CrudRepository<Variable, Long> , QuerydslPredicateExecutor<Variable>, QuerydslBinderCustomizer<QVariable> {
 
     @Override
-    default public void customize(QuerydslBindings bindings, QVariable root) {
+    default void customize(QuerydslBindings bindings,
+                           QVariable root) {
 
 
         bindings.bind(String.class).first(

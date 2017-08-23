@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEntityEventImpl;
 import org.activiti.engine.task.Task;
 import org.activiti.services.core.model.converter.TaskConverter;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.events.TaskCompletedEventImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ import org.springframework.stereotype.Component;
 import static org.activiti.engine.delegate.event.ActivitiEventType.TASK_COMPLETED;
 
 @Component
-public class TaskCompletedEventConverter implements EventConverter {
+public class TaskCompletedEventConverter extends AbstractEventConverter {
 
     private final TaskConverter taskConverter;
 
@@ -40,8 +40,8 @@ public class TaskCompletedEventConverter implements EventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        System.out.println(event.getType() + "---> Task Completed??? " + event.getClass().getCanonicalName());
-        return new TaskCompletedEventImpl(event.getExecutionId(),
+        return new TaskCompletedEventImpl(getApplicationName(),
+                                          event.getExecutionId(),
                                           event.getProcessDefinitionId(),
                                           event.getProcessInstanceId(),
                                           taskConverter.from((Task) ((ActivitiEntityEventImpl) event).getEntity()));

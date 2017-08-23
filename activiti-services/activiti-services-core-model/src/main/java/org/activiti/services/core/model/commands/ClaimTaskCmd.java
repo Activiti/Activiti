@@ -16,28 +16,20 @@
 
 package org.activiti.services.core.model.commands;
 
-import java.util.UUID;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class ClaimTaskCmd implements Command {
+public class ClaimTaskCmd extends AbstractCommand {
 
-    private String id;
     private String taskId;
     private String assignee;
 
-    public ClaimTaskCmd() {
-        this.id = UUID.randomUUID().toString();
-    }
-
-    public ClaimTaskCmd(String taskId,
-                        String assignee) {
-        this();
+    @JsonCreator
+    public ClaimTaskCmd(@JsonProperty("taskId") String taskId,
+                        @JsonProperty("assignee") String assignee) {
+        super();
         this.taskId = taskId;
         this.assignee = assignee;
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     public String getTaskId() {

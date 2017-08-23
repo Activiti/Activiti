@@ -17,8 +17,8 @@
 package org.activiti.services.query.app.repository;
 
 import com.querydsl.core.types.dsl.StringPath;
-import org.activiti.services.query.app.model.QTask;
-import org.activiti.services.query.app.model.Task;
+import org.activiti.services.query.model.QTask;
+import org.activiti.services.query.model.Task;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
@@ -29,7 +29,8 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 public interface TaskRepository extends CrudRepository<Task, String> , QuerydslPredicateExecutor<Task>, QuerydslBinderCustomizer<QTask> {
 
     @Override
-    default public void customize(QuerydslBindings bindings, QTask root) {
+    default void customize(QuerydslBindings bindings,
+                           QTask root) {
 
 
         bindings.bind(String.class).first(
@@ -38,7 +39,5 @@ public interface TaskRepository extends CrudRepository<Task, String> , QuerydslP
                 root.lastModified.after(value));
         bindings.bind(root.lastModifiedTo).first((path, value) ->
                 root.lastModified.before(value));
-        bindings.bind(root.nameLike).first((path, value) ->
-                root.name.contains(value));
     }
 }

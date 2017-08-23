@@ -20,8 +20,9 @@ import javax.persistence.Convert;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
-import org.activiti.services.core.model.ProcessInstance;
+
 import org.activiti.services.audit.converter.ProcessInstanceJpaJsonConverter;
+import org.activiti.services.audit.events.model.ProcessInstance;
 
 @Entity
 @DiscriminatorValue(value = ProcessCompletedEventEntity.PROCESS_COMPLETED_EVENT)

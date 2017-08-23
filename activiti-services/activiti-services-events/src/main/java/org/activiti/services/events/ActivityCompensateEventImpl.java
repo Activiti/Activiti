@@ -26,13 +26,15 @@ public class ActivityCompensateEventImpl extends AbstractProcessEngineEvent impl
     public ActivityCompensateEventImpl() {
     }
 
-    public ActivityCompensateEventImpl(String executionId,
+    public ActivityCompensateEventImpl(String applicationName,
+                                       String executionId,
                                        String processDefinitionId,
                                        String processInstanceId,
                                        String activityId,
                                        String activityName,
                                        String activityType) {
-        super(executionId,
+        super(applicationName,
+              executionId,
               processDefinitionId,
               processInstanceId);
         this.activityId = activityId;

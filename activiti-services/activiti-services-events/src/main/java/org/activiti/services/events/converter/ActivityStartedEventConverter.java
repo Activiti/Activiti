@@ -19,18 +19,19 @@ package org.activiti.services.events.converter;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiActivityEventImpl;
+import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.events.ActivityStartedEventImpl;
-import org.activiti.services.core.model.events.ProcessEngineEvent;
 import org.springframework.stereotype.Component;
 
 import static org.activiti.engine.delegate.event.ActivitiEventType.ACTIVITY_STARTED;
 
 @Component
-public class ActivityStartedEventConverter implements EventConverter {
+public class ActivityStartedEventConverter extends AbstractEventConverter {
 
     @Override
     public ProcessEngineEvent from(ActivitiEvent event) {
-        return new ActivityStartedEventImpl(event.getExecutionId(),
+        return new ActivityStartedEventImpl(getApplicationName(),
+                                            event.getExecutionId(),
                                             event.getProcessDefinitionId(),
                                             event.getProcessInstanceId(),
                                             ((ActivitiActivityEventImpl) event).getActivityId(),

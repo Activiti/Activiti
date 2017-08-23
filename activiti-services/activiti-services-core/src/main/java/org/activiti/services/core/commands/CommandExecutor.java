@@ -1,6 +1,6 @@
 package org.activiti.services.core.commands;
 
-import org.activiti.services.core.model.commands.Command;
+import org.activiti.services.api.commands.Command;
 
 public interface CommandExecutor<T extends Command> {
 

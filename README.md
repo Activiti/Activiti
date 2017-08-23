@@ -17,6 +17,7 @@ Activiti
   <a href='https://github.com/Activiti/Activiti/blob/master/LICENSE.txt'>
        <img src='https://img.shields.io/hexpm/l/plug.svg' alt='license' />
     </a>
+  <a href="https://cla-assistant.io/Activiti/Activiti"><img src="https://cla-assistant.io/readme/badge/Activiti/Activiti" alt="CLA assistant" /></a>
 </p>
 
 Homepage: http://activiti.org/

@@ -17,27 +17,21 @@
 package org.activiti.services.core.model.commands;
 
 import java.util.Map;
-import java.util.UUID;
 
-public class CompleteTaskCmd implements Command {
-    private String id;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class CompleteTaskCmd extends AbstractCommand {
+
     private String taskId;
     private Map<String, Object> outputVariables;
 
-    public CompleteTaskCmd() {
-        this.id = UUID.randomUUID().toString();
-    }
-
-    public CompleteTaskCmd(String taskId,
-                           Map<String, Object> outputVariables) {
-        this();
+    @JsonCreator
+    public CompleteTaskCmd(@JsonProperty("taskId") String taskId,
+                           @JsonProperty("outputVariables") Map<String, Object> outputVariables) {
+        super();
         this.taskId = taskId;
         this.outputVariables = outputVariables;
-    }
-
-    @Override
-    public String getId() {
-        return id;
     }
 
     public Map<String, Object> getOutputVariables() {

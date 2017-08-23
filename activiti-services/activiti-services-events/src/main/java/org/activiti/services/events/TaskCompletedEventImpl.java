@@ -26,11 +26,13 @@ public class TaskCompletedEventImpl extends AbstractProcessEngineEvent implement
     public TaskCompletedEventImpl() {
     }
 
-    public TaskCompletedEventImpl(String executionId,
+    public TaskCompletedEventImpl(String applicationName,
+                                  String executionId,
                                   String processDefinitionId,
                                   String processInstanceId,
                                   Task task) {
-        super(executionId,
+        super(applicationName,
+              executionId,
               processDefinitionId,
               processInstanceId);
         this.task = task;

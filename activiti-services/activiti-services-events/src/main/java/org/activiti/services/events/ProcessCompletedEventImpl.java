@@ -22,14 +22,17 @@ import org.activiti.services.core.model.ProcessInstance;
 public class ProcessCompletedEventImpl extends AbstractProcessEngineEvent implements ProcessCompletedEvent {
 
     private ProcessInstance processInstance;
+
     public ProcessCompletedEventImpl() {
     }
 
-    public ProcessCompletedEventImpl(String executionId,
+    public ProcessCompletedEventImpl(String applicationName,
+                                     String executionId,
                                      String processDefinitionId,
                                      String processInstanceId,
                                      ProcessInstance processInstance) {
-        super(executionId,
+        super(applicationName,
+              executionId,
               processDefinitionId,
               processInstanceId);
         this.processInstance = processInstance;
