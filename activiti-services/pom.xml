@@ -10,7 +10,7 @@
 
 
   <artifactId>activiti-services</artifactId>
-  <name>Activiti - Services Parent</name>
+  <name>Activiti - Services :: Parent</name>
   <description>Activiti Services Parent</description>
   <packaging>pom</packaging>
 
