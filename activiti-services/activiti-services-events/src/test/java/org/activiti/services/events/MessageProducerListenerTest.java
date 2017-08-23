@@ -30,7 +30,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class MessageProducerListenerTest {
 
     @Autowired
-    MessageProducerActivitiEventListener eventListener;
+    private MessageProducerActivitiEventListener eventListener;
 
     @Configuration
     @ComponentScan({"org.activiti.services.events.tests.util", "org.activiti.services.events.converter", "org.activiti.services.core.model.converter"})
