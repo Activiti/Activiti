@@ -24,6 +24,8 @@
 
 
   <properties>
+    <version.activiti>${project.version}</version.activiti>
+    <version.activiti.cloud>${project.version}</version.activiti.cloud>
     <!-- Spring Boot / Cloud / Stream deps -->
     <spring.boot.version>2.0.0.M3</spring.boot.version>
     <spring.cloud.version>Finchley.BUILD-SNAPSHOT</spring.cloud.version>
@@ -47,6 +49,7 @@
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven.enforcer.plugin.version>1.4.1</maven.enforcer.plugin.version>
+    <maven.docker.plugin.version>0.21.0</maven.docker.plugin.version>
     <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
     <extra-enforcer-rules.version>1.0-beta-6</extra-enforcer-rules.version>
     <illegal-transitive-dependency-check.version>1.7.4</illegal-transitive-dependency-check.version>
@@ -98,6 +101,40 @@
   <!-- Here we add 3rd Party Dependencies -->
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-bom</artifactId>
+        <version>${version.activiti}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- Activiti Cloud Modules for managed dependencies -->
+      <dependency>
+        <groupId>org.activiti.cloud</groupId>
+        <artifactId>activiti-cloud-starter-runtime-bundle</artifactId>
+        <version>${version.activiti.cloud}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.cloud</groupId>
+        <artifactId>activiti-cloud-starter-configure</artifactId>
+        <version>${version.activiti.cloud}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.cloud</groupId>
+        <artifactId>activiti-cloud-starter-audit</artifactId>
+        <version>${version.activiti.cloud}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.cloud</groupId>
+        <artifactId>activiti-cloud-starter-query</artifactId>
+        <version>${version.activiti.cloud}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.cloud</groupId>
+        <artifactId>activiti-cloud-starter-test</artifactId>
+        <version>${version.activiti.cloud}</version>
+        <scope>test</scope>
+      </dependency>
       <!-- Spring Boot / Cloud / Stream dependencies -->
       <dependency>
         <groupId>org.springframework.boot</groupId>
