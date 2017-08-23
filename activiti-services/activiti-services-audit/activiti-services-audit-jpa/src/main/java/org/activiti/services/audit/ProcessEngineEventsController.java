@@ -18,12 +18,14 @@ package org.activiti.services.audit;
 
 import java.util.Optional;
 
+import com.querydsl.core.types.Predicate;
 import org.activiti.engine.ActivitiException;
 import org.activiti.services.audit.assembler.EventResourceAssembler;
 import org.activiti.services.audit.events.ProcessEngineEventEntity;
 import org.activiti.services.audit.resources.EventResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,8 +64,8 @@ public class ProcessEngineEventsController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public PagedResources<EventResource> findAll(Pageable pageable) {
-        return pagedResourcesAssembler.toResource(eventsRepository.findAll(pageable), eventResourceAssembler);
+    public PagedResources<EventResource> findAll(@QuerydslPredicate(root = ProcessEngineEventEntity.class) Predicate predicate, Pageable pageable) {
+        return pagedResourcesAssembler.toResource(eventsRepository.findAll(predicate, pageable), eventResourceAssembler);
     }
 
 }
