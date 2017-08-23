@@ -25,7 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>activiti-services-identity-keycloak</artifactId>
-  <name>Activiti - Services Identity Keycloak</name>
+  <name>Activiti - Services :: Identity Keycloak</name>
   <description>Activiti Services Identity Keycloak</description>
   <dependencies>
     <dependency>

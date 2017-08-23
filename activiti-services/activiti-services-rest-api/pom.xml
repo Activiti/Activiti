@@ -25,7 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>activiti-services-rest-api</artifactId>
-  <name>Activiti - Services REST APIs</name>
+  <name>Activiti - Services :: REST APIs</name>
   <description>Activiti Services REST APIs</description>
   <dependencies>
     <dependency>

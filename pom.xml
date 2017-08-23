@@ -28,11 +28,11 @@
 
   <dependencyManagement>
     <!-- Important: Do not add any additional dependency versions here!
-         The dependency management should only import activiti-bom. 3rd party deps should go to activiit-parent -->
+         The dependency management should only import activiti-dependencies. 3rd party deps should go to activiti-parent -->
     <dependencies>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-bom</artifactId>
+        <artifactId>activiti-dependencies</artifactId>
         <version>${version.activiti}</version>
         <type>pom</type>
         <scope>import</scope>

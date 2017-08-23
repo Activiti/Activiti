@@ -11,7 +11,7 @@
 
   <artifactId>activiti-services-audit-jpa</artifactId>
   <name>Activiti - Services Audit JPA</name>
-  <description>Activiti Services Audit JPA</description>
+  <description>Activiti Services :: Audit JPA</description>
 
   <dependencies>
     <dependency>

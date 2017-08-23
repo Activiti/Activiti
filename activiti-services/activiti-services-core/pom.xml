@@ -25,7 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>activiti-services-core</artifactId>
-  <name>Activiti - Services Core</name>
+  <name>Activiti - Services :: Core</name>
   <description>Activiti Services Core</description>
   <dependencies>
     <dependency>

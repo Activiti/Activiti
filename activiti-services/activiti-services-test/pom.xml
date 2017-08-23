@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>activiti-services-test</artifactId>
-  <name>Activiti - Services Test</name>
+  <name>Activiti - Services :: Test</name>
   <description>Activiti Services Test</description>
   <dependencies>
     <dependency>

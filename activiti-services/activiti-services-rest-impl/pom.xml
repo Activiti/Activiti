@@ -25,7 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>activiti-services-rest</artifactId>
-  <name>Activiti - Services REST Impl</name>
+  <name>Activiti - Services :: REST Impl</name>
   <description>Activiti Services REST Impl</description>
   <dependencies>
     <dependency>
@@ -48,7 +48,6 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-image-generator</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-services-core</artifactId>
