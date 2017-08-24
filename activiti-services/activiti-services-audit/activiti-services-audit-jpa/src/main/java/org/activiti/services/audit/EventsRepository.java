@@ -16,11 +16,25 @@
 
 package org.activiti.services.audit;
 
+import com.querydsl.core.types.dsl.StringPath;
 import org.activiti.services.audit.events.ProcessEngineEventEntity;
+import org.activiti.services.audit.events.QProcessEngineEventEntity;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
+import org.springframework.data.querydsl.binding.QuerydslBindings;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(exported = false)
-public interface EventsRepository extends PagingAndSortingRepository<ProcessEngineEventEntity, Long> {
+public interface EventsRepository extends PagingAndSortingRepository<ProcessEngineEventEntity, Long>,
+                                          QuerydslPredicateExecutor<ProcessEngineEventEntity>,
+                                          QuerydslBinderCustomizer<QProcessEngineEventEntity> {
+
+    @Override
+    default void customize(QuerydslBindings bindings,
+                   QProcessEngineEventEntity root) {
+        bindings.bind(String.class).first(
+                (StringPath path, String value) -> path.eq(value));
+    }
 
 }
