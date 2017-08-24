@@ -7,6 +7,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>activiti-services-identity-basic</artifactId>
+  <name>Activiti - Services :: Identity Basic</name>
+  <description>Activiti Services Identity Basic</description>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>

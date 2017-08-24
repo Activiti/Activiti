@@ -8,7 +8,8 @@
   </parent>
 
   <artifactId>activiti-services-events</artifactId>
-
+  <name>Activiti - Services :: Events</name>
+  <description>Activiti Services Events</description>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
