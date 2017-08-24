@@ -16,16 +16,20 @@
 
 package org.activiti.services.query.events.handlers;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import java.util.Collections;
 
+import org.activiti.services.query.events.AbstractProcessEngineEvent;
 import org.activiti.services.query.events.TaskCompletedEvent;
 import org.activiti.services.query.events.TaskCreatedEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class QueryEventHandlerContextTest {
 
@@ -47,7 +51,8 @@ public class QueryEventHandlerContextTest {
         TaskCreatedEvent event = new TaskCreatedEvent();
 
         //when
-        context.handle(event);
+        AbstractProcessEngineEvent[] events = {event};
+        context.handle(events);
 
         //then
         verify(handler).handle(event);
@@ -59,7 +64,8 @@ public class QueryEventHandlerContextTest {
         TaskCompletedEvent event = new TaskCompletedEvent();
 
         //when
-        context.handle(event);
+        AbstractProcessEngineEvent[] events = {event};
+        context.handle(events);
 
         //then
         verify(handler, never()).handle(any());
