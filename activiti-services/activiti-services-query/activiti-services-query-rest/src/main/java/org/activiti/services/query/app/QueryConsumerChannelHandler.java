@@ -35,8 +35,8 @@ public class QueryConsumerChannelHandler {
     }
 
     @StreamListener(QueryConsumerChannels.QUERY_CONSUMER)
-    public synchronized void receive(AbstractProcessEngineEvent event) {
-        eventHandlerContext.handle(event);
+    public synchronized void receive(AbstractProcessEngineEvent[] events) {
+        eventHandlerContext.handle(events);
     }
 
 }

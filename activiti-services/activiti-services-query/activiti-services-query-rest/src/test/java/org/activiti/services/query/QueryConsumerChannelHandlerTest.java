@@ -16,6 +16,10 @@
 
 package org.activiti.services.query;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.services.query.app.QueryConsumerChannelHandler;
 import org.activiti.services.query.events.AbstractProcessEngineEvent;
 import org.activiti.services.query.events.handlers.QueryEventHandlerContext;
@@ -23,10 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class QueryConsumerChannelHandlerTest {
 
@@ -47,9 +47,10 @@ public class QueryConsumerChannelHandlerTest {
         AbstractProcessEngineEvent event = mock(AbstractProcessEngineEvent.class);
 
         //when
-        consumer.receive(event);
+        AbstractProcessEngineEvent[] events = {event};
+        consumer.receive(events);
 
         //then
-        verify(eventHandlerContext).handle(event);
+        verify(eventHandlerContext).handle(events);
     }
 }
