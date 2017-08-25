@@ -19,9 +19,9 @@ package org.activiti.services.events;
 
 public class VariableDeletedEventImpl extends AbstractProcessEngineEvent implements VariableDeletedEvent {
 
-    protected String variableName;
-    protected String variableType;
-    protected String taskId;
+    private String variableName;
+    private String variableType;
+    private String taskId;
 
     public VariableDeletedEventImpl() {
     }
@@ -59,6 +59,6 @@ public class VariableDeletedEventImpl extends AbstractProcessEngineEvent impleme
 
     @Override
     public String getEventType() {
-        return "VariableCreatedEvent";
+        return "VariableDeletedEvent";
     }
 }
