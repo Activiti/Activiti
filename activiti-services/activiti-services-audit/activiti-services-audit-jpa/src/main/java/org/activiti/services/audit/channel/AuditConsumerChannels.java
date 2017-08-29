@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.activiti.services.audit;
+package org.activiti.services.audit.channel;
 
 import org.springframework.cloud.stream.annotation.Input;
 import org.springframework.messaging.SubscribableChannel;
