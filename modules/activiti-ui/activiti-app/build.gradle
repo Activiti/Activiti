@@ -1,0 +1,53 @@
+buildscript {
+
+    ext {
+        activitiVersion = '6.0.0'
+        jacksonVersion = '2.3.3'
+
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        
+    }
+}
+
+apply plugin: 'war'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'eclipse-wtp'
+
+war {
+    baseName = 'activit-app'
+}
+
+
+
+repositories {
+    maven { url 'http://maven.aliyun.com/nexus/content/repositories/central/' }
+    maven { url "http://www.datanucleus.org/downloads/maven2" }
+    maven { url "https://repository.jboss.org/nexus/content/repositories/releases" }
+    mavenCentral()
+    
+}
+
+configurations {
+	 providedRuntime
+}
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+
+	compile("org.activiti:activiti-app-conf:${activitiVersion}")
+    compile("com.h2database:h2:1.4.194")
+    compile("mysql:mysql-connector-java:5.1.43") 
+	
+	//providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")  
+}
+
+ 
+

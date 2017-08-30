@@ -14,3 +14,4 @@ migration.html
 modules/activiti-ui/activiti-app/data
 modules/activiti-webapp-rest2/src/main/webapp/docs/*.json
 modules/activiti-webapp-rest2/src/main/webapp/docs/*.yaml
+modules/activiti-webapp-rest2/.gradle/
