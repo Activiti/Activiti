@@ -10,5 +10,5 @@
  */
 
 
-include 'activiti-app', 'activiti-app-conf', 'activiti-app-logic', 'activiti-app-rest', 'content-storage-api', 'content-storage-fs', 'editor-image-generator'
+include  'activiti-ui','activiti-app', 'activiti-app-conf', 'activiti-app-logic', 'activiti-app-rest', 'content-storage-api', 'content-storage-fs', 'editor-image-generator'
 
