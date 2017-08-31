@@ -11,15 +11,16 @@ def getDateTime() {
 buildscript {
 
     ext {
-			activiti.version = '6.0.0'
-			spring.version = '4.1.6.RELEASE '
-			spring.security.version = '4.0.1.RELEASE'
-			hibernate.version = '4.2.16.Final'
-			jackson.version = '2.3.3'
-			codahale.metrics.version = '3.0.2'
-			hazelcastcache.version = '3.1.5'
-			batik.version = '1.7'
-			jetty.version = '9.1.3.v20140225'
+    		projectVersion = '6.0.0'
+			activitiVersion = '6.0.0'
+			springVersion = '4.1.6.RELEASE '
+			springSecurityVersion = '4.0.1.RELEASE'
+			hibernateVersion = '4.2.16.Final'
+			jacksonVersion = '2.3.3'
+			codahaleMetricsVersion = '3.0.2'
+			hazelcastcacheVersion = '3.1.5'
+			batikVersion = '1.7'
+			jettyVersion = '9.1.3.v20140225'
 
     }
 	
@@ -128,29 +129,29 @@ project(':content-storage-fs') {
 project(':editor-image-generator') {
 	dependencies {
 
+		compile("org.activiti:activiti-ui-root:${projectVersion}")
 
-
-		compile("org.activiti:content-storage-api:${project.version}")
-		compile("org.activiti:content-storage-fs:${project.version}")
-		compile("org.activiti:activiti-app-logic:${project.version}")
-		compile("org.activiti:activiti-app-rest:${project.version}")
-		compile("org.activiti:activiti-app-conf:${project.version}")
-		compile("org.activiti:editor-image-generator:${project.version}")
+		compile("org.activiti:content-storage-api:${projectVersion}")
+		compile("org.activiti:content-storage-fs:${projectVersion}")
+		compile("org.activiti:activiti-app-logic:${projectVersion}")
+		compile("org.activiti:activiti-app-rest:${projectVersion}")
+		compile("org.activiti:activiti-app-conf:${projectVersion}")
+		compile("org.activiti:editor-image-generator:${projectVersion}")
 
 		////  Activiti Enterprise Engine 
-		compile("org.activiti:activiti-engine:${activiti.version}")
-		compile("org.activiti:activiti-spring:${activiti.version}")
-		compile("org.activiti:activiti-bpmn-model:${activiti.version}")
-		compile("org.activiti:activiti-bpmn-converter:${activiti.version}")
-		compile("org.activiti:activiti-json-converter:${activiti.version}")
-		compile("org.activiti:activiti-process-validation:${activiti.version}")
-		compile("org.activiti:activiti-bpmn-layout:${activiti.version}")
-		compile("org.activiti:activiti-form-engine-configurator:${activiti.version}")
-		compile("org.activiti:activiti-form-engine:${activiti.version}")
-		compile("org.activiti:activiti-form-model:${activiti.version}")
-		compile("org.activiti:activiti-form-json-converter:${activiti.version}")
-		compile("org.activiti:activiti-image-generator:${activiti.version}")
-		compile("org.activiti:activiti-rest:${activiti.version}")
+		compile("org.activiti:activiti-engine:${activitiVersion}")
+		compile("org.activiti:activiti-spring:${activitiVersion}")
+		compile("org.activiti:activiti-bpmn-model:${activitiVersion}")
+		compile("org.activiti:activiti-bpmn-converter:${activitiVersion}")
+		compile("org.activiti:activiti-json-converter:${activitiVersion}")
+		compile("org.activiti:activiti-process-validation:${activitiVersion}")
+		compile("org.activiti:activiti-bpmn-layout:${activitiVersion}")
+		compile("org.activiti:activiti-form-engine-configurator:${activitiVersion}")
+		compile("org.activiti:activiti-form-engine:${activitiVersion}")
+		compile("org.activiti:activiti-form-model:${activitiVersion}")
+		compile("org.activiti:activiti-form-json-converter:${activitiVersion}")
+		compile("org.activiti:activiti-image-generator:${activitiVersion}")
+		compile("org.activiti:activiti-rest:${activitiVersion}")
 
 		////  Xerces is needed (eg by jboss, which ships with an old version), for process definition parsing 
 		compile("xerces:xercesImpl:2.11.0")
@@ -162,20 +163,20 @@ project(':editor-image-generator') {
 		compile("org.slf4j:jcl-over-slf4j:1.7.5")
 
 		////  JSON 
-		compile("com.fasterxml.jackson.core:jackson-core:${jackson.version}")
-		compile("com.fasterxml.jackson.core:jackson-databind:${jackson.version}")
-		compile("com.fasterxml.jackson.core:jackson-annotations:${jackson.version}")
-		compile("com.fasterxml.jackson.datatype:jackson-datatype-json-org:${jackson.version}")
-		compile("com.fasterxml.jackson.datatype:jackson-datatype-hppc:${jackson.version}")
-		compile("com.fasterxml.jackson.datatype:jackson-datatype-joda:${jackson.version}")
+		compile("com.fasterxml.jackson.core:jackson-core:${jacksonVersion}")
+		compile("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
+		compile("com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}")
+		compile("com.fasterxml.jackson.datatype:jackson-datatype-json-org:${jacksonVersion}")
+		compile("com.fasterxml.jackson.datatype:jackson-datatype-hppc:${jacksonVersion}")
+		compile("com.fasterxml.jackson.datatype:jackson-datatype-joda:${jacksonVersion}")
 
 		////  DATABASE 
 		compile("org.liquibase:liquibase-core:3.1.0")
 		compile("com.mchange:c3p0:0.9.2.1")
 		compile("org.hsqldb:hsqldb:2.3.1")
 		compile("mysql:mysql-connector-java:5.1.30")
-		compile("org.hibernate:hibernate-core:${hibernate.version}")
-		compile("org.hibernate:hibernate-entitymanager:${hibernate.version}")
+		compile("org.hibernate:hibernate-core:${hibernateVersion}")
+		compile("org.hibernate:hibernate-entitymanager:${hibernateVersion}")
 		compile("org.hibernate:hibernate-validator:5.0.2.Final")
 
 
@@ -200,22 +201,22 @@ project(':editor-image-generator') {
 
 		////  SPRING 
 		compile("org.aspectj:aspectjweaver:1.7.4")
-		compile("org.springframework:spring-aop:${spring.version}")
-		compile("org.springframework:spring-beans:${spring.version}")
-		compile("org.springframework:spring-context:${spring.version}")
-		compile("org.springframework:spring-context-support:${spring.version}")
-		compile("org.springframework:spring-core:${spring.version}")
-		compile("org.springframework:spring-expression:${spring.version}")
-		compile("org.springframework:spring-orm:${spring.version}")
-		compile("org.springframework:spring-tx:${spring.version}")
-		compile("org.springframework:spring-web:${spring.version}")
-		compile("org.springframework:spring-webmvc:${spring.version}")
+		compile("org.springframework:spring-aop:${springVersion}")
+		compile("org.springframework:spring-beans:${springVersion}")
+		compile("org.springframework:spring-context:${springVersion}")
+		compile("org.springframework:spring-context-support:${springVersion}")
+		compile("org.springframework:spring-core:${springVersion}")
+		compile("org.springframework:spring-expression:${springVersion}")
+		compile("org.springframework:spring-orm:${springVersion}")
+		compile("org.springframework:spring-tx:${springVersion}")
+		compile("org.springframework:spring-web:${springVersion}")
+		compile("org.springframework:spring-webmvc:${springVersion}")
 		compile("org.springframework.data:spring-data-jpa:1.7.1.RELEASE")
-		compile("org.springframework.security:spring-security-core:${spring.security.version}")
-		compile("org.springframework.security:spring-security-config:${spring.security.version}")
-		compile("org.springframework.security:spring-security-crypto:${spring.security.version}")
-		compile("org.springframework.security:spring-security-web:${spring.security.version}")
-		compile("org.springframework.security:spring-security-ldap:${spring.security.version}")
+		compile("org.springframework.security:spring-security-core:${springSecurityVersion}")
+		compile("org.springframework.security:spring-security-config:${springSecurityVersion}")
+		compile("org.springframework.security:spring-security-crypto:${springSecurityVersion}")
+		compile("org.springframework.security:spring-security-web:${springSecurityVersion}")
+		compile("org.springframework.security:spring-security-ldap:${springSecurityVersion}")
 
 		////  EMAIL 
 		compile("org.freemarker:freemarker:2.3.20")
@@ -234,8 +235,8 @@ project(':editor-image-generator') {
 		testCompile("org.hamcrest:hamcrest-core:1.3")
 		testCompile("org.hamcrest:hamcrest-library:1.3")
 		testCompile("org.mockito:mockito-all:1.9.5")
-		testCompile("org.springframework:spring-test:${spring.version}")
-		testCompile("org.eclipse.jetty:jetty-webapp:${jetty.version}")
+		testCompile("org.springframework:spring-test:${springVersion}")
+		testCompile("org.eclipse.jetty:jetty-webapp:${jettyVersion}")
 		testCompile("org.apache.httpcomponents:httpmime:4.3.5")
 
 	}
