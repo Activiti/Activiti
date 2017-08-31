@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<configuration scan="true" scanPeriod="10 seconds" debug="false">
+
+
+	<contextName>activiti-rest-service</contextName>
+	<property name="APP_LOG_HOME" scope="context" value="./app-log" />
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level
+				%logger{30}.%method&lt;%line&gt;:%n%msg%n</pattern>
+		</layout>
+	</appender>
+
+
+	<appender name="APP_FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${APP_LOG_HOME}/activiti.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${APP_LOG_HOME}/activiti.%d{yyyy-MM-dd}.%i.log
+			</FileNamePattern>
+			<MaxHistory>30</MaxHistory>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>1MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="ch.qos.logback.classic.PatternLayout">
+				<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{30}.%method&lt;%line&gt;:%n%msg%n</pattern>
+			</layout>
+		</encoder>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="APP_FILE" />
+		<appender-ref ref="STDOUT" />
+	</root>
+	<logger name="org.activiti.rest" additivity="false">
+		<level value="TRACE" />
+		<appender-ref ref="APP_FILE" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+	<logger name="com.sunway.activiti" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="APP_FILE" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+
+</configuration>
+
