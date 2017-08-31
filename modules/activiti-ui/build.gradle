@@ -30,6 +30,7 @@ buildscript {
 allprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
+	apply plugin: 'org.springframework.boot'
 	
   eclipse {
     classpath {
@@ -41,6 +42,8 @@ allprojects {
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
+	
+
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
 
@@ -216,7 +219,7 @@ project(':activiti-app') {
 
 	apply plugin: 'war'
 	apply plugin: 'eclipse-wtp'
-	apply plugin: 'org.springframework.boot'
+	
 	
 	jar {
 	    baseName = 'activiti-app'  
