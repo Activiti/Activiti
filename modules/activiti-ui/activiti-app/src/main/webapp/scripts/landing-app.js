@@ -96,9 +96,11 @@ activitiApp
             suffix: '.json'
         })
 
-        .registerAvailableLanguageKeys(['en'], {
-            'en_*': 'en',
-            'en-*': 'en'
+        .registerAvailableLanguageKeys(['en','zh_CN'], {
+     	   'zh_*': 'zh_CN',
+    	   'zh-*': 'zh_CN',
+           'en_*': 'en',
+           'en-*': 'en'
         });
 
 
@@ -182,7 +184,7 @@ activitiApp
         if (proposedLanguage !== 'de' && proposedLanguage !== 'en' && proposedLanguage !== 'es' && proposedLanguage !== 'fr'
             && proposedLanguage !== 'it' && proposedLanguage !== 'ja') {
             
-            $translate.use('en');
+            $translate.use('zh_CN');
         }
          
         /* Auto-height */
