@@ -27,8 +27,13 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-services-query-repo</artifactId>
+      <artifactId>activiti-services-query-es</artifactId>
+      <version>7-201708-EA-SNAPSHOT</version>
     </dependency>
+    <!-- <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-services-query-repo</artifactId>
+    </dependency> -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
@@ -186,7 +191,7 @@
         <configuration>
 
           <packages>
-            <package>org.activiti.services.query.model</package>
+            <package>org.activiti.services.query.es.model</package>
           </packages>
 
           <!-- whether generated assertions classes can be inherited with consistent assertion chaining -->
