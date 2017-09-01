@@ -20,8 +20,8 @@ import org.activiti.services.api.events.ProcessEngineEvent;
 
 public interface QueryEventHandler {
 
-    void handle(ProcessEngineEvent event);
+	void handle(ProcessEngineEvent event);
 
-    Class<? extends ProcessEngineEvent> getHandledEventClass();
+	Class<? extends ProcessEngineEvent> getHandledEventClass();
 
 }

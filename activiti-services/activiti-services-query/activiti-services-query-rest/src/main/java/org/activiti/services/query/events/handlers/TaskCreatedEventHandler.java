@@ -19,8 +19,8 @@ package org.activiti.services.query.events.handlers;
 import java.util.Date;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.Task;
-import org.activiti.services.query.app.repository.TaskRepository;
+import org.activiti.services.query.es.model.TaskES;
+import org.activiti.services.query.es.repository.TaskRepository;
 import org.activiti.services.query.events.TaskCreatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,24 +28,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskCreatedEventHandler implements QueryEventHandler {
 
-    private TaskRepository taskRepository;
+	private TaskRepository taskRepository;
 
-    @Autowired
-    public TaskCreatedEventHandler(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
+	@Autowired
+	public TaskCreatedEventHandler(TaskRepository taskRepository) {
+		this.taskRepository = taskRepository;
+	}
 
-    @Override
-    public void handle(ProcessEngineEvent event) {
-        TaskCreatedEvent taskCreatedEvent = (TaskCreatedEvent) event;
-        Task task = taskCreatedEvent.getTask();
-        task.setStatus("CREATED");
-        task.setLastModified(new Date(taskCreatedEvent.getTimestamp()));
-        taskRepository.save(task);
-    }
+	@Override
+	public void handle(ProcessEngineEvent event) {
+		TaskCreatedEvent taskCreatedEvent = (TaskCreatedEvent) event;
+		TaskES task = taskCreatedEvent.getTask();
+		task.setStatus("CREATED");
+		task.setLastModified(new Date(taskCreatedEvent.getTimestamp()));
+		taskRepository.save(task);
+	}
 
-    @Override
-    public Class<? extends ProcessEngineEvent> getHandledEventClass() {
-        return TaskCreatedEvent.class;
-    }
+	@Override
+	public Class<? extends ProcessEngineEvent> getHandledEventClass() {
+		return TaskCreatedEvent.class;
+	}
 }

@@ -16,13 +16,13 @@
 
 package org.activiti.services.query.resource;
 
-import org.activiti.services.query.model.ProcessInstance;
+import org.activiti.services.query.es.model.ProcessInstanceES;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 
-public class ProcessInstanceQueryResource extends Resource<ProcessInstance> {
+public class ProcessInstanceQueryResource extends Resource<ProcessInstanceES> {
 
-    public ProcessInstanceQueryResource(ProcessInstance content, Iterable<Link> links) {
-        super(content, links);
-    }
+	public ProcessInstanceQueryResource(ProcessInstanceES content, Iterable<Link> links) {
+		super(content, links);
+	}
 }

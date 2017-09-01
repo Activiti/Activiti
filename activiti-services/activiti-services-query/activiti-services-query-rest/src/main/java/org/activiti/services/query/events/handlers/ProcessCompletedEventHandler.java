@@ -21,8 +21,8 @@ import java.util.Optional;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.ProcessInstance;
-import org.activiti.services.query.app.repository.ProcessInstanceRepository;
+import org.activiti.services.query.es.model.ProcessInstanceES;
+import org.activiti.services.query.es.repository.ProcessInstanceRepository;
 import org.activiti.services.query.events.ProcessCompletedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,30 +30,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessCompletedEventHandler implements QueryEventHandler {
 
-    private ProcessInstanceRepository processInstanceRepository;
+	private ProcessInstanceRepository processInstanceRepository;
 
-    @Autowired
-    public ProcessCompletedEventHandler(ProcessInstanceRepository processInstanceRepository) {
-        this.processInstanceRepository = processInstanceRepository;
-    }
+	@Autowired
+	public ProcessCompletedEventHandler(ProcessInstanceRepository processInstanceRepository) {
+		this.processInstanceRepository = processInstanceRepository;
+	}
 
-    @Override
-    public void handle(ProcessEngineEvent completedEvent) {
-        long processInstanceId = Long.parseLong(completedEvent.getProcessInstanceId());
-        Optional<ProcessInstance> findResult = processInstanceRepository.findById(processInstanceId);
-        if (findResult.isPresent()) {
-            ProcessInstance processInstance = findResult.get();
-            processInstance.setStatus("COMPLETED");
-            processInstance.setLastModified(new Date(completedEvent.getTimestamp()));
-            processInstanceRepository.save(processInstance);
-        } else {
-            throw new ActivitiException("Unable to find process instance with the given id: " + processInstanceId);
-        }
-    }
+	@Override
+	public void handle(ProcessEngineEvent completedEvent) {
+		long processInstanceId = Long.parseLong(completedEvent.getProcessInstanceId());
+		Optional<ProcessInstanceES> findResult = processInstanceRepository.findById(processInstanceId);
+		if (findResult.isPresent()) {
+			ProcessInstanceES processInstance = findResult.get();
+			processInstance.setStatus("COMPLETED");
+			processInstance.setLastModified(new Date(completedEvent.getTimestamp()));
+			processInstanceRepository.save(processInstance);
+		} else {
+			throw new ActivitiException("Unable to find process instance with the given id: " + processInstanceId);
+		}
+	}
 
-    @Override
-    public Class<? extends ProcessEngineEvent> getHandledEventClass() {
-        return ProcessCompletedEvent.class;
-    }
+	@Override
+	public Class<? extends ProcessEngineEvent> getHandledEventClass() {
+		return ProcessCompletedEvent.class;
+	}
 
 }

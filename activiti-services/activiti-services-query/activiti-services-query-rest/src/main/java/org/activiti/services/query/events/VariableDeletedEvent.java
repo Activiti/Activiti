@@ -18,33 +18,33 @@ package org.activiti.services.query.events;
 
 public class VariableDeletedEvent extends AbstractProcessEngineEvent {
 
-    private String variableName;
-    private String variableValue;
-    private String variableType;
-    private String taskId;
+	private String variableName;
+	private String variableValue;
+	private String variableType;
+	private String taskId;
 
-    public String getVariableName() {
-        return variableName;
-    }
+	public String getVariableName() {
+		return variableName;
+	}
 
-    public void setVariableName(String variableName) {
-        this.variableName = variableName;
-    }
+	public void setVariableName(String variableName) {
+		this.variableName = variableName;
+	}
 
-    public String getVariableValue() {
-        return variableValue;
-    }
+	public String getVariableValue() {
+		return variableValue;
+	}
 
-    public String getVariableType() {
-        return variableType;
-    }
+	public String getVariableType() {
+		return variableType;
+	}
 
-    public String getTaskId() {
-        return taskId;
-    }
+	public String getTaskId() {
+		return taskId;
+	}
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
+	public void setTaskId(String taskId) {
+		this.taskId = taskId;
+	}
 
 }

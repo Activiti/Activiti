@@ -19,39 +19,35 @@ package org.activiti.services.query.events.handlers;
 import java.util.Date;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.app.repository.VariableRepository;
+import org.activiti.services.query.es.model.VariableES;
+import org.activiti.services.query.es.repository.VariableRepository;
 import org.activiti.services.query.events.VariableCreatedEvent;
-import org.activiti.services.query.model.Variable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class VariableCreatedEventHandler implements QueryEventHandler {
 
-    private final VariableRepository variableRepository;
+	private final VariableRepository variableRepository;
 
-    @Autowired
-    public VariableCreatedEventHandler(VariableRepository variableRepository) {
-        this.variableRepository = variableRepository;
-    }
+	@Autowired
+	public VariableCreatedEventHandler(VariableRepository variableRepository) {
+		this.variableRepository = variableRepository;
+	}
 
-    @Override
-    public void handle(ProcessEngineEvent event) {
-        VariableCreatedEvent variableCreatedEvent = (VariableCreatedEvent) event;
-        Date now = new Date();
-        Variable variable = new Variable(variableCreatedEvent.getVariableType(),
-                                         variableCreatedEvent.getVariableName(),
-                                         variableCreatedEvent.getProcessInstanceId(),
-                                         variableCreatedEvent.getTaskId(),
-                                         now,
-                                         now,
-                                         variableCreatedEvent.getExecutionId(),
-                                         variableCreatedEvent.getVariableValue());
-        variableRepository.save(variable);
-    }
+	@Override
+	public void handle(ProcessEngineEvent event) {
+		VariableCreatedEvent variableCreatedEvent = (VariableCreatedEvent) event;
+		Date now = new Date();
+		VariableES variable = new VariableES(variableCreatedEvent.getVariableType(),
+				variableCreatedEvent.getVariableName(), variableCreatedEvent.getProcessInstanceId(),
+				variableCreatedEvent.getTaskId(), now, now, variableCreatedEvent.getExecutionId(),
+				variableCreatedEvent.getVariableValue());
+		variableRepository.save(variable);
+	}
 
-    @Override
-    public Class<? extends ProcessEngineEvent> getHandledEventClass() {
-        return VariableCreatedEvent.class;
-    }
+	@Override
+	public Class<? extends ProcessEngineEvent> getHandledEventClass() {
+		return VariableCreatedEvent.class;
+	}
 }

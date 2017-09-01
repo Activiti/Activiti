@@ -16,31 +16,21 @@
 
 package org.activiti.services.query.events.handlers;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
-import org.activiti.services.query.model.QVariable;
-import org.activiti.services.query.model.Variable;
+import org.activiti.services.query.es.model.VariableES;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProcessVariableUpdateHandler {
 
-    private final VariableUpdater variableUpdater;
+	private final VariableUpdater variableUpdater;
 
-    @Autowired
-    public ProcessVariableUpdateHandler(VariableUpdater variableUpdater) {
-        this.variableUpdater = variableUpdater;
-    }
+	@Autowired
+	public ProcessVariableUpdateHandler(VariableUpdater variableUpdater) {
+		this.variableUpdater = variableUpdater;
+	}
 
-    public void handle(Variable updatedVariable) {
-        String variableName = updatedVariable.getName();
-        String processInstanceId = updatedVariable.getProcessInstanceId();
-        BooleanExpression predicate = QVariable.variable.name.eq(variableName)
-                .and(
-                        QVariable.variable.processInstanceId.eq(String.valueOf(processInstanceId))
-                );
-        variableUpdater.update(updatedVariable,
-                               predicate,
-                               "Unable to find variable named '" + variableName + "' for process instance '" + processInstanceId + "'");
-    }
+	public void handle(VariableES updatedVariable) {
+		variableUpdater.update(updatedVariable);
+	}
 }

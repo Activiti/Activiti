@@ -18,47 +18,36 @@ package org.activiti.services.query.events;
 
 public class VariableUpdatedEvent extends AbstractProcessEngineEvent {
 
-    protected String variableName;
-    protected String variableValue;
-    protected String variableType;
-    protected String taskId;
+	protected String variableName;
+	protected String variableValue;
+	protected String variableType;
+	protected String taskId;
 
-    public VariableUpdatedEvent() {
-    }
+	public VariableUpdatedEvent() {
+	}
 
-    public VariableUpdatedEvent(Long timestamp,
-                                String eventType,
-                                String executionId,
-                                String processDefinitionId,
-                                String processInstanceId,
-                                String variableName,
-                                String variableValue,
-                                String variableType,
-                                String taskId) {
-        super(timestamp,
-              eventType,
-              executionId,
-              processDefinitionId,
-              processInstanceId);
-        this.variableName = variableName;
-        this.variableValue = variableValue;
-        this.variableType = variableType;
-        this.taskId = taskId;
-    }
+	public VariableUpdatedEvent(Long timestamp, String eventType, String executionId, String processDefinitionId,
+			String processInstanceId, String variableName, String variableValue, String variableType, String taskId) {
+		super(timestamp, eventType, executionId, processDefinitionId, processInstanceId);
+		this.variableName = variableName;
+		this.variableValue = variableValue;
+		this.variableType = variableType;
+		this.taskId = taskId;
+	}
 
-    public String getVariableName() {
-        return variableName;
-    }
+	public String getVariableName() {
+		return variableName;
+	}
 
-    public String getVariableValue() {
-        return variableValue;
-    }
+	public String getVariableValue() {
+		return variableValue;
+	}
 
-    public String getVariableType() {
-        return variableType;
-    }
+	public String getVariableType() {
+		return variableType;
+	}
 
-    public String getTaskId() {
-        return taskId;
-    }
+	public String getTaskId() {
+		return taskId;
+	}
 }

@@ -16,16 +16,12 @@
 
 package org.activiti.services.query.rest.controller;
 
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import org.activiti.services.query.app.repository.VariableRepository;
-import org.activiti.services.query.model.QVariable;
-import org.activiti.services.query.model.Variable;
+import org.activiti.services.query.es.model.VariableES;
+import org.activiti.services.query.es.repository.VariableRepository;
 import org.activiti.services.query.resource.VariableQueryResource;
 import org.activiti.services.query.rest.assembler.VariableQueryResourceAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedResources;
@@ -38,28 +34,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/v1/process-instances/{processInstanceId}/variables", produces = MediaTypes.HAL_JSON_VALUE)
 public class ProcessInstanceVariableQueryController {
 
-    private final VariableRepository variableRepository;
+	private final VariableRepository variableRepository;
 
-    private final VariableQueryResourceAssembler resourceAssembler;
+	private final VariableQueryResourceAssembler resourceAssembler;
 
-    @Autowired
-    public ProcessInstanceVariableQueryController(VariableRepository variableRepository,
-                                                  VariableQueryResourceAssembler resourceAssembler) {
-        this.variableRepository = variableRepository;
-        this.resourceAssembler = resourceAssembler;
-    }
+	@Autowired
+	public ProcessInstanceVariableQueryController(VariableRepository variableRepository,
+			VariableQueryResourceAssembler resourceAssembler) {
+		this.variableRepository = variableRepository;
+		this.resourceAssembler = resourceAssembler;
+	}
 
-    @RequestMapping(method = RequestMethod.GET)
-    public PagedResources<VariableQueryResource> findAll(@PathVariable String processInstanceId,
-                                                         @QuerydslPredicate(root = Variable.class) Predicate predicate,
-                                                         Pageable pageable,
-                                                         PagedResourcesAssembler<Variable> pagedResourcesAssembler) {
-        BooleanExpression filterOnProcess = QVariable.variable.processInstanceId.eq(processInstanceId);
-        if (predicate != null) {
-            filterOnProcess = filterOnProcess.and(predicate);
-        }
-        return pagedResourcesAssembler.toResource(variableRepository.findAll(filterOnProcess,
-                                                                             pageable),
-                                                  resourceAssembler);
-    }
+	@RequestMapping(method = RequestMethod.GET)
+	public PagedResources<VariableQueryResource> findAll(@PathVariable String processInstanceId,
+
+			Pageable pageable, PagedResourcesAssembler<VariableES> pagedResourcesAssembler) {
+		return pagedResourcesAssembler.toResource(variableRepository.findAll(processInstanceId, pageable),
+				resourceAssembler);
+	}
 }

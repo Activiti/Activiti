@@ -24,30 +24,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class VariableDeletedEventHandler implements QueryEventHandler {
 
-    private final ProcessVariableDeletedHandler processVariableDeletedHandler;
+	private final ProcessVariableDeletedHandler processVariableDeletedHandler;
 
-    private final TaskVariableDeletedHandler taskVariableDeletedHandler;
+	private final TaskVariableDeletedHandler taskVariableDeletedHandler;
 
-    @Autowired
-    public VariableDeletedEventHandler(ProcessVariableDeletedHandler processVariableDeletedHandler,
-                                       TaskVariableDeletedHandler taskVariableDeletedHandler) {
-        this.processVariableDeletedHandler = processVariableDeletedHandler;
-        this.taskVariableDeletedHandler = taskVariableDeletedHandler;
-    }
+	@Autowired
+	public VariableDeletedEventHandler(ProcessVariableDeletedHandler processVariableDeletedHandler,
+			TaskVariableDeletedHandler taskVariableDeletedHandler) {
+		this.processVariableDeletedHandler = processVariableDeletedHandler;
+		this.taskVariableDeletedHandler = taskVariableDeletedHandler;
+	}
 
-    @Override
-    public void handle(ProcessEngineEvent event) {
-        VariableDeletedEvent variableDeletedEvent = (VariableDeletedEvent) event;
-        if (variableDeletedEvent.getTaskId() == null) {
-            processVariableDeletedHandler.handle(variableDeletedEvent);
-        } else {
-            taskVariableDeletedHandler.handle(variableDeletedEvent);
-        }
+	@Override
+	public void handle(ProcessEngineEvent event) {
+		VariableDeletedEvent variableDeletedEvent = (VariableDeletedEvent) event;
+		if (variableDeletedEvent.getTaskId() == null) {
+			processVariableDeletedHandler.handle(variableDeletedEvent);
+		} else {
+			taskVariableDeletedHandler.handle(variableDeletedEvent);
+		}
 
-    }
+	}
 
-    @Override
-    public Class<? extends ProcessEngineEvent> getHandledEventClass() {
-        return VariableDeletedEvent.class;
-    }
+	@Override
+	public Class<? extends ProcessEngineEvent> getHandledEventClass() {
+		return VariableDeletedEvent.class;
+	}
 }

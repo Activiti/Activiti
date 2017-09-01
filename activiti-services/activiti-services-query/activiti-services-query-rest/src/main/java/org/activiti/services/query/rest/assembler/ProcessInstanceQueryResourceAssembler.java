@@ -19,8 +19,9 @@ package org.activiti.services.query.rest.assembler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import org.activiti.services.query.model.ProcessInstance;
+import org.activiti.services.query.es.model.ProcessInstanceES;
 import org.activiti.services.query.resource.ProcessInstanceQueryResource;
 import org.activiti.services.query.rest.controller.ProcessInstanceQueryController;
 import org.springframework.hateoas.Link;
@@ -31,17 +32,30 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Component
-public class ProcessInstanceQueryResourceAssembler extends ResourceAssemblerSupport<ProcessInstance,ProcessInstanceQueryResource> {
+public class ProcessInstanceQueryResourceAssembler
+		extends ResourceAssemblerSupport<ProcessInstanceES, ProcessInstanceQueryResource> {
 
+	public ProcessInstanceQueryResourceAssembler() {
+		super(ProcessInstanceQueryController.class, ProcessInstanceQueryResource.class);
+	}
 
-    public ProcessInstanceQueryResourceAssembler() {
-        super(ProcessInstanceQueryController.class, ProcessInstanceQueryResource.class);
-    }
+	@Override
+	public ProcessInstanceQueryResource toResource(ProcessInstanceES processInstance) {
+		List<Link> links = new ArrayList<>();
+		links.add(linkTo(methodOn(ProcessInstanceQueryController.class)
+				.getProcessInstanceById(processInstance.getProcessInstanceId())).withSelfRel());
+		return new ProcessInstanceQueryResource(processInstance, links);
+	}
 
-    @Override
-    public ProcessInstanceQueryResource toResource(ProcessInstance processInstance) {
-        List<Link> links = new ArrayList<>();
-        links.add(linkTo(methodOn(ProcessInstanceQueryController.class).getProcessInstanceById(processInstance.getProcessInstanceId())).withSelfRel());
-        return new ProcessInstanceQueryResource(processInstance,links);
-    }
+	public ProcessInstanceQueryResource toResource(Optional<ProcessInstanceES> optional) {
+		ProcessInstanceQueryResource processInstanceQueryResource = null;
+		if (optional.isPresent()) {
+			ProcessInstanceES processInstance = optional.get();
+			List<Link> links = new ArrayList<>();
+			links.add(linkTo(methodOn(ProcessInstanceQueryController.class)
+					.getProcessInstanceById(processInstance.getProcessInstanceId())).withSelfRel());
+			processInstanceQueryResource = new ProcessInstanceQueryResource(processInstance, links);
+		}
+		return processInstanceQueryResource;
+	}
 }

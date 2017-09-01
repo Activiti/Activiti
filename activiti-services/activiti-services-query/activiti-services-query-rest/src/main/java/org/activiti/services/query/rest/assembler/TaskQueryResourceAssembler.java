@@ -18,9 +18,10 @@ package org.activiti.services.query.rest.assembler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.activiti.services.query.rest.controller.TaskQueryController;
-import org.activiti.services.query.model.Task;
+import org.activiti.services.query.es.model.TaskES;
 import org.activiti.services.query.resource.TaskQueryResource;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mvc.ResourceAssemblerSupport;
@@ -30,17 +31,29 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Component
-public class TaskQueryResourceAssembler extends ResourceAssemblerSupport<Task, TaskQueryResource> {
+public class TaskQueryResourceAssembler extends ResourceAssemblerSupport<TaskES, TaskQueryResource> {
 
-    public TaskQueryResourceAssembler() {
-        super(TaskQueryController.class,
-                TaskQueryResource.class);
-    }
+	public TaskQueryResourceAssembler() {
+		super(TaskQueryController.class, TaskQueryResource.class);
+	}
 
-    @Override
-    public TaskQueryResource toResource(Task task) {
-        List<Link> links = new ArrayList<>();
-        links.add(linkTo(methodOn(TaskQueryController.class).getTaskById(task.getId())).withSelfRel());
-        return new TaskQueryResource(task, links);
-    }
+	@Override
+	public TaskQueryResource toResource(TaskES task) {
+		List<Link> links = new ArrayList<>();
+		links.add(linkTo(methodOn(TaskQueryController.class).getTaskById(task.getId())).withSelfRel());
+		return new TaskQueryResource(task, links);
+	}
+
+	public TaskQueryResource toResource(Optional<TaskES> optional) {
+		TaskQueryResource taskQueryResource = null;
+		if (optional.isPresent()) {
+			TaskES task = optional.get();
+			List<Link> links = new ArrayList<>();
+			links.add(linkTo(methodOn(TaskQueryController.class).getTaskById(task.getId())).withSelfRel());
+			taskQueryResource = new TaskQueryResource(task, links);
+		}
+
+		return taskQueryResource;
+	}
+
 }

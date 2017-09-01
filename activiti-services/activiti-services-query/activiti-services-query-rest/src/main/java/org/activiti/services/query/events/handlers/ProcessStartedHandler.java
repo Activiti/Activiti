@@ -19,8 +19,8 @@ package org.activiti.services.query.events.handlers;
 import java.util.Date;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.ProcessInstance;
-import org.activiti.services.query.app.repository.ProcessInstanceRepository;
+import org.activiti.services.query.es.model.ProcessInstanceES;
+import org.activiti.services.query.es.repository.ProcessInstanceRepository;
 import org.activiti.services.query.events.ProcessStartedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,30 +30,32 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProcessStartedHandler implements QueryEventHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessStartedHandler.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProcessStartedHandler.class);
 
-    private ProcessInstanceRepository processInstanceRepository;
+	private ProcessInstanceRepository processInstanceRepository;
 
-    @Autowired
-    public ProcessStartedHandler(ProcessInstanceRepository processInstanceRepository) {
-        this.processInstanceRepository = processInstanceRepository;
-    }
+	@Autowired
+	public ProcessStartedHandler(ProcessInstanceRepository processInstanceRepository) {
+		this.processInstanceRepository = processInstanceRepository;
+	}
 
-    @Override
-    public void handle(ProcessEngineEvent event) {
-        LOGGER.debug("Handling start of process Instance " + event.getProcessInstanceId());
+	@Override
+	public void handle(ProcessEngineEvent event) {
+		LOGGER.debug("Handling start of process Instance " + event.getProcessInstanceId());
 
-        processInstanceRepository.save(
-                new ProcessInstance(Long.parseLong(event.getProcessInstanceId()),
-                                    event.getProcessDefinitionId(),
-                                    "RUNNING",
-                                    new Date(event.getTimestamp())));
+		ProcessInstanceES processInstance = new ProcessInstanceES();
+		processInstance.setProcessInstanceId(Long.parseLong(event.getProcessInstanceId()));
+		processInstance.setProcessDefinitionId(event.getProcessDefinitionId());
+		processInstance.setStatus("RUNNING");
+		processInstance.setLastModified(new Date(event.getTimestamp()));
 
-    }
+		processInstanceRepository.save(processInstance);
 
-    @Override
-    public Class<? extends ProcessEngineEvent> getHandledEventClass() {
-        return ProcessStartedEvent.class;
-    }
+	}
+
+	@Override
+	public Class<? extends ProcessEngineEvent> getHandledEventClass() {
+		return ProcessStartedEvent.class;
+	}
 
 }

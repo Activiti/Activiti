@@ -21,8 +21,8 @@ import org.springframework.messaging.SubscribableChannel;
 
 public interface QueryConsumerChannels {
 
-    String QUERY_CONSUMER = "queryConsumer";
+	String QUERY_CONSUMER = "queryConsumer";
 
-    @Input(QUERY_CONSUMER)
-    SubscribableChannel queryConsumer();
+	@Input(QUERY_CONSUMER)
+	SubscribableChannel queryConsumer();
 }
