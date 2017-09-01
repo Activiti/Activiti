@@ -13,7 +13,7 @@
             "FORBIDDEN": "您不允许执行请求的操作", 
             "INTERNAL_SERVER_ERROR": "对不起, 执行请求的操作时发生意外错误。",
             "UPLOAD-LIMIT-EXCEEDED": "您试图上传的文件太大", 
-            "UPLOAD-LIMIT-EXCEEDED-TRIAL-USER": "您尝试上载的文件太大。升级到企业以上载大于 {{quota}} 的文件!",
+            "UPLOAD-LIMIT-EXCEEDED-TRIAL-USER": "您尝试上传的文件太大。升级到企业版以上传大于 {{quota}} 的文件!",
             "QUOTA-EXCEEDED-RUNTIME-PROCESSES": "作为试用用户, 您只能同时运行 {{quota}} 活动流程。",
             "QUOTA-EXCEEDED-COMPLETED-PROCESSES": "作为试用用户, 您只能有 {{quota}} 完成的流程。删除已完成的流程以启动新的流程。",
             "QUOTA-EXCEEDED-TOTAL-CONTENT-SIZE": "作为试用用户, 您只能存储内容的总数 {{quota}}。删除内容或完成流程以释放新内容的空间。"
@@ -50,7 +50,7 @@
             "SELECT-GROUP-SEARCH-PLACEHOLDER": "搜索组", 
             "SELECT-GROUP-NO-MATCHING-RESULTS": "使用上面的搜索框查找组。",
             "UPLOAD-CONTENT": "选择或删除文件", 
-            "UPLOAD-CONTENT-NO-DROP": "选择要上载的文件", 
+            "UPLOAD-CONTENT-NO-DROP": "选择要上传的文件", 
             "DROPZONE": "删除文件上传", 
             "YES": "是的", 
             "NO": "不"
@@ -64,7 +64,7 @@
             "TYPE": "类型", 
             "LICENSED-TO": "许可的", 
             "EXPIRES": "期满", 
-            "COPYRIGHT": "©2005-2015 露天软件 Inc。版权所有", 
+            "COPYRIGHT": "©2005-2015 Alfresco Software Inc。版权所有", 
             "LEGAL": "法律和许可证"
         }
     },
@@ -117,8 +117,8 @@
             "RELATED-CONTENT-ADDED-LOADING": "\"{{name}}\"已添加到任务中。一旦从外部源检索到这些内容, 就可以使用。"
         },
         "ACTION": {
-            "COMPLETE-TASK-WITH-FORM": "完整表格", 
-            "COMPLETE": "完整", 
+            "COMPLETE-TASK-WITH-FORM": "完成表格", 
+            "COMPLETE": "完成", 
             "CLAIM": "索赔", 
             "ASSIGN": "分配", 
             "REASSIGN": "重新分配", 
@@ -316,7 +316,7 @@
             "SAVE": "保存"
         },
         "DEFAULT-OUTCOME": {
-            "COMPLETE": "完整", 
+            "COMPLETE": "完成", 
             "START-PROCESS": "启动过程"
         },
         "MESSAGE" : {
