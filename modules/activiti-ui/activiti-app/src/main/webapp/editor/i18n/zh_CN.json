@@ -18,9 +18,9 @@
             "RECENT-PEOPLE": "最近的人",
             "MATCHING-PEOPLE": "匹配的人",
             "MATCHING-GROUPS": "匹配组",
-            "FILTER": "Filter",
-            "COMMENTS": "Comments",
-            "HISTORY": "History"
+            "FILTER": "筛选",
+            "COMMENTS": "评论",
+            "HISTORY": "历史"
         },
         "ACTION": {
             "LOGOUT": "退出",
@@ -63,7 +63,7 @@
             "QUOTA-EXCEEDED-LICENSE-APPS": "许可证只允许同时使用 {{quota}} 个应用程序定义."
         },
         "ABOUT": {
-          "TYPE": "Type",
+          "TYPE": "类型",
           "LICENSED-TO": "授权给",
           "EXPIRES": "到期",
           "COPYRIGHT": "© 2005-2015 Alfresco Software Inc. 保留所有权利.",
@@ -107,7 +107,7 @@
             "MY-PROCESSES-STEP-HINT": "如果您是新的设计流程, 您可以使用步骤编辑器。",
             "FILTER-TEXT": ", matching \"{{filterText}}\"",
             "FILTER-TEXT-EMPTY": "您没有业务流程模型能匹配 \"{{filterText}}\"",
-            "RECENT": "Recent",
+            "RECENT": "最近",
             "RECENT-COUNT": "最近使用过 {{total}} 个模型",
             "RECENT-ONE": "一个最近使用的模型",
             "RECENT-EMPTY": "没有最近使用的模型"
@@ -226,7 +226,7 @@
         "FORM": {
             "USERNAME": "电子邮件地址",
             "USERNAME.PLACEHOLDER": "输入您的电子邮件",
-            "PASSWORD": "Password",
+            "PASSWORD": "密码",
             "PASSWORD.PLACEHOLDER": "输入您的密码",
             "REMEMBERME": "自动登录",
             "BUTTON": "登录"
@@ -244,7 +244,7 @@
       "DESCRIPTION": "描述",
       "VERSION-COMMENT": "版本注释",
       "EDITOR-TYPE": "编辑器类型",
-      "STENCIL": "Stencil",
+      "STENCIL": "模具",
       "ACTION": {
             "DETAILS": "显示详细信息",
             "EDIT": "修改模型属性",
@@ -270,8 +270,8 @@
           "TITLE": "Business process model details {{name}}",
           "COMPARE-WITH-TITLE": "比较",
           "STENCIL": "Stencil:",
-          "HISTORY-TITLE": "History",
-          "COMMENTS-TITLE": "Comments",
+          "HISTORY-TITLE": "历史",
+          "COMMENTS-TITLE": "评论",
           "LAST-UPDATED-BY": "最后修改:{{lastUpdatedByFullName}} - {{lastUpdated | dateformat}}",
           "CREATED-BY": "Created by {{createdByFullName}}",
           "VERSION": "(版本 {{version}})",
@@ -312,10 +312,10 @@
           "NOT-SHARED" : "此业务流程模型不与任何人共享。",
           "SHARED-WITH": "共享",
           "PERMISSION": "权限",
-          "ACTIONS": "Actions",
+          "ACTIONS": "行动",
           "IMPORT": {
               "DROPZONE": "删除 .bpmn or .bpmn20.xml BPMN XML 文件",
-              "CANCEL-UPLOAD": "取消上载",
+              "CANCEL-UPLOAD": "取消上传",
               "ERROR": "处理 BPMN XML 文件时出错",
               "NO-DROP": "不支持拖放"
           }
@@ -349,8 +349,8 @@
             "SELECT-TITLE": "选择子进程",
             "NONE-SELECTED": "未选择子进程...",
             "CREATE": "+ 创建子流程",
-            "OPEN": "Open",
-            "CLEAR": "Clear",
+            "OPEN": "打开",
+            "CLEAR": "清除",
             "SEARCH-PLACEHOLDER": "搜索子进程",
             "MATCHING": "匹配子进程",
             "NONE-MATCHING": "没有匹配的子进程"
@@ -370,12 +370,12 @@
             "SHARE": "共享此表单",
             "SHARE-CONFIRM": "确认更改",
             "DELETE": "删除此表单",
-            "ADD-COMMENT": "+ Add comment",
+            "ADD-COMMENT": "+ 添加注释",
             "ADD-COMMENT-CONFIRM": "添加注释",
             "CREATE-CONFIRM": "创建新表单",
             "DUPLICATE-CONFIRM": "复制表单",
             "OPEN-IN-EDITOR": "表单编辑器",
-            "EDIT-CONFIRM": "Save",
+            "EDIT-CONFIRM": "保存",
             "DELETE-CONFIRM": "删除表单",
             "USE-AS-NEW-VERSION": "用作新版本",
             "USE-AS-NEW-VERSION-CONFIRM": "用作新版本",
@@ -383,13 +383,13 @@
 
         },
         "DETAILS": {
-          "TITLE": "Form details {{name}}",
+          "TITLE": "{{name}}表单明细",
           "COMPARE-WITH-TITLE": "比较",
-          "HISTORY-TITLE": "History",
-          "COMMENTS-TITLE": "Comments",
+          "HISTORY-TITLE": "历史",
+          "COMMENTS-TITLE": "评论",
           "LAST-UPDATED-BY": "最后一次修改:{{lastUpdatedByFullName}} - {{lastUpdated | dateformat}}",
-          "CREATED-BY": "Created by {{createdByFullName}}",
-          "VERSION": "(版本 {{version}})"
+          "CREATED-BY": "创建者:{{createdByFullName}}",
+          "VERSION": "(版本: {{version}})"
         },
         "EDIT": {
           "TITLE": "Edit form"
@@ -451,7 +451,7 @@
             "CANCEL": "取消",
             "OPEN-IN-EDITOR": "决策表编辑器",
             "EXPORT": "导出决策表",
-            "EDIT-CONFIRM": "Save",
+            "EDIT-CONFIRM": "保存",
             "DELETE-CONFIRM": "删除决策表",
             "USE-AS-NEW-VERSION": "用作新版本",
             "USE-AS-NEW-VERSION-CONFIRM": "用作新版本",
@@ -462,8 +462,8 @@
         "DETAILS": {
             "TITLE": "Decision table details {{name}}",
             "COMPARE-WITH-TITLE": "比较",
-            "HISTORY-TITLE": "History",
-            "COMMENTS-TITLE": "Comments",
+            "HISTORY-TITLE": "历史",
+            "COMMENTS-TITLE": "评论",
             "LAST-UPDATED-BY": "最后一次修改:{{lastUpdatedByFullName}} - {{lastUpdated | dateformat}}",
             "CREATED-BY": "Created by {{createdByFullName}}",
             "VERSION": "(版本 {{version}})"
@@ -489,7 +489,7 @@
             "IMPORT-TITLE": "导入 DMN 模型",
  	        "IMPORT": {
  	            "DROPZONE": "删除. dmn 或. dmn. xml dmn xml 文件",
- 	            "CANCEL-UPLOAD": "取消上载",
+ 	            "CANCEL-UPLOAD": "取消上传",
  	            "ERROR": "处理 DMN XML 文件时出错",
  	            "NO-DROP": "不支持拖放"
  	        },
@@ -507,7 +507,7 @@
             "NOT-SHARED": "此决策表不与任何人共享。",
             "IMPORT-DROPZONE": "删除. dmn 或. xml 决策表文件",
             "IMPORT-NO-DROP": "不支持拖放",
-            "IMPORT-CANCEL-UPLOAD": "取消上载",
+            "IMPORT-CANCEL-UPLOAD": "取消上传",
             "IMPORT-ERROR": "处理决策表文件时出错",
             "REUSABLE": "可重用的决策表",
             "SAVE-EMBEDDED": "是否将此决策表嵌入到当前流程模型中？",
@@ -532,8 +532,8 @@
         "KEY": "应用程序定义键",
         "DESCRIPTION": "描述",
         "VERSION-COMMENT": "版本注释",
-        "ICON": "Icon",
-        "THEME": "Theme",
+        "ICON": "图标",
+        "THEME": "主题",
         "ACTION": {
             "DETAILS": "显示详细信息",
             "EDIT": "修改应用程序定义属性",
@@ -546,13 +546,13 @@
             "ADD-COMMENT-CONFIRM": "添加注释",
             "CREATE-CONFIRM": "创建新的应用程序定义",
             "DUPLICATE-CONFIRM": "复制应用程序定义",
-            "EDIT-CONFIRM": "Save",
+            "EDIT-CONFIRM": "保存",
             "DELETE-CONFIRM": "删除应用程序定义",
             "USE-AS-NEW-VERSION": "用作新版本",
             "USE-AS-NEW-VERSION-CONFIRM": "用作新版本",
             "FAVORITE": "最喜欢这个应用程序定义",
             "OPEN-IN-EDITOR": "应用程序编辑器",
-            "PUBLISH": "Publish",
+            "PUBLISH": "发布",
             "PUBLISH-CONFIRM": "发布应用程序定义",
             "SELECT-ICON": "更改图标...",
             "SELECT-THEME": "更改主题...",
@@ -563,8 +563,8 @@
         "DETAILS": {
           "TITLE": "'应用程序定义'详细信息: {{name}}",
           "COMPARE-WITH-TITLE": "比较",
-          "HISTORY-TITLE": "History",
-          "COMMENTS-TITLE": "Comments",
+          "HISTORY-TITLE": "历史",
+          "COMMENTS-TITLE": "评论",
           "MODELS-TITLE": "应用程序定义中包含的模型",
           "THEME-TITLE": "这是所选应用程序定义主题的预览。您可以通过在预览上悬停来选择不同的图标和主题颜色。",
           "LAST-UPDATED-BY": "最后一次修改:{{lastUpdatedByFullName}} - {{lastUpdated | dateformat}}",
@@ -616,10 +616,10 @@
           "HAS-CUSTOM-STENCILITEM" : "Model \"{{modelName}}\" uses a stencil with custom stencil items. 不能在应用程序定义中使用此模型。",
           "HAS-VALIDATIONERROR" : "Model \"{{modelName}}\" has validation errors and cannot be added to an app definition. 在编辑器中打开模型以查看有关验证错误的详细信息(s).",
           "IMPORT-DESCRIPTION":"请浏览或删除带有. zip 扩展名的应用程序定义",
-          "IMPORT-TITLE":"Import an app definition model",
+          "IMPORT-TITLE":"导入'应用程序定义模型'",
           "IMPORT": {
               "DROPZONE": "删除. zip 应用程序定义文件",
-              "CANCEL-UPLOAD": "取消上载",
+              "CANCEL-UPLOAD": "取消上传",
               "RENEWIDM-IDS": "在导入步骤和 BPMN 模型时更新用户和组标识符。在将应用程序定义导入到不同的Activiti环境中时, 通常需要这样做。它将尝试将手工操作和用户任务链接到此目标环境中的正确用户和组.",
               "ERROR": "处理应用程序定义文件时出错",
               "NO-DROP": "不支持拖放"
@@ -644,32 +644,32 @@
           "TITLE-PROCESSES": "过程模型",
           "TITLE-FORMS": "表单模型",
           "TITLE-APPS": "应用程序模型",
-          "TITLE-STENCILS": "Stencils"
+          "TITLE-STENCILS": "模具"
         },
         "ADMINISTRATOR": {
           "TITLE": "Admin App"
         },
         "TASKS": {
           "TITLE": "Task App",
-          "TITLE-TASKS": "Tasks",
-          "TITLE-PROCESSES": "Processes"
+          "TITLE-TASKS": "任务",
+          "TITLE-PROCESSES": "过程"
         },
         "IDENTITY-MANAGEMENT": {
-          "TITLE": "Profile",
+          "TITLE": "配置",
           "TITLE-TENANT-ADMIN": "身份管理",
-          "TITLE-TENANT-ADMIN-TENANT-MGMT": "Tenants",
-          "TITLE-TENANT-ADMIN-USER-MGMT": "Users",
+          "TITLE-TENANT-ADMIN-TENANT-MGMT": "租户",
+          "TITLE-TENANT-ADMIN-USER-MGMT": "用户",
           "TITLE-TENANT-ADMIN-SYSTEM-GROUP-MGMT": "能力",
           "TITLE-TENANT-ADMIN-FUNCTIONAL-GROUP-MGMT": "组织",
-          "TITLE-TENANT-ADMIN-PROFILE": "Profile",
-          "TITLE-PROFILE": "Profile"
+          "TITLE-TENANT-ADMIN-PROFILE": "配置",
+          "TITLE-PROFILE": "配置"
         },
         "ANALYTICS": {
           "TITLE": "分析应用程序"
         },
         "CUSTOM-APP" : {
-           "TITLE-TASKS": "tasks",
-           "TITLE-PROCESSES": "processes"
+           "TITLE-TASKS": "任务",
+           "TITLE-PROCESSES": "过程"
         }
     },
 
@@ -742,26 +742,26 @@
 
     "FORM-BUILDER": {
         "PALLETTE": {
-            "TEXT": "Text",
-            "CONTAINER": "Container",
+            "TEXT": "文本",
+            "CONTAINER": "容器",
             "MULTILINE-TEXT": "多行文本",
-            "NUMBER": "Number",
-            "CHECKBOX": "Checkbox",
-            "DATE": "Date",
-            "DROPDOWN": "Dropdown",
+            "NUMBER": "数值",
+            "CHECKBOX": "复选框",
+            "DATE": "日期",
+            "DROPDOWN": "下拉框",
             "RADIO": "单选按钮",
-            "PEOPLE": "People",
-            "GROUP-OF-PEOPLE": "一群人",
+            "PEOPLE": "人",
+            "GROUP-OF-PEOPLE": "多人",
             "TABLE": "动态表",
-            "HEADER": "Header",
-            "UPLOAD": "Upload",
-            "EXPRESSION": "表达",
+            "HEADER": "头",
+            "UPLOAD": "上传",
+            "EXPRESSION": "表达式",
             "DISPLAY-VALUE": "显示值",
             "DISPLAY-TEXT": "显示文本"
         },
         "TABS": {
-            "GENERAL": "General",
-            "OPTIONS": "Options",
+            "GENERAL": "一般信息",
+            "OPTIONS": "选项",
             "UPLOAD-OPTIONS": "上传选项",
             "TABLE-COLUMNS": "表列",
             "URL-OPTIONS": "Url 选项",
@@ -771,15 +771,15 @@
         "VERSION": "版本 {{version}}",
         "LAST-UPDATED": "{{lastUpdatedByFullName}}最后一次更新于:{{lastUpdated | dateformat}}",
         "TITLE": {
-            "PREVIEW": "Preview",
-            "DESIGN": "Design",
-            "DETAILS": "Details",
-            "OUTCOME": "Outcomes",
+            "PREVIEW": "预览",
+            "DESIGN": "设计",
+            "DETAILS": "明细",
+            "OUTCOME": "结果",
             "COMPONENTS": "表单组件",
             "EDIT-COMPONENT": "编辑表单组件"
         },
         "POPUP": {
-            "EDIT-TITLE": "Edit field '{{name}}'",
+            "EDIT-TITLE": "编辑字段'{{name}}'",
             "EXPRESSION-TITLE": "编辑表达式"
         },
         "MESSAGE": {
@@ -787,7 +787,7 @@
             "SELECT-FIELD": "(No field selected)",
             "EMPTY-EXPRESSION": "(No expression value)",
             "FIELD-VALUE": "Show value of field \"{{field}}\"",
-            "SELECT-READONLY-FIELD": "Field:",
+            "SELECT-READONLY-FIELD": "字段:",
             "EXPRESSION-HELP": "您还可以显示以前以任何形式提交的值 (作为文本的一部分), 方法是使用下面的符号 (如 $ {myFieldId}) 引用它们。",
             "HYPERLINK-HELP": "您还可以显示以前以任何形式提交的值, 作为超链接 URL 的一部分。选择下面的字段, 将其插入光标所在的位置。",
             "HYPERLINK-HELP-RESPONSE-VARIABLE": "还可以将 REST 响应变量显示为超链接 URL 的一部分。选择下面的字段, 将其插入光标所在的位置。",
@@ -800,23 +800,23 @@
             "SEARCH": "搜索"
         },
         "COMPONENT": {
-            "LABEL": "Label:",
-            "NAME": "Name:",
+            "LABEL": "标签:",
+            "NAME": "姓名:",
             "OVERRIDEID": "是否覆盖 id？",
             "ID": "Id:",
-            "PLACEHOLDER": "符:",
+            "PLACEHOLDER": "占位符:",
             "OPTIONS-TYPE": "选项类型:",
-            "OPTIONS": "Options",
+            "OPTIONS": "选项",
             "RADIO-BUTTON-DEFAULT": "Option 1",
             "DROPDOWN-DEFAULT-EMPTY-SELECTION": "请选择一个...",
             "DROPDOWN-EMPTY-VALUE-HELP": "这是 \"空值\" 选项。在运行时选择此项是指 \"空值\" 或 \"空\"。 这是允许的可选字段, 但不允许为必填字段。",
             "DISPLAY-TEXT-DEFAULT": "将文本显示为表单的一部分",
             "BASE-ENDPOINT": "基本端点",
-            "REQUIRED": "Required",
+            "REQUIRED": "必填",
             "EXPRESSION": "表达",
             "READONLY": "Read only",
             "ADD-OPTION": "+ Add a new option",
-            "UPLOAD-ALLOW-MULTIPLE": "允许上载多个文件",
+            "UPLOAD-ALLOW-MULTIPLE": "允许上传多个文件",
             "DOCUMENTS-EDITABLE": "允许在 Office 中编辑文档",
             "READONLY-TEXT": "要显示的文本",
             "ONLY-LINKS": "Only link selected content, don't copy",
@@ -826,9 +826,9 @@
             "HEADER-NAME" : "属性名称",
             "PLACEHOLDER-NAME" : "输入属性名称",
             "HEADER-TYPE": "属性类型",
-            "REQUIRED" : "Required",
-            "EDITABLE" : "Editable",
-            "SORTABLE" : "Sortable",
+            "REQUIRED" : "必填",
+            "EDITABLE" : "编辑",
+            "SORTABLE" : "排序",
             "VISIBLE" : "在表中显示",
             "PROPERTY-UNSELECTED" : "未选择任何属性",
             "DISPLAY-TEXT": "显示文本",
@@ -836,7 +836,7 @@
             "AMOUNT-ENABLE-FRACTIONS": "启用分数"
         },
         "OPTIONS": {
-            "MANUAL": "Manual",
+            "MANUAL": "手动",
             "REST": "休息服务"
         },
         "OUTCOMES": {
@@ -846,11 +846,11 @@
             "POSSIBLE-OUTCOMES": "可能的结果",
             "NEW-OUTCOME-PLACEHOLDER": "输入新的结果",
             "ADD": "添加结果",
-            "REMOVE": "Remove"
+            "REMOVE": "删除"
         },
         "VALIDATOR-POPUP": {
             "DESCRIPTION": "描述",
-            "WARNING": "Warning",
+            "WARNING": "警告",
             "VALIDATOR-SET": "验证程序集"
         },
         "GROUP-RESTRICTION": {
@@ -879,21 +879,21 @@
                 "EXPRESSION-PLACEHOLDER": "输入可选标签",
                 "EXPRESSION-TYPE-LABEL": "列类型:",
                 "EXPRESSION-TYPE-VARIABLE": "表达",
-                "EXPRESSION-TYPE-SCRIPT": "Script",
+                "EXPRESSION-TYPE-SCRIPT": "脚本",
                 "EXPRESSION-VARIABLE-TYPE-LABEL": "变量类型:",
-                "EXPRESSION-VARIABLE-TYPE-BOOLEAN": "Boolean",
-                "EXPRESSION-VARIABLE-TYPE-DATE": "Date",
+                "EXPRESSION-VARIABLE-TYPE-BOOLEAN": "布尔",
+                "EXPRESSION-VARIABLE-TYPE-DATE": "日期",
                 "EXPRESSION-VARIABLE-TYPE-DATE_EXECUTION": "执行日期",
-                "EXPRESSION-VARIABLE-TYPE-NUMBER": "Number",
-                "EXPRESSION-VARIABLE-TYPE-STRING": "String",
+                "EXPRESSION-VARIABLE-TYPE-NUMBER": "数值",
+                "EXPRESSION-VARIABLE-TYPE-STRING": "字符串",
                 "EXPRESSION-VARIABLE-TYPE-FORMFIELD": "表单域",
-                "EXPRESSION-VARIABLE-TYPE-VARIABLE": "Variable",
-                "EXPRESSION-VARIABLE-TYPE-STATIC": "Static",
+                "EXPRESSION-VARIABLE-TYPE-VARIABLE": "变量",
+                "EXPRESSION-VARIABLE-TYPE-STATIC": "静态",
                 "EXPRESSION-VARIABLE-NAME": "变量名:",
                 "EXPRESSION-VARIABLE-NAME-PLACEHOLDER": "输入变量名",
-                "INPUT-EXISTING-VARIABLE": "Existing",
+                "INPUT-EXISTING-VARIABLE": "已有",
                 "INPUT-NEW-VARIABLE": "创建新",
-                "OUTPUT-EXISTING-VARIABLE": "Existing",
+                "OUTPUT-EXISTING-VARIABLE": "已有",
                 "OUTPUT-NEW-VARIABLE": "创建新",
                 "OUTPUT-NEW-VARIABLE-ID": "变量 ID:",
                 "OUTPUT-NEW-VARIABLE-TYPE": "变量类型:"
@@ -901,40 +901,40 @@
             "RULE-EDITOR": {
                 "TITLE": "编辑 \"{{name }}\"列的规则表达式",
                 "DESCRIPTION": "Compose the \"{{columnType}}\" expression",
-                "OPERATOR-LABEL": "Operator:",
+                "OPERATOR-LABEL": "运算符:",
                 "DATE-TYPE-LABEL": "日期类型:",
-                "DATE-LABEL": "Date:",
-                "METHOD-LABEL": "Method:",
-                "YEARS-LABEL": "Years:",
-                "MONTHS-LABEL": "Months:",
-                "DAYS-LABEL": "Days:",
-                "DATE-TYPE-FIXED": "Fixed",
-                "DATE-TYPE-DYNAMIC": "Dynamic",
-                "NUMBER-LABEL": "Number:",
+                "DATE-LABEL": "日期:",
+                "METHOD-LABEL": "方法:",
+                "YEARS-LABEL": "年:",
+                "MONTHS-LABEL": "月:",
+                "DAYS-LABEL": "天:",
+                "DATE-TYPE-FIXED": "固定",
+                "DATE-TYPE-DYNAMIC": "动态",
+                "NUMBER-LABEL": "数量:",
                 "NUMBER-FORMAT-MESSAGE": "123.45",
-                "BOOLEAN-LABEL": "Boolean:",
-                "STRING-LABEL": "String:",
+                "BOOLEAN-LABEL": "布尔:",
+                "STRING-LABEL": "字符串:",
                 "SELECT-VALUE": "选择项...",
                 "DATE_CALCULATION-LABEL": "计算:",
                 "DATE_EXECUTION-LABEL": "执行日期:",
                 "DATE_EXECUTION-TEXT": "执行决策表的日期将使用",
                 "ERROR": "图形编辑器无法理解单元格表达式。这并不意味着表达式无效. <br/>要保持表达式单击 \"取消 \"。要创建新表达式, 只需完成窗体并单击 \"确定 \"。",
                 "NUMBER_CALCULATION-LABEL": "计算:",
-                "NUMBER_CALCULATION-PARAM1-LABEL": "Number:"
+                "NUMBER_CALCULATION-PARAM1-LABEL": "数量:"
             }
         },
         "OPERATOR": {
             "STRING": {
-                "==": "Equals",
+                "==": "等于",
                 "!=": "不等于",
                 ".startsWith": "开始",
                 ".endsWith": "Ends with",
-                ".contains": "Contains",
+                ".contains": "包含",
                 "__isEmpty__": "Is empty",
                 "__isNotEmpty__": "不是空的"
             },
             "BOOLEAN": {
-                "==": "Equals",
+                "==": "等于",
                 "!=": "不等于",
                 "__isEmpty__": "Is empty",
                 "__isNotEmpty__": "不是空的"
@@ -942,18 +942,18 @@
             "DATE": {
                 "==": "Same as",
                 "!=": "以外",
-                ">": "After",
-                "<": "Before",
+                ">": "晚于",
+                "<": "早于",
                 ">=": "后或相同",
                 "<=": "之前或相同",
                 ".startsWith": "开始",
                 ".endsWith": "Ends with",
-                ".contains": "Contains",
+                ".contains": "包含",
                 "__isEmpty__": "Is empty",
                 "__isNotEmpty__": "不是空的"
             },
             "NUMBER": {
-                "==": "Equals",
+                "==": "等于",
                 "!=": "不等于",
                 ">": "大于",
                 "<": "Less than",
@@ -967,14 +967,14 @@
             "DATE": {
                 "NONE": "",
                 "ADD": "Add",
-                "SUBTRACT": "Subtract"
+                "SUBTRACT": "减去"
             },
             "NUMBER": {
                 "NONE": "",
                 "ADD": "Add",
-                "SUBTRACT": "Subtract",
-                "DIVIDE": "Divide",
-                "MULTIPLY": "Multiply"
+                "SUBTRACT": "减去",
+                "DIVIDE": "除以",
+                "MULTIPLY": "乘以"
             }
         },
         "BUTTON-ADD-INPUT-LABEL": "Add input",
@@ -999,7 +999,7 @@
         "RECAPTCHA-RELOAD": "获取另一个验证码",
         "RECAPTCHA-GET-AUDIO": "使用音频验证码",
         "RECAPTCHA-GET-IMAGE": "显示图像验证码",
-        "RECAPTCHA-HELP": "Help"
+        "RECAPTCHA-HELP": "帮助"
     },
 
     "TOUR": {
@@ -1033,9 +1033,9 @@
       "EMAIL-PLACEHOLDER": "输入电子邮件地址",
       "EMAIL-HELP": "按 Enter 键或单击按钮继续。此人将通过电子邮件通知或邀请注册",
       "BACK-TO-SEARCH": "返回搜索",
-      "ACTION-SELECT": "Select",
+      "ACTION-SELECT": "选择",
       "SOURCE": {
-          "TYPE": "Source",
+          "TYPE": "源",
           "SEARCH-OPTION": "用户搜索",
           "FIELD-OPTION": "表单域"
       }
@@ -1045,16 +1045,16 @@
         "GROUP": {
             "ACTIVITIES": "Activiti",
             "ALFRESCO": "Alfresco",
-            "ARTIFACTS": "Artifacts",
+            "ARTIFACTS": "部件",
             "BOUNDARY-EVENTS": "边界事件",
             "CONNECTING-OBJECTS": "连接对象",
             "END-EVENTS": "结束事件",
-            "GATEWAYS": "Gateways",
+            "GATEWAYS": "网关",
             "INTERMEDIATE-CATCH-EVENTS": "中级捕捉事件",
             "INTERMEDIATE-THROW-EVENTS": "中间投掷事件",
             "START-EVENTS": "启动事件",
             "STRUCTURAL": "结构",
-            "SWIMLANES": "Swimlanes"
+            "SWIMLANES": "泳道"
         },
         "ITEM": {
             "ASSOCIATION": {
@@ -1146,7 +1146,7 @@
                 "DESCRIPTION": "带有信号触发的中间事件"
             },
             "LANE": {
-                "TITLE": "Lane",
+                "TITLE": "车道",
                 "DESCRIPTION": "对过程定义进行结构化的车道"
             },
             "MAILTASK": {
@@ -1170,7 +1170,7 @@
                 "DESCRIPTION": "并行网关"
             },
             "POOL": {
-                "TITLE": "Pool",
+                "TITLE": "池",
                 "DESCRIPTION": "用于对流程定义进行结构化的池"
             },
             "RECEIVETASK": {
@@ -1304,23 +1304,23 @@
                 "DESCRIPTION": "电子邮件的抄送。在逗号分隔的列表中定义了多个收件人。"
             },
             "MAILTASK-CHARSET": {
-                "TITLE": "Charset",
+                "TITLE": "字符集",
                 "DESCRIPTION": "允许更改电子邮件的字符集, 这对于许多非英语语言来说是必要的。"
             },
             "MAILTASK-FROM": {
-                "TITLE": "From",
+                "TITLE": "从",
                 "DESCRIPTION": "发件人电子邮件地址。如果未提供, 则使用从地址配置的默认值。"
             },
             "MAILTASK-HTML": {
-                "TITLE": "Html",
+                "TITLE": "HTML",
                 "DESCRIPTION": "这是一个 HTML 的内容, 这是电子邮件的一部分。"
             },
             "MAILTASK-SUBJECT": {
-                "TITLE": "Subject",
+                "TITLE": "主题",
                 "DESCRIPTION": "电子邮件的主题。"
             },
             "MAILTASK-TEXT": {
-                "TITLE": "Text",
+                "TITLE": "文本",
                 "DESCRIPTION": "The content of the e-mail, in case one needs to send plain none-rich e-mails. Can be used in combination with html, for e-mail clients that don't support rich content. The client will then fall back to this text-only alternative."
             },
             "MAILTASK-TO": {
@@ -1332,7 +1332,7 @@
                 "DESCRIPTION": "定义消息名称。"
             },
             "MULETASK-LANGUAGE": {
-                "TITLE": "Language",
+                "TITLE": "语言",
                 "DESCRIPTION": "用于解析有效负载表达式的语言的必需定义, 如 juel。"
             },
             "MULETASK-PAYLOAD": {
@@ -1392,7 +1392,7 @@
                 "DESCRIPTION": "用于文档目的的版本标识符。"
             },
             "RULE-EXCLUDE": {
-                "TITLE": "Exclude",
+                "TITLE": "排除",
                 "DESCRIPTION": "使用 \"规则\" 属性作为排除。"
             },
             "RULE-INPUT-VARIABLES": {
@@ -1404,7 +1404,7 @@
                 "DESCRIPTION": "规则任务的结果变量。"
             },
             "RULE-RULESDEF": {
-                "TITLE": "Rules",
+                "TITLE": "规则",
                 "DESCRIPTION": "规则任务。"
             },
             "SCRIPTTASK-FORMAT": {
@@ -1412,11 +1412,11 @@
                 "DESCRIPTION": "脚本任务的脚本格式。"
             },
             "SCRIPTTASK-TEXT": {
-                "TITLE": "Script",
+                "TITLE": "脚本",
                 "DESCRIPTION": "脚本任务的文本。"
             },
             "SERVICETASK-CLASS": {
-                "TITLE": "Class",
+                "TITLE": "类",
                 "DESCRIPTION": "实现服务任务逻辑的类。"
             },
             "SERVICETASK-DELEGATE-EXPRESSION": {
@@ -1468,7 +1468,7 @@
                 "DESCRIPTION": "用户任务的侦听器。"
             },
             "TEXT-ANNOTATION-TEXT": {
-                "TITLE": "Text",
+                "TITLE": "文本",
                 "DESCRIPTION": "文本批注的文本。"
             },
             "TIMER-CYCLE": {
@@ -1488,7 +1488,7 @@
                 "DESCRIPTION": "用户任务的分配定义。"
             },
             "USERTASK-CATEGORY": {
-                "TITLE": "Category",
+                "TITLE": "类别",
                 "DESCRIPTION": "用户任务的类别。"
             },
             "USERTASK-DUEDATE": {
@@ -1496,7 +1496,7 @@
                 "DESCRIPTION": "用户任务的截止日期。"
             },
             "USERTASK-PRIORITY": {
-                "TITLE": "Priority",
+                "TITLE": "优先",
                 "DESCRIPTION": "用户任务的优先级。"
             },
             "USERTASK-SEND-EMAIL": {
@@ -1511,35 +1511,35 @@
     "PAGE.HEADER" : "业务流程详细信息",
 
     "ACTION.OK" : "Ok",
-    "ACTION.SAVE" : "Save",
+    "ACTION.SAVE" : "保存",
     "ACTION.SAVE-AND-CLOSE" : "保存并关闭编辑器",
-    "ACTION.SEND" : "Send",
+    "ACTION.SEND" : "发送",
     "ACTION.CANCEL" : "取消",
-    "ACTION.SELECT" : "Select",
+    "ACTION.SELECT" : "选择",
     "ACTION.ADD" : "Add",
-    "ACTION.REMOVE" : "Remove",
+    "ACTION.REMOVE" : "删除",
     "ACTION.MOVE.UP" : "向上移动项",
     "ACTION.MOVE.DOWN" : "向下移动项",
 
     "MAIN_NAVIGATION_ORCHESTRATIONS" : "流程",
     "MAIN_NAVIGATION_DISPATCH_RULES" : "调度规则",
     "MAIN_NAVIGATION_ASSET_GROUPS" : "断言组",
-    "MAIN_NAVIGATION_SOLUTIONS" : "Solutions",
+    "MAIN_NAVIGATION_SOLUTIONS" : "解决",
 
     "TOOLBAR.ACTION.CLOSE" : "关闭编辑器并返回到 \"概览\" 页",
     "TOOLBAR.ACTION.SAVE" : "保存模型",
     "TOOLBAR.ACTION.VALIDATE": "验证模型",
     "TOOLBAR.ACTION.CUT" : "Cut (select one or more elements in your business process)",
     "TOOLBAR.ACTION.COPY" : "Copy (select one or more elements in your business process)",
-    "TOOLBAR.ACTION.PASTE" : "Paste",
+    "TOOLBAR.ACTION.PASTE" : "粘贴",
     "TOOLBAR.ACTION.DELETE" : "删除选定的元素",
-    "TOOLBAR.ACTION.UNDO" : "Undo",
-    "TOOLBAR.ACTION.REDO" : "Redo",
+    "TOOLBAR.ACTION.UNDO" : "撤消",
+    "TOOLBAR.ACTION.REDO" : "做",
     "TOOLBAR.ACTION.ZOOMIN" : "Zoom in",
     "TOOLBAR.ACTION.ZOOMOUT" : "Zoom out",
     "TOOLBAR.ACTION.ZOOMACTUAL" : "缩放到实际大小",
     "TOOLBAR.ACTION.ZOOMFIT" : "缩放以适合",
-    "TOOLBAR.ACTION.MOVE" : "Move",
+    "TOOLBAR.ACTION.MOVE" : "移动",
     "TOOLBAR.ACTION.IMPORT" : "导入",
     "TOOLBAR.ACTION.EXPORT" : "导出",
     "TOOLBAR.ACTION.BENDPOINT.ADD" : "将折弯点添加到所选序列流",
@@ -1571,7 +1571,7 @@
     "BUTTON.ACTION.DELETE.TOOLTIP": "从模型中删除元素",
     "BUTTON.ACTION.MORPH.TOOLTIP": "更改元素类型",
 
-    "ELEMENT.AUTHOR" : "Author",
+    "ELEMENT.AUTHOR" : "作者",
     "ELEMENT.DATE_CREATED" : "创建日期",
     "ELEMENT.SELECTED_EMPTY_TITLE" : "(No name)",
 
@@ -1613,8 +1613,8 @@
 
     "PROPERTY.EXECUTIONLISTENERS.DISPLAY" : "{{length}}个执行侦听器",
     "PROPERTY.EXECUTIONLISTENERS.EMPTY" : "未配置执行侦听器",
-    "PROPERTY.EXECUTIONLISTENERS.EVENT" : "Event",
-    "PROPERTY.EXECUTIONLISTENERS.CLASS" : "Class",
+    "PROPERTY.EXECUTIONLISTENERS.EVENT" : "事件",
+    "PROPERTY.EXECUTIONLISTENERS.CLASS" : "类",
     "PROPERTY.EXECUTIONLISTENERS.CLASS.PLACEHOLDER" : "输入类",
     "PROPERTY.EXECUTIONLISTENERS.EXPRESSION" : "表达",
     "PROPERTY.EXECUTIONLISTENERS.EXPRESSION.PLACEHOLDER" : "输入表达式",
@@ -1627,7 +1627,7 @@
     "PROPERTY.EXECUTIONLISTENERS.FIELDS.EXPRESSION.PLACEHOLDER" : "输入表达式",
     "PROPERTY.EXECUTIONLISTENERS.FIELDS.STRINGVALUE" : "字符串值",
     "PROPERTY.EXECUTIONLISTENERS.FIELDS.STRINGVALUE.PLACEHOLDER" : "输入字符串值",
-    "PROPERTY.EXECUTIONLISTENERS.FIELDS.STRING" : "String",
+    "PROPERTY.EXECUTIONLISTENERS.FIELDS.STRING" : "字符串",
     "PROPERTY.EXECUTIONLISTENERS.FIELDS.STRING.PLACEHOLDER" : "输入字符串",
     "PROPERTY.EXECUTIONLISTENERS.FIELDS.IMPLEMENTATION" : "执行",
     "PROPERTY.EXECUTIONLISTENERS.FIELDS.EMPTY" : "未选择字段",
@@ -1640,7 +1640,7 @@
     "PROPERTY.FIELDS.EXPRESSION.PLACEHOLDER" : "输入表达式",
     "PROPERTY.FIELDS.STRINGVALUE" : "字符串值",
     "PROPERTY.FIELDS.STRINGVALUE.PLACEHOLDER" : "输入字符串值",
-    "PROPERTY.FIELDS.STRING" : "String",
+    "PROPERTY.FIELDS.STRING" : "字符串",
     "PROPERTY.FIELDS.STRING.PLACEHOLDER" : "输入字符串",
     "PROPERTY.FIELDS.IMPLEMENTATION" : "执行",
     "PROPERTY.FIELDS.UNSELECTED" : "未选择字段",
@@ -1654,7 +1654,7 @@
     "PROPERTY.FORMPROPERTIES.TYPE" : "类型",
     "PROPERTY.FORMPROPERTIES.DATEPATTERN" : "日期模式",
     "PROPERTY.FORMPROPERTIES.DATEPATTERN.PLACEHOLDER" : "输入日期模式",
-    "PROPERTY.FORMPROPERTIES.VALUES" : "Values",
+    "PROPERTY.FORMPROPERTIES.VALUES" : "值",
     "PROPERTY.FORMPROPERTIES.ENUMVALUES.EMPTY" : "未选择枚举值",
     "PROPERTY.FORMPROPERTIES.VALUES.ID" : "Id",
     "PROPERTY.FORMPROPERTIES.VALUES.NAME" : "名称",
@@ -1662,7 +1662,7 @@
   	"PROPERTY.FORMPROPERTIES.VALUES.NAME.PLACEHOLDER" : "输入值的名称",
     "PROPERTY.FORMPROPERTIES.EXPRESSION" : "表达",
     "PROPERTY.FORMPROPERTIES.EXPRESSION.PLACEHOLDER" : "输入表达式",
-    "PROPERTY.FORMPROPERTIES.VARIABLE" : "Variable",
+    "PROPERTY.FORMPROPERTIES.VARIABLE" : "变量",
     "PROPERTY.FORMPROPERTIES.VARIABLE.PLACEHOLDER" : "输入变量",
     "PROPERTY.FORMPROPERTIES.REQUIRED" : "必填",
     "PROPERTY.FORMPROPERTIES.READABLE" : "可读",
@@ -1674,18 +1674,18 @@
     "PROPERTY.OUTPARAMETERS.VALUE" : "{{length}} 输出参数",
     "PROPERTY.OUTPARAMETERS.EMPTY" : "未配置 输出参数",
 
-    "PROPERTY.PARAMETER.SOURCE" : "Source",
+    "PROPERTY.PARAMETER.SOURCE" : "源",
     "PROPERTY.PARAMETER.SOURCE.PLACEHOLDER" : "输入源",
     "PROPERTY.PARAMETER.SOURCEEXPRESSION" : "源表达式",
     "PROPERTY.PARAMETER.SOURCEEXPRESSION.PLACEHOLDER" : "输入源表达式",
-    "PROPERTY.PARAMETER.TARGET" : "Target",
+    "PROPERTY.PARAMETER.TARGET" : "目标",
     "PROPERTY.PARAMETER.TARGET.PLACEHOLDER" : "输入目标",
     "PROPERTY.PARAMETER.EMPTY" : "未选择参数",
 
     "PROPERTY.SUBPROCESSREFERENCE.EMPTY" : "未选择引用",
     "PROPERTY.SUBPROCESSREFERENCE.TITLE" : "折叠的子进程引用",
     "PROPERTY.SUBPROCESSREFERENCE.ERROR.SUBPROCESS" : "加载子流程时出错。稍后再试",
-    "PROPERTY.SUBPROCESSREFERENCE.FOLDER.ROOT" : "Folders",
+    "PROPERTY.SUBPROCESSREFERENCE.FOLDER.ROOT" : "文件夹",
     "PROPERTY.SUBPROCESSREFERENCE.FOLDER.LOADING" : "正在加载文件夹...",
     "PROPERTY.SUBPROCESSREFERENCE.FOLDER.EMPTY" : "此文件夹不包含子目录",
     "PROPERTY.SUBPROCESSREFERENCE.SUBPROCESS.LOADING" : "加载子流程...",
@@ -1694,7 +1694,7 @@
     "PROPERTY.FORMREFERENCE.EMPTY" : "未选择引用",
     "PROPERTY.FORMREFERENCE.TITLE" : "表单参考",
     "PROPERTY.FORMREFERENCE.ERROR.FORM" : "加载表单时出错。稍后再试",
-    "PROPERTY.FORMREFERENCE.FOLDER.ROOT" : "Folders",
+    "PROPERTY.FORMREFERENCE.FOLDER.ROOT" : "文件夹",
     "PROPERTY.FORMREFERENCE.FOLDER.LOADING" : "正在加载文件夹...",
     "PROPERTY.FORMREFERENCE.FOLDER.EMPTY" : "此文件夹不包含子目录",
     "PROPERTY.FORMREFERENCE.FORM.LOADING" : "加载表单...",
@@ -1702,8 +1702,8 @@
 
     "PROPERTY.TASKLISTENERS.VALUE" : "{{length}} 个任务侦听器",
     "PROPERTY.TASKLISTENERS.EMPTY" : "没有配置任务侦听器",
-    "PROPERTY.TASKLISTENERS.EVENT" : "Event",
-    "PROPERTY.TASKLISTENERS.CLASS" : "Class",
+    "PROPERTY.TASKLISTENERS.EVENT" : "事件",
+    "PROPERTY.TASKLISTENERS.CLASS" : "类",
     "PROPERTY.TASKLISTENERS.CLASS.PLACEHOLDER" : "输入类",
     "PROPERTY.TASKLISTENERS.EXPRESSION" : "表达",
     "PROPERTY.TASKLISTENERS.EXPRESSION.PLACEHOLDER" : "输入表达式",
@@ -1716,16 +1716,16 @@
     "PROPERTY.TASKLISTENERS.FIELDS.EXPRESSION.PLACEHOLDER" : "输入表达式",
     "PROPERTY.TASKLISTENERS.FIELDS.STRINGVALUE" : "字符串值",
     "PROPERTY.TASKLISTENERS.FIELDS.STRINGVALUE.PLACEHOLDER" : "输入字符串值",
-    "PROPERTY.TASKLISTENERS.FIELDS.STRING" : "String",
+    "PROPERTY.TASKLISTENERS.FIELDS.STRING" : "字符串",
     "PROPERTY.TASKLISTENERS.FIELDS.STRING.PLACEHOLDER" : "输入字符串",
     "PROPERTY.TASKLISTENERS.FIELDS.IMPLEMENTATION" : "执行",
     "PROPERTY.TASKLISTENERS.FIELDS.EMPTY" : "未选择字段",
 
     "PROPERTY.EVENTLISTENERS.DISPLAY" : "{{length}} event listeners",
     "PROPERTY.EVENTLISTENERS.EMPTY" : "未配置事件侦听器",
-    "PROPERTY.EVENTLISTENERS.EVENTS": "Events",
+    "PROPERTY.EVENTLISTENERS.EVENTS": "事件",
     "PROPERTY.EVENTLISTENERS.RETHROW": "再次触发事件？",
-    "PROPERTY.EVENTLISTENERS.CLASS" : "Class",
+    "PROPERTY.EVENTLISTENERS.CLASS" : "类",
     "PROPERTY.EVENTLISTENERS.CLASS.PLACEHOLDER" : "输入类",
     "PROPERTY.EVENTLISTENERS.DELEGATEEXPRESSION" : "委托表达式",
     "PROPERTY.EVENTLISTENERS.DELEGATEEXPRESSION.PLACEHOLDER" : "输入委托表达式",
@@ -1742,11 +1742,11 @@
 
     "PROPERTY.SIGNALDEFINITIONS.DISPLAY" : "{{length}} signal definitions",
     "PROPERTY.SIGNALDEFINITIONS.EMPTY" : "未配置信号定义",
-    "PROPERTY.SIGNALDEFINITIONS.SCOPE-GLOBAL": "Global",
+    "PROPERTY.SIGNALDEFINITIONS.SCOPE-GLOBAL": "全球",
     "PROPERTY.SIGNALDEFINITIONS.SCOPE-PROCESSINSTANCE": "流程实例",
     "PROPERTY.SIGNALDEFINITIONS.ID" : "Id",
     "PROPERTY.SIGNALDEFINITIONS.NAME" : "名称",
-    "PROPERTY.SIGNALDEFINITIONS.SCOPE" : "Scope",
+    "PROPERTY.SIGNALDEFINITIONS.SCOPE" : "范围",
 
     "PROPERTY.MESSAGEDEFINITIONS.DISPLAY" : "{{length}} message definitions",
     "PROPERTY.MESSAGEDEFINITIONS.EMPTY" : "未配置消息定义",
@@ -1781,7 +1781,7 @@
     "MODEL.KEY" : "Key",
     "MODEL.DESCRIPTION" : "描述",
     "MODEL.SAVE.NEWVERSION" : "将其另存为新版本？ 这意味着您可以始终返回到以前的版本",
-    "MODEL.SAVE.COMMENT" : "Comment",
+    "MODEL.SAVE.COMMENT" : "评论",
     "MODEL.SAVE.SAVING" : "保存模型",
     "MODEL.LASTMODIFIEDDATE" : "上次保存",
     "MODEL.SAVE.ERROR": "意外错误: 无法保存模型",
@@ -1800,7 +1800,7 @@
     "EVENT_TYPE.MEMBERSHIP.CREATED.TOOLTIP": "已创建新的成员身份",
     "EVENT_TYPE.MEMBERSHIP.DELETED.TOOLTIP": "已删除单个成员身份",
     "EVENT_TYPE.MEMBERSHIPS.DELETED.TOOLTIP": "相关组中的所有成员身份都已被删除。由于可能的性能原因, 不会分派单个事件",
-    "EVENT_TYPE.TASK.ASSIGNED.TOOLTIP": "A task as been assigned. This is thrown alongside with an ENTITY_UPDATED event",
+    "EVENT_TYPE.TASK.ASSIGNED.TOOLTIP": "已分配任务。同时抛出了 ENTITY_UPDATED 事件",
     "EVENT_TYPE.TASK.COMPLETED.TOOLTIP": "任务已完成。在任务实体被删除之前发送",
     "EVENT_TYPE.UNCAUGHT.BPMNERROR.TOOLTIP": "当抛出了 BPMN 错误, 但未在进程中捕获",
     "EVENT_TYPE.VARIABLE.CREATED.TOOLTIP": "已创建新变量",
@@ -1810,7 +1810,7 @@
     "PROPERTY.DECISIONTABLEREFERENCE.EMPTY" : "未选择引用",
     "PROPERTY.DECISIONTABLEREFERENCE.TITLE" : "决策表参考",
     "PROPERTY.DECISIONTABLEREFERENCE.ERROR.FORM" : "加载决策表时出错。稍后再试",
-    "PROPERTY.DECISIONTABLEREFERENCE.FOLDER.ROOT" : "Folders",
+    "PROPERTY.DECISIONTABLEREFERENCE.FOLDER.ROOT" : "文件夹",
     "PROPERTY.DECISIONTABLEREFERENCE.FOLDER.LOADING" : "正在加载文件夹...",
     "PROPERTY.DECISIONTABLEREFERENCE.FOLDER.EMPTY" : "该文件夹不包含子文件夹",
     "PROPERTY.DECISIONTABLEREFERENCE.DECISIONTABLE.LOADING" : "加载决策表...",
