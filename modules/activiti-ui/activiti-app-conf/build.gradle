@@ -20,9 +20,6 @@ buildscript {
     }
 }
 
-plugins {
-    id "io.spring.dependency-management" version "1.0.3.RELEASE"
-}
 
 ext {
   
