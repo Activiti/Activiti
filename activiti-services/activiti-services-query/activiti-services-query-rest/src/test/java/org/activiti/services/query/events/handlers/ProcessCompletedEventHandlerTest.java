@@ -21,8 +21,8 @@ import java.util.Optional;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.ProcessInstance;
-import org.activiti.services.query.app.repository.ProcessInstanceRepository;
+import org.activiti.services.query.es.model.ProcessInstanceES;
+import org.activiti.services.query.es.repository.ProcessInstanceRepository;
 import org.activiti.services.query.events.ProcessCompletedEvent;
 import org.junit.Before;
 import org.junit.Rule;
@@ -38,69 +38,61 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ProcessCompletedEventHandlerTest {
 
-    @InjectMocks
-    private ProcessCompletedEventHandler handler;
+	@InjectMocks
+	private ProcessCompletedEventHandler handler;
 
-    @Mock
-    private ProcessInstanceRepository processInstanceRepository;
+	@Mock
+	private ProcessInstanceRepository processInstanceRepository;
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+	}
 
-    @Test
-    public void handleShouldUpdateCurrentProcessInstanceStateToCompleted() throws Exception {
-        //given
-        ProcessCompletedEvent event = new ProcessCompletedEvent(System.currentTimeMillis(),
-                                                                                "ProcessCompletedEvent",
-                                                                                "10",
-                                                                                "100",
-                                                                                "200",
-                                                                                new ProcessInstance());
+	@Test
+	public void handleShouldUpdateCurrentProcessInstanceStateToCompleted() throws Exception {
+		// given
+		ProcessCompletedEvent event = new ProcessCompletedEvent(System.currentTimeMillis(), "ProcessCompletedEvent",
+				"10", "100", "200", new ProcessInstanceES());
 
-        ProcessInstance currentProcessInstance = mock(ProcessInstance.class);
-        given(processInstanceRepository.findById(200L)).willReturn(Optional.of(currentProcessInstance));
+		ProcessInstanceES currentProcessInstance = mock(ProcessInstanceES.class);
+		given(processInstanceRepository.findById(200L)).willReturn(Optional.of(currentProcessInstance));
 
-        //when
-        handler.handle(event);
+		// when
+		handler.handle(event);
 
-        //then
-        verify(processInstanceRepository).save(currentProcessInstance);
-        verify(currentProcessInstance).setStatus("COMPLETED");
-        verify(currentProcessInstance).setLastModified(any(Date.class));
-    }
+		// then
+		verify(processInstanceRepository).save(currentProcessInstance);
+		verify(currentProcessInstance).setStatus("COMPLETED");
+		verify(currentProcessInstance).setLastModified(any(Date.class));
+	}
 
-    @Test
-    public void handleShouldThrowExceptionWhenRelatedProcessInstanceIsNotFound() throws Exception {
-        //given
-        ProcessCompletedEvent event = new ProcessCompletedEvent(System.currentTimeMillis(),
-                                                                                "ProcessCompletedEvent",
-                                                                                "10",
-                                                                                "100",
-                                                                                "200",
-                                                                                new ProcessInstance());
+	@Test
+	public void handleShouldThrowExceptionWhenRelatedProcessInstanceIsNotFound() throws Exception {
+		// given
+		ProcessCompletedEvent event = new ProcessCompletedEvent(System.currentTimeMillis(), "ProcessCompletedEvent",
+				"10", "100", "200", new ProcessInstanceES());
 
-        given(processInstanceRepository.findById(200L)).willReturn(Optional.empty());
+		given(processInstanceRepository.findById(200L)).willReturn(Optional.empty());
 
-        //then
-        expectedException.expect(ActivitiException.class);
-        expectedException.expectMessage("Unable to find process instance with the given id: ");
+		// then
+		expectedException.expect(ActivitiException.class);
+		expectedException.expectMessage("Unable to find process instance with the given id: ");
 
-        //when
-        handler.handle(event);
+		// when
+		handler.handle(event);
 
-    }
+	}
 
-    @Test
-    public void getHandledEventClassShouldReturnProcessCompletedEvent() throws Exception {
-        //when
-        Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
+	@Test
+	public void getHandledEventClassShouldReturnProcessCompletedEvent() throws Exception {
+		// when
+		Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
 
-        //then
-        assertThat(handledEventClass).isEqualTo(ProcessCompletedEvent.class);
-    }
+		// then
+		assertThat(handledEventClass).isEqualTo(ProcessCompletedEvent.class);
+	}
 }

@@ -16,44 +16,40 @@
 
 package org.activiti.services.query.events.handlers;
 
-import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.model.Variable;
+import org.activiti.services.query.es.model.VariableES;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ProcessVariableUpdateHandlerTest {
 
-    @InjectMocks
-    private ProcessVariableUpdateHandler handler;
+	@InjectMocks
+	private ProcessVariableUpdateHandler handler;
 
-    @Mock
-    private VariableUpdater variableUpdater;
+	@Mock
+	private VariableUpdater variableUpdater;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+	}
 
-    @Test
-    public void handleShouldUpdateVariable() throws Exception {
-        //given
-        Variable variable = new Variable();
-        variable.setName("var");
-        variable.setValue("v1");
-        variable.setProcessInstanceId("10");
+	@Test
+	public void handleShouldUpdateVariable() throws Exception {
+		// given
+		VariableES variable = new VariableES();
+		variable.setName("var");
+		variable.setValue("v1");
+		variable.setProcessInstanceId("10");
 
-        //when
-        handler.handle(variable);
+		// when
+		handler.handle(variable);
 
-        //then
-        verify(variableUpdater).update(eq(variable), any(Predicate.class), anyString());
-    }
+		// then
+		verify(variableUpdater).update(variable);
+	}
 }

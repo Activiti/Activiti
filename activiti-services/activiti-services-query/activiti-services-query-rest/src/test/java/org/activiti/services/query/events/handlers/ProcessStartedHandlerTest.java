@@ -17,8 +17,8 @@
 package org.activiti.services.query.events.handlers;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.ProcessInstance;
-import org.activiti.services.query.app.repository.ProcessInstanceRepository;
+import org.activiti.services.query.es.model.ProcessInstanceES;
+import org.activiti.services.query.es.repository.ProcessInstanceRepository;
 import org.activiti.services.query.events.ProcessStartedEvent;
 import org.activiti.test.Assertions;
 import org.junit.Before;
@@ -33,48 +33,49 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ProcessStartedHandlerTest {
 
-    @InjectMocks
-    private ProcessStartedHandler handler;
+	@InjectMocks
+	private ProcessStartedHandler handler;
 
-    @Mock
-    private ProcessInstanceRepository processInstanceRepository;
+	@Mock
+	private ProcessInstanceRepository processInstanceRepository;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+	}
 
-    @Test
-    public void handleShouldStoreANewProcessInstanceInTheRepository() throws Exception {
-        //given
-        ProcessStartedEvent event = new ProcessStartedEvent(System.currentTimeMillis(),
-                                                            "ProcessStartedEvent",
-                                                            "10",
-                                                            "100",
-                                                            "200",
-                                                            "101",
-                                                            "201");
+	@Test
+	public void handleShouldStoreANewProcessInstanceInTheRepository() throws Exception {
+		// given
+		ProcessStartedEvent event = new ProcessStartedEvent(System.currentTimeMillis(), "ProcessStartedEvent", "10",
+				"100", "200", "101", "201");
 
-        //when
-        handler.handle(event);
+		// when
+		handler.handle(event);
 
-        //then
-        ArgumentCaptor<ProcessInstance> argumentCaptor = ArgumentCaptor.forClass(ProcessInstance.class);
-        verify(processInstanceRepository).save(argumentCaptor.capture());
+		// then
+		ArgumentCaptor<ProcessInstanceES> argumentCaptor = ArgumentCaptor.forClass(ProcessInstanceES.class);
+		verify(processInstanceRepository).save(argumentCaptor.capture());
 
-        ProcessInstance processInstance = argumentCaptor.getValue();
-        Assertions.assertThat(processInstance)
-                .hasProcessInstanceId(200L)
-                .hasProcessDefinitionId("100")
-                .hasStatus("RUNNING");
-    }
+		ProcessInstanceES processInstance = argumentCaptor.getValue();
 
-    @Test
-    public void getHandledEventClassShouldReturnProcessStartedEvent() throws Exception {
-        //when
-        Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
+		assertThat(processInstance).isNotNull();
+		assertThat(processInstance.getProcessInstanceId()).isEqualTo(200L);
+		assertThat(processInstance.getProcessDefinitionId()).isEqualTo("100");
+		assertThat(processInstance.getStatus()).isEqualTo("RUNNING");
 
-        //then
-        assertThat(handledEventClass).isEqualTo(ProcessStartedEvent.class);
-    }
+		// Assertions.assertThat(processInstance)
+		// .hasProcessInstanceId(200L)
+		// .hasProcessDefinitionId("100")
+		// .hasStatus("RUNNING");
+	}
+
+	@Test
+	public void getHandledEventClassShouldReturnProcessStartedEvent() throws Exception {
+		// when
+		Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
+
+		// then
+		assertThat(handledEventClass).isEqualTo(ProcessStartedEvent.class);
+	}
 }

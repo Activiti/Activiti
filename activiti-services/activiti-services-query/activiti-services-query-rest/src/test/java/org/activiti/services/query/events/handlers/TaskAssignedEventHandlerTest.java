@@ -21,8 +21,8 @@ import java.util.Optional;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.Task;
-import org.activiti.services.query.app.repository.TaskRepository;
+import org.activiti.services.query.es.model.TaskES;
+import org.activiti.services.query.es.repository.TaskRepository;
 import org.activiti.services.query.events.TaskAssignedEvent;
 import org.junit.Before;
 import org.junit.Rule;
@@ -40,73 +40,60 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TaskAssignedEventHandlerTest {
 
-    @InjectMocks
-    private TaskAssignedEventHandler handler;
+	@InjectMocks
+	private TaskAssignedEventHandler handler;
 
-    @Mock
-    private TaskRepository taskRepository;
+	@Mock
+	private TaskRepository taskRepository;
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+	@Rule
+	public ExpectedException expectedException = ExpectedException.none();
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+	}
 
-    @Test
-    public void handleShouldUpdateTaskStatusToAssigned() throws Exception {
-        //given
-        String taskId = "30";
-        Task task = aTask()
-                .withId(taskId)
-                .withAssignee("user")
-                .build();
+	@Test
+	public void handleShouldUpdateTaskStatusToAssigned() throws Exception {
+		// given
+		String taskId = "30";
+		TaskES task = aTask().withId(taskId).withAssignee("user").build();
 
-        given(taskRepository.findById(taskId)).willReturn(Optional.of(task));
+		given(taskRepository.findById(Long.parseLong(taskId))).willReturn(Optional.of(task));
 
-        //when
-        handler.handle(new TaskAssignedEvent(System.currentTimeMillis(),
-                                             "taskAssigned",
-                                             "10",
-                                             "100",
-                                             "200",
-                                             task));
+		// when
+		handler.handle(new TaskAssignedEvent(System.currentTimeMillis(), "taskAssigned", "10", "100", "200", task));
 
-        //then
-        verify(taskRepository).save(task);
-        verify(task).setStatus("ASSIGNED");
-        verify(task).setAssignee("user");
-        verify(task).setLastModified(any(Date.class));
-    }
+		// then
+		verify(taskRepository).save(task);
+		verify(task).setStatus("ASSIGNED");
+		verify(task).setAssignee("user");
+		verify(task).setLastModified(any(Date.class));
+	}
 
-    @Test
-    public void handleShouldThrowExceptionWhenNoTaskIsFoundForTheGivenId() throws Exception {
-        //given
-        String taskId = "30";
-        Task task = aTask().withId(taskId).build();
+	@Test
+	public void handleShouldThrowExceptionWhenNoTaskIsFoundForTheGivenId() throws Exception {
+		// given
+		String taskId = "30";
+		TaskES task = aTask().withId(taskId).build();
 
-        given(taskRepository.findById(taskId)).willReturn(Optional.empty());
+		given(taskRepository.findById(Long.parseLong(taskId))).willReturn(Optional.empty());
 
-        //then
-        expectedException.expect(ActivitiException.class);
-        expectedException.expectMessage("Unable to find task with id: " + taskId);
+		// then
+		expectedException.expect(ActivitiException.class);
+		expectedException.expectMessage("Unable to find task with id: " + taskId);
 
-        //when
-        handler.handle(new TaskAssignedEvent(System.currentTimeMillis(),
-                                             "taskAssigned",
-                                             "10",
-                                             "100",
-                                             "200",
-                                             task));
-    }
+		// when
+		handler.handle(new TaskAssignedEvent(System.currentTimeMillis(), "taskAssigned", "10", "100", "200", task));
+	}
 
-    @Test
-    public void getHandledEventClassShouldReturnTaskAssignedEventClass() throws Exception {
-        //when
-        Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
+	@Test
+	public void getHandledEventClassShouldReturnTaskAssignedEventClass() throws Exception {
+		// when
+		Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
 
-        //then
-        assertThat(handledEventClass).isEqualTo(TaskAssignedEvent.class);
-    }
+		// then
+		assertThat(handledEventClass).isEqualTo(TaskAssignedEvent.class);
+	}
 }

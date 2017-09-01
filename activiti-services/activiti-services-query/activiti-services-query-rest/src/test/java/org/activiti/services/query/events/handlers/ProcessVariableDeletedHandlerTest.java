@@ -17,10 +17,9 @@
 package org.activiti.services.query.events.handlers;
 
 import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.app.repository.EntityFinder;
-import org.activiti.services.query.app.repository.VariableRepository;
+import org.activiti.services.query.es.repository.VariableRepository;
 import org.activiti.services.query.events.VariableDeletedEvent;
-import org.activiti.services.query.model.Variable;
+import org.activiti.services.query.es.model.VariableES;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -33,37 +32,37 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Optional;
+
 public class ProcessVariableDeletedHandlerTest {
 
-    @InjectMocks
-    private ProcessVariableDeletedHandler handler;
+	@InjectMocks
+	private ProcessVariableDeletedHandler handler;
 
-    @Mock
-    private VariableRepository variableRepository;
+	@Mock
+	private VariableRepository variableRepository;
 
-    @Mock
-    private EntityFinder entityFinder;
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+	}
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+	@Test
+	public void handleRemoveVariableFromProcessAndDeleteIt() throws Exception {
+		// given
+		VariableDeletedEvent event = new VariableDeletedEvent();
+		event.setProcessInstanceId("10");
+		event.setVariableName("var");
 
-    @Test
-    public void handleRemoveVariableFromProcessAndDeleteIt() throws Exception {
-        //given
-        VariableDeletedEvent event = new VariableDeletedEvent();
-        event.setProcessInstanceId("10");
-        event.setVariableName("var");
+		VariableES variable = new VariableES();
+		given(variableRepository.findByProcessInstanceId(event.getVariableName(), event.getProcessInstanceId()))
+				.willReturn(Optional.of(variable));
 
-        Variable variable = new Variable();
-        given(entityFinder.findOne(eq(variableRepository), any(Predicate.class), anyString())).willReturn(variable);
+		// when
+		handler.handle(event);
 
-        //when
-        handler.handle(event);
-
-        //then
-        verify(variableRepository).delete(variable);
-    }
+		// then
+		verify(variableRepository).delete(variable);
+	}
 
 }

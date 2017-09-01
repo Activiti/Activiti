@@ -30,27 +30,27 @@ import org.mockito.Mock;
 
 public class QueryConsumerChannelHandlerTest {
 
-    @InjectMocks
-    private QueryConsumerChannelHandler consumer;
+	@InjectMocks
+	private QueryConsumerChannelHandler consumer;
 
-    @Mock
-    private QueryEventHandlerContext eventHandlerContext;
+	@Mock
+	private QueryEventHandlerContext eventHandlerContext;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+	}
 
-    @Test
-    public void receiveShouldHandleReceivedEvent() throws Exception {
-        //given
-        AbstractProcessEngineEvent event = mock(AbstractProcessEngineEvent.class);
+	@Test
+	public void receiveShouldHandleReceivedEvent() throws Exception {
+		// given
+		AbstractProcessEngineEvent event = mock(AbstractProcessEngineEvent.class);
 
-        //when
-        AbstractProcessEngineEvent[] events = {event};
-        consumer.receive(events);
+		// when
+		AbstractProcessEngineEvent[] events = { event };
+		consumer.receive(events);
 
-        //then
-        verify(eventHandlerContext).handle(events);
-    }
+		// then
+		verify(eventHandlerContext).handle(events);
+	}
 }

@@ -19,9 +19,9 @@ package org.activiti.services.query.events.handlers;
 import java.util.Map;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.app.repository.ProcessInstanceRepository;
-import org.activiti.services.query.app.repository.TaskRepository;
-import org.activiti.services.query.app.repository.VariableRepository;
+import org.activiti.services.query.es.repository.ProcessInstanceRepository;
+import org.activiti.services.query.es.repository.TaskRepository;
+import org.activiti.services.query.es.repository.VariableRepository;
 import org.activiti.services.query.events.ProcessCompletedEvent;
 import org.activiti.services.query.events.ProcessStartedEvent;
 import org.activiti.services.query.events.TaskAssignedEvent;
@@ -51,62 +51,57 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles(MOCK_DEPENDENCIES_PROFILE)
 public class QueryEventHandlerContextIT {
 
-    public static final String MOCK_DEPENDENCIES_PROFILE = "mockDependencies";
+	public static final String MOCK_DEPENDENCIES_PROFILE = "mockDependencies";
 
-    @Autowired
-    private QueryEventHandlerContext context;
+	@Autowired
+	private QueryEventHandlerContext context;
 
-    @Configuration
-    @Profile(MOCK_DEPENDENCIES_PROFILE)
-    @ComponentScan(basePackages = {"org.activiti.services.query.events.handlers",  "org.activiti.services.query.app.repository"})
-    public static class QueryEventHandlerContextConfig {
+	@Configuration
+	@Profile(MOCK_DEPENDENCIES_PROFILE)
+	@ComponentScan(basePackages = { "org.activiti.services.query.events.handlers",
+			"org.activiti.services.query.app.repository" })
+	public static class QueryEventHandlerContextConfig {
 
-        // the purpose of this test is to verify that handlers for every supported event is inject
-        // so we can mock transitive component dependencies
-        @Primary
-        @Bean
-        public ProcessInstanceRepository getProcessInstanceRepository() {
-            return mock(ProcessInstanceRepository.class);
-        }
+		// the purpose of this test is to verify that handlers for every
+		// supported event is inject
+		// so we can mock transitive component dependencies
+		@Primary
+		@Bean
+		public ProcessInstanceRepository getProcessInstanceRepository() {
+			return mock(ProcessInstanceRepository.class);
+		}
 
-        @Primary
-        @Bean
-        public TaskRepository getTaskRepository() {
-            return mock(TaskRepository.class);
-        }
+		@Primary
+		@Bean
+		public TaskRepository getTaskRepository() {
+			return mock(TaskRepository.class);
+		}
 
-        @Primary
-        @Bean
-        public VariableRepository getVariableRepository() {
-            return mock(VariableRepository.class);
-        }
-    }
+		@Primary
+		@Bean
+		public VariableRepository getVariableRepository() {
+			return mock(VariableRepository.class);
+		}
+	}
 
-    @Test
-    public void shouldHaveHandlersForAllSupportedEvents() throws Exception {
-        //given
+	@Test
+	public void shouldHaveHandlersForAllSupportedEvents() throws Exception {
+		// given
 
-        //when
-        Map<Class<? extends ProcessEngineEvent>, QueryEventHandler> handlers = context.getHandlers();
+		// when
+		Map<Class<? extends ProcessEngineEvent>, QueryEventHandler> handlers = context.getHandlers();
 
-        //then
-        assertThat(handlers).containsOnlyKeys(
-                ProcessStartedEvent.class,
-                ProcessCompletedEvent.class,
-                TaskCreatedEvent.class,
-                TaskAssignedEvent.class,
-                TaskCompletedEvent.class,
-                VariableCreatedEvent.class,
-                VariableUpdatedEvent.class,
-                VariableDeletedEvent.class
-        );
-        assertThat(handlers.get(ProcessStartedEvent.class)).isInstanceOf(ProcessStartedHandler.class);
-        assertThat(handlers.get(ProcessCompletedEvent.class)).isInstanceOf(ProcessCompletedEventHandler.class);
-        assertThat(handlers.get(TaskCreatedEvent.class)).isInstanceOf(TaskCreatedEventHandler.class);
-        assertThat(handlers.get(TaskAssignedEvent.class)).isInstanceOf(TaskAssignedEventHandler.class);
-        assertThat(handlers.get(TaskCompletedEvent.class)).isInstanceOf(TaskCompletedEventHandler.class);
-        assertThat(handlers.get(VariableCreatedEvent.class)).isInstanceOf(VariableCreatedEventHandler.class);
-        assertThat(handlers.get(VariableUpdatedEvent.class)).isInstanceOf(VariableUpdatedEventHandler.class);
-        assertThat(handlers.get(VariableDeletedEvent.class)).isInstanceOf(VariableDeletedEventHandler.class);
-    }
+		// then
+		assertThat(handlers).containsOnlyKeys(ProcessStartedEvent.class, ProcessCompletedEvent.class,
+				TaskCreatedEvent.class, TaskAssignedEvent.class, TaskCompletedEvent.class, VariableCreatedEvent.class,
+				VariableUpdatedEvent.class, VariableDeletedEvent.class);
+		assertThat(handlers.get(ProcessStartedEvent.class)).isInstanceOf(ProcessStartedHandler.class);
+		assertThat(handlers.get(ProcessCompletedEvent.class)).isInstanceOf(ProcessCompletedEventHandler.class);
+		assertThat(handlers.get(TaskCreatedEvent.class)).isInstanceOf(TaskCreatedEventHandler.class);
+		assertThat(handlers.get(TaskAssignedEvent.class)).isInstanceOf(TaskAssignedEventHandler.class);
+		assertThat(handlers.get(TaskCompletedEvent.class)).isInstanceOf(TaskCompletedEventHandler.class);
+		assertThat(handlers.get(VariableCreatedEvent.class)).isInstanceOf(VariableCreatedEventHandler.class);
+		assertThat(handlers.get(VariableUpdatedEvent.class)).isInstanceOf(VariableUpdatedEventHandler.class);
+		assertThat(handlers.get(VariableDeletedEvent.class)).isInstanceOf(VariableDeletedEventHandler.class);
+	}
 }
