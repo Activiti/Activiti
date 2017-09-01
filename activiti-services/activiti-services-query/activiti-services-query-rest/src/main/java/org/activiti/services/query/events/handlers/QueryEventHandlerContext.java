@@ -40,11 +40,14 @@ public class QueryEventHandlerContext {
         this.handlers = handlers.stream().collect(Collectors.toMap(QueryEventHandler::getHandledEventClass,
                                                                    Function.identity()));
     }
-    public void handle(AbstractProcessEngineEvent event) {
-        QueryEventHandler handler = handlers.get(event.getClass());
-        if (handler != null) {
-            LOGGER.debug("Handling event: " + handler.getHandledEventClass().getName());
-            handler.handle(event);
+
+    public void handle(AbstractProcessEngineEvent[] events) {
+        for (AbstractProcessEngineEvent event : events) {
+            QueryEventHandler handler = handlers.get(event.getClass());
+            if (handler != null) {
+                LOGGER.debug("Handling event: " + handler.getHandledEventClass().getName());
+                handler.handle(event);
+            }
         }
     }
 

@@ -59,6 +59,6 @@ public class ActivityCompletedEventImpl extends AbstractProcessEngineEvent imple
 
     @Override
     public String getEventType() {
-        return "ActivityStartedEvent";
+        return "ActivityCompletedEvent";
     }
 }

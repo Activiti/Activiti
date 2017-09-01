@@ -9,7 +9,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>activiti-services-query-rest</artifactId>
-
+  <name>Activiti - Services :: Query REST</name>
+  <description>Activiti Services Query REST</description>
   <dependencies>
     <!-- keycloak included as default identity provider to be excluded if overridden -->
     <dependency>
@@ -132,7 +133,7 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-spring-boot-test</artifactId>
+      <artifactId>activiti-services-test</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

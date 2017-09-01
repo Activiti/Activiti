@@ -19,10 +19,10 @@ package org.activiti.services.events;
 
 public class VariableUpdatedEventImpl extends AbstractProcessEngineEvent implements VariableUpdatedEvent {
 
-    protected String variableName;
-    protected String variableValue;
-    protected String variableType;
-    protected String taskId;
+    private String variableName;
+    private String variableValue;
+    private String variableType;
+    private String taskId;
 
     public VariableUpdatedEventImpl() {
     }
@@ -67,6 +67,6 @@ public class VariableUpdatedEventImpl extends AbstractProcessEngineEvent impleme
 
     @Override
     public String getEventType() {
-        return "VariableCreatedEvent";
+        return "VariableUpdatedEvent";
     }
 }

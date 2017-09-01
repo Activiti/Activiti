@@ -14,29 +14,30 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query.app;
+package org.activiti.services.audit.channel;
 
-import org.activiti.services.query.events.AbstractProcessEngineEvent;
-import org.activiti.services.query.events.handlers.QueryEventHandlerContext;
+import org.activiti.services.audit.EventsRepository;
+import org.activiti.services.audit.events.ProcessEngineEventEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@EnableBinding(QueryConsumerChannels.class)
-public class QueryConsumerChannelHandler {
+@EnableBinding(AuditConsumerChannels.class)
+public class AuditConsumerChannelHandler {
 
-    private QueryEventHandlerContext eventHandlerContext;
+    private final EventsRepository eventsRepository;
 
     @Autowired
-    public QueryConsumerChannelHandler(QueryEventHandlerContext eventHandlerContext) {
-        this.eventHandlerContext = eventHandlerContext;
+    public AuditConsumerChannelHandler(EventsRepository eventsRepository) {
+        this.eventsRepository = eventsRepository;
     }
 
-    @StreamListener(QueryConsumerChannels.QUERY_CONSUMER)
-    public synchronized void receive(AbstractProcessEngineEvent[] events) {
-        eventHandlerContext.handle(events);
+    @StreamListener(AuditConsumerChannels.AUDIT_CONSUMER)
+    public synchronized void receive(ProcessEngineEventEntity[] events) {
+        for (ProcessEngineEventEntity event : events) {
+            eventsRepository.save(event);
+        }
     }
-
 }

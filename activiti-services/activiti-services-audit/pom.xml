@@ -27,6 +27,8 @@
 
 
   <artifactId>activiti-services-audit</artifactId>
+  <name>Activiti - Services :: Audit Parent</name>
+  <description>Activiti Services Audit Parent</description>
   <packaging>pom</packaging>
 
   <modules>

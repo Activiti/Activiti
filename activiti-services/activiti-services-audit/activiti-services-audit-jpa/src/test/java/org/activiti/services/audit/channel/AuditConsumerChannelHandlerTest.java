@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package org.activiti.services.query;
+package org.activiti.services.audit.channel;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import org.activiti.services.query.app.QueryConsumerChannelHandler;
-import org.activiti.services.query.events.AbstractProcessEngineEvent;
-import org.activiti.services.query.events.handlers.QueryEventHandlerContext;
+import org.activiti.services.audit.EventsRepository;
+import org.activiti.services.audit.events.ProcessEngineEventEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-public class QueryConsumerChannelHandlerTest {
+import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+public class AuditConsumerChannelHandlerTest {
 
     @InjectMocks
-    private QueryConsumerChannelHandler consumer;
+    private AuditConsumerChannelHandler handler;
 
     @Mock
-    private QueryEventHandlerContext eventHandlerContext;
+    private EventsRepository eventsRepository;
 
     @Before
     public void setUp() throws Exception {
@@ -42,15 +40,17 @@ public class QueryConsumerChannelHandlerTest {
     }
 
     @Test
-    public void receiveShouldHandleReceivedEvent() throws Exception {
+    public void receiveShouldStoreAllReceivedEvents() throws Exception {
         //given
-        AbstractProcessEngineEvent event = mock(AbstractProcessEngineEvent.class);
+        ProcessEngineEventEntity firstEvent = mock(ProcessEngineEventEntity.class);
+        ProcessEngineEventEntity secondEvent = mock(ProcessEngineEventEntity.class);
+        ProcessEngineEventEntity[] events = {firstEvent, secondEvent};
 
         //when
-        AbstractProcessEngineEvent[] events = {event};
-        consumer.receive(events);
+        handler.receive(events);
 
         //then
-        verify(eventHandlerContext).handle(events);
+        verify(eventsRepository).save(firstEvent);
+        verify(eventsRepository).save(secondEvent);
     }
 }
