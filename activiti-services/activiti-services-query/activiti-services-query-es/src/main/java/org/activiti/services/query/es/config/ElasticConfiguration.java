@@ -1,13 +1,15 @@
 package org.activiti.services.query.es.config;
 
-import java.io.File;
-import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
@@ -20,22 +22,26 @@ public class ElasticConfiguration {
 
 	private static Logger logger = LoggerFactory.getLogger(ElasticConfiguration.class);
 
+	@Value("${spring.data.elasticsearch.cluster-name}")
+	private String clusterName;
+
+	@Value("${spring.data.elasticsearch.cluster-nodes}")
+	private String clusterNodes;
+
 	@Bean
-	public ElasticsearchOperations elasticsearchTemplate() throws IOException {
-		File tmpDir = File.createTempFile("elastic", Long.toString(System.nanoTime()));
+	public ElasticsearchOperations elasticsearchTemplate() throws UnknownHostException {
 
-		logger.info("Temp directory: " + tmpDir.getAbsolutePath());
+		String server = clusterNodes.split(":")[0];
 
-		Settings elasticsearchSettings = Settings.builder().put("http.enabled", "true") // 1
-				.put("index.number_of_shards", "1")
-				.put("path.data", new File(tmpDir, "data").getAbsolutePath()) // 2
-				.put("path.logs", new File(tmpDir, "logs").getAbsolutePath()) // 2
-				.put("path.work", new File(tmpDir, "work").getAbsolutePath()) // 2
-				.put("path.home", tmpDir).build();
-		;
+		Integer port = Integer.parseInt(clusterNodes.split(":")[1]);
 
-		TransportClient client = new PreBuiltTransportClient(elasticsearchSettings);
+		Settings settings = Settings.builder().put("cluster.name", clusterName).build();
+
+		TransportClient client = new PreBuiltTransportClient(settings);
+
+		client.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(server), port));
 
 		return new ElasticsearchTemplate(client);
+
 	}
 }
