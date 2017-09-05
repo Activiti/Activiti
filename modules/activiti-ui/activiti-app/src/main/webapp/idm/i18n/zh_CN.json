@@ -148,7 +148,7 @@
          "POPUP": {
             "UPLOAD-PICTURE-TITLE": "更改图片",
             "UPLOAD-PICTURE-DESCRIPTION": "请从您的计算机中选择一个图像, 或将其放在下面的区域中.",
-            "UPLOAD-PICTURE-CANCEL-UPLOAD": "取消上载",
+            "UPLOAD-PICTURE-CANCEL-UPLOAD": "取消上传",
             "UPLOAD-PICTURE-DROPZONE": "删除徽标图像文件在这里",
             "UPLOAD-PICTURE-NO-DROP": "您的浏览器不支持删除",
             "UPLOAD-PICTURE-ERROR": "错误",
