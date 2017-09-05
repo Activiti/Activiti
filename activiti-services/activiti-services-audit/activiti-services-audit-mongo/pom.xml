@@ -20,11 +20,6 @@
       <artifactId>activiti-services-identity-keycloak</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-services-audit-common</artifactId>
-      <version>7-201708-EA-SNAPSHOT</version>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-eureka</artifactId>
     </dependency>
