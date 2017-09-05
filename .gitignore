@@ -1,12 +1,13 @@
 target
+/local
+
+# Netbeans and IntelliJ files
+!.gitignore
+/nbproject
+/*.ipr
+/*.iws
 *.iml
-*.ipr
-*.iws
 .idea
-.classpath
-.project
-.settings
-.DS_Store
 *.bpmn/
 /userguide/src/en/index.html
 migration.html
@@ -17,3 +18,4 @@ modules/activiti-webapp-rest2/src/main/webapp/docs/*.yaml
 modules/activiti-webapp-rest2/.gradle/
 modules/activiti-ui/.gradle/
 modules/activiti-ui/activiti-app/build/
+
