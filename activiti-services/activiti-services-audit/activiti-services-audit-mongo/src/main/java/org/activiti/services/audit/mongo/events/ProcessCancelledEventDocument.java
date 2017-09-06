@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package org.activiti.services.audit.mongo.resources;
+package org.activiti.services.audit.mongo.events;
 
-import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
+import javax.persistence.DiscriminatorValue;
 
-public class EventResource extends Resource<ProcessEngineEventDocument> {
+@DiscriminatorValue(value = ProcessCancelledEventDocument.PROCESS_CANCELLED_EVENT)
+public class ProcessCancelledEventDocument extends BaseProcessEventDocument {
 
-    public EventResource(ProcessEngineEventDocument content,
-                         Link... links) {
-        super(content,
-              links);
+    protected static final String PROCESS_CANCELLED_EVENT = "ProcessCancelledEvent";
+
+    private String cause;
+
+    public String getCause() {
+        return cause;
     }
 
 }

@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package org.activiti.services.audit.mongo.resources;
+package org.activiti.services.audit.mongo.events;
 
-import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
+public class ActivityCancelledEventDocument extends BaseActivityEventDocument {
 
-public class EventResource extends Resource<ProcessEngineEventDocument> {
+    protected static final String ACTIVITY_CANCELLED_EVENT = "ActivityCancelledEvent";
 
-    public EventResource(ProcessEngineEventDocument content,
-                         Link... links) {
-        super(content,
-              links);
+    private String cause;
+
+    public String getCause() {
+        return cause;
     }
 
 }

@@ -20,22 +20,18 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import org.activiti.services.audit.mongo.ProcessEngineEventsController;
-import org.activiti.services.audit.mongo.entity.EventLogDocument;
+import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
 import org.activiti.services.audit.mongo.resources.EventResource;
-import org.bson.types.ObjectId;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceAssembler;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EventResourceAssembler implements ResourceAssembler<EventLogDocument, EventResource> {
+public class EventResourceAssembler implements ResourceAssembler<ProcessEngineEventDocument, EventResource> {
 
     @Override
-    public EventResource toResource(EventLogDocument document) {
-        String id = ((ObjectId) document.get("_id")).toString();
-        document.put("id", id);
-        document.remove("_id");
-        Link selfRel = linkTo(methodOn(ProcessEngineEventsController.class).findById(id)).withSelfRel();
+    public EventResource toResource(ProcessEngineEventDocument document) {
+        Link selfRel = linkTo(methodOn(ProcessEngineEventsController.class).findById(document.getId())).withSelfRel();
         return new EventResource(document, selfRel);
     }
 

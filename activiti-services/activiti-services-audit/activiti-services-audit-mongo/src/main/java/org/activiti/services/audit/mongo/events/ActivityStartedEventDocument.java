@@ -14,18 +14,12 @@
  * limitations under the License.
  */
 
-package org.activiti.services.audit.mongo.resources;
+package org.activiti.services.audit.mongo.events;
 
-import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
+import javax.persistence.DiscriminatorValue;
 
-public class EventResource extends Resource<ProcessEngineEventDocument> {
+@DiscriminatorValue(value = ActivityStartedEventDocument.ACTIVITY_STARTED_EVENT)
+public class ActivityStartedEventDocument extends BaseActivityEventDocument {
 
-    public EventResource(ProcessEngineEventDocument content,
-                         Link... links) {
-        super(content,
-              links);
-    }
-
+    protected static final String ACTIVITY_STARTED_EVENT = "ActivityStartedEvent";
 }

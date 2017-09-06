@@ -18,9 +18,11 @@ package org.activiti.services.audit.mongo;
 
 import static org.activiti.services.audit.mongo.EventsRelProvider.COLLECTION_RESOURCE_REL;
 
+import java.util.Optional;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.services.audit.mongo.assembler.EventResourceAssembler;
-import org.activiti.services.audit.mongo.entity.EventLogDocument;
+import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
 import org.activiti.services.audit.mongo.resources.EventResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -39,12 +41,12 @@ public class ProcessEngineEventsController {
 
     private EventResourceAssembler eventResourceAssembler;
 
-    private PagedResourcesAssembler<EventLogDocument> pagedResourcesAssembler;
+    private PagedResourcesAssembler<ProcessEngineEventDocument> pagedResourcesAssembler;
 
     @Autowired
     public ProcessEngineEventsController(EventsMongoRepository eventsRepository,
                                          EventResourceAssembler eventResourceAssembler,
-                                         PagedResourcesAssembler<EventLogDocument> pagedResourcesAssembler) {
+                                         PagedResourcesAssembler<ProcessEngineEventDocument> pagedResourcesAssembler) {
         this.eventsRepository = eventsRepository;
         this.eventResourceAssembler = eventResourceAssembler;
         this.pagedResourcesAssembler = pagedResourcesAssembler;
@@ -52,11 +54,12 @@ public class ProcessEngineEventsController {
 
     @RequestMapping(value = "/{eventId}", method = RequestMethod.GET)
     public EventResource findById(@PathVariable String eventId) {
-        EventLogDocument findResult = eventsRepository.findById(eventId);
-        if (findResult == null) {
+        Optional<ProcessEngineEventDocument> findResult = eventsRepository.findById(eventId);
+        if (!findResult.isPresent()) {
             throw new ActivitiException("Unable to find event for the given id:'" + eventId + "'");
+        } else {
+            return eventResourceAssembler.toResource(findResult.get());
         }
-        return eventResourceAssembler.toResource(findResult);
     }
 
     @RequestMapping(method = RequestMethod.GET)

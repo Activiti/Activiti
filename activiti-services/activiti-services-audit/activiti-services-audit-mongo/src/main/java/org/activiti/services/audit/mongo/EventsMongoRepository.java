@@ -1,22 +1,24 @@
 package org.activiti.services.audit.mongo;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.activiti.services.audit.mongo.entity.EventLogDocument;
+import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface EventsMongoRepository {
+public interface EventsMongoRepository extends MongoRepository<ProcessEngineEventDocument, String> {
 
-    public void save(final EventLogDocument message);
+    @Override
+    public Optional<ProcessEngineEventDocument> findById(String id);
 
-    public void insertAll(final List<EventLogDocument> messageList);
+    @Override
+    public List<ProcessEngineEventDocument> findAll();
 
-    public EventLogDocument findById(final String json);
+    @Override
+    public Page<ProcessEngineEventDocument> findAll(Pageable pageable);
 
-    public List<EventLogDocument> findAll();
-
-    public Page<EventLogDocument> findAll(Pageable pageable);
-
+    @Override
     public void deleteAll();
 }

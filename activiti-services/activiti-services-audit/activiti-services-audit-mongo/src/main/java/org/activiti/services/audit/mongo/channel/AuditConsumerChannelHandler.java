@@ -17,14 +17,9 @@
 package org.activiti.services.audit.mongo.channel;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import org.activiti.services.audit.mongo.EventsMongoRepository;
-import org.activiti.services.audit.mongo.entity.EventLogDocument;
+import org.activiti.services.audit.mongo.EventsMongoCustomRepository;
+import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -34,24 +29,15 @@ import org.springframework.stereotype.Component;
 @EnableBinding(AuditConsumerChannels.class)
 public class AuditConsumerChannelHandler {
 
-    private final EventsMongoRepository eventsRepository;
+    private final EventsMongoCustomRepository customRepositor;
 
     @Autowired
-    public AuditConsumerChannelHandler(EventsMongoRepository eventsRepository) {
-        this.eventsRepository = eventsRepository;
+    public AuditConsumerChannelHandler(EventsMongoCustomRepository customRepositor) {
+        this.customRepositor = customRepositor;
     }
 
     @StreamListener(AuditConsumerChannels.AUDIT_CONSUMER)
-    public synchronized void receive(String eventJsonArray) throws IOException {
-        ObjectMapper jsonMapper = new ObjectMapper();
-        JsonNode jsonNode = jsonMapper.readTree(eventJsonArray);
-
-        List<EventLogDocument> messageList = new ArrayList<>();
-
-        ArrayNode arrayNode = (ArrayNode) jsonNode;
-        for (int i = 0; i < arrayNode.size(); i++) {
-            messageList.add(jsonMapper.readValue(arrayNode.get(i).toString(), EventLogDocument.class));
-        }
-        eventsRepository.insertAll(messageList);
+    public synchronized void receive(ProcessEngineEventDocument[] events) throws IOException {
+        customRepositor.insertAll(events);
     }
 }

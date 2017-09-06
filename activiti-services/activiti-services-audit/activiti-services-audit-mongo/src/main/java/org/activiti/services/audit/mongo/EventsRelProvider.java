@@ -16,6 +16,7 @@
 
 package org.activiti.services.audit.mongo;
 
+import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.hateoas.RelProvider;
@@ -29,15 +30,18 @@ public class EventsRelProvider implements RelProvider {
 
     private static final String ITEM_RESOURCE_REL = "event";
 
+    @Override
     public String getItemResourceRelFor(Class<?> aClass) {
         return ITEM_RESOURCE_REL;
     }
 
+    @Override
     public String getCollectionResourceRelFor(Class<?> aClass) {
         return COLLECTION_RESOURCE_REL;
     }
 
-    public boolean supports(Class<?> arg0) {
-        return true;
+    @Override
+    public boolean supports(Class<?> aClass) {
+        return ProcessEngineEventDocument.class.isAssignableFrom(aClass);
     }
 }

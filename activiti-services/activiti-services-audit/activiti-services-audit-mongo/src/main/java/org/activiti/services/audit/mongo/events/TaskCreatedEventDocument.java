@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.activiti.services.audit.mongo.resources;
+package org.activiti.services.audit.mongo.events;
 
-import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.Resource;
+import org.activiti.services.audit.mongo.events.model.Task;
 
-public class EventResource extends Resource<ProcessEngineEventDocument> {
+public class TaskCreatedEventDocument extends ProcessEngineEventDocument {
 
-    public EventResource(ProcessEngineEventDocument content,
-                         Link... links) {
-        super(content,
-              links);
+    protected static final String TASK_CREATED_EVENT = "TaskCreatedEvent";
+
+    private Task task;
+
+    public Task getTask() {
+        return task;
     }
-
 }
