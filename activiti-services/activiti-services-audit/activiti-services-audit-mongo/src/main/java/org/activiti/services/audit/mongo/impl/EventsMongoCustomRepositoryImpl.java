@@ -14,7 +14,7 @@ public class EventsMongoCustomRepositoryImpl implements EventsMongoCustomReposit
     private final static String COLLECTION_NAME = "act_evt_log";
 
     @Autowired
-    MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
 
     @Override
     public void insertAll(ProcessEngineEventDocument[] events) {
