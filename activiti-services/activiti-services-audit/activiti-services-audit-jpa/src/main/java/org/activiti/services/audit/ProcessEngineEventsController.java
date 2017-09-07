@@ -16,6 +16,8 @@
 
 package org.activiti.services.audit;
 
+import static org.activiti.services.audit.EventsRelProvider.COLLECTION_RESOURCE_REL;
+
 import java.util.Optional;
 
 import com.querydsl.core.types.Predicate;
@@ -32,8 +34,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import static org.activiti.services.audit.EventsRelProvider.COLLECTION_RESOURCE_REL;
 
 @RestController
 @RequestMapping(value = "/v1/" + COLLECTION_RESOURCE_REL)
@@ -65,7 +65,8 @@ public class ProcessEngineEventsController {
 
     @RequestMapping(method = RequestMethod.GET)
     public PagedResources<EventResource> findAll(@QuerydslPredicate(root = ProcessEngineEventEntity.class) Predicate predicate, Pageable pageable) {
-        return pagedResourcesAssembler.toResource(eventsRepository.findAll(predicate, pageable), eventResourceAssembler);
+        return pagedResourcesAssembler.toResource(eventsRepository.findAll(predicate, pageable),
+                                                  eventResourceAssembler);
     }
 
 }

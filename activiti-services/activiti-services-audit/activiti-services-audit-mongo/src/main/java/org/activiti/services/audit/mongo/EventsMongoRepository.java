@@ -7,8 +7,9 @@ import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 
-public interface EventsMongoRepository extends MongoRepository<ProcessEngineEventDocument, String> {
+public interface EventsMongoRepository extends MongoRepository<ProcessEngineEventDocument, String>, QuerydslPredicateExecutor<ProcessEngineEventDocument> {
 
     @Override
     public Optional<ProcessEngineEventDocument> findById(String id);

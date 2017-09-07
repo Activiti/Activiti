@@ -20,12 +20,14 @@ import static org.activiti.services.audit.mongo.EventsRelProvider.COLLECTION_RES
 
 import java.util.Optional;
 
+import com.querydsl.core.types.Predicate;
 import org.activiti.engine.ActivitiException;
 import org.activiti.services.audit.mongo.assembler.EventResourceAssembler;
 import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
 import org.activiti.services.audit.mongo.resources.EventResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,7 +65,13 @@ public class ProcessEngineEventsController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public PagedResources<EventResource> findAll(Pageable pageable) {
-        return pagedResourcesAssembler.toResource(eventsRepository.findAll(pageable), eventResourceAssembler);
+    public PagedResources<EventResource> findAll(@QuerydslPredicate(
+            root = ProcessEngineEventDocument.class) Predicate predicate, Pageable pageable) {
+        if (predicate == null) {
+            return pagedResourcesAssembler.toResource(eventsRepository.findAll(pageable), eventResourceAssembler);
+        } else {
+            return pagedResourcesAssembler.toResource(eventsRepository.findAll(predicate, pageable),
+                                                      eventResourceAssembler);
+        }
     }
 }

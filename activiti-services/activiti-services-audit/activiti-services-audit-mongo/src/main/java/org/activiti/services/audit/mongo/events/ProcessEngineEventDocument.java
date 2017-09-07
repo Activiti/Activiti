@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.querydsl.core.annotations.QueryEntity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -41,6 +42,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
                                                                                                         value = SequenceFlowTakenEventDocument.class,
                                                                                                         name = SequenceFlowTakenEventDocument.SEQUENCE_FLOW_TAKEN_EVENT)
 })
+@QueryEntity
 @Document(collection = "act_evt_log")
 public class ProcessEngineEventDocument {
 
