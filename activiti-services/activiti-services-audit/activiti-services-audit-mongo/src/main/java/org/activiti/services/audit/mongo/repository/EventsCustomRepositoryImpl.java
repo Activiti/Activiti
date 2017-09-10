@@ -1,7 +1,7 @@
-package org.activiti.services.audit.mongo.impl;
+package org.activiti.services.audit.mongo.repository;
 
-import org.activiti.services.audit.mongo.EventsMongoCustomRepository;
 import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
+import org.activiti.services.audit.mongo.repository.EventsCustomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.BulkOperations.BulkMode;
@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
-public class EventsMongoCustomRepositoryImpl implements EventsMongoCustomRepository {
+public class EventsCustomRepositoryImpl implements EventsCustomRepository {
 
     private final static String COLLECTION_NAME = "act_evt_log";
 

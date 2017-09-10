@@ -16,9 +16,6 @@
 
 package org.activiti.services.audit.mongo.events;
 
-import javax.persistence.DiscriminatorValue;
-
-@DiscriminatorValue(value = ActivityStartedEventDocument.ACTIVITY_STARTED_EVENT)
 public class ActivityStartedEventDocument extends BaseActivityEventDocument {
 
     protected static final String ACTIVITY_STARTED_EVENT = "ActivityStartedEvent";

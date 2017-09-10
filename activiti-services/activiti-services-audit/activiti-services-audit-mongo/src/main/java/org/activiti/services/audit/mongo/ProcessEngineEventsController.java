@@ -24,6 +24,7 @@ import com.querydsl.core.types.Predicate;
 import org.activiti.engine.ActivitiException;
 import org.activiti.services.audit.mongo.assembler.EventResourceAssembler;
 import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
+import org.activiti.services.audit.mongo.repository.EventsRepository;
 import org.activiti.services.audit.mongo.resources.EventResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -39,14 +40,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(value = "/v1/" + COLLECTION_RESOURCE_REL)
 public class ProcessEngineEventsController {
 
-    private final EventsMongoRepository eventsRepository;
+    private final EventsRepository eventsRepository;
 
     private EventResourceAssembler eventResourceAssembler;
 
     private PagedResourcesAssembler<ProcessEngineEventDocument> pagedResourcesAssembler;
 
     @Autowired
-    public ProcessEngineEventsController(EventsMongoRepository eventsRepository,
+    public ProcessEngineEventsController(EventsRepository eventsRepository,
                                          EventResourceAssembler eventResourceAssembler,
                                          PagedResourcesAssembler<ProcessEngineEventDocument> pagedResourcesAssembler) {
         this.eventsRepository = eventsRepository;

@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package org.activiti.services.audit.channel;
+package org.activiti.services.audit.mongo.channel;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import org.activiti.services.audit.mongo.EventsMongoCustomRepository;
-import org.activiti.services.audit.mongo.channel.AuditConsumerChannelHandler;
 import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
+import org.activiti.services.audit.mongo.repository.EventsCustomRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -34,7 +33,7 @@ public class AuditConsumerChannelHandlerTest {
     private AuditConsumerChannelHandler handler;
 
     @Mock
-    private EventsMongoCustomRepository eventsRepository;
+    private EventsCustomRepository eventsRepository;
 
     @Before
     public void setUp() throws Exception {

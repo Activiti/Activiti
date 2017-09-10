@@ -18,8 +18,8 @@ package org.activiti.services.audit.mongo.channel;
 
 import java.io.IOException;
 
-import org.activiti.services.audit.mongo.EventsMongoCustomRepository;
 import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
+import org.activiti.services.audit.mongo.repository.EventsCustomRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -29,10 +29,10 @@ import org.springframework.stereotype.Component;
 @EnableBinding(AuditConsumerChannels.class)
 public class AuditConsumerChannelHandler {
 
-    private final EventsMongoCustomRepository customRepositor;
+    private final EventsCustomRepository customRepositor;
 
     @Autowired
-    public AuditConsumerChannelHandler(EventsMongoCustomRepository customRepositor) {
+    public AuditConsumerChannelHandler(EventsCustomRepository customRepositor) {
         this.customRepositor = customRepositor;
     }
 

@@ -16,9 +16,6 @@
 
 package org.activiti.services.audit.mongo.events;
 
-import javax.persistence.DiscriminatorValue;
-
-@DiscriminatorValue(value = ProcessCancelledEventDocument.PROCESS_CANCELLED_EVENT)
 public class ProcessCancelledEventDocument extends BaseProcessEventDocument {
 
     protected static final String PROCESS_CANCELLED_EVENT = "ProcessCancelledEvent";
