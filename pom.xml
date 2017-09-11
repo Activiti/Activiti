@@ -1036,9 +1036,9 @@
     <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
   </ciManagement>
   <scm>
-    <url>https://github.com/Activiti/Activiti</url>
-    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
-    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
+    <url>https://github.com/Activiti/activiti-build</url>
+    <connection>scm:git:https://github.com/Activiti/activiti-build.git</connection>
+    <developerConnection>scm:git:https://github.com/Activiti/activiti-build.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
   <developers>
