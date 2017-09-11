@@ -104,7 +104,7 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependencies</artifactId>
-        <version>${version.activiti}</version>
+        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -112,27 +112,27 @@
       <dependency>
         <groupId>org.activiti.cloud</groupId>
         <artifactId>activiti-cloud-starter-runtime-bundle</artifactId>
-        <version>${version.activiti.cloud}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.cloud</groupId>
         <artifactId>activiti-cloud-starter-configure</artifactId>
-        <version>${version.activiti.cloud}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.cloud</groupId>
         <artifactId>activiti-cloud-starter-audit</artifactId>
-        <version>${version.activiti.cloud}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.cloud</groupId>
         <artifactId>activiti-cloud-starter-query</artifactId>
-        <version>${version.activiti.cloud}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.cloud</groupId>
         <artifactId>activiti-cloud-starter-test</artifactId>
-        <version>${version.activiti.cloud}</version>
+        <version>${project.version}</version>
         <scope>test</scope>
       </dependency>
       <!-- Spring Boot / Cloud / Stream dependencies -->
