@@ -40,6 +40,18 @@
     <module>activiti-spring</module>
   </modules>
 
+  <repositories>
+    <repository>
+      <id>alfresco.activiti.snapshots</id>
+      <name>Alfresco Activiti Snapshots</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+    </repository>
+    <repository>
+      <id>alfresco.activiti.releases</id>
+      <name>Alfresco Activiti Releases</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+    </repository>
+  </repositories>
 
   <profiles>
     <!-- Profile to sign artifacts, triggered when releasing -->
