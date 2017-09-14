@@ -55,6 +55,24 @@
     <generated-assertions-package>org.activiti.test</generated-assertions-package>
   </properties>
 
+  <distributionManagement>
+    <!--<repository>-->
+    <!--<id>central-releases-staging</id>-->
+    <!--<name>Central Releases - Staging</name>-->
+    <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>-->
+    <!--</repository>-->
+    <repository>
+      <id>activiti-enterprise-snapshots</id>
+      <name>Activiti Snapshots</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+    </repository>
+    <snapshotRepository>
+      <id>activiti-enterprise-snapshots</id>
+      <name>Activiti Snapshots</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
+  
   <repositories>
     <repository>
       <id>spring-milestones</id>
