@@ -117,10 +117,15 @@
   </properties>
 
   <distributionManagement>
+    <!--<repository>-->
+      <!--<id>central-releases-staging</id>-->
+      <!--<name>Central Releases - Staging</name>-->
+      <!--<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>-->
+    <!--</repository>-->
     <repository>
-      <id>central-releases-staging</id>
-      <name>Central Releases - Staging</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      <id>activiti-enterprise-snapshots</id>
+      <name>Activiti Snapshots</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
     </repository>
     <snapshotRepository>
       <id>activiti-enterprise-snapshots</id>
