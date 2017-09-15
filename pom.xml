@@ -10,6 +10,7 @@
 
   <description>BPM and workflow engine</description>
   <artifactId>activiti-root</artifactId>
+  <version>7-201708-EA</version>
   <packaging>pom</packaging>
 
 
@@ -102,7 +103,7 @@
     <url>https://github.com/Activiti/Activiti</url>
     <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
     <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>activiti-7-201708-EA</tag>
   </scm>
   <developers>
     <developer>
