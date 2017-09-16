@@ -20,8 +20,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Arrays;
+
 import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
-import org.activiti.services.audit.mongo.repository.EventsCustomRepository;
+import org.activiti.services.audit.mongo.repository.EventsRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -33,7 +35,7 @@ public class AuditConsumerChannelHandlerTest {
     private AuditConsumerChannelHandler handler;
 
     @Mock
-    private EventsCustomRepository eventsRepository;
+    private EventsRepository eventsRepository;
 
     @Before
     public void setUp() throws Exception {
@@ -51,6 +53,6 @@ public class AuditConsumerChannelHandlerTest {
         handler.receive(events);
 
         //then
-        verify(eventsRepository).insertAll(events);
+        verify(eventsRepository).saveAll(Arrays.asList(events));
     }
 }

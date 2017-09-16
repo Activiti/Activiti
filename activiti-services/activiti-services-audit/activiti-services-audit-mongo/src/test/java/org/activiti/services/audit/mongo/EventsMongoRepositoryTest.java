@@ -1,9 +1,7 @@
 package org.activiti.services.audit.mongo;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.samePropertyValuesAs;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +25,6 @@ import org.activiti.services.audit.mongo.events.TaskCreatedEventDocument;
 import org.activiti.services.audit.mongo.events.VariableCreatedEventDocument;
 import org.activiti.services.audit.mongo.events.VariableDeletedEventDocument;
 import org.activiti.services.audit.mongo.events.VariableUpdatedEventDocument;
-import org.activiti.services.audit.mongo.repository.EventsCustomRepository;
 import org.activiti.services.audit.mongo.repository.EventsRepository;
 import org.activiti.services.core.model.ProcessInstance;
 import org.activiti.services.core.model.ProcessInstance.ProcessInstanceStatus;
@@ -59,9 +56,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class EventsMongoRepositoryTest {
 
     @Autowired
-    private EventsCustomRepository customRepositor;
-
-    @Autowired
     private EventsRepository eventsRepository;
 
     @Before
@@ -72,49 +66,36 @@ public class EventsMongoRepositoryTest {
     @Test
     public void testAllEventType() throws IOException {
         List<ProcessEngineEventDocument> events = getAllEvents();
-        customRepositor.insertAll(events.toArray(new ProcessEngineEventDocument[events.size()]));
+        eventsRepository.saveAll(events);
 
         List<ProcessEngineEventDocument> retrievedEvents = eventsRepository.findAll();
         assertEquals(events.size(), retrievedEvents.size());
 
-        assertThat(((ActivityCancelledEventDocument) events.get(0)),
-                   is(samePropertyValuesAs((ActivityCancelledEventDocument) retrievedEvents.get(0))));
+        assertThat((ActivityCancelledEventDocument) events.get(0)).isEqualToComparingFieldByField(retrievedEvents.get(0));
 
-        assertThat(((ActivityStartedEventDocument) events.get(1)),
-                     is(samePropertyValuesAs((ActivityStartedEventDocument) retrievedEvents.get(1))));
+        assertThat((ActivityStartedEventDocument) events.get(1)).isEqualToComparingFieldByField(retrievedEvents.get(1));
 
-        assertThat(((ActivityCompletedEventDocument) events.get(2)),
-                     is(samePropertyValuesAs((ActivityCompletedEventDocument) retrievedEvents.get(2))));
+        assertThat((ActivityCompletedEventDocument) events.get(2)).isEqualToComparingFieldByField(retrievedEvents.get(2));
 
-        assertThat(((ProcessCompletedEventDocument) events.get(3)),
-                     is(samePropertyValuesAs((ProcessCompletedEventDocument) retrievedEvents.get(3))));
+        assertThat((ProcessCompletedEventDocument) events.get(3)).isEqualToComparingFieldByField(retrievedEvents.get(3));
 
-        assertThat(((ProcessCancelledEventDocument) events.get(4)),
-                   is(samePropertyValuesAs((ProcessCancelledEventDocument) retrievedEvents.get(4))));
+        assertThat((ProcessCancelledEventDocument) events.get(4)).isEqualToComparingFieldByField(retrievedEvents.get(4));
 
-        assertThat(((ProcessStartedEventDocument) events.get(5)),
-                   is(samePropertyValuesAs((ProcessStartedEventDocument) retrievedEvents.get(5))));
+        assertThat((ProcessStartedEventDocument) events.get(5)).isEqualToComparingFieldByField(retrievedEvents.get(5));
 
-        assertThat(((SequenceFlowTakenEventDocument) events.get(6)),
-                   is(samePropertyValuesAs((SequenceFlowTakenEventDocument) retrievedEvents.get(6))));
+        assertThat((SequenceFlowTakenEventDocument) events.get(6)).isEqualToComparingFieldByField(retrievedEvents.get(6));
 
-        assertThat(((TaskAssignedEventDocument) events.get(7)),
-                   is(samePropertyValuesAs((TaskAssignedEventDocument) retrievedEvents.get(7))));
+        assertThat((TaskAssignedEventDocument) events.get(7)).isEqualToComparingFieldByField(retrievedEvents.get(7));
 
-        assertThat(((TaskCompletedEventDocument) events.get(8)),
-                   is(samePropertyValuesAs((TaskCompletedEventDocument) retrievedEvents.get(8))));
+        assertThat((TaskCompletedEventDocument) events.get(8)).isEqualToComparingFieldByField(retrievedEvents.get(8));
 
-        assertThat(((TaskCreatedEventDocument) events.get(9)),
-                   is(samePropertyValuesAs((TaskCreatedEventDocument) retrievedEvents.get(9))));
+        assertThat((TaskCreatedEventDocument) events.get(9)).isEqualToComparingFieldByField(retrievedEvents.get(9));
 
-        assertThat(((VariableCreatedEventDocument) events.get(10)),
-                   is(samePropertyValuesAs((VariableCreatedEventDocument) retrievedEvents.get(10))));
+        assertThat((VariableCreatedEventDocument) events.get(10)).isEqualToComparingFieldByField(retrievedEvents.get(10));
 
-        assertThat(((VariableDeletedEventDocument) events.get(11)),
-                   is(samePropertyValuesAs((VariableDeletedEventDocument) retrievedEvents.get(11))));
+        assertThat((VariableDeletedEventDocument) events.get(11)).isEqualToComparingFieldByField(retrievedEvents.get(11));
 
-        assertThat(((VariableUpdatedEventDocument) events.get(12)),
-                   is(samePropertyValuesAs((VariableUpdatedEventDocument) retrievedEvents.get(12))));
+        assertThat((VariableUpdatedEventDocument) events.get(12)).isEqualToComparingFieldByField(retrievedEvents.get(12));
     }
 
     private List<ProcessEngineEventDocument> getAllEvents() throws IOException {

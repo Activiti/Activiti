@@ -42,37 +42,6 @@ public class Task {
     private String parentTaskId;
     private String status;
 
-    public Task() {
-    }
-
-    public Task(String id,
-                String owner,
-                String assignee,
-                String name,
-                String description,
-                Date createdDate,
-                Date claimedDate,
-                Date dueDate,
-                int priority,
-                String processDefinitionId,
-                String processInstanceId,
-                String parentTaskId,
-                String status) {
-        this.id = id;
-        this.owner = owner;
-        this.assignee = assignee;
-        this.name = name;
-        this.description = description;
-        this.createdDate = createdDate;
-        this.claimedDate = claimedDate;
-        this.dueDate = dueDate;
-        this.priority = priority;
-        this.processDefinitionId = processDefinitionId;
-        this.processInstanceId = processInstanceId;
-        this.parentTaskId = parentTaskId;
-        this.status = status;
-    }
-
     public String getId() {
         return id;
     }

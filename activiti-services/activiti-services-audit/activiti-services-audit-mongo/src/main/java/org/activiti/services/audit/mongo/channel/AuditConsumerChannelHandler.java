@@ -17,9 +17,10 @@
 package org.activiti.services.audit.mongo.channel;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.activiti.services.audit.mongo.events.ProcessEngineEventDocument;
-import org.activiti.services.audit.mongo.repository.EventsCustomRepository;
+import org.activiti.services.audit.mongo.repository.EventsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -29,15 +30,15 @@ import org.springframework.stereotype.Component;
 @EnableBinding(AuditConsumerChannels.class)
 public class AuditConsumerChannelHandler {
 
-    private final EventsCustomRepository customRepositor;
+    private final EventsRepository eventsRepository;
 
     @Autowired
-    public AuditConsumerChannelHandler(EventsCustomRepository customRepositor) {
-        this.customRepositor = customRepositor;
+    public AuditConsumerChannelHandler(EventsRepository eventsRepository) {
+        this.eventsRepository = eventsRepository;
     }
 
     @StreamListener(AuditConsumerChannels.AUDIT_CONSUMER)
     public synchronized void receive(ProcessEngineEventDocument[] events) throws IOException {
-        customRepositor.insertAll(events);
+        eventsRepository.saveAll(Arrays.asList(events));
     }
 }

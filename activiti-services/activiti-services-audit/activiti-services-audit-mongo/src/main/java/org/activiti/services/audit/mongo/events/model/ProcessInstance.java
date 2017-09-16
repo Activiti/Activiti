@@ -37,27 +37,6 @@ public class ProcessInstance {
     private String businessKey;
     private String status;
 
-    public ProcessInstance() {
-    }
-
-    public ProcessInstance(String id,
-                           String name,
-                           String description,
-                           String processDefinitionId,
-                           String initiator,
-                           Date startDate,
-                           String businessKey,
-                           String status) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.startDate = startDate;
-        this.initiator = initiator;
-        this.businessKey = businessKey;
-        this.status = status;
-        this.processDefinitionId = processDefinitionId;
-    }
-
     public String getId() {
         return id;
     }

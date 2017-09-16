@@ -16,8 +16,6 @@
 
 package org.activiti.services.audit.mongo;
 
-import static org.activiti.services.audit.mongo.EventsRelProvider.COLLECTION_RESOURCE_REL;
-
 import java.util.Optional;
 
 import com.querydsl.core.types.Predicate;
@@ -37,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/v1/" + COLLECTION_RESOURCE_REL)
+@RequestMapping(value = "/v1/events")
 public class ProcessEngineEventsController {
 
     private final EventsRepository eventsRepository;
