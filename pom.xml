@@ -1016,6 +1016,18 @@
         </plugins>
       </build>
     </profile>
+
+    <!-- option to publish to alfresco-->
+    <profile>
+      <id>distroAlfresco</id>
+      <distributionManagement>
+        <repository>
+          <id>Activiti.org Releases</id>
+          <name>Activiti Releases</name>
+          <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+        </repository>
+      </distributionManagement>
+    </profile>
   </profiles>
 
   <!-- Various information, not used by the build -->
