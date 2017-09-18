@@ -163,6 +163,17 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <repository> <!-- Using snapshot repo to temporarily keep keycloak adapter -->
+      <id>activiti-snapshots</id>
+      <name>Activiti Snapshots</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
   </repositories>
   <!-- Here we add 3rd Party Dependencies -->
   <dependencyManagement>
