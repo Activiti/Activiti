@@ -56,14 +56,13 @@
   </properties>
 
   <distributionManagement>
-
     <repository>
       <id>central-releases-staging</id>
       <name>Central Releases - Staging</name>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
     </repository>
     <snapshotRepository>
-      <id>Activiti.org Snapshots</id>
+      <id>activiti-enterprise-snapshots</id>
       <name>Activiti Snapshots</name>
       <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
     </snapshotRepository>
@@ -646,8 +645,8 @@
       <id>distroAlfresco</id>
       <distributionManagement>
         <repository>
-          <id>Activiti.org Releases</id>
-          <name>Activiti Releases</name>
+          <id>activiti-enterprise-snapshots</id>
+          <name>Activiti Snapshots</name>
           <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
         </repository>
       </distributionManagement>
