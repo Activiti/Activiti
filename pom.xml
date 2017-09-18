@@ -40,18 +40,18 @@
     <module>activiti-spring</module>
   </modules>
 
-  <repositories>
+  <distributionManagement>
     <repository>
-      <id>alfresco.activiti.snapshots</id>
-      <name>Alfresco Activiti Snapshots</name>
+      <id>central-releases-staging</id>
+      <name>Central Releases - Staging</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>activiti-enterprise-snapshots</id>
+      <name>Activiti Snapshots</name>
       <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-    </repository>
-    <repository>
-      <id>alfresco.activiti.releases</id>
-      <name>Alfresco Activiti Releases</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
-    </repository>
-  </repositories>
+    </snapshotRepository>
+  </distributionManagement>
 
   <profiles>
     <!-- Profile to sign artifacts, triggered when releasing -->
