@@ -46,6 +46,9 @@ import graphql.GraphQLError;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ActivitiGraphQLControllerIT {
 	private static final String	TASK_NAME	= "task1";
+
+	@Autowired
+	private TestRestTemplate			rest;
     
     @SpringBootApplication
     @EnableActivitiGraphQLQueryService
@@ -53,9 +56,6 @@ public class ActivitiGraphQLControllerIT {
         // Nothing
     }
     
-	@Autowired
-	private TestRestTemplate			rest;
-
 	@Test
 	public void testGraphql() {
 		GraphQLQueryRequest query = new GraphQLQueryRequest("{Tasks(where:{name:{EQ: \"" + TASK_NAME + "\"}}){select{id assignee priority}}}");

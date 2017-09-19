@@ -100,9 +100,9 @@ public class ActivitiGraphQLController {
     public static class GraphQLQueryRequest {
 
         @NotNull
-        String query;
+        private String query;
 
-        String variables;
+        private String variables;
 
         GraphQLQueryRequest() {}
         

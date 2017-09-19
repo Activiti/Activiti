@@ -44,10 +44,6 @@ import com.introproventures.graphql.jpa.query.schema.impl.GraphQLJpaExecutor;
 @WebMvcTest(controllers = ActivitiGraphQLController.class)
 public class ActivitiGraphQLControllerTest {
     
-    @Configuration
-    @Import(ActivitiGraphQLController.class)
-    static class Config { }
-    
 	@Autowired 
 	private MockMvc			mockmvc;
 	
@@ -57,6 +53,10 @@ public class ActivitiGraphQLControllerTest {
 	@Autowired
 	private ObjectMapper	mapper;
 
+    @Configuration
+    @Import(ActivitiGraphQLController.class)
+    static class Config { }
+	
 	private void ok(final GraphQLQueryRequest query) throws Exception, JsonProcessingException {
 		perform(mapper.writeValueAsString(query)).andExpect(status().isOk());
 	}
