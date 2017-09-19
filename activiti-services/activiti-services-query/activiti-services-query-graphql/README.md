@@ -322,7 +322,7 @@ Sorting
 -------
 
 Sorting is supported on any field.  Simply pass in an 'orderBy' argument with the value of ASC or DESC.  Here's an example
-of sorting by name for Human objects. The default sort order can be specified using `GraphQLDefaultSort` annotation on entity field. If sort order is not specified and there is no field with default sort order provided, it will use the field annotated with @Id to avoid paging confusions.
+of sorting by name for Task objects. The default sort order can be specified using `GraphQLDefaultSort` annotation on entity field. If sort order is not specified and there is no field with default sort order provided, it will use the field annotated with @Id to avoid paging confusions.
 
 For Example:
 
