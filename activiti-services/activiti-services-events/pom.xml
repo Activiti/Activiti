@@ -4,7 +4,7 @@
   <parent>
     <artifactId>activiti-services</artifactId>
     <groupId>org.activiti</groupId>
-    <version>7-201708-EA-SNAPSHOT</version>
+    <version>7-201708-EA</version>
   </parent>
 
   <artifactId>activiti-services-events</artifactId>
