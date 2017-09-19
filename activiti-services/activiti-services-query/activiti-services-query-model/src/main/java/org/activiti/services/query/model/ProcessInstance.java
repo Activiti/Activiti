@@ -17,13 +17,20 @@
 package org.activiti.services.query.model;
 
 import java.util.Date;
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.springframework.format.annotation.DateTimeFormat;
+import com.introproventures.graphql.jpa.query.annotation.GraphQLDescription;
+
+@GraphQLDescription("Process Instance Entity Model")
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,6 +38,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class ProcessInstance {
 
     @Id
+    @GraphQLDescription("Unique process instance identity attribute")
     private Long processInstanceId;
     private String processDefinitionId;
     private String status;
@@ -44,6 +52,10 @@ public class ProcessInstance {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastModifiedFrom;
 
+    @GraphQLDescription("Associated tasks entities")
+    @OneToMany(mappedBy="processInstance")
+    private Set<Task> tasks;     
+    
     public ProcessInstance() {
     }
 
@@ -106,4 +118,13 @@ public class ProcessInstance {
     public void setLastModifiedFrom(Date lastModifiedFrom) {
         this.lastModifiedFrom = lastModifiedFrom;
     }
+
+	public Set<Task> getTasks() {
+		return this.tasks;
+	}
+
+	public void setTasks(Set<Task> tasks) {
+		this.tasks = tasks;
+	}
+    
 }

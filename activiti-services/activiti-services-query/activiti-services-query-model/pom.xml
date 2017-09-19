@@ -1,15 +1,30 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>activiti-services-query</artifactId>
     <groupId>org.activiti</groupId>
-    <version>7-201708-EA</version>
+    <version>7-201708-EA-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>activiti-services-query-model</artifactId>
   <name>Activiti - Services :: Query Model</name>
   <description>Activiti Services Query Model</description>
+  
+  <repositories>
+	<repository>
+	  <id>jitpack.io</id>
+	  <url>https://jitpack.io</url>
+	</repository>
+  </repositories>
+  
   <dependencies>
+	<dependency>
+	    <groupId>com.github.introproventures.graphql-jpa-query</groupId>
+	    <artifactId>graphql-jpa-query-annotations</artifactId>
+	    <version>v0.1.0</version>
+	</dependency>  
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-services-core-model</artifactId>
