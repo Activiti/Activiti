@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.activiti.services.query.qraphql.autoconfigure.ActivitiGraphQLAutoConfiguration
