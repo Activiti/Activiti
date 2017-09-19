@@ -17,7 +17,7 @@
 package org.activiti.services.query.events.handlers;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.Variable;
+import org.activiti.services.query.es.model.VariableES;
 import org.activiti.services.query.events.VariableUpdatedEvent;
 import org.activiti.test.Assertions;
 import org.junit.Before;
@@ -32,82 +32,80 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class VariableUpdatedEventHandlerTest {
 
-    @InjectMocks
-    private VariableUpdatedEventHandler handler;
+	@InjectMocks
+	private VariableUpdatedEventHandler handler;
 
-    @Mock
-    private ProcessVariableUpdateHandler processVariableUpdateHandler;
+	@Mock
+	private ProcessVariableUpdateHandler processVariableUpdateHandler;
 
-    @Mock
-    private TaskVariableUpdatedHandler taskVariableUpdatedHandler;
+	@Mock
+	private TaskVariableUpdatedHandler taskVariableUpdatedHandler;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+	}
 
-    @Test
-    public void handleShouldUseProcessVariableUpdateHandlerWhenNoTaskId() throws Exception {
-        //given
-        VariableUpdatedEvent event = new VariableUpdatedEvent(System.currentTimeMillis(),
-                                                              "variableUpdated",
-                                                              "10",
-                                                              "20",
-                                                              "30",
-                                                              "var",
-                                                              "v1",
-                                                              "string",
-                                                              null);
+	@Test
+	public void handleShouldUseProcessVariableUpdateHandlerWhenNoTaskId() throws Exception {
+		// given
+		VariableUpdatedEvent event = new VariableUpdatedEvent(System.currentTimeMillis(), "variableUpdated", "10", "20",
+				"30", "var", "v1", "string", null);
 
-        //when
-        handler.handle(event);
+		// when
+		handler.handle(event);
 
-        //then
-        ArgumentCaptor<Variable> captor = ArgumentCaptor.forClass(Variable.class);
-        verify(processVariableUpdateHandler).handle(captor.capture());
+		// then
+		ArgumentCaptor<VariableES> captor = ArgumentCaptor.forClass(VariableES.class);
+		verify(processVariableUpdateHandler).handle(captor.capture());
 
-        Variable variable = captor.getValue();
-        Assertions.assertThat(variable)
-                .hasProcessInstanceId("30")
-                .hasName("var")
-                .hasValue("v1")
-                .hasType("string");
-    }
+		VariableES variable = captor.getValue();
+		assertThat(variable).isNotNull();
+		assertThat(variable.getProcessInstanceId()).isEqualTo("30");
+		assertThat(variable.getName()).isEqualTo("var");
+		assertThat(variable.getValue()).isEqualTo("v1");
+		assertThat(variable.getType()).isEqualTo("string");
 
-    @Test
-    public void handleShouldUseTaskVariableUpdateHandlerWhenTaskIdIsSet() throws Exception {
-        //given
-        VariableUpdatedEvent event = new VariableUpdatedEvent(System.currentTimeMillis(),
-                                                              "variableUpdated",
-                                                              "10",
-                                                              "20",
-                                                              "30",
-                                                              "var",
-                                                              "v1",
-                                                              "string",
-                                                              "40");
+		// Assertions.assertThat(variable)
+		// .hasProcessInstanceId("30")
+		// .hasName("var")
+		// .hasValue("v1")
+		// .hasType("string");
+	}
 
-        //when
-        handler.handle(event);
+	@Test
+	public void handleShouldUseTaskVariableUpdateHandlerWhenTaskIdIsSet() throws Exception {
+		// given
+		VariableUpdatedEvent event = new VariableUpdatedEvent(System.currentTimeMillis(), "variableUpdated", "10", "20",
+				"30", "var", "v1", "string", "40");
 
-        //then
-        ArgumentCaptor<Variable> captor = ArgumentCaptor.forClass(Variable.class);
-        verify(taskVariableUpdatedHandler).handle(captor.capture());
+		// when
+		handler.handle(event);
 
-        Variable variable = captor.getValue();
-        Assertions.assertThat(variable)
-                .hasTaskId("40")
-                .hasName("var")
-                .hasValue("v1")
-                .hasType("string");
-    }
+		// then
+		ArgumentCaptor<VariableES> captor = ArgumentCaptor.forClass(VariableES.class);
+		verify(taskVariableUpdatedHandler).handle(captor.capture());
 
-    @Test
-    public void getHandledEventClass() throws Exception {
-        //when
-        Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
+		VariableES variable = captor.getValue();
+		assertThat(variable).isNotNull();
+		assertThat(variable.getTaskId()).isEqualTo("40");
+		assertThat(variable.getName()).isEqualTo("var");
+		assertThat(variable.getValue()).isEqualTo("v1");
+		assertThat(variable.getType()).isEqualTo("string");
 
-        //then
-        assertThat(handledEventClass).isEqualTo(VariableUpdatedEvent.class);
-    }
+		// Assertions.assertThat(variable)
+		// .hasTaskId("40")
+		// .hasName("var")
+		// .hasValue("v1")
+		// .hasType("string");
+	}
+
+	@Test
+	public void getHandledEventClass() throws Exception {
+		// when
+		Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
+
+		// then
+		assertThat(handledEventClass).isEqualTo(VariableUpdatedEvent.class);
+	}
 }

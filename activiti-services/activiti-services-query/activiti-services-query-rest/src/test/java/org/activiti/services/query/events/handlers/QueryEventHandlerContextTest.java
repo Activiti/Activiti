@@ -33,41 +33,41 @@ import org.mockito.Mock;
 
 public class QueryEventHandlerContextTest {
 
-    private QueryEventHandlerContext context;
+	private QueryEventHandlerContext context;
 
-    @Mock
-    private QueryEventHandler handler;
+	@Mock
+	private QueryEventHandler handler;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-        doReturn(TaskCreatedEvent.class).when(handler).getHandledEventClass();
-        context = new QueryEventHandlerContext(Collections.singleton(handler));
-    }
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+		doReturn(TaskCreatedEvent.class).when(handler).getHandledEventClass();
+		context = new QueryEventHandlerContext(Collections.singleton(handler));
+	}
 
-    @Test
-    public void handleShouldSelectHandlerBasedOnEventType() throws Exception {
-        //given
-        TaskCreatedEvent event = new TaskCreatedEvent();
+	@Test
+	public void handleShouldSelectHandlerBasedOnEventType() throws Exception {
+		// given
+		TaskCreatedEvent event = new TaskCreatedEvent();
 
-        //when
-        AbstractProcessEngineEvent[] events = {event};
-        context.handle(events);
+		// when
+		AbstractProcessEngineEvent[] events = { event };
+		context.handle(events);
 
-        //then
-        verify(handler).handle(event);
-    }
+		// then
+		verify(handler).handle(event);
+	}
 
-    @Test
-    public void handleShouldDoNothingWhenNoHandlerIsFoundForTheGivenEvent() throws Exception {
-        //given
-        TaskCompletedEvent event = new TaskCompletedEvent();
+	@Test
+	public void handleShouldDoNothingWhenNoHandlerIsFoundForTheGivenEvent() throws Exception {
+		// given
+		TaskCompletedEvent event = new TaskCompletedEvent();
 
-        //when
-        AbstractProcessEngineEvent[] events = {event};
-        context.handle(events);
+		// when
+		AbstractProcessEngineEvent[] events = { event };
+		context.handle(events);
 
-        //then
-        verify(handler, never()).handle(any());
-    }
+		// then
+		verify(handler, never()).handle(any());
+	}
 }

@@ -16,36 +16,38 @@
 
 package org.activiti.services.query.events.handlers;
 
-import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.model.Variable;
-import org.activiti.services.query.app.repository.EntityFinder;
-import org.activiti.services.query.app.repository.VariableRepository;
+import java.util.Optional;
+
+import org.activiti.engine.ActivitiException;
+import org.activiti.services.query.es.model.VariableES;
+import org.activiti.services.query.es.repository.VariableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class VariableUpdater {
 
-    private final EntityFinder entityFinder;
+	private VariableRepository variableRepository;
 
-    private VariableRepository variableRepository;
+	@Autowired
+	public VariableUpdater(VariableRepository variableRepository) {
+		this.variableRepository = variableRepository;
+	}
 
-    @Autowired
-    public VariableUpdater(EntityFinder entityFinder,
-                           VariableRepository variableRepository) {
-        this.entityFinder = entityFinder;
-        this.variableRepository = variableRepository;
-    }
+	public void update(VariableES updatedVariable) {
+		Optional<VariableES> optional = variableRepository.findById(updatedVariable.getId());
 
-    public void update(Variable updatedVariable, Predicate predicate, String notFoundMessage) {
-        Variable variable = entityFinder.findOne(variableRepository,
-                                            predicate,
-                                            notFoundMessage);
-        variable.setLastUpdatedTime(updatedVariable.getLastUpdatedTime());
-        variable.setType(updatedVariable.getType());
-        variable.setValue(updatedVariable.getValue());
+		if (optional.isPresent()) {
+			VariableES variable = optional.get();
+			variable.setLastUpdatedTime(updatedVariable.getLastUpdatedTime());
+			variable.setType(updatedVariable.getType());
+			variable.setValue(updatedVariable.getValue());
 
-        variableRepository.save(variable);
-    }
+			variableRepository.save(variable);
+		} else {
+			throw new ActivitiException("Unable to find variable with id: " + updatedVariable.getId());
+		}
+
+	}
 
 }

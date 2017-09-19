@@ -26,20 +26,20 @@ import static org.mockito.Mockito.*;
 
 public class QueryRepositoryConfigTest {
 
-    private QueryRepositoryConfig queryRepositoryConfig = new QueryRepositoryConfig();
+	private QueryRepositoryConfig queryRepositoryConfig = new QueryRepositoryConfig();
 
-    @Test
-    public void configureRepositoryRestConfigurationShouldExposeAllIds() throws Exception {
-        //given
-        RepositoryRestConfiguration restConfiguration = mock(RepositoryRestConfiguration.class);
+	@Test
+	public void configureRepositoryRestConfigurationShouldExposeAllIds() throws Exception {
+		// given
+		RepositoryRestConfiguration restConfiguration = mock(RepositoryRestConfiguration.class);
 
-        //when
-        queryRepositoryConfig.configureRepositoryRestConfiguration(restConfiguration);
+		// when
+		queryRepositoryConfig.configureRepositoryRestConfiguration(restConfiguration);
 
-        //then
-        verify(restConfiguration).exposeIdsFor(ProcessInstance.class);
-        verify(restConfiguration).exposeIdsFor(Task.class);
-        verify(restConfiguration).exposeIdsFor(Variable.class);
-    }
+		// then
+		verify(restConfiguration).exposeIdsFor(ProcessInstance.class);
+		verify(restConfiguration).exposeIdsFor(Task.class);
+		verify(restConfiguration).exposeIdsFor(Variable.class);
+	}
 
 }

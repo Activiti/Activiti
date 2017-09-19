@@ -29,53 +29,52 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class VariableDeletedEventHandlerTest {
 
-    @InjectMocks
-    private VariableDeletedEventHandler handler;
+	@InjectMocks
+	private VariableDeletedEventHandler handler;
 
-    @Mock
-    private ProcessVariableDeletedHandler processVariableDeletedHandler;
+	@Mock
+	private ProcessVariableDeletedHandler processVariableDeletedHandler;
 
-    @Mock
-    private TaskVariableDeletedHandler taskVariableDeletedHandler;
+	@Mock
+	private TaskVariableDeletedHandler taskVariableDeletedHandler;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+	}
 
-    @Test
-    public void handleShouldUseProcessVariableDeleteHandlerWhenNoTaskId() throws Exception {
-        //given
-        VariableDeletedEvent event = new VariableDeletedEvent();
-        event.setTaskId(null);
+	@Test
+	public void handleShouldUseProcessVariableDeleteHandlerWhenNoTaskId() throws Exception {
+		// given
+		VariableDeletedEvent event = new VariableDeletedEvent();
+		event.setTaskId(null);
 
-        //when
-        handler.handle(event);
+		// when
+		handler.handle(event);
 
-        //then
-        verify(processVariableDeletedHandler).handle(event);
-    }
+		// then
+		verify(processVariableDeletedHandler).handle(event);
+	}
 
-    @Test
-    public void handleShouldUseProcessVariableDeleteHandlerWhenTaskIdIsPresent() throws Exception {
-        //given
-        VariableDeletedEvent event = new VariableDeletedEvent();
-        event.setTaskId("1");
+	@Test
+	public void handleShouldUseProcessVariableDeleteHandlerWhenTaskIdIsPresent() throws Exception {
+		// given
+		VariableDeletedEvent event = new VariableDeletedEvent();
+		event.setTaskId("1");
 
-        //when
-        handler.handle(event);
+		// when
+		handler.handle(event);
 
-        //then
-        verify(taskVariableDeletedHandler).handle(event);
-    }
+		// then
+		verify(taskVariableDeletedHandler).handle(event);
+	}
 
+	@Test
+	public void getHandledEventClassShouldReturnVariableDeletedEvent() throws Exception {
+		// when
+		Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
 
-    @Test
-    public void getHandledEventClassShouldReturnVariableDeletedEvent() throws Exception {
-        //when
-        Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
-
-        //then
-        assertThat(handledEventClass).isEqualTo(VariableDeletedEvent.class);
-    }
+		// then
+		assertThat(handledEventClass).isEqualTo(VariableDeletedEvent.class);
+	}
 }

@@ -16,39 +16,37 @@
 
 package org.activiti.services.query.events.handlers;
 
-import com.querydsl.core.types.dsl.BooleanExpression;
-import org.activiti.services.query.app.repository.EntityFinder;
-import org.activiti.services.query.app.repository.VariableRepository;
+import java.util.Optional;
+import org.activiti.engine.ActivitiException;
+import org.activiti.services.query.es.model.VariableES;
+import org.activiti.services.query.es.repository.VariableRepository;
 import org.activiti.services.query.events.VariableDeletedEvent;
-import org.activiti.services.query.model.QVariable;
-import org.activiti.services.query.model.Variable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProcessVariableDeletedHandler {
 
-    private final VariableRepository variableRepository;
+	private final VariableRepository variableRepository;
 
-    private final EntityFinder entityFinder;
+	@Autowired
+	public ProcessVariableDeletedHandler(VariableRepository variableRepository) {
+		this.variableRepository = variableRepository;
+	}
 
-    @Autowired
-    public ProcessVariableDeletedHandler(VariableRepository variableRepository,
-                                         EntityFinder entityFinder) {
-        this.variableRepository = variableRepository;
-        this.entityFinder = entityFinder;
-    }
+	public void handle(VariableDeletedEvent event) {
+		String variableName = event.getVariableName();
+		String processInstanceId = event.getProcessInstanceId();
 
-    public void handle(VariableDeletedEvent event) {
-        String variableName = event.getVariableName();
-        String processInstanceId = event.getProcessInstanceId();
-        BooleanExpression predicate = QVariable.variable.processInstanceId.eq(processInstanceId)
-                .and(
-                        QVariable.variable.name.eq(variableName)
-                );
-        Variable variable = entityFinder.findOne(variableRepository,
-                                            predicate,
-                                            "Unable to find variable with name '" + variableName + "' for process instance '" + processInstanceId + "'");
-        variableRepository.delete(variable);
-    }
+		Optional<VariableES> optional = variableRepository.findByProcessInstanceId(variableName, processInstanceId);
+
+		if (optional.isPresent()) {
+			VariableES variable = optional.get();
+			variableRepository.delete(variable);
+		} else {
+			throw new ActivitiException("Unable to find variable with name: " + variableName
+					+ " and processInstanceId: " + processInstanceId);
+		}
+
+	}
 }

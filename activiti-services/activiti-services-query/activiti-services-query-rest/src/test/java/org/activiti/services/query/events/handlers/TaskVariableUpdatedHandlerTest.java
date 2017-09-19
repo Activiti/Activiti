@@ -16,47 +16,43 @@
 
 package org.activiti.services.query.events.handlers;
 
-import com.querydsl.core.types.Predicate;
-import org.activiti.services.query.model.Variable;
+import org.activiti.services.query.es.model.VariableES;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TaskVariableUpdatedHandlerTest {
 
-    @InjectMocks
-    private TaskVariableUpdatedHandler handler;
+	@InjectMocks
+	private TaskVariableUpdatedHandler handler;
 
-    @Mock
-    private VariableUpdater variableUpdater;
+	@Mock
+	private VariableUpdater variableUpdater;
 
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+	}
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+	@Test
+	public void handleShouldUpdateVariableValue() throws Exception {
+		// given
+		String taskId = "10";
+		VariableES updatedVariable = new VariableES();
+		updatedVariable.setName("var");
+		updatedVariable.setType("string");
+		updatedVariable.setValue("content");
+		updatedVariable.setTaskId(taskId);
 
-    @Test
-    public void handleShouldUpdateVariableValue() throws Exception {
-        //given
-        String taskId = "10";
-        Variable updatedVariable = new Variable();
-        updatedVariable.setName("var");
-        updatedVariable.setType("string");
-        updatedVariable.setValue("content");
-        updatedVariable.setTaskId(taskId);
+		// when
+		handler.handle(updatedVariable);
 
-        //when
-        handler.handle(updatedVariable);
-
-        //then
-        verify(variableUpdater).update(eq(updatedVariable), any(Predicate.class), anyString());
-    }
+		// then
+		verify(variableUpdater).update(updatedVariable);
+	}
 
 }

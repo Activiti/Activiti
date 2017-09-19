@@ -31,27 +31,27 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueryEventHandlerContext {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(QueryEventHandlerContext.class);
+	private static Logger LOGGER = LoggerFactory.getLogger(QueryEventHandlerContext.class);
 
-    private Map<Class<? extends ProcessEngineEvent>, QueryEventHandler> handlers;
+	private Map<Class<? extends ProcessEngineEvent>, QueryEventHandler> handlers;
 
-    @Autowired
-    public QueryEventHandlerContext(Set<QueryEventHandler> handlers) {
-        this.handlers = handlers.stream().collect(Collectors.toMap(QueryEventHandler::getHandledEventClass,
-                                                                   Function.identity()));
-    }
+	@Autowired
+	public QueryEventHandlerContext(Set<QueryEventHandler> handlers) {
+		this.handlers = handlers.stream()
+				.collect(Collectors.toMap(QueryEventHandler::getHandledEventClass, Function.identity()));
+	}
 
-    public void handle(AbstractProcessEngineEvent[] events) {
-        for (AbstractProcessEngineEvent event : events) {
-            QueryEventHandler handler = handlers.get(event.getClass());
-            if (handler != null) {
-                LOGGER.debug("Handling event: " + handler.getHandledEventClass().getName());
-                handler.handle(event);
-            }
-        }
-    }
+	public void handle(AbstractProcessEngineEvent[] events) {
+		for (AbstractProcessEngineEvent event : events) {
+			QueryEventHandler handler = handlers.get(event.getClass());
+			if (handler != null) {
+				LOGGER.debug("Handling event: " + handler.getHandledEventClass().getName());
+				handler.handle(event);
+			}
+		}
+	}
 
-    protected Map<Class<? extends ProcessEngineEvent>, QueryEventHandler> getHandlers() {
-        return handlers;
-    }
+	protected Map<Class<? extends ProcessEngineEvent>, QueryEventHandler> getHandlers() {
+		return handlers;
+	}
 }

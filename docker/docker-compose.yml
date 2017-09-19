@@ -1,0 +1,21 @@
+rabbitmq:
+  image: rabbitmq:management
+  ports:
+    - "5672:5672"
+    - "15672:15672"
+activiti-sample:
+  image: activiti-sample:latest
+  ports:
+    - "8090:8090"
+  links:
+    - activiti-keycloak:activiti-keycloak
+    - rabbitmq:rabbitmq
+activiti-keycloak:
+  image: activiti-keycloak:latest
+  ports:
+    - "8080:8080"
+#elasticsearch:
+#  image: docker.elastic.co/elasticsearch/elasticsearch:5.4.1
+#  ports:
+#    - "9200:9200"
+#    - "9300:9300"

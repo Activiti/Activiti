@@ -26,12 +26,12 @@ import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapt
 @Configuration
 public class QueryRepositoryConfig extends RepositoryRestConfigurerAdapter {
 
-    @Override
-    public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
-        //by default the ids are not exposed the the REST API
-        config.exposeIdsFor(ProcessInstance.class);
-        config.exposeIdsFor(Task.class);
-        config.exposeIdsFor(Variable.class);
-    }
+	@Override
+	public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+		// by default the ids are not exposed the the REST API
+		config.exposeIdsFor(ProcessInstance.class);
+		config.exposeIdsFor(Task.class);
+		config.exposeIdsFor(Variable.class);
+	}
 
 }

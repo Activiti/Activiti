@@ -16,30 +16,22 @@
 
 package org.activiti.services.query.events;
 
-import org.activiti.services.query.model.ProcessInstance;
+import org.activiti.services.query.es.model.ProcessInstanceES;
 
 public class ProcessCompletedEvent extends AbstractProcessEngineEvent {
 
-    private ProcessInstance processInstance;
+	private ProcessInstanceES processInstance;
 
-    public ProcessCompletedEvent() {
-    }
+	public ProcessCompletedEvent() {
+	}
 
-    public ProcessCompletedEvent(Long timestamp,
-                                 String eventType,
-                                 String executionId,
-                                 String processDefinitionId,
-                                 String processInstanceId,
-                                 ProcessInstance processInstance) {
-        super(timestamp,
-              eventType,
-              executionId,
-              processDefinitionId,
-              processInstanceId);
-        this.processInstance = processInstance;
-    }
+	public ProcessCompletedEvent(Long timestamp, String eventType, String executionId, String processDefinitionId,
+			String processInstanceId, ProcessInstanceES processInstance) {
+		super(timestamp, eventType, executionId, processDefinitionId, processInstanceId);
+		this.processInstance = processInstance;
+	}
 
-    public ProcessInstance getProcessInstance() {
-        return processInstance;
-    }
+	public ProcessInstanceES getProcessInstance() {
+		return processInstance;
+	}
 }

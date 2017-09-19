@@ -19,7 +19,7 @@ package org.activiti.services.query.events.handlers;
 import java.util.Date;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.Variable;
+import org.activiti.services.query.es.model.VariableES;
 import org.activiti.services.query.events.VariableUpdatedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,38 +27,35 @@ import org.springframework.stereotype.Component;
 @Component
 public class VariableUpdatedEventHandler implements QueryEventHandler {
 
-    private ProcessVariableUpdateHandler processVariableUpdateHandler;
+	private ProcessVariableUpdateHandler processVariableUpdateHandler;
 
-    private TaskVariableUpdatedHandler taskVariableUpdatedHandler;
+	private TaskVariableUpdatedHandler taskVariableUpdatedHandler;
 
-    @Autowired
-    public VariableUpdatedEventHandler(ProcessVariableUpdateHandler processVariableUpdateHandler,
-                                       TaskVariableUpdatedHandler taskVariableUpdatedHandler) {
-        this.processVariableUpdateHandler = processVariableUpdateHandler;
-        this.taskVariableUpdatedHandler = taskVariableUpdatedHandler;
-    }
+	@Autowired
+	public VariableUpdatedEventHandler(ProcessVariableUpdateHandler processVariableUpdateHandler,
+			TaskVariableUpdatedHandler taskVariableUpdatedHandler) {
+		this.processVariableUpdateHandler = processVariableUpdateHandler;
+		this.taskVariableUpdatedHandler = taskVariableUpdatedHandler;
+	}
 
-    @Override
-    public void handle(ProcessEngineEvent event) {
-        VariableUpdatedEvent variableUpdatedEvent = (VariableUpdatedEvent) event;
-        Variable variable = new Variable(variableUpdatedEvent.getVariableType(),
-                                         variableUpdatedEvent.getVariableName(),
-                                         variableUpdatedEvent.getProcessInstanceId(),
-                                         variableUpdatedEvent.getTaskId(),
-                                         new Date(variableUpdatedEvent.getTimestamp()),
-                                         new Date(variableUpdatedEvent.getTimestamp()),
-                                         variableUpdatedEvent.getExecutionId(),
-                                         variableUpdatedEvent.getVariableValue());
-        if (variableUpdatedEvent.getTaskId() != null) {
-            taskVariableUpdatedHandler.handle(variable);
-        } else {
-            processVariableUpdateHandler.handle(variable);
-        }
+	@Override
+	public void handle(ProcessEngineEvent event) {
+		VariableUpdatedEvent variableUpdatedEvent = (VariableUpdatedEvent) event;
+		VariableES variable = new VariableES(variableUpdatedEvent.getVariableType(),
+				variableUpdatedEvent.getVariableName(), variableUpdatedEvent.getProcessInstanceId(),
+				variableUpdatedEvent.getTaskId(), new Date(variableUpdatedEvent.getTimestamp()),
+				new Date(variableUpdatedEvent.getTimestamp()), variableUpdatedEvent.getExecutionId(),
+				variableUpdatedEvent.getVariableValue());
+		if (variableUpdatedEvent.getTaskId() != null) {
+			taskVariableUpdatedHandler.handle(variable);
+		} else {
+			processVariableUpdateHandler.handle(variable);
+		}
 
-    }
+	}
 
-    @Override
-    public Class<? extends ProcessEngineEvent> getHandledEventClass() {
-        return VariableUpdatedEvent.class;
-    }
+	@Override
+	public Class<? extends ProcessEngineEvent> getHandledEventClass() {
+		return VariableUpdatedEvent.class;
+	}
 }

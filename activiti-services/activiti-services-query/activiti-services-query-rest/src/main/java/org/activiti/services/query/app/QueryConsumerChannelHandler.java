@@ -27,16 +27,16 @@ import org.springframework.stereotype.Component;
 @EnableBinding(QueryConsumerChannels.class)
 public class QueryConsumerChannelHandler {
 
-    private QueryEventHandlerContext eventHandlerContext;
+	private QueryEventHandlerContext eventHandlerContext;
 
-    @Autowired
-    public QueryConsumerChannelHandler(QueryEventHandlerContext eventHandlerContext) {
-        this.eventHandlerContext = eventHandlerContext;
-    }
+	@Autowired
+	public QueryConsumerChannelHandler(QueryEventHandlerContext eventHandlerContext) {
+		this.eventHandlerContext = eventHandlerContext;
+	}
 
-    @StreamListener(QueryConsumerChannels.QUERY_CONSUMER)
-    public synchronized void receive(AbstractProcessEngineEvent[] events) {
-        eventHandlerContext.handle(events);
-    }
+	@StreamListener(QueryConsumerChannels.QUERY_CONSUMER)
+	public synchronized void receive(AbstractProcessEngineEvent[] events) {
+		eventHandlerContext.handle(events);
+	}
 
 }

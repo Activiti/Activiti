@@ -16,30 +16,22 @@
 
 package org.activiti.services.query.events;
 
-import org.activiti.services.query.model.Task;
+import org.activiti.services.query.es.model.TaskES;
 
 public class TaskCreatedEvent extends AbstractProcessEngineEvent {
 
-    private Task task;
+	private TaskES task;
 
-    public TaskCreatedEvent() {
-    }
+	public TaskCreatedEvent() {
+	}
 
-    public TaskCreatedEvent(Long timestamp,
-                            String eventType,
-                            String executionId,
-                            String processDefinitionId,
-                            String processInstanceId,
-                            Task task) {
-        super(timestamp,
-              eventType,
-              executionId,
-              processDefinitionId,
-              processInstanceId);
-        this.task = task;
-    }
+	public TaskCreatedEvent(Long timestamp, String eventType, String executionId, String processDefinitionId,
+			String processInstanceId, TaskES task) {
+		super(timestamp, eventType, executionId, processDefinitionId, processInstanceId);
+		this.task = task;
+	}
 
-    public Task getTask() {
-        return task;
-    }
+	public TaskES getTask() {
+		return task;
+	}
 }

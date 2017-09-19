@@ -19,8 +19,8 @@ package org.activiti.services.query.events.handlers;
 import java.util.Date;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.Task;
-import org.activiti.services.query.app.repository.TaskRepository;
+import org.activiti.services.query.es.model.TaskES;
+import org.activiti.services.query.es.repository.TaskRepository;
 import org.activiti.services.query.events.TaskCreatedEvent;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,43 +33,39 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TaskCreatedEventHandlerTest {
 
-    @InjectMocks
-    private TaskCreatedEventHandler handler;
+	@InjectMocks
+	private TaskCreatedEventHandler handler;
 
-    @Mock
-    private TaskRepository taskRepository;
+	@Mock
+	private TaskRepository taskRepository;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+	}
 
-    @Test
-    public void handleShouldStoreNewTaskInstance() throws Exception {
-        //given
-        Task eventTask = mock(Task.class);
-        TaskCreatedEvent taskCreated = new TaskCreatedEvent(System.currentTimeMillis(),
-                                                            "taskCreated",
-                                                            "10",
-                                                            "100",
-                                                            "200",
-                                                            eventTask);
+	@Test
+	public void handleShouldStoreNewTaskInstance() throws Exception {
+		// given
+		TaskES eventTask = mock(TaskES.class);
+		TaskCreatedEvent taskCreated = new TaskCreatedEvent(System.currentTimeMillis(), "taskCreated", "10", "100",
+				"200", eventTask);
 
-        //when
-        handler.handle(taskCreated);
+		// when
+		handler.handle(taskCreated);
 
-        //then
-        verify(taskRepository).save(eventTask);
-        verify(eventTask).setStatus("CREATED");
-        verify(eventTask).setLastModified(any(Date.class));
-    }
+		// then
+		verify(taskRepository).save(eventTask);
+		verify(eventTask).setStatus("CREATED");
+		verify(eventTask).setLastModified(any(Date.class));
+	}
 
-    @Test
-    public void getHandledEventClassShouldReturnTaskCreatedEventClass() throws Exception {
-        //when
-        Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
+	@Test
+	public void getHandledEventClassShouldReturnTaskCreatedEventClass() throws Exception {
+		// when
+		Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
 
-        //then
-        assertThat(handledEventClass).isEqualTo(TaskCreatedEvent.class);
-    }
+		// then
+		assertThat(handledEventClass).isEqualTo(TaskCreatedEvent.class);
+	}
 }

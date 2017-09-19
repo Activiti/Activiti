@@ -16,16 +16,16 @@
 
 package org.activiti.services.query.rest.assembler;
 
-import org.activiti.services.query.model.Variable;
+import org.activiti.services.query.es.model.VariableES;
 import org.activiti.services.query.resource.VariableQueryResource;
 import org.springframework.hateoas.ResourceAssembler;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VariableQueryResourceAssembler implements ResourceAssembler<Variable, VariableQueryResource> {
+public class VariableQueryResourceAssembler implements ResourceAssembler<VariableES, VariableQueryResource> {
 
-    @Override
-    public VariableQueryResource toResource(Variable variable) {
-        return new VariableQueryResource(variable);
-    }
+	@Override
+	public VariableQueryResource toResource(VariableES variable) {
+		return new VariableQueryResource(variable);
+	}
 }

@@ -17,9 +17,9 @@
 package org.activiti.services.query.events.handlers;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.app.repository.VariableRepository;
+import org.activiti.services.query.es.repository.VariableRepository;
 import org.activiti.services.query.events.VariableCreatedEvent;
-import org.activiti.services.query.model.Variable;
+import org.activiti.services.query.es.model.VariableES;
 import org.activiti.test.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,57 +33,56 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class VariableCreatedEventHandlerTest {
 
-    @InjectMocks
-    private VariableCreatedEventHandler handler;
+	@InjectMocks
+	private VariableCreatedEventHandler handler;
 
-    @Mock
-    private VariableRepository variableRepository;
+	@Mock
+	private VariableRepository variableRepository;
 
-    @Before
-    public void setUp() throws Exception {
-        initMocks(this);
-    }
+	@Before
+	public void setUp() throws Exception {
+		initMocks(this);
+	}
 
-    @Test
-    public void handleShouldCreateAndStoreVariable() throws Exception {
-        //given
-        String executionId = "10";
-        long processInstanceId = 30L;
-        String taskId = "50";
-        String variableName = "var";
-        String variableType = String.class.getName();
-        VariableCreatedEvent event = new VariableCreatedEvent(System.currentTimeMillis(),
-                                                              "variableCreated",
-                                                              executionId,
-                                                              "20",
-                                                              String.valueOf(processInstanceId),
-                                                              variableName,
-                                                              "content",
-                                                              variableType,
-                                                              taskId);
+	@Test
+	public void handleShouldCreateAndStoreVariable() throws Exception {
+		// given
+		String executionId = "10";
+		long processInstanceId = 30L;
+		String taskId = "50";
+		String variableName = "var";
+		String variableType = String.class.getName();
+		VariableCreatedEvent event = new VariableCreatedEvent(System.currentTimeMillis(), "variableCreated",
+				executionId, "20", String.valueOf(processInstanceId), variableName, "content", variableType, taskId);
 
-        //when
-        handler.handle(event);
+		// when
+		handler.handle(event);
 
-        //then
-        ArgumentCaptor<Variable> captor = ArgumentCaptor.forClass(Variable.class);
-        verify(variableRepository).save(captor.capture());
+		// then
+		ArgumentCaptor<VariableES> captor = ArgumentCaptor.forClass(VariableES.class);
+		verify(variableRepository).save(captor.capture());
 
-        Variable variable = captor.getValue();
-        Assertions.assertThat(variable)
-                .hasExecutionId(executionId)
-                .hasProcessInstanceId(String.valueOf(processInstanceId))
-                .hasName(variableName)
-                .hasTaskId(taskId)
-                .hasType(variableType);
-    }
+		VariableES variable = captor.getValue();
+		assertThat(variable).isNotNull();
+		assertThat(variable.getExecutionId()).isEqualTo(executionId);
+		assertThat(variable.getName()).isEqualTo(variableName);
+		assertThat(variable.getTaskId()).isEqualTo(taskId);
+		assertThat(variable.getType()).isEqualTo(variableType);
 
-    @Test
-    public void getHandledEventClass() throws Exception {
-        //when
-        Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
+		// Assertions.assertThat(variable)
+		// .hasExecutionId(executionId)
+		// .hasProcessInstanceId(String.valueOf(processInstanceId))
+		// .hasName(variableName)
+		// .hasTaskId(taskId)
+		// .hasType(variableType);
+	}
 
-        //then
-        assertThat(handledEventClass).isEqualTo(VariableCreatedEvent.class);
-    }
+	@Test
+	public void getHandledEventClass() throws Exception {
+		// when
+		Class<? extends ProcessEngineEvent> handledEventClass = handler.getHandledEventClass();
+
+		// then
+		assertThat(handledEventClass).isEqualTo(VariableCreatedEvent.class);
+	}
 }

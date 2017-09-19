@@ -21,8 +21,8 @@ import java.util.Optional;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.Task;
-import org.activiti.services.query.app.repository.TaskRepository;
+import org.activiti.services.query.es.model.TaskES;
+import org.activiti.services.query.es.repository.TaskRepository;
 import org.activiti.services.query.events.TaskCompletedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,30 +30,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskCompletedEventHandler implements QueryEventHandler {
 
-    private final TaskRepository taskRepository;
+	private final TaskRepository taskRepository;
 
-    @Autowired
-    public TaskCompletedEventHandler(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
+	@Autowired
+	public TaskCompletedEventHandler(TaskRepository taskRepository) {
+		this.taskRepository = taskRepository;
+	}
 
-    @Override
-    public void handle(ProcessEngineEvent event) {
-        TaskCompletedEvent taskCompletedEvent = (TaskCompletedEvent) event;
-        Task eventTask = taskCompletedEvent.getTask();
-        Optional<Task> findResult = taskRepository.findById(eventTask.getId());
-        if (findResult.isPresent()) {
-            Task task = findResult.get();
-            task.setStatus("COMPLETED");
-            task.setLastModified(new Date(taskCompletedEvent.getTimestamp()));
-            taskRepository.save(task);
-        } else {
-            throw new ActivitiException("Unable to find task with id: " + eventTask.getId());
-        }
-    }
+	@Override
+	public void handle(ProcessEngineEvent event) {
+		TaskCompletedEvent taskCompletedEvent = (TaskCompletedEvent) event;
+		TaskES eventTask = taskCompletedEvent.getTask();
+		Optional<TaskES> findResult = taskRepository.findById(Long.parseLong(eventTask.getId()));
+		if (findResult.isPresent()) {
+			TaskES task = findResult.get();
+			task.setStatus("COMPLETED");
+			task.setLastModified(new Date(taskCompletedEvent.getTimestamp()));
+			taskRepository.save(task);
+		} else {
+			throw new ActivitiException("Unable to find task with id: " + eventTask.getId());
+		}
+	}
 
-    @Override
-    public Class<? extends ProcessEngineEvent> getHandledEventClass() {
-        return TaskCompletedEvent.class;
-    }
+	@Override
+	public Class<? extends ProcessEngineEvent> getHandledEventClass() {
+		return TaskCompletedEvent.class;
+	}
 }

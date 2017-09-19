@@ -16,14 +16,13 @@
 
 package org.activiti.services.query.resource;
 
-import org.activiti.services.query.model.Task;
+import org.activiti.services.query.es.model.TaskES;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 
+public class TaskQueryResource extends Resource<TaskES> {
 
-public class TaskQueryResource extends Resource<Task> {
-
-    public TaskQueryResource(Task content, Iterable<Link> links) {
-        super(content, links);
-    }
+	public TaskQueryResource(TaskES content, Iterable<Link> links) {
+		super(content, links);
+	}
 }
