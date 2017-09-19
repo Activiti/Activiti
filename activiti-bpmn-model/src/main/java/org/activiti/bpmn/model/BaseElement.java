@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class BaseElement implements HasExtensionAttributes {
@@ -24,9 +23,11 @@ public abstract class BaseElement implements HasExtensionAttributes {
   protected String id;
   protected int xmlRowNumber;
   protected int xmlColumnNumber;
-  protected Map<String, List<ExtensionElement>> extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
+  protected Map<String, List<ExtensionElement>> extensionElements =
+      new LinkedHashMap<String, List<ExtensionElement>>();
   /** extension attributes could be part of each element */
-  protected Map<String, List<ExtensionAttribute>> attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
+  protected Map<String, List<ExtensionAttribute>> attributes =
+      new LinkedHashMap<String, List<ExtensionAttribute>>();
 
   public String getId() {
     return id;
@@ -81,8 +82,8 @@ public abstract class BaseElement implements HasExtensionAttributes {
     List<ExtensionAttribute> attributes = getAttributes().get(name);
     if (attributes != null && !attributes.isEmpty()) {
       for (ExtensionAttribute attribute : attributes) {
-        if ((namespace == null && attribute.getNamespace() == null) || namespace.equals(attribute.getNamespace()))
-          return attribute.getValue();
+        if ((namespace == null && attribute.getNamespace() == null)
+            || namespace.equals(attribute.getNamespace())) return attribute.getValue();
       }
     }
     return null;
@@ -109,7 +110,8 @@ public abstract class BaseElement implements HasExtensionAttributes {
     setId(otherElement.getId());
 
     extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
-    if (otherElement.getExtensionElements() != null && !otherElement.getExtensionElements().isEmpty()) {
+    if (otherElement.getExtensionElements() != null
+        && !otherElement.getExtensionElements().isEmpty()) {
       for (String key : otherElement.getExtensionElements().keySet()) {
         List<ExtensionElement> otherElementList = otherElement.getExtensionElements().get(key);
         if (otherElementList != null && !otherElementList.isEmpty()) {
@@ -128,9 +130,10 @@ public abstract class BaseElement implements HasExtensionAttributes {
         List<ExtensionAttribute> otherAttributeList = otherElement.getAttributes().get(key);
         if (otherAttributeList != null && !otherAttributeList.isEmpty()) {
           List<ExtensionAttribute> attributeList = new ArrayList<ExtensionAttribute>();
-          for (ExtensionAttribute extensionAttribute : otherAttributeList) {
-            attributeList.add(extensionAttribute.clone());
-          }
+          otherAttributeList.forEach(
+              extensionAttribute -> {
+                attributeList.add(extensionAttribute.clone());
+              });
           attributes.put(key, attributeList);
         }
       }

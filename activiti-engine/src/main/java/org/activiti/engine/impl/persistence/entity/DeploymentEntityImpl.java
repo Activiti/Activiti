@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,15 +19,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 
-/**
-
-
- */
-public class DeploymentEntityImpl extends AbstractEntityNoRevision implements DeploymentEntity, Serializable {
+/** */
+public class DeploymentEntityImpl extends AbstractEntityNoRevision
+    implements DeploymentEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -41,15 +38,14 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
 
   // Backwards compatibility
   protected String engineVersion;
-  
+
   /**
-   * Will only be used during actual deployment to pass deployed artifacts (eg process definitions). Will be null otherwise.
+   * Will only be used during actual deployment to pass deployed artifacts (eg process definitions).
+   * Will be null otherwise.
    */
   protected Map<Class<?>, List<Object>> deployedArtifacts;
-  
-  public DeploymentEntityImpl() {
-    
-  }
+
+  public DeploymentEntityImpl() {}
 
   public void addResource(ResourceEntity resource) {
     if (resources == null) {
@@ -59,14 +55,16 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   }
 
   // lazy loading ///////////////////////////////////////////////////////////////
-  
+
   public Map<String, ResourceEntity> getResources() {
     if (resources == null && id != null) {
-      List<ResourceEntity> resourcesList = Context.getCommandContext().getResourceEntityManager().findResourcesByDeploymentId(id);
+      List<ResourceEntity> resourcesList =
+          Context.getCommandContext().getResourceEntityManager().findResourcesByDeploymentId(id);
       resources = new HashMap<String, ResourceEntity>();
-      for (ResourceEntity resource : resourcesList) {
-        resources.put(resource.getName(), resource);
-      }
+      resourcesList.forEach(
+          resource -> {
+            resources.put(resource.getName(), resource);
+          });
     }
     return resources;
   }
@@ -80,7 +78,7 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   }
 
   // Deployed artifacts manipulation ////////////////////////////////////////////
-  
+
   public void addDeployedArtifact(Object deployedArtifact) {
     if (deployedArtifacts == null) {
       deployedArtifacts = new HashMap<Class<?>, List<Object>>();
@@ -123,7 +121,7 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   public void setCategory(String category) {
     this.category = category;
   }
-  
+
   public String getKey() {
     return key;
   }
@@ -174,5 +172,4 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   public String toString() {
     return "DeploymentEntity[id=" + id + ", name=" + name + "]";
   }
-
 }

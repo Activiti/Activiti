@@ -15,7 +15,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CallActivity;
@@ -34,25 +33,27 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
-
- */
+/** */
 public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
-  public ParallelMultiInstanceBehavior(Activity activity, AbstractBpmnActivityBehavior originalActivityBehavior) {
+  public ParallelMultiInstanceBehavior(
+      Activity activity, AbstractBpmnActivityBehavior originalActivityBehavior) {
     super(activity, originalActivityBehavior);
   }
 
   /**
-   * Handles the parallel case of spawning the instances. Will create child executions accordingly for every instance needed.
+   * Handles the parallel case of spawning the instances. Will create child executions accordingly
+   * for every instance needed.
    */
   protected int createInstances(DelegateExecution execution) {
     int nrOfInstances = resolveNrOfInstances(execution);
     if (nrOfInstances < 0) {
-      throw new ActivitiIllegalArgumentException("Invalid number of instances: must be non-negative integer value" + ", but was " + nrOfInstances);
+      throw new ActivitiIllegalArgumentException(
+          "Invalid number of instances: must be non-negative integer value"
+              + ", but was "
+              + nrOfInstances);
     }
 
     execution.setMultiInstanceRoot(true);
@@ -63,14 +64,17 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
 
     List<DelegateExecution> concurrentExecutions = new ArrayList<DelegateExecution>();
     for (int loopCounter = 0; loopCounter < nrOfInstances; loopCounter++) {
-      DelegateExecution concurrentExecution = Context.getCommandContext().getExecutionEntityManager()
-          .createChildExecution((ExecutionEntity) execution);
+      DelegateExecution concurrentExecution =
+          Context.getCommandContext()
+              .getExecutionEntityManager()
+              .createChildExecution((ExecutionEntity) execution);
       concurrentExecution.setCurrentFlowElement(activity);
       concurrentExecution.setActive(true);
       concurrentExecution.setScope(false);
 
       concurrentExecutions.add(concurrentExecution);
-      logLoopDetails(concurrentExecution, "initialized", loopCounter, 0, nrOfInstances, nrOfInstances);
+      logLoopDetails(
+          concurrentExecution, "initialized", loopCounter, 0, nrOfInstances, nrOfInstances);
     }
 
     // Before the activities are executed, all executions MUST be created up front
@@ -80,16 +84,21 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       DelegateExecution concurrentExecution = concurrentExecutions.get(loopCounter);
       // executions can be inactive, if instances are all automatics
       // (no-waitstate) and completionCondition has been met in the meantime
-      if (concurrentExecution.isActive() && !concurrentExecution.isEnded() && concurrentExecution.getParent().isActive() && !concurrentExecution.getParent().isEnded()) {
+      if (concurrentExecution.isActive()
+          && !concurrentExecution.isEnded()
+          && concurrentExecution.getParent().isActive()
+          && !concurrentExecution.getParent().isEnded()) {
         setLoopVariable(concurrentExecution, getCollectionElementIndexVariable(), loopCounter);
         executeOriginalBehavior(concurrentExecution, loopCounter);
       }
     }
 
     // See ACT-1586: ExecutionQuery returns wrong results when using multi
-    // instance on a receive task The parent execution must be set to false, so it wouldn't show up in
+    // instance on a receive task The parent execution must be set to false, so it wouldn't show up
+    // in
     // the execution query when using .activityId(something). Do not we cannot nullify the
-    // activityId (that would have been a better solution), as it would break boundary event behavior.
+    // activityId (that would have been a better solution), as it would break boundary event
+    // behavior.
     if (!concurrentExecutions.isEmpty()) {
       ExecutionEntity executionEntity = (ExecutionEntity) execution;
       executionEntity.setActive(false);
@@ -99,7 +108,9 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
   }
 
   /**
-   * Called when the wrapped {@link ActivityBehavior} calls the {@link AbstractBpmnActivityBehavior#leave(ActivityExecution)} method. Handles the completion of one of the parallel instances
+   * Called when the wrapped {@link ActivityBehavior} calls the {@link
+   * AbstractBpmnActivityBehavior#leave(ActivityExecution)} method. Handles the completion of one of
+   * the parallel instances
    */
   public void leave(DelegateExecution execution) {
 
@@ -117,7 +128,9 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
 
-    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution, null);
+    Context.getCommandContext()
+        .getHistoryManager()
+        .recordActivityEnd((ExecutionEntity) execution, null);
     callActivityEndListeners(execution);
 
     if (zeroNrOfInstances) {
@@ -130,9 +143,15 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       setLoopVariable(miRootExecution, NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
     }
 
-    //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);
+    // executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);
 
-    logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
+    logLoopDetails(
+        execution,
+        "instance completed",
+        loopCounter,
+        nrOfCompletedInstances,
+        nrOfActiveInstances,
+        nrOfInstances);
 
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
@@ -141,7 +160,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       executionEntity.inactivate();
       lockFirstParentScope(executionEntity);
 
-      if (nrOfCompletedInstances >= nrOfInstances || completionConditionSatisfied(execution.getParent())) {
+      if (nrOfCompletedInstances >= nrOfInstances
+          || completionConditionSatisfied(execution.getParent())) {
 
         ExecutionEntity executionToUse = null;
         if (nrOfInstances > 0) {
@@ -161,8 +181,9 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
               Activity subActivity = (Activity) subElement;
               if (CollectionUtil.isNotEmpty(subActivity.getBoundaryEvents())) {
                 for (BoundaryEvent boundaryEvent : subActivity.getBoundaryEvents()) {
-                  if (CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) &&
-                      boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+                  if (CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions())
+                      && boundaryEvent.getEventDefinitions().get(0)
+                          instanceof CompensateEventDefinition) {
 
                     hasCompensation = true;
                     break;
@@ -178,30 +199,40 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         }
 
         if (activity instanceof CallActivity) {
-          ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+          ExecutionEntityManager executionEntityManager =
+              Context.getCommandContext().getExecutionEntityManager();
           if (executionToUse != null) {
             List<String> callActivityExecutionIds = new ArrayList<String>();
 
             // Find all execution entities that are at the call activity
-            List<ExecutionEntity> childExecutions = executionEntityManager.collectChildren(executionToUse);
+            List<ExecutionEntity> childExecutions =
+                executionEntityManager.collectChildren(executionToUse);
             if (childExecutions != null) {
-              for (ExecutionEntity childExecution : childExecutions) {
-                if (activity.getId().equals(childExecution.getCurrentActivityId())) {
-                  callActivityExecutionIds.add(childExecution.getId());
-                }
-              }
+              childExecutions
+                  .stream()
+                  .filter(
+                      childExecution ->
+                          activity.getId().equals(childExecution.getCurrentActivityId()))
+                  .forEach(
+                      childExecution -> {
+                        callActivityExecutionIds.add(childExecution.getId());
+                      });
 
-              // Now all call activity executions have been collected, loop again and check which should be removed
-              for (int i=childExecutions.size()-1; i>=0; i--) {
+              // Now all call activity executions have been collected, loop again and check which
+              // should be removed
+              for (int i = childExecutions.size() - 1; i >= 0; i--) {
                 ExecutionEntity childExecution = childExecutions.get(i);
                 if (StringUtils.isNotEmpty(childExecution.getSuperExecutionId())
                     && callActivityExecutionIds.contains(childExecution.getSuperExecutionId())) {
 
-                  executionEntityManager.deleteProcessInstanceExecutionEntity(childExecution.getId(), activity.getId(),
-                      "call activity completion condition met", true, false);
+                  executionEntityManager.deleteProcessInstanceExecutionEntity(
+                      childExecution.getId(),
+                      activity.getId(),
+                      "call activity completion condition met",
+                      true,
+                      false);
                 }
               }
-
             }
           }
         }
@@ -222,7 +253,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
 
   protected void lockFirstParentScope(DelegateExecution execution) {
 
-    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+    ExecutionEntityManager executionEntityManager =
+        Context.getCommandContext().getExecutionEntityManager();
 
     boolean found = false;
     ExecutionEntity parentScopeExecution = null;
@@ -239,19 +271,21 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
   }
 
   // TODO: can the ExecutionManager.deleteChildExecution not be used?
-  protected void deleteChildExecutions(ExecutionEntity parentExecution, boolean deleteExecution, CommandContext commandContext) {
+  protected void deleteChildExecutions(
+      ExecutionEntity parentExecution, boolean deleteExecution, CommandContext commandContext) {
     // Delete all child executions
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-    Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
+    Collection<ExecutionEntity> childExecutions =
+        executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
     if (CollectionUtil.isNotEmpty(childExecutions)) {
-      for (ExecutionEntity childExecution : childExecutions) {
-        deleteChildExecutions(childExecution, true, commandContext);
-      }
+      childExecutions.forEach(
+          childExecution -> {
+            deleteChildExecutions(childExecution, true, commandContext);
+          });
     }
 
     if (deleteExecution) {
       executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
     }
   }
-
 }

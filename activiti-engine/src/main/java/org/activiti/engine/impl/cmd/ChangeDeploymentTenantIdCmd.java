@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,7 +14,6 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
@@ -25,9 +24,7 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 
-/**
-
- */
+/** */
 public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -47,43 +44,66 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
 
     // Update all entities
 
-    DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findById(deploymentId);
+    DeploymentEntity deployment =
+        commandContext.getDeploymentEntityManager().findById(deploymentId);
     if (deployment == null) {
-      throw new ActivitiObjectNotFoundException("Could not find deployment with id " + deploymentId, Deployment.class);
+      throw new ActivitiObjectNotFoundException(
+          "Could not find deployment with id " + deploymentId, Deployment.class);
     }
-    
-    if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled() && 
-        Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(deployment.getEngineVersion())) {
-      
-      commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().changeDeploymentTenantId(deploymentId, newTenantId);
+
+    if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled()
+        && Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(
+            deployment.getEngineVersion())) {
+
+      commandContext
+          .getProcessEngineConfiguration()
+          .getActiviti5CompatibilityHandler()
+          .changeDeploymentTenantId(deploymentId, newTenantId);
       return null;
     }
-    
+
     String oldTenantId = deployment.getTenantId();
     deployment.setTenantId(newTenantId);
 
     // Doing process instances, executions and tasks with direct SQL updates
     // (otherwise would not be performant)
-    commandContext.getProcessDefinitionEntityManager().updateProcessDefinitionTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getExecutionEntityManager().updateExecutionTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getTaskEntityManager().updateTaskTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getProcessDefinitionEntityManager()
+        .updateProcessDefinitionTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getExecutionEntityManager()
+        .updateExecutionTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getTaskEntityManager()
+        .updateTaskTenantIdForDeployment(deploymentId, newTenantId);
     commandContext.getJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getTimerJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getSuspendedJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getDeadLetterJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
-    commandContext.getEventSubscriptionEntityManager().updateEventSubscriptionTenantId(oldTenantId, newTenantId);
+    commandContext
+        .getTimerJobEntityManager()
+        .updateJobTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getSuspendedJobEntityManager()
+        .updateJobTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getDeadLetterJobEntityManager()
+        .updateJobTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext
+        .getEventSubscriptionEntityManager()
+        .updateEventSubscriptionTenantId(oldTenantId, newTenantId);
 
     // Doing process definitions in memory, cause we need to clear the process definition cache
-    List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl().deploymentId(deploymentId).list();
-    for (ProcessDefinition processDefinition : processDefinitions) {
-      commandContext.getProcessEngineConfiguration().getProcessDefinitionCache().remove(processDefinition.getId());
-    }
+    List<ProcessDefinition> processDefinitions =
+        new ProcessDefinitionQueryImpl().deploymentId(deploymentId).list();
+    processDefinitions.forEach(
+        processDefinition -> {
+          commandContext
+              .getProcessEngineConfiguration()
+              .getProcessDefinitionCache()
+              .remove(processDefinition.getId());
+        });
 
     // Clear process definition cache
     commandContext.getProcessEngineConfiguration().getProcessDefinitionCache().clear();
 
     return null;
-
   }
-
 }

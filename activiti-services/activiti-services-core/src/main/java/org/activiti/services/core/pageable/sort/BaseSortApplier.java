@@ -21,50 +21,54 @@ import org.activiti.engine.query.QueryProperty;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-/**
-
- */
+/** */
 public abstract class BaseSortApplier<T extends Query<?, ?>> implements SortApplier<T> {
 
-    @Override
-    public void applySort(T query, Pageable pageable) {
-        if (pageable.getSort() != null && pageable.getSort() != Sort.unsorted()) {
-            applyPageableSort(query, pageable.getSort());
-        } else {
-            applyDefaultSort(query);
-        }
+  @Override
+  public void applySort(T query, Pageable pageable) {
+    if (pageable.getSort() != null && pageable.getSort() != Sort.unsorted()) {
+      applyPageableSort(query, pageable.getSort());
+    } else {
+      applyDefaultSort(query);
     }
+  }
 
-    protected abstract void applyDefaultSort(T query);
+  protected abstract void applyDefaultSort(T query);
 
-    private void applyPageableSort(T query, Sort sort) {
-        for (Sort.Order order : sort) {
-            applyOrder(query, order);
-            applyDirection(query, order.getDirection());
-        }
+  private void applyPageableSort(T query, Sort sort) {
+    sort.stream()
+        .map(
+            order -> {
+              applyOrder(query, order);
+              return order;
+            })
+        .forEach(
+            order -> {
+              applyDirection(query, order.getDirection());
+            });
+  }
+
+  private void applyOrder(T query, Sort.Order order) {
+    QueryProperty property = getOrderByProperty(order);
+    if (property != null) {
+      query.orderBy(property);
+    } else {
+      throw new ActivitiIllegalArgumentException(
+          "The property '" + order.getProperty() + "' cannot be used to sort the result.");
     }
+  }
 
-    private void applyOrder(T query, Sort.Order order) {
-        QueryProperty property = getOrderByProperty(order);
-        if (property != null) {
-            query.orderBy(property);
-        } else {
-            throw new ActivitiIllegalArgumentException("The property '" + order.getProperty() + "' cannot be used to sort the result.");
-        }
+  protected abstract QueryProperty getOrderByProperty(Sort.Order order);
+
+  private void applyDirection(T query, Sort.Direction direction) {
+    switch (direction) {
+      case ASC:
+        query.asc();
+        break;
+
+      case DESC:
+        query.desc();
+        break;
     }
-
-    protected abstract QueryProperty getOrderByProperty(Sort.Order order);
-
-    private void applyDirection(T query, Sort.Direction direction) {
-        switch (direction) {
-
-            case ASC:
-                query.asc();
-                break;
-
-            case DESC:
-                query.desc();
-                break;
-        }
-    }
+  }
 }

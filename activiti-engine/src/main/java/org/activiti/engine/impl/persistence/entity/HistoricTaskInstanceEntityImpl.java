@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,16 +17,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 
-/**
-
-
- */
-public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityImpl implements HistoricTaskInstanceEntity, BulkDeleteable {
+/** */
+public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityImpl
+    implements HistoricTaskInstanceEntity, BulkDeleteable {
 
   private static final long serialVersionUID = 1L;
 
@@ -47,9 +44,7 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
-  public HistoricTaskInstanceEntityImpl() {
-    
-  }
+  public HistoricTaskInstanceEntityImpl() {}
 
   public HistoricTaskInstanceEntityImpl(TaskEntity task, ExecutionEntity execution) {
     this.id = task.getId();
@@ -105,7 +100,7 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
   }
 
   // getters and setters ////////////////////////////////////////////////////////
-  
+
   public String getExecutionId() {
     return executionId;
   }
@@ -121,14 +116,15 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
       return name;
     }
   }
+
   public void setName(String name) {
     this.name = name;
   }
-  
+
   public void setLocalizedName(String name) {
     this.localizedName = name;
   }
-  
+
   public String getDescription() {
     if (localizedDescription != null && localizedDescription.length() > 0) {
       return localizedDescription;
@@ -136,11 +132,11 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
       return description;
     }
   }
-  
+
   public void setDescription(String description) {
     this.description = description;
   }
-  
+
   public void setLocalizedDescription(String description) {
     this.localizedDescription = description;
   }
@@ -163,7 +159,8 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
 
   @Override
   public Date getCreateTime() {
-    return getStartTime(); // For backwards compatible reason implemented with createTime and startTime
+    return getStartTime(); // For backwards compatible reason implemented with createTime and
+                           // startTime
   }
 
   public String getFormKey() {
@@ -244,11 +241,15 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
   public Map<String, Object> getTaskLocalVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
-      for (HistoricVariableInstanceEntity variableInstance : queryVariables) {
-        if (variableInstance.getId() != null && variableInstance.getTaskId() != null) {
-          variables.put(variableInstance.getName(), variableInstance.getValue());
-        }
-      }
+      queryVariables
+          .stream()
+          .filter(
+              variableInstance ->
+                  variableInstance.getId() != null && variableInstance.getTaskId() != null)
+          .forEach(
+              variableInstance -> {
+                variables.put(variableInstance.getName(), variableInstance.getValue());
+              });
     }
     return variables;
   }
@@ -256,11 +257,15 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
   public Map<String, Object> getProcessVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
-      for (HistoricVariableInstanceEntity variableInstance : queryVariables) {
-        if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
-          variables.put(variableInstance.getName(), variableInstance.getValue());
-        }
-      }
+      queryVariables
+          .stream()
+          .filter(
+              variableInstance ->
+                  variableInstance.getId() != null && variableInstance.getTaskId() == null)
+          .forEach(
+              variableInstance -> {
+                variables.put(variableInstance.getName(), variableInstance.getValue());
+              });
     }
     return variables;
   }
@@ -275,5 +280,4 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
   public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
-  
 }
