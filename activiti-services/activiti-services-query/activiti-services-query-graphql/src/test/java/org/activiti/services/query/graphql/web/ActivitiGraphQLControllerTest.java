@@ -49,13 +49,13 @@ public class ActivitiGraphQLControllerTest {
     static class Config { }
     
 	@Autowired 
-	MockMvc			mockmvc;
+	private MockMvc			mockmvc;
 	
 	@MockBean
-	GraphQLJpaExecutor	executor;
+	private GraphQLJpaExecutor	executor;
 	
 	@Autowired
-	ObjectMapper	mapper;
+	private ObjectMapper	mapper;
 
 	private void ok(final GraphQLQueryRequest query) throws Exception, JsonProcessingException {
 		perform(mapper.writeValueAsString(query)).andExpect(status().isOk());
@@ -87,12 +87,13 @@ public class ActivitiGraphQLControllerTest {
 		GraphQLQueryRequest query = new GraphQLQueryRequest("query TasksQuery($title: String!){Tasks(where:{name: {EQ: $title}}){select{id name}}}");
 		query.setVariables("{\"title\":\"value\"}");
 		
+		Map<String, Object> targetVariables = new HashMap<>();
+		targetVariables.put("title", "value"); 
+		
 		ok(query);
 		verify(executor).execute(
-		    query.getQuery(), 
-		    new HashMap<String, Object>() {{
-		        put("title", "value"); 
-		    }}
+		    query.getQuery(),
+		    targetVariables
 		 );
 	}
 

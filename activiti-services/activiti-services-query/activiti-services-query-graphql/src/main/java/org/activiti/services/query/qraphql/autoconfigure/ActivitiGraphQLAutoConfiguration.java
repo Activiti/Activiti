@@ -53,7 +53,7 @@ public class ActivitiGraphQLAutoConfiguration {
     static class DefaultActivitiGraphQLJpaConfiguration implements ImportAware  {
         
         @Autowired
-        ActivitiGraphQLSchemaProperties properties;
+        private ActivitiGraphQLSchemaProperties properties;
 
         @Bean
         @ConditionalOnMissingBean(GraphQLExecutor.class)

@@ -24,11 +24,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.introproventures.graphql.jpa.query.annotation.GraphQLDescription;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 @GraphQLDescription("Process Instance Entity Model")
 
@@ -54,7 +54,7 @@ public class ProcessInstance {
 
     @GraphQLDescription("Associated tasks entities")
     @OneToMany(mappedBy="processInstance")
-    Set<Task> tasks;     
+    private Set<Task> tasks;     
     
     public ProcessInstance() {
     }

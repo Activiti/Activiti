@@ -46,7 +46,6 @@ import graphql.GraphQLError;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ActivitiGraphQLControllerIT {
 	private static final String	TASK_NAME	= "task1";
-    private static final String TASK_ID   = "1";
     
     @SpringBootApplication
     @EnableActivitiGraphQLQueryService
@@ -55,7 +54,7 @@ public class ActivitiGraphQLControllerIT {
     }
     
 	@Autowired
-	TestRestTemplate			rest;
+	private TestRestTemplate			rest;
 
 	@Test
 	public void testGraphql() {
@@ -116,9 +115,9 @@ public class ActivitiGraphQLControllerIT {
 }
 
 class Result implements ExecutionResult {
-    Map<String, Object> data;
-    List<GraphQLError> errors;
-    Map<Object, Object> extensions;
+    private Map<String, Object> data;
+    private List<GraphQLError> errors;
+    private Map<Object, Object> extensions;
 
     /**
      * Default

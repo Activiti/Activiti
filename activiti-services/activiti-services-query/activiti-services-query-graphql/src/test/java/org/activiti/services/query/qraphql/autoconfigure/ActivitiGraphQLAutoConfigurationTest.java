@@ -17,13 +17,11 @@ package org.activiti.services.query.qraphql.autoconfigure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.activiti.services.query.model.ProcessInstance;
 import org.activiti.services.query.qraphql.web.ActivitiGraphQLController;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -37,21 +35,21 @@ import com.introproventures.graphql.jpa.query.schema.impl.GraphQLJpaSchemaBuilde
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ActivitiGraphQLAutoConfigurationTest {
 
+    @Autowired(required=false)
+    private ActivitiGraphQLSchemaProperties  graphQLProperties;
+
+    @Autowired(required=false)
+    private GraphQLExecutor graphQLExecutor;
+
+    @Autowired(required=false)
+    private GraphQLSchemaBuilder graphQLSchemaBuilder;
+
+    @Autowired(required=false)
+    private ActivitiGraphQLController graphQLController;
+
     @SpringBootApplication
     static class Application {
     }
-    
-    @Autowired(required=false)
-    ActivitiGraphQLSchemaProperties  graphQLProperties;
-
-    @Autowired(required=false)
-    GraphQLExecutor graphQLExecutor;
-
-    @Autowired(required=false)
-    GraphQLSchemaBuilder graphQLSchemaBuilder;
-
-    @Autowired(required=false)
-    ActivitiGraphQLController graphQLController;
     
     @Test
     public void contextIsAutoConfigured() {

@@ -38,16 +38,16 @@ import graphql.schema.GraphQLSchema;
 )
 public class ActivitiGraphQLSchemaBuildTest {
 
+    @Autowired
+    private GraphQLJpaSchemaBuilder builder;
+
     @SpringBootApplication
     @EnableActivitiGraphQLQueryService
     static class TestConfiguration {
     }
     
-    @Autowired
-    private GraphQLJpaSchemaBuilder builder;
-
     @Before
-    public void setup() {
+    public void setUp() {
     }
 
     @Test

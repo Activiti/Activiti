@@ -30,13 +30,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.introproventures.graphql.jpa.query.annotation.GraphQLDescription;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 @GraphQLDescription("Task Instance Entity Model")
 
@@ -83,7 +83,7 @@ public class Task implements Serializable {
         @JoinColumn(name="processInstanceId", referencedColumnName="processInstanceId"),
         @JoinColumn(name="taskId", referencedColumnName="id")
     })
-    Set<Variable> variables;    
+    private Set<Variable> variables;    
     
     public Task() {
     }
