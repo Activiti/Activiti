@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <version>7-201708-EA</version>
+    <version>7-201709-EA-SNAPSHOT</version>
   </parent>
 
   <dependencies>
