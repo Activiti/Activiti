@@ -125,6 +125,11 @@
       </dependency>
       <dependency>
         <groupId>org.activiti.cloud</groupId>
+        <artifactId>activiti-cloud-starter-audit-mongo</artifactId>
+        <version>${version.activiti.cloud}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.cloud</groupId>
         <artifactId>activiti-cloud-starter-query</artifactId>
         <version>${project.version}</version>
       </dependency>

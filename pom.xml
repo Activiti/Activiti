@@ -87,6 +87,7 @@
     <resteasy.version>3.0.21.Final</resteasy.version>
     <querydsl.version>4.1.4</querydsl.version>
     <batik.version>1.7</batik.version>
+    <fongo.version>2.1.0</fongo.version>
 
     <!--keycloak snapshot that was used to build boot2 adapter
     the original snapshot doesn't contain the boot2 adapter, just this particular build
@@ -622,6 +623,12 @@
         <version>${btm.version}</version>
         <scope>test</scope>
       </dependency>
+     <dependency>
+      <groupId>com.github.fakemongo</groupId>
+      <artifactId>fongo</artifactId>
+      <version>${fongo.version}</version>
+      <scope>test</scope>
+    </dependency>
     </dependencies>
   </dependencyManagement>
 
