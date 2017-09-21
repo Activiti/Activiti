@@ -30,7 +30,7 @@
   </build>
 
   <properties>
-    <spring.boot.version>2.0.0.M2</spring.boot.version>
+    <spring.boot.version>2.0.0.M3</spring.boot.version>
   </properties>
 
   <repositories>
@@ -57,10 +57,7 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-    	<groupId>org.springframework.hateoas</groupId>
-    	<artifactId>spring-hateoas</artifactId>
+      <version>4.12</version>
     </dependency>
     <dependency>
     	<groupId>org.assertj</groupId>
@@ -74,11 +71,8 @@
     </dependency>
     <dependency>
     	<groupId>org.springframework.boot</groupId>
-    	<artifactId>spring-boot-test</artifactId>
-    </dependency>
-    <dependency>
-    	<groupId>org.springframework.boot</groupId>
     	<artifactId>spring-boot-starter-web</artifactId>
+      <version>${spring.boot.version}</version>
     </dependency>
   </dependencies>
 

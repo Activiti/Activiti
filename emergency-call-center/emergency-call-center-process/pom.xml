@@ -20,7 +20,8 @@
     <dependency>
     	<groupId>org.activiti</groupId>
     	<artifactId>activiti-bpmn-converter</artifactId>
-    	</dependency>
+      <version>6.0.0</version>
+    </dependency>
     <dependency>
     	<groupId>org.activiti</groupId>
     	<artifactId>activiti-image-generator</artifactId>
@@ -40,15 +41,18 @@
     	<groupId>junit</groupId>
     	<artifactId>junit</artifactId>
     	<scope>test</scope>
-    	</dependency>
+      <version>4.12</version>
+    </dependency>
     <dependency>
     	<groupId>com.h2database</groupId>
     	<artifactId>h2</artifactId>
     	<scope>runtime</scope>
+      <version>1.4.193</version>
     </dependency>
     <dependency>
     	<groupId>org.springframework</groupId>
     	<artifactId>spring-web</artifactId>
+      <version>4.3.7.RELEASE</version>
     </dependency>
   </dependencies>
 

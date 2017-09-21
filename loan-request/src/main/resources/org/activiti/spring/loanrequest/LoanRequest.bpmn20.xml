@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="LoanRequestProcess" name="Process creating and handling loan request">
+        <startEvent id="theStart"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="createLoanRequest"/>
+
+        <serviceTask id="createLoanRequest" name="Create loan request"
+                     activiti:expression="${loanRequestBean.newLoanRequest(customerName, amount)}"
+                     activiti:resultVariable="loanRequest"/>
+        <sequenceFlow id="flow2" sourceRef="createLoanRequest" targetRef="approveTask"/>
+
+        <userTask id="approveTask" name="Approve request"/>
+        <sequenceFlow id="flow3" sourceRef="approveTask" targetRef="approveOrDissaprove"/>
+
+        <serviceTask id="approveOrDissaprove" name="Store decision"
+                     activiti:expression="${loanRequest.setApproved(approvedByManager)}"/>
+        <sequenceFlow id="flow4" sourceRef="approveOrDissaprove" targetRef="exclusiveGw"/>
+
+        <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway approval"/>
+        <sequenceFlow id="endFlow1" sourceRef="exclusiveGw" targetRef="theEnd">
+            <conditionExpression xsi:type="tFormalExpression">${loanRequest.approved}</conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="endFlow2" sourceRef="exclusiveGw" targetRef="sendRejectionLetter">
+            <conditionExpression xsi:type="tFormalExpression">${!loanRequest.approved}</conditionExpression>
+        </sequenceFlow>
+
+        <userTask id="sendRejectionLetter" name="Send rejection letter"/>
+        <sequenceFlow id="flow5" sourceRef="sendRejectionLetter" targetRef="theOtherEnd"/>
+
+        <endEvent id="theEnd"/>
+        <endEvent id="theOtherEnd"/>
+    </process>
+
+</definitions>
