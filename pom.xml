@@ -6,7 +6,7 @@
   <groupId>org.activiti</groupId>
   <artifactId>activiti-examples-root</artifactId>
   <packaging>pom</packaging>
-  <version>7-201708-EA</version>
+  <version>7-201709-EA-SNAPSHOT</version>
 
   <properties>
     <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
@@ -22,7 +22,7 @@
     <url>https://github.com/Activiti/activiti-examples</url>
     <connection>scm:git:https://github.com/Activiti/activiti-examples.git</connection>
     <developerConnection>scm:git:https://github.com/Activiti/activiti-examples.git</developerConnection>
-    <tag>activiti-7-201708-EA</tag>
+    <tag>HEAD</tag>
   </scm>
 
 
