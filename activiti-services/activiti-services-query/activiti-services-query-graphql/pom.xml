@@ -28,7 +28,7 @@
         <dependency>
             <groupId>com.github.introproventures.graphql-jpa-query</groupId>
             <artifactId>graphql-jpa-query-schema</artifactId>
-            <version>v0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
 
         <dependency>
