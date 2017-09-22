@@ -4,13 +4,13 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7-201709-EA-SNAPSHOT</version>
+    <version>7-201708HOTFIX-EA</version>
   </parent>
   <name>Activiti</name>
 
   <description>BPM and workflow engine</description>
   <artifactId>activiti-root</artifactId>
-  <version>7-201709-EA-SNAPSHOT</version>
+  <version>7-201708HOTFIX-EA</version>
   <packaging>pom</packaging>
 
 
@@ -103,7 +103,7 @@
     <url>https://github.com/Activiti/Activiti</url>
     <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
     <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>activiti-7-201708HOTFIX-EA</tag>
   </scm>
   <developers>
     <developer>
