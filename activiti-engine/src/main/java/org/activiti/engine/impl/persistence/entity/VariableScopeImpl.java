@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,9 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.el.ELContext;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.context.Context;
@@ -31,23 +29,22 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
-/**
-
-
-
-
- */
-public abstract class VariableScopeImpl extends AbstractEntity implements Serializable, VariableScope {
+/** */
+public abstract class VariableScopeImpl extends AbstractEntity
+    implements Serializable, VariableScope {
 
   private static final long serialVersionUID = 1L;
 
   // The cache used when fetching all variables
-  protected Map<String, VariableInstanceEntity> variableInstances; // needs to be null, the logic depends on it for checking if vars were already fetched
+  protected Map<String, VariableInstanceEntity>
+      variableInstances; // needs to be null, the logic depends on it for checking if vars were
+                         // already fetched
 
   // The cache is used when fetching/setting specific variables
-  protected Map<String, VariableInstanceEntity> usedVariablesCache = new HashMap<String, VariableInstanceEntity>();
+  protected Map<String, VariableInstanceEntity> usedVariablesCache =
+      new HashMap<String, VariableInstanceEntity>();
 
-  protected Map<String, VariableInstance> transientVariabes; 
+  protected Map<String, VariableInstance> transientVariabes;
 
   protected ELContext cachedElContext;
 
@@ -55,7 +52,8 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
 
   protected abstract VariableScopeImpl getParentVariableScope();
 
-  protected abstract void initializeVariableInstanceBackPointer(VariableInstanceEntity variableInstance);
+  protected abstract void initializeVariableInstanceBackPointer(
+      VariableInstanceEntity variableInstance);
 
   protected void ensureVariableInstancesInitialized() {
     if (variableInstances == null) {
@@ -66,9 +64,10 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
         throw new ActivitiException("lazy loading outside command context");
       }
       Collection<VariableInstanceEntity> variableInstancesList = loadVariableInstances();
-      for (VariableInstanceEntity variableInstance : variableInstancesList) {
-        variableInstances.put(variableInstance.getName(), variableInstance);
-      }
+      variableInstancesList.forEach(
+          variableInstance -> {
+            variableInstances.put(variableInstance.getName(), variableInstance);
+          });
     }
   }
 
@@ -88,11 +87,11 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     return getVariableInstances(variableNames, true);
   }
 
-  public Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables) {
+  public Map<String, Object> getVariables(
+      Collection<String> variableNames, boolean fetchAllVariables) {
 
     Map<String, Object> requestedVariables = new HashMap<String, Object>();
     Set<String> variableNamesToFetch = new HashSet<String>(variableNames);
-    
 
     // Transient variables 'shadow' any existing variables.
     // The values in the fetch-cache will be more recent, so they can override any existing ones
@@ -126,17 +125,17 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
 
       // Fetch variables on this scope
       List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
-      for (VariableInstanceEntity variable : variables) {
-        requestedVariables.put(variable.getName(), variable.getValue());
-      }
+      variables.forEach(
+          variable -> {
+            requestedVariables.put(variable.getName(), variable.getValue());
+          });
 
       return requestedVariables;
-
     }
-
   }
-  
-  public Map<String, VariableInstance> getVariableInstances(Collection<String> variableNames, boolean fetchAllVariables) {
+
+  public Map<String, VariableInstance> getVariableInstances(
+      Collection<String> variableNames, boolean fetchAllVariables) {
 
     Map<String, VariableInstance> requestedVariables = new HashMap<String, VariableInstance>();
     Set<String> variableNamesToFetch = new HashSet<String>(variableNames);
@@ -167,19 +166,19 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
       // Go up if needed
       VariableScope parent = getParentVariableScope();
       if (parent != null) {
-        requestedVariables.putAll(parent.getVariableInstances(variableNamesToFetch, fetchAllVariables));
+        requestedVariables.putAll(
+            parent.getVariableInstances(variableNamesToFetch, fetchAllVariables));
       }
 
       // Fetch variables on this scope
       List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
-      for (VariableInstanceEntity variable : variables) {
-        requestedVariables.put(variable.getName(), variable);
-      }
+      variables.forEach(
+          variable -> {
+            requestedVariables.put(variable.getName(), variable);
+          });
 
       return requestedVariables;
-
     }
-
   }
 
   protected Map<String, Object> collectVariables(HashMap<String, Object> variables) {
@@ -196,7 +195,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     for (String variableName : usedVariablesCache.keySet()) {
       variables.put(variableName, usedVariablesCache.get(variableName).getValue());
     }
-    
+
     if (transientVariabes != null) {
       for (String variableName : transientVariabes.keySet()) {
         variables.put(variableName, transientVariabes.get(variableName).getValue());
@@ -205,8 +204,9 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
 
     return variables;
   }
-  
-  protected Map<String, VariableInstance> collectVariableInstances(HashMap<String, VariableInstance> variables) {
+
+  protected Map<String, VariableInstance> collectVariableInstances(
+      HashMap<String, VariableInstance> variables) {
     ensureVariableInstancesInitialized();
     VariableScopeImpl parentScope = getParentVariableScope();
     if (parentScope != null) {
@@ -220,7 +220,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     for (String variableName : usedVariablesCache.keySet()) {
       variables.put(variableName, usedVariablesCache.get(variableName));
     }
-    
+
     if (transientVariabes != null) {
       variables.putAll(transientVariabes);
     }
@@ -237,15 +237,16 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
   }
 
   /**
-   * The same operation as {@link VariableScopeImpl#getVariable(String)}, 
-   * but with an extra parameter to indicate whether or not all variables need to be fetched.
-   * 
-   * Note that the default Activiti way (because of backwards compatibility) is to fetch all the variables 
-   * when doing a get/set of variables. So this means 'true' is the default value for this method,
-   * and in fact it will simply delegate to {@link #getVariable(String)}. 
-   * This can also be the most performant, if you're doing a lot of variable gets in the same transaction (eg in service tasks).
-   * 
-   * In case 'false' is used, only the specific variable will be fetched.
+   * The same operation as {@link VariableScopeImpl#getVariable(String)}, but with an extra
+   * parameter to indicate whether or not all variables need to be fetched.
+   *
+   * <p>Note that the default Activiti way (because of backwards compatibility) is to fetch all the
+   * variables when doing a get/set of variables. So this means 'true' is the default value for this
+   * method, and in fact it will simply delegate to {@link #getVariable(String)}. This can also be
+   * the most performant, if you're doing a lot of variable gets in the same transaction (eg in
+   * service tasks).
+   *
+   * <p>In case 'false' is used, only the specific variable will be fetched.
    */
   public Object getVariable(String variableName, boolean fetchAllVariables) {
     Object value = null;
@@ -257,7 +258,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
   }
 
   public VariableInstance getVariableInstance(String variableName, boolean fetchAllVariables) {
-    
+
     // Transient variable
     if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
       return transientVariabes.get(variableName);
@@ -267,7 +268,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     if (usedVariablesCache.containsKey(variableName)) {
       return usedVariablesCache.get(variableName);
     }
-    
+
     if (fetchAllVariables == true) {
       ensureVariableInstancesInitialized();
       VariableInstanceEntity variableInstance = variableInstances.get(variableName);
@@ -284,7 +285,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
       return null;
 
     } else {
-      
+
       if (variableInstances != null && variableInstances.containsKey(variableName)) {
         return variableInstances.get(variableName);
       }
@@ -302,7 +303,6 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
       }
 
       return null;
-
     }
   }
 
@@ -326,15 +326,15 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
   }
 
   public VariableInstance getVariableInstanceLocal(String variableName, boolean fetchAllVariables) {
-    
+
     if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
       return transientVariabes.get(variableName);
     }
-    
+
     if (usedVariablesCache.containsKey(variableName)) {
       return usedVariablesCache.get(variableName);
     }
-    
+
     if (fetchAllVariables == true) {
 
       ensureVariableInstancesInitialized();
@@ -368,7 +368,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     if (transientVariabes != null && !transientVariabes.isEmpty()) {
       return true;
     }
-    
+
     ensureVariableInstancesInitialized();
     if (!variableInstances.isEmpty()) {
       return true;
@@ -411,7 +411,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     if (transientVariabes != null) {
       variableNames.addAll(transientVariabes.keySet());
     }
-    
+
     ensureVariableInstancesInitialized();
     VariableScopeImpl parentScope = getParentVariableScope();
     if (parentScope != null) {
@@ -467,7 +467,8 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     return getVariableInstancesLocal(variableNames, true);
   }
 
-  public Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+  public Map<String, Object> getVariablesLocal(
+      Collection<String> variableNames, boolean fetchAllVariables) {
     Map<String, Object> requestedVariables = new HashMap<String, Object>();
 
     // The values in the fetch-cache will be more recent, so they can override any existing ones
@@ -492,16 +493,17 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     } else {
 
       List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
-      for (VariableInstanceEntity variable : variables) {
-        requestedVariables.put(variable.getName(), variable.getValue());
-      }
-
+      variables.forEach(
+          variable -> {
+            requestedVariables.put(variable.getName(), variable.getValue());
+          });
     }
 
     return requestedVariables;
   }
-  
-  public Map<String, VariableInstance> getVariableInstancesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+
+  public Map<String, VariableInstance> getVariableInstancesLocal(
+      Collection<String> variableNames, boolean fetchAllVariables) {
     Map<String, VariableInstance> requestedVariables = new HashMap<String, VariableInstance>();
 
     // The values in the fetch-cache will be more recent, so they can override any existing ones
@@ -526,16 +528,17 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     } else {
 
       List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
-      for (VariableInstanceEntity variable : variables) {
-        requestedVariables.put(variable.getName(), variable);
-      }
-
+      variables.forEach(
+          variable -> {
+            requestedVariables.put(variable.getName(), variable);
+          });
     }
 
     return requestedVariables;
   }
 
-  protected abstract List<VariableInstanceEntity> getSpecificVariables(Collection<String> variableNames);
+  protected abstract List<VariableInstanceEntity> getSpecificVariables(
+      Collection<String> variableNames);
 
   public Set<String> getVariableNamesLocal() {
     Set<String> variableNames = new HashSet<String>();
@@ -551,7 +554,6 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     ensureVariableInstancesInitialized();
     return Collections.unmodifiableMap(variableInstances);
   }
-
 
   public Map<String, VariableInstanceEntity> getUsedVariablesCache() {
     return usedVariablesCache;
@@ -584,31 +586,35 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
   public void removeVariables() {
     ensureVariableInstancesInitialized();
     Set<String> variableNames = new HashSet<String>(variableInstances.keySet());
-    for (String variableName : variableNames) {
-      removeVariable(variableName);
-    }
+    variableNames.forEach(
+        variableName -> {
+          removeVariable(variableName);
+        });
   }
 
   public void removeVariablesLocal() {
     List<String> variableNames = new ArrayList<String>(getVariableNamesLocal());
-    for (String variableName : variableNames) {
-      removeVariableLocal(variableName);
-    }
+    variableNames.forEach(
+        variableName -> {
+          removeVariableLocal(variableName);
+        });
   }
 
   public void removeVariables(Collection<String> variableNames) {
     if (variableNames != null) {
-      for (String variableName : variableNames) {
-        removeVariable(variableName);
-      }
+      variableNames.forEach(
+          variableName -> {
+            removeVariable(variableName);
+          });
     }
   }
 
   public void removeVariablesLocal(Collection<String> variableNames) {
     if (variableNames != null) {
-      for (String variableName : variableNames) {
-        removeVariableLocal(variableName);
-      }
+      variableNames.forEach(
+          variableName -> {
+            removeVariableLocal(variableName);
+          });
     }
   }
 
@@ -617,12 +623,11 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
   }
 
   /**
-   * The default {@link #setVariable(String, Object)} fetches all variables 
-   * (for historical and backwards compatible reasons) while setting the variables.
-   * 
-   * Setting the fetchAllVariables parameter to true is the default behaviour 
-   * (ie fetching all variables) Setting the fetchAllVariables parameter to false does not do that.
-   * 
+   * The default {@link #setVariable(String, Object)} fetches all variables (for historical and
+   * backwards compatible reasons) while setting the variables.
+   *
+   * <p>Setting the fetchAllVariables parameter to true is the default behaviour (ie fetching all
+   * variables) Setting the fetchAllVariables parameter to false does not do that.
    */
   public void setVariable(String variableName, Object value, boolean fetchAllVariables) {
     setVariable(variableName, value, getSourceActivityExecution(), fetchAllVariables);
@@ -630,11 +635,17 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
 
   /**
    * Sets a variable as high as possible (highest parent).
-   * 
-   *  @param sourceExecution The execution where the variable was originally set, used for history data.
-   *  @param fetchAllVariables If true, all existing variables will be fetched when setting the variable.
+   *
+   * @param sourceExecution The execution where the variable was originally set, used for history
+   *     data.
+   * @param fetchAllVariables If true, all existing variables will be fetched when setting the
+   *     variable.
    */
-  protected void setVariable(String variableName, Object value, ExecutionEntity sourceExecution, boolean fetchAllVariables) {
+  protected void setVariable(
+      String variableName,
+      Object value,
+      ExecutionEntity sourceExecution,
+      boolean fetchAllVariables) {
 
     if (fetchAllVariables == true) {
 
@@ -702,13 +713,9 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
 
           variable = createVariableInstance(variableName, value, sourceExecution);
           usedVariablesCache.put(variableName, variable);
-
         }
-
       }
-
     }
-
   }
 
   public Object setVariableLocal(String variableName, Object value) {
@@ -716,22 +723,28 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
   }
 
   /**
-   * The default {@link #setVariableLocal(String, Object)} fetches all variables (for historical and backwards compatible reasons) while setting the variables.
-   * 
-   * Setting the fetchAllVariables parameter to true is the default behaviour (ie fetching all variables) Setting the fetchAllVariables parameter to false does not do that.
-   * 
+   * The default {@link #setVariableLocal(String, Object)} fetches all variables (for historical and
+   * backwards compatible reasons) while setting the variables.
+   *
+   * <p>Setting the fetchAllVariables parameter to true is the default behaviour (ie fetching all
+   * variables) Setting the fetchAllVariables parameter to false does not do that.
    */
   public Object setVariableLocal(String variableName, Object value, boolean fetchAllVariables) {
     return setVariableLocal(variableName, value, getSourceActivityExecution(), fetchAllVariables);
   }
 
-  public Object setVariableLocal(String variableName, Object value, ExecutionEntity sourceActivityExecution, boolean fetchAllVariables) {
+  public Object setVariableLocal(
+      String variableName,
+      Object value,
+      ExecutionEntity sourceActivityExecution,
+      boolean fetchAllVariables) {
 
     if (fetchAllVariables == true) {
 
       // If it's in the cache, it's more recent
       if (usedVariablesCache.containsKey(variableName)) {
-        updateVariableInstance(usedVariablesCache.get(variableName), value, sourceActivityExecution);
+        updateVariableInstance(
+            usedVariablesCache.get(variableName), value, sourceActivityExecution);
       }
 
       ensureVariableInstancesInitialized();
@@ -752,7 +765,8 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     } else {
 
       if (usedVariablesCache.containsKey(variableName)) {
-        updateVariableInstance(usedVariablesCache.get(variableName), value, sourceActivityExecution);
+        updateVariableInstance(
+            usedVariablesCache.get(variableName), value, sourceActivityExecution);
       } else if (variableInstances != null && variableInstances.containsKey(variableName)) {
         updateVariableInstance(variableInstances.get(variableName), value, sourceActivityExecution);
       } else {
@@ -764,26 +778,29 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
           variable = createVariableInstance(variableName, value, sourceActivityExecution);
         }
         usedVariablesCache.put(variableName, variable);
-
       }
 
       return null;
-
     }
   }
-  
+
   public void createVariableLocal(String variableName, Object value) {
     createVariableLocal(variableName, value, getSourceActivityExecution());
   }
 
   /**
-   * only called when a new variable is created on this variable scope. This method is also responsible for propagating the creation of this variable to the history.
+   * only called when a new variable is created on this variable scope. This method is also
+   * responsible for propagating the creation of this variable to the history.
    */
-  protected void createVariableLocal(String variableName, Object value, ExecutionEntity sourceActivityExecution) {
+  protected void createVariableLocal(
+      String variableName, Object value, ExecutionEntity sourceActivityExecution) {
     ensureVariableInstancesInitialized();
 
     if (variableInstances.containsKey(variableName)) {
-      throw new ActivitiException("variable '" + variableName + "' already exists. Use setVariableLocal if you want to overwrite the value");
+      throw new ActivitiException(
+          "variable '"
+              + variableName
+              + "' already exists. Use setVariableLocal if you want to overwrite the value");
     }
 
     createVariableInstance(variableName, value, sourceActivityExecution);
@@ -825,7 +842,8 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     }
   }
 
-  protected void deleteVariableInstanceForExplicitUserCall(VariableInstanceEntity variableInstance, ExecutionEntity sourceActivityExecution) {
+  protected void deleteVariableInstanceForExplicitUserCall(
+      VariableInstanceEntity variableInstance, ExecutionEntity sourceActivityExecution) {
     Context.getCommandContext().getVariableInstanceEntityManager().delete(variableInstance);
     variableInstance.setValue(null);
 
@@ -833,10 +851,16 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     Context.getCommandContext().getHistoryManager().recordVariableRemoved(variableInstance);
 
     // Record historic detail
-    Context.getCommandContext().getHistoryManager().recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
+    Context.getCommandContext()
+        .getHistoryManager()
+        .recordHistoricDetailVariableCreate(
+            variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
   }
 
-  protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
+  protected void updateVariableInstance(
+      VariableInstanceEntity variableInstance,
+      Object value,
+      ExecutionEntity sourceActivityExecution) {
 
     // Always check if the type should be altered. It's possible that the
     // previous type is lower in the type
@@ -857,12 +881,16 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
       variableInstance.setValue(value);
     }
 
-    Context.getCommandContext().getHistoryManager().recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
+    Context.getCommandContext()
+        .getHistoryManager()
+        .recordHistoricDetailVariableCreate(
+            variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
 
     Context.getCommandContext().getHistoryManager().recordVariableUpdate(variableInstance);
   }
 
-  protected VariableInstanceEntity createVariableInstance(String variableName, Object value, ExecutionEntity sourceActivityExecution) {
+  protected VariableInstanceEntity createVariableInstance(
+      String variableName, Object value, ExecutionEntity sourceActivityExecution) {
     VariableTypes variableTypes = Context.getProcessEngineConfiguration().getVariableTypes();
 
     VariableType type = variableTypes.findVariableType(value);
@@ -873,7 +901,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
             .create(variableName, type, value);
     initializeVariableInstanceBackPointer(variableInstance);
     Context.getCommandContext().getVariableInstanceEntityManager().insert(variableInstance);
-    
+
     if (variableInstances != null) {
       variableInstances.put(variableName, variableInstance);
     }
@@ -882,35 +910,37 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     Context.getCommandContext().getHistoryManager().recordVariableCreate(variableInstance);
 
     // Record historic detail
-    Context.getCommandContext().getHistoryManager().recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
+    Context.getCommandContext()
+        .getHistoryManager()
+        .recordHistoricDetailVariableCreate(
+            variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
 
     return variableInstance;
   }
-  
-  
+
   /*
    * Transient variables
    */
-  
+
   public void setTransientVariablesLocal(Map<String, Object> transientVariables) {
     for (String variableName : transientVariables.keySet()) {
       setTransientVariableLocal(variableName, transientVariables.get(variableName));
     }
   }
-  
+
   public void setTransientVariableLocal(String variableName, Object variableValue) {
     if (transientVariabes == null) {
       transientVariabes = new HashMap<String, VariableInstance>();
     }
     transientVariabes.put(variableName, new TransientVariableInstance(variableName, variableValue));
   }
-  
+
   public void setTransientVariables(Map<String, Object> transientVariables) {
     for (String variableName : transientVariables.keySet()) {
       setTransientVariable(variableName, transientVariables.get(variableName));
     }
   }
-  
+
   public void setTransientVariable(String variableName, Object variableValue) {
     VariableScopeImpl parentVariableScope = getParentVariableScope();
     if (parentVariableScope != null) {
@@ -919,14 +949,14 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
     }
     setTransientVariableLocal(variableName, variableValue);
   }
-  
+
   public Object getTransientVariableLocal(String variableName) {
     if (transientVariabes != null) {
       return transientVariabes.get(variableName).getValue();
     }
     return null;
   }
-  
+
   public Map<String, Object> getTransientVariablesLocal() {
     if (transientVariabes != null) {
       Map<String, Object> variables = new HashMap<String, Object>();
@@ -938,30 +968,30 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
       return Collections.emptyMap();
     }
   }
-  
+
   public Object getTransientVariable(String variableName) {
     if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
       return transientVariabes.get(variableName).getValue();
     }
-    
-    VariableScopeImpl  parentScope = getParentVariableScope();
+
+    VariableScopeImpl parentScope = getParentVariableScope();
     if (parentScope != null) {
       return parentScope.getTransientVariable(variableName);
     }
 
     return null;
   }
-  
+
   public Map<String, Object> getTransientVariables() {
     return collectTransientVariables(new HashMap<String, Object>());
   }
-  
+
   protected Map<String, Object> collectTransientVariables(HashMap<String, Object> variables) {
     VariableScopeImpl parentScope = getParentVariableScope();
     if (parentScope != null) {
       variables.putAll(parentScope.collectVariables(variables));
     }
-    
+
     if (transientVariabes != null) {
       for (String variableName : transientVariabes.keySet()) {
         variables.put(variableName, transientVariabes.get(variableName).getValue());
@@ -970,19 +1000,19 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
 
     return variables;
   }
-  
+
   public void removeTransientVariableLocal(String variableName) {
     if (transientVariabes != null) {
       transientVariabes.remove(variableName);
     }
   }
-  
+
   public void removeTransientVariablesLocal() {
     if (transientVariabes != null) {
       transientVariabes.clear();
     }
   }
-  
+
   public void removeTransientVariable(String variableName) {
     if (transientVariabes != null && transientVariabes.containsKey(variableName)) {
       removeTransientVariableLocal(variableName);
@@ -993,7 +1023,7 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
       parentVariableScope.removeTransientVariable(variableName);
     }
   }
-  
+
   public void removeTransientVariables() {
     removeTransientVariablesLocal();
     VariableScopeImpl parentVariableScope = getParentVariableScope();
@@ -1001,9 +1031,10 @@ public abstract class VariableScopeImpl extends AbstractEntity implements Serial
       parentVariableScope.removeTransientVariablesLocal();
     }
   }
-  
+
   /**
-   * Execution variable updates have activity instance ids, but historic task variable updates don't.
+   * Execution variable updates have activity instance ids, but historic task variable updates
+   * don't.
    */
   protected boolean isActivityIdUsedForDetails() {
     return true;

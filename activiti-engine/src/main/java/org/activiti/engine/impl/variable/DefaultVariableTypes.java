@@ -17,12 +17,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 
-/**
-
- */
+/** */
 public class DefaultVariableTypes implements VariableTypes, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -44,9 +41,10 @@ public class DefaultVariableTypes implements VariableTypes, Serializable {
     this.typesList.clear();
     this.typesList.addAll(typesList);
     this.typesMap.clear();
-    for (VariableType type : typesList) {
-      typesMap.put(type.getTypeName(), type);
-    }
+    typesList.forEach(
+        type -> {
+          typesMap.put(type.getTypeName(), type);
+        });
   }
 
   public VariableType getVariableType(String typeName) {

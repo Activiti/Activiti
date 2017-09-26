@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
@@ -31,25 +30,21 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CountingExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
-/**
-
-
-
-
-
- */
-
-public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionEntity, CountingExecutionEntity {
+/** */
+public class ExecutionEntityImpl extends VariableScopeImpl
+    implements ExecutionEntity, CountingExecutionEntity {
 
   private static final long serialVersionUID = 1L;
 
   // current position /////////////////////////////////////////////////////////
 
-  protected FlowElement currentFlowElement; 
-  protected ActivitiListener currentActivitiListener; // Only set when executing an execution listener
+  protected FlowElement currentFlowElement;
+  protected ActivitiListener
+      currentActivitiListener; // Only set when executing an execution listener
 
   /**
-   * the process instance. this is the root of the execution tree. the processInstance of a process instance is a self reference.
+   * the process instance. this is the root of the execution tree. the processInstance of a process
+   * instance is a self reference.
    */
   protected ExecutionEntityImpl processInstance;
 
@@ -62,11 +57,15 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   /** super execution, not-null if this execution is part of a subprocess */
   protected ExecutionEntityImpl superExecution;
 
-  /** reference to a subprocessinstance, not-null if currently subprocess is started from this execution */
+  /**
+   * reference to a subprocessinstance, not-null if currently subprocess is started from this
+   * execution
+   */
   protected ExecutionEntityImpl subProcessInstance;
 
   /** The tenant identifier (if any) */
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+
   protected String name;
   protected String description;
   protected String localizedName;
@@ -75,7 +74,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected Date lockTime;
 
   // state/type of execution //////////////////////////////////////////////////
-  
+
   protected boolean isActive = true;
   protected boolean isScope = true;
   protected boolean isConcurrent;
@@ -85,7 +84,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   protected boolean isCountEnabled;
 
   // events ///////////////////////////////////////////////////////////////////
-  
+
   // TODO: still needed in v6?
 
   protected String eventName;
@@ -102,13 +101,13 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   // cascade deletion ////////////////////////////////////////////////////////
 
   protected String deleteReason;
-  
+
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
-  
+
   protected String startUserId;
   protected Date startTime;
-  
-  // CountingExecutionEntity 
+
+  // CountingExecutionEntity
   protected int eventSubscriptionCount;
   protected int taskCount;
   protected int jobCount;
@@ -120,93 +119,79 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   /**
    * persisted reference to the processDefinition.
-   * 
+   *
    * @see #processDefinition
    * @see #setProcessDefinition(ProcessDefinitionImpl)
    * @see #getProcessDefinition()
    */
   protected String processDefinitionId;
 
-  /**
-   * persisted reference to the process definition key.
-   */
+  /** persisted reference to the process definition key. */
   protected String processDefinitionKey;
 
-  /**
-   * persisted reference to the process definition name.
-   */
+  /** persisted reference to the process definition name. */
   protected String processDefinitionName;
 
-  /**
-   * persisted reference to the process definition version.
-   */
+  /** persisted reference to the process definition version. */
   protected Integer processDefinitionVersion;
 
-  /**
-   * persisted reference to the deployment id.
-   */
+  /** persisted reference to the deployment id. */
   protected String deploymentId;
 
   /**
-   * persisted reference to the current position in the diagram within the {@link #processDefinition}.
-   * 
+   * persisted reference to the current position in the diagram within the {@link
+   * #processDefinition}.
+   *
    * @see #activity
    * @see #setActivity(ActivityImpl)
    * @see #getActivity()
    */
   protected String activityId;
 
-  /**
-   * The name of the current activity position
-   */
+  /** The name of the current activity position */
   protected String activityName;
 
   /**
    * persisted reference to the process instance.
-   * 
+   *
    * @see #getProcessInstance()
    */
   protected String processInstanceId;
 
-  /**
-   * persisted reference to the business key.
-   */
+  /** persisted reference to the business key. */
   protected String businessKey;
 
   /**
    * persisted reference to the parent of this execution.
-   * 
+   *
    * @see #getParent()
    * @see #setParentId(String)
    */
   protected String parentId;
 
   /**
-   * persisted reference to the super execution of this execution
-   * 
-   * @See {@link #getSuperExecution()}
+   * persisted reference to the super execution of this execution @See {@link #getSuperExecution()}
+   *
    * @see #setSuperExecution(ExecutionEntityImpl)
    */
   protected String superExecutionId;
-  
+
   protected String rootProcessInstanceId;
   protected ExecutionEntityImpl rootProcessInstance;
 
   protected boolean forcedUpdate;
 
   protected List<VariableInstanceEntity> queryVariables;
-  
+
   protected boolean isDeleted; // TODO: should be in entity superclass probably
 
-  public ExecutionEntityImpl() {
-    
-  }
-  
+  public ExecutionEntityImpl() {}
+
   /**
    * Static factory method: to be used when a new execution is created for the very first time/
-   * Calling this will make sure no extra db fetches are needed later on, as all collections
-   * will be populated with empty collections. If they would be null, it would trigger
-   * a database fetch for those relationship entities.
+   * Calling this will make sure no extra db fetches are needed later on, as all collections will be
+   * populated with empty collections. If they would be null, it would trigger a database fetch for
+   * those relationship entities.
    */
   public static ExecutionEntityImpl createWithEmptyRelationshipCollections() {
     ExecutionEntityImpl execution = new ExecutionEntityImpl();
@@ -219,48 +204,48 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     execution.identityLinks = new ArrayList<IdentityLinkEntity>(1);
     return execution;
   }
-  
-  
-  //persistent state /////////////////////////////////////////////////////////
 
- public Object getPersistentState() {
-   Map<String, Object> persistentState = new HashMap<String, Object>();
-   persistentState.put("processDefinitionId", this.processDefinitionId);
-   persistentState.put("businessKey", this.businessKey);
-   persistentState.put("activityId", this.activityId);
-   persistentState.put("isActive", this.isActive);
-   persistentState.put("isConcurrent", this.isConcurrent);
-   persistentState.put("isScope", this.isScope);
-   persistentState.put("isEventScope", this.isEventScope);
-   persistentState.put("parentId", parentId);
-   persistentState.put("name", name);
-   persistentState.put("lockTime", lockTime);
-   persistentState.put("superExecution", this.superExecutionId);
-   persistentState.put("rootProcessInstanceId", this.rootProcessInstanceId);
-   if (forcedUpdate) {
-     persistentState.put("forcedUpdate", Boolean.TRUE);
-   }
-   persistentState.put("suspensionState", this.suspensionState);
-   persistentState.put("startTime", this.startTime);
-   persistentState.put("startUserId", this.startUserId);
-   persistentState.put("eventSubscriptionCount", eventSubscriptionCount);
-   persistentState.put("taskCount", taskCount);
-   persistentState.put("jobCount", jobCount);
-   persistentState.put("timerJobCount", timerJobCount);
-   persistentState.put("suspendedJobCount", suspendedJobCount);
-   persistentState.put("deadLetterJobCount", deadLetterJobCount);
-   persistentState.put("variableCount", variableCount);
-   persistentState.put("identityLinkCount", identityLinkCount);
-   return persistentState;
- }
-  
+  // persistent state /////////////////////////////////////////////////////////
+
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("processDefinitionId", this.processDefinitionId);
+    persistentState.put("businessKey", this.businessKey);
+    persistentState.put("activityId", this.activityId);
+    persistentState.put("isActive", this.isActive);
+    persistentState.put("isConcurrent", this.isConcurrent);
+    persistentState.put("isScope", this.isScope);
+    persistentState.put("isEventScope", this.isEventScope);
+    persistentState.put("parentId", parentId);
+    persistentState.put("name", name);
+    persistentState.put("lockTime", lockTime);
+    persistentState.put("superExecution", this.superExecutionId);
+    persistentState.put("rootProcessInstanceId", this.rootProcessInstanceId);
+    if (forcedUpdate) {
+      persistentState.put("forcedUpdate", Boolean.TRUE);
+    }
+    persistentState.put("suspensionState", this.suspensionState);
+    persistentState.put("startTime", this.startTime);
+    persistentState.put("startUserId", this.startUserId);
+    persistentState.put("eventSubscriptionCount", eventSubscriptionCount);
+    persistentState.put("taskCount", taskCount);
+    persistentState.put("jobCount", jobCount);
+    persistentState.put("timerJobCount", timerJobCount);
+    persistentState.put("suspendedJobCount", suspendedJobCount);
+    persistentState.put("deadLetterJobCount", deadLetterJobCount);
+    persistentState.put("variableCount", variableCount);
+    persistentState.put("identityLinkCount", identityLinkCount);
+    return persistentState;
+  }
+
   // The current flow element, will be filled during operation execution
 
   public FlowElement getCurrentFlowElement() {
     if (currentFlowElement == null) {
       String processDefinitionId = getProcessDefinitionId();
       if (processDefinitionId != null) {
-        org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+        org.activiti.bpmn.model.Process process =
+            ProcessDefinitionUtil.getProcess(processDefinitionId);
         currentFlowElement = process.getFlowElement(getCurrentActivityId(), true);
       }
     }
@@ -275,7 +260,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
       this.activityId = null;
     }
   }
-  
+
   public ActivitiListener getCurrentActivitiListener() {
     return currentActivitiListener;
   }
@@ -291,17 +276,21 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     ensureExecutionsInitialized();
     return executions;
   }
-  
+
   @Override
   public void addChildExecution(ExecutionEntity executionEntity) {
     ensureExecutionsInitialized();
     executions.add((ExecutionEntityImpl) executionEntity);
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @SuppressWarnings({"unchecked", "rawtypes"})
   protected void ensureExecutionsInitialized() {
     if (executions == null) {
-      this.executions = (List) Context.getCommandContext().getExecutionEntityManager().findChildExecutionsByParentExecutionId(id);
+      this.executions =
+          (List)
+              Context.getCommandContext()
+                  .getExecutionEntityManager()
+                  .findChildExecutionsByParentExecutionId(id);
     }
   }
 
@@ -371,7 +360,9 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   protected void ensureProcessInstanceInitialized() {
     if ((processInstance == null) && (processInstanceId != null)) {
-      processInstance = (ExecutionEntityImpl) Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
+      processInstance =
+          (ExecutionEntityImpl)
+              Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
     }
   }
 
@@ -396,7 +387,9 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   protected void ensureParentInitialized() {
     if (parent == null && parentId != null) {
-      parent = (ExecutionEntityImpl) Context.getCommandContext().getExecutionEntityManager().findById(parentId);
+      parent =
+          (ExecutionEntityImpl)
+              Context.getCommandContext().getExecutionEntityManager().findById(parentId);
     }
   }
 
@@ -436,7 +429,9 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   protected void ensureSuperExecutionInitialized() {
     if (superExecution == null && superExecutionId != null) {
-      superExecution = (ExecutionEntityImpl) Context.getCommandContext().getExecutionEntityManager().findById(superExecutionId);
+      superExecution =
+          (ExecutionEntityImpl)
+              Context.getCommandContext().getExecutionEntityManager().findById(superExecutionId);
     }
   }
 
@@ -451,21 +446,29 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   protected void ensureSubProcessInstanceInitialized() {
     if (subProcessInstance == null) {
-      subProcessInstance = (ExecutionEntityImpl) Context.getCommandContext().getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(id);
+      subProcessInstance =
+          (ExecutionEntityImpl)
+              Context.getCommandContext()
+                  .getExecutionEntityManager()
+                  .findSubProcessInstanceBySuperExecutionId(id);
     }
   }
-  
+
   public ExecutionEntity getRootProcessInstance() {
     ensureRootProcessInstanceInitialized();
     return rootProcessInstance;
   }
-  
+
   protected void ensureRootProcessInstanceInitialized() {
     if (rootProcessInstanceId == null) {
-      rootProcessInstance = (ExecutionEntityImpl) Context.getCommandContext().getExecutionEntityManager().findById(rootProcessInstanceId);
+      rootProcessInstance =
+          (ExecutionEntityImpl)
+              Context.getCommandContext()
+                  .getExecutionEntityManager()
+                  .findById(rootProcessInstanceId);
     }
   }
-  
+
   public void setRootProcessInstance(ExecutionEntity rootProcessInstance) {
     this.rootProcessInstance = (ExecutionEntityImpl) rootProcessInstance;
 
@@ -475,11 +478,11 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
       this.rootProcessInstanceId = null;
     }
   }
-  
+
   public String getRootProcessInstanceId() {
     return rootProcessInstanceId;
   }
-  
+
   public void setRootProcessInstanceId(String rootProcessInstanceId) {
     this.rootProcessInstanceId = rootProcessInstanceId;
   }
@@ -497,11 +500,10 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public void forceUpdate() {
     this.forcedUpdate = true;
   }
-  
- // VariableScopeImpl methods //////////////////////////////////////////////////////////////////
 
-  
-  // TODO: this should ideally move to another place  
+  // VariableScopeImpl methods //////////////////////////////////////////////////////////////////
+
+  // TODO: this should ideally move to another place
   @Override
   protected void initializeVariableInstanceBackPointer(VariableInstanceEntity variableInstance) {
     if (processInstanceId != null) {
@@ -514,7 +516,9 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   @Override
   protected Collection<VariableInstanceEntity> loadVariableInstances() {
-    return Context.getCommandContext().getVariableInstanceEntityManager().findVariableInstancesByExecutionId(id);
+    return Context.getCommandContext()
+        .getVariableInstanceEntityManager()
+        .findVariableInstancesByExecutionId(id);
   }
 
   @Override
@@ -523,40 +527,61 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   }
 
   /**
-   * used to calculate the sourceActivityExecution for method {@link #updateActivityInstanceIdInHistoricVariableUpdate(HistoricDetailVariableInstanceUpdateEntity, ExecutionEntityImpl)}
+   * used to calculate the sourceActivityExecution for method {@link
+   * #updateActivityInstanceIdInHistoricVariableUpdate(HistoricDetailVariableInstanceUpdateEntity,
+   * ExecutionEntityImpl)}
    */
   protected ExecutionEntityImpl getSourceActivityExecution() {
     return this;
   }
 
   @Override
-  protected VariableInstanceEntity createVariableInstance(String variableName, Object value, ExecutionEntity sourceActivityExecution) {
-    VariableInstanceEntity result = super.createVariableInstance(variableName, value, sourceActivityExecution);
+  protected VariableInstanceEntity createVariableInstance(
+      String variableName, Object value, ExecutionEntity sourceActivityExecution) {
+    VariableInstanceEntity result =
+        super.createVariableInstance(variableName, value, sourceActivityExecution);
 
     // Dispatch event, if needed
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context
-          .getProcessEngineConfiguration()
+    if (Context.getProcessEngineConfiguration() != null
+        && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration()
           .getEventDispatcher()
           .dispatchEvent(
-              ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_CREATED, variableName, value, result.getType(), result.getTaskId(), result.getExecutionId(), getProcessInstanceId(),
+              ActivitiEventBuilder.createVariableEvent(
+                  ActivitiEventType.VARIABLE_CREATED,
+                  variableName,
+                  value,
+                  result.getType(),
+                  result.getTaskId(),
+                  result.getExecutionId(),
+                  getProcessInstanceId(),
                   getProcessDefinitionId()));
     }
     return result;
   }
-  
+
   @Override
-  protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
+  protected void updateVariableInstance(
+      VariableInstanceEntity variableInstance,
+      Object value,
+      ExecutionEntity sourceActivityExecution) {
     super.updateVariableInstance(variableInstance, value, sourceActivityExecution);
 
     // Dispatch event, if needed
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context
-          .getProcessEngineConfiguration()
+    if (Context.getProcessEngineConfiguration() != null
+        && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration()
           .getEventDispatcher()
           .dispatchEvent(
-              ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_UPDATED, variableInstance.getName(), value, variableInstance.getType(), variableInstance.getTaskId(),
-                  variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
+              ActivitiEventBuilder.createVariableEvent(
+                  ActivitiEventType.VARIABLE_UPDATED,
+                  variableInstance.getName(),
+                  value,
+                  variableInstance.getType(),
+                  variableInstance.getTaskId(),
+                  variableInstance.getExecutionId(),
+                  getProcessInstanceId(),
+                  getProcessDefinitionId()));
     }
   }
 
@@ -567,7 +592,10 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     if (commandContext == null) {
       throw new ActivitiException("lazy loading outside command context");
     }
-    VariableInstanceEntity variableInstance = commandContext.getVariableInstanceEntityManager().findVariableInstanceByExecutionAndName(id, variableName);
+    VariableInstanceEntity variableInstance =
+        commandContext
+            .getVariableInstanceEntityManager()
+            .findVariableInstanceByExecutionAndName(id, variableName);
 
     return variableInstance;
   }
@@ -578,7 +606,9 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     if (commandContext == null) {
       throw new ActivitiException("lazy loading outside command context");
     }
-    return commandContext.getVariableInstanceEntityManager().findVariableInstancesByExecutionAndNames(id, variableNames);
+    return commandContext
+        .getVariableInstanceEntityManager()
+        .findVariableInstancesByExecutionAndNames(id, variableNames);
   }
 
   // event subscription support //////////////////////////////////////////////
@@ -590,7 +620,10 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   protected void ensureEventSubscriptionsInitialized() {
     if (eventSubscriptions == null) {
-      eventSubscriptions = Context.getCommandContext().getEventSubscriptionEntityManager().findEventSubscriptionsByExecution(id);
+      eventSubscriptions =
+          Context.getCommandContext()
+              .getEventSubscriptionEntityManager()
+              .findEventSubscriptionsByExecution(id);
     }
   }
 
@@ -600,18 +633,18 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     ensureJobsInitialized();
     return jobs;
   }
-  
+
   protected void ensureJobsInitialized() {
     if (jobs == null) {
       jobs = Context.getCommandContext().getJobEntityManager().findJobsByExecutionId(id);
     }
   }
-  
+
   public List<TimerJobEntity> getTimerJobs() {
     ensureTimerJobsInitialized();
     return timerJobs;
   }
-  
+
   protected void ensureTimerJobsInitialized() {
     if (timerJobs == null) {
       timerJobs = Context.getCommandContext().getTimerJobEntityManager().findJobsByExecutionId(id);
@@ -640,7 +673,10 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
   protected void ensureIdentityLinksInitialized() {
     if (identityLinks == null) {
-      identityLinks = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinksByProcessInstanceId(id);
+      identityLinks =
+          Context.getCommandContext()
+              .getIdentityLinkEntityManager()
+              .findIdentityLinksByProcessInstanceId(id);
     }
   }
 
@@ -681,7 +717,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public void setActive(boolean isActive) {
     this.isActive = isActive;
   }
-  
+
   public void inactivate() {
     this.isActive = false;
   }
@@ -689,7 +725,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public boolean isEnded() {
     return isEnded;
   }
-  
+
   public void setEnded(boolean isEnded) {
     this.isEnded = isEnded;
   }
@@ -729,17 +765,17 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public void setEventScope(boolean isEventScope) {
     this.isEventScope = isEventScope;
   }
-  
+
   @Override
   public boolean isMultiInstanceRoot() {
     return isMultiInstanceRoot;
   }
-  
+
   @Override
   public void setMultiInstanceRoot(boolean isMultiInstanceRoot) {
     this.isMultiInstanceRoot = isMultiInstanceRoot;
   }
-  
+
   @Override
   public boolean isCountEnabled() {
     return isCountEnabled;
@@ -774,23 +810,23 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
       return description;
     }
   }
-  
+
   public void setDescription(String description) {
     this.description = description;
   }
-  
+
   public String getLocalizedName() {
     return localizedName;
   }
-  
+
   public void setLocalizedName(String localizedName) {
     this.localizedName = localizedName;
   }
-  
+
   public String getLocalizedDescription() {
     return localizedDescription;
   }
-  
+
   public void setLocalizedDescription(String localizedDescription) {
     this.localizedDescription = localizedDescription;
   }
@@ -814,11 +850,15 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public Map<String, Object> getProcessVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
-      for (VariableInstanceEntity variableInstance : queryVariables) {
-        if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
-          variables.put(variableInstance.getName(), variableInstance.getValue());
-        }
-      }
+      queryVariables
+          .stream()
+          .filter(
+              variableInstance ->
+                  variableInstance.getId() != null && variableInstance.getTaskId() == null)
+          .forEach(
+              variableInstance -> {
+                variables.put(variableInstance.getName(), variableInstance.getValue());
+              });
     }
     return variables;
   }
@@ -841,7 +881,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public void setDeleted(boolean isDeleted) {
     this.isDeleted = isDeleted;
   }
-  
+
   public String getActivityName() {
     return activityName;
   }
@@ -861,7 +901,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public void setStartTime(Date startTime) {
     this.startTime = startTime;
   }
-  
+
   public int getEventSubscriptionCount() {
     return eventSubscriptionCount;
   }
@@ -885,7 +925,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public void setJobCount(int jobCount) {
     this.jobCount = jobCount;
   }
-  
+
   public int getTimerJobCount() {
     return timerJobCount;
   }
@@ -917,17 +957,16 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   public void setVariableCount(int variableCount) {
     this.variableCount = variableCount;
   }
-  
+
   public int getIdentityLinkCount() {
     return identityLinkCount;
   }
-  
+
   public void setIdentityLinkCount(int identityLinkCount) {
     this.identityLinkCount = identityLinkCount;
-  }  
+  }
 
-
-  //toString /////////////////////////////////////////////////////////////////
+  // toString /////////////////////////////////////////////////////////////////
 
   public String toString() {
     if (isProcessInstanceType()) {
@@ -936,7 +975,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
       StringBuilder strb = new StringBuilder();
       if (isScope) {
         strb.append("Scoped execution[ id '" + getId() + "' ]");
-      } else if(isMultiInstanceRoot) {
+      } else if (isMultiInstanceRoot) {
         strb.append("Multi instance root execution[ id '" + getId() + "' ]");
       } else {
         strb.append("Execution[ id '" + getId() + "' ]");
@@ -950,5 +989,4 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
       return strb.toString();
     }
   }
-
 }

@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,16 +16,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.DataObject;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
 
-/**
-
- */
+/** */
 public class BpmnParseHandlers {
 
   private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(BpmnParseHandlers.class);
@@ -41,9 +38,10 @@ public class BpmnParseHandlers {
   }
 
   public void addHandlers(List<BpmnParseHandler> bpmnParseHandlers) {
-    for (BpmnParseHandler bpmnParseHandler : bpmnParseHandlers) {
-      addHandler(bpmnParseHandler);
-    }
+    bpmnParseHandlers.forEach(
+        bpmnParseHandler -> {
+          addHandler(bpmnParseHandler);
+        });
   }
 
   public void addHandler(BpmnParseHandler bpmnParseHandler) {
@@ -73,12 +71,15 @@ public class BpmnParseHandlers {
     List<BpmnParseHandler> handlers = parseHandlers.get(element.getClass());
 
     if (handlers == null) {
-      LOGGER.warn("Could not find matching parse handler for + " + element.getId() + " this is likely a bug.");
+      LOGGER.warn(
+          "Could not find matching parse handler for + "
+              + element.getId()
+              + " this is likely a bug.");
     } else {
-      for (BpmnParseHandler handler : handlers) {
-        handler.parse(bpmnParse, element);
-      }
+      handlers.forEach(
+          handler -> {
+            handler.parse(bpmnParse, element);
+          });
     }
   }
-
 }

@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.activiti.bpmn.model.*;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -21,12 +23,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-/**
-
- */
+/** */
 public class TriggerTimerEventJobHandler implements JobHandler {
 
   public static final String TYPE = "trigger-timer";
@@ -35,12 +32,19 @@ public class TriggerTimerEventJobHandler implements JobHandler {
     return TYPE;
   }
 
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+  public void execute(
+      JobEntity job,
+      String configuration,
+      ExecutionEntity execution,
+      CommandContext commandContext) {
 
     Context.getAgenda().planTriggerExecutionOperation(execution);
 
     if (commandContext.getEventDispatcher().isEnabled()) {
-      commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
+      commandContext
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
     }
 
     if (execution.getCurrentFlowElement() instanceof BoundaryEvent) {
@@ -49,7 +53,11 @@ public class TriggerTimerEventJobHandler implements JobHandler {
     }
   }
 
-  protected void dispatchExecutionTimeOut(JobEntity timerEntity, ExecutionEntity execution, List<String> processedElements, CommandContext commandContext) {
+  protected void dispatchExecutionTimeOut(
+      JobEntity timerEntity,
+      ExecutionEntity execution,
+      List<String> processedElements,
+      CommandContext commandContext) {
     FlowElement currentElement = execution.getCurrentFlowElement();
     if (currentElement instanceof BoundaryEvent) {
       BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
@@ -67,12 +75,14 @@ public class TriggerTimerEventJobHandler implements JobHandler {
       // flow nodes
       if (execution.getCurrentFlowElement() instanceof FlowNode) {
         processedElements.add(execution.getCurrentActivityId());
-        dispatchActivityTimeOut(timerEntity, (FlowNode) execution.getCurrentFlowElement(), execution, commandContext);
-        if (execution.getCurrentFlowElement() instanceof UserTask && !execution.isMultiInstanceRoot()) {
-        	List<TaskEntity> tasks = execution.getTasks();
-        	if (tasks.size() > 0) {
-        		tasks.get(0).setCanceled(true);
-        	}
+        dispatchActivityTimeOut(
+            timerEntity, (FlowNode) execution.getCurrentFlowElement(), execution, commandContext);
+        if (execution.getCurrentFlowElement() instanceof UserTask
+            && !execution.isMultiInstanceRoot()) {
+          List<TaskEntity> tasks = execution.getTasks();
+          if (tasks.size() > 0) {
+            tasks.get(0).setCanceled(true);
+          }
         }
       }
 
@@ -84,25 +94,44 @@ public class TriggerTimerEventJobHandler implements JobHandler {
           }
         }
 
-      // call activities
+        // call activities
       } else if (execution.getCurrentFlowElement() instanceof CallActivity) {
-        ExecutionEntity subProcessInstance = commandContext.getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
+        ExecutionEntity subProcessInstance =
+            commandContext
+                .getExecutionEntityManager()
+                .findSubProcessInstanceBySuperExecutionId(execution.getId());
         if (subProcessInstance != null) {
           List<? extends ExecutionEntity> childExecutions = subProcessInstance.getExecutions();
-          for (ExecutionEntity subExecution : childExecutions) {
-            if (!processedElements.contains(subExecution.getCurrentActivityId())) {
-              dispatchExecutionTimeOut(timerEntity, subExecution, processedElements, commandContext);
-            }
-          }
+          childExecutions
+              .stream()
+              .filter(
+                  subExecution -> !processedElements.contains(subExecution.getCurrentActivityId()))
+              .forEach(
+                  subExecution -> {
+                    dispatchExecutionTimeOut(
+                        timerEntity, subExecution, processedElements, commandContext);
+                  });
         }
       }
     }
   }
 
-  protected void dispatchActivityTimeOut(JobEntity timerEntity, FlowNode flowNode, ExecutionEntity execution, CommandContext commandContext) {
-    commandContext.getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), execution.getId(),
-            execution.getProcessInstanceId(), execution.getProcessDefinitionId(), parseActivityType(flowNode), timerEntity));
+  protected void dispatchActivityTimeOut(
+      JobEntity timerEntity,
+      FlowNode flowNode,
+      ExecutionEntity execution,
+      CommandContext commandContext) {
+    commandContext
+        .getEventDispatcher()
+        .dispatchEvent(
+            ActivitiEventBuilder.createActivityCancelledEvent(
+                flowNode.getId(),
+                flowNode.getName(),
+                execution.getId(),
+                execution.getProcessInstanceId(),
+                execution.getProcessDefinitionId(),
+                parseActivityType(flowNode),
+                timerEntity));
   }
 
   protected String parseActivityType(FlowNode flowNode) {

@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -34,13 +33,9 @@ import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
-/**
-
-
-
-
- */
-public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Serializable, BulkDeleteable {
+/** */
+public class TaskEntityImpl extends VariableScopeImpl
+    implements TaskEntity, Serializable, BulkDeleteable {
 
   public static final String DELETE_REASON_COMPLETED = "completed";
   public static final String DELETE_REASON_DELETED = "deleted";
@@ -92,9 +87,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   protected Date claimTime;
 
-  public TaskEntityImpl() {
-    
-  }
+  public TaskEntityImpl() {}
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -164,37 +157,58 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   @Override
   protected List<VariableInstanceEntity> loadVariableInstances() {
-    return Context.getCommandContext().getVariableInstanceEntityManager().findVariableInstancesByTaskId(id);
+    return Context.getCommandContext()
+        .getVariableInstanceEntityManager()
+        .findVariableInstancesByTaskId(id);
   }
 
   @Override
-  protected VariableInstanceEntity createVariableInstance(String variableName, Object value, ExecutionEntity sourceActivityExecution) {
-    VariableInstanceEntity result = super.createVariableInstance(variableName, value, sourceActivityExecution);
+  protected VariableInstanceEntity createVariableInstance(
+      String variableName, Object value, ExecutionEntity sourceActivityExecution) {
+    VariableInstanceEntity result =
+        super.createVariableInstance(variableName, value, sourceActivityExecution);
 
     // Dispatch event, if needed
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context
-          .getProcessEngineConfiguration()
+    if (Context.getProcessEngineConfiguration() != null
+        && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration()
           .getEventDispatcher()
           .dispatchEvent(
-              ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_CREATED, variableName, value, result.getType(), result.getTaskId(), result.getExecutionId(), getProcessInstanceId(),
+              ActivitiEventBuilder.createVariableEvent(
+                  ActivitiEventType.VARIABLE_CREATED,
+                  variableName,
+                  value,
+                  result.getType(),
+                  result.getTaskId(),
+                  result.getExecutionId(),
+                  getProcessInstanceId(),
                   getProcessDefinitionId()));
     }
     return result;
   }
 
   @Override
-  protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
+  protected void updateVariableInstance(
+      VariableInstanceEntity variableInstance,
+      Object value,
+      ExecutionEntity sourceActivityExecution) {
     super.updateVariableInstance(variableInstance, value, sourceActivityExecution);
 
     // Dispatch event, if needed
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context
-          .getProcessEngineConfiguration()
+    if (Context.getProcessEngineConfiguration() != null
+        && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration()
           .getEventDispatcher()
           .dispatchEvent(
-              ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_UPDATED, variableInstance.getName(), value, variableInstance.getType(), variableInstance.getTaskId(),
-                  variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
+              ActivitiEventBuilder.createVariableEvent(
+                  ActivitiEventType.VARIABLE_UPDATED,
+                  variableInstance.getName(),
+                  value,
+                  variableInstance.getType(),
+                  variableInstance.getTaskId(),
+                  variableInstance.getExecutionId(),
+                  getProcessInstanceId(),
+                  getProcessDefinitionId()));
     }
   }
 
@@ -202,7 +216,8 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public ExecutionEntity getExecution() {
     if ((execution == null) && (executionId != null)) {
-      this.execution = Context.getCommandContext().getExecutionEntityManager().findById(executionId);
+      this.execution =
+          Context.getCommandContext().getExecutionEntityManager().findById(executionId);
     }
     return execution;
   }
@@ -216,7 +231,9 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   @Override
   public void addCandidateUsers(Collection<String> candidateUsers) {
-    Context.getCommandContext().getIdentityLinkEntityManager().addCandidateUsers(this, candidateUsers);
+    Context.getCommandContext()
+        .getIdentityLinkEntityManager()
+        .addCandidateUsers(this, candidateUsers);
   }
 
   @Override
@@ -226,19 +243,25 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   @Override
   public void addCandidateGroups(Collection<String> candidateGroups) {
-    Context.getCommandContext().getIdentityLinkEntityManager().addCandidateGroups(this, candidateGroups);
+    Context.getCommandContext()
+        .getIdentityLinkEntityManager()
+        .addCandidateGroups(this, candidateGroups);
   }
 
   @Override
   public void addUserIdentityLink(String userId, String identityLinkType) {
-    Context.getCommandContext().getIdentityLinkEntityManager().addUserIdentityLink(this, userId, identityLinkType);
+    Context.getCommandContext()
+        .getIdentityLinkEntityManager()
+        .addUserIdentityLink(this, userId, identityLinkType);
   }
 
   @Override
   public void addGroupIdentityLink(String groupId, String identityLinkType) {
-    Context.getCommandContext().getIdentityLinkEntityManager().addGroupIdentityLink(this, groupId, identityLinkType);
+    Context.getCommandContext()
+        .getIdentityLinkEntityManager()
+        .addGroupIdentityLink(this, groupId, identityLinkType);
   }
-  
+
   public Set<IdentityLink> getCandidates() {
     Set<IdentityLink> potentialOwners = new HashSet<IdentityLink>();
     for (IdentityLinkEntity identityLinkEntity : getIdentityLinks()) {
@@ -259,19 +282,24 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public void deleteGroupIdentityLink(String groupId, String identityLinkType) {
     if (groupId != null) {
-      Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(this, null, groupId, identityLinkType);
+      Context.getCommandContext()
+          .getIdentityLinkEntityManager()
+          .deleteIdentityLink(this, null, groupId, identityLinkType);
     }
   }
 
   public void deleteUserIdentityLink(String userId, String identityLinkType) {
     if (userId != null) {
-      Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(this, userId, null, identityLinkType);
+      Context.getCommandContext()
+          .getIdentityLinkEntityManager()
+          .deleteIdentityLink(this, userId, null, identityLinkType);
     }
   }
 
   public List<IdentityLinkEntity> getIdentityLinks() {
     if (!isIdentityLinksInitialized) {
-      taskIdentityLinkEntities = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinksByTaskId(id);
+      taskIdentityLinkEntities =
+          Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinksByTaskId(id);
       isIdentityLinksInitialized = true;
     }
 
@@ -297,7 +325,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     this.assignee = assignee;
     assigneeUpdatedCount++;
   }
-  
+
   public void setOwner(String owner) {
     this.owner = owner;
   }
@@ -340,7 +368,10 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     if (commandContext == null) {
       throw new ActivitiException("lazy loading outside command context");
     }
-    VariableInstanceEntity variableInstance = commandContext.getVariableInstanceEntityManager().findVariableInstanceByTaskAndName(id, variableName);
+    VariableInstanceEntity variableInstance =
+        commandContext
+            .getVariableInstanceEntityManager()
+            .findVariableInstanceByTaskAndName(id, variableName);
 
     return variableInstance;
   }
@@ -351,7 +382,9 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     if (commandContext == null) {
       throw new ActivitiException("lazy loading outside command context");
     }
-    return commandContext.getVariableInstanceEntityManager().findVariableInstancesByTaskAndNames(id, variableNames);
+    return commandContext
+        .getVariableInstanceEntityManager()
+        .findVariableInstancesByTaskAndNames(id, variableNames);
   }
 
   // regular getters and setters ////////////////////////////////////////////////////////
@@ -387,7 +420,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
       return description;
     }
   }
-  
+
   public String getLocalizedDescription() {
     return localizedDescription;
   }
@@ -431,7 +464,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public String getAssignee() {
     return assignee;
   }
-  
+
   public String getOriginalAssignee() {
     // Don't ask. A stupid hack for v5 compatibility
     if (assigneeUpdatedCount > 1) {
@@ -440,7 +473,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
       return assignee;
     }
   }
-  
+
   public String getTaskDefinitionKey() {
     return taskDefinitionKey;
   }
@@ -456,7 +489,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public void setEventName(String eventName) {
     this.eventName = eventName;
   }
-  
+
   public ActivitiListener getCurrentActivitiListener() {
     return currentActivitiListener;
   }
@@ -471,7 +504,8 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public ExecutionEntity getProcessInstance() {
     if (processInstance == null && processInstanceId != null) {
-      processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
+      processInstance =
+          Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
     }
     return processInstance;
   }
@@ -500,12 +534,16 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     this.delegationState = delegationState;
   }
 
-  public String getDelegationStateString() { //Needed for Activiti 5 compatibility, not exposed in terface
+  public String
+      getDelegationStateString() { // Needed for Activiti 5 compatibility, not exposed in terface
     return (delegationState != null ? delegationState.toString() : null);
   }
 
   public void setDelegationStateString(String delegationStateString) {
-    this.delegationState = (delegationStateString != null ? DelegationState.valueOf(DelegationState.class, delegationStateString) : null);
+    this.delegationState =
+        (delegationStateString != null
+            ? DelegationState.valueOf(DelegationState.class, delegationStateString)
+            : null);
   }
 
   public boolean isDeleted() {
@@ -517,13 +555,13 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   }
 
   public boolean isCanceled() {
-	  return isCanceled;
+    return isCanceled;
   }
 
   public void setCanceled(boolean isCanceled) {
-	  this.isCanceled = isCanceled;
+    this.isCanceled = isCanceled;
   }
-  
+
   public String getParentTaskId() {
     return parentTaskId;
   }
@@ -552,11 +590,15 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public Map<String, Object> getTaskLocalVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
-      for (VariableInstanceEntity variableInstance : queryVariables) {
-        if (variableInstance.getId() != null && variableInstance.getTaskId() != null) {
-          variables.put(variableInstance.getName(), variableInstance.getValue());
-        }
-      }
+      queryVariables
+          .stream()
+          .filter(
+              variableInstance ->
+                  variableInstance.getId() != null && variableInstance.getTaskId() != null)
+          .forEach(
+              variableInstance -> {
+                variables.put(variableInstance.getName(), variableInstance.getValue());
+              });
     }
     return variables;
   }
@@ -564,11 +606,15 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public Map<String, Object> getProcessVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
-      for (VariableInstanceEntity variableInstance : queryVariables) {
-        if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
-          variables.put(variableInstance.getName(), variableInstance.getValue());
-        }
-      }
+      queryVariables
+          .stream()
+          .filter(
+              variableInstance ->
+                  variableInstance.getId() != null && variableInstance.getTaskId() == null)
+          .forEach(
+              variableInstance -> {
+                variables.put(variableInstance.getName(), variableInstance.getValue());
+              });
     }
     return variables;
   }
@@ -603,5 +649,4 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   public String toString() {
     return "Task[id=" + id + ", name=" + name + "]";
   }
-
 }

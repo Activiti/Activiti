@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.FlowNode;
@@ -31,7 +30,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 public class ExecutionGraphUtil {
 
   /**
-   * Takes in a collection of executions belonging to the same process instance. Orders the executions in a list, first elements are the leaf, last element is the root elements.
+   * Takes in a collection of executions belonging to the same process instance. Orders the
+   * executions in a list, first elements are the leaf, last element is the root elements.
    */
   public static List<ExecutionEntity> orderFromRootToLeaf(Collection<ExecutionEntity> executions) {
     List<ExecutionEntity> orderedList = new ArrayList<ExecutionEntity>(executions.size());
@@ -47,12 +47,21 @@ public class ExecutionGraphUtil {
 
     // Non-root elements
     while (orderedList.size() < executions.size()) {
-      for (ExecutionEntity execution : executions) {
-        if (!previousIds.contains(execution.getId()) && previousIds.contains(execution.getParentId())) {
-          orderedList.add(execution);
-          previousIds.add(execution.getId());
-        }
-      }
+      executions
+          .stream()
+          .filter(
+              execution ->
+                  !previousIds.contains(execution.getId())
+                      && previousIds.contains(execution.getParentId()))
+          .map(
+              execution -> {
+                orderedList.add(execution);
+                return execution;
+              })
+          .forEach(
+              execution -> {
+                previousIds.add(execution.getId());
+              });
     }
 
     return orderedList;
@@ -65,9 +74,11 @@ public class ExecutionGraphUtil {
   }
 
   /**
-   * Verifies if the element with the given source identifier can reach the element with the target identifier through following sequence flow.
+   * Verifies if the element with the given source identifier can reach the element with the target
+   * identifier through following sequence flow.
    */
-  public static boolean isReachable(String processDefinitionId, String sourceElementId, String targetElementId) {
+  public static boolean isReachable(
+      String processDefinitionId, String sourceElementId, String targetElementId) {
 
     // Fetch source and target elements
     Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
@@ -89,17 +100,31 @@ public class ExecutionGraphUtil {
     }
 
     if (sourceElement == null) {
-      throw new ActivitiException("Invalid sourceElementId '" + sourceElementId + "': no element found for this id n process definition '" + processDefinitionId + "'");
+      throw new ActivitiException(
+          "Invalid sourceElementId '"
+              + sourceElementId
+              + "': no element found for this id n process definition '"
+              + processDefinitionId
+              + "'");
     }
     if (targetElement == null) {
-      throw new ActivitiException("Invalid targetElementId '" + targetElementId + "': no element found for this id n process definition '" + processDefinitionId + "'");
+      throw new ActivitiException(
+          "Invalid targetElementId '"
+              + targetElementId
+              + "': no element found for this id n process definition '"
+              + processDefinitionId
+              + "'");
     }
 
     Set<String> visitedElements = new HashSet<String>();
     return isReachable(process, sourceElement, targetElement, visitedElements);
   }
 
-  public static boolean isReachable(Process process, FlowNode sourceElement, FlowNode targetElement, Set<String> visitedElements) {
+  public static boolean isReachable(
+      Process process,
+      FlowNode sourceElement,
+      FlowNode targetElement,
+      Set<String> visitedElements) {
 
     // No outgoing seq flow: could be the end of eg . the process or an embedded subprocess
     if (sourceElement.getOutgoingFlows().size() == 0) {
@@ -128,7 +153,8 @@ public class ExecutionGraphUtil {
         String targetRef = sequenceFlow.getTargetRef();
         FlowNode sequenceFlowTarget = (FlowNode) process.getFlowElement(targetRef, true);
         if (sequenceFlowTarget != null && !visitedElements.contains(sequenceFlowTarget.getId())) {
-          boolean reachable = isReachable(process, sequenceFlowTarget, targetElement, visitedElements);
+          boolean reachable =
+              isReachable(process, sequenceFlowTarget, targetElement, visitedElements);
 
           if (reachable) {
             return true;
@@ -139,5 +165,4 @@ public class ExecutionGraphUtil {
 
     return false;
   }
-
 }

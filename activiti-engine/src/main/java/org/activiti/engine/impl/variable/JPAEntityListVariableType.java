@@ -7,16 +7,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
 
 /**
- * Variable type capable of storing a list of reference to JPA-entities. Only JPA-Entities which are configured by annotations are supported. Use of compound primary keys is not supported. <br>
+ * Variable type capable of storing a list of reference to JPA-entities. Only JPA-Entities which are
+ * configured by annotations are supported. Use of compound primary keys is not supported. <br>
  * The variable value should be of type {@link List} and can only contain objects of the same type.
- * 
-
  */
 public class JPAEntityListVariableType implements VariableType, CacheableVariable {
 
@@ -59,7 +57,13 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
         Class<?> entityClass = mappings.getEntityMetaData(list.get(0).getClass()).getEntityClass();
 
         for (Object entity : list) {
-          canStore = entity != null && mappings.isJPAEntity(entity) && mappings.getEntityMetaData(entity.getClass()).getEntityClass().equals(entityClass);
+          canStore =
+              entity != null
+                  && mappings.isJPAEntity(entity)
+                  && mappings
+                      .getEntityMetaData(entity.getClass())
+                      .getEntityClass()
+                      .equals(entityClass);
           if (!canStore) {
             // In case the object is not a JPA entity or the class
             // doesn't match, we can't store the list
@@ -73,9 +77,11 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
 
   @Override
   public void setValue(Object value, ValueFields valueFields) {
-    EntityManagerSession entityManagerSession = Context.getCommandContext().getSession(EntityManagerSession.class);
+    EntityManagerSession entityManagerSession =
+        Context.getCommandContext().getSession(EntityManagerSession.class);
     if (entityManagerSession == null) {
-      throw new ActivitiException("Cannot set JPA variable: " + EntityManagerSession.class + " not configured");
+      throw new ActivitiException(
+          "Cannot set JPA variable: " + EntityManagerSession.class + " not configured");
     } else {
       // Before we set the value we must flush all pending changes from
       // the entitymanager
@@ -90,9 +96,10 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
       List<String> ids = new ArrayList<String>();
 
       String type = mappings.getJPAClassString(list.get(0));
-      for (Object entry : list) {
-        ids.add(mappings.getJPAIdString(entry));
-      }
+      list.forEach(
+          entry -> {
+            ids.add(mappings.getJPAIdString(entry));
+          });
 
       // Store type in text field and the ID's as a serialized array
       valueFields.setBytes(serializeIds(ids));
@@ -104,7 +111,6 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
     } else {
       throw new ActivitiIllegalArgumentException("Value is not a list of JPA entities: " + value);
     }
-
   }
 
   @Override
@@ -125,9 +131,7 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
     return null;
   }
 
-  /**
-   * @return a bytearray containing all ID's in the given string serialized as an array.
-   */
+  /** @return a bytearray containing all ID's in the given string serialized as an array. */
   protected byte[] serializeIds(List<String> ids) {
     try {
       String[] toStore = ids.toArray(new String[] {});
@@ -148,7 +152,8 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
 
       Object read = in.readObject();
       if (!(read instanceof String[])) {
-        throw new ActivitiIllegalArgumentException("Deserialized value is not an array of ID's: " + read);
+        throw new ActivitiIllegalArgumentException(
+            "Deserialized value is not an array of ID's: " + read);
       }
 
       return (String[]) read;
@@ -158,5 +163,4 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
       throw new ActivitiException("Unexpected exception when deserializing JPA id's", e);
     }
   }
-
 }

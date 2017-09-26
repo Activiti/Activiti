@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
-
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -28,16 +27,15 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
- */
+/** */
 public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
   protected MessageEventDefinition messageEventDefinition;
 
-  public BoundaryMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition, boolean interrupting) {
+  public BoundaryMessageEventActivityBehavior(
+      MessageEventDefinition messageEventDefinition, boolean interrupting) {
     super(interrupting);
     this.messageEventDefinition = messageEventDefinition;
   }
@@ -46,23 +44,37 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
   public void execute(DelegateExecution execution) {
     CommandContext commandContext = Context.getCommandContext();
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    
+
     String messageName = null;
     if (StringUtils.isNotEmpty(messageEventDefinition.getMessageRef())) {
       messageName = messageEventDefinition.getMessageRef();
     } else {
-      Expression messageExpression = commandContext.getProcessEngineConfiguration().getExpressionManager()
-          .createExpression(messageEventDefinition.getMessageExpression());
+      Expression messageExpression =
+          commandContext
+              .getProcessEngineConfiguration()
+              .getExpressionManager()
+              .createExpression(messageEventDefinition.getMessageExpression());
       messageName = messageExpression.getValue(execution).toString();
     }
-    
-    commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageName, executionEntity);
-    
+
+    commandContext
+        .getEventSubscriptionEntityManager()
+        .insertMessageEvent(messageName, executionEntity);
+
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        commandContext.getProcessEngineConfiguration().getEventDispatcher()
-                .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, executionEntity.getActivityId(), messageName,
-                        null, executionEntity.getId(), executionEntity.getProcessInstanceId(), executionEntity.getProcessDefinitionId()));
-      }
+      commandContext
+          .getProcessEngineConfiguration()
+          .getEventDispatcher()
+          .dispatchEvent(
+              ActivitiEventBuilder.createMessageEvent(
+                  ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                  executionEntity.getActivityId(),
+                  messageName,
+                  null,
+                  executionEntity.getId(),
+                  executionEntity.getProcessInstanceId(),
+                  executionEntity.getProcessDefinitionId()));
+    }
   }
 
   @Override
@@ -71,14 +83,21 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
     BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
 
     if (boundaryEvent.isCancelActivity()) {
-      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+      EventSubscriptionEntityManager eventSubscriptionEntityManager =
+          Context.getCommandContext().getEventSubscriptionEntityManager();
       List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
-      for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-        if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {
-
-          eventSubscriptionEntityManager.delete(eventSubscription);
-        }
-      }
+      eventSubscriptions
+          .stream()
+          .filter(
+              eventSubscription ->
+                  eventSubscription instanceof MessageEventSubscriptionEntity
+                      && eventSubscription
+                          .getEventName()
+                          .equals(messageEventDefinition.getMessageRef()))
+          .forEach(
+              eventSubscription -> {
+                eventSubscriptionEntityManager.delete(eventSubscription);
+              });
     }
 
     super.trigger(executionEntity, triggerName, triggerData);
