@@ -6,7 +6,7 @@
   <groupId>org.activiti</groupId>
   <artifactId>activiti-parent</artifactId>
   <packaging>pom</packaging>
-  <version>7-201709-EA-SNAPSHOT</version>
+  <version>7-201709-EA</version>
   <properties>
     <version.activiti>${project.version}</version.activiti>
     <version.activiti.cloud>${project.version}</version.activiti.cloud>
@@ -1063,7 +1063,7 @@
     <url>https://github.com/Activiti/activiti-build</url>
     <connection>scm:git:https://github.com/Activiti/activiti-build.git</connection>
     <developerConnection>scm:git:https://github.com/Activiti/activiti-build.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>activiti-7-201709-EA</tag>
   </scm>
   <developers>
     <developer>

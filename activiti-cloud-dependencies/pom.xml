@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.activiti.cloud</groupId>
     <artifactId>activiti-cloud-parent</artifactId>
-    <version>7-201709-EA-SNAPSHOT</version>
+    <version>7-201709-EA</version>
     <relativePath>../activiti-cloud-parent/</relativePath>
   </parent>
 
@@ -146,7 +146,7 @@
     <url>https://github.com/Activiti/activiti-build</url>
     <connection>scm:git:https://github.com/Activiti/activiti-build.git</connection>
     <developerConnection>scm:git:https://github.com/Activiti/activiti-build.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>activiti-7-201709-EA</tag>
   </scm>
   <developers>
     <developer>
