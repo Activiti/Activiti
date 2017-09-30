@@ -18,6 +18,7 @@
     <module>activiti-services-query-model</module>
     <module>activiti-services-query-repo</module>
     <module>activiti-services-query-rest</module>
+    <module>activiti-services-query-graphql</module>
   </modules>
 
 </project>

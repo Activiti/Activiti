@@ -16,39 +16,30 @@
 
 package org.activiti.services.query.events.handlers;
 
+import static org.activiti.services.query.events.handlers.QueryEventHandlerContextIT.MOCK_DEPENDENCIES_PROFILE;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+
 import java.util.Map;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.app.repository.VariableRepository;
-import org.activiti.services.query.events.ProcessCompletedEvent;
-import org.activiti.services.query.events.ProcessStartedEvent;
-import org.activiti.services.query.events.TaskAssignedEvent;
-import org.activiti.services.query.events.TaskCompletedEvent;
-import org.activiti.services.query.events.TaskCreatedEvent;
-import org.activiti.services.query.events.VariableCreatedEvent;
-import org.activiti.services.query.events.VariableDeletedEvent;
-import org.activiti.services.query.events.VariableUpdatedEvent;
+import org.activiti.services.query.events.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.services.query.events.handlers.QueryEventHandlerContextIT.MOCK_DEPENDENCIES_PROFILE;
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = QueryEventHandlerContextIT.QueryEventHandlerContextConfig.class)
 @ActiveProfiles(MOCK_DEPENDENCIES_PROFILE)
+@DataJpaTest // Needed to auto configure JPA Entity Manager
 public class QueryEventHandlerContextIT {
 
     public static final String MOCK_DEPENDENCIES_PROFILE = "mockDependencies";
@@ -80,6 +71,7 @@ public class QueryEventHandlerContextIT {
         public VariableRepository getVariableRepository() {
             return mock(VariableRepository.class);
         }
+
     }
 
     @Test

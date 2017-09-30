@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.activiti.services.query.graphql.example;
 
-package org.activiti.services.query.rest.assembler;
+import org.activiti.services.query.qraphql.autoconfigure.EnableActivitiGraphQLQueryService;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import org.activiti.services.query.model.Variable;
-import org.activiti.services.query.resource.VariableQueryResource;
-import org.springframework.hateoas.ResourceAssembler;
-import org.springframework.stereotype.Component;
+@SpringBootApplication
+@EnableActivitiGraphQLQueryService
+public class Application {
 
-@Component
-public class VariableQueryResourceAssembler implements ResourceAssembler<Variable, VariableQueryResource> {
-
-    @Override
-    public VariableQueryResource toResource(Variable variable) {
-        return new VariableQueryResource(variable);
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
     }
+
 }

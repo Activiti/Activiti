@@ -21,6 +21,7 @@ import org.activiti.services.query.model.Task;
 import org.activiti.services.query.model.Variable;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
+import org.springframework.data.rest.core.mapping.RepositoryDetectionStrategy.RepositoryDetectionStrategies;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurerAdapter;
 
 @Configuration
@@ -28,6 +29,12 @@ public class QueryRepositoryConfig extends RepositoryRestConfigurerAdapter {
 
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+    	// Configure base path for api endpoint
+    	config.setBasePath("/v1");
+    	
+    	// Expose only repositories annotated with @RepositoryRestResource
+    	config.setRepositoryDetectionStrategy(RepositoryDetectionStrategies.ANNOTATED);
+    	
         //by default the ids are not exposed the the REST API
         config.exposeIdsFor(ProcessInstance.class);
         config.exposeIdsFor(Task.class);
