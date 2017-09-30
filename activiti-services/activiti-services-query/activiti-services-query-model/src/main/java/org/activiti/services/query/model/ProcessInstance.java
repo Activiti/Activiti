@@ -55,6 +55,10 @@ public class ProcessInstance {
     @GraphQLDescription("Associated tasks entities")
     @OneToMany(mappedBy="processInstance")
     private Set<Task> tasks;     
+
+    @GraphQLDescription("Associated process instance variables")
+    @OneToMany(mappedBy="processInstance")
+    private Set<Variable> variables;     
     
     public ProcessInstance() {
     }
@@ -125,6 +129,14 @@ public class ProcessInstance {
 
 	public void setTasks(Set<Task> tasks) {
 		this.tasks = tasks;
+	}
+
+	public Set<Variable> getVariables() {
+		return variables;
+	}
+
+	public void setVariables(Set<Variable> variables) {
+		this.variables = variables;
 	}
     
 }

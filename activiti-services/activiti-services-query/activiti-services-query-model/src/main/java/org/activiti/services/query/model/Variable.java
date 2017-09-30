@@ -18,13 +18,7 @@ package org.activiti.services.query.model;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -40,7 +34,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Variable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)  
     private long id;
     private String type;
     private String name;
@@ -55,13 +49,13 @@ public class Variable {
     private String executionId;
     private String value;
 
-    @ManyToOne()
+    @ManyToOne(optional=true)
     @JoinColumns({
-        @JoinColumn(name="taskId", referencedColumnName="id"),
+        @JoinColumn(name="taskId", referencedColumnName="id", nullable = true),
     })
     private Task task;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumns({
         @JoinColumn(name="processInstanceId", referencedColumnName="processInstanceId")
     })
@@ -159,9 +153,17 @@ public class Variable {
     public ProcessInstance getProcessInstance() {
         return this.processInstance;
     }
+
+    public void setProcessInstance(ProcessInstance processInstance) {
+        this.processInstance = processInstance;
+    }
     
     public Task getTask() {
         return this.task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
     }
     
 }
