@@ -33,10 +33,8 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
 
 /**
- * Enable Configuration of Activiti Query Rest Service Components
+ * Enables Configuration of Activiti Query Rest Service Components
  * 
- * @author Igor Dianov
- *
  */
 @Documented
 @Retention( RUNTIME )
