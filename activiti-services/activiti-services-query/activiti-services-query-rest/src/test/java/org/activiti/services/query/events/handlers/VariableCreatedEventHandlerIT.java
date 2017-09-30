@@ -52,13 +52,14 @@ public class VariableCreatedEventHandlerIT {
 	}
 	
 	@Autowired
-	VariableRepository repository;
+	private VariableRepository repository;
 	
 	@Autowired
-	VariableCreatedEventHandler handler;
+	private VariableCreatedEventHandler handler;
 	
 	@Test
 	public void contextLoads() {
+		// Should pass
 	}
 
     @Test

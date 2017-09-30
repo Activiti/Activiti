@@ -60,13 +60,14 @@ public class TaskCreatedEventHandlerIT {
 	}
 	
 	@Autowired
-	TaskRepository repository;
+	private TaskRepository repository;
 	
 	@Autowired
-	TaskCreatedEventHandler handler;
+	private TaskCreatedEventHandler handler;
 	
 	@Test
 	public void contextLoads() {
+		// Should pass
 	}
 
     @Test
