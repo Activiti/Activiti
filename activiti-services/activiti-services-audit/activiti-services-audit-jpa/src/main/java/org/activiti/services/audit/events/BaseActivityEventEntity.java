@@ -16,6 +16,9 @@
 
 package org.activiti.services.audit.events;
 
+import javax.persistence.Entity;
+
+@Entity
 public abstract class BaseActivityEventEntity extends ProcessEngineEventEntity {
 
     private String activityId;
