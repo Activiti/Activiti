@@ -50,20 +50,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 @Sql(value="classpath:/jpa-test.sql")
 @DirtiesContext
 public class TaskCreatedEventHandlerIT {
+
+	@Autowired
+	private TaskRepository repository;
+	
+	@Autowired
+	private TaskCreatedEventHandler handler;
 	
 	@SpringBootConfiguration
 	@EnableJpaRepositories(basePackageClasses=ProcessInstanceRepository.class)
 	@EntityScan(basePackageClasses=ProcessInstance.class)
 	@Import(TaskCreatedEventHandler.class)
 	static class Configuation {
-		
 	}
-	
-	@Autowired
-	private TaskRepository repository;
-	
-	@Autowired
-	private TaskCreatedEventHandler handler;
 	
 	@Test
 	public void contextLoads() {
