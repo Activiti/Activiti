@@ -28,11 +28,11 @@ import org.springframework.data.rest.core.annotation.RestResource;
  * 
  */
 @NoRepositoryBean
-public interface RestResourceQueryRepository<T, ID> extends PagingAndSortingRepository<T, ID> {
+public interface RestResourceQueryRepository<T, I> extends PagingAndSortingRepository<T, I> {
 
 	@Override
 	@RestResource(exported = false)
-	void deleteById(ID id);
+	void deleteById(I id);
 
 	@Override
 	@RestResource(exported = false)

@@ -25,6 +25,6 @@ public class EnableActivitiRestQueryServiceTest {
 	
 	@Test
 	public void contextLoads() {
-		
+		// should pass
 	}
 }
