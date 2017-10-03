@@ -30,28 +30,28 @@ import org.springframework.data.rest.core.annotation.RestResource;
 @NoRepositoryBean
 public interface RestResourceQueryRepository<T, I> extends PagingAndSortingRepository<T, I> {
 
-	@Override
-	@RestResource(exported = false)
-	void deleteById(I id);
+    @Override
+    @RestResource(exported = false)
+    void deleteById(I id);
 
-	@Override
-	@RestResource(exported = false)
-	void delete(T entity);
+    @Override
+    @RestResource(exported = false)
+    void delete(T entity);
 
-	@Override
-	@RestResource(exported = false)
-	void deleteAll();
-	
-	@Override
-	@RestResource(exported = false)
-	void deleteAll(Iterable<? extends T> entities);
-	
-	@Override
-	@RestResource(exported = false)
-	<S extends T> S save(S entity);
+    @Override
+    @RestResource(exported = false)
+    void deleteAll();
 
-	@Override
-	@RestResource(exported = false)
-	<S extends T> Iterable<S> saveAll(Iterable<S> entity);
+    @Override
+    @RestResource(exported = false)
+    void deleteAll(Iterable<? extends T> entities);
+
+    @Override
+    @RestResource(exported = false)
+    <S extends T> S save(S entity);
+
+    @Override
+    @RestResource(exported = false)
+    <S extends T> Iterable<S> saveAll(Iterable<S> entity);
 
 }
