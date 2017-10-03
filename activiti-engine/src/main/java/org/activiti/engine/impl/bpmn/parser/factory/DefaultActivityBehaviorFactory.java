@@ -160,6 +160,18 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     public ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask) {
         Expression delegateExpression = expressionManager.createExpression(serviceTask.getImplementation());
+        return createServiceTaskBehavior(serviceTask,
+                                         delegateExpression);
+    }
+
+    public ServiceTaskDelegateExpressionActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask) {
+        Expression delegateExpression = expressionManager.createExpression("${MQServiceTaskBehavior}");
+        return createServiceTaskBehavior(serviceTask,
+                                         delegateExpression);
+    }
+
+    private ServiceTaskDelegateExpressionActivityBehavior createServiceTaskBehavior(ServiceTask serviceTask,
+                                                                                    Expression delegateExpression) {
         return new ServiceTaskDelegateExpressionActivityBehavior(serviceTask.getId(),
                                                                  delegateExpression,
                                                                  getSkipExpressionFromServiceTask(serviceTask),

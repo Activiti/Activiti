@@ -181,6 +181,11 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   }
 
   @Override
+  public ServiceTaskDelegateExpressionActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask) {
+    return wrappedActivityBehaviorFactory.createDefaultServiceTaskBehavior(serviceTask);
+  }
+
+  @Override
   public ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask) {
     return wrappedActivityBehaviorFactory.createServiceTaskExpressionActivityBehavior(serviceTask);
   }

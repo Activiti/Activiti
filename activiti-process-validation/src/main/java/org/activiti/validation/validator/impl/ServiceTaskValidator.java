@@ -33,22 +33,11 @@ public class ServiceTaskValidator extends ExternalInvocationTaskValidator {
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
     List<ServiceTask> serviceTasks = process.findFlowElementsOfType(ServiceTask.class);
     for (ServiceTask serviceTask : serviceTasks) {
-      verifyImplementation(process, serviceTask, errors);
       verifyType(process, serviceTask, errors);
       verifyResultVariableName(process, serviceTask, errors);
       verifyWebservice(bpmnModel, process, serviceTask, errors);
     }
 
-  }
-
-  protected void verifyImplementation(Process process, ServiceTask serviceTask, List<ValidationError> errors) {
-    if (!ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(serviceTask.getImplementationType())
-        && !ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())
-        && !ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())
-        && !ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(serviceTask.getImplementationType()) && StringUtils.isEmpty(serviceTask.getType())) {
-      addError(errors, Problems.SERVICE_TASK_MISSING_IMPLEMENTATION, process, serviceTask,
-          "One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask.");
-    }
   }
 
   protected void verifyType(Process process, ServiceTask serviceTask, List<ValidationError> errors) {
