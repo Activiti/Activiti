@@ -15,8 +15,7 @@
  */
 package org.activiti.services.query.rest.support;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,7 +31,6 @@ import org.springframework.http.*;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.*;
-import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -42,324 +40,328 @@ import org.springframework.web.context.request.ServletRequestAttributes;
  */
 public class TestMvcClient {
 
-	public static MediaType DEFAULT_MEDIA_TYPE = org.springframework.hateoas.MediaTypes.HAL_JSON;
+    public static MediaType DEFAULT_MEDIA_TYPE = org.springframework.hateoas.MediaTypes.HAL_JSON;
 
-	private final MockMvc mvc;
-	private final LinkDiscoverers discoverers;
-	private String basePath = "/"; 
+    private final MockMvc mvc;
+    private final LinkDiscoverers discoverers;
+    private String basePath = "/";
 
-	/**
-	 * Creates a new {@link TestMvcClient} for the given {@link MockMvc} and {@link LinkDiscoverers}.
-	 * 
-	 * @param mvc must not be {@literal null}.
-	 * @param discoverers must not be {@literal null}.
-	 */
-	public TestMvcClient(MockMvc mvc, LinkDiscoverers discoverers) {
+    /**
+     * Creates a new {@link TestMvcClient} for the given {@link MockMvc} and {@link LinkDiscoverers}.
+     * 
+     * @param mvc must not be {@literal null}.
+     * @param discoverers must not be {@literal null}.
+     */
+    public TestMvcClient(MockMvc mvc, LinkDiscoverers discoverers) {
 
-		Assert.notNull(mvc, "MockMvc must not be null!");
-		Assert.notNull(discoverers, "LinkDiscoverers must not be null!");
+        assertThat(mvc).isNotNull();
+        assertThat(discoverers).isNotNull();
 
-		this.mvc = mvc;
-		this.discoverers = discoverers;
-	}
-	
-	/**
-	 * Set base path uri. Default value is "/"
-	 * 
-	 * @param uri basePath 
-	 * @return TestMvcClient instance
-	 */
-	public TestMvcClient setBasePath(String uri) {
-		this.basePath = uri;
-		
-		return this;
-	}
+        this.mvc = mvc;
+        this.discoverers = discoverers;
+    }
 
-	/**
-	 * Initializes web tests. Will register a {@link MockHttpServletRequest} for the current thread.
-	 */
-	public static void initWebTest() {
+    /**
+     * Set base path uri. Default value is "/"
+     * 
+     * @param uri basePath 
+     * @return TestMvcClient instance
+     */
+    public TestMvcClient setBasePath(String uri) {
+        this.basePath = uri;
 
-		MockHttpServletRequest request = new MockHttpServletRequest();
-		ServletRequestAttributes requestAttributes = new ServletRequestAttributes(request);
-		RequestContextHolder.setRequestAttributes(requestAttributes);
-	}
+        return this;
+    }
 
-	public static void assertAllowHeaders(HttpEntity<?> response, HttpMethod... methods) {
+    /**
+     * Initializes web tests. Will register a {@link MockHttpServletRequest} for the current thread.
+     */
+    public static void initWebTest() {
 
-		HttpHeaders headers = response.getHeaders();
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        ServletRequestAttributes requestAttributes = new ServletRequestAttributes(request);
+        RequestContextHolder.setRequestAttributes(requestAttributes);
+    }
 
-		assertThat(headers.getAllow(), hasSize(methods.length));
-		assertThat(headers.getAllow(), hasItems(methods));
-	}
+    public static void assertAllowHeaders(HttpEntity<?> response, HttpMethod... methods) {
 
-	/**
-	 * Perform GET [href] with an explicit Accept media type using MockMvc. Verify the requests succeeded and also came
-	 * back as the Accept type.
-	 *
-	 * @param href
-	 * @param contentType
-	 * @return a mocked servlet response with results from GET [href]
-	 * @throws Exception
-	 */
-	public MockHttpServletResponse request(String href, MediaType contentType) throws Exception {
-		return mvc.perform(get(href).accept(contentType)). //
-				andExpect(status().isOk()). //
-				andExpect(content().contentTypeCompatibleWith(contentType)). //
-				andReturn().getResponse();
-	}
+        HttpHeaders headers = response.getHeaders();
 
-	/**
-	 * Perform GET [href] with an explicit Accept media type using MockMvc. Verify the requests succeeded and also came
-	 * back as the Accept type.
-	 *
-	 * @param href
-	 * @param contentType
-	 * @return a mocked servlet response with results from GET [href]
-	 * @throws Exception
-	 */
-	public MockHttpServletResponse request(String href, MediaType contentType, HttpHeaders httpHeaders) throws Exception {
-		return mvc.perform(get(href).accept(contentType).headers(httpHeaders)). //
-				andExpect(status().isOk()). //
-				andExpect(content().contentType(contentType)). //
-				andReturn().getResponse();
-	}
+        assertThat(headers.getAllow()).containsExactly(methods);
+    }
 
-	/**
-	 * Convenience wrapper that first expands the link using URI substitution before requesting with the default media
-	 * type.
-	 *
-	 * @param link
-	 * @return
-	 * @throws Exception
-	 */
-	public MockHttpServletResponse request(Link link) throws Exception {
-		return request(link.expand().getHref());
-	}
+    /**
+     * Perform GET [href] with an explicit Accept media type using MockMvc. Verify the requests succeeded and also came
+     * back as the Accept type.
+     *
+     * @param href
+     * @param contentType
+     * @return a mocked servlet response with results from GET [href]
+     * @throws Exception
+     */
+    public MockHttpServletResponse request(String href, MediaType contentType) throws Exception {
+        return mvc.perform(get(href).accept(contentType)). //
+                  andExpect(status().isOk()). //
+                  andExpect(content().contentTypeCompatibleWith(contentType)). //
+                  andReturn().getResponse();
+    }
 
-	/**
-	 * Convenience wrapper that first expands the link using URI substitution and then GET [href] using an explicit media
-	 * type
-	 *
-	 * @param link
-	 * @param mediaType
-	 * @return
-	 * @throws Exception
-	 */
-	public MockHttpServletResponse request(Link link, MediaType mediaType) throws Exception {
-		return request(link.expand().getHref(), mediaType);
-	}
+    /**
+     * Perform GET [href] with an explicit Accept media type using MockMvc. Verify the requests succeeded and also came
+     * back as the Accept type.
+     *
+     * @param href
+     * @param contentType
+     * @return a mocked servlet response with results from GET [href]
+     * @throws Exception
+     */
+    public MockHttpServletResponse request(String href, MediaType contentType, HttpHeaders httpHeaders)
+                                                                                                        throws Exception {
+        return mvc.perform(get(href).accept(contentType).headers(httpHeaders)). //
+                  andExpect(status().isOk()). //
+                  andExpect(content().contentType(contentType)). //
+                  andReturn().getResponse();
+    }
 
-	/**
-	 * Convenience wrapper to GET [href] using the default media type.
-	 *
-	 * @param href
-	 * @return
-	 * @throws Exception
-	 */
-	public MockHttpServletResponse request(String href) throws Exception {
-		return request(href, DEFAULT_MEDIA_TYPE);
-	}
+    /**
+     * Convenience wrapper that first expands the link using URI substitution before requesting with the default media
+     * type.
+     *
+     * @param link
+     * @return
+     * @throws Exception
+     */
+    public MockHttpServletResponse request(Link link) throws Exception {
+        return request(link.expand().getHref());
+    }
 
-	/**
-	 * For a given link, expand the href using URI substitution and then do a simple GET.
-	 *
-	 * @param link
-	 * @return
-	 * @throws Exception
-	 */
-	public ResultActions follow(Link link) throws Exception {
-		return follow(link.expand().getHref());
-	}
+    /**
+     * Convenience wrapper that first expands the link using URI substitution and then GET [href] using an explicit media
+     * type
+     *
+     * @param link
+     * @param mediaType
+     * @return
+     * @throws Exception
+     */
+    public MockHttpServletResponse request(Link link, MediaType mediaType) throws Exception {
+        return request(link.expand().getHref(), mediaType);
+    }
 
-	/**
-	 * Follow URL supplied as a string. NOTE: Assumes no URI templates.
-	 *
-	 * @param href
-	 * @return
-	 * @throws Exception
-	 */
-	public ResultActions follow(String href) throws Exception {
-		return follow(href, MediaType.ALL);
-	}
+    /**
+     * Convenience wrapper to GET [href] using the default media type.
+     *
+     * @param href
+     * @return
+     * @throws Exception
+     */
+    public MockHttpServletResponse request(String href) throws Exception {
+        return request(href, DEFAULT_MEDIA_TYPE);
+    }
 
-	/**
-	 * Folow Link with a specific Accept header (media type).
-	 *
-	 * @param link
-	 * @param accept
-	 * @return
-	 * @throws Exception
-	 */
-	public ResultActions follow(Link link, MediaType accept) throws Exception {
-		return follow(link.expand().getHref(), accept);
-	}
+    /**
+     * For a given link, expand the href using URI substitution and then do a simple GET.
+     *
+     * @param link
+     * @return
+     * @throws Exception
+     */
+    public ResultActions follow(Link link) throws Exception {
+        return follow(link.expand().getHref());
+    }
 
-	/**
-	 * Follow URL supplied as a string with a specific Accept header.
-	 * 
-	 * @param href
-	 * @param accept
-	 * @return
-	 * @throws Exception
-	 */
-	public ResultActions follow(String href, MediaType accept) throws Exception {
-		return mvc.perform(get(href).header(HttpHeaders.ACCEPT, accept.toString()));
-	}
+    /**
+     * Follow URL supplied as a string. NOTE: Assumes no URI templates.
+     *
+     * @param href
+     * @return
+     * @throws Exception
+     */
+    public ResultActions follow(String href) throws Exception {
+        return follow(href, MediaType.ALL);
+    }
 
-	/**
-	 * Discover list of URIs associated with a rel, starting at the root node ("/")
-	 *
-	 * @param rel
-	 * @return
-	 * @throws Exception
-	 */
-	public List<Link> discover(String rel) throws Exception {
-		return discover(new Link(basePath), rel);
-	}
+    /**
+     * Folow Link with a specific Accept header (media type).
+     *
+     * @param link
+     * @param accept
+     * @return
+     * @throws Exception
+     */
+    public ResultActions follow(Link link, MediaType accept) throws Exception {
+        return follow(link.expand().getHref(), accept);
+    }
 
-	/**
-	 * Discover single URI associated with a rel, starting at the root node ("/")
-	 * 
-	 * @param rel
-	 * @return
-	 * @throws Exception
-	 */
-	public Link discoverUnique(String rel) throws Exception {
+    /**
+     * Follow URL supplied as a string with a specific Accept header.
+     * 
+     * @param href
+     * @param accept
+     * @return
+     * @throws Exception
+     */
+    public ResultActions follow(String href, MediaType accept) throws Exception {
+        return mvc.perform(get(href).header(HttpHeaders.ACCEPT, accept.toString()));
+    }
 
-		List<Link> discover = discover(rel);
-		assertThat(discover, hasSize(1));
-		return discover.get(0);
-	}
+    /**
+     * Discover list of URIs associated with a rel, starting at the root node ("/")
+     *
+     * @param rel
+     * @return
+     * @throws Exception
+     */
+    public List<Link> discover(String rel) throws Exception {
+        return discover(new Link(basePath), rel);
+    }
 
-	/**
-	 * Traverses the given link relations from the root.
-	 * 
-	 * @param rels
-	 * @return
-	 * @throws Exception
-	 */
-	public Link discoverUnique(String... rels) throws Exception {
+    /**
+     * Discover single URI associated with a rel, starting at the root node ("/")
+     * 
+     * @param rel
+     * @return
+     * @throws Exception
+     */
+    public Link discoverUnique(String rel) throws Exception {
 
-		Iterator<String> toTraverse = Arrays.asList(rels).iterator();
-		Link lastLink = null;
+        List<Link> discover = discover(rel);
+        assertThat(discover).hasSize(1);
+        return discover.get(0);
+    }
 
-		while (toTraverse.hasNext()) {
+    /**
+     * Traverses the given link relations from the root.
+     * 
+     * @param rels
+     * @return
+     * @throws Exception
+     */
+    public Link discoverUnique(String... rels) throws Exception {
 
-			String rel = toTraverse.next();
-			lastLink = lastLink == null ? discoverUnique(rel) : discoverUnique(lastLink, rel);
-		}
+        Iterator<String> toTraverse = Arrays.asList(rels).iterator();
+        Link lastLink = null;
 
-		return lastLink;
-	}
+        while (toTraverse.hasNext()) {
 
-	/**
-	 * Given a URI (root), discover the URIs for a given rel.
-	 *
-	 * @param root - URI to start from
-	 * @param rel - name of the relationship to seek links
-	 * @return list of {@link org.springframework.hateoas.Link Link} objects associated with the rel
-	 * @throws Exception
-	 */
-	public List<Link> discover(Link root, String rel) throws Exception {
+            String rel = toTraverse.next();
+            lastLink = lastLink == null ? discoverUnique(rel) : discoverUnique(lastLink, rel);
+        }
 
-		MockHttpServletResponse response = mvc.perform(get(root.expand().getHref()).accept(DEFAULT_MEDIA_TYPE)).//
-				andExpect(status().isOk()).//
-				andExpect(hasLinkWithRel(rel)).//
-				andReturn().getResponse();
+        return lastLink;
+    }
 
-		String s = response.getContentAsString();
-		return getDiscoverer(response).findLinksWithRel(rel, s);
-	}
+    /**
+     * Given a URI (root), discover the URIs for a given rel.
+     *
+     * @param root - URI to start from
+     * @param rel - name of the relationship to seek links
+     * @return list of {@link org.springframework.hateoas.Link Link} objects associated with the rel
+     * @throws Exception
+     */
+    public List<Link> discover(Link root, String rel) throws Exception {
 
-	/**
-	 * Given a URI (root), discover the unique URI for a given rel. NOTE: Assumes there is only one URI
-	 *
-	 * @param root
-	 * @param rel
-	 * @return {@link org.springframework.hateoas.Link Link} tied to a given rel
-	 * @throws Exception
-	 */
-	public Link discoverUnique(Link root, String rel) throws Exception {
-		return discoverUnique(root, rel, DEFAULT_MEDIA_TYPE);
-	}
+        MockHttpServletResponse response = mvc.perform(get(root.expand().getHref()).accept(DEFAULT_MEDIA_TYPE)).//
+                                              andExpect(status().isOk()).//
+                                              andExpect(hasLinkWithRel(rel)).//
+                                              andReturn().getResponse();
 
-	/**
-	 * Given a URI (root), discover the unique URI for a given rel. NOTE: Assumes there is only one URI
-	 *
-	 * @param root the link to the resource to access.
-	 * @param rel the link relation to discover in the response.
-	 * @param mediaType the {@link MediaType} to request.
-	 * @return {@link org.springframework.hateoas.Link Link} tied to a given rel
-	 * @throws Exception
-	 */
-	public Link discoverUnique(Link root, String rel, MediaType mediaType) throws Exception {
+        String s = response.getContentAsString();
+        return getDiscoverer(response).findLinksWithRel(rel, s);
+    }
 
-		MockHttpServletResponse response = mvc
-				.perform(get(root.expand().getHref())//
-						.accept(mediaType))
-				.andExpect(status().isOk())//
-				.andExpect(hasLinkWithRel(rel))//
-				.andReturn().getResponse();
+    /**
+     * Given a URI (root), discover the unique URI for a given rel. NOTE: Assumes there is only one URI
+     *
+     * @param root
+     * @param rel
+     * @return {@link org.springframework.hateoas.Link Link} tied to a given rel
+     * @throws Exception
+     */
+    public Link discoverUnique(Link root, String rel) throws Exception {
+        return discoverUnique(root, rel, DEFAULT_MEDIA_TYPE);
+    }
 
-		return assertHasLinkWithRel(rel, response);
-	}
+    /**
+     * Given a URI (root), discover the unique URI for a given rel. NOTE: Assumes there is only one URI
+     *
+     * @param root the link to the resource to access.
+     * @param rel the link relation to discover in the response.
+     * @param mediaType the {@link MediaType} to request.
+     * @return {@link org.springframework.hateoas.Link Link} tied to a given rel
+     * @throws Exception
+     */
+    public Link discoverUnique(Link root, String rel, MediaType mediaType) throws Exception {
 
-	/**
-	 * For a given servlet response, verify that the provided rel exists in its hypermedia. If so, return the URI link.
-	 *
-	 * @param rel
-	 * @param response
-	 * @return {@link org.springframework.hateoas.Link} of the rel found in the response
-	 * @throws Exception
-	 */
-	public Link assertHasLinkWithRel(String rel, MockHttpServletResponse response) throws Exception {
+        MockHttpServletResponse response = mvc
+                                              .perform(get(root.expand().getHref())//
+                                                                                   .accept(mediaType))
+                                              .andExpect(status().isOk())//
+                                              .andExpect(hasLinkWithRel(rel))//
+                                              .andReturn()
+                                              .getResponse();
 
-		String content = response.getContentAsString();
-		Link link = getDiscoverer(response).findLinkWithRel(rel, content);
+        return assertHasLinkWithRel(rel, response);
+    }
 
-		assertThat("Expected to find link with rel " + rel + " but found none in " + content + "!", link,
-				is(notNullValue()));
+    /**
+     * For a given servlet response, verify that the provided rel exists in its hypermedia. If so, return the URI link.
+     *
+     * @param rel
+     * @param response
+     * @return {@link org.springframework.hateoas.Link} of the rel found in the response
+     * @throws Exception
+     */
+    public Link assertHasLinkWithRel(String rel, MockHttpServletResponse response) throws Exception {
 
-		return link;
-	}
+        String content = response.getContentAsString();
+        Link link = getDiscoverer(response).findLinkWithRel(rel, content);
 
-	/**
-	 * MockMvc matcher used to verify existence of rel with URI link
-	 *
-	 * @param rel
-	 * @return
-	 */
-	public ResultMatcher hasLinkWithRel(final String rel) {
+        assertThat(link)
+            .describedAs("Expected to find link with rel " + rel + " but found none in " + content + "!")
+            .isNotNull();
 
-		return new ResultMatcher() {
+        return link;
+    }
 
-			@Override
-			public void match(MvcResult result) throws Exception {
+    /**
+     * MockMvc matcher used to verify existence of rel with URI link
+     *
+     * @param rel
+     * @return
+     */
+    public ResultMatcher hasLinkWithRel(final String rel) {
 
-				MockHttpServletResponse response = result.getResponse();
-				String s = response.getContentAsString();
+        return new ResultMatcher() {
 
-				assertThat("Expected to find link with rel " + rel + " but found none in " + s, //
-						getDiscoverer(response).findLinkWithRel(rel, s), notNullValue());
-			}
-		};
-	}
+            @Override
+            public void match(MvcResult result) throws Exception {
 
-	/**
-	 * Using the servlet response's content type, find the corresponding link discoverer.
-	 *
-	 * @param response
-	 * @return {@link org.springframework.hateoas.LinkDiscoverer}
-	 */
-	public LinkDiscoverer getDiscoverer(MockHttpServletResponse response) {
+                MockHttpServletResponse response = result.getResponse();
+                String s = response.getContentAsString();
 
-		String contentType = response.getContentType();
-		LinkDiscoverer linkDiscovererFor = discoverers.getLinkDiscovererFor(contentType);
+                assertThat(getDiscoverer(response).findLinkWithRel(rel, s))
+                           .describedAs("Expected to find link with rel " + rel + " but found none in " + s)
+                           .isNotNull();
+            }
+        };
+    }
 
-		assertThat("Did not find a LinkDiscoverer for returned media type " + contentType + "!", linkDiscovererFor,
-				is(notNullValue()));
+    /**
+     * Using the servlet response's content type, find the corresponding link discoverer.
+     *
+     * @param response
+     * @return {@link org.springframework.hateoas.LinkDiscoverer}
+     */
+    public LinkDiscoverer getDiscoverer(MockHttpServletResponse response) {
 
-		return linkDiscovererFor;
-	}
+        String contentType = response.getContentType();
+        LinkDiscoverer linkDiscovererFor = discoverers.getLinkDiscovererFor(contentType);
+
+        assertThat(linkDiscovererFor)
+            .describedAs("Did not find a LinkDiscoverer for returned media type " + contentType + "!")
+            .isNotNull();
+
+        return linkDiscovererFor;
+    }
 }
