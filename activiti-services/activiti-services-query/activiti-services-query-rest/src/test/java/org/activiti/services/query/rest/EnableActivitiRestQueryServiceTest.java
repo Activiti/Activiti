@@ -44,125 +44,131 @@ import org.springframework.web.context.WebApplicationContext;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
-	webEnvironment=WebEnvironment.RANDOM_PORT,
-	properties={
-		"spring.jpa.hibernate.ddl-auto=create-drop",
-		"spring.jpa.show-sql=true"
-	}
-)
+        webEnvironment = WebEnvironment.MOCK,
+        properties = {"spring.jpa.hibernate.ddl-auto=create-drop", "spring.jpa.show-sql=true"
+        })
 public class EnableActivitiRestQueryServiceTest {
-	
-	private static String basePath = "/v1";
 
-	@Autowired
-	private WebApplicationContext context;
+    private static String basePath = "/v1";
 
-	@Autowired 
-	private LinkDiscoverers discoverers;
+    @Autowired
+    private WebApplicationContext context;
 
-	private MockMvc mvc;
-	
-	private TestMvcClient client;
-	
-	@SpringBootApplication
-	@EnableActivitiRestQueryService
-	static class Configuration {
-		
-		@Bean
-		public LinkDiscoverer alpsLinkDiscoverer() {
-			return new JsonPathLinkDiscoverer("$.descriptors[?(@.name == '%s')].href",
-					MediaType.valueOf("application/alps+json"));
-		}
-	}
-	
-	@Before
-	public void setUp() {
-		this.mvc = MockMvcBuilders.webAppContextSetup(context).build();
-		this.client = new TestMvcClient(mvc, discoverers).setBasePath(basePath);
-	}
-	
-	@Test
-	public void contextLoads() {
-		// should pass
-	}
+    @Autowired
+    private LinkDiscoverers discoverers;
 
-	@Test
-	public void exposesAlpsCollectionResourcesWithIdsAndAssociations() throws Exception {
+    private MockMvc mvc;
 
-		// Given 
-		Link profileLink = client.discoverUnique("profile");
-		
-		// When
-		Link resourceLink = client.discoverUnique(profileLink, "process-instances", MediaType.ALL);
+    private TestMvcClient client;
 
-		// Then
-		client.follow(resourceLink, RestMediaTypes.ALPS_JSON)//
-			.andExpect(jsonPath("$.alps.version").value("1.0"))//
-			.andExpect(jsonPath("$.alps.descriptors[*].name", hasItems("process-instances", "process-instance")))
-			.andExpect(jsonPath("$.alps.descriptors[0].descriptors[*].name", hasItems("processInstanceId", "tasks", "variables")))
-		;
+    @SpringBootApplication
+    @EnableActivitiRestQueryService
+    static class Configuration {
 
-		// When
-		resourceLink = client.discoverUnique(profileLink, "tasks", MediaType.ALL);
+        @Bean
+        public LinkDiscoverer alpsLinkDiscoverer() {
+            return new JsonPathLinkDiscoverer("$.descriptors[?(@.name == '%s')].href",
+                                              MediaType.valueOf("application/alps+json"));
+        }
+    }
 
-		// Then
-		client.follow(resourceLink, RestMediaTypes.ALPS_JSON)//
-			.andExpect(jsonPath("$.alps.version").value("1.0"))//
-			.andExpect(jsonPath("$.alps.descriptors[*].name", hasItems("tasks", "task")))
-			.andExpect(jsonPath("$.alps.descriptors[0].descriptors[*].name", hasItems("id", "processInstance", "variables")))
-		;
+    @Before
+    public void setUp() {
+        this.mvc = MockMvcBuilders.webAppContextSetup(context).build();
+        this.client = new TestMvcClient(mvc, discoverers).setBasePath(basePath);
+    }
 
-		// When
-		resourceLink = client.discoverUnique(profileLink, "variables", MediaType.ALL);
+    @Test
+    public void contextLoads() {
+        // should pass
+    }
 
-		// Then
-		client.follow(resourceLink, RestMediaTypes.ALPS_JSON)//
-			.andExpect(jsonPath("$.alps.version").value("1.0"))//
-			.andExpect(jsonPath("$.alps.descriptors[*].name", hasItems("variables", "variable")))
-			.andExpect(jsonPath("$.alps.descriptors[0].descriptors[*].name", hasItems("id", "processInstance", "task")))
-		;
-		
-	}
+    @Test
+    public void exposesAlpsCollectionResourcesWithIdsAndAssociations() throws Exception {
 
-	@Test
-	public void deleteProcessInstancesNotAllowed() throws Exception {
-		deleteResourceIsNotAllowed("process-instances");
-	}	
+        // Given 
+        Link profileLink = client.discoverUnique("profile");
+        String expectedAlpsVersion = "1.0";
 
-	@Test
-	public void deleteTasksNotAllowed() throws Exception {
-		deleteResourceIsNotAllowed("tasks");
-	}	
+        // When
+        Link resourceLink = client.discoverUnique(profileLink, "process-instances", MediaType.ALL);
 
-	@Test
-	public void deleteVariablesNotAllowed() throws Exception {
-		deleteResourceIsNotAllowed("variables");
-	}	
-	
-	@Test
-	public void getPagingAndSortingProcessInstancesIsOK() throws Exception {
-		getPagingAndSortingResourceQueryIsOK("process-instances");
-	}	
+        // Then
+        client.follow(resourceLink, RestMediaTypes.ALPS_JSON)//
+              .andExpect(jsonPath("$.alps.version")
+                         .value(expectedAlpsVersion))
+              .andExpect(jsonPath("$.alps.descriptors[*].name")
+                         .value(hasItems("process-instances", "process-instance")))
+              .andExpect(jsonPath("$.alps.descriptors[0].descriptors[*].name")
+                         .value(hasItems("processInstanceId", "tasks", "variables")));
 
-	@Test
-	public void getPagingAndSortingTasksIsOK() throws Exception {
-		getPagingAndSortingResourceQueryIsOK("tasks");
-	}	
+        // When
+        resourceLink = client.discoverUnique(profileLink, "tasks", MediaType.ALL);
 
-	@Test
-	public void getPagingAndSortingVariablesIsOK() throws Exception {
-		getPagingAndSortingResourceQueryIsOK("variables");
-	}
-	
-	private void getPagingAndSortingResourceQueryIsOK(String collection) throws Exception {
-		mvc.perform(get(basePath+"/"+collection))
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$._links.self.href", endsWith(collection+"{?page,size,sort}")));
-	}
-	
-	private void deleteResourceIsNotAllowed(String resourceRel) throws Exception {
-		mvc.perform(delete(basePath+"/"+resourceRel+"/0"))
-			.andExpect(status().is(405));
-	}
-	
+        // Then
+        client.follow(resourceLink, RestMediaTypes.ALPS_JSON)//
+              .andExpect(jsonPath("$.alps.version")
+                         .value(expectedAlpsVersion))
+              .andExpect(jsonPath("$.alps.descriptors[*].name")
+                         .value(hasItems("tasks", "task")))
+              .andExpect(jsonPath("$.alps.descriptors[0].descriptors[*].name")
+                         .value(hasItems("id", "processInstance", "variables")));
+
+        // When
+        resourceLink = client.discoverUnique(profileLink, "variables", MediaType.ALL);
+
+        // Then
+        client.follow(resourceLink, RestMediaTypes.ALPS_JSON)//
+              .andExpect(jsonPath("$.alps.version")
+                         .value(expectedAlpsVersion))
+              .andExpect(jsonPath("$.alps.descriptors[*].name")
+                         .value(hasItems("variables", "variable")))
+              .andExpect(jsonPath("$.alps.descriptors[0].descriptors[*].name")
+                         .value(hasItems("id", "processInstance", "task")));
+
+    }
+
+    @Test
+    public void deleteProcessInstancesNotAllowed() throws Exception {
+        assertDeleteResourceIsNotAllowed("process-instances");
+    }
+
+    @Test
+    public void deleteTasksNotAllowed() throws Exception {
+        assertDeleteResourceIsNotAllowed("tasks");
+    }
+
+    @Test
+    public void deleteVariablesNotAllowed() throws Exception {
+        assertDeleteResourceIsNotAllowed("variables");
+    }
+
+    @Test
+    public void getPagingAndSortingProcessInstancesIsOK() throws Exception {
+        assertGetPagingAndSortingResourceQueryIsOK("process-instances");
+    }
+
+    @Test
+    public void getPagingAndSortingTasksIsOK() throws Exception {
+        assertGetPagingAndSortingResourceQueryIsOK("tasks");
+    }
+
+    @Test
+    public void getPagingAndSortingVariablesIsOK() throws Exception {
+        assertGetPagingAndSortingResourceQueryIsOK("variables");
+    }
+
+    // Assert the response status code is HttpStatus.OK (200) and collection is paged and sorted.
+    private void assertGetPagingAndSortingResourceQueryIsOK(String collection) throws Exception {
+        mvc.perform(get(basePath + "/" + collection))
+           .andExpect(status().isOk())
+           .andExpect(jsonPath("$._links.self.href", endsWith(collection + "{?page,size,sort}")));
+    }
+
+    // Assert the response status code is HttpStatus.METHOD_NOT_ALLOWED (405).
+    private void assertDeleteResourceIsNotAllowed(String resourceRel) throws Exception {
+        mvc.perform(delete(basePath + "/" + resourceRel + "/0"))
+           .andExpect(status().isMethodNotAllowed());
+    }
+
 }
