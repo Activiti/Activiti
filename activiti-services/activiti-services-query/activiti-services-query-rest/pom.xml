@@ -125,18 +125,9 @@
       <artifactId>junit</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-services-test</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
@@ -147,16 +138,10 @@
       <artifactId>mockito-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.data</groupId>
-      <artifactId>spring-data-rest-hal-browser</artifactId>
-      <scope>test</scope>
-    </dependency>    
-    <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-test-autoconfigure</artifactId>
+      <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
-    
   </dependencies>
 
   <build>

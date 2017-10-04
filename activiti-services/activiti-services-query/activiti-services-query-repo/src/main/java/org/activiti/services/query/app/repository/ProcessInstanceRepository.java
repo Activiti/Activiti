@@ -22,23 +22,21 @@ import org.activiti.services.query.model.QProcessInstance;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.data.querydsl.binding.QuerydslBinderCustomizer;
 import org.springframework.data.querydsl.binding.QuerydslBindings;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.rest.core.annotation.Description;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(exported = false)
-public interface ProcessInstanceRepository extends CrudRepository<ProcessInstance, Long>,
-                                                   QuerydslPredicateExecutor<ProcessInstance>,
-                                                   QuerydslBinderCustomizer<QProcessInstance> {
+@RepositoryRestResource(path = "/process-instances",
+        collectionResourceDescription = @Description("Collection of process instance resources"),
+        collectionResourceRel = "process-instances",
+        itemResourceRel = "process-instance")
+public interface ProcessInstanceRepository extends RestResourceQueryRepository<ProcessInstance, Long>, QuerydslPredicateExecutor<ProcessInstance>, QuerydslBinderCustomizer<QProcessInstance> {
 
     @Override
     default void customize(QuerydslBindings bindings,
                            QProcessInstance root) {
 
-        bindings.bind(String.class).first(
-                (StringPath path, String value) -> path.eq(value));
-        bindings.bind(root.lastModifiedFrom).first((path, value) ->
-                                                           root.lastModified.after(value));
-        bindings.bind(root.lastModifiedTo).first((path, value) ->
-                                                         root.lastModified.before(value));
+        bindings.bind(String.class).first((StringPath path, String value) -> path.eq(value));
+        bindings.bind(root.lastModifiedFrom).first((path, value) -> root.lastModified.after(value));
+        bindings.bind(root.lastModifiedTo).first((path, value) -> root.lastModified.before(value));
     }
 }
