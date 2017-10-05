@@ -18,6 +18,9 @@ package org.activiti.services.query.qraphql.autoconfigure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.introproventures.graphql.jpa.query.schema.impl.GraphQLJpaSchemaBuilder;
+import graphql.Scalars;
+import graphql.schema.GraphQLSchema;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +28,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import com.introproventures.graphql.jpa.query.schema.impl.GraphQLJpaSchemaBuilder;
-
-import graphql.Scalars;
-import graphql.schema.GraphQLSchema;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -70,7 +68,7 @@ public class ActivitiGraphQLSchemaBuildTest {
         //then
         assertThat(schema.getQueryType().getFieldDefinition("ProcessInstance")
             .getArgument("processInstanceId").getType())
-            .isEqualTo(Scalars.GraphQLLong);
+            .isEqualTo(Scalars.GraphQLString);
 
         //then
         assertThat(schema.getQueryType().getFieldDefinition("ProcessInstance")
