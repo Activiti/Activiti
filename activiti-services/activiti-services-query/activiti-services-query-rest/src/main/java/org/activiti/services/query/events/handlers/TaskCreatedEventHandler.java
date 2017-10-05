@@ -48,7 +48,7 @@ public class TaskCreatedEventHandler implements QueryEventHandler {
         
         // Get processInstance reference proxy without database query
         ProcessInstance processInstance = entityManager
-        	.getReference(ProcessInstance.class, Long.valueOf(taskCreatedEvent.getProcessInstanceId()));
+                .getReference(ProcessInstance.class, taskCreatedEvent.getProcessInstanceId());
 
         // Associate task with parent reference
         task.setProcessInstance(processInstance);

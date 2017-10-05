@@ -16,20 +16,20 @@
 
 package org.activiti.services.query.events.handlers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.ProcessInstance;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.events.ProcessStartedEvent;
+import org.activiti.services.query.model.ProcessInstance;
 import org.activiti.test.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ProcessStartedHandlerTest {
 
@@ -64,7 +64,7 @@ public class ProcessStartedHandlerTest {
 
         ProcessInstance processInstance = argumentCaptor.getValue();
         Assertions.assertThat(processInstance)
-                .hasProcessInstanceId(200L)
+                .hasProcessInstanceId("200")
                 .hasProcessDefinitionId("100")
                 .hasStatus("RUNNING");
     }

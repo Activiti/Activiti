@@ -59,8 +59,7 @@ public class VariableCreatedEventHandler implements QueryEventHandler {
 
         // Set required parent processInstance reference
         ProcessInstance processInstance = entityManager
-                   .getReference(ProcessInstance.class,
-                                 Long.valueOf(variableCreatedEvent.getProcessInstanceId()));
+        		.getReference(ProcessInstance.class, variableCreatedEvent.getProcessInstanceId());
 
         variable.setProcessInstance(processInstance);
 

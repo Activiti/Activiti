@@ -19,16 +19,12 @@ package org.activiti.services.query.model;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
-
-import org.springframework.format.annotation.DateTimeFormat;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.introproventures.graphql.jpa.query.annotation.GraphQLDescription;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @GraphQLDescription("Process Instance Entity Model")
 
@@ -39,7 +35,7 @@ public class ProcessInstance {
 
     @Id
     @GraphQLDescription("Unique process instance identity attribute")
-    private Long processInstanceId;
+    private String processInstanceId;
     private String processDefinitionId;
     private String status;
 
@@ -63,17 +59,17 @@ public class ProcessInstance {
     public ProcessInstance() {
     }
 
-    public ProcessInstance(Long processInstanceId,
+    public ProcessInstance(String processInstanceId,
                            String processDefinitionId,
                            String status,
                            Date lastModified) {
         this.processInstanceId = processInstanceId;
         this.processDefinitionId = processDefinitionId;
-        this.status = status;
+        this.status = status; 
         this.lastModified = lastModified;
     }
 
-    public Long getProcessInstanceId() {
+    public String getProcessInstanceId() {
         return processInstanceId;
     }
 
@@ -89,7 +85,7 @@ public class ProcessInstance {
         return lastModified;
     }
 
-    public void setProcessInstanceId(Long processInstanceId) {
+    public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 
