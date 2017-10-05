@@ -18,12 +18,16 @@ package org.activiti.services.query.graphql.web;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import graphql.ExecutionResult;
+import graphql.GraphQLError;
 import org.activiti.services.query.qraphql.autoconfigure.EnableActivitiGraphQLQueryService;
 import org.activiti.services.query.qraphql.web.ActivitiGraphQLController.GraphQLQueryRequest;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,41 +40,46 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-
-import graphql.ExecutionResult;
-import graphql.GraphQLError;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ActivitiGraphQLControllerIT {
-	private static final String	TASK_NAME	= "task1";
 
-	@Autowired
-	private TestRestTemplate			rest;
-    
+    private static final String TASK_NAME = "task1";
+
+    @Autowired
+    private TestRestTemplate rest;
+
     @SpringBootApplication
     @EnableActivitiGraphQLQueryService
     static class Application {
         // Nothing
     }
-    
-	@Test
-	public void testGraphql() {
-		GraphQLQueryRequest query = new GraphQLQueryRequest("{Tasks(where:{name:{EQ: \"" + TASK_NAME + "\"}}){select{id assignee priority}}}");
 
-		ResponseEntity<Result> entity = rest.postForEntity("/graphql", new HttpEntity<>(query), Result.class);
-		Assert.assertEquals(entity.toString(), HttpStatus.OK, entity.getStatusCode());
+    @Test
+    public void testGraphql() {
+        GraphQLQueryRequest query = new GraphQLQueryRequest("{Tasks(where:{name:{EQ: \"" + TASK_NAME + "\"}}){select{id assignee priority}}}");
 
-		Result result = entity.getBody();
-		Assert.assertNotNull(result);
-		Assert.assertTrue(result.getErrors().toString(), result.getErrors().isEmpty());
-		Assert.assertEquals("{Tasks={select=[{id=1, assignee=assignee, priority=Normal}]}}", result.getData().toString());
-	}
+        ResponseEntity<Result> entity = rest.postForEntity("/graphql", new HttpEntity<>(query), Result.class);
 
-	@Test
-	public void testGraphqlNesting() {
+        assertThat(HttpStatus.OK)
+            .describedAs(entity.toString())
+            .isEqualTo(entity.getStatusCode());
+
+        Result result = entity.getBody();
+        
+        assertThat(result).isNotNull();
+        assertThat(result.getErrors().isEmpty())
+            .describedAs(result.getErrors().toString())
+            .isTrue();
+
+        assertThat("{Tasks={select=[{id=1, assignee=assignee, priority=Normal}]}}")
+            .isEqualTo(result.getData().toString());
+        
+    }
+
+    @Test
+    public void testGraphqlNesting() {
+        // @formatter:off
 		GraphQLQueryRequest query = new GraphQLQueryRequest(
 				"query {"
 				+ "ProcessInstances {"
@@ -87,34 +96,52 @@ public class ActivitiGraphQLControllerIT {
 				+ "    }"
 				+ "  }"
 				+ "}");
+       // @formatter:on
 
-		ResponseEntity<Result> entity = rest.postForEntity("/graphql", new HttpEntity<>(query), Result.class);
-		Assert.assertEquals(entity.toString(), HttpStatus.OK, entity.getStatusCode());
+        ResponseEntity<Result> entity = rest.postForEntity("/graphql", new HttpEntity<>(query), Result.class);
+        
+        assertThat(HttpStatus.OK)
+            .describedAs(entity.toString())
+            .isEqualTo(entity.getStatusCode());
 
-		Result result = entity.getBody();
-		Assert.assertNotNull(result);
-		Assert.assertTrue(result.getErrors().toString(), result.getErrors().isEmpty());
-		assertThat(((Map<String, Object>)result.getData()).get("ProcessInstances")).isNotNull();
-	}
-	
-	@Test
-	public void testGraphqlArguments() throws JsonParseException, JsonMappingException, IOException {
-		GraphQLQueryRequest query = new GraphQLQueryRequest("query TasksQuery($name: String!) {Tasks(where:{name:{EQ: $name}}) {select{id assignee priority}}}") ;
-		
-		String variables = "{\"name\":\"" + TASK_NAME + "\"}";
-		query.setVariables(variables);
+        Result result = entity.getBody();
+        
+        assertThat(result).isNotNull();
+        assertThat(result.getErrors().isEmpty())
+            .describedAs(result.getErrors().toString())
+            .isTrue();
+        assertThat(((Map<String, Object>) result.getData()).get("ProcessInstances")).isNotNull();
+    }
 
-		ResponseEntity<Result> entity = rest.postForEntity("/graphql", new HttpEntity<>(query), Result.class);
-		Assert.assertEquals(entity.toString(), HttpStatus.OK, entity.getStatusCode());
+    @Test
+    public void testGraphqlArguments() throws JsonParseException, JsonMappingException, IOException {
+        GraphQLQueryRequest query = new GraphQLQueryRequest("query TasksQuery($name: String!) {Tasks(where:{name:{EQ: $name}}) {select{id assignee priority}}}");
 
-		Result result = entity.getBody();
-		Assert.assertNotNull(result);
-		Assert.assertTrue(result.getErrors().toString(), result.getErrors().isEmpty());
-		Assert.assertEquals("{Tasks={select=[{id=1, assignee=assignee, priority=Normal}]}}", result.getData().toString());
-	}
+        HashMap<String, Object> variables = new HashMap<>();
+        variables.put("name", TASK_NAME);
+        
+        query.setVariables(variables);
+
+        ResponseEntity<Result> entity = rest.postForEntity("/graphql", new HttpEntity<>(query), Result.class);
+
+        assertThat(HttpStatus.OK)
+            .describedAs(entity.toString())
+            .isEqualTo(entity.getStatusCode());
+
+        Result result = entity.getBody();
+        
+        assertThat(result).isNotNull();
+        assertThat(result.getErrors().isEmpty())
+            .describedAs(result.getErrors().toString())
+            .isTrue();
+        
+        assertThat("{Tasks={select=[{id=1, assignee=assignee, priority=Normal}]}}")
+            .isEqualTo(result.getData().toString());
+    }
 }
 
 class Result implements ExecutionResult {
+
     private Map<String, Object> data;
     private List<GraphQLError> errors;
     private Map<Object, Object> extensions;
@@ -122,8 +149,9 @@ class Result implements ExecutionResult {
     /**
      * Default
      */
-    Result() { }
-    
+    Result() {
+    }
+
     /**
      * @param data the data to set
      */
@@ -149,10 +177,12 @@ class Result implements ExecutionResult {
     public <T> T getData() {
         return (T) data;
     }
+
     @Override
     public List<GraphQLError> getErrors() {
         return errors;
     }
+
     @Override
     public Map<Object, Object> getExtensions() {
         return extensions;
