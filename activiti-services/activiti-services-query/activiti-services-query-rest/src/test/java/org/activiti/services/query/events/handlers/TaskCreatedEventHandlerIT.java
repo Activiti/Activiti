@@ -42,51 +42,49 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * TaskCreatedEventHandler JPA Repository Integration Tests
  * 
- * @author Igor Dianov
- *
  */
 @RunWith(SpringRunner.class)
-@DataJpaTest(showSql=true)
-@Sql(value="classpath:/jpa-test.sql")
+@DataJpaTest(showSql = true)
+@Sql(value = "classpath:/jpa-test.sql")
 @DirtiesContext
 public class TaskCreatedEventHandlerIT {
 
-	@Autowired
-	private TaskRepository repository;
-	
-	@Autowired
-	private TaskCreatedEventHandler handler;
-	
-	@SpringBootConfiguration
-	@EnableJpaRepositories(basePackageClasses=ProcessInstanceRepository.class)
-	@EntityScan(basePackageClasses=ProcessInstance.class)
-	@Import(TaskCreatedEventHandler.class)
-	static class Configuation {
-	}
-	
-	@Test
-	public void contextLoads() {
-		// Should pass
-	}
+    @Autowired
+    private TaskRepository repository;
+
+    @Autowired
+    private TaskCreatedEventHandler handler;
+
+    @SpringBootConfiguration
+    @EnableJpaRepositories(basePackageClasses = ProcessInstanceRepository.class)
+    @EntityScan(basePackageClasses = ProcessInstance.class)
+    @Import(TaskCreatedEventHandler.class)
+    static class Configuation {
+    }
+
+    @Test
+    public void contextLoads() {
+        // Should pass
+    }
 
     @Test
     public void handleShouldStoreNewTaskInstance() throws Exception {
-    	String processInstanceId = "0";
-    	
+        String processInstanceId = "0";
+
         //given
         Task eventTask = new Task(
-    		"task_id", 
-    		"assignee", 
-    		"name", 
-    		"description", 
-    		new Date() /*createTime*/, 
-    		new Date() /*dueDate*/, 
-    		"priority", 
-    		"category", 
-    		"process_definition_id", 
-    		processInstanceId, 
-    		"CREATED", 
-    		new Date() /*lastModified*/
+                                  "task_id",
+                                  "assignee",
+                                  "name",
+                                  "description",
+                                  new Date() /*createTime*/,
+                                  new Date() /*dueDate*/,
+                                  "priority",
+                                  "category",
+                                  "process_definition_id",
+                                  processInstanceId,
+                                  "CREATED",
+                                  new Date() /*lastModified*/
         );
         TaskCreatedEvent taskCreated = new TaskCreatedEvent(System.currentTimeMillis(),
                                                             "taskCreated",
@@ -98,32 +96,32 @@ public class TaskCreatedEventHandlerIT {
         handler.handle(taskCreated);
 
         //then
-        Optional<Task> result=repository.findById("task_id");
-        
+        Optional<Task> result = repository.findById("task_id");
+
         assertThat(result.isPresent()).isTrue();
         assertThat(result.get().getProcessInstance()).isNotNull();
     }
 
-    @Test(expected=ActivitiException.class)
+    @Test(expected = ActivitiException.class)
     public void handleShouldFailOnNewTaskInstanceWithNonExistingProcessInstanceReference() throws Exception {
-    	String processInstanceId = "-1";
-    	
+        String processInstanceId = "-1";
+
         //given
         Task eventTask = new Task(
-    		"task_id", 
-    		"assignee", 
-    		"name", 
-    		"description", 
-    		new Date() /*createTime*/, 
-    		new Date() /*dueDate*/, 
-    		"priority", 
-    		"category", 
-    		"process_definition_id", 
-    		processInstanceId, 
-    		"CREATED", 
-    		new Date() /*lastModified*/
+                                  "task_id",
+                                  "assignee",
+                                  "name",
+                                  "description",
+                                  new Date() /*createTime*/,
+                                  new Date() /*dueDate*/,
+                                  "priority",
+                                  "category",
+                                  "process_definition_id",
+                                  processInstanceId,
+                                  "CREATED",
+                                  new Date() /*lastModified*/
         );
-        
+
         TaskCreatedEvent taskCreated = new TaskCreatedEvent(System.currentTimeMillis(),
                                                             "taskCreated",
                                                             "10",
@@ -136,5 +134,5 @@ public class TaskCreatedEventHandlerIT {
         //then
         //should throw ActivitiException
     }
-    
+
 }

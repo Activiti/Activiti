@@ -34,29 +34,17 @@ import org.springframework.stereotype.Component;
 public class VariableCreatedEventHandler implements QueryEventHandler {
 
     private final VariableRepository variableRepository;
-//    private final TaskRepository taskRepository;
-//    private final ProcessInstanceRepository processInstanceRepository;
 
     private final EntityManager entityManager;
 
-//    @Autowired
-//    public VariableCreatedEventHandler(VariableRepository variableRepository, 
-//    		TaskRepository taskRepository,
-//    		ProcessInstanceRepository processInstanceRepository) {
-//        this.variableRepository = variableRepository;
-//        this.taskRepository = taskRepository;
-//        this.processInstanceRepository = processInstanceRepository;
-//    }
-
     @Autowired
-    public VariableCreatedEventHandler(VariableRepository variableRepository, 
-    		EntityManager entityManager) {
+    public VariableCreatedEventHandler(VariableRepository variableRepository,
+                                       EntityManager entityManager) {
         this.variableRepository = variableRepository;
         this.entityManager = entityManager;
     }
-    
+
     @Override
-    //@Transactional(value=TxType.REQUIRED)
     public void handle(ProcessEngineEvent event) {
         VariableCreatedEvent variableCreatedEvent = (VariableCreatedEvent) event;
         Date now = new Date();
@@ -69,26 +57,26 @@ public class VariableCreatedEventHandler implements QueryEventHandler {
                                          variableCreatedEvent.getExecutionId(),
                                          variableCreatedEvent.getVariableValue());
 
-        
-    	// Set required parent processInstance reference
+        // Set required parent processInstance reference
         ProcessInstance processInstance = entityManager
-        		.getReference(ProcessInstance.class, Long.valueOf(variableCreatedEvent.getProcessInstanceId()));
+                   .getReference(ProcessInstance.class,
+                                 Long.valueOf(variableCreatedEvent.getProcessInstanceId()));
 
-    	variable.setProcessInstance(processInstance);
-        
-    	// Set optional task reference
-        if(variableCreatedEvent.getTaskId() != null) {
-	        Task task = entityManager.getReference(Task.class, variableCreatedEvent.getTaskId());
-			variable.setTask(task);
+        variable.setProcessInstance(processInstance);
+
+        // Set optional task reference
+        if (variableCreatedEvent.getTaskId() != null) {
+            Task task = entityManager.getReference(Task.class, variableCreatedEvent.getTaskId());
+            variable.setTask(task);
         }
 
         // Persist to database
         try {
-        	variableRepository.save(variable);
-        } catch(Exception cause) {
-        	throw new ActivitiException("Error handling VariableCreatedEvent["+event+"]", cause);
+            variableRepository.save(variable);
+        } catch (Exception cause) {
+            throw new ActivitiException("Error handling VariableCreatedEvent[" + event + "]", cause);
         }
-    
+
     }
 
     @Override
