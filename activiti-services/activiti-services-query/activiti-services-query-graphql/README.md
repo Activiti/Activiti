@@ -71,9 +71,8 @@ The Activiti GraphQL Query leverages open-source 'graphql-jpa-query' library htt
 The following dependencies are introduced in `activiti-services-query-models` for GraphQL JPA Query Schema documentation support:
 
     <dependency>
-	    <groupId>com.github.introproventures.graphql-jpa-query</groupId>
+	    <groupId>com.introproventures</groupId>
 	    <artifactId>graphql-jpa-query-annotations</artifactId>
-	    <version>v0.1.0</version>
     </dependency>
 
 The entity classes in `activiti-services-query-models` have been augmented with @OneToMany and @ManyToOne annotations to be able to generate GraphQL Schema.
@@ -81,12 +80,11 @@ The entity classes in `activiti-services-query-models` have been augmented with 
 The `activiti-services-query-graphql` module uses GraphQL JPA Query Schema Builder module as a dependency.
 
     <dependency>
-	    <groupId>com.github.introproventures.graphql-jpa-query</groupId>
+	    <groupId>com.introproventures</groupId>
 	    <artifactId>graphql-jpa-query-schema</artifactId>
-	    <version>v0.1.0</version>
     </dependency>
 
-Sample Spring Boot auto-configuration support is provided along with '@EnableActivitiGraphQLQueryService' annotation to configure and enable schema builder, query executor, and web controller at runtime.
+Spring Boot auto-configuration with application properties support is provided along with '@EnableActivitiGraphQLQueryService' annotation to configure and enable schema builder, query executor, and web controller at runtime.
 
 Schema Documentation
 --------------------
