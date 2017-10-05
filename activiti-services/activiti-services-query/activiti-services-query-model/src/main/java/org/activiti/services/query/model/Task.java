@@ -20,23 +20,11 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import com.introproventures.graphql.jpa.query.annotation.GraphQLDescription;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @GraphQLDescription("Task Instance Entity Model")
 
@@ -46,11 +34,11 @@ import com.introproventures.graphql.jpa.query.annotation.GraphQLDescription;
 public class Task implements Serializable {
 
     /**
-	 * serialVersionUID
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	@Id
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
+
+    @Id
     private String id;
     private String assignee;
     private String name;

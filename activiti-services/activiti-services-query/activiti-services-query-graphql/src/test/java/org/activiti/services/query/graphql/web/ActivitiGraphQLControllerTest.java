@@ -180,7 +180,7 @@ public class ActivitiGraphQLControllerTest {
         mockmvc.perform(get("/graphql")
                .param("query", "{Tasks(where: {name: {EQ: \"name\"}}){select{id}}}")
                .contentType(MediaType.TEXT_HTML))
-            .andExpect(status().is(415));
+            .andExpect(status().is(415))
             ;
         
         verify(executor, never())

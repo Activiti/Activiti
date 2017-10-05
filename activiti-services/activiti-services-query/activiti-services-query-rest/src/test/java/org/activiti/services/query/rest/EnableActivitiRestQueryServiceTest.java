@@ -96,11 +96,14 @@ public class EnableActivitiRestQueryServiceTest {
         // Then
         client.follow(resourceLink, RestMediaTypes.ALPS_JSON)//
               .andExpect(jsonPath("$.alps.version")
-                         .value(expectedAlpsVersion))
+                                                   .value(expectedAlpsVersion))
               .andExpect(jsonPath("$.alps.descriptors[*].name")
-                         .value(hasItems("process-instances", "process-instance")))
+                                                               .value(hasItems("process-instances",
+                                                                               "process-instance")))
               .andExpect(jsonPath("$.alps.descriptors[0].descriptors[*].name")
-                         .value(hasItems("processInstanceId", "tasks", "variables")));
+                                                                              .value(hasItems("processInstanceId",
+                                                                                              "tasks",
+                                                                                              "variables")));
 
         // When
         resourceLink = client.discoverUnique(profileLink, "tasks", MediaType.ALL);
@@ -108,11 +111,13 @@ public class EnableActivitiRestQueryServiceTest {
         // Then
         client.follow(resourceLink, RestMediaTypes.ALPS_JSON)//
               .andExpect(jsonPath("$.alps.version")
-                         .value(expectedAlpsVersion))
+                                                   .value(expectedAlpsVersion))
               .andExpect(jsonPath("$.alps.descriptors[*].name")
-                         .value(hasItems("tasks", "task")))
+                                                               .value(hasItems("tasks", "task")))
               .andExpect(jsonPath("$.alps.descriptors[0].descriptors[*].name")
-                         .value(hasItems("id", "processInstance", "variables")));
+                                                                              .value(hasItems("id",
+                                                                                              "processInstance",
+                                                                                              "variables")));
 
         // When
         resourceLink = client.discoverUnique(profileLink, "variables", MediaType.ALL);
@@ -120,11 +125,13 @@ public class EnableActivitiRestQueryServiceTest {
         // Then
         client.follow(resourceLink, RestMediaTypes.ALPS_JSON)//
               .andExpect(jsonPath("$.alps.version")
-                         .value(expectedAlpsVersion))
+                                                   .value(expectedAlpsVersion))
               .andExpect(jsonPath("$.alps.descriptors[*].name")
-                         .value(hasItems("variables", "variable")))
+                                                               .value(hasItems("variables", "variable")))
               .andExpect(jsonPath("$.alps.descriptors[0].descriptors[*].name")
-                         .value(hasItems("id", "processInstance", "task")));
+                                                                              .value(hasItems("id",
+                                                                                              "processInstance",
+                                                                                              "task")));
 
     }
 
@@ -161,14 +168,14 @@ public class EnableActivitiRestQueryServiceTest {
     // Assert the response status code is HttpStatus.OK (200) and collection is paged and sorted.
     private void assertGetPagingAndSortingResourceQueryIsOK(String collection) throws Exception {
         mvc.perform(get(basePath + "/" + collection))
-           .andExpect(status().isOk())
-           .andExpect(jsonPath("$._links.self.href", endsWith(collection + "{?page,size,sort}")));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$._links.self.href", endsWith(collection + "{?page,size,sort}")));
     }
 
     // Assert the response status code is HttpStatus.METHOD_NOT_ALLOWED (405).
     private void assertDeleteResourceIsNotAllowed(String resourceRel) throws Exception {
         mvc.perform(delete(basePath + "/" + resourceRel + "/0"))
-           .andExpect(status().isMethodNotAllowed());
+            .andExpect(status().isMethodNotAllowed());
     }
 
 }

@@ -119,20 +119,20 @@ public class ProcessInstance {
         this.lastModifiedFrom = lastModifiedFrom;
     }
 
-	public Set<Task> getTasks() {
-		return this.tasks;
-	}
+    public Set<Task> getTasks() {
+        return this.tasks;
+    }
 
-	public void setTasks(Set<Task> tasks) {
-		this.tasks = tasks;
-	}
+    public void setTasks(Set<Task> tasks) {
+        this.tasks = tasks;
+    }
 
-	public Set<Variable> getVariables() {
-		return variables;
-	}
+    public Set<Variable> getVariables() {
+        return variables;
+    }
 
-	public void setVariables(Set<Variable> variables) {
-		this.variables = variables;
-	}
-    
+    public void setVariables(Set<Variable> variables) {
+        this.variables = variables;
+    }
+
 }

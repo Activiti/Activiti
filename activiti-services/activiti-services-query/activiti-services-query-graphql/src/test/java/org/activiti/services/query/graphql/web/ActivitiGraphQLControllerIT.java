@@ -80,22 +80,22 @@ public class ActivitiGraphQLControllerIT {
     @Test
     public void testGraphqlNesting() {
         // @formatter:off
-		GraphQLQueryRequest query = new GraphQLQueryRequest(
-				"query {"
-				+ "ProcessInstances {"
-				+ "    select {"
-				+ "      processInstanceId"
-				+ "      tasks {"
-				+ "        id"
-				+ "        name"
-				+ "        variables {"
-				+ "          name"
-				+ "          value"
-				+ "        }"
-				+ "      }"
-				+ "    }"
-				+ "  }"
-				+ "}");
+        GraphQLQueryRequest query = new GraphQLQueryRequest(
+                "query {"
+                + "ProcessInstances {"
+                + "    select {"
+                + "      processInstanceId"
+                + "      tasks {"
+                + "        id"
+                + "        name"
+                + "        variables {"
+                + "          name"
+                + "          value"
+                + "        }"
+                + "      }"
+                + "    }"
+                + "  }"
+                + "}");
        // @formatter:on
 
         ResponseEntity<Result> entity = rest.postForEntity("/graphql", new HttpEntity<>(query), Result.class);

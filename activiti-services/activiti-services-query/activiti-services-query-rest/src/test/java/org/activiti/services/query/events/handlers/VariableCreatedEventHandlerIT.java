@@ -43,24 +43,24 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DirtiesContext
 public class VariableCreatedEventHandlerIT {
 
-	@Autowired
-	private VariableRepository repository;
-	
-	@Autowired
-	private VariableCreatedEventHandler handler;
-	
-	@SpringBootConfiguration
-	@EnableJpaRepositories(basePackageClasses=VariableRepository.class)
-	@EntityScan(basePackageClasses=Variable.class)
-	@Import(VariableCreatedEventHandler.class)
-	static class Configuation {
-	}
+    @Autowired
+    private VariableRepository repository;
 
-	@Test
-	public void contextLoads() {
-		// Should pass
-	}
-	
+    @Autowired
+    private VariableCreatedEventHandler handler;
+
+    @SpringBootConfiguration
+    @EnableJpaRepositories(basePackageClasses = VariableRepository.class)
+    @EntityScan(basePackageClasses = Variable.class)
+    @Import(VariableCreatedEventHandler.class)
+    static class Configuation {
+    }
+
+    @Test
+    public void contextLoads() {
+        // Should pass
+    }
+
     @Test
     public void handleShouldCreateAndStoreVariable() throws Exception {
         //given
