@@ -22,10 +22,13 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import org.activiti.services.query.qraphql.autoconfigure.ActivitiGraphQLAutoConfiguration.DefaultActivitiGraphQLJpaConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 
+/**
+ * Enables configuration of Activiti GraphQL Query Service components 
+ *
+ */
 @Documented
 @Retention( RUNTIME )
 @Target( TYPE )
