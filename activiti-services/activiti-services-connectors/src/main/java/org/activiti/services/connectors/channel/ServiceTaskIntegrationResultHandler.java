@@ -17,29 +17,29 @@
 package org.activiti.services.connectors.channel;
 
 import org.activiti.engine.RuntimeService;
-import org.activiti.services.connectors.model.ServiceTaskResult;
+import org.activiti.services.connectors.model.IntegrationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.stereotype.Component;
 
 @Component
-@EnableBinding(ServiceTaskChannels.class)
-public class ServiceTaskResultHandler {
+@EnableBinding(ProcessEngineIntegrationChannels.class)
+public class ServiceTaskIntegrationResultHandler {
 
     private final RuntimeService runtimeService;
 
     @Autowired
-    public ServiceTaskResultHandler(RuntimeService runtimeService) {
+    public ServiceTaskIntegrationResultHandler(RuntimeService runtimeService) {
         this.runtimeService = runtimeService;
     }
 
-    @StreamListener(ServiceTaskChannels.SERVICE_TASK_RESULT_CONSUMER)
-    public synchronized void receive(ServiceTaskResult serviceTaskResult) {
+    @StreamListener(ProcessEngineIntegrationChannels.INTEGRATION_RESULTS_CONSUMER)
+    public synchronized void receive(IntegrationResult integrationResult) {
 
 
-        runtimeService.trigger(serviceTaskResult.getExecutionId(),
-                               serviceTaskResult.getVariables());
+        runtimeService.trigger(integrationResult.getExecutionId(),
+                               integrationResult.getVariables());
     }
 
 }

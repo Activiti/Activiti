@@ -16,26 +16,25 @@
 
 package org.activiti.services.connectors.model;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class ServiceTaskResult {
+public class IntegrationEvent {
 
     private String id;
-    private String executionId;
+    private AsyncContext context;
+
     private Map<String, Object> variables;
 
     //used by json deserialization
-    public ServiceTaskResult() {
+    public IntegrationEvent() {
     }
 
-    public ServiceTaskResult(String id,
-                             String executionId,
-                             Map<String, Object> variables) {
+    public IntegrationEvent(String id,
+                            AsyncContext context,
+                            Map<String, Object> variables) {
         this.id = id;
-        this.executionId = executionId;
+        this.context = context;
         this.variables = variables;
     }
 
@@ -47,8 +46,15 @@ public class ServiceTaskResult {
         return variables;
     }
 
-    public String getExecutionId() {
-        return executionId;
+    public void putVariable(String name, Object value) {
+        if (variables == null) {
+            variables = new HashMap<>();
+        }
+        variables.put(name, value);
+    }
+
+    public AsyncContext getContext() {
+        return context;
     }
 
 }

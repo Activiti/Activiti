@@ -21,9 +21,9 @@ import java.util.UUID;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
-import org.activiti.services.connectors.channel.ServiceTaskChannels;
+import org.activiti.services.connectors.channel.ProcessEngineIntegrationChannels;
 import org.activiti.services.connectors.model.AsyncContext;
-import org.activiti.services.connectors.model.ServiceTaskEvent;
+import org.activiti.services.connectors.model.IntegrationEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
@@ -31,10 +31,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class MQServiceTaskBehavior extends AbstractBpmnActivityBehavior implements TriggerableActivityBehavior {
 
-    private final ServiceTaskChannels channels;
+    private final ProcessEngineIntegrationChannels channels;
 
     @Autowired
-    public MQServiceTaskBehavior(ServiceTaskChannels channels) {
+    public MQServiceTaskBehavior(ProcessEngineIntegrationChannels channels) {
         this.channels = channels;
     }
 
@@ -43,10 +43,10 @@ public class MQServiceTaskBehavior extends AbstractBpmnActivityBehavior implemen
         AsyncContext context = new AsyncContext(execution.getProcessInstanceId(),
                                                      execution.getCurrentActivityId(),
                                                      execution.getId());
-        ServiceTaskEvent event = new ServiceTaskEvent(UUID.randomUUID().toString(),
+        IntegrationEvent event = new IntegrationEvent(UUID.randomUUID().toString(),
                                                       context,
                                                       execution.getVariables());
-        channels.serviceTasksProducer().send(MessageBuilder.withPayload(event).build());
+        channels.integrationEventsProducer().send(MessageBuilder.withPayload(event).build());
     }
 
     @Override

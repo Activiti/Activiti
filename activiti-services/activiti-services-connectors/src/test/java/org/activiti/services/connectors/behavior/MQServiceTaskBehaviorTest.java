@@ -17,8 +17,8 @@
 package org.activiti.services.connectors.behavior;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.services.connectors.channel.ServiceTaskChannels;
-import org.activiti.services.connectors.model.ServiceTaskEvent;
+import org.activiti.services.connectors.channel.ProcessEngineIntegrationChannels;
+import org.activiti.services.connectors.model.IntegrationEvent;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -41,18 +41,18 @@ public class MQServiceTaskBehaviorTest {
     private MQServiceTaskBehavior behavior;
 
     @Mock
-    private ServiceTaskChannels channels;
+    private ProcessEngineIntegrationChannels channels;
 
     @Mock
     private MessageChannel messageChannel;
 
     @Captor
-    private ArgumentCaptor<Message<ServiceTaskEvent>> captor;
+    private ArgumentCaptor<Message<IntegrationEvent>> captor;
 
     @Before
     public void setUp() throws Exception {
         initMocks(this);
-        when(channels.serviceTasksProducer()).thenReturn(messageChannel);
+        when(channels.integrationEventsProducer()).thenReturn(messageChannel);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class MQServiceTaskBehaviorTest {
 
         //then
         verify(messageChannel).send(captor.capture());
-        Message<ServiceTaskEvent> message = captor.getValue();
+        Message<IntegrationEvent> message = captor.getValue();
         assertThat(message.getPayload().getContext().getExecutionId()).isEqualTo("execId");
         assertThat(message.getPayload().getContext().getProcessInstanceId()).isEqualTo("procInstId");
         assertThat(message.getPayload().getContext().getTaskId()).isEqualTo("actId");

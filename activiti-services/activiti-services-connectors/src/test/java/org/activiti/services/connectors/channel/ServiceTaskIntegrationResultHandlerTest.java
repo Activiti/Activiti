@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.activiti.engine.RuntimeService;
-import org.activiti.services.connectors.model.ServiceTaskResult;
+import org.activiti.services.connectors.model.IntegrationResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -29,10 +29,11 @@ import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class ServiceTaskResultHandlerTest {
+public class ServiceTaskIntegrationResultHandlerTest {
+
 
     @InjectMocks
-    private ServiceTaskResultHandler handler;
+    private ServiceTaskIntegrationResultHandler handler;
 
     @Mock
     private RuntimeService runtimeService;
@@ -48,14 +49,15 @@ public class ServiceTaskResultHandlerTest {
         String executionId = "execId";
         Map<String, Object> variables = Collections.singletonMap("var1",
                                                                  "v");
-        ServiceTaskResult serviceTaskResult = new ServiceTaskResult("resultId",
+        IntegrationResult integrationResult = new IntegrationResult("resultId",
                                                                     executionId,
                                                                     variables);
 
         //when
-        handler.receive(serviceTaskResult);
+        handler.receive(integrationResult);
 
         //then
-        verify(runtimeService).trigger(executionId, variables);
+        verify(runtimeService).trigger(executionId,
+                                       variables);
     }
 }

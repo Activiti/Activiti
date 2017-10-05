@@ -21,14 +21,14 @@ import org.springframework.cloud.stream.annotation.Output;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.SubscribableChannel;
 
-public interface ServiceTaskChannels {
+public interface ProcessEngineIntegrationChannels {
 
-    String SERVICE_TASK_RESULT_CONSUMER = "serviceTaskResultConsumer";
+    String INTEGRATION_RESULTS_CONSUMER = "integrationResultsConsumer";
 
-    @Input(SERVICE_TASK_RESULT_CONSUMER)
-    SubscribableChannel serviceTaskResultConsumer();
+    @Input(INTEGRATION_RESULTS_CONSUMER)
+    SubscribableChannel integrationResultsConsumer();
 
-    @Output("serviceTaskProducer")
-    MessageChannel serviceTasksProducer();
+    @Output("integrationEventsProducer")
+    MessageChannel integrationEventsProducer();
 
 }
