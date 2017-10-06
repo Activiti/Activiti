@@ -191,7 +191,7 @@ public class ActivitiGraphQLControllerTest {
     public void testGraphqlQueryPostUnsupportedMediaType() throws Exception {
         mockmvc.perform(post("/graphql")
                .contentType(MediaType.TEXT_HTML))
-            .andExpect(status().is(415));
+            .andExpect(status().is(415))
             ;
         
         verify(executor, never())

@@ -59,7 +59,7 @@ public class TaskCreatedEventHandler implements QueryEventHandler {
 
         // Persist into database
         try {
-	        taskRepository.save(task);
+            taskRepository.save(task);
         } catch(Exception cause) {
         	throw new ActivitiException("Error handling TaskCreatedEvent["+event+"]", cause);
         }
