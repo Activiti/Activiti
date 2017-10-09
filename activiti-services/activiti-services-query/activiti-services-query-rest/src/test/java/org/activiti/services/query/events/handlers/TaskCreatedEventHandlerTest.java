@@ -16,20 +16,27 @@
 
 package org.activiti.services.query.events.handlers;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.Task;
 import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.events.TaskCreatedEvent;
+import org.activiti.services.query.model.ProcessInstance;
+import org.activiti.services.query.model.Task;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TaskCreatedEventHandlerTest {
 
@@ -39,6 +46,9 @@ public class TaskCreatedEventHandlerTest {
     @Mock
     private TaskRepository taskRepository;
 
+    @Mock
+    private EntityManager entityManager;
+    
     @Before
     public void setUp() throws Exception {
         initMocks(this);
@@ -55,6 +65,9 @@ public class TaskCreatedEventHandlerTest {
                                                             "200",
                                                             eventTask);
 
+        when(entityManager.getReference(ArgumentMatchers.eq(ProcessInstance.class), any()))
+        	.thenReturn(mock(ProcessInstance.class));
+        
         //when
         handler.handle(taskCreated);
 
@@ -62,6 +75,7 @@ public class TaskCreatedEventHandlerTest {
         verify(taskRepository).save(eventTask);
         verify(eventTask).setStatus("CREATED");
         verify(eventTask).setLastModified(any(Date.class));
+        verify(eventTask).setProcessInstance(any(ProcessInstance.class));
     }
 
     @Test

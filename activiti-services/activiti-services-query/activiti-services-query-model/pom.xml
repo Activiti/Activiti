@@ -9,7 +9,13 @@
   <artifactId>activiti-services-query-model</artifactId>
   <name>Activiti - Services :: Query Model</name>
   <description>Activiti Services Query Model</description>
+  
   <dependencies>
+	<dependency>
+	    <groupId>com.introproventures</groupId>
+	    <artifactId>graphql-jpa-query-annotations</artifactId>
+	    <version>0.3.0</version>
+	</dependency>  
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-services-core-model</artifactId>

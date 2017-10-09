@@ -18,30 +18,51 @@ package org.activiti.services.query.events.handlers;
 
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.Task;
 import org.activiti.services.query.app.repository.TaskRepository;
 import org.activiti.services.query.events.TaskCreatedEvent;
+import org.activiti.services.query.model.ProcessInstance;
+import org.activiti.services.query.model.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TaskCreatedEventHandler implements QueryEventHandler {
 
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+    private final EntityManager entityManager;
 
     @Autowired
-    public TaskCreatedEventHandler(TaskRepository taskRepository) {
+    public TaskCreatedEventHandler(TaskRepository taskRepository, EntityManager entityManager) {
         this.taskRepository = taskRepository;
+        this.entityManager = entityManager;
     }
 
     @Override
     public void handle(ProcessEngineEvent event) {
         TaskCreatedEvent taskCreatedEvent = (TaskCreatedEvent) event;
         Task task = taskCreatedEvent.getTask();
+        
+        // Get processInstance reference proxy without database query
+        ProcessInstance processInstance = entityManager
+                .getReference(ProcessInstance.class, taskCreatedEvent.getProcessInstanceId());
+
+        // Associate task with parent reference
+        task.setProcessInstance(processInstance);
+        
+        // Set attributes
         task.setStatus("CREATED");
         task.setLastModified(new Date(taskCreatedEvent.getTimestamp()));
-        taskRepository.save(task);
+
+        // Persist into database
+        try {
+            taskRepository.save(task);
+        } catch(Exception cause) {
+        	throw new ActivitiException("Error handling TaskCreatedEvent["+event+"]", cause);
+        }
     }
 
     @Override

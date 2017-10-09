@@ -16,22 +16,27 @@
 
 package org.activiti.services.query.model;
 
+import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.*;
+import com.introproventures.graphql.jpa.query.annotation.GraphQLDescription;
 import org.springframework.format.annotation.DateTimeFormat;
 
+@GraphQLDescription("Task Instance Entity Model")
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Task {
+public class Task implements Serializable {
+
+    /**
+     * serialVersionUID
+     */
+    private static final long serialVersionUID = 1L;
 
     @Id
     private String id;
@@ -45,6 +50,7 @@ public class Task {
     private String priority;
     private String category;
     private String processDefinitionId;
+    @Column(insertable=false, updatable=false)
     private String processInstanceId;
     private String status;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -56,6 +62,17 @@ public class Task {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date lastModifiedFrom;
 
+    @ManyToOne
+    @JoinColumn(name="processInstanceId", referencedColumnName="processInstanceId")
+    private ProcessInstance processInstance;
+    
+    @OneToMany(fetch=FetchType.EAGER) 
+    @JoinColumns({
+        @JoinColumn(name="processInstanceId", referencedColumnName="processInstanceId"),
+        @JoinColumn(name="taskId", referencedColumnName="id")
+    })
+    private Set<Variable> variables;    
+    
     public Task() {
     }
 
@@ -198,6 +215,34 @@ public class Task {
 
     public void setLastModifiedFrom(Date lastModifiedFrom) {
         this.lastModifiedFrom = lastModifiedFrom;
+    }
+
+    /**
+     * @return the processInstance
+     */
+    public ProcessInstance getProcessInstance() {
+        return this.processInstance;
+    }
+
+    /**
+     * @param processInstance the processInstance to set
+     */
+    public void setProcessInstance(ProcessInstance processInstance) {
+        this.processInstance = processInstance;
+    }
+
+    /**
+     * @return the variables
+     */
+    public Set<Variable> getVariables() {
+        return this.variables;
+    }
+
+    /**
+     * @param variables the variables to set
+     */
+    public void setVariables(Set<Variable> variables) {
+        this.variables = variables;
     }
 
 }

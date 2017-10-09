@@ -16,3 +16,8 @@ target
 .project
 .classpath
 .settings
+\.metadata/
+/.recommenders/
+
+.factorypath
+.springBeans
