@@ -52,7 +52,7 @@ public class EntityFinderTest {
     @Test
     public void findByIdShouldReturnResultWhenIsPresent() throws Exception {
         //given
-        long processInstanceId = 5L;
+        String processInstanceId = "5";
         ProcessInstance processInstance = mock(ProcessInstance.class);
         given(repository.findById(processInstanceId)).willReturn(Optional.of(processInstance));
 
@@ -68,7 +68,7 @@ public class EntityFinderTest {
     @Test
     public void findByIdShouldThrowExceptionWhenNotPresent() throws Exception {
         //given
-        long processInstanceId = 5L;
+        String processInstanceId = "5";
         given(repository.findById(processInstanceId)).willReturn(Optional.empty());
 
         //then
