@@ -23,7 +23,6 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.introproventures.graphql.jpa.query.annotation.GraphQLDescription;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
 @GraphQLDescription("Variable Instance Entity Model")
@@ -38,9 +37,7 @@ public class Variable {
     private long id;
     private String type;
     private String name;
-    @Column(insertable=false, updatable=false)
     private String processInstanceId;
-    @Column(insertable=false, updatable=false)
     private String taskId;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date createTime;
@@ -50,15 +47,11 @@ public class Variable {
     private String value;
 
     @ManyToOne(optional=true)
-    @JoinColumns({
-        @JoinColumn(name="taskId", referencedColumnName="id", nullable = true),
-    })
+    @JoinColumn(name="taskId", referencedColumnName="id", insertable=false, updatable=false, nullable = true)
     private Task task;
 
     @ManyToOne
-    @JoinColumns({
-        @JoinColumn(name="processInstanceId", referencedColumnName="processInstanceId")
-    })
+    @JoinColumn(name="processInstanceId", referencedColumnName="processInstanceId", insertable=false, updatable=false)
     private ProcessInstance processInstance;
     
     public Variable() {
