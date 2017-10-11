@@ -29,7 +29,7 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
         collectionResourceDescription = @Description("Collection of process instance resources"),
         collectionResourceRel = "process-instances",
         itemResourceRel = "process-instance")
-public interface ProcessInstanceRepository extends RestResourceQueryRepository<ProcessInstance, Long>, QuerydslPredicateExecutor<ProcessInstance>, QuerydslBinderCustomizer<QProcessInstance> {
+public interface ProcessInstanceRepository extends RestResourceQueryRepository<ProcessInstance, String>, QuerydslPredicateExecutor<ProcessInstance>, QuerydslBinderCustomizer<QProcessInstance> {
 
     @Override
     default void customize(QuerydslBindings bindings,

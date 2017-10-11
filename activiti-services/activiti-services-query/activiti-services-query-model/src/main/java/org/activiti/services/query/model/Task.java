@@ -50,7 +50,6 @@ public class Task implements Serializable {
     private String priority;
     private String category;
     private String processDefinitionId;
-    @Column(insertable=false, updatable=false)
     private String processInstanceId;
     private String status;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -63,14 +62,11 @@ public class Task implements Serializable {
     private Date lastModifiedFrom;
 
     @ManyToOne
-    @JoinColumn(name="processInstanceId", referencedColumnName="processInstanceId")
+    @JoinColumn(name="processInstanceId", referencedColumnName="processInstanceId", insertable=false, updatable=false)
     private ProcessInstance processInstance;
     
     @OneToMany(fetch=FetchType.EAGER) 
-    @JoinColumns({
-        @JoinColumn(name="processInstanceId", referencedColumnName="processInstanceId"),
-        @JoinColumn(name="taskId", referencedColumnName="id")
-    })
+    @JoinColumn(name="taskId", referencedColumnName="id", insertable=false, updatable=false)
     private Set<Variable> variables;    
     
     public Task() {

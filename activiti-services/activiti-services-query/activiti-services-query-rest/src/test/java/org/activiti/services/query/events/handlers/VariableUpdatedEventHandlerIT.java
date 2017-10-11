@@ -21,8 +21,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Optional;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.services.query.app.repository.EntityFinder;
 import org.activiti.services.query.app.repository.VariableRepository;
-import org.activiti.services.query.events.VariableCreatedEvent;
+import org.activiti.services.query.events.VariableUpdatedEvent;
 import org.activiti.services.query.model.QVariable;
 import org.activiti.services.query.model.Variable;
 import org.junit.Test;
@@ -41,18 +42,24 @@ import org.springframework.test.context.junit4.SpringRunner;
 @DataJpaTest(showSql=true)
 @Sql(value="classpath:/jpa-test.sql")
 @DirtiesContext
-public class VariableCreatedEventHandlerIT {
+public class VariableUpdatedEventHandlerIT {
 
     @Autowired
     private VariableRepository repository;
 
     @Autowired
-    private VariableCreatedEventHandler handler;
+    private VariableUpdatedEventHandler handler;
 
     @SpringBootConfiguration
     @EnableJpaRepositories(basePackageClasses = VariableRepository.class)
     @EntityScan(basePackageClasses = Variable.class)
-    @Import(VariableCreatedEventHandler.class)
+    @Import({
+        VariableUpdatedEventHandler.class, 
+        ProcessVariableUpdateHandler.class, 
+        TaskVariableUpdatedHandler.class,
+        VariableUpdater.class,
+        EntityFinder.class
+    })
     static class Configuation {
     }
 
@@ -62,20 +69,20 @@ public class VariableCreatedEventHandlerIT {
     }
 
     @Test
-    public void handleShouldCreateAndStoreVariable() throws Exception {
+    public void handleShouldUpdateAndStoreVariable() throws Exception {
         //given
     	String executionId = "10";
         String processInstanceId = "0";
         String taskId = "1";
-        String variableName = "var";
+        String variableName = "variable1";
         String variableType = String.class.getName();
-        VariableCreatedEvent event = new VariableCreatedEvent(System.currentTimeMillis(),
-                                                              "variableCreated",
+        VariableUpdatedEvent event = new VariableUpdatedEvent(System.currentTimeMillis(),
+                                                              "variableUpdated",
                                                               executionId,
                                                               "process_definition_id",
                                                               processInstanceId,
                                                               variableName,
-                                                              "content",
+                                                              "newValue",
                                                               variableType,
                                                               taskId);
 
@@ -86,25 +93,26 @@ public class VariableCreatedEventHandlerIT {
         Optional<Variable> result=repository.findOne(QVariable.variable.name.eq(variableName));
         
         assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getValue()).isEqualTo("newValue");
         assertThat(result.get().getProcessInstance()).isNotNull();
         assertThat(result.get().getTask()).isNotNull();
     }	
 
     @Test
-    public void handleShouldCreateAndStoreVariableWithOptionalTaskId() throws Exception {
+    public void handleShouldUpdateAndStoreProcessInstanceVariable() throws Exception {
         //given
     	String executionId = "10";
-        String processInstanceId = "0";
+        String processInstanceId = "1";
         String taskId = null;
-        String variableName = "var1";
+        String variableName = "initiator";
         String variableType = String.class.getName();
-        VariableCreatedEvent event = new VariableCreatedEvent(System.currentTimeMillis(),
-                                                              "variableCreated",
+        VariableUpdatedEvent event = new VariableUpdatedEvent(System.currentTimeMillis(),
+                                                              "variableUpdated",
                                                               executionId,
                                                               "process_definition_id",
                                                               processInstanceId,
                                                               variableName,
-                                                              "content",
+                                                              "newValue",
                                                               variableType,
                                                               taskId);
 
@@ -115,20 +123,21 @@ public class VariableCreatedEventHandlerIT {
         Optional<Variable> result=repository.findOne(QVariable.variable.name.eq(variableName));
         
         assertThat(result.isPresent()).isTrue();
+        assertThat(result.get().getValue()).isEqualTo("newValue");
         assertThat(result.get().getProcessInstance()).isNotNull();
         assertThat(result.get().getTask()).isNull();
     }	
     
     @Test(expected=ActivitiException.class)
-    public void handleShouldFailCreateAndStoreVariableWithNonExistingProcessInstanceReference() throws Exception {
+    public void handleShouldFailUpdateAndStoreVariableWithNonExistingProcessInstanceReference() throws Exception {
         //given
     	String executionId = "10";
         String processInstanceId = "-1"; // does not exist
         String taskId = null;
         String variableName = "var";
         String variableType = String.class.getName();
-        VariableCreatedEvent event = new VariableCreatedEvent(System.currentTimeMillis(),
-                                                              "variableCreated",
+        VariableUpdatedEvent event = new VariableUpdatedEvent(System.currentTimeMillis(),
+                                                              "variableUpdated",
                                                               executionId,
                                                               "process_definition_id",
                                                               processInstanceId,
@@ -145,15 +154,15 @@ public class VariableCreatedEventHandlerIT {
     }
     
     @Test(expected=ActivitiException.class)
-    public void handleShouldFailCreateAndStoreVariableWithNonExistingTaskReference() throws Exception {
+    public void handleShouldFailUpdateAndStoreVariableWithNonExistingTaskReference() throws Exception {
         //given
     	String executionId = "10";
         String processInstanceId = "-1"; // does not exist
         String taskId = "-1";
         String variableName = "var";
         String variableType = String.class.getName();
-        VariableCreatedEvent event = new VariableCreatedEvent(System.currentTimeMillis(),
-                                                              "variableCreated",
+        VariableUpdatedEvent event = new VariableUpdatedEvent(System.currentTimeMillis(),
+                                                              "variableUpdated",
                                                               executionId,
                                                               "process_definition_id",
                                                               processInstanceId,
