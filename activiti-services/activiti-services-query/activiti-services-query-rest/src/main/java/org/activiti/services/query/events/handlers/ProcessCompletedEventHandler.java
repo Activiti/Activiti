@@ -39,7 +39,7 @@ public class ProcessCompletedEventHandler implements QueryEventHandler {
 
     @Override
     public void handle(ProcessEngineEvent completedEvent) {
-        long processInstanceId = Long.parseLong(completedEvent.getProcessInstanceId());
+        String processInstanceId = completedEvent.getProcessInstanceId();
         Optional<ProcessInstance> findResult = processInstanceRepository.findById(processInstanceId);
         if (findResult.isPresent()) {
             ProcessInstance processInstance = findResult.get();

@@ -17,13 +17,15 @@
 package org.activiti.services.query.model;
 
 import java.util.Date;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.introproventures.graphql.jpa.query.annotation.GraphQLDescription;
 import org.springframework.format.annotation.DateTimeFormat;
+
+@GraphQLDescription("Variable Instance Entity Model")
 
 @Entity
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -31,7 +33,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Variable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)  
     private long id;
     private String type;
     private String name;
@@ -44,6 +46,14 @@ public class Variable {
     private String executionId;
     private String value;
 
+    @ManyToOne(optional=true)
+    @JoinColumn(name="taskId", referencedColumnName="id", insertable=false, updatable=false, nullable = true)
+    private Task task;
+
+    @ManyToOne
+    @JoinColumn(name="processInstanceId", referencedColumnName="processInstanceId", insertable=false, updatable=false)
+    private ProcessInstance processInstance;
+    
     public Variable() {
     }
 
@@ -133,4 +143,20 @@ public class Variable {
         return value;
     }
 
+    public ProcessInstance getProcessInstance() {
+        return this.processInstance;
+    }
+
+    public void setProcessInstance(ProcessInstance processInstance) {
+        this.processInstance = processInstance;
+    }
+    
+    public Task getTask() {
+        return this.task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
+    
 }

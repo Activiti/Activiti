@@ -19,9 +19,9 @@ package org.activiti.services.query.events.handlers;
 import java.util.Date;
 
 import org.activiti.services.api.events.ProcessEngineEvent;
-import org.activiti.services.query.model.ProcessInstance;
 import org.activiti.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.services.query.events.ProcessStartedEvent;
+import org.activiti.services.query.model.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class ProcessStartedHandler implements QueryEventHandler {
         LOGGER.debug("Handling start of process Instance " + event.getProcessInstanceId());
 
         processInstanceRepository.save(
-                new ProcessInstance(Long.parseLong(event.getProcessInstanceId()),
+                new ProcessInstance(event.getProcessInstanceId(),
                                     event.getProcessDefinitionId(),
                                     "RUNNING",
                                     new Date(event.getTimestamp())));

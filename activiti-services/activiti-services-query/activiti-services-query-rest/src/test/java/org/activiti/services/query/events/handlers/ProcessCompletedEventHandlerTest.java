@@ -63,7 +63,7 @@ public class ProcessCompletedEventHandlerTest {
                                                                                 new ProcessInstance());
 
         ProcessInstance currentProcessInstance = mock(ProcessInstance.class);
-        given(processInstanceRepository.findById(200L)).willReturn(Optional.of(currentProcessInstance));
+        given(processInstanceRepository.findById("200")).willReturn(Optional.of(currentProcessInstance));
 
         //when
         handler.handle(event);
@@ -84,7 +84,7 @@ public class ProcessCompletedEventHandlerTest {
                                                                                 "200",
                                                                                 new ProcessInstance());
 
-        given(processInstanceRepository.findById(200L)).willReturn(Optional.empty());
+        given(processInstanceRepository.findById("200")).willReturn(Optional.empty());
 
         //then
         expectedException.expect(ActivitiException.class);
