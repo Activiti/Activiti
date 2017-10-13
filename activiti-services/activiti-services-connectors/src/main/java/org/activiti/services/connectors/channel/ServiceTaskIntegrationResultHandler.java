@@ -17,7 +17,11 @@
 package org.activiti.services.connectors.channel;
 
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
+import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.services.connectors.model.IntegrationResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
@@ -27,19 +31,30 @@ import org.springframework.stereotype.Component;
 @EnableBinding(ProcessEngineIntegrationChannels.class)
 public class ServiceTaskIntegrationResultHandler {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServiceTaskIntegrationResultHandler.class);
+
     private final RuntimeService runtimeService;
+    private final IntegrationContextService integrationContextService;
 
     @Autowired
-    public ServiceTaskIntegrationResultHandler(RuntimeService runtimeService) {
+    public ServiceTaskIntegrationResultHandler(RuntimeService runtimeService,
+                                               IntegrationContextService integrationContextService) {
         this.runtimeService = runtimeService;
+        this.integrationContextService = integrationContextService;
     }
 
     @StreamListener(ProcessEngineIntegrationChannels.INTEGRATION_RESULTS_CONSUMER)
     public synchronized void receive(IntegrationResult integrationResult) {
+        IntegrationContextEntity integrationContext = integrationContextService.findIntegrationContextByCorrelationId(integrationResult.getCorrelationId());
 
+        if (integrationContext != null) {
 
-        runtimeService.trigger(integrationResult.getExecutionId(),
-                               integrationResult.getVariables());
+            runtimeService.trigger(integrationContext.getExecutionId(),
+                                   integrationResult.getVariables());
+        } else {
+            LOGGER.warn("No task is waiting for integration result with correlation id `" +
+                                integrationResult.getCorrelationId() +
+                                "`. The integration result `" + integrationResult.getId() + "` will be ignored." );
+        }
     }
-
 }

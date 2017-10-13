@@ -109,6 +109,16 @@ alter table ACT_PROCDEF_INFO
 alter table ACT_PROCDEF_INFO 
 	drop foreign key ACT_FK_INFO_PROCDEF;
 
+alter table ACT_RU_INTEGRATION
+    drop foreign key ACT_FK_INT_EXECUTION;
+
+alter table ACT_RU_INTEGRATION
+    drop foreign key ACT_FK_INT_PROC_INST;
+
+alter table ACT_RU_INTEGRATION
+    drop foreign key ACT_FK_INT_PROC_DEF;
+
+
 drop index ACT_IDX_EVENT_SUBSCR_CONFIG_;
 drop index ACT_IDX_ATHRZ_PROCEDEF;
     
@@ -128,3 +138,4 @@ drop table ACT_RU_DEADLETTER_JOB;
 drop table ACT_RU_EVENT_SUBSCR;
 drop table ACT_EVT_LOG;
 drop table ACT_PROCDEF_INFO;
+drop table ACT_RU_INTEGRATION;

@@ -24,7 +24,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class IntegrationResult {
 
     private String id;
-    private String executionId;
+
+    private String correlationId;
+
     private Map<String, Object> variables;
 
     //used by json deserialization
@@ -32,10 +34,10 @@ public class IntegrationResult {
     }
 
     public IntegrationResult(String id,
-                             String executionId,
+                             String correlationId,
                              Map<String, Object> variables) {
         this.id = id;
-        this.executionId = executionId;
+        this.correlationId = correlationId;
         this.variables = variables;
     }
 
@@ -43,12 +45,12 @@ public class IntegrationResult {
         return id;
     }
 
-    public Map<String, Object> getVariables() {
-        return variables;
+    public String getCorrelationId() {
+        return correlationId;
     }
 
-    public String getExecutionId() {
-        return executionId;
+    public Map<String, Object> getVariables() {
+        return variables;
     }
 
 }

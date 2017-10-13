@@ -16,13 +16,15 @@
 
 package org.activiti.services.connectors.behavior;
 
+import java.util.Date;
 import java.util.UUID;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
+import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
+import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
 import org.activiti.services.connectors.channel.ProcessEngineIntegrationChannels;
-import org.activiti.services.connectors.model.AsyncContext;
 import org.activiti.services.connectors.model.IntegrationEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.support.MessageBuilder;
@@ -32,21 +34,36 @@ import org.springframework.stereotype.Component;
 public class MQServiceTaskBehavior extends AbstractBpmnActivityBehavior implements TriggerableActivityBehavior {
 
     private final ProcessEngineIntegrationChannels channels;
+    private final IntegrationContextManager integrationContextManager;
 
     @Autowired
-    public MQServiceTaskBehavior(ProcessEngineIntegrationChannels channels) {
+    public MQServiceTaskBehavior(ProcessEngineIntegrationChannels channels,
+                                 IntegrationContextManager integrationContextManager) {
         this.channels = channels;
+        this.integrationContextManager = integrationContextManager;
     }
 
     @Override
     public void execute(DelegateExecution execution) {
-        AsyncContext context = new AsyncContext(execution.getProcessInstanceId(),
-                                                     execution.getCurrentActivityId(),
-                                                     execution.getId());
-        IntegrationEvent event = new IntegrationEvent(UUID.randomUUID().toString(),
-                                                      context,
-                                                      execution.getVariables());
+        IntegrationContextEntity integrationContext = buildIntegrationContext(execution);
+        integrationContextManager.insert(integrationContext);
+
+        IntegrationEvent event = new IntegrationEvent();
+        event.setProcessInstanceId(execution.getProcessInstanceId());
+        event.setProcessDefinitionId(execution.getProcessDefinitionId());
+        event.setCorrelationId(integrationContext.getCorrelationId());
+        event.setVariables(execution.getVariables());
         channels.integrationEventsProducer().send(MessageBuilder.withPayload(event).build());
+    }
+
+    private IntegrationContextEntity buildIntegrationContext(DelegateExecution execution) {
+        IntegrationContextEntity integrationContext = integrationContextManager.create();
+        integrationContext.setCorrelationId(UUID.randomUUID().toString());
+        integrationContext.setExecutionId(execution.getId());
+        integrationContext.setProcessInstanceId(execution.getProcessInstanceId());
+        integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
+        integrationContext.setCreatedDate(new Date());
+        return integrationContext;
     }
 
     @Override

@@ -21,29 +21,44 @@ import java.util.Map;
 
 public class IntegrationEvent {
 
-    private String id;
-    private AsyncContext context;
+    private String processInstanceId;
+
+    private String processDefinitionId;
+
+    private String correlationId;
 
     private Map<String, Object> variables;
 
-    //used by json deserialization
-    public IntegrationEvent() {
+    public String getProcessInstanceId() {
+        return processInstanceId;
     }
 
-    public IntegrationEvent(String id,
-                            AsyncContext context,
-                            Map<String, Object> variables) {
-        this.id = id;
-        this.context = context;
-        this.variables = variables;
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
 
-    public String getId() {
-        return id;
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
+
+    public String getCorrelationId() {
+        return correlationId;
+    }
+
+    public void setCorrelationId(String correlationId) {
+        this.correlationId = correlationId;
     }
 
     public Map<String, Object> getVariables() {
         return variables;
+    }
+
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
     }
 
     public void putVariable(String name, Object value) {
@@ -51,10 +66,6 @@ public class IntegrationEvent {
             variables = new HashMap<>();
         }
         variables.put(name, value);
-    }
-
-    public AsyncContext getContext() {
-        return context;
     }
 
 }

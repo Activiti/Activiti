@@ -17,6 +17,8 @@
 package org.activiti.services.connectors.behavior;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
+import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
 import org.activiti.services.connectors.channel.ProcessEngineIntegrationChannels;
 import org.activiti.services.connectors.model.IntegrationEvent;
 import org.junit.Before;
@@ -44,6 +46,9 @@ public class MQServiceTaskBehaviorTest {
     private ProcessEngineIntegrationChannels channels;
 
     @Mock
+    private IntegrationContextManager integrationContextManager;
+
+    @Mock
     private MessageChannel messageChannel;
 
     @Captor
@@ -56,22 +61,31 @@ public class MQServiceTaskBehaviorTest {
     }
 
     @Test
-    public void executeShouldSendAMessage() throws Exception {
+    public void executeShouldStoreTheIntegrationContextAndSendAMessage() throws Exception {
         //given
         DelegateExecution execution = mock(DelegateExecution.class);
         given(execution.getId()).willReturn("execId");
         given(execution.getProcessInstanceId()).willReturn("procInstId");
-        given(execution.getCurrentActivityId()).willReturn("actId");
+        given(execution.getProcessDefinitionId()).willReturn("procDefId");
+
+        IntegrationContextEntityImpl entity = new IntegrationContextEntityImpl();
+        given(integrationContextManager.create()).willReturn(entity);
 
         //when
         behavior.execute(execution);
 
         //then
+        verify(integrationContextManager).insert(entity);
+        assertThat(entity.getExecutionId()).isEqualTo("execId");
+        assertThat(entity.getProcessDefinitionId()).isEqualTo("procDefId");
+        assertThat(entity.getProcessInstanceId()).isEqualTo("procInstId");
+        assertThat(entity.getCorrelationId()).isNotNull();
+
         verify(messageChannel).send(captor.capture());
         Message<IntegrationEvent> message = captor.getValue();
-        assertThat(message.getPayload().getContext().getExecutionId()).isEqualTo("execId");
-        assertThat(message.getPayload().getContext().getProcessInstanceId()).isEqualTo("procInstId");
-        assertThat(message.getPayload().getContext().getTaskId()).isEqualTo("actId");
+        assertThat(message.getPayload().getCorrelationId()).isNotNull();
+        assertThat(message.getPayload().getProcessInstanceId()).isEqualTo("procInstId");
+        assertThat(message.getPayload().getProcessDefinitionId()).isEqualTo("procDefId");
     }
 
     @Test

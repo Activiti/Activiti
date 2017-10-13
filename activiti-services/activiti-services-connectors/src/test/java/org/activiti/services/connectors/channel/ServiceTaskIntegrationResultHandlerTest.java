@@ -20,13 +20,16 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
+import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.services.connectors.model.IntegrationResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ServiceTaskIntegrationResultHandlerTest {
@@ -38,6 +41,9 @@ public class ServiceTaskIntegrationResultHandlerTest {
     @Mock
     private RuntimeService runtimeService;
 
+    @Mock
+    private IntegrationContextService integrationContextService;
+
     @Before
     public void setUp() throws Exception {
         initMocks(this);
@@ -47,10 +53,17 @@ public class ServiceTaskIntegrationResultHandlerTest {
     public void receiveShouldTriggerTheExecution() throws Exception {
         //given
         String executionId = "execId";
+        String correlationId = "corId";
+
+        IntegrationContextEntityImpl integrationContext = new IntegrationContextEntityImpl();
+        integrationContext.setCorrelationId(correlationId);
+        integrationContext.setExecutionId(executionId);
+
+        given(integrationContextService.findIntegrationContextByCorrelationId(correlationId)).willReturn(integrationContext);
         Map<String, Object> variables = Collections.singletonMap("var1",
                                                                  "v");
         IntegrationResult integrationResult = new IntegrationResult("resultId",
-                                                                    executionId,
+                                                                    correlationId,
                                                                     variables);
 
         //when
