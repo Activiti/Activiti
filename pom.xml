@@ -131,8 +131,6 @@
 
   <modules>
     <module>activiti-dependencies</module>
-    <module>activiti-cloud-parent</module>
-    <module>activiti-cloud-dependencies</module>
   </modules>
 
   <repositories>
