@@ -9,17 +9,11 @@
   <version>7-201710-EA-SNAPSHOT</version>
   <properties>
     <version.activiti>${project.version}</version.activiti>
-    <version.activiti.cloud>${project.version}</version.activiti.cloud>
     <!--configuration properties-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <jdk.version>1.8</jdk.version>
-    <docker.keycloak.port>8180</docker.keycloak.port>
-    <docker.keycloak.start.timeout>40000</docker.keycloak.start.timeout>
-    <docker.rabbitmq.tcp.port>5672</docker.rabbitmq.tcp.port>
-    <docker.rabbitmq.cli.port>15672</docker.rabbitmq.cli.port>
-    <docker.rabbitmq.start.timeout>15000</docker.rabbitmq.start.timeout>
 
     <!-- configuration properties for tests-->
     <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
@@ -28,24 +22,13 @@
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
 
-    <!-- Spring Boot / Cloud / Stream deps -->
-    <spring.boot.version>2.0.0.M3</spring.boot.version>
-    <spring.cloud.version>Finchley.M2</spring.cloud.version>
-    <spring.cloud.stream.version>Ditmars.M2</spring.cloud.stream.version>
-    <!-- using SNAPSHOT version to benefit from https://github.com/spring-projects/spring-hateoas/issues/583 -->
-    <spring.hateoas.version>0.24.0.BUILD-SNAPSHOT</spring.hateoas.version>
 
-    <springfox.version>2.7.0</springfox.version>
     <mockito.version>2.7.22</mockito.version>
     <junit.version>4.12</junit.version>
     <assertj.version>3.8.0</assertj.version>
     <jsonunit.version>1.24.0</jsonunit.version>
     <el-api.version>2.2</el-api.version>
     <slf4j.version>1.7.6</slf4j.version>
-    <hibernate-core.version>5.2.2.Final</hibernate-core.version>
-    <hibernate-jpa-2.1-api.version>1.0.0.Final</hibernate-jpa-2.1-api.version>
-    <hibernate-validator.version>5.3.4.Final</hibernate-validator.version>
-    <hibernate-entitymanager.version>5.0.12.Final</hibernate-entitymanager.version>
     <commons-lang3.version>3.3.2</commons-lang3.version>
     <commons-io.version>2.0.1</commons-io.version>
     <commons-fileupload.version>1.2.2</commons-fileupload.version>
@@ -66,35 +49,14 @@
     <jaxb-api.version>2.2.11</jaxb-api.version>
     <h2.version>1.4.193</h2.version>
     <commons-dbcp.version>1.4</commons-dbcp.version>
-    <hsqldb.version>2.3.2</hsqldb.version>
     <postgresql.version>9.4-1201-jdbc4</postgresql.version>
-    <ojdbc7.version>12.1.0.1</ojdbc7.version>
-    <mysql.version>5.1.27</mysql.version>
-    <db2jcc4.version>10.1</db2jcc4.version>
     <java-uuid-generator.version>3.1.3</java-uuid-generator.version>
     <jgraphx.version>1.10.4.1</jgraphx.version>
     <btm.version>2.1.3</btm.version>
     <jsr250-api.version>1.0</jsr250-api.version>
     <httpmime.version>4.3.5</httpmime.version>
-    <jetty.javax.servlet.version>3.0.0.v201112011016</jetty.javax.servlet.version>
-    <jetty-server.version>8.1.16.v20140903</jetty-server.version>
-    <jetty-servlet.version>8.1.16.v20140903</jetty-servlet.version>
-    <jetty-http.version>8.1.16.v20140903</jetty-http.version>
-    <jetty-webapp.version>8.1.16.v20140903</jetty-webapp.version>
-    <jetty-io.version>8.1.16.v20140903</jetty-io.version>
-    <jetty-util.version>8.1.16.v20140903</jetty-util.version>
-    <swagger.version>1.5.10</swagger.version>
-    <resteasy.version>3.0.21.Final</resteasy.version>
-    <querydsl.version>4.1.4</querydsl.version>
     <batik.version>1.7</batik.version>
 
-    <!--keycloak snapshot that was used to build boot2 adapter
-    the original snapshot doesn't contain the boot2 adapter, just this particular build
-    see https://issues.jboss.org/browse/KEYCLOAK-5098
-    https://github.com/keycloak/keycloak/pull/4279
-    -->
-    <keycloak.snapshot.version>3.2.0.CR1-SNAPSHOT</keycloak.snapshot.version>
-    <keycloak.version>3.2.0.Final</keycloak.version>
 
     <!-- plugins -->
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
@@ -109,7 +71,6 @@
     <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
     <extra-enforcer-rules.version>1.0-beta-6</extra-enforcer-rules.version>
     <illegal-transitive-dependency-check.version>1.7.4</illegal-transitive-dependency-check.version>
-    <spring-boot-maven-plugin.version>1.5.4.RELEASE</spring-boot-maven-plugin.version>
     <apt-maven-plugin.version>1.1.3</apt-maven-plugin.version>
     <docker.maven.plugin.version>0.21.0</docker.maven.plugin.version>
     <directory.maven.plugin.version>0.1</directory.maven.plugin.version>
@@ -176,137 +137,11 @@
   <!-- Here we add 3rd Party Dependencies -->
   <dependencyManagement>
     <dependencies>
-      <!-- Spring Boot / Cloud / Stream dependencies -->
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring.boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-dependencies</artifactId>
-        <version>${spring.cloud.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.cloud</groupId>
-        <artifactId>spring-cloud-stream-dependencies</artifactId>
-        <version>${spring.cloud.stream.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.hateoas</groupId>
-        <artifactId>spring-hateoas</artifactId>
-        <version>${spring.hateoas.version}</version>
-      </dependency>
-
-
       <dependency>
         <groupId>javax.el</groupId>
         <artifactId>el-api</artifactId>
         <version>${el-api.version}</version>
       </dependency>
-      <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-core</artifactId>
-        <version>${springfox.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-spi</artifactId>
-        <version>${springfox.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-spring-web</artifactId>
-        <version>${springfox.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-swagger2</artifactId>
-        <version>${springfox.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.springfox</groupId>
-        <artifactId>springfox-swagger-ui</artifactId>
-        <version>${springfox.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate.javax.persistence</groupId>
-        <artifactId>hibernate-jpa-2.1-api</artifactId>
-        <version>${hibernate-jpa-2.1-api.version}</version>
-      </dependency>
-
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-admin-client</artifactId>
-        <version>${keycloak.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-core</artifactId>
-        <version>${keycloak.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-adapter-core</artifactId>
-        <version>${keycloak.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-spring-security-adapter</artifactId>
-        <version>${keycloak.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-spring-boot-2-adapter</artifactId>
-        <version>${keycloak.snapshot.version}</version>
-      </dependency>
-
-      <!--
-      keycloak boot 2 adapter only proven with jetty and undertow
-      see https://github.com/keycloak/keycloak/pull/4279
-  <dependency>
-    <groupId>org.keycloak</groupId>
-    <artifactId>keycloak-tomcat8-adapter</artifactId>
-    <version>${keycloak.version}</version>
-  </dependency>
-  -->
-      <!--
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-undertow-adapter</artifactId>
-        <version>${keycloak.version}</version>
-      </dependency>
- -->
-
-      <dependency>
-        <groupId>org.keycloak</groupId>
-        <artifactId>keycloak-jetty94-adapter</artifactId>
-        <version>${keycloak.version}</version>
-      </dependency>
-
-      <!-- addresses https://issues.jboss.org/browse/KEYCLOAK-2009 , may not be needed on servers other than embedded jetty-->
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-client</artifactId>
-        <version>3.0.21.Final</version>
-      </dependency>
-      <dependency>
-        <groupId>org.jboss.resteasy</groupId>
-        <artifactId>resteasy-jackson2-provider</artifactId>
-        <version>3.0.21.Final</version>
-      </dependency>
-
       <!-- Logging -->
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -331,11 +166,6 @@
       <dependency>
         <groupId>com.querydsl</groupId>
         <artifactId>querydsl-apt</artifactId>
-        <version>${querydsl.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.querydsl</groupId>
-        <artifactId>querydsl-jpa</artifactId>
         <version>${querydsl.version}</version>
       </dependency>
       <dependency>
@@ -422,19 +252,6 @@
         <groupId>javax.annotation</groupId>
         <artifactId>jsr250-api</artifactId>
         <version>${jsr250-api.version}</version>
-      </dependency>
-      <!-- swagger dependencies -->
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-annotations</artifactId>
-        <version>${swagger.version}</version>
-        <scope>compile</scope>
-      </dependency>
-      <dependency>
-        <groupId>io.swagger</groupId>
-        <artifactId>swagger-models</artifactId>
-        <version>${swagger.version}</version>
-        <scope>compile</scope>
       </dependency>
 
       <dependency>
@@ -574,45 +391,10 @@
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>org.hsqldb</groupId>
-        <artifactId>hsqldb</artifactId>
-        <version>${hsqldb.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
         <version>${postgresql.version}</version>
         <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.oracle.jdbc</groupId>
-        <artifactId>ojdbc7</artifactId>
-        <version>${ojdbc7.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>${mysql.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.ibm.db2.jcc</groupId>
-        <artifactId>db2jcc4</artifactId>
-        <version>${db2jcc4.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-core</artifactId>
-        <version>${hibernate-core.version}</version>
-        <optional>true</optional>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-entitymanager</artifactId>
-        <version>${hibernate-entitymanager.version}</version>
       </dependency>
       <dependency>
         <groupId>org.codehaus.btm</groupId>
