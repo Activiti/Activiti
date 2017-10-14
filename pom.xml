@@ -40,7 +40,7 @@
       </snapshots>
     </repository>
   </repositories>
-  
+
   <dependencyManagement>
     <!-- Important: Do not add any additional dependency versions here!
          The dependency management should only import activiti-dependencies. 3rd party deps should go to activiti-parent -->
@@ -63,7 +63,6 @@
     <module>activiti-json-converter</module>
     <module>activiti-bpmn-converter</module>
     <module>activiti-engine</module>
-    <module>activiti-services</module>
     <module>activiti-spring</module>
   </modules>
 
