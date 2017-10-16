@@ -57,6 +57,8 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
     } else if ("##WebService".equals(xtr.getAttributeValue(null, ATTRIBUTE_TASK_IMPLEMENTATION))) {
       serviceTask.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE);
       serviceTask.setOperationRef(parseOperationRef(xtr.getAttributeValue(null, ATTRIBUTE_TASK_OPERATION_REF), model));
+    } else {
+      serviceTask.setImplementation(xtr.getAttributeValue(null, ATTRIBUTE_TASK_IMPLEMENTATION));
     }
 
     serviceTask.setResultVariableName(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_SERVICE_RESULTVARIABLE));

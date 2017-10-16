@@ -19,6 +19,7 @@ package org.activiti.services.connectors.behavior;
 import java.util.Date;
 import java.util.UUID;
 
+import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.delegate.TriggerableActivityBehavior;
@@ -27,12 +28,14 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 import org.activiti.services.connectors.channel.ProcessEngineIntegrationChannels;
 import org.activiti.services.connectors.model.IntegrationEvent;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MQServiceTaskBehavior extends AbstractBpmnActivityBehavior implements TriggerableActivityBehavior {
 
+    private static final String CONNECTOR_TYPE = "connectorType";
     private final ProcessEngineIntegrationChannels channels;
     private final IntegrationContextManager integrationContextManager;
 
@@ -48,12 +51,24 @@ public class MQServiceTaskBehavior extends AbstractBpmnActivityBehavior implemen
         IntegrationContextEntity integrationContext = buildIntegrationContext(execution);
         integrationContextManager.insert(integrationContext);
 
+        Message<IntegrationEvent> message = buildMessage(execution,
+                                                         integrationContext);
+        channels.integrationEventsProducer().send(message);
+    }
+
+    private Message<IntegrationEvent> buildMessage(DelegateExecution execution,
+                                                   IntegrationContextEntity integrationContext) {
         IntegrationEvent event = new IntegrationEvent();
         event.setProcessInstanceId(execution.getProcessInstanceId());
         event.setProcessDefinitionId(execution.getProcessDefinitionId());
         event.setCorrelationId(integrationContext.getCorrelationId());
         event.setVariables(execution.getVariables());
-        channels.integrationEventsProducer().send(MessageBuilder.withPayload(event).build());
+
+        String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
+        return MessageBuilder.withPayload(event)
+                .setHeader(CONNECTOR_TYPE,
+                           implementation)
+                .build();
     }
 
     private IntegrationContextEntity buildIntegrationContext(DelegateExecution execution) {

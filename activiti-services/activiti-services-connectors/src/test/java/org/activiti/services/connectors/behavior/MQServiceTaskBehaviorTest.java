@@ -16,6 +16,7 @@
 
 package org.activiti.services.connectors.behavior;
 
+import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
@@ -63,10 +64,15 @@ public class MQServiceTaskBehaviorTest {
     @Test
     public void executeShouldStoreTheIntegrationContextAndSendAMessage() throws Exception {
         //given
+        String connectorType = "payment";
+        ServiceTask serviceTask = new ServiceTask();
+        serviceTask.setImplementation(connectorType);
+
         DelegateExecution execution = mock(DelegateExecution.class);
         given(execution.getId()).willReturn("execId");
         given(execution.getProcessInstanceId()).willReturn("procInstId");
         given(execution.getProcessDefinitionId()).willReturn("procDefId");
+        given(execution.getCurrentFlowElement()).willReturn(serviceTask);
 
         IntegrationContextEntityImpl entity = new IntegrationContextEntityImpl();
         given(integrationContextManager.create()).willReturn(entity);
@@ -86,6 +92,7 @@ public class MQServiceTaskBehaviorTest {
         assertThat(message.getPayload().getCorrelationId()).isNotNull();
         assertThat(message.getPayload().getProcessInstanceId()).isEqualTo("procInstId");
         assertThat(message.getPayload().getProcessDefinitionId()).isEqualTo("procDefId");
+        assertThat(message.getHeaders().get("connectorType")).isEqualTo(connectorType);
     }
 
     @Test
