@@ -21,11 +21,14 @@ import java.nio.charset.StandardCharsets;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.conf.SecurityProperties;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.image.ProcessDiagramGenerator;
+import org.activiti.services.core.AuthenticationWrapper;
 import org.activiti.services.core.model.ProcessDefinition;
 import org.activiti.services.core.model.converter.ProcessDefinitionConverter;
 import org.activiti.services.core.pageable.PageableRepositoryService;
@@ -53,17 +56,27 @@ public class ProcessDefinitionControllerImpl implements ProcessDefinitionControl
 
     private final PageableRepositoryService pageableRepositoryService;
 
+    private AuthenticationWrapper authenticationWrapper = new AuthenticationWrapper();
+
+    private final SecurityProperties securityProperties;
+
+    private final UserGroupLookupProxy userGroupLookupProxy;
+
     @Autowired
     public ProcessDefinitionControllerImpl(RepositoryService repositoryService,
                                            ProcessDiagramGenerator processDiagramGenerator,
                                            ProcessDefinitionConverter processDefinitionConverter,
                                            ProcessDefinitionResourceAssembler resourceAssembler,
-                                           PageableRepositoryService pageableRepositoryService) {
+                                           PageableRepositoryService pageableRepositoryService,
+                                           SecurityProperties securityProperties,
+                                           UserGroupLookupProxy userGroupLookupProxy) {
         this.repositoryService = repositoryService;
         this.processDiagramGenerator = processDiagramGenerator;
         this.processDefinitionConverter = processDefinitionConverter;
         this.resourceAssembler = resourceAssembler;
         this.pageableRepositoryService = pageableRepositoryService;
+        this.securityProperties = securityProperties;
+        this.userGroupLookupProxy = userGroupLookupProxy;
     }
 
     @Override
