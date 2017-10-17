@@ -85,7 +85,7 @@
     <illegal-transitive-dependency-check.version>1.7.4</illegal-transitive-dependency-check.version>
     <directory.maven.plugin.version>0.1</directory.maven.plugin.version>
     <assertions-generator-plugin.version>2.0.0</assertions-generator-plugin.version>
-    <jgitflow.plugin.version>1.0-m3</jgitflow.plugin.version>
+    <jgitflow.plugin.version>1.0-m5.1</jgitflow.plugin.version>
   </properties>
 
   <distributionManagement>
