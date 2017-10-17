@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <version>7-201710-EA-salaboy_123_improving_readme-SNAPSHOT</version>
+    <version>7-201710-EA-SNAPSHOT</version>
   </parent>
 
   <properties>
