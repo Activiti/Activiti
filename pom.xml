@@ -85,6 +85,7 @@
     <illegal-transitive-dependency-check.version>1.7.4</illegal-transitive-dependency-check.version>
     <directory.maven.plugin.version>0.1</directory.maven.plugin.version>
     <assertions-generator-plugin.version>2.0.0</assertions-generator-plugin.version>
+    <jgitflow.plugin.version>1.0-m3</jgitflow.plugin.version>
   </properties>
 
   <distributionManagement>
@@ -576,6 +577,18 @@
             <tagNameFormat>activiti-@{project.version}</tagNameFormat>
             <!-- Necessary until keycloak releases boot2 adaptor -->
             <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>external.atlassian.jgitflow</groupId>
+          <artifactId>jgitflow-maven-plugin</artifactId>
+          <version>${jgitflow.plugin.version}</version>
+          <configuration>
+            <enableFeatureVersions>true</enableFeatureVersions>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <allowSnapshots>true</allowSnapshots>
+            <noDeploy>false</noDeploy>
+            <useReleaseProfile>false</useReleaseProfile> <!-- Do not generate javadoc when releaseing -->
           </configuration>
         </plugin>
         <plugin>
