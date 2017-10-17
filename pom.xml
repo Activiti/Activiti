@@ -591,8 +591,6 @@
             <useReleaseProfile>true</useReleaseProfile> <!-- Do not generate javadoc when releaseing -->
             <pushReleases>true</pushReleases>
             <squash>true</squash>
-            <noReleaseMerge>true</noReleaseMerge>
-            <noReleaseBuild>true</noReleaseBuild>
           </configuration>
         </plugin>
         <plugin>
