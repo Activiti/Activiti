@@ -588,7 +588,11 @@
             <autoVersionSubmodules>true</autoVersionSubmodules>
             <allowSnapshots>true</allowSnapshots>
             <noDeploy>false</noDeploy>
-            <useReleaseProfile>false</useReleaseProfile> <!-- Do not generate javadoc when releaseing -->
+            <useReleaseProfile>true</useReleaseProfile> <!-- Do not generate javadoc when releaseing -->
+            <pushReleases>true</pushReleases>
+            <squash>true</squash>
+            <noReleaseMerge>true</noReleaseMerge>
+            <noReleaseBuild>true</noReleaseBuild>
           </configuration>
         </plugin>
         <plugin>
