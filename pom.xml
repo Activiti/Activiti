@@ -6,6 +6,9 @@
     <artifactId>activiti-parent</artifactId>
     <version>7-201710-EA-SNAPSHOT</version>
   </parent>
+  <properties>
+    <jgitflow.plugin.version>1.0-m5.1</jgitflow.plugin.version>
+  </properties>
   <name>Activiti</name>
 
   <description>BPM and workflow engine</description>
@@ -89,6 +92,25 @@
       </build>
     </profile>
   </profiles>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>external.atlassian.jgitflow</groupId>
+          <artifactId>jgitflow-maven-plugin</artifactId>
+          <version>${jgitflow.plugin.version}</version>
+          <configuration>
+            <enableFeatureVersions>true</enableFeatureVersions>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <allowSnapshots>true</allowSnapshots>
+            <noDeploy>true</noDeploy>
+            <useReleaseProfile>false</useReleaseProfile> <!-- Do not generate javadoc when releaseing -->
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
   <!-- Various information, not used by the build -->
 
