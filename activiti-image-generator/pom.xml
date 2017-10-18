@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <version>7-201710-EA-SNAPSHOT</version>
+    <version>7-201710-EA-salaboy_1510_jgitflowtest-SNAPSHOT</version>
   </parent>
 
   <dependencies>

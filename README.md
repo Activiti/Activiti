@@ -31,6 +31,7 @@ Activiti JIRA: https://activiti.atlassian.net
 
 If you want to read more about our Repositories structure you can read our [GitBook](https://activiti.gitbooks.io/activiti-7-developers-guide/content/).
 
+ Quick note
 Configuring IntelliJ
 --------------------
 
