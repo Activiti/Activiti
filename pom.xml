@@ -48,7 +48,7 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-dependencies</artifactId>
-        <version>7-201710-EA-SNAPSHOT</version>
+        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
