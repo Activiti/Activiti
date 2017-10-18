@@ -590,7 +590,8 @@
             <noDeploy>false</noDeploy>
             <useReleaseProfile>true</useReleaseProfile> <!-- Do not generate javadoc when releaseing -->
             <pushReleases>true</pushReleases>
-            <squash>false</squash>
+            <squash>true</squash>
+            <versionTagPrefix>activiti-</versionTagPrefix>
           </configuration>
         </plugin>
         <plugin>
