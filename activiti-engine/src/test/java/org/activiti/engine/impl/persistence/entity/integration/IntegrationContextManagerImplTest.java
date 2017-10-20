@@ -51,13 +51,13 @@ public class IntegrationContextManagerImplTest {
     }
 
     @Test
-    public void findIntegrationContextByCorrelationIdShouldReturnResultFromDataManager() throws Exception {
+    public void findIntegrationContextByExecutionIdShouldReturnResultFromDataManager() throws Exception {
         //given
         IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
-        given(dataManager.findIntegrationContextByCorrelationId("corId")).willReturn(entity);
+        given(dataManager.findIntegrationContextByExecutionId("execId")).willReturn(entity);
 
         //when
-        IntegrationContextEntity retrievedEntity = manager.findIntegrationContextByCorrelationId("corId");
+        IntegrationContextEntity retrievedEntity = manager.findIntegrationContextByExecutionId("execId");
 
         //then
         assertThat(retrievedEntity).isEqualTo(entity);

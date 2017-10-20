@@ -54,7 +54,7 @@ public class RetrieveIntegrationContextCmdTest {
         RetrieveIntegrationContextCmd command = new RetrieveIntegrationContextCmd(correlationId);
 
         IntegrationContextEntity contextEntity = mock(IntegrationContextEntity.class);
-        given(integrationContextManager.findIntegrationContextByCorrelationId(correlationId)).willReturn(contextEntity);
+        given(integrationContextManager.findIntegrationContextByExecutionId(correlationId)).willReturn(contextEntity);
 
         //when
         IntegrationContextEntity executeResult = command.execute(commandContext);

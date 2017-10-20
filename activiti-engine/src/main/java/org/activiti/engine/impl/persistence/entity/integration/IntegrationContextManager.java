@@ -20,6 +20,6 @@ import org.activiti.engine.impl.persistence.entity.EntityManager;
 
 public interface IntegrationContextManager extends EntityManager<IntegrationContextEntity> {
 
-    IntegrationContextEntity findIntegrationContextByCorrelationId(final String correlationId);
+    IntegrationContextEntity findIntegrationContextByExecutionId(final String executionId);
 
 }

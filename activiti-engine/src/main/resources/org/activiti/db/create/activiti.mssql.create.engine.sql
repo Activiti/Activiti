@@ -278,7 +278,6 @@ create table ACT_PROCDEF_INFO (
 create table ACT_RU_INTEGRATION (
     ID_ nvarchar(64) not null,
     EXECUTION_ID_ nvarchar(64),
-    CORRELATION_ID_ nvarchar(64),
     PROCESS_INSTANCE_ID_ nvarchar(64),
     PROC_DEF_ID_ nvarchar(64),
     CREATED_DATE_ datetime,

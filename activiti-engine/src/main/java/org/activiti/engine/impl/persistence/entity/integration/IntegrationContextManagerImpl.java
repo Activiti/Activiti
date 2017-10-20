@@ -36,8 +36,8 @@ public class IntegrationContextManagerImpl extends AbstractEntityManager<Integra
     }
 
     @Override
-    public IntegrationContextEntity findIntegrationContextByCorrelationId(String correlationId) {
-        return dataManager.findIntegrationContextByCorrelationId(correlationId);
+    public IntegrationContextEntity findIntegrationContextByExecutionId(String executionId) {
+        return dataManager.findIntegrationContextByExecutionId(executionId);
     }
 
 }

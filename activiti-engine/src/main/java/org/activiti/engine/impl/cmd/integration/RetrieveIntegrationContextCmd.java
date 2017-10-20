@@ -22,14 +22,14 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 
 public class RetrieveIntegrationContextCmd implements Command<IntegrationContextEntity> {
 
-    private String correlationId;
+    private String executionId;
 
-    public RetrieveIntegrationContextCmd(String correlationId) {
-        this.correlationId = correlationId;
+    public RetrieveIntegrationContextCmd(String executionId) {
+        this.executionId = executionId;
     }
 
     @Override
     public IntegrationContextEntity execute(CommandContext commandContext) {
-        return commandContext.getProcessEngineConfiguration().getIntegrationContextManager().findIntegrationContextByCorrelationId(correlationId);
+        return commandContext.getProcessEngineConfiguration().getIntegrationContextManager().findIntegrationContextByExecutionId(executionId);
     }
 }

@@ -64,14 +64,14 @@ public class MybatisIntegrationContextDataManagerTest {
     }
 
     @Test
-    public void findIntegrationContextByCorrelationIdShouldReturnResultOfDbSessionSelectOne() throws Exception {
+    public void findIntegrationContextByExecutionIdShouldReturnResultOfDbSessionSelectOne() throws Exception {
         //given
-        String correlationId = "correlationId";
+        String executionId = "executionId";
         IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
-        doReturn(entity).when(dbSqlSession).selectOne("selectIntegrationContextByCorrelationId", correlationId);
+        doReturn(entity).when(dbSqlSession).selectOne("selectIntegrationContextByExecutionId", executionId);
 
         //when
-        IntegrationContextEntity retrievedValue = manager.findIntegrationContextByCorrelationId(correlationId);
+        IntegrationContextEntity retrievedValue = manager.findIntegrationContextByExecutionId(executionId);
 
         //then
         assertThat(retrievedValue).isEqualTo(entity);

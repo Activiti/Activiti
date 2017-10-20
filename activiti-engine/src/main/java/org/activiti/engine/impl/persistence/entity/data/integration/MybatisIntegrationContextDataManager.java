@@ -38,9 +38,9 @@ public class MybatisIntegrationContextDataManager extends AbstractDataManager<In
     }
 
     @Override
-    public IntegrationContextEntity findIntegrationContextByCorrelationId(String correlationId) {
-        return (IntegrationContextEntity) getDbSqlSession().selectOne("selectIntegrationContextByCorrelationId",
-                                                                      correlationId);
+    public IntegrationContextEntity findIntegrationContextByExecutionId(String executionId) {
+        return (IntegrationContextEntity) getDbSqlSession().selectOne("selectIntegrationContextByExecutionId",
+                                                                      executionId);
 
     }
 }

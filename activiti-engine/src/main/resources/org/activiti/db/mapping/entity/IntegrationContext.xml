@@ -23,7 +23,6 @@
   <resultMap id="integrationContextResultMap" type="org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
-    <result property="correlationId" column="CORRELATION_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="createdDate" column="CREATED_DATE_" jdbcType="TIMESTAMP" />
@@ -36,7 +35,6 @@
     insert into ${prefix}ACT_RU_INTEGRATION (
     ID_,
     EXECUTION_ID_,
-    CORRELATION_ID_,
     PROCESS_INSTANCE_ID_,
     PROC_DEF_ID_,
     CREATED_DATE_
@@ -44,7 +42,6 @@
     values (
     #{id, jdbcType=VARCHAR},
     #{executionId, jdbcType=VARCHAR},
-    #{correlationId, jdbcType=VARCHAR},
     #{processInstanceId, jdbcType=VARCHAR},
     #{processDefinitionId, jdbcType=VARCHAR},
     #{createdDate, jdbcType=TIMESTAMP}
@@ -63,10 +60,10 @@
     select * from ${prefix}ACT_RU_INTEGRATION where ID_ = #{id, jdbcType=VARCHAR}
   </select>
 
-  <select id="selectIntegrationContextByCorrelationId" parameterType="string" resultMap="integrationContextResultMap">
+  <select id="selectIntegrationContextByExecutionId" parameterType="string" resultMap="integrationContextResultMap">
     select *
     from ${prefix}ACT_RU_INTEGRATION I
-    where I.CORRELATION_ID_ = #{parameter}
+    where I.EXECUTION_ID_ = #{parameter}
   </select>
 
 

@@ -29,8 +29,8 @@ public class IntegrationContextServiceImpl implements IntegrationContextService 
     }
 
     @Override
-    public IntegrationContextEntity findIntegrationContextByCorrelationId(String correlationId) {
-        return commandExecutor.execute(new RetrieveIntegrationContextCmd(correlationId));
+    public IntegrationContextEntity findIntegrationContextByExecutionId(String executionId) {
+        return commandExecutor.execute(new RetrieveIntegrationContextCmd(executionId));
     }
 
 }

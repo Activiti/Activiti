@@ -25,8 +25,6 @@ public class IntegrationContextEntityImpl extends AbstractEntity implements Inte
 
     private String executionId;
 
-    private String correlationId;
-
     private Date createdDate;
 
     private String processInstanceId;
@@ -41,16 +39,6 @@ public class IntegrationContextEntityImpl extends AbstractEntity implements Inte
     @Override
     public void setExecutionId(String executionId) {
         this.executionId = executionId;
-    }
-
-    @Override
-    public String getCorrelationId() {
-        return correlationId;
-    }
-
-    @Override
-    public void setCorrelationId(String correlationId) {
-        this.correlationId = correlationId;
     }
 
     public String getProcessDefinitionId() {

@@ -20,6 +20,6 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 
 public interface IntegrationContextService {
 
-    IntegrationContextEntity findIntegrationContextByCorrelationId(String correlationId);
+    IntegrationContextEntity findIntegrationContextByExecutionId(String executionId);
 
 }

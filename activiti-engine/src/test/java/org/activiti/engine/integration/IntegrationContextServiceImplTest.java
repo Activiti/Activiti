@@ -44,13 +44,13 @@ public class IntegrationContextServiceImplTest {
     }
 
     @Test
-    public void findIntegrationContextByCorrelationIdShouldExecuteRetrieveIntegrationContextCmd() throws Exception {
+    public void findIntegrationContextByExecutionIdShouldExecuteRetrieveIntegrationContextCmd() throws Exception {
         //given
         IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
         given(commandExecutor.execute(any(RetrieveIntegrationContextCmd.class))).willReturn(entity);
 
         //when
-        IntegrationContextEntity commandResult = integrationContextService.findIntegrationContextByCorrelationId("corId");
+        IntegrationContextEntity commandResult = integrationContextService.findIntegrationContextByExecutionId("execId");
 
         //then
         assertThat(commandResult).isEqualTo(entity);

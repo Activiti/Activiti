@@ -26,10 +26,6 @@ public interface IntegrationContextEntity extends Entity {
 
     void setExecutionId(String executionId);
 
-    String getCorrelationId();
-
-    void setCorrelationId(String correlationId);
-
     String getProcessDefinitionId();
 
     void setProcessDefinitionId(String processDefinitionId);
