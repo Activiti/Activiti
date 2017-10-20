@@ -75,6 +75,7 @@ public class ServiceTaskParseHandler extends AbstractActivityBpmnParseHandler<Se
       serviceTask.setBehavior(webServiceActivityBehavior);
       
     } else {
+      logger.debug("Using default behavior for service task '" + serviceTask.getId() + "'");
       serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createDefaultServiceTaskBehavior(serviceTask));
     }
 
