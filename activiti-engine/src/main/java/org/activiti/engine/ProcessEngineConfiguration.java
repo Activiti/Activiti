@@ -18,6 +18,8 @@ import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
+import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
+import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.engine.runtime.Clock;
 
 import javax.sql.DataSource;
@@ -252,6 +254,10 @@ public abstract class ProcessEngineConfiguration {
   public abstract ProcessEngineConfiguration getProcessEngineConfiguration();
 
   public abstract UserGroupLookupProxy getUserGroupLookupProxy();
+
+  public abstract IntegrationContextService getIntegrationContextService();
+
+  public abstract IntegrationContextManager getIntegrationContextManager();
 
   // getters and setters
   // //////////////////////////////////////////////////////

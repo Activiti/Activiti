@@ -59,7 +59,7 @@ public class DefaultProcessValidatorTest {
     Assert.assertNotNull(bpmnModel);
 
     List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-    Assert.assertEquals(65, allErrors.size());
+    Assert.assertEquals(64, allErrors.size());
 
     String setName = ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS; // shortening
                                                                     // it a
@@ -121,8 +121,6 @@ public class DefaultProcessValidatorTest {
     problems = findErrors(allErrors, setName, Problems.SERVICE_TASK_RESULT_VAR_NAME_WITH_DELEGATE, 1);
     assertCommonProblemFieldForActivity(problems.get(0));
     problems = findErrors(allErrors, setName, Problems.SERVICE_TASK_INVALID_TYPE, 1);
-    assertCommonProblemFieldForActivity(problems.get(0));
-    problems = findErrors(allErrors, setName, Problems.SERVICE_TASK_MISSING_IMPLEMENTATION, 1);
     assertCommonProblemFieldForActivity(problems.get(0));
     problems = findErrors(allErrors, setName, Problems.SERVICE_TASK_WEBSERVICE_INVALID_OPERATION_REF, 1);
     assertCommonProblemFieldForActivity(problems.get(0));

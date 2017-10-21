@@ -120,6 +120,8 @@ public interface ActivityBehaviorFactory {
 
   public abstract ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask);
 
+  public abstract ServiceTaskDelegateExpressionActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask);
+
   public abstract ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask);
 
   public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask);

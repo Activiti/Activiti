@@ -275,6 +275,15 @@ create table ACT_PROCDEF_INFO (
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
+create table ACT_RU_INTEGRATION (
+    ID_ varchar(64) not null,
+    EXECUTION_ID_ varchar(64),
+    PROCESS_INSTANCE_ID_ varchar(64),
+    PROC_DEF_ID_ varchar(64),
+    CREATED_DATE_ timestamp,
+    primary key (ID_)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
+
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
 create index ACT_IDX_EXEC_ROOT on ACT_RU_EXECUTION(ROOT_PROC_INST_ID_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
@@ -472,3 +481,18 @@ alter table ACT_PROCDEF_INFO
 alter table ACT_PROCDEF_INFO
     add constraint ACT_UNIQ_INFO_PROCDEF
     unique (PROC_DEF_ID_);
+
+alter table ACT_RU_INTEGRATION
+    add constraint ACT_FK_INT_EXECUTION
+    foreign key (EXECUTION_ID_)
+    references ACT_RU_EXECUTION (ID_);
+
+alter table ACT_RU_INTEGRATION
+    add constraint ACT_FK_INT_PROC_INST
+    foreign key (PROCESS_INSTANCE_ID_)
+    references ACT_RU_EXECUTION (ID_);
+
+alter table ACT_RU_INTEGRATION
+    add constraint ACT_FK_INT_PROC_DEF
+    foreign key (PROC_DEF_ID_)
+    references ACT_RE_PROCDEF (ID_);
