@@ -9,7 +9,7 @@
   <version>7-201710-EA-SNAPSHOT</version>
 
   <properties>
-    <maven.release.plugin.version>2.5.3</maven.release.plugin.version>
+    <jgitflow.plugin.version>1.0-m5.1</jgitflow.plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
   </properties>
 
@@ -43,15 +43,18 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>${maven.release.plugin.version}</version>
+          <groupId>external.atlassian.jgitflow</groupId>
+          <artifactId>jgitflow-maven-plugin</artifactId>
+          <version>${jgitflow.plugin.version}</version>
           <configuration>
-            <releaseProfiles>sign</releaseProfiles>
+            <enableFeatureVersions>true</enableFeatureVersions>
             <autoVersionSubmodules>true</autoVersionSubmodules>
-            <tagNameFormat>activiti-@{project.version}</tagNameFormat>
-            <!-- Necessary until keycloak releases boot2 adaptor -->
-            <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+            <allowSnapshots>true</allowSnapshots>
+            <noDeploy>true</noDeploy>
+            <useReleaseProfile>true</useReleaseProfile> <!-- Do not generate javadoc when releaseing -->
+            <pushReleases>true</pushReleases>
+            <squash>true</squash>
+            <versionTagPrefix>activiti-</versionTagPrefix>
           </configuration>
         </plugin>
       </plugins>
