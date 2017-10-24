@@ -45,6 +45,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     protected Set<String> deploymentIds;
     protected String key;
     protected String keyLike;
+    protected Set<String> keys;
     protected String resourceName;
     protected String resourceNameLike;
     protected Integer version;
@@ -146,6 +147,14 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
             throw new ActivitiIllegalArgumentException("key is null");
         }
         this.key = key;
+        return this;
+    }
+
+    public ProcessDefinitionQueryImpl processDefinitionKeys(Set<String> keys) {
+        if (keys == null) {
+            throw new ActivitiIllegalArgumentException("keys is null");
+        }
+        this.keys = keys;
         return this;
     }
 
@@ -372,6 +381,8 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     public String getKeyLike() {
         return keyLike;
     }
+
+    public Set<String> getKeys() { return keys; }
 
     public Integer getVersion() {
         return version;

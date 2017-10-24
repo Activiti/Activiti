@@ -129,6 +129,27 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     verifyQueryResults(query, 1);
   }
 
+  public void testQueryByKeys() {
+    Set<String> one = new HashSet<String>();
+    one.add("one");
+    Set<String> two = new HashSet<String>();
+    two.add("two");
+    Set<String> oneAndTwo = new HashSet<String>();
+    oneAndTwo.addAll(one);
+    oneAndTwo.addAll(two);
+
+    // process one
+    ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionKeys(one);
+    verifyQueryResults(query, 2);
+
+    // process two
+    query = repositoryService.createProcessDefinitionQuery().processDefinitionKeys(two);
+    verifyQueryResults(query, 1);
+
+    query = repositoryService.createProcessDefinitionQuery().processDefinitionKeys(oneAndTwo);
+    verifyQueryResults(query, 3);
+  }
+
   public void testQueryByInvalidKey() {
     ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionKey("invalid");
     verifyQueryResults(query, 0);

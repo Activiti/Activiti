@@ -73,6 +73,11 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
   ProcessDefinitionQuery processDefinitionKey(String processDefinitionKey);
 
   /**
+   * Only select process definition with the given keys.
+   */
+  ProcessDefinitionQuery processDefinitionKeys(Set<String> processDefinitionKeys);
+
+  /**
    * Only select process definitions where the key matches the given parameter. The syntax that should be used is the same as in SQL, eg. %activiti%
    */
   ProcessDefinitionQuery processDefinitionKeyLike(String processDefinitionKeyLike);
