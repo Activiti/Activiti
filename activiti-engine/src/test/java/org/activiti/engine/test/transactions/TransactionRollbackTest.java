@@ -33,6 +33,15 @@ public class TransactionRollbackTest extends PluggableActivitiTestCase {
     }
   }
 
+  public static class Fizz implements ActivityBehavior {
+
+    private static final long serialVersionUID = 1L;
+
+    public void execute(DelegateExecution execution) {
+      throw new Error("Fizz");
+    }
+  }
+
   @Deployment
   public void testRollback() {
     try {
@@ -60,5 +69,19 @@ public class TransactionRollbackTest extends PluggableActivitiTestCase {
 
     assertEquals(0, runtimeService.createExecutionQuery().count());
 
+  }
+
+  @Deployment
+  public void testRollbackAfterError() {
+      try {
+          runtimeService.startProcessInstanceByKey("RollbackProcess");
+
+          fail("Starting the process instance should throw an error");
+
+        } catch (Throwable e) {
+          assertEquals("Fizz", e.getMessage());
+        }
+
+        assertEquals(0, runtimeService.createExecutionQuery().count());
   }
 }
