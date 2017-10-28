@@ -13,6 +13,7 @@
 package org.activiti.bpmn.model;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Tijs Rademakers
@@ -22,6 +23,8 @@ public interface FlowElementsContainer {
   FlowElement getFlowElement(String id);
 
   Collection<FlowElement> getFlowElements();
+
+  Map<String, FlowElement> getFlowElementMap();
 
   void addFlowElement(FlowElement element);
   
