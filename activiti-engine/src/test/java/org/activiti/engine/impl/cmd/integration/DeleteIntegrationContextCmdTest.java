@@ -24,12 +24,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class RetrieveIntegrationContextCmdTest {
+public class DeleteIntegrationContextCmdTest {
 
     @Mock
     private CommandContext commandContext;
@@ -48,19 +48,15 @@ public class RetrieveIntegrationContextCmdTest {
     }
 
     @Test
-    public void executeShouldReturnResultOfIntegrationContextManager() throws Exception {
+    public void executeShouldDeleteIntegrationContext() throws Exception {
         //given
-        String executionId = "executionId";
-        RetrieveIntegrationContextCmd command = new RetrieveIntegrationContextCmd(executionId);
-
-        IntegrationContextEntity contextEntity = mock(IntegrationContextEntity.class);
-        given(integrationContextManager.findIntegrationContextByExecutionId(executionId)).willReturn(contextEntity);
+        IntegrationContextEntity integrationContextEntity = mock(IntegrationContextEntity.class);
+        DeleteIntegrationContextCmd command = new DeleteIntegrationContextCmd(integrationContextEntity);
 
         //when
-        IntegrationContextEntity executeResult = command.execute(commandContext);
+        command.execute(commandContext);
 
         //then
-        assertThat(executeResult).isEqualTo(contextEntity);
+        verify(integrationContextManager).delete(integrationContextEntity);
     }
-
 }

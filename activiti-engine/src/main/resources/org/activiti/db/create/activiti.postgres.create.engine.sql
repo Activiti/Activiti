@@ -520,7 +520,8 @@ alter table ACT_PROCDEF_INFO
 alter table ACT_RU_INTEGRATION
     add constraint ACT_FK_INT_EXECUTION
     foreign key (EXECUTION_ID_)
-    references ACT_RU_EXECUTION (ID_);
+    references ACT_RU_EXECUTION (ID_)
+    on delete cascade;
 
 alter table ACT_RU_INTEGRATION
     add constraint ACT_FK_INT_PROC_INST

@@ -16,6 +16,7 @@
 
 package org.activiti.engine.integration;
 
+import org.activiti.engine.impl.cmd.integration.DeleteIntegrationContextCmd;
 import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
@@ -28,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class IntegrationContextServiceImplTest {
@@ -56,4 +58,15 @@ public class IntegrationContextServiceImplTest {
         assertThat(commandResult).isEqualTo(entity);
     }
 
+    @Test
+    public void deleteIntegrationContextShouldExecuteDeleteIntegrationContextCommand() throws Exception {
+        //given
+        IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
+
+        //when
+        integrationContextService.deleteIntegrationContext(entity);
+
+        //then
+        verify(commandExecutor).execute(any(DeleteIntegrationContextCmd.class));
+    }
 }

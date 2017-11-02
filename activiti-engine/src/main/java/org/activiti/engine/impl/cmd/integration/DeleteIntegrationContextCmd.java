@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.integration;
+package org.activiti.engine.impl.cmd.integration;
 
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
-public interface IntegrationContextService {
+public class DeleteIntegrationContextCmd implements Command<IntegrationContextEntity> {
 
-    IntegrationContextEntity findIntegrationContextByExecutionId(String executionId);
+    private IntegrationContextEntity integrationContext;
 
-    void deleteIntegrationContext(IntegrationContextEntity integrationContextEntity);
+    public DeleteIntegrationContextCmd(IntegrationContextEntity integrationContext) {
+        this.integrationContext = integrationContext;
+    }
 
+    @Override
+    public IntegrationContextEntity execute(CommandContext commandContext) {
+        commandContext.getProcessEngineConfiguration().getIntegrationContextManager().delete(integrationContext);
+        return integrationContext;
+    }
 }
