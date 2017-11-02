@@ -592,6 +592,9 @@
             <pushReleases>true</pushReleases>
             <squash>false</squash>
             <versionTagPrefix>activiti-</versionTagPrefix>
+            <keepBranch>true</keepBranch>
+            <noFeatureBuild>true</noFeatureBuild>
+            <noFeatureMerge>true</noFeatureMerge>
           </configuration>
         </plugin>
         <plugin>
