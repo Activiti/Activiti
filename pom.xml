@@ -4,17 +4,17 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7-201710-EA-SNAPSHOT</version>
+    <version>7-201710-EA</version>
   </parent>
   <name>Activiti</name>
 
   <description>BPM and workflow engine</description>
   <artifactId>activiti-root</artifactId>
-  <version>7-201710-EA-SNAPSHOT</version>
+  <version>7-201710-EA</version>
   <packaging>pom</packaging>
 
   <properties>
-    <version.activiti>7-201710-EA-SNAPSHOT</version.activiti>
+    <version.activiti>${project.version}</version.activiti>
   </properties>
 
   <distributionManagement>
