@@ -1,4 +1,18 @@
 # activiti-build
+========
+
+[![Join the chat at https://gitter.im/Activiti/Activiti7](https://badges.gitter.im/Activiti/Activiti7.svg)](https://gitter.im/Activiti/Activiti7?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+
+<p>
+  <a title='Build Status Travis' href="https://travis-ci.org/Activiti/activiti-build">
+    <img src='https://travis-ci.org/Activiti/activiti-build.svg?branch=master'  alt='Travis Status' />
+  </a>
+  <a href='https://github.com/Activiti/activiti-build/blob/master/LICENSE.txt'>
+       <img src='https://img.shields.io/hexpm/l/plug.svg' alt='license' />
+    </a>
+</p>
+
 BOMs (Bill of Materials) and scripts for all repos related with Activiti
 
 
