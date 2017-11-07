@@ -23,6 +23,7 @@ import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -46,12 +47,14 @@ public class JpaProcessEngineAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "spring.activiti", value = "jpaEnabled", havingValue = "true", matchIfMissing = true)
     public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
       return new JpaTransactionManager(emf);
     }
 
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnProperty(prefix = "spring.activiti", value = "jpaEnabled", havingValue = "true", matchIfMissing = true)
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
             DataSource dataSource, EntityManagerFactory entityManagerFactory,
             PlatformTransactionManager transactionManager, SpringAsyncExecutor springAsyncExecutor) throws IOException {
