@@ -34,35 +34,35 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 
     private static final Logger log = LoggerFactory.getLogger(ProcessDefinitionQueryImpl.class);
 
-    protected String id;
-    protected Set<String> ids;
-    protected String category;
-    protected String categoryLike;
-    protected String categoryNotEquals;
-    protected String name;
-    protected String nameLike;
-    protected String deploymentId;
-    protected Set<String> deploymentIds;
-    protected String key;
-    protected String keyLike;
-    protected Set<String> keys;
-    protected String resourceName;
-    protected String resourceNameLike;
-    protected Integer version;
-    protected Integer versionGt;
-    protected Integer versionGte;
-    protected Integer versionLt;
-    protected Integer versionLte;
-    protected boolean latest;
-    protected SuspensionState suspensionState;
-    protected String authorizationUserId;
-    protected String procDefId;
-    protected String tenantId;
-    protected String tenantIdLike;
-    protected boolean withoutTenantId;
+    private String id;
+    private Set<String> ids;
+    private String category;
+    private String categoryLike;
+    private String categoryNotEquals;
+    private String name;
+    private String nameLike;
+    private String deploymentId;
+    private Set<String> deploymentIds;
+    private String key;
+    private String keyLike;
+    private Set<String> keys;
+    private String resourceName;
+    private String resourceNameLike;
+    private Integer version;
+    private Integer versionGt;
+    private Integer versionGte;
+    private Integer versionLt;
+    private Integer versionLte;
+    private boolean latest;
+    private SuspensionState suspensionState;
+    private String authorizationUserId;
+    private String procDefId;
+    private String tenantId;
+    private String tenantIdLike;
+    private boolean withoutTenantId;
 
-    protected String eventSubscriptionName;
-    protected String eventSubscriptionType;
+    private String eventSubscriptionName;
+    private String eventSubscriptionType;
 
     public ProcessDefinitionQueryImpl() {
     }
