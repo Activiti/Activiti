@@ -20,6 +20,9 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.junit.Assert;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -127,6 +130,27 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     // process two
     query = repositoryService.createProcessDefinitionQuery().processDefinitionKey("two");
     verifyQueryResults(query, 1);
+  }
+
+  public void testQueryByKeys() {
+    Set<String> one = new HashSet<String>();
+    one.add("one");
+    Set<String> two = new HashSet<String>();
+    two.add("two");
+    Set<String> oneAndTwo = new HashSet<String>();
+    oneAndTwo.addAll(one);
+    oneAndTwo.addAll(two);
+
+    // process one
+    ProcessDefinitionQuery query = repositoryService.createProcessDefinitionQuery().processDefinitionKeys(one);
+    verifyQueryResults(query, 2);
+
+    // process two
+    query = repositoryService.createProcessDefinitionQuery().processDefinitionKeys(two);
+    verifyQueryResults(query, 1);
+
+    query = repositoryService.createProcessDefinitionQuery().processDefinitionKeys(oneAndTwo);
+    verifyQueryResults(query, 3);
   }
 
   public void testQueryByInvalidKey() {
@@ -323,5 +347,15 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
   		assertTrue(ids.contains(processDefinition.getId()));
   	}
   }
-  
+
+  public void testQueryWithNullArgs(){
+
+    try {
+      repositoryService.createProcessDefinitionQuery().processDefinitionKeys(null);
+      fail("Expected exception not thrown");
+    }catch (ActivitiIllegalArgumentException ex){
+      return;
+    }
+
+  }
 }

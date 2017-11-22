@@ -178,6 +178,12 @@
       <if test="keyLike != null">
         and RES.KEY_ like #{keyLike}${wildcardEscapeClause}
       </if>
+      <if test="keys != null and !keys.isEmpty()">
+        and RES.KEY_ in
+        <foreach item="item" index="index" collection="keys" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
       <if test="resourceName != null">
         and RES.RESOURCE_NAME_ = #{resourceName}
       </if>
