@@ -12,10 +12,18 @@
  */
 package org.activiti.editor.ui;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.vaadin.data.Property.ValueChangeEvent;
+import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.terminal.DownloadStream;
+import com.vaadin.terminal.FileResource;
+import com.vaadin.ui.AbstractSelect.Filtering;
+import com.vaadin.ui.*;
+import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.themes.Reindeer;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.editor.language.json.converter.BpmnJsonConverter;
@@ -41,26 +49,9 @@ import org.activiti.workflow.simple.definition.WorkflowDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
-import com.vaadin.terminal.DownloadStream;
-import com.vaadin.terminal.FileResource;
-import com.vaadin.ui.AbstractSelect.Filtering;
-import com.vaadin.ui.Alignment;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.ComponentContainer;
-import com.vaadin.ui.Embedded;
-import com.vaadin.ui.GridLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.Select;
-import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
 
 
 /**
@@ -312,7 +303,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
           String processName = modelData.getName() + ".bpmn20.xml";
           Deployment deployment = repositoryService.createDeployment()
                   .name(modelData.getName())
-                  .addString(processName, new String(bpmnBytes))
+                  .addString(processName, new String(bpmnBytes, "UTF-8"))
                   .deploy();
           
           // Generate reports
@@ -343,12 +334,17 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
     byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(model);
     
     String processName = modelData.getName() + ".bpmn20.xml";
-    Deployment deployment = repositoryService.createDeployment()
-            .name(modelData.getName())
-            .addString(processName, new String(bpmnBytes))
-            .deploy();
+      Deployment deployment = null;
+      try {
+          deployment = repositoryService.createDeployment()
+                  .name(modelData.getName())
+                  .addString(processName, new String(bpmnBytes, "UTF-8"))
+                  .deploy();
+      } catch (UnsupportedEncodingException e) {
+          ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_TOXML_FAILED, e);
+      }
 
-    ExplorerApp.get().getViewManager().showDeploymentPage(deployment.getId());
+      ExplorerApp.get().getViewManager().showDeploymentPage(deployment.getId());
   }
 
 }
