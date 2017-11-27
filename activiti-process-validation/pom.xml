@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <version>7-201711-EA-SNAPSHOT</version>
+    <version>7-201711-EA-elias_1548_auto_sign_on_release-SNAPSHOT</version>
   </parent>
 
   <properties>
