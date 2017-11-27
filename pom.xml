@@ -69,30 +69,6 @@
     <module>activiti-spring</module>
   </modules>
 
-
-  <profiles>
-    <!-- Profile to sign artifacts, triggered when releasing -->
-    <profile>
-      <id>sign</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>${maven-gpg-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-
   <!-- Various information, not used by the build -->
 
   <url>http://activiti.org</url>
