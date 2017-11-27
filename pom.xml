@@ -814,6 +814,12 @@
     <!-- Profile to sign artifacts, triggered when releasing -->
     <profile>
       <id>sign</id>
+      <activation>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
       <build>
         <plugins>
           <plugin>
