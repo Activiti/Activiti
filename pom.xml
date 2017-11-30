@@ -4,13 +4,13 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7-201710-EA</version>
+    <version>7-201711-EA</version>
   </parent>
   <name>Activiti</name>
 
   <description>BPM and workflow engine</description>
   <artifactId>activiti-root</artifactId>
-  <version>7-201710-EA</version>
+  <version>7-201711-EA</version>
   <packaging>pom</packaging>
 
   <properties>
@@ -68,30 +68,6 @@
     <module>activiti-engine</module>
     <module>activiti-spring</module>
   </modules>
-
-
-  <profiles>
-    <!-- Profile to sign artifacts, triggered when releasing -->
-    <profile>
-      <id>sign</id>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <version>${maven-gpg-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
   <!-- Various information, not used by the build -->
 
