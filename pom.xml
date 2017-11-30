@@ -23,9 +23,9 @@
     <argLine>-Duser.language=en</argLine>
 
     <!-- Spring Version: We need to keep these ones aligned with Spring Boot -->
-    <!--  Today this is aligned with Spring Boot 2.0.0.M5 -->
-    <spring.version>5.0.0.RELEASE</spring.version>
-    <jackson.version>2.9.1</jackson.version>
+    <!--  Today this is aligned with Spring Boot 2.0.0.M6 -->
+    <spring.version>5.0.1.RELEASE</spring.version>
+    <jackson.version>2.9.2</jackson.version>
 
 
     <!-- JPA Hibernate is needed for testing -->
@@ -35,7 +35,7 @@
 
     <!-- other properties -->
 
-    <mockito.version>2.7.22</mockito.version>
+    <mockito.version>2.11.0</mockito.version>
     <junit.version>4.12</junit.version>
     <assertj.version>3.8.0</assertj.version>
     <jsonunit.version>1.24.0</jsonunit.version>
