@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:modeler="http://activiti.com/modeler" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" modeler:version="1.0en" modeler:exportDateTime="20171201010336345" modeler:modelId="33" modeler:modelVersion="7" modeler:modelLastUpdated="1512090194573" exporter="Camunda Modeler" exporterVersion="1.11.2" targetNamespace="http://bpmn.io/schema/bpmn">
+  <process id="testSignalThrowCatchUserTask" isExecutable="true">
+    <startEvent id="StartEvent_1">
+      <extensionElements>
+        <modeler:editor-resource-id>StartEvent_1</modeler:editor-resource-id>
+      </extensionElements>
+      <outgoing>SequenceFlow_2</outgoing>
+    </startEvent>
+    <sequenceFlow id="SequenceFlow_2" name="" sourceRef="StartEvent_1" targetRef="IntermediateThrowEvent_1"/>
+    <endEvent id="EndEvent_1">
+      <extensionElements>
+        <modeler:editor-resource-id>EndEvent_1t6khkd</modeler:editor-resource-id>
+      </extensionElements>
+      <incoming>SequenceFlow_4</incoming>
+    </endEvent>
+    <userTask id="ManualTask_2" name="User Task">
+      <incoming>SequenceFlow_3</incoming>
+      <outgoing>SequenceFlow_1</outgoing>
+    </userTask>
+    <sequenceFlow id="SequenceFlow_1" name="" sourceRef="ManualTask_2" targetRef="IntermediateCatchEvent_1"/>
+    <intermediateThrowEvent id="IntermediateThrowEvent_1" name="Publish Event">
+      <incoming>SequenceFlow_2</incoming>
+      <outgoing>SequenceFlow_3</outgoing>
+      <signalEventDefinition id="_SignalEventDefinition_7" signalRef="Signal_1"/>
+    </intermediateThrowEvent>
+    <sequenceFlow id="SequenceFlow_3" name="" sourceRef="IntermediateThrowEvent_1" targetRef="ManualTask_2"/>
+    <intermediateCatchEvent id="IntermediateCatchEvent_1" name="Event Published">
+      <incoming>SequenceFlow_1</incoming>
+      <outgoing>SequenceFlow_4</outgoing>
+      <signalEventDefinition id="_SignalEventDefinition_8" signalRef="Signal_1"/>
+    </intermediateCatchEvent>
+    <sequenceFlow id="SequenceFlow_4" name="" sourceRef="IntermediateCatchEvent_1" targetRef="EndEvent_1"/>
+  </process>
+  <signal id="Signal_1" activiti:scope="processInstance" name="Event"/>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="testSignalThrowCatchUserTask">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
+        <omgdc:Bounds height="30.0" width="30.0" x="504.0" y="223.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="519.0" y="258.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1t6khkd" bpmnElement="EndEvent_1">
+        <omgdc:Bounds height="28.0" width="28.0" x="924.0" y="224.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="938.0" y="257.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_ManualTask_3" bpmnElement="ManualTask_2">
+        <omgdc:Bounds height="80.0" width="100.0" x="684.0" y="198.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="_BPMNShape_ManualTask_3" targetElement="_BPMNShape_IntermediateCatchEvent_6">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="784.0" y="238.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="852.0" y="238.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="6.0" width="6.0" x="821.0" y="238.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_2" bpmnElement="SequenceFlow_2" sourceElement="BPMNShape_StartEvent_1" targetElement="_BPMNShape_IntermediateThrowEvent_6">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="534.0" y="238.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="588.0" y="238.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="6.0" width="6.0" x="546.0" y="238.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_IntermediateThrowEvent_6" bpmnElement="IntermediateThrowEvent_1">
+        <omgdc:Bounds height="28.0" width="28.0" x="588.0" y="224.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="602.0" y="257.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_3" bpmnElement="SequenceFlow_3" sourceElement="_BPMNShape_IntermediateThrowEvent_6" targetElement="_BPMNShape_ManualTask_3">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="616.0" y="238.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="684.0" y="238.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_IntermediateCatchEvent_6" bpmnElement="IntermediateCatchEvent_1">
+        <omgdc:Bounds height="28.0" width="28.0" x="852.0" y="224.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="0.0" width="0.0" x="866.0" y="257.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_4" bpmnElement="SequenceFlow_4" sourceElement="_BPMNShape_IntermediateCatchEvent_6" targetElement="BPMNShape_EndEvent_1t6khkd">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="880.0" y="238.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="924.0" y="238.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="6.0" width="6.0" x="912.0" y="238.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
