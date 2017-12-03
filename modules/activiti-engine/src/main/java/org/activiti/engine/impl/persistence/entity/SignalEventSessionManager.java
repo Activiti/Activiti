@@ -23,7 +23,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 public class SignalEventSessionManager extends AbstractManager {
 
   /** collect fired events in process instance scope in the current command context session */
-  protected Map<String,Set<String>> firedSignalEventsInCurrentSesssion = new HashMap<String, Set<String>>();
+  protected Map<String,Set<String>> firedSignalEventsSesssionRegistry = new HashMap<String, Set<String>>();
   
   /**
    * Registers thrown signal events for execution in current session 
@@ -34,13 +34,13 @@ public class SignalEventSessionManager extends AbstractManager {
   public void registerThrowSignalEventByExecution(ActivityExecution execution, String eventName) {
     String processInstanceId = execution.getProcessInstanceId();
     
-    synchronized (firedSignalEventsInCurrentSesssion) {
-      Set<String> events = firedSignalEventsInCurrentSesssion
+    synchronized (firedSignalEventsSesssionRegistry) {
+      Set<String> events = firedSignalEventsSesssionRegistry
           .getOrDefault(processInstanceId, new LinkedHashSet<String>());
 
       events.add(eventName);
 
-      firedSignalEventsInCurrentSesssion.put(processInstanceId, events);
+      firedSignalEventsSesssionRegistry.put(processInstanceId, events);
     }
     
   }
@@ -69,13 +69,15 @@ public class SignalEventSessionManager extends AbstractManager {
   }
     
   protected boolean mayBeHasThrowSignalEventsInCurrentSession(String processInstanceId, String eventName) {
-    return firedSignalEventsInCurrentSesssion
+    return firedSignalEventsSesssionRegistry
       .getOrDefault(processInstanceId, new LinkedHashSet<String>(0))
       .contains(eventName);
   }
 
   protected boolean mayBeHasThrowSignalEventsInHistoricActivityInstance(ActivityExecution execution, String eventName) {
-    // Then check signal events in recorded history for the process instance scope 
+    boolean hasThrowSignalEvent = false;
+
+    // check signal events in recorded history for the process instance scope 
     CommandContext commandContext = Context.getCommandContext();
 
     HistoricActivityInstanceQueryImpl activityInstanceQuery = new HistoricActivityInstanceQueryImpl(commandContext)
@@ -86,6 +88,7 @@ public class SignalEventSessionManager extends AbstractManager {
       .findHistoricActivityInstancesByQueryCriteria(activityInstanceQuery, null);
 
     for(HistoricActivityInstance thrownSignal : thrownSignalActivities) {
+      
       if(execution instanceof ExecutionEntity) {
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
@@ -97,15 +100,22 @@ public class SignalEventSessionManager extends AbstractManager {
           IntermediateThrowSignalEventActivityBehavior intermediateThrowSignalEventBehavior = 
               (IntermediateThrowSignalEventActivityBehavior) activityBehavior;
 
-          if(intermediateThrowSignalEventBehavior.isProcessInstanceScope() &&
-              intermediateThrowSignalEventBehavior.getSignalDefinition().getEventName().equals(eventName)) {
-            return true;
+          if(intermediateThrowSignalEventBehavior.isProcessInstanceScope()) {
+            String thrownSignalEventName = intermediateThrowSignalEventBehavior.getSignalDefinition().getEventName();  
+
+            // Cache events from history in the current session context to optimize performance 
+            registerThrowSignalEventByExecution(execution, thrownSignalEventName);
+
+            // Match registered signal event name with subscription event name
+            if(thrownSignalEventName.equals(eventName) && hasThrowSignalEvent == false) {
+              hasThrowSignalEvent = true;
+            }
           }
         }
       }
     }
 
-    return false;
+    return hasThrowSignalEvent;
   }
   
 
