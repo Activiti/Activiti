@@ -1,5 +1,7 @@
 package org.activiti.engine.test.bpmn.event.signal;
 
+import java.util.Date;
+
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
@@ -63,6 +65,22 @@ public class SignalEventSessionManagerTest extends PluggableActivitiTestCase {
 
     taskService.complete(taskService.createTaskQuery().taskName("User Task").singleResult().getId());
     
+    // No tasks should be open then and process should have ended
+    assertEquals(0, taskService.createTaskQuery().count());
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }      
+
+  @Deployment
+  public void testSignalThrowCatchBoundaryUserTask() throws InterruptedException {
+    // Set the clock fixed
+    Date startTime = new Date();
+
+    runtimeService.startProcessInstanceByKey("testSignalThrowCatchBoundaryUserTask");
+
+    // After setting the clock to startTime + '2 seconds', the timer should fire
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 2000));
+    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+     
     // No tasks should be open then and process should have ended
     assertEquals(0, taskService.createTaskQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());
