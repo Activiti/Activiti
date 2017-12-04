@@ -88,18 +88,25 @@ public class SignalEventSessionManagerTest extends PluggableActivitiTestCase {
 
     
   @Deployment
-  public void testSignalThrowCatchEventGateway() throws InterruptedException {
+  public void testSignalThrowCatchBoundarySubProcess() throws InterruptedException {
     // Set the clock fixed
     Date startTime = new Date();
+
+    runtimeService.startProcessInstanceByKey("testSignalThrowCatchBoundarySubProcess");
+
+    // No tasks should be open then and process should have ended
+    assertEquals(0, taskService.createTaskQuery().count());
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }      
+
+  
+  @Deployment
+  public void testSignalThrowCatchEventGateway() throws InterruptedException {
 
     runtimeService.startProcessInstanceByKey("testSignalThrowCatchEventGateway");
 
     taskService.complete(taskService.createTaskQuery().taskName("User Task").singleResult().getId());
     
-//    // After setting the clock to startTime + '2 seconds', the timer should fire
-//    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 2000));
-//    waitForJobExecutorToProcessAllJobs(5000L, 25L);
-     
     // No tasks should be open then and process should have ended
     assertEquals(0, taskService.createTaskQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());

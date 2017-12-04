@@ -34,6 +34,7 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
  */
 public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior implements CompositeActivityBehavior {
   
+  @Override
   public void execute(ActivityExecution execution) throws Exception {
     PvmActivity activity = execution.getActivity();
     ActivityImpl initialActivity = (ActivityImpl) activity.getProperty(BpmnParse.PROPERTYNAME_INITIAL);
@@ -51,10 +52,15 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior imp
     	((ExecutionEntity) execution).setActivity(initialActivity);
     	Context.getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
     }
-
+    
+    initialActivity.setActivityBehavior(new BoundarySignalEventAwareStartEventActivityBehavior(initialActivity));
+    
+    // Start sub process activity    
     execution.executeActivity(initialActivity);
+  
   }
   
+  @Override
   public void lastExecutionEnded(ActivityExecution execution) {
     ScopeUtil.createEventScopeExecution((ExecutionEntity) execution);
     
@@ -73,4 +79,5 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior imp
       execution.setVariablesLocal(dataObjectVars);
     }
   }
+  
 }
