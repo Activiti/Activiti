@@ -8,7 +8,7 @@
   <packaging>pom</packaging>
   <version>7-201712-EA-SNAPSHOT</version>
   <properties>
-    <version.activiti>${project.version}</version.activiti>
+    <version.activiti>7-201712-EA-SNAPSHOT</version.activiti>
     <!--configuration properties-->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
