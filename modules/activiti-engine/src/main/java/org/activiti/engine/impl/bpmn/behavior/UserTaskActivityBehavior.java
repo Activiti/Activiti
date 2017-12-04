@@ -225,16 +225,19 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       task.complete(null, false);
     }
     
-    // Execute any interrupting boundary event activities 
-    // for any signal events registered in process instance execution scope
-    for(BoundaryEventActivityBehavior boundaryEventActivity: getInterruptingBoundaryEventActivities(execution)) {
-      SignalEventDefinition signalEventDef = findSignalEventDefinition(boundaryEventActivity);
+    // Execute any  boundary event signal activity if matching signal event is registered in process instance execution scope
+    for(BoundaryEventActivityBehavior boundaryEventActivityBehavior: getBoundaryEventActivityBehaviors(execution)) {
+      SignalEventDefinition signalEventDef = findSignalEventDefinition(boundaryEventActivityBehavior);
       
       if(signalEventDef != null) {
         if(Context.getCommandContext().getSignalEventSessionManager()
             .hasThrowSignalEventForExecution(execution, signalEventDef.getSignalRef())) 
         {
-          boundaryEventActivity.execute(execution);
+          // Execute boundary event activity
+          boundaryEventActivityBehavior.execute(execution);
+          
+          // Leave
+          return;
         }
       }
     }
@@ -394,7 +397,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     return taskDefinition;
   }
   
-  protected List<BoundaryEventActivityBehavior> getInterruptingBoundaryEventActivities(ActivityExecution execution) {
+  protected List<BoundaryEventActivityBehavior> getBoundaryEventActivityBehaviors(ActivityExecution execution) {
     List<BoundaryEventActivityBehavior> result = new ArrayList<BoundaryEventActivityBehavior>();
 
     ActivityImpl activity = ((ExecutionEntity)execution).getActivity();
@@ -404,8 +407,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     for(ActivityImpl child: children) {
       if(child.getActivityBehavior() instanceof BoundaryEventActivityBehavior) {
         BoundaryEventActivityBehavior boundaryEventActivity = (BoundaryEventActivityBehavior) child.getActivityBehavior();
-        if(boundaryEventActivity.isInterrupting())
-          result.add(boundaryEventActivity);
+        result.add(boundaryEventActivity);
       }
     }
     
