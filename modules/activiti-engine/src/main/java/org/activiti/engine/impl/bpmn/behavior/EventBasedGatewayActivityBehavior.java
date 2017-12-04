@@ -31,17 +31,17 @@ public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior 
   public void execute(ActivityExecution execution) throws Exception {
 
     // Continue with signal catch event activities for signal events 
-    // already registered in process instance execution scope
+    // already fired and registered in process instance execution scope
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     ActivityImpl executionActivity = executionEntity.getActivity();
     
     for(ActivityImpl mayBeCatchEventActivity: executionActivity.getActivities()) {
       if(mayBeCatchEventActivity.getActivityBehavior() instanceof IntermediateCatchEventActivityBehavior) {
-        IntermediateCatchEventActivityBehavior catchEventActivity = (IntermediateCatchEventActivityBehavior) mayBeCatchEventActivity.getActivityBehavior();
+        IntermediateCatchEventActivityBehavior catchEventActivityBehavior = (IntermediateCatchEventActivityBehavior) mayBeCatchEventActivity.getActivityBehavior();
 
-        SignalEventDefinition signalEventDef = findSignalEventDefinition(catchEventActivity);
+        SignalEventDefinition signalEventDef = findSignalEventDefinition(catchEventActivityBehavior);
         
-        // Find first matching registered event
+        // Find matching registered signal event
         if(signalEventDef != null) {
           if(Context.getCommandContext().getSignalEventSessionManager()
               .hasThrowSignalEventForExecution(execution, signalEventDef.getSignalRef())) 
@@ -49,8 +49,8 @@ public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior 
               // Switch execution context to signal catch event activity
               executionEntity.setActivity(mayBeCatchEventActivity); 
               
-              // Send signal
-              catchEventActivity.signal(execution, signalEventDef.getSignalRef(), null);
+              // Emit signal
+              catchEventActivityBehavior.signal(execution, signalEventDef.getSignalRef(), null);
               
               return;
           }

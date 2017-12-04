@@ -16,6 +16,7 @@
       <incoming>SequenceFlow_6</incoming>
       <outgoing>SequenceFlow_21</outgoing>
       <outgoing>SequenceFlow_26</outgoing>
+      <outgoing>SequenceFlow_30</outgoing>
     </parallelGateway>
     <startEvent id="StartEvent_1">
       <extensionElements>
@@ -34,6 +35,7 @@
     <parallelGateway id="ParallelGateway_2">
       <incoming>SequenceFlow_11</incoming>
       <incoming>SequenceFlow_24</incoming>
+      <incoming>SequenceFlow_31</incoming>
       <outgoing>SequenceFlow_12</outgoing>
     </parallelGateway>
     <sequenceFlow id="SequenceFlow_12" name="" sourceRef="ParallelGateway_2" targetRef="EndEvent_1"/>
@@ -70,6 +72,12 @@
       <outgoing>SequenceFlow_27</outgoing>
     </userTask>
     <sequenceFlow id="SequenceFlow_27" name="" sourceRef="UserTask_1" targetRef="EventBasedGateway_1"/>
+    <sequenceFlow id="SequenceFlow_30" name="" sourceRef="ParallelGateway_1" targetRef="ManualTask_4"/>
+    <manualTask id="ManualTask_4" name="Parallel Task">
+      <incoming>SequenceFlow_30</incoming>
+      <outgoing>SequenceFlow_31</outgoing>
+    </manualTask>
+    <sequenceFlow id="SequenceFlow_31" name="" sourceRef="ManualTask_4" targetRef="ParallelGateway_2"/>
   </process>
   <signal id="Signal_1" activiti:scope="processInstance" name="Event"/>
   <signal id="Signal_2" name="Another"/>
@@ -223,6 +231,26 @@
         <omgdi:waypoint xsi:type="omgdc:Point" x="881.0" y="286.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="6.0" width="6.0" x="875.0" y="258.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_ManualTask_7" bpmnElement="ManualTask_4">
+        <omgdc:Bounds height="80.0" width="100.0" x="679.0" y="480.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_30" bpmnElement="SequenceFlow_30" sourceElement="_BPMNShape_ParallelGateway_2" targetElement="_BPMNShape_ManualTask_7">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="505.0" y="264.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="505.0" y="520.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="679.0" y="520.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="6.0" width="6.0" x="502.0" y="289.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_31" bpmnElement="SequenceFlow_31" sourceElement="_BPMNShape_ManualTask_7" targetElement="_BPMNShape_ParallelGateway_3">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="779.0" y="520.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="857.0" y="520.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="961.0" y="520.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="961.0" y="251.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="6.0" width="6.0" x="958.0" y="477.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
