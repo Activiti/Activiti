@@ -38,6 +38,16 @@
 		<property name="databaseSchemaUpdate" value="true" />
 		<property name="mailServerHost" value="localhost" />
 		<property name="mailServerPort" value="5025" />
+
+        &lt;!&ndash; Solution for Chinese Disorderly Code start &ndash;&gt;
+        &lt;!&ndash; Set activity default font that support Chinese characters, or others.
+             It resolves Disorderly Code Problem when exporting model to image.
+             '\u5fae\u8f6f\u96c5\u9ed1' is 'Microsoft YaHei' in Chinese.You also can change it what you like.
+        &ndash;&gt;
+        <property name="activityFontName" value="\u5fae\u8f6f\u96c5\u9ed1"/>
+        <property name="labelFontName" value="\u5fae\u8f6f\u96c5\u9ed1"/>
+        &lt;!&ndash; solution for Chinese Disorderly Code end &ndash;&gt;
+
         <property name="customFormTypes">
           <list>
             <bean class="org.activiti.rest.form.UserFormType"/>
