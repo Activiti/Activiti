@@ -236,8 +236,9 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
           // Execute boundary event activity
           boundaryEventActivityBehavior.execute(execution);
           
-          // Leave
-          return;
+          // Leave only if interrupted
+          if(boundaryEventActivityBehavior.isInterrupting())
+            return;
         }
       }
     }

@@ -35,7 +35,8 @@ public class BoundarySignalEventAwareStartEventActivityBehavior extends FlowNode
           // Execute outgoing boundary signal event activity
           boundaryEventActivityBehavior.execute(execution);
 
-          return;
+          if(boundaryEventActivityBehavior.isInterrupting())
+            return;
         }
       }
     }        
