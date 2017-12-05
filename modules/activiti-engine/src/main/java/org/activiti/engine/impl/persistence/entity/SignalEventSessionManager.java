@@ -82,7 +82,8 @@ public class SignalEventSessionManager extends AbstractManager {
 
     HistoricActivityInstanceQueryImpl activityInstanceQuery = new HistoricActivityInstanceQueryImpl(commandContext)
      .processInstanceId(execution.getProcessInstanceId())
-     .activityType("intermediateSignalThrow");
+     .activityType("intermediateSignalThrow")
+     .orderByHistoricActivityInstanceStartTime();
 
     List<HistoricActivityInstance> thrownSignalActivities = commandContext.getHistoricActivityInstanceEntityManager()
       .findHistoricActivityInstancesByQueryCriteria(activityInstanceQuery, null);
