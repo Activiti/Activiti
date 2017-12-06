@@ -74,6 +74,7 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter implements Fo
     }
     
     BpmnJsonConverterUtil.convertDataPropertiesToJson(subProcess.getDataObjects(), propertiesNode);
+    addLocalizationProperties(subProcess, propertiesNode);
   }
 
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
@@ -94,7 +95,7 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter implements Fo
       subProcess.setDataObjects(dataObjects);
       subProcess.getFlowElements().addAll(dataObjects);
     }
-    
+    addLocalizationExtensionElement(elementNode, subProcess);
     return subProcess;
   }
   
