@@ -52,6 +52,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManage
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
+import org.activiti.engine.impl.persistence.entity.SignalEventSessionManager;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
@@ -376,6 +377,10 @@ public class CommandContext {
     return getSession(EventSubscriptionEntityManager.class);
   }
 
+  public SignalEventSessionManager getSignalEventSessionManager() {
+    return getSession(SignalEventSessionManager.class); 
+  }
+  
   public Map<Class< ? >, SessionFactory> getSessionFactories() {
     return sessionFactories;
   }

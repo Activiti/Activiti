@@ -12,14 +12,44 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.List;
+
+import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.IntermediateCatchEvent;
+import org.activiti.bpmn.model.SignalEventDefinition;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
 public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
+  protected final IntermediateCatchEvent intermediateCatchEvent;
+    
+  public IntermediateCatchEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent) {
+        this.intermediateCatchEvent = intermediateCatchEvent;
+  }
 
+  @Override
   public void execute(ActivityExecution execution) throws Exception {
-    // Do nothing: waitstate behavior
+      
+      // Use associated event definitions     
+      List<EventDefinition> events = intermediateCatchEvent.getEventDefinitions();
+
+      for(EventDefinition event : events) {
+        if(event instanceof SignalEventDefinition) {
+          SignalEventDefinition signalEventDefinition = (SignalEventDefinition) event;
+          
+          // Check already published signal events registered in the process instance context   
+          if(Context.getCommandContext().getSignalEventSessionManager()
+              .hasThrowSignalEventForExecution(execution, signalEventDefinition.getSignalRef()))
+          {
+              //Continue execution 
+              leave(execution);
+          }
+        }
+      }
+      
+     // Otherwise, do nothing: waitstate behavior
   }
 
   @Override

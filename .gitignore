@@ -9,3 +9,6 @@ target
 .DS_Store
 *.bpmn/
 /userguide/src/en/index.html
+/.metadata/
+/.recommenders/
+.factorypath

@@ -40,6 +40,7 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.xml.namespace.QName;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnService;
@@ -192,6 +193,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManage
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
+import org.activiti.engine.impl.persistence.entity.SignalEventSessionManager;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
@@ -243,8 +245,6 @@ import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 import org.apache.ibatis.type.JdbcType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -1036,6 +1036,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(EventSubscriptionEntityManager.class));
       addSessionFactory(new GenericManagerFactory(EventLogEntryEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(SignalEventSessionManager.class)); 
       
       addSessionFactory(new DefaultHistoryManagerSessionFactory());
       

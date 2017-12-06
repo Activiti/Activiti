@@ -39,19 +39,23 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
     this.signalDefinition = signalDefinition;
   }
   
+  @Override
   public void execute(ActivityExecution execution) throws Exception {
     
     CommandContext commandContext = Context.getCommandContext();
     
     List<SignalEventSubscriptionEntity> subscriptionEntities = null;
-    if (processInstanceScope) {
-      subscriptionEntities = commandContext
-              .getEventSubscriptionEntityManager()
-              .findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalDefinition.getEventName());
+    if(processInstanceScope) {
+      subscriptionEntities = commandContext.getEventSubscriptionEntityManager()
+        .findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalDefinition.getEventName());
+
+      // register fired signals with subscription manager 
+      // to handle race conditions within single session in process instance scope 
+      commandContext.getSignalEventSessionManager()
+        .registerThrowSignalEventByExecution(execution, signalDefinition.getEventName());
     } else {
-      subscriptionEntities = commandContext
-              .getEventSubscriptionEntityManager()
-              .findSignalEventSubscriptionsByEventName(signalDefinition.getEventName(), execution.getTenantId());
+      subscriptionEntities = commandContext.getEventSubscriptionEntityManager()
+        .findSignalEventSubscriptionsByEventName(signalDefinition.getEventName(), execution.getTenantId());
     }
     
     for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
@@ -62,5 +66,13 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
       leave(execution);
     }
   }
- 
+
+    public boolean isProcessInstanceScope() {
+        return processInstanceScope;
+    }
+    
+    
+    public EventSubscriptionDeclaration getSignalDefinition() {
+        return signalDefinition;
+    }
 }

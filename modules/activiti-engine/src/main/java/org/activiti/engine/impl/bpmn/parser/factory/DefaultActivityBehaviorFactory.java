@@ -379,7 +379,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   // Intermediate Events
   
   public IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent) {
-    return new IntermediateCatchEventActivityBehavior();
+    return new IntermediateCatchEventActivityBehavior(intermediateCatchEvent);
   }
 
   public IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(ThrowEvent throwEvent) {
@@ -417,7 +417,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   // Boundary Events
   
   public BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(BoundaryEvent boundaryEvent, boolean interrupting, ActivityImpl activity) {
-    return new BoundaryEventActivityBehavior(interrupting, activity.getId());
+    return new BoundaryEventActivityBehavior(boundaryEvent, interrupting, activity.getId());
   }
 
   public CancelBoundaryEventActivityBehavior createCancelBoundaryEventActivityBehavior(CancelEventDefinition cancelEventDefinition) {

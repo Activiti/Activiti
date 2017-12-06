@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
@@ -30,16 +31,19 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
   
   protected boolean interrupting;
   protected String activityId;
+  protected BoundaryEvent boundaryEvent;
   
   public BoundaryEventActivityBehavior() {
     
   }
   
-  public BoundaryEventActivityBehavior(boolean interrupting, String activityId) {
+  public BoundaryEventActivityBehavior(BoundaryEvent boundaryEvent, boolean interrupting, String activityId) {
     this.interrupting = interrupting;
     this.activityId = activityId;
+    this.boundaryEvent = boundaryEvent;
   }
   
+  @Override
   @SuppressWarnings("unchecked")
   public void execute(ActivityExecution execution) throws Exception {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
@@ -93,6 +97,16 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 
   public void setInterrupting(boolean interrupting) {
     this.interrupting = interrupting;
+  }
+
+  
+  public String getActivityId() {
+    return activityId;
+  }
+
+  
+  public BoundaryEvent getBoundaryEvent() {
+    return boundaryEvent;
   }
 
 }

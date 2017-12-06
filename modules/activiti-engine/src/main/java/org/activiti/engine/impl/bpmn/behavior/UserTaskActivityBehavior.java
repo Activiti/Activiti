@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -21,6 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.DynamicBpmnConstants;
@@ -30,18 +36,15 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
-import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * activity implementation for the user task.
@@ -62,6 +65,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     this.taskDefinition = taskDefinition;
   }
 
+  @Override
   public void execute(ActivityExecution execution) throws Exception {
     TaskEntity task = TaskEntity.createAndInsert(execution);
     task.setExecution(execution);
@@ -220,8 +224,29 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     if (skipUserTask) {
       task.complete(null, false);
     }
+    
+    // Execute any  boundary event signal activity if matching signal event is registered in process instance execution scope
+    for(BoundaryEventActivityBehavior boundaryEventActivityBehavior: getBoundaryEventActivityBehaviors(execution)) {
+      SignalEventDefinition signalEventDef = findSignalEventDefinition(boundaryEventActivityBehavior);
+      
+      if(signalEventDef != null) {
+        if(Context.getCommandContext().getSignalEventSessionManager()
+            .hasThrowSignalEventForExecution(execution, signalEventDef.getSignalRef())) 
+        {
+          // Execute boundary event activity
+          boundaryEventActivityBehavior.execute(execution);
+          
+          // Leave only if interrupted
+          if(boundaryEventActivityBehavior.isInterrupting())
+            return;
+        }
+      }
+    }
+    
   }
 
+  
+  @Override
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     if (!((ExecutionEntity) execution).getTasks().isEmpty())
       throw new ActivitiException("UserTask should not be signalled before complete");
@@ -372,5 +397,39 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   public TaskDefinition getTaskDefinition() {
     return taskDefinition;
   }
+  
+  protected List<BoundaryEventActivityBehavior> getBoundaryEventActivityBehaviors(ActivityExecution execution) {
+    List<BoundaryEventActivityBehavior> result = new ArrayList<BoundaryEventActivityBehavior>();
+
+    ActivityImpl activity = ((ExecutionEntity)execution).getActivity();
+    
+    List<ActivityImpl> children = activity.getActivities();
+    
+    for(ActivityImpl child: children) {
+      if(child.getActivityBehavior() instanceof BoundaryEventActivityBehavior) {
+        BoundaryEventActivityBehavior boundaryEventActivity = (BoundaryEventActivityBehavior) child.getActivityBehavior();
+        result.add(boundaryEventActivity);
+      }
+    }
+    
+    return result;
+  }
+
+  protected SignalEventDefinition findSignalEventDefinition(BoundaryEventActivityBehavior boundaryEventActivityBehavior) {
+    SignalEventDefinition signalEventDef = null;
+    BoundaryEvent boundaryEvent = boundaryEventActivityBehavior.getBoundaryEvent();
+    
+    if(boundaryEvent != null) {
+      for(EventDefinition eventDef : boundaryEvent.getEventDefinitions()) {
+        if(eventDef instanceof SignalEventDefinition) {
+          signalEventDef = (SignalEventDefinition) eventDef;
+        }
+      }
+    }
+    
+    return signalEventDef;
+    
+  }
+  
   
 }
