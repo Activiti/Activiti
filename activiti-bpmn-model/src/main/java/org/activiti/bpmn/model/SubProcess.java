@@ -42,6 +42,9 @@ public class SubProcess extends Activity implements FlowElementsContainer {
   public void addFlowElement(FlowElement element) {
     flowElementList.add(element);
     element.setParentContainer(this);
+    if(element instanceof FlowElementsContainer){
+      flowElementMap.putAll(((FlowElementsContainer) element).getFlowElementMap());
+    }
     if (StringUtils.isNotEmpty(element.getId())) {
       flowElementMap.put(element.getId(), element);
       if (getParentContainer() != null) {
