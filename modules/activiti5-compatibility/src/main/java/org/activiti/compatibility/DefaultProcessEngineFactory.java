@@ -62,6 +62,7 @@ public class DefaultProcessEngineFactory {
     activiti5Configuration.setEventDispatcher(activiti6Configuration.getEventDispatcher());
     copyPostDeployers(activiti6Configuration, activiti5Configuration);
     activiti5Configuration.setBusinessCalendarManager(activiti6Configuration.getBusinessCalendarManager());
+    copyCustomPreVariableTypes(activiti6Configuration, activiti5Configuration);
   }
 
   protected void copyJdbcConfig(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
@@ -223,4 +224,9 @@ public class DefaultProcessEngineFactory {
     return parseHandlers;
   }
   
+  protected void copyCustomPreVariableTypes(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
+    if (activiti6Configuration.getCustomPreVariableTypes() != null) {
+      activiti5Configuration.setCustomPreVariableTypes(activiti6Configuration.getCustomPreVariableTypes());
+    }
+  }
 }
