@@ -51,6 +51,12 @@ public class TransientVariablesTest extends PluggableActivitiTestCase {
     assertNull(runtimeService.getVariable(processInstance.getId(), "response"));
   }
   
+  // Test case for ACT-4304
+  @Deployment
+  public void testTransientVariableDeletion() {
+    runtimeService.startProcessInstanceByKey("transientVarsTest");
+  }
+  
   @Deployment
   public void testUseTransientVariableInExclusiveGateway() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("transientVarsTest");
