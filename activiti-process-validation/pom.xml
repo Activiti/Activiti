@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <version>7-201712-EA-SNAPSHOT</version>
+    <version>7-201712-EA-port_act_4304-SNAPSHOT</version>
   </parent>
 
   <properties>
