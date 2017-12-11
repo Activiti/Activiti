@@ -63,7 +63,7 @@ public class AppDispatcherServletConfiguration extends WebMvcConfigurationSuppor
     @Bean
     public MultipartResolver multipartResolver() {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize(environment.getProperty("file.upload.max.size", Long.class));
+        multipartResolver.setMaxUploadSize(environment.getProperty("file.upload.max.size", Long.class, 104857600L));
         return multipartResolver;
     }
 
