@@ -221,8 +221,8 @@ angular.module('activitiModeler')
             // Update positions of the resize-markers, according to the canvas
 
             var actualCanvas = null;
-            if (canvas && canvas[0].children[1]) {
-                actualCanvas = canvas[0].children[1];
+            if (canvas && canvas[0].children[11]) {
+                actualCanvas = canvas[0].children[11];
             }
 
             var canvasTop = canvas.position().top;
