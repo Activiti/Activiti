@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20171212194457100" modeler:modelId="1001" modeler:modelVersion="1" modeler:modelLastUpdated="1513088093693">
+  <process id="concurrencyProcess" name="concurrencyProcess" isExecutable="true">
+    <documentation>concurrencyProcess</documentation>
+    <startEvent id="start">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[startEvent1]]></modeler:editor-resource-id>
+      </extensionElements>
+    </startEvent>
+    <parallelGateway id="parallelgate">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-309BC49B-B17D-46F8-B7F0-9117B2C80807]]></modeler:editor-resource-id>
+      </extensionElements>
+    </parallelGateway>
+    <userTask id="UserA" name="UserA" activiti:assignee="$INITIATOR" activiti:formKey="1002">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:form-reference-id><![CDATA[1002]]></modeler:form-reference-id>
+        <modeler:form-reference-name><![CDATA[myForm]]></modeler:form-reference-name>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-2C65C109-F528-452F-9C70-615ADE90DB91]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-56656410-86D5-4C09-B755-CA4DC3C0B580" sourceRef="parallelgate" targetRef="UserA">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-56656410-86D5-4C09-B755-CA4DC3C0B580]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <userTask id="UserC" name="UserC" activiti:assignee="$INITIATOR" activiti:formKey="1002">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:form-reference-id><![CDATA[1002]]></modeler:form-reference-id>
+        <modeler:form-reference-name><![CDATA[myForm]]></modeler:form-reference-name>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-732FE617-5752-49D5-BB99-4F227A2B990E]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-ADCEC98C-5C96-4E5E-B486-7EC0FD053D60" sourceRef="parallelgate" targetRef="UserC">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-ADCEC98C-5C96-4E5E-B486-7EC0FD053D60]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <endEvent id="End2">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-9D67F8AC-401C-4203-8C32-49561F61A045]]></modeler:editor-resource-id>
+      </extensionElements>
+    </endEvent>
+    <sequenceFlow id="sid-213385F9-9467-4E00-B75F-CEAB00D1290D" sourceRef="UserC" targetRef="End2">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-213385F9-9467-4E00-B75F-CEAB00D1290D]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <userTask id="UserB" name="UserB" activiti:assignee="$INITIATOR" activiti:formKey="1002">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:form-reference-id><![CDATA[1002]]></modeler:form-reference-id>
+        <modeler:form-reference-name><![CDATA[myForm]]></modeler:form-reference-name>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-8C309285-5CE8-4C4E-986F-76065FE24F8D]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <userTask id="sid-6A656DD6-E0BE-4D05-BE5C-0039AD869B07" name="User" activiti:assignee="$INITIATOR">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-6A656DD6-E0BE-4D05-BE5C-0039AD869B07]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-3A7D7B6B-699A-4453-AD69-6DD95FE91672" sourceRef="sid-6A656DD6-E0BE-4D05-BE5C-0039AD869B07" targetRef="parallelgate">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-3A7D7B6B-699A-4453-AD69-6DD95FE91672]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="sid-43FE41F3-60D7-4FE5-A444-741375E55A15" sourceRef="start" targetRef="sid-6A656DD6-E0BE-4D05-BE5C-0039AD869B07">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-43FE41F3-60D7-4FE5-A444-741375E55A15]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <exclusiveGateway id="sid-4D68D7EC-04A7-47BA-BA66-3AB1216E0497">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-4D68D7EC-04A7-47BA-BA66-3AB1216E0497]]></modeler:editor-resource-id>
+      </extensionElements>
+    </exclusiveGateway>
+    <sequenceFlow id="sid-B27A2FD6-45B5-4B4C-A791-2364A9A7FD07" sourceRef="UserA" targetRef="sid-4D68D7EC-04A7-47BA-BA66-3AB1216E0497">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-B27A2FD6-45B5-4B4C-A791-2364A9A7FD07]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <userTask id="sid-93AA0B2A-8454-457A-BA31-A19DDF32069D" name="UserD" activiti:assignee="$INITIATOR" activiti:formKey="1002">
+      <extensionElements>
+        <modeler:allow-send-email><![CDATA[true]]></modeler:allow-send-email>
+        <modeler:form-reference-id><![CDATA[1002]]></modeler:form-reference-id>
+        <modeler:form-reference-name><![CDATA[myForm]]></modeler:form-reference-name>
+        <modeler:activiti-idm-initiator><![CDATA[true]]></modeler:activiti-idm-initiator>
+        <modeler:editor-resource-id><![CDATA[sid-93AA0B2A-8454-457A-BA31-A19DDF32069D]]></modeler:editor-resource-id>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="sid-C5E77BBB-DAC5-4A5A-80A0-BDC04837FB5B" sourceRef="sid-4D68D7EC-04A7-47BA-BA66-3AB1216E0497" targetRef="UserB">
+      <extensionElements>
+        <modeler:conditionDefinition modeler:index="0" modeler:leftFormFieldId="textID" modeler:rightValue="UserB" modeler:operator="=="/>
+        <modeler:editor-resource-id><![CDATA[sid-C5E77BBB-DAC5-4A5A-80A0-BDC04837FB5B]]></modeler:editor-resource-id>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${(activiti_flowConditionsBean.exists(execution, 'textID') && textID == 'UserB')}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-A2669929-BA15-4135-B6CC-87D32C23347F" sourceRef="sid-4D68D7EC-04A7-47BA-BA66-3AB1216E0497" targetRef="sid-93AA0B2A-8454-457A-BA31-A19DDF32069D">
+      <extensionElements>
+        <modeler:conditionDefinition modeler:index="0" modeler:leftFormFieldId="textID" modeler:rightValue="UserD" modeler:operator="=="/>
+        <modeler:editor-resource-id><![CDATA[sid-A2669929-BA15-4135-B6CC-87D32C23347F]]></modeler:editor-resource-id>
+      </extensionElements>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${(activiti_flowConditionsBean.exists(execution, 'textID') && textID == 'UserD')}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sid-94C7F948-EF5D-402D-9623-DF26283B7BB5" sourceRef="sid-93AA0B2A-8454-457A-BA31-A19DDF32069D" targetRef="sid-6A656DD6-E0BE-4D05-BE5C-0039AD869B07">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-94C7F948-EF5D-402D-9623-DF26283B7BB5]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+    <sequenceFlow id="sid-E6D5F3DA-D6E0-45A8-BD46-A4CF6D591894" sourceRef="UserB" targetRef="sid-6A656DD6-E0BE-4D05-BE5C-0039AD869B07">
+      <extensionElements>
+        <modeler:editor-resource-id><![CDATA[sid-E6D5F3DA-D6E0-45A8-BD46-A4CF6D591894]]></modeler:editor-resource-id>
+      </extensionElements>
+    </sequenceFlow>
+  </process>
+</definitions>

@@ -22,6 +22,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
+import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
@@ -370,7 +371,7 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
 @SuppressWarnings({ "unchecked", "rawtypes" })
   public void recordExecutionReplacedBy(ExecutionEntity execution, InterpretableExecution replacedBy) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      
+
       // Update the cached historic activity instances that are open
       List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
       for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
@@ -380,7 +381,7 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
           cachedHistoricActivityInstance.setExecutionId(replacedBy.getId());
         }
       }
-    
+
       // Update the persisted historic activity instances that are open
       List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
         .executionId(execution.getId())
@@ -388,6 +389,15 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
         .list();
       for (HistoricActivityInstanceEntity historicActivityInstance: historicActivityInstances) {
         historicActivityInstance.setExecutionId(replacedBy.getId());
+      }
+
+      // Update the persisted historic task instances that are open
+      List<HistoricTaskInstanceEntity> historicTaskInstances = (List) new HistoricTaskInstanceQueryImpl(Context.getCommandContext())
+        .executionId(execution.getId())
+        .unfinished()
+        .list();
+      for (HistoricTaskInstanceEntity historicTaskInstance: historicTaskInstances) {
+        historicTaskInstance.setExecutionId(replacedBy.getId());
       }
     }
   }

@@ -54,6 +54,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+	  <groupId>org.assertj</groupId>
+	  <artifactId>assertj-core</artifactId>
+	</dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
       <scope>provided</scope>
