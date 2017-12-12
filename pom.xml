@@ -23,8 +23,8 @@
     <argLine>-Duser.language=en</argLine>
 
     <!-- Spring Version: We need to keep these ones aligned with Spring Boot -->
-    <!--  Today this is aligned with Spring Boot 2.0.0.M6 -->
-    <spring.version>5.0.1.RELEASE</spring.version>
+    <!--  Today this is aligned with Spring Boot 2.0.0.M7 -->
+    <spring.version>5.0.2.RELEASE</spring.version>
     <jackson.version>2.9.2</jackson.version>
 
 
