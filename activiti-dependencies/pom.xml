@@ -10,7 +10,7 @@
   <artifactId>activiti-dependencies</artifactId>
   <packaging>pom</packaging>
 
-  <name>Activiti Dependencies BOM (Bill Of Materials)</name>
+  <name>Activiti - Dependencies BOM (Bill Of Materials)</name>
   <description>Activiti Dependencies BOM (Bill Of Materials)</description>
 
   <repositories>

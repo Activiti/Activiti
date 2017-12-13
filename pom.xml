@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Activiti</name>
+  <name>Activiti - Parent</name>
   <description>BPM and workflow engine (Parent)</description>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-parent</artifactId>
@@ -47,7 +47,7 @@
     <servlet-api.version>2.5</servlet-api.version>
     <javax.enterprise.concurrent-api.version>1.0</javax.enterprise.concurrent-api.version>
     <juel.version>2.2.7</juel.version>
-    <commons-email.version>1.4</commons-email.version>
+    <commons-email.version>1.5</commons-email.version>
     <geronimo.version>1.1.1</geronimo.version>
     <mybatis.version>3.4.2</mybatis.version>
     <joda-time.version>2.6</joda-time.version>
@@ -67,7 +67,7 @@
     <btm.version>2.1.3</btm.version>
     <jsr250-api.version>1.0</jsr250-api.version>
     <httpmime.version>4.3.5</httpmime.version>
-    <batik.version>1.7</batik.version>
+    <batik.version>1.9.1</batik.version>
 
 
     <!-- plugins -->
@@ -86,6 +86,7 @@
     <directory.maven.plugin.version>0.1</directory.maven.plugin.version>
     <assertions-generator-plugin.version>2.0.0</assertions-generator-plugin.version>
     <jgitflow.plugin.version>1.0-m5.1</jgitflow.plugin.version>
+    <dependency-check-maven.version>3.0.2</dependency-check-maven.version>
   </properties>
 
   <distributionManagement>
@@ -302,19 +303,19 @@
         <version>${batik.version}</version>
       </dependency>
       <dependency>
-        <groupId>batik</groupId>
+        <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-svg-dom</artifactId>
         <version>${batik.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>batik</groupId>
+        <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-anim</artifactId>
         <version>${batik.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
-        <groupId>batik</groupId>
+        <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-parser</artifactId>
         <version>${batik.version}</version>
         <scope>test</scope>
@@ -500,6 +501,21 @@
             <phase>post-integration-test</phase>
             <goals>
               <goal>report-integration</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.owasp</groupId>
+        <artifactId>dependency-check-maven</artifactId>
+        <version>${dependency-check-maven.version}</version>
+        <configuration>
+          <failBuildOnCVSS>7</failBuildOnCVSS>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
             </goals>
           </execution>
         </executions>
