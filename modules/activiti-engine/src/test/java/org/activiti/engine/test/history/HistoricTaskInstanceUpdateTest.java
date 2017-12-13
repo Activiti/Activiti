@@ -13,6 +13,8 @@
 
 package org.activiti.engine.test.history;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -21,9 +23,6 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
-import org.apache.commons.collections.CollectionUtils;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 
 /**
@@ -74,39 +73,40 @@ public class HistoricTaskInstanceUpdateTest extends PluggableActivitiTestCase {
     assertNull(historicTaskInstance.getAssignee());
   }
 
-  @Deployment
-  public void testHistoricTaskInstanceExecutionIdUpdateOnConcurrentExecution() {
+    @Deployment
+    public void testHistoricTaskInstanceExecutionIdUpdateOnConcurrentExecution() {
 
-	ProcessInstance pi = runtimeService.startProcessInstanceByKey("concurrencyProcess");
-	Task task = taskService.createTaskQuery().singleResult();
-	assertThat(historyService.createHistoricTaskInstanceQuery().count()).isEqualTo(1);
+	    ProcessInstance pi = runtimeService.startProcessInstanceByKey("concurrencyProcess");
+	    Task task = taskService.createTaskQuery().singleResult();
+	    assertThat(historyService.createHistoricTaskInstanceQuery().count()).isEqualTo(1);
 
-	HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
-	String parentExecutionId = historicTaskInstance.getExecutionId();
-	taskService.complete(task.getId());
-	TaskQuery query = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
-    List<Task> tasks = query.list();
-    assertThat(tasks).hasSize(2);
+	    HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
+	    String parentExecutionId = historicTaskInstance.getExecutionId();
+	    taskService.complete(task.getId());
+	    TaskQuery query = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc();
+	    List<Task> tasks = query.list();
+	    assertThat(tasks).hasSize(2);
 
-    // the tasks are ordered by name
-    Task task1 = tasks.get(0);
-    assertThat(task1.getName()).isEqualTo("UserA");
-    assertThat(task1.getExecutionId()).isNotEqualTo(parentExecutionId);
-    Task task2 = tasks.get(1);
-    assertThat(task2.getName()).isEqualTo("UserC");
-    assertThat(task2.getExecutionId()).isNotEqualTo(parentExecutionId);
+        // the tasks are ordered by name
+	    Task task1 = tasks.get(0);
+	    assertThat(task1.getName()).isEqualTo("UserA");
+	    assertThat(task1.getExecutionId()).isNotEqualTo(parentExecutionId);
+	    Task task2 = tasks.get(1);
+	    assertThat(task2.getName()).isEqualTo("UserC");
+	    assertThat(task2.getExecutionId()).isNotEqualTo(parentExecutionId);
 
-    // terminating one flow from concurrent execution
-    taskService.complete(tasks.get(1).getId());
-    Task userTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery().processInstanceId(pi.getId()).list();
-    assertThat(historicTaskInstances).hasSize(3);
-    HistoricTaskInstance activeHistoricTaskInstance = null;
-        for (HistoricTaskInstance historicTaskInst : historicTaskInstances) {
-            if (userTask.getId().equals(historicTaskInst.getId())) {
-                activeHistoricTaskInstance = historicTaskInst;
-            }
-        }
-    assertThat(parentExecutionId).isEqualTo(activeHistoricTaskInstance.getExecutionId());
+        // terminating one flow from concurrent execution
+	    taskService.complete(tasks.get(1).getId());
+	    Task userTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+	    List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery().processInstanceId(pi.getId()).list();
+	    assertThat(historicTaskInstances).hasSize(3);
+	    HistoricTaskInstance activeHistoricTaskInstance = null;
+	    for (HistoricTaskInstance historicTaskInst : historicTaskInstances) {
+		    if (userTask.getId().equals(historicTaskInst.getId())) {
+			    activeHistoricTaskInstance = historicTaskInst;
+			    break;
+			}
+		}
+	    assertThat(parentExecutionId).isEqualTo(activeHistoricTaskInstance.getExecutionId());
   }
 }
