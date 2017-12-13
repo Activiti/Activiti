@@ -95,7 +95,7 @@ public class SpringAutoDeployTest extends AbstractTestCase {
         createAppContext(CTX_PATH);
         assertEquals(1,
                      repositoryService.createDeploymentQuery().count());
-        ((AbstractXmlApplicationContext) applicationContext).destroy();
+        ((AbstractXmlApplicationContext) applicationContext).close();
 
         String filePath = "org/activiti/spring/test/autodeployment/autodeploy.a.bpmn20.xml";
         String originalBpmnFileContent = IoUtil.readFileAsString(filePath);
