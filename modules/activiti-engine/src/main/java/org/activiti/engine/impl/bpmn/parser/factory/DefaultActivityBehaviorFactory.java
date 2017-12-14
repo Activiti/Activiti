@@ -379,7 +379,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   // Intermediate Events
   
   public IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent) {
-    return new IntermediateCatchEventActivityBehavior();
+    return new IntermediateCatchEventActivityBehavior(intermediateCatchEvent);
   }
 
   public IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(ThrowEvent throwEvent) {

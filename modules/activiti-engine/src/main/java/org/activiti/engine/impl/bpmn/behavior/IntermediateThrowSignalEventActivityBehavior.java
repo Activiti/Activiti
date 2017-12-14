@@ -39,12 +39,18 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
     this.signalDefinition = signalDefinition;
   }
   
+  @Override
   public void execute(ActivityExecution execution) throws Exception {
-    
+
     CommandContext commandContext = Context.getCommandContext();
+
+    // register fired signals with signal event session manager 
+    // to handle race conditions within current transaction scope 
+    commandContext.getSignalEventSessionManager()
+       .registerThrowSignalEventByExecution(execution, signalDefinition.getEventName());
     
     List<SignalEventSubscriptionEntity> subscriptionEntities = null;
-    if (processInstanceScope) {
+    if(processInstanceScope) {
       subscriptionEntities = commandContext
               .getEventSubscriptionEntityManager()
               .findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalDefinition.getEventName());
@@ -62,5 +68,10 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
       leave(execution);
     }
   }
- 
+
+  @Override
+  public void leave(ActivityExecution execution) {
+    super.leave(execution);
+  }
+
 }
