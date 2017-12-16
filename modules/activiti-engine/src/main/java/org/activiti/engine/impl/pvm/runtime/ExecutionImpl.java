@@ -1000,4 +1000,9 @@ public class ExecutionImpl implements
   public String getTenantId() {
     return null; // Not implemented
   }
+
+  @Override
+  public void setBusinessKey(String businessKey) {
+    updateProcessBusinessKey(businessKey);
+  }
 }
