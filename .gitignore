@@ -10,8 +10,6 @@ target
 *.bpmn/
 /userguide/src/en/index.html
 
-\.metadata/
-
-\.recommenders/
-
-modules/activiti-spring-boot/spring-boot-starters/activiti-spring-boot-starter-basic/\.factorypath
+.metadata
+.recommenders
+.factorypath
