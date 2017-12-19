@@ -181,12 +181,12 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         .createDeployment()
         .name("childProcessDeployment")
         .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
-    
+
     processEngine.getRepositoryService()
         .createDeployment()
         .name("mainProcessDeployment")
         .addBpmnModel("mainProcess.bpmn20.xml", mainBpmnModel).deploy();
-    
+
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("var1", "String test value");
     variables.put("var2", true);
@@ -261,14 +261,14 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("mainProcess");
     ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
     assertNull(subProcessInstance.getBusinessKey());
-    
+
     // Modeled using expression: businessKey="${busKey}"
-    Map<String,Object> variables = new HashMap<>();
+    Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("busKey", "123");
     pi = runtimeService.startProcessInstanceByKey("mainProcessBusinessKey", variables);
     subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
     assertEquals("123", subProcessInstance.getBusinessKey());
-    
+
     // Inherit business key
     pi = runtimeService.startProcessInstanceByKey("mainProcessInheritBusinessKey", "123");
     subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
