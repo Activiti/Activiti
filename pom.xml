@@ -384,7 +384,7 @@
 			<dependency>
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-email</artifactId>
-				<version>1.4</version>
+				<version>1.5</version>
 			</dependency>
 			<!-- Web service -->
 			<dependency>
