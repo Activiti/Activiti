@@ -147,14 +147,6 @@
 			<version>${activiti.version}</version>
 		</dependency>
 		
-		<!-- Xerces is needed (eg by jboss, which ships with an old version), for process definition parsing -->
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>2.11.0</version>
-		</dependency>
-		
-
 		<!-- LOGGING -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
