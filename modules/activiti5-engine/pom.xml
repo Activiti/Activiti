@@ -174,7 +174,6 @@
 			com.sun*;resolution:=optional,
 			javax.persistence*;resolution:=optional,
 			org.apache.commons.mail*;resolution:=optional,
-			org.apache.xerces*;resolution:=optional,
 			org.activiti.camel;resolution:=optional,
 			org.activiti.camel.impl;resolution:=optional,
 			org.springframework*;resolution:=optional,
