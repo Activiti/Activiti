@@ -22,6 +22,7 @@
 		<mule.version>3.5.0</mule.version>
 		<cxf.version>3.1.6</cxf.version>
 		<batik.version>1.7</batik.version>
+		<jackson.version>2.8.10</jackson.version>
 		<!-- JVM params for test execution -->
 		<argLine>-Duser.language=en</argLine>
 
@@ -617,17 +618,17 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-core</artifactId>
-				<version>2.7.5</version>
+				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>
-				<version>2.7.5</version>
+				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
-				<version>2.7.5</version>
+				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.xmlgraphics</groupId>
