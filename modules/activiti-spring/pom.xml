@@ -1,322 +1,320 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <name>Activiti - Spring</name>
-    <artifactId>activiti-spring</artifactId>
+  <name>Activiti - Spring</name>
+  <artifactId>activiti-spring</artifactId>
 
-    <parent>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-root</artifactId>
-        <relativePath>../..</relativePath>
-        <version>5.23.0-SNAPSHOT</version>
-    </parent>
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <relativePath>../..</relativePath>
+    <version>5.23.0-SNAPSHOT</version>
+  </parent>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <activiti.artifact>
-            org.activiti.spring
-        </activiti.artifact>
-        <activiti.osgi.import.additional>
-          org.springframework.test.context*;resolution:=optional,
-        </activiti.osgi.import.additional>
-    </properties>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <activiti.artifact>
+      org.activiti.spring
+    </activiti.artifact>
+    <activiti.osgi.import.additional>
+      org.springframework.test.context*;resolution:=optional,
+    </activiti.osgi.import.additional>
+  </properties>
 
-    <build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>cleanVersions</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>bundle-manifest</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>manifest</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>
+                      maven-bundle-plugin
+                    </artifactId>
+                    <versionRange>
+                      [2.1.0,)
+                    </versionRange>
+                    <goals>
+                      <goal>cleanVersions</goal>
+                      <goal>manifest</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.persistence</groupId>
+      <artifactId>persistence-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <version>3.6.9.Final</version>
+      <scope>test</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.subethamail</groupId>
+      <artifactId>subethasmtp-wiser</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.openjpa</groupId>
+      <artifactId>openjpa</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>check</id>
+      <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>delete-test-sources</id>
+                <phase>generate-sources</phase>
                 <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
+                  <tasks>
+                    <delete dir="src/test/java/org/activiti/engine/test"/>
+                    <delete dir="src/test/resources/org/activiti/engine/test"/>
+                    <delete dir="src/test/java/org/activiti/examples"/>
+                    <delete dir="src/test/resources/org/activiti/examples"/>
+                    <delete dir="src/test/java/org/activiti/standalone"/>
+                    <delete dir="src/test/resources/org/activiti/standalone"/>
+                  </tasks>
                 </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>cleanVersions</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>bundle-manifest</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>manifest</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
-                                    <pluginExecutionFilter>
-                                        <groupId>org.apache.felix</groupId>
-                                        <artifactId>
-                                            maven-bundle-plugin
-                                        </artifactId>
-                                        <versionRange>
-                                            [2.1.0,)
-                                        </versionRange>
-                                        <goals>
-                                            <goal>cleanVersions</goal>
-                                            <goal>manifest</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
-                                    <action>
-                                        <ignore></ignore>
-                                    </action>
-                                </pluginExecution>
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-engine</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jdbc</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>persistence-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>3.6.9.Final</version>
-            <scope>test</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.subethamail</groupId>
-            <artifactId>subethasmtp-wiser</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.openjpa</groupId>
-            <artifactId>openjpa</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-dbcp</groupId>
-            <artifactId>commons-dbcp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-    <profiles>
-        <profile>
-            <id>check</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>delete-test-sources</id>
-                                <phase>generate-sources</phase>
-                                <configuration>
-                                    <tasks>
-                                        <delete dir="src/test/java/org/activiti/engine/test" />
-                                        <delete dir="src/test/resources/org/activiti/engine/test" />
-                                        <delete dir="src/test/java/org/activiti/examples" />
-                                        <delete dir="src/test/resources/org/activiti/examples" />
-                                        <delete dir="src/test/java/org/activiti/standalone" />
-                                        <delete dir="src/test/resources/org/activiti/standalone" />
-                                    </tasks>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>checkspring</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>copy-test-sources-from-engine</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <tasks>
-                                        <delete dir="src/test/java/org/activiti/engine/test" />
-                                        <delete dir="src/test/resources/org/activiti/engine/test" />
-                                        <delete dir="src/test/java/org/activiti/examples" />
-                                        <delete dir="src/test/resources/org/activiti/examples" />
-                                        <delete dir="src/test/java/org/activiti/standalone" />
-                                        <delete dir="src/test/resources/org/activiti/standalone" />
-                                        <copy todir="src/test/java" overwrite="true">
-                                            <fileset dir="../activiti-engine/src/test/java" />
-                                        </copy>
-                                        <copy todir="src/test/resources" overwrite="true">
-                                            <fileset dir="../activiti-engine/src/test/resources" />
-                                        </copy>
-                                    </tasks>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>delete-test-sources-after</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <configuration>
-                                    <tasks>
-                                        <delete dir="src/test/java/org/activiti/engine/test" />
-                                        <delete dir="src/test/resources/org/activiti/engine/test" />
-                                        <delete dir="src/test/java/org/activiti/examples" />
-                                        <delete dir="src/test/resources/org/activiti/examples" />
-                                        <delete dir="src/test/java/org/activiti/standalone" />
-                                        <delete dir="src/test/resources/org/activiti/standalone" />
-                                    </tasks>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <systemProperties>
-                                <property>
-                                    <name>process.engine.initializer</name>
-                                    <value>org.activiti.spring.SpringProcessEngineInitializer</value>
-                                </property>
-                            </systemProperties>
-                            <excludes>
-                                <exclude>org/activiti/standalone/**</exclude>
-                                <exclude>**/*TestCase.java</exclude>
-                                <exclude>**/ActivitiRuleJunit4Test.java</exclude><!-- Can't run in
+      </build>
+    </profile>
+    <profile>
+      <id>checkspring</id>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-test-sources-from-engine</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <delete dir="src/test/java/org/activiti/engine/test"/>
+                    <delete dir="src/test/resources/org/activiti/engine/test"/>
+                    <delete dir="src/test/java/org/activiti/examples"/>
+                    <delete dir="src/test/resources/org/activiti/examples"/>
+                    <delete dir="src/test/java/org/activiti/standalone"/>
+                    <delete dir="src/test/resources/org/activiti/standalone"/>
+                    <copy todir="src/test/java" overwrite="true">
+                      <fileset dir="../activiti-engine/src/test/java"/>
+                    </copy>
+                    <copy todir="src/test/resources" overwrite="true">
+                      <fileset dir="../activiti-engine/src/test/resources"/>
+                    </copy>
+                  </tasks>
+                </configuration>
+              </execution>
+              <execution>
+                <id>delete-test-sources-after</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <delete dir="src/test/java/org/activiti/engine/test"/>
+                    <delete dir="src/test/resources/org/activiti/engine/test"/>
+                    <delete dir="src/test/java/org/activiti/examples"/>
+                    <delete dir="src/test/resources/org/activiti/examples"/>
+                    <delete dir="src/test/java/org/activiti/standalone"/>
+                    <delete dir="src/test/resources/org/activiti/standalone"/>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <systemProperties>
+                <property>
+                  <name>process.engine.initializer</name>
+                  <value>org.activiti.spring.SpringProcessEngineInitializer</value>
+                </property>
+              </systemProperties>
+              <excludes>
+                <exclude>org/activiti/standalone/**</exclude>
+                <exclude>**/*TestCase.java</exclude>
+                <exclude>**/ActivitiRuleJunit4Test.java</exclude><!-- Can't run in
 									Spring since ActivitiRule must be used different in Spring -->
-                                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-234 -->
-                                <exclude>**/WSDLImporterTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-315 -->
-                                <exclude>**/JobExecutorTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-427 -->
-                                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-485 -->
-                            </excludes>
-                            <runOrder>alphabetical</runOrder>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>distro</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <version>2.1.1</version>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>jar-no-fork</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
+                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-234 -->
+                <exclude>**/WSDLImporterTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-315 -->
+                <exclude>**/JobExecutorTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-427 -->
+                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-485 -->
+              </excludes>
+              <runOrder>alphabetical</runOrder>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>distro</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

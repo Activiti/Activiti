@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,26 +36,25 @@ import org.springframework.transaction.PlatformTransactionManager;
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
 public class DataSourceProcessEngineAutoConfiguration {
 
-  @Configuration
-  @ConditionalOnMissingClass(name= "javax.persistence.EntityManagerFactory")
-  @EnableConfigurationProperties(ActivitiProperties.class)
-  public static class DataSourceProcessEngineConfiguration extends AbstractProcessEngineAutoConfiguration {
+    @Configuration
+    @ConditionalOnMissingClass("javax.persistence.EntityManagerFactory")
+    @EnableConfigurationProperties(ActivitiProperties.class)
+    public static class DataSourceProcessEngineConfiguration extends AbstractProcessEngineAutoConfiguration {
 
-    @Bean
-    @ConditionalOnMissingBean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) {
-      return new DataSourceTransactionManager(dataSource);
+        @Bean
+        @ConditionalOnMissingBean
+        public PlatformTransactionManager transactionManager(DataSource dataSource) {
+            return new DataSourceTransactionManager(dataSource);
+        }
+
+        @Bean
+        @ConditionalOnMissingBean
+        public SpringProcessEngineConfiguration springProcessEngineConfiguration(
+                DataSource dataSource,
+                PlatformTransactionManager transactionManager,
+                SpringAsyncExecutor springAsyncExecutor) throws IOException {
+
+            return this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springAsyncExecutor);
+        }
     }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public SpringProcessEngineConfiguration springProcessEngineConfiguration(
-            DataSource dataSource,
-            PlatformTransactionManager transactionManager,
-            SpringAsyncExecutor springAsyncExecutor) throws IOException {
-      
-      return this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springAsyncExecutor);
-    }
-  }
-
 }

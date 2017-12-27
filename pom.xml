@@ -1,5 +1,5 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <name>Activiti</name>
@@ -17,25 +17,26 @@
   <version>5.23.0-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
-    <spring.security.version>3.2.3.RELEASE</spring.security.version>
-    <mule.version>3.5.0</mule.version>
+    <spring.version>4.3.5.RELEASE</spring.version>
+    <spring-security.version>4.2.3.RELEASE</spring-security.version>
+    <mule.version>3.7.0</mule.version>
     <cxf.version>2.6.14</cxf.version>
     <batik.version>1.7</batik.version>
     <jackson.version>2.8.10</jackson.version>
+
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
 
     <!-- OSGi bundles properties -->
-    <activiti.artifact />
+    <activiti.artifact/>
     <activiti.osgi.import.activiti.version>version="[$(version;==;${activiti.osgi.version.clean}),$(version;=+;${activiti.osgi.version.clean}))"</activiti.osgi.import.activiti.version>
     <activiti.osgi.import.strict.version>version="[$(version;===;${activiti.osgi.version.clean}),$(version;==+;${activiti.osgi.version.clean}))"</activiti.osgi.import.strict.version>
     <activiti.osgi.import.default.version>[$(version;==;$(@)),$(version;+;$(@)))</activiti.osgi.import.default.version>
     <activiti.osgi.import.defaults>
     </activiti.osgi.import.defaults>
-    <activiti.osgi.import.before.defaults />
-    <activiti.osgi.import.additional />
-    <activiti.osgi.export.additional />
+    <activiti.osgi.import.before.defaults/>
+    <activiti.osgi.import.additional/>
+    <activiti.osgi.export.additional/>
     <activiti.osgi.import.pkg>
       org.activiti.*;${activiti.osgi.import.activiti.version},
       ${activiti.osgi.import.before.defaults},
@@ -43,7 +44,7 @@
       ${activiti.osgi.import.additional},
       *
     </activiti.osgi.import.pkg>
-    <activiti.osgi.activator />
+    <activiti.osgi.activator/>
     <activiti.osgi.failok>false</activiti.osgi.failok>
     <activiti.osgi.export>${activiti.osgi.export.pkg};${activiti.osgi.version};-noimport:=true</activiti.osgi.export>
     <!-- <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg>
@@ -56,7 +57,7 @@
     <activiti.osgi.version>version=${project.version}</activiti.osgi.version>
     <activiti.osgi.split.pkg>-split-package:=first</activiti.osgi.split.pkg>
     <activiti.osgi.import>${activiti.osgi.import.pkg}</activiti.osgi.import>
-    <activiti.osgi.dynamic />
+    <activiti.osgi.dynamic/>
     <activiti.osgi.symbolic.name>${activiti.artifact}</activiti.osgi.symbolic.name>
     <activiti.osgi.exclude.dependencies>false</activiti.osgi.exclude.dependencies>
     <activiti.osgi.remove.headers>Ignore-Package,Include-Resource,Private-Package,Bundle-DocURL</activiti.osgi.remove.headers>
@@ -115,12 +116,12 @@
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
-        <version>1.2.2</version>
+        <version>1.3.3</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
-   	 	<artifactId>httpclient</artifactId>
-    	<version>4.3.5</version>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.2</version>
       </dependency>
       <dependency>
         <groupId>com.oracle.jdbc</groupId>
@@ -160,9 +161,9 @@
         <scope>provided</scope>
       </dependency>
       <dependency>
-    	<groupId>javax.enterprise.concurrent</groupId>
-    	<artifactId>javax.enterprise.concurrent-api</artifactId>
-    	<version>1.0</version>
+        <groupId>javax.enterprise.concurrent</groupId>
+        <artifactId>javax.enterprise.concurrent-api</artifactId>
+        <version>1.0</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
@@ -173,7 +174,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
-        <version>4.11</version>
+        <version>4.12</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -402,12 +403,12 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-beans</artifactId>
-        <version>${spring.framework.version}</version>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-core</artifactId>
-        <version>${spring.framework.version}</version>
+        <version>${spring.version}</version>
         <exclusions>
           <exclusion>
             <artifactId>commons-logging</artifactId>
@@ -418,67 +419,72 @@
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>${spring.framework.version}</version>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-aop</artifactId>
-        <version>${spring.framework.version}</version>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-jdbc</artifactId>
-        <version>${spring.framework.version}</version>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-orm</artifactId>
-        <version>${spring.framework.version}</version>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-tx</artifactId>
-        <version>${spring.framework.version}</version>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
-      	<groupId>org.springframework</groupId>
-      	<artifactId>spring-context-support</artifactId>
-      	<version>${spring.framework.version}</version>
-	  </dependency>
-	  <dependency>
-      	<groupId>org.springframework</groupId>
-      	<artifactId>spring-web</artifactId>
-      	<version>${spring.framework.version}</version>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
-      	<groupId>org.springframework</groupId>
-      	<artifactId>spring-webmvc</artifactId>
-      	<version>${spring.framework.version}</version>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-web</artifactId>
+        <version>${spring.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-webmvc</artifactId>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
-        <version>${spring.framework.version}</version>
+        <version>${spring.version}</version>
       </dependency>
       <dependency>
-      	<groupId>org.springframework.security</groupId>
-      	<artifactId>spring-security-core</artifactId>
-      	<version>${spring.security.version}</version>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-core</artifactId>
+        <version>${spring-security.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-config</artifactId>
-        <version>${spring.security.version}</version>
+        <version>${spring-security.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-crypto</artifactId>
-        <version>${spring.security.version}</version>
+        <version>${spring-security.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.security</groupId>
         <artifactId>spring-security-web</artifactId>
-        <version>${spring.security.version}</version>
+        <version>${spring-security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-ldap</artifactId>
+        <version>${spring-security.version}</version>
       </dependency>
       <dependency>
         <groupId>org.subethamail</groupId>
@@ -621,12 +627,12 @@
         <artifactId>jtds</artifactId>
         <version>1.3.0</version>
       </dependency>
-        <dependency>
-            <groupId>com.googlecode.catch-exception</groupId>
-            <artifactId>catch-exception</artifactId>
-            <version>1.2.0</version>
-            <scope>test</scope>
-        </dependency>
+      <dependency>
+        <groupId>com.googlecode.catch-exception</groupId>
+        <artifactId>catch-exception</artifactId>
+        <version>1.2.0</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 
@@ -678,7 +684,8 @@
             <Bundle-Activator>${activiti.osgi.activator}</Bundle-Activator>
             <Export-Package>${activiti.osgi.export}</Export-Package>
             <Import-Package>org.activiti.osgi;resolution:=optional,
-              ${activiti.osgi.import}</Import-Package>
+              ${activiti.osgi.import}
+            </Import-Package>
             <DynamicImport-Package>${activiti.osgi.dynamic}</DynamicImport-Package>
             <Private-Package>${activiti.osgi.private.pkg}</Private-Package>
             <Implementation-Title>Activiti</Implementation-Title>
@@ -699,6 +706,19 @@
     </plugins>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.0.0</version>
+          <configuration>
+            <doclint>none</doclint>
+          </configuration>
+        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
@@ -806,9 +826,6 @@
                 <goals>
                   <goal>jar</goal>
                 </goals>
-                <configuration>
-                  <additionalparam>-Xdoclint:none</additionalparam>
-                </configuration>
               </execution>
             </executions>
           </plugin>
@@ -949,25 +966,22 @@
         <module>modules/activiti-jmx</module>
         <module>tooling/archetypes/activiti-archetype-unittest</module>
       </modules>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-              <additionalparam>-Xdoclint:none</additionalparam>
-            </configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
     <profile>
       <id>database</id>
@@ -1079,7 +1093,7 @@
     <url>http://www.alfresco.com</url>
   </organization>
   <developers>
-  	<developer>
+    <developer>
       <name>Bassam Al-Sarori</name>
       <organization>Alfresco</organization>
       <url>http://www.alfresco.com</url>

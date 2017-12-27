@@ -12,10 +12,9 @@
     <relativePath>../..</relativePath>
     <version>5.23.0-SNAPSHOT</version>
   </parent>
-  
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring.mule.version>3.2.10.RELEASE</spring.mule.version>
     <activiti.artifact>
       org.activiti.mule
     </activiti.artifact>
@@ -141,47 +140,39 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
-      <version>${spring.mule.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>${spring.mule.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>${spring.mule.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-aop</artifactId>
-      <version>${spring.mule.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jdbc</artifactId>
-      <version>${spring.mule.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
-      <version>${spring.mule.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-jms</artifactId>
-      <version>${spring.mule.version}</version>
+      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
-      <version>${spring.mule.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>${spring.mule.version}</version>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -213,6 +204,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-ldap</artifactId>
+      <version>${spring-security.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.mule.tests</groupId>
       <artifactId>mule-tests-functional</artifactId>
     </dependency>
@@ -226,7 +223,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>2.1.1</version>
             <executions>
               <execution>
                 <id>attach-sources</id>
