@@ -19,8 +19,10 @@ package org.activiti.engine.impl.persistence.entity.data.integration;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
+import java.util.List;
+
 public interface IntegrationContextDataManager extends DataManager<IntegrationContextEntity> {
 
-    IntegrationContextEntity findIntegrationContextByExecutionId(final String executionId);
+    List<IntegrationContextEntity> findIntegrationContextByExecutionId(final String executionId);
 
 }

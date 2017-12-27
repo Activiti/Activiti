@@ -17,13 +17,16 @@
 package org.activiti.engine.integration;
 
 import org.activiti.engine.impl.cmd.integration.DeleteIntegrationContextCmd;
-import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextCmd;
+import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,13 +52,14 @@ public class IntegrationContextServiceImplTest {
     public void findIntegrationContextByExecutionIdShouldExecuteRetrieveIntegrationContextCmd() throws Exception {
         //given
         IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
-        given(commandExecutor.execute(any(RetrieveIntegrationContextCmd.class))).willReturn(entity);
+        given(commandExecutor.execute(any(RetrieveIntegrationContextsCmd.class))).willReturn(Arrays.asList(entity));
 
         //when
-        IntegrationContextEntity commandResult = integrationContextService.findIntegrationContextByExecutionId("execId");
+        Collection<IntegrationContextEntity> commandResult = integrationContextService.findIntegrationContextByExecutionId("execId");
 
         //then
-        assertThat(commandResult).isEqualTo(entity);
+        assertThat(commandResult).contains(entity);
+        assertThat(commandResult).hasSize(1);
     }
 
     @Test

@@ -21,6 +21,8 @@ import org.activiti.engine.impl.persistence.entity.data.AbstractDataManager;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
 
+import java.util.List;
+
 public class MybatisIntegrationContextDataManager extends AbstractDataManager<IntegrationContextEntity> implements IntegrationContextDataManager {
 
     public MybatisIntegrationContextDataManager(ProcessEngineConfigurationImpl processEngineConfiguration) {
@@ -38,8 +40,8 @@ public class MybatisIntegrationContextDataManager extends AbstractDataManager<In
     }
 
     @Override
-    public IntegrationContextEntity findIntegrationContextByExecutionId(String executionId) {
-        return (IntegrationContextEntity) getDbSqlSession().selectOne("selectIntegrationContextByExecutionId",
+    public List<IntegrationContextEntity> findIntegrationContextByExecutionId(String executionId) {
+        return (List<IntegrationContextEntity>) getDbSqlSession().selectList("selectIntegrationContextByExecutionId",
                                                                       executionId);
 
     }
