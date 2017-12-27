@@ -10,15 +10,6 @@
     </parent>
 
     <artifactId>activiti-spring-boot-starter-basic</artifactId>
-<!--
-
-    <properties>
-        <spring.framework.version>4.1.4.RELEASE</spring.framework.version>
-    </properties>
-
--->
-
-
 
     <dependencies>
         <!-- Support for auto-completion support in Boot 1.2 -->
@@ -36,7 +27,6 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring</artifactId>
-
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -69,13 +59,11 @@
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-java-dsl</artifactId>
-            <version>${spring-integration-java-dsl.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
-            <version>1.7.5</version>
             <scope>test</scope>
         </dependency>
 
@@ -95,7 +83,6 @@
             <artifactId>activiti-bpmn-layout</artifactId>
             <optional>true</optional>
         </dependency>
-
 
         <!-- boot -->
         <dependency>

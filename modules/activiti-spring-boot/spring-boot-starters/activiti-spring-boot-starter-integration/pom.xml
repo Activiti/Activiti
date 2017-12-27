@@ -1,11 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
-
-
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot-starters</artifactId>
@@ -13,6 +8,10 @@
     </parent>
 
     <artifactId>activiti-spring-boot-starter-integration</artifactId>
+
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -30,27 +29,22 @@
             <artifactId>spring-integration-amqp</artifactId>
             <optional>true</optional>
         </dependency>
-        <!-- bring in the Java configuration DSL for Spring Integration
-        -->
+        <!-- bring in the Java configuration DSL for Spring Integration -->
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-java-dsl</artifactId>
-            <version>${spring-integration-java-dsl.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
             <scope>test</scope>
-            <version>1.7.5</version>
         </dependency>
 
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
-
         </dependency>
 
     </dependencies>

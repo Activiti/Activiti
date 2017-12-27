@@ -1,80 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans      http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.springframework.org/schema/context    http://www.springframework.org/schema/context/spring-context-2.5.xsd
-                           http://www.springframework.org/schema/tx         http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
-                           http://www.springframework.org/schema/security   http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans      http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/security   http://www.springframework.org/schema/security/spring-security.xsd">
 
-    <!-- Embedded ldap test server -->
-	<security:ldap-server ldif="classpath:users.ldif" root="o=activiti" manager-dn="uid=admin, ou=users" manager-password="admin"/>
+  <!-- Embedded ldap test server -->
+  <security:ldap-server ldif="classpath:users.ldif" root="o=activiti" manager-dn="uid=admin, ou=users" manager-password="admin"/>
 
-	<bean id="dataSource"
-		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
-		<property name="driverClass" value="org.h2.Driver" />
-		<property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
-		<property name="username" value="sa" />
-		<property name="password" value="" />
-	</bean>
+  <bean id="dataSource"
+        class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+    <property name="driverClass" value="org.h2.Driver"/>
+    <property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"/>
+    <property name="username" value="sa"/>
+    <property name="password" value=""/>
+  </bean>
 
-	<bean id="transactionManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
+  <bean id="transactionManager"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"/>
+  </bean>
 
-	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
-		<property name="dataSource" ref="dataSource" />
-		<property name="transactionManager" ref="transactionManager" />
-		<property name="databaseSchemaUpdate" value="true" />
-		<property name="jobExecutorActivate" value="false" />
-		<property name="configurators">
-		  <list>
-		      <bean class="org.activiti.ldap.LDAPConfigurator">
-		      
-		        <!-- Server connection params -->
-                <property name="server" value="ldap://localhost" />
-                <property name="port" value="33389" />
-                <property name="user" value="uid=admin, ou=users, o=activiti" />
-                <property name="password" value="pass" />
-                
-                <!-- Query params -->
-                <property name="baseDn" value="o=activiti" />
-                <property name="queryUserByUserId" value="(&amp;(objectClass=inetOrgPerson)(uid={0}))" />
-                <property name="queryUserByFullNameLike" value="(&amp;(objectClass=inetOrgPerson)(|({0}=*{1}*)({2}=*{3}*)))" />
-                <property name="queryGroupsForUser" value="(&amp;(objectClass=groupOfUniqueNames)(uniqueMember={0}))" />
-                
-                <!-- Attribute config -->
-                <property name="userIdAttribute" value="uid" />
-                <property name="userFirstNameAttribute" value="cn" />
-                <property name="userLastNameAttribute" value="sn" />
-                
-                <property name="groupIdAttribute" value="uid" />
-                <property name="groupNameAttribute" value="cn" />
-                
-                <!-- Group cache settings -->
-                <property name="groupCacheSize" value="2" /> <!-- Setting it really low for testing purposes -->
-                <property name="groupCacheExpirationTime" value="1800000" />
-                
-		      </bean>
-		  </list>
-		</property>
-	</bean>
+  <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="transactionManager" ref="transactionManager"/>
+    <property name="databaseSchemaUpdate" value="true"/>
+    <property name="jobExecutorActivate" value="false"/>
+    <property name="configurators">
+      <list>
+        <bean class="org.activiti.ldap.LDAPConfigurator">
 
-	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
-		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
-	</bean>
+          <!-- Server connection params -->
+          <property name="server" value="ldap://localhost"/>
+          <property name="port" value="33389"/>
+          <property name="user" value="uid=admin, ou=users, o=activiti"/>
+          <property name="password" value="pass"/>
 
-	<bean id="repositoryService" factory-bean="processEngine"
-		factory-method="getRepositoryService" />
-	<bean id="runtimeService" factory-bean="processEngine"
-		factory-method="getRuntimeService" />
-	<bean id="taskService" factory-bean="processEngine"
-		factory-method="getTaskService" />
-	<bean id="historyService" factory-bean="processEngine"
-		factory-method="getHistoryService" />
-	<bean id="managementService" factory-bean="processEngine"
-		factory-method="getManagementService" />
+          <!-- Query params -->
+          <property name="baseDn" value="o=activiti"/>
+          <property name="queryUserByUserId" value="(&amp;(objectClass=inetOrgPerson)(uid={0}))"/>
+          <property name="queryUserByFullNameLike" value="(&amp;(objectClass=inetOrgPerson)(|({0}=*{1}*)({2}=*{3}*)))"/>
+          <property name="queryGroupsForUser" value="(&amp;(objectClass=groupOfUniqueNames)(uniqueMember={0}))"/>
+
+          <!-- Attribute config -->
+          <property name="userIdAttribute" value="uid"/>
+          <property name="userFirstNameAttribute" value="cn"/>
+          <property name="userLastNameAttribute" value="sn"/>
+
+          <property name="groupIdAttribute" value="uid"/>
+          <property name="groupNameAttribute" value="cn"/>
+
+          <!-- Group cache settings -->
+          <property name="groupCacheSize" value="2"/> <!-- Setting it really low for testing purposes -->
+          <property name="groupCacheExpirationTime" value="1800000"/>
+
+        </bean>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+    <property name="processEngineConfiguration" ref="processEngineConfiguration"/>
+  </bean>
+
+  <bean id="repositoryService" factory-bean="processEngine"
+        factory-method="getRepositoryService"/>
+  <bean id="runtimeService" factory-bean="processEngine"
+        factory-method="getRuntimeService"/>
+  <bean id="taskService" factory-bean="processEngine"
+        factory-method="getTaskService"/>
+  <bean id="historyService" factory-bean="processEngine"
+        factory-method="getHistoryService"/>
+  <bean id="managementService" factory-bean="processEngine"
+        factory-method="getManagementService"/>
 
 </beans>

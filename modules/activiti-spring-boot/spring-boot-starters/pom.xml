@@ -1,18 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot</artifactId>
         <version>5.23.0-SNAPSHOT</version>
     </parent>
-
     <artifactId>activiti-spring-boot-starters</artifactId>
-
     <packaging>pom</packaging>
     <properties>
+        <spring-amqp.version>2.0.1.RELEASE</spring-amqp.version>
         <spring-integration-java-dsl.version>1.0.0.RELEASE</spring-integration-java-dsl.version>
     </properties>
     <modules>
@@ -27,7 +24,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>${spring.boot.version}</version>
+            <version>${spring-boot.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
