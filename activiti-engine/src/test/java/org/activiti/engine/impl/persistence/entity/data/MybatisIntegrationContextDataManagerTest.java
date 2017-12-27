@@ -26,6 +26,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -68,13 +71,14 @@ public class MybatisIntegrationContextDataManagerTest {
         //given
         String executionId = "executionId";
         IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
-        doReturn(entity).when(dbSqlSession).selectOne("selectIntegrationContextByExecutionId", executionId);
+        doReturn(Arrays.asList(entity)).when(dbSqlSession).selectList("selectIntegrationContextByExecutionId", executionId);
 
         //when
-        IntegrationContextEntity retrievedValue = manager.findIntegrationContextByExecutionId(executionId);
+        Collection<IntegrationContextEntity> retrievedValues = manager.findIntegrationContextByExecutionId(executionId);
 
         //then
-        assertThat(retrievedValue).isEqualTo(entity);
+        assertThat(retrievedValues).contains(entity);
+        assertThat(retrievedValues).hasSize(1);
     }
 
 }

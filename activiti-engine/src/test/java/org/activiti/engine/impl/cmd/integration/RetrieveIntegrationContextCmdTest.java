@@ -24,6 +24,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.Arrays;
+import java.util.Collection;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -51,16 +54,17 @@ public class RetrieveIntegrationContextCmdTest {
     public void executeShouldReturnResultOfIntegrationContextManager() throws Exception {
         //given
         String executionId = "executionId";
-        RetrieveIntegrationContextCmd command = new RetrieveIntegrationContextCmd(executionId);
+        RetrieveIntegrationContextsCmd command = new RetrieveIntegrationContextsCmd(executionId);
 
         IntegrationContextEntity contextEntity = mock(IntegrationContextEntity.class);
-        given(integrationContextManager.findIntegrationContextByExecutionId(executionId)).willReturn(contextEntity);
+        given(integrationContextManager.findIntegrationContextByExecutionId(executionId)).willReturn(Arrays.asList(contextEntity));
 
         //when
-        IntegrationContextEntity executeResult = command.execute(commandContext);
+        Collection<IntegrationContextEntity> executeResult = command.execute(commandContext);
 
         //then
-        assertThat(executeResult).isEqualTo(contextEntity);
+        assertThat(executeResult).contains(contextEntity);
+        assertThat(executeResult).hasSize(1);
     }
 
 }

@@ -17,9 +17,11 @@
 package org.activiti.engine.integration;
 
 import org.activiti.engine.impl.cmd.integration.DeleteIntegrationContextCmd;
-import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextCmd;
+import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
+
+import java.util.List;
 
 public class IntegrationContextServiceImpl implements IntegrationContextService {
 
@@ -30,8 +32,8 @@ public class IntegrationContextServiceImpl implements IntegrationContextService 
     }
 
     @Override
-    public IntegrationContextEntity findIntegrationContextByExecutionId(String executionId) {
-        return commandExecutor.execute(new RetrieveIntegrationContextCmd(executionId));
+    public List<IntegrationContextEntity> findIntegrationContextByExecutionId(String executionId) {
+        return commandExecutor.execute(new RetrieveIntegrationContextsCmd(executionId));
     }
 
     @Override
