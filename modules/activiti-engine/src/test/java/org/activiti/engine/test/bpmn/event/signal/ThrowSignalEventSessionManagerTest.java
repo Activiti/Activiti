@@ -11,7 +11,6 @@ public class ThrowSignalEventSessionManagerTest extends PluggableActivitiTestCas
     runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGateway");
     
     // No tasks should be open then and process should have ended
-    assertEquals(0, taskService.createTaskQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());
   }
 
@@ -21,7 +20,6 @@ public class ThrowSignalEventSessionManagerTest extends PluggableActivitiTestCas
     runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGatewayGlobal");
     
     // No tasks should be open then and process should have ended
-    assertEquals(0, taskService.createTaskQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());
   }
   
@@ -31,7 +29,6 @@ public class ThrowSignalEventSessionManagerTest extends PluggableActivitiTestCas
     runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGatewayAsync");
 
     // No tasks should be open then and process should have ended
-    assertEquals(0, taskService.createTaskQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());
   }  
 
@@ -41,7 +38,6 @@ public class ThrowSignalEventSessionManagerTest extends PluggableActivitiTestCas
     runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGatewayGlobalAsync");
 
     // No tasks should be open then and process should have ended
-    assertEquals(0, taskService.createTaskQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());
   }  
   
@@ -51,7 +47,6 @@ public class ThrowSignalEventSessionManagerTest extends PluggableActivitiTestCas
     runtimeService.startProcessInstanceByKey("testSignalThrowCatchEventGateway");
 
     // No tasks should be open then and process should have ended
-    assertEquals(0, taskService.createTaskQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());
   }
   
