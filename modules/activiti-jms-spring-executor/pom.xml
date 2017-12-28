@@ -2,31 +2,20 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>Activiti - JMS - Spring - Executor</name>
-	<artifactId>activiti-jms-spring-executor</artifactId>
-
 	<parent>
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-root</artifactId>
-		<relativePath>../..</relativePath>
 		<version>6.0.1-SNAPSHOT</version>
+		<relativePath>../..</relativePath>
 	</parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+	<artifactId>activiti-jms-spring-executor</artifactId>
+	<name>Activiti - JMS - Spring - Executor</name>
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-			<plugin>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<archive>
@@ -111,7 +100,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jms</artifactId>
-			<version>${spring.framework.version}</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.geronimo.specs</groupId>

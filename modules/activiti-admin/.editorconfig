@@ -17,5 +17,8 @@ charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
 
+[*.xml]
+indent_size = 2
+
 [*.md]
 trim_trailing_whitespace = false
