@@ -192,7 +192,6 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManage
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
-import org.activiti.engine.impl.persistence.entity.ThrowSignalEventSessionManager;
 import org.activiti.engine.impl.persistence.entity.TableDataManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
@@ -1037,7 +1036,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManager.class));
       addSessionFactory(new GenericManagerFactory(EventSubscriptionEntityManager.class));
       addSessionFactory(new GenericManagerFactory(EventLogEntryEntityManager.class));
-      addSessionFactory(new GenericManagerFactory(ThrowSignalEventSessionManager.class)); 
       
       addSessionFactory(new DefaultHistoryManagerSessionFactory());
       

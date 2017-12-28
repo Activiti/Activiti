@@ -657,6 +657,51 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     runtimeService.signalEventReceived("signal3");
     validateTaskCounts(3, 1, 2);
 	}
+
+  @Deployment
+  public void testSignalRaceConditionsAfterParallelGateway() {
+
+    runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGateway");
+    
+    // No tasks should be open then and process should have ended
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+
+  @Deployment
+  public void testSignalRaceConditionsAfterParallelGatewayGlobal() {
+
+    runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGatewayGlobal");
+    
+    // No tasks should be open then and process should have ended
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+  
+  @Deployment
+  public void testSignalRaceConditionsAfterParallelGatewayAsync() {
+
+    runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGatewayAsync");
+
+    // No tasks should be open then and process should have ended
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }  
+
+  @Deployment
+  public void testSignalRaceConditionsAfterParallelGatewayGlobalAsync() {
+
+    runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGatewayGlobalAsync");
+
+    // No tasks should be open then and process should have ended
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }  
+  
+  @Deployment
+  public void testSignalThrowCatchEventGateway() throws InterruptedException {
+
+    runtimeService.startProcessInstanceByKey("testSignalThrowCatchEventGateway");
+
+    // No tasks should be open then and process should have ended
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
 	
 
   private void validateTaskCounts(long taskACount, long taskBCount, long taskCCount) {
