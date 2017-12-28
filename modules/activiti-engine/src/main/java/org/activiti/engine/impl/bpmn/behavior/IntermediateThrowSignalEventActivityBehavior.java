@@ -69,9 +69,4 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
     }
   }
 
-  @Override
-  public void leave(ActivityExecution execution) {
-    super.leave(execution);
-  }
-
 }
