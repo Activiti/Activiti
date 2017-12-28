@@ -37,9 +37,9 @@ public class DmnDeploymentResourceTest extends BaseSpringDmnRestTestCase {
 
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + DmnRestUrls.createRelativeResourceUrl(DmnRestUrls.URL_DEPLOYMENT, existingDeployment.getId()));
     CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
-    closeResponse(response);
 
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
 
     String deploymentId = responseNode.get("id").textValue();
     String name = responseNode.get("name").textValue();

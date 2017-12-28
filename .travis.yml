@@ -17,7 +17,7 @@ before_script:
 
 # Enable integration tests
 script:
-  - mvn verify -B
+  - mvn verify -B -Pdistro
 
 # Send coverage data
 after_success:

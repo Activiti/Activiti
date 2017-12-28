@@ -2,7 +2,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-
 	<parent>
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-spring-boot-starters</artifactId>
@@ -10,8 +9,6 @@
 	</parent>
 
 	<artifactId>activiti-spring-boot-starter-basic</artifactId>
-	<!-- <properties> <spring.framework.version>4.1.4.RELEASE</spring.framework.version> 
-		</properties> -->
 
 	<dependencies>
 		<!-- Support for auto-completion support in Boot 1.2 -->
@@ -62,13 +59,11 @@
 		<dependency>
 			<groupId>org.springframework.integration</groupId>
 			<artifactId>spring-integration-java-dsl</artifactId>
-			<version>${spring-integration-java-dsl.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy</artifactId>
-			<version>1.7.5</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -135,7 +130,6 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
-						<version>2.1.1</version>
 						<executions>
 							<execution>
 								<id>attach-sources</id>

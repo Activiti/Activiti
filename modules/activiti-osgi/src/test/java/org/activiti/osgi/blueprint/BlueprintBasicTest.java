@@ -20,6 +20,7 @@ import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
 import static org.ops4j.pax.exam.CoreOptions.provision;
+import static org.ops4j.pax.exam.MavenUtils.asInProject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -79,28 +80,28 @@ public class BlueprintBasicTest {
   @Configuration
   public Option[] createConfiguration() {
     Option[] coreBundles = options(
-        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version("6.0.0"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version("6.0.0"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version("6.0.0"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version("6.0.0"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-form-model").version("6.0.0"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-form-api").version("6.0.0"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-dmn-model").version("6.0.0"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-dmn-api").version("6.0.0"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("6.0.0"),
-        mavenBundle().groupId("org.apache.commons").artifactId("commons-lang3").version("3.3.2"),
-        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-core").version("2.7.5"),
-        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-databind").version("2.7.5"),
-        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-annotations").version("2.7.5"),
-        mavenBundle().groupId("de.odysseus.juel").artifactId("juel-api").version("2.2.7"),
-        mavenBundle().groupId("de.odysseus.juel").artifactId("juel-impl").version("2.2.7"),
-        mavenBundle().groupId("de.odysseus.juel").artifactId("juel-spi").version("2.2.7"),
-        mavenBundle().groupId("log4j").artifactId("log4j").version("1.2.17"),
-        mavenBundle().groupId("joda-time").artifactId("joda-time").version("2.6"),
-        mavenBundle().groupId("com.h2database").artifactId("h2").version("1.3.176"),
-        mavenBundle().groupId("org.mybatis").artifactId("mybatis").version("3.4.2"),
-        mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").version("1.7.6"),
-        mavenBundle().groupId("org.slf4j").artifactId("slf4j-log4j12").version("1.7.6").noStart(),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version(asInProject()),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version(asInProject()),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version(asInProject()),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version(asInProject()),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-form-model").version(asInProject()),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-form-api").version(asInProject()),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-dmn-model").version(asInProject()),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-dmn-api").version(asInProject()),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version(asInProject()),
+        mavenBundle().groupId("org.apache.commons").artifactId("commons-lang3").version(asInProject()),
+        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-core").version(asInProject()),
+        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-databind").version(asInProject()),
+        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-annotations").version(asInProject()),
+        mavenBundle().groupId("de.odysseus.juel").artifactId("juel-api").version(asInProject()),
+        mavenBundle().groupId("de.odysseus.juel").artifactId("juel-impl").version(asInProject()),
+        mavenBundle().groupId("de.odysseus.juel").artifactId("juel-spi").version(asInProject()),
+        mavenBundle().groupId("log4j").artifactId("log4j").version(asInProject()),
+        mavenBundle().groupId("joda-time").artifactId("joda-time").version(asInProject()),
+        mavenBundle().groupId("com.h2database").artifactId("h2").version(asInProject()),
+        mavenBundle().groupId("org.mybatis").artifactId("mybatis").version(asInProject()),
+        mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").version(asInProject()),
+        mavenBundle().groupId("org.slf4j").artifactId("slf4j-log4j12").version(asInProject()).noStart(),
         mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").version("3.5.4"),
         mavenBundle().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint.core").version("1.6.2"),
         mavenBundle().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy").version("1.0.1"),

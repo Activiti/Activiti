@@ -3,18 +3,17 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Activiti - JSON Converter</name>
-  <artifactId>activiti-json-converter</artifactId>
-
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <relativePath>../..</relativePath>
     <version>6.0.1-SNAPSHOT</version>
+    <relativePath>../..</relativePath>
   </parent>
-  
+
+  <artifactId>activiti-json-converter</artifactId>
+  <name>Activiti - JSON Converter</name>
+
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <activiti.artifact>
       org.activiti.json.converter
     </activiti.artifact>
@@ -27,13 +26,6 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-        </configuration>
-      </plugin>
-      <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
           <archive>
@@ -155,7 +147,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>2.1.1</version>
             <executions>
               <execution>
                 <id>attach-sources</id>
