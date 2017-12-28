@@ -1,11 +1,10 @@
 package org.activiti.engine.impl.persistence.entity;
 
 
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.function.Function;
 
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -20,13 +19,6 @@ public class ThrowSignalEventSessionManager extends AbstractManager {
   /** collect fired events in process instance scope in the current transaction context  */
   protected Map<String,Set<String>> firedSignalEventsSesssionRegistry = new ConcurrentHashMap<String, Set<String>>();
   
-  private final Function<String,Set<String>> emptySetFunc = new Function<String,Set<String>>() {
-      @Override
-      public Set<String> apply(String t) {
-        return new CopyOnWriteArraySet<String>();
-      }
-  };
-  
   /**
    * Registers thrown signal events for execution in current transaction context 
    * 
@@ -34,9 +26,19 @@ public class ThrowSignalEventSessionManager extends AbstractManager {
    * @param eventName name of the event
    */
   public void registerThrowSignalEventByExecution(ActivityExecution execution, String eventName) {
-    firedSignalEventsSesssionRegistry
-      .computeIfAbsent( execution.getProcessInstanceId(), emptySetFunc)
-      .add(eventName);
+    String processInstanceId = execution.getProcessInstanceId();
+    
+    Set<String> values=firedSignalEventsSesssionRegistry.get(processInstanceId);
+    if(values == null) {
+        values=new LinkedHashSet<String>();
+        
+        Set<String> tmp=firedSignalEventsSesssionRegistry.putIfAbsent(processInstanceId, values);
+        if(tmp != null)
+            values=tmp;
+    }
+
+    values.add(eventName);
+    
   }
   
   /**
@@ -48,7 +50,8 @@ public class ThrowSignalEventSessionManager extends AbstractManager {
    */
   public boolean hasThrowSignalEventForExecution(ActivityExecution execution, String eventName) {
     return firedSignalEventsSesssionRegistry
-        .computeIfAbsent(execution.getProcessInstanceId(), emptySetFunc)
+        .getOrDefault(execution.getProcessInstanceId(), new LinkedHashSet<String>(0))
         .contains(eventName);
   }
+  
 }
