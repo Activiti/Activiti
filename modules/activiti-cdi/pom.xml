@@ -73,17 +73,15 @@
         <dependency>
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-simple</artifactId>
-          <version>1.7.6</version>
           <scope>test</scope>
         </dependency>
       </dependencies>
-
       <dependencyManagement>
         <dependencies>
           <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-bom</artifactId>
-            <version>1.1.28.Final</version>
+            <version>2.2.8.Final</version>
             <type>pom</type>
             <scope>import</scope>
           </dependency>

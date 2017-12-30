@@ -61,7 +61,6 @@
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-mvel</artifactId>
       <scope>test</scope>
-      <version>2.17.1</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.uuid</groupId>

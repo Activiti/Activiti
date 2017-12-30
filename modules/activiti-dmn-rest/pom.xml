@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -18,7 +18,7 @@
       org.activiti.rest.dmn.service
     </activiti.artifact>
   </properties>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -138,7 +138,7 @@
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
-   	  <artifactId>httpclient</artifactId>
+      <artifactId>httpclient</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -146,7 +146,7 @@
       <artifactId>httpmime</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <!-- SPRING -->
     <dependency>
       <groupId>org.springframework</groupId>
@@ -188,48 +188,41 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
     </dependency>
-    
+
     <dependency>
-      <groupId>org.eclipse.jetty.orbit</groupId>
-      <artifactId>javax.servlet</artifactId>
-      <version>3.0.0.v201112011016</version>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>8.1.16.v20140903</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-servlet</artifactId>
-      <version>8.1.16.v20140903</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-http</artifactId>
-      <version>8.1.16.v20140903</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-webapp</artifactId>
-      <version>8.1.16.v20140903</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-io</artifactId>
-      <version>8.1.16.v20140903</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
-      <version>8.1.16.v20140903</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

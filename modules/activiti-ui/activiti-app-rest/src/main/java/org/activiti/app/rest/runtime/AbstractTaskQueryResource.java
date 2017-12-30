@@ -111,7 +111,7 @@ public abstract class AbstractTaskQueryResource {
 
         JsonNode processInstanceIdNode = requestNode.get("processInstanceId");
         if (processInstanceIdNode != null && processInstanceIdNode.isNull() == false) {
-            handleProcessInstanceFiltering(currentUser, taskInfoQueryWrapper, processInstanceIdNode);
+            handleProcessInstanceFiltering(taskInfoQueryWrapper, processInstanceIdNode);
         }
 
         JsonNode textNode = requestNode.get("text");

@@ -20,10 +20,13 @@
     <spring-data.version>1.9.6.RELEASE</spring-data.version>
     <hibernate.version>4.2.16.Final</hibernate.version>
     <mule.version>3.8.1</mule.version>
-    <cxf.version>3.1.6</cxf.version>
+    <cxf.version>3.1.14</cxf.version>
+    <camel.version>2.17.6</camel.version>
     <batik.version>1.7</batik.version>
     <jackson.version>2.8.10</jackson.version>
     <mysql.version>5.1.41</mysql.version>
+    <jetty.version>9.1.3.v20140225</jetty.version>
+    <slf4j.version>1.7.6</slf4j.version>
 
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
@@ -87,17 +90,27 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.7.6</version>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
-        <version>1.7.6</version>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
-        <version>1.7.6</version>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>${slf4j.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-logging</groupId>
@@ -505,6 +518,11 @@
         <version>${mule.version}</version>
       </dependency>
       <dependency>
+        <groupId>org.python</groupId>
+        <artifactId>jython-standalone</artifactId>
+        <version>2.7.1</version>
+      </dependency>
+      <dependency>
         <groupId>org.mybatis</groupId>
         <artifactId>mybatis</artifactId>
         <version>3.4.2</version>
@@ -532,11 +550,6 @@
         <artifactId>org.apache.felix.fileinstall</artifactId>
         <version>3.5.4</version>
         <optional>true</optional>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-jdk14</artifactId>
-        <version>1.7.6</version>
       </dependency>
       <dependency>
         <groupId>org.springframework</groupId>
@@ -759,7 +772,12 @@
       <dependency>
         <groupId>org.apache.camel</groupId>
         <artifactId>camel-spring</artifactId>
-        <version>2.17.1</version>
+        <version>${camel.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-mvel</artifactId>
+        <version>${camel.version}</version>
       </dependency>
       <!-- Mule integration -->
       <dependency>
@@ -783,6 +801,36 @@
         <artifactId>catch-exception</artifactId>
         <version>1.2.0</version>
         <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-server</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-servlet</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-http</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-webapp</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-io</artifactId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-util</artifactId>
+        <version>${jetty.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
