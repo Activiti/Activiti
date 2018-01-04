@@ -26,6 +26,7 @@
     <batik.version>1.7</batik.version>
     <jackson.version>2.8.10</jackson.version>
     <slf4j.version>1.7.6</slf4j.version>
+    <drools.version>6.5.0.Final</drools.version>
 
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
@@ -357,12 +358,22 @@
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-core</artifactId>
-        <version>5.5.0.Final</version>
+        <version>${drools.version}</version>
       </dependency>
       <dependency>
         <groupId>org.drools</groupId>
         <artifactId>drools-compiler</artifactId>
-        <version>5.5.0.Final</version>
+        <version>${drools.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools</groupId>
+        <artifactId>knowledge-api</artifactId>
+        <version>${drools.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.thoughtworks.xstream</groupId>
+        <artifactId>xstream</artifactId>
+        <version>1.4.10</version>
       </dependency>
       <dependency>
         <groupId>org.json</groupId>

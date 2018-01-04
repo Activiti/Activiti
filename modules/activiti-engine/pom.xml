@@ -42,7 +42,7 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -61,6 +61,11 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>knowledge-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
