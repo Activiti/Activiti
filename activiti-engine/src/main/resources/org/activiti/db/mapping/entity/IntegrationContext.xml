@@ -25,6 +25,7 @@
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="flowNodeId" column="FLOW_NODE_ID_" jdbcType="VARCHAR" />
     <result property="createdDate" column="CREATED_DATE_" jdbcType="TIMESTAMP" />
   </resultMap>
 
@@ -37,6 +38,7 @@
     EXECUTION_ID_,
     PROCESS_INSTANCE_ID_,
     PROC_DEF_ID_,
+    FLOW_NODE_ID_,
     CREATED_DATE_
     )
     values (
@@ -44,6 +46,7 @@
     #{executionId, jdbcType=VARCHAR},
     #{processInstanceId, jdbcType=VARCHAR},
     #{processDefinitionId, jdbcType=VARCHAR},
+    #{flowNodeId, jdbcType=VARCHAR},
     #{createdDate, jdbcType=TIMESTAMP}
     )
   </insert>

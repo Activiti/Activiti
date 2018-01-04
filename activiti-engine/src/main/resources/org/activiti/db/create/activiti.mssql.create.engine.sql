@@ -280,6 +280,7 @@ create table ACT_RU_INTEGRATION (
     EXECUTION_ID_ nvarchar(64),
     PROCESS_INSTANCE_ID_ nvarchar(64),
     PROC_DEF_ID_ nvarchar(64),
+    FLOW_NODE_ID_ nvarchar(64),
     CREATED_DATE_ datetime,
     primary key (ID_)
 );
