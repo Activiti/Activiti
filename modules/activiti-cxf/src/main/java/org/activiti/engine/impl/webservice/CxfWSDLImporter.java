@@ -29,6 +29,17 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
 import javax.xml.namespace.QName;
 
+import com.sun.codemodel.JClass;
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JJavaName;
+import com.sun.codemodel.JType;
+import com.sun.tools.xjc.ConsoleErrorReporter;
+import com.sun.tools.xjc.api.ErrorListener;
+import com.sun.tools.xjc.api.Mapping;
+import com.sun.tools.xjc.api.S2JJAXBModel;
+import com.sun.tools.xjc.api.SchemaCompiler;
+import com.sun.tools.xjc.api.XJC;
 import org.activiti.bpmn.model.Import;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.PrimitiveStructureDefinition;
@@ -49,17 +60,6 @@ import org.apache.cxf.wsdl.WSDLManager;
 import org.apache.cxf.wsdl11.WSDLServiceBuilder;
 
 import com.ibm.wsdl.extensions.schema.SchemaImpl;
-import com.sun.codemodel.JClass;
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JFieldVar;
-import com.sun.codemodel.JJavaName;
-import com.sun.codemodel.JType;
-import com.sun.tools.xjc.ConsoleErrorReporter;
-import com.sun.tools.xjc.api.ErrorListener;
-import com.sun.tools.xjc.api.Mapping;
-import com.sun.tools.xjc.api.S2JJAXBModel;
-import com.sun.tools.xjc.api.SchemaCompiler;
-import com.sun.tools.xjc.api.XJC;
 
 /**
  * @author Esteban Robles Luna

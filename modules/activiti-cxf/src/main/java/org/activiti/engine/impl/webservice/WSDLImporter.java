@@ -35,6 +35,14 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import com.sun.codemodel.JDefinedClass;
+import com.sun.codemodel.JFieldVar;
+import com.sun.tools.xjc.ConsoleErrorReporter;
+import com.sun.tools.xjc.api.ErrorListener;
+import com.sun.tools.xjc.api.Mapping;
+import com.sun.tools.xjc.api.S2JJAXBModel;
+import com.sun.tools.xjc.api.SchemaCompiler;
+import com.sun.tools.xjc.api.XJC;
 import org.activiti.bpmn.model.Import;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
@@ -46,15 +54,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import com.sun.codemodel.JDefinedClass;
-import com.sun.codemodel.JFieldVar;
-import com.sun.tools.xjc.ConsoleErrorReporter;
-import com.sun.tools.xjc.api.ErrorListener;
-import com.sun.tools.xjc.api.Mapping;
-import com.sun.tools.xjc.api.S2JJAXBModel;
-import com.sun.tools.xjc.api.SchemaCompiler;
-import com.sun.tools.xjc.api.XJC;
 
 /**
  * A WSDL importer
