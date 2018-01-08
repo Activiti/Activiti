@@ -30,25 +30,25 @@ public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior 
   @Override
   public void execute(ActivityExecution execution) throws Exception {
       
-      // Continue with signal catch event activities for signal events
-      // already fired and registered in process instance execution scope
-      List<EventSubscriptionEntity> subscriptions = ((ExecutionEntity)execution).getEventSubscriptions();
+    // Continue with signal catch event activities for signal events
+    // already fired and registered in process instance execution scope
+    List<EventSubscriptionEntity> subscriptions = ((ExecutionEntity)execution).getEventSubscriptions();
 
-      for(EventSubscriptionEntity subscription: subscriptions) {
-          // If event already fired matches existing subscription
-          if(Context.getCommandContext().getAttribute(subscription.getEventName()) != null)
-          {
-              // Execute signal event behavior 
-              subscription.eventReceived(null, false);
+    for(EventSubscriptionEntity subscription: subscriptions) {
+      // Check already published signal events registered in the transaction context  
+      if(Context.getCommandContext().getAttribute(subscription.getEventName()) != null)
+      {
+          // Execute signal event behavior 
+          subscription.eventReceived(null, false);
 
-              // Interrupt loop
-              break;
-          }
+          // Interrupt loop
+          break;
       }
-      
-      // Otherwise
-      // the event based gateway doesn't really do anything
-      // ignoring outgoing sequence flows (they're only parsed for the diagram)
+    }
+    
+    // Otherwise
+    // the event based gateway doesn't really do anything
+    // ignoring outgoing sequence flows (they're only parsed for the diagram)
   }
   
 }
