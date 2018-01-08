@@ -28,11 +28,14 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
     // Find active subscriptions
     List<EventSubscriptionEntity> subscriptions = ((ExecutionEntity)execution).getEventSubscriptions();
     
-    for(EventSubscriptionEntity subscription: subscriptions) {
+    if(!subscriptions.isEmpty()) {
+      // There can be only one subscription entity 
+      EventSubscriptionEntity subscription = subscriptions.get(0);
+  
       // Check already published signal events registered in the transaction context   
-      if(Context.getCommandContext().getAttribute(subscription.getEventName()) != null)
+      if(Context.getCommandContext().getAttribute(subscription.getEventName()) != null) 
       {
-        // Signal event for matching throw signal 
+        // Handle signal event for matching throw signal 
         subscription.eventReceived(null, false);
       }
     }
