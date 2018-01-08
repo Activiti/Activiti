@@ -15,7 +15,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -30,18 +29,17 @@ public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior 
   @Override
   public void execute(ActivityExecution execution) throws Exception {
       
-    // Continue with signal catch event activities for signal events
-    // already fired and registered in process instance execution scope
     List<EventSubscriptionEntity> subscriptions = ((ExecutionEntity)execution).getEventSubscriptions();
 
+    // Continue with signal catch event activities for signal events
+    // already fired and registered in process instance execution scope
     for(EventSubscriptionEntity subscription: subscriptions) {
-      // Check already published signal events registered in the transaction context  
-      if(Context.getCommandContext().getAttribute(subscription.getEventName()) != null)
+      if(isSignalEventAlreadyFired(execution, subscription.getEventName()))
       {
           // Execute signal event behavior 
           subscription.eventReceived(null, false);
 
-          // Interrupt loop
+          // Interrupt loop to handle only one out of many signals after the gateway
           break;
       }
     }

@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 
@@ -28,7 +29,7 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 public abstract class FlowNodeActivityBehavior implements SignallableActivityBehavior {
   
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
-  
+
   /**
    * Default behaviour: just leave the activity with no extra functionality.
    */
@@ -51,6 +52,21 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     // concrete activity behaviours that do accept signals should override this method;
     throw new ActivitiException("this activity doesn't accept signals");
+  }
+
+  /**
+   * Register fired signals to handle race conditions within current transaction scope
+   */
+  protected void registerFiredSignalEvent(ActivityExecution execution, String eventName) {
+    // register fired signals to handle race conditions within current transaction scope 
+    Context.getCommandContext().addAttribute(eventName, true);
+  }
+  
+  /**
+   * Check if event has already been fired in the current transaction scope
+   */
+  protected boolean isSignalEventAlreadyFired(ActivityExecution execution, String eventName) {
+    return Context.getCommandContext().getAttribute(eventName) != null;
   }
   
 }

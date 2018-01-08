@@ -14,7 +14,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -32,8 +31,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
       // There can be only one subscription entity 
       EventSubscriptionEntity subscription = subscriptions.get(0);
   
-      // Check already published signal events registered in the transaction context   
-      if(Context.getCommandContext().getAttribute(subscription.getEventName()) != null) 
+      if(isSignalEventAlreadyFired(execution, subscription.getEventName())) 
       {
         // Handle signal event for matching throw signal 
         subscription.eventReceived(null, false);

@@ -44,9 +44,8 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
 
     CommandContext commandContext = Context.getCommandContext();
 
-    // register fired signals with signal event session manager 
-    // to handle race conditions within current transaction scope 
-    commandContext.addAttribute(signalDefinition.getEventName(), true);
+    // register fired signals to handle race conditions within current transaction scope 
+    registerFiredSignalEvent(execution, signalDefinition.getEventName());
     
     List<SignalEventSubscriptionEntity> subscriptionEntities = null;
     if(processInstanceScope) {
