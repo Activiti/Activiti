@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7-201712-EA</version>
+    <version>7-201801-EA-SNAPSHOT</version>
   </parent>
   <name>Activiti</name>
 
@@ -14,7 +14,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <version.activiti>${project.version}</version.activiti>
+    <version.activiti>7-201801-EA-SNAPSHOT</version.activiti>
   </properties>
 
   <distributionManagement>
