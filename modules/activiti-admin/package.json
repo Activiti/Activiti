@@ -1,0 +1,7 @@
+{
+  "name": "activiti-admin",
+  "version": "1.0.0",
+  "devDependencies": {
+    "bower": "^1.8.2"
+  }
+}
