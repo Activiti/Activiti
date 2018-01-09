@@ -20,16 +20,18 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
-public class RetrieveIntegrationContextCmd implements Command<IntegrationContextEntity> {
+import java.util.List;
+
+public class RetrieveIntegrationContextsCmd implements Command<List<IntegrationContextEntity>> {
 
     private String executionId;
 
-    public RetrieveIntegrationContextCmd(String executionId) {
+    public RetrieveIntegrationContextsCmd(String executionId) {
         this.executionId = executionId;
     }
 
     @Override
-    public IntegrationContextEntity execute(CommandContext commandContext) {
+    public List<IntegrationContextEntity> execute(CommandContext commandContext) {
         return commandContext.getProcessEngineConfiguration().getIntegrationContextManager().findIntegrationContextByExecutionId(executionId);
     }
 }
