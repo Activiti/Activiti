@@ -34,6 +34,10 @@ public interface IntegrationContextEntity extends Entity {
 
     void setProcessInstanceId(String processInstanceId);
 
+    String getFlowNodeId();
+
+    void setFlowNodeId(String flowNodeId);
+
     Date getCreatedDate();
 
     void setCreatedDate(Date createdDate);
