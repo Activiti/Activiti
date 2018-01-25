@@ -23,6 +23,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
+import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
@@ -398,6 +399,14 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
         .list();
       for (HistoricTaskInstanceEntity historicTaskInstance: historicTaskInstances) {
         historicTaskInstance.setExecutionId(replacedBy.getId());
+      }
+
+      // Update the persisted historic variable instances
+      List<HistoricVariableInstanceEntity> historicVariableInstances = (List) new HistoricVariableInstanceQueryImpl(Context.getCommandContext())
+        .executionId(execution.getId())
+        .list();
+      for (HistoricVariableInstanceEntity historicVariableInstance: historicVariableInstances) {
+          historicVariableInstance.setExecutionId(replacedBy.getId());
       }
     }
   }

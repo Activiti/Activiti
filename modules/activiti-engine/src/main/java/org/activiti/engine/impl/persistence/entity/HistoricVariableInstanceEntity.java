@@ -115,6 +115,7 @@ public class HistoricVariableInstanceEntity implements ValueFields, HistoricVari
   	persistentState.put("byteArrayRef", byteArrayRef.getId());
   	persistentState.put("createTime", createTime);
   	persistentState.put("lastUpdatedTime", lastUpdatedTime);
+  	persistentState.put("executionId", executionId);
   	
   	return persistentState;
   }
