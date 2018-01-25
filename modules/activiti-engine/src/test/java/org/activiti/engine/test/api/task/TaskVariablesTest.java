@@ -13,6 +13,8 @@
 
 package org.activiti.engine.test.api.task;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -271,10 +273,10 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     String executionId = task.getExecutionId();
 
     HistoricVariableInstance var1 = historyService.createHistoricVariableInstanceQuery().executionId(executionId).singleResult();
-    assertEquals(var1.getValue(), "AAA");
+    assertThat(var1.getValue()).isEqualTo("AAA");
 
     HistoricVariableInstance var2 = historyService.createHistoricVariableInstanceQuery().executionId(oldExecutionId).singleResult();
-    assertEquals(var2, null);
+    assertThat(var2).isNull();
 
   }
 }
