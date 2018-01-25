@@ -12,8 +12,14 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 
@@ -57,7 +63,7 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
   /**
    * Register fired signals to handle race conditions within current transaction scope
    */
-  protected void registerFiredSignalEvent(ActivityExecution execution, String eventName) {
+  protected void registerFiredSignalEvent(String eventName) {
     // register fired signals to handle race conditions within current transaction scope 
     Context.getCommandContext().addAttribute(eventName, true);
   }
@@ -65,8 +71,42 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
   /**
    * Check if event has already been fired in the current transaction scope
    */
-  protected boolean isSignalEventAlreadyFired(ActivityExecution execution, String eventName) {
+  protected boolean isSignalEventAlreadyFired(String eventName) {
     return Context.getCommandContext().getAttribute(eventName) != null;
   }
   
+  /**
+   * Register fired signals to handle race conditions within current transaction scope
+   */
+  protected void registerFiredSignalEvent(ActivityExecution execution, String eventName) {
+    Map<String, List<String>> signalEvents = null;
+    CommandContext currentCommandContext = Context.getCommandContext();
+    // register fired signals to handle race conditions within current transaction scope 
+    if (currentCommandContext.getAttribute(IntermediateThrowSignalEventActivityBehavior.FIRED_SIGNAL_EVENTS) == null ){
+      signalEvents = new HashMap<String, List<String>>();
+    } else {
+      signalEvents = (Map<String, List<String>>) currentCommandContext.getAttribute(IntermediateThrowSignalEventActivityBehavior.FIRED_SIGNAL_EVENTS);
+    }
+    
+    List<String> signalNameList = signalEvents.get(execution.getProcessInstanceId());
+    if (signalNameList == null) {
+        signalNameList = new ArrayList<String>();
+    }
+    signalNameList.add(eventName);
+    signalEvents.put(execution.getProcessInstanceId(), signalNameList);
+
+    Context.getCommandContext().addAttribute(IntermediateThrowSignalEventActivityBehavior.FIRED_SIGNAL_EVENTS, signalEvents);
+  }
+  
+  /**
+   * Check if event has already been fired in the current transaction scope
+   */
+  protected boolean isSignalEventAlreadyFired(ActivityExecution execution, String eventName) {
+    Map<String, List<String>> signalEvents = (Map<String, List<String>>) Context.getCommandContext().getAttribute(IntermediateThrowSignalEventActivityBehavior.FIRED_SIGNAL_EVENTS);
+    if (signalEvents != null ){
+      List<String> signalNameList = signalEvents.get(execution.getProcessInstanceId());
+      return (signalNameList != null) && signalNameList.contains(eventName);
+    }
+    return false;
+  }
 }
