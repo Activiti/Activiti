@@ -16,10 +16,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.activiti.bpmn.model.Signal;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 
@@ -39,6 +43,7 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
   /**
    * Default behaviour: just leave the activity with no extra functionality.
    */
+  @Override
   public void execute(ActivityExecution execution) throws Exception {
     leave(execution);
   }
@@ -55,6 +60,7 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
     bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(activityContext);
   }
 
+  @Override
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     // concrete activity behaviours that do accept signals should override this method;
     throw new ActivitiException("this activity doesn't accept signals");
@@ -63,50 +69,72 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
   /**
    * Register fired signals to handle race conditions within current transaction scope
    */
-  protected void registerFiredSignalEvent(String eventName) {
-    // register fired signals to handle race conditions within current transaction scope 
-    Context.getCommandContext().addAttribute(eventName, true);
-  }
-  
-  /**
-   * Check if event has already been fired in the current transaction scope
-   */
-  protected boolean isSignalEventAlreadyFired(String eventName) {
-    return Context.getCommandContext().getAttribute(eventName) != null;
-  }
-  
-  /**
-   * Register fired signals to handle race conditions within current transaction scope
-   */
-  protected void registerFiredSignalEvent(ActivityExecution execution, String eventName) {
-    Map<String, List<String>> signalEvents = null;
+  @SuppressWarnings("unchecked")
+  protected void registerFiredSignalEvent(ActivityExecution execution, Signal signal) {
+    String signalScope = getSignalScope(signal);
     CommandContext currentCommandContext = Context.getCommandContext();
+    Map<String, List<String>> signalEvents = null;
+    
     // register fired signals to handle race conditions within current transaction scope 
-    if (currentCommandContext.getAttribute(IntermediateThrowSignalEventActivityBehavior.FIRED_SIGNAL_EVENTS) == null ){
+    if (currentCommandContext.getAttribute(signalScope) == null ){
       signalEvents = new HashMap<String, List<String>>();
     } else {
-      signalEvents = (Map<String, List<String>>) currentCommandContext.getAttribute(IntermediateThrowSignalEventActivityBehavior.FIRED_SIGNAL_EVENTS);
+      signalEvents = (Map<String, List<String>>) currentCommandContext.getAttribute(signalScope);
     }
     
     List<String> signalNameList = signalEvents.get(execution.getProcessInstanceId());
     if (signalNameList == null) {
         signalNameList = new ArrayList<String>();
     }
-    signalNameList.add(eventName);
+    signalNameList.add(signal.getName());
     signalEvents.put(execution.getProcessInstanceId(), signalNameList);
 
-    Context.getCommandContext().addAttribute(IntermediateThrowSignalEventActivityBehavior.FIRED_SIGNAL_EVENTS, signalEvents);
+    Context.getCommandContext().addAttribute(signalScope, signalEvents);
   }
   
   /**
    * Check if event has already been fired in the current transaction scope
    */
-  protected boolean isSignalEventAlreadyFired(ActivityExecution execution, String eventName) {
-    Map<String, List<String>> signalEvents = (Map<String, List<String>>) Context.getCommandContext().getAttribute(IntermediateThrowSignalEventActivityBehavior.FIRED_SIGNAL_EVENTS);
-    if (signalEvents != null ){
+  @SuppressWarnings("unchecked")
+  protected boolean isSignalEventAlreadyFired(ActivityExecution execution, EventSubscriptionEntity subscription) {
+
+    if (isSignalEventSubscription(subscription)) {
+      return false;
+    }
+
+    final String subscriptionScope = getEventSubscriptionScope(subscription);
+    
+    Map<String, List<String>> signalEvents = (Map<String, List<String>>) Context.getCommandContext()
+                                                                            .getAttribute(subscriptionScope);
+    if (signalEvents != null) {
       List<String> signalNameList = signalEvents.get(execution.getProcessInstanceId());
-      return (signalNameList != null) && signalNameList.contains(eventName);
+      return (signalNameList != null) && signalNameList.contains(subscription.getEventName());
     }
     return false;
+  }
+
+  protected boolean isSignalEventSubscription(EventSubscriptionEntity subscription) {
+    return !"signal".equals(subscription.getEventType());
+  }
+
+  protected String getEventSubscriptionScope(EventSubscriptionEntity subscription) {
+    if (subscription.getConfiguration() != null) {
+      Pattern pattern = Pattern.compile("\"scope\"\\s*:\\s*\"([^\"]+)\",?");
+      Matcher matcher = pattern.matcher(subscription.getConfiguration());
+
+      if (matcher.find()) {
+        return matcher.group(1);
+      }
+    }
+
+    return Signal.SCOPE_GLOBAL;
+  }
+
+  protected String getSignalScope(Signal signal) {
+    if (signal.getScope() != null)
+      return signal.getScope();
+
+    return Signal.SCOPE_GLOBAL;
+
   }
 }

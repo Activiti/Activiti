@@ -31,14 +31,14 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
       
   private static final long serialVersionUID = -2961893934810190972L;
   
-  public static final String FIRED_SIGNAL_EVENTS = "firedSignalEvents";
-  
   protected final boolean processInstanceScope;
   protected final EventSubscriptionDeclaration signalDefinition;
+  protected final Signal signal;
 
   public IntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, Signal signal, EventSubscriptionDeclaration signalDefinition) {
     this.processInstanceScope = Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope());
     this.signalDefinition = signalDefinition;
+    this.signal = signal;
   }
   
   @Override
@@ -46,18 +46,16 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
 
     CommandContext commandContext = Context.getCommandContext();
 
+    // register fired signals to handle race conditions within current transaction scope 
+    registerFiredSignalEvent(execution, signal);
     
     List<SignalEventSubscriptionEntity> subscriptionEntities = null;
     if(processInstanceScope) {
-      // register fired signals to handle race conditions within current transaction scope 
-      registerFiredSignalEvent(execution, signalDefinition.getEventName());
 
       subscriptionEntities = commandContext
               .getEventSubscriptionEntityManager()
               .findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalDefinition.getEventName());
     } else {
-      // register fired signals to handle race conditions within current transaction scope 
-      registerFiredSignalEvent(signalDefinition.getEventName());
       
       subscriptionEntities = commandContext
               .getEventSubscriptionEntityManager()
