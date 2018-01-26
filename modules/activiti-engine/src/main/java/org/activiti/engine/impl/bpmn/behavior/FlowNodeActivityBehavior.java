@@ -12,17 +12,12 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.activiti.bpmn.model.Signal;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
@@ -38,8 +33,6 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
  */
 public abstract class FlowNodeActivityBehavior implements SignallableActivityBehavior {
 
-  private static String FIRED_SIGNAL_EVENTS = "firedSignalEvents";
-  
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
 
   /**
@@ -71,52 +64,28 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
   /**
    * Register fired signals to handle race conditions within current transaction scope
    */
-  @SuppressWarnings("unchecked")
   protected void registerFiredSignalEvent(ActivityExecution execution, Signal signal) {
     String signalScope = getSignalScope(execution, signal);
     
-    CommandContext currentCommandContext = Context.getCommandContext();
-    Map<String, List<String>> signalEvents = null;
-    
-    // register fired signals to handle race conditions within current transaction scope 
-    if (currentCommandContext.getAttribute(FIRED_SIGNAL_EVENTS) == null ){
-      signalEvents = new HashMap<String, List<String>>();
-    } else {
-      signalEvents = (Map<String, List<String>>) currentCommandContext.getAttribute(FIRED_SIGNAL_EVENTS);
-    }
-    
-    List<String> signalNameList = signalEvents.get(signalScope);
-    if (signalNameList == null) {
-        signalNameList = new ArrayList<String>();
-    }
-    signalNameList.add(signal.getName());
-    signalEvents.put(signalScope, signalNameList);
-
-    Context.getCommandContext().addAttribute(FIRED_SIGNAL_EVENTS, signalEvents);
+    Context.getCommandContext().addAttribute(signalScope, true);
   }
   
   /**
    * Check if event has already been fired in the current transaction scope
    */
-  @SuppressWarnings("unchecked")
   protected boolean isSignalEventAlreadyFired(ActivityExecution execution, EventSubscriptionEntity subscription) {
 
-    if (isSignalEventSubscription(subscription)) {
+    if (isSignalEventType(subscription)) {
       return false;
     }
 
     final String subscriptionScope = getEventSubscriptionScope(execution, subscription);
     
-    Map<String, List<String>> signalEvents = (Map<String, List<String>>) Context.getCommandContext()
-                                                                            .getAttribute(FIRED_SIGNAL_EVENTS);
-    if (signalEvents != null) {
-      List<String> signalNameList = signalEvents.get(subscriptionScope);
-      return (signalNameList != null) && signalNameList.contains(subscription.getEventName());
-    }
-    return false;
+    return Context.getCommandContext()
+        .getAttribute(subscriptionScope) != null;
   }
 
-  protected boolean isSignalEventSubscription(EventSubscriptionEntity subscription) {
+  protected boolean isSignalEventType(EventSubscriptionEntity subscription) {
     return !"signal".equals(subscription.getEventType());
   }
 
@@ -132,11 +101,11 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
       }
     }
 
-    return getSignalExecutionScope(execution, subscriptionScope);
+    return subscription.getEventName() + ":" + getSignalExecutionScope(execution, subscriptionScope);
   }
 
   protected String getSignalScope(ActivityExecution execution, Signal signal) {
-    return getSignalExecutionScope(execution, signal.getScope());
+    return signal.getName() + ":" + getSignalExecutionScope(execution, signal.getScope());
 
   }
 
