@@ -33,6 +33,10 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
  */
 public abstract class FlowNodeActivityBehavior implements SignallableActivityBehavior {
 
+  public final String FIRED_EVENT_SIGNALS = "firedEventSignals";
+  
+  private final static Pattern scopeRegexPattern = Pattern.compile("\"scope\"\\s*:\\s*\"([^\"]+)\",?");
+  
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
 
   /**
@@ -93,26 +97,26 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
     String subscriptionScope = null;
     
     if (subscription.getConfiguration() != null) {
-      Pattern pattern = Pattern.compile("\"scope\"\\s*:\\s*\"([^\"]+)\",?");
-      Matcher matcher = pattern.matcher(subscription.getConfiguration());
+      Matcher matcher = scopeRegexPattern.matcher(subscription.getConfiguration());
 
       if (matcher.find()) {
         subscriptionScope = matcher.group(1);
       }
     }
 
-    return subscription.getEventName() + ":" + getSignalExecutionScope(execution, subscriptionScope);
+    return getSignalExecutionScope(execution, subscription.getEventName(), subscriptionScope);
   }
 
   protected String getSignalScope(ActivityExecution execution, Signal signal) {
-    return signal.getName() + ":" + getSignalExecutionScope(execution, signal.getScope());
+    return getSignalExecutionScope(execution, signal.getName(), signal.getScope());
 
   }
 
-  protected String getSignalExecutionScope(ActivityExecution execution, String signalScope) {
-    return Signal.SCOPE_PROCESS_INSTANCE.equals(signalScope) 
-              ? execution.getProcessInstanceId()
-              : Signal.SCOPE_GLOBAL;
+  protected String getSignalExecutionScope(ActivityExecution execution,  String signalName, String signalScope) {
+    return FIRED_EVENT_SIGNALS + "_" + signalName + "_"
+            + (Signal.SCOPE_PROCESS_INSTANCE.equals(signalScope) 
+                  ? execution.getProcessInstanceId()
+                  : Signal.SCOPE_GLOBAL);
 
   }
   
