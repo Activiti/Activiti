@@ -37,6 +37,8 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
  * @author Joram Barrez
  */
 public abstract class FlowNodeActivityBehavior implements SignallableActivityBehavior {
+
+  private static String FIRED_SIGNAL_EVENTS = "firedSignalEvents";
   
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
 
@@ -71,25 +73,26 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
    */
   @SuppressWarnings("unchecked")
   protected void registerFiredSignalEvent(ActivityExecution execution, Signal signal) {
-    String signalScope = getSignalScope(signal);
+    String signalScope = getSignalScope(execution, signal);
+    
     CommandContext currentCommandContext = Context.getCommandContext();
     Map<String, List<String>> signalEvents = null;
     
     // register fired signals to handle race conditions within current transaction scope 
-    if (currentCommandContext.getAttribute(signalScope) == null ){
+    if (currentCommandContext.getAttribute(FIRED_SIGNAL_EVENTS) == null ){
       signalEvents = new HashMap<String, List<String>>();
     } else {
-      signalEvents = (Map<String, List<String>>) currentCommandContext.getAttribute(signalScope);
+      signalEvents = (Map<String, List<String>>) currentCommandContext.getAttribute(FIRED_SIGNAL_EVENTS);
     }
     
-    List<String> signalNameList = signalEvents.get(execution.getProcessInstanceId());
+    List<String> signalNameList = signalEvents.get(signalScope);
     if (signalNameList == null) {
         signalNameList = new ArrayList<String>();
     }
     signalNameList.add(signal.getName());
-    signalEvents.put(execution.getProcessInstanceId(), signalNameList);
+    signalEvents.put(signalScope, signalNameList);
 
-    Context.getCommandContext().addAttribute(signalScope, signalEvents);
+    Context.getCommandContext().addAttribute(FIRED_SIGNAL_EVENTS, signalEvents);
   }
   
   /**
@@ -102,12 +105,12 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
       return false;
     }
 
-    final String subscriptionScope = getEventSubscriptionScope(subscription);
+    final String subscriptionScope = getEventSubscriptionScope(execution, subscription);
     
     Map<String, List<String>> signalEvents = (Map<String, List<String>>) Context.getCommandContext()
-                                                                            .getAttribute(subscriptionScope);
+                                                                            .getAttribute(FIRED_SIGNAL_EVENTS);
     if (signalEvents != null) {
-      List<String> signalNameList = signalEvents.get(execution.getProcessInstanceId());
+      List<String> signalNameList = signalEvents.get(subscriptionScope);
       return (signalNameList != null) && signalNameList.contains(subscription.getEventName());
     }
     return false;
@@ -117,24 +120,32 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
     return !"signal".equals(subscription.getEventType());
   }
 
-  protected String getEventSubscriptionScope(EventSubscriptionEntity subscription) {
+  protected String getEventSubscriptionScope(ActivityExecution execution, EventSubscriptionEntity subscription) {
+    String subscriptionScope = null;
+    
     if (subscription.getConfiguration() != null) {
       Pattern pattern = Pattern.compile("\"scope\"\\s*:\\s*\"([^\"]+)\",?");
       Matcher matcher = pattern.matcher(subscription.getConfiguration());
 
       if (matcher.find()) {
-        return matcher.group(1);
+        subscriptionScope = matcher.group(1);
       }
     }
 
-    return Signal.SCOPE_GLOBAL;
+    return getSignalExecutionScope(execution, subscriptionScope);
   }
 
-  protected String getSignalScope(Signal signal) {
-    if (signal.getScope() != null)
-      return signal.getScope();
-
-    return Signal.SCOPE_GLOBAL;
+  protected String getSignalScope(ActivityExecution execution, Signal signal) {
+    return getSignalExecutionScope(execution, signal.getScope());
 
   }
+
+  protected String getSignalExecutionScope(ActivityExecution execution, String signalScope) {
+    return Signal.SCOPE_PROCESS_INSTANCE.equals(signalScope) 
+              ? execution.getProcessInstanceId()
+              : Signal.SCOPE_GLOBAL;
+
+  }
+  
+  
 }
