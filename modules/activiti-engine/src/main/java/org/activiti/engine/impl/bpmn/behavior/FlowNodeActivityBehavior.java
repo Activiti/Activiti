@@ -75,7 +75,7 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
    */
   protected boolean isSignalEventAlreadyFired(ActivityExecution execution, EventSubscriptionEntity subscription) {
 
-    if (isSignalEventType(subscription)) {
+    if (!isSignalEventType(subscription)) {
       return false;
     }
 
@@ -86,7 +86,7 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
   }
 
   protected boolean isSignalEventType(EventSubscriptionEntity subscription) {
-    return !"signal".equals(subscription.getEventType());
+    return "signal".equals(subscription.getEventType());
   }
 
   protected String getEventSubscriptionScope(ActivityExecution execution, EventSubscriptionEntity subscription) {
