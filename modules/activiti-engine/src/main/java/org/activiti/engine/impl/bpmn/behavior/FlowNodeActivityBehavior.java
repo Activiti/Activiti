@@ -33,7 +33,7 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
  */
 public abstract class FlowNodeActivityBehavior implements SignallableActivityBehavior {
 
-  public final String FIRED_EVENT_SIGNALS = "firedEventSignals";
+  public final String FIRED_EVENT_SIGNAL_FORMAT = "firedEventSignal_%s_%s";
   
   private final static Pattern scopeRegexPattern = Pattern.compile("\"scope\"\\s*:\\s*\"([^\"]+)\",?");
   
@@ -113,10 +113,10 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
   }
 
   protected String getSignalExecutionScope(ActivityExecution execution,  String signalName, String signalScope) {
-    return FIRED_EVENT_SIGNALS + "_" + signalName + "_"
-            + (Signal.SCOPE_PROCESS_INSTANCE.equals(signalScope) 
-                  ? execution.getProcessInstanceId()
-                  : Signal.SCOPE_GLOBAL);
+    return String.format(FIRED_EVENT_SIGNAL_FORMAT, 
+                         signalName, (Signal.SCOPE_PROCESS_INSTANCE.equals(signalScope) 
+                                        ? execution.getProcessInstanceId()
+                                        : Signal.SCOPE_GLOBAL)); 
 
   }
   
