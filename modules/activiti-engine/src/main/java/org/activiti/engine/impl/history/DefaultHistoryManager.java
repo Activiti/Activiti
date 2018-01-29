@@ -393,6 +393,16 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
       }
 
       // Update the persisted historic task instances that are open
+      List<HistoricTaskInstanceEntity> cachedHistoricTaskInstances = getDbSqlSession().findInCache(HistoricTaskInstanceEntity.class);
+      for (HistoricTaskInstanceEntity cachedHistoricTaskInstance: cachedHistoricTaskInstances) {
+          if ( (cachedHistoricTaskInstance.getEndTime()==null)
+               && (execution.getId().equals(cachedHistoricTaskInstance.getExecutionId()))
+             ) {
+              cachedHistoricTaskInstance.setExecutionId(replacedBy.getId());
+          }
+        }
+
+      // Update the persisted historic task instances that are open
       List<HistoricTaskInstanceEntity> historicTaskInstances = (List) new HistoricTaskInstanceQueryImpl(Context.getCommandContext())
         .executionId(execution.getId())
         .unfinished()
@@ -400,6 +410,13 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
       for (HistoricTaskInstanceEntity historicTaskInstance: historicTaskInstances) {
         historicTaskInstance.setExecutionId(replacedBy.getId());
       }
+      List<HistoricVariableInstanceEntity> cachedHistoricVariableInstances = getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class);
+      for (HistoricVariableInstanceEntity cachedHistoricVariableInstance: cachedHistoricVariableInstances) {
+          if ((execution.getId().equals(cachedHistoricVariableInstance.getExecutionId()))
+             ) {
+              cachedHistoricVariableInstance.setExecutionId(replacedBy.getId());
+          }
+        }
 
       // Update the persisted historic variable instances
       List<HistoricVariableInstanceEntity> historicVariableInstances = (List) new HistoricVariableInstanceQueryImpl(Context.getCommandContext())
