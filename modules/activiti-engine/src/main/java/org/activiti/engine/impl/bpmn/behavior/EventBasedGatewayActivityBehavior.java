@@ -34,7 +34,7 @@ public class EventBasedGatewayActivityBehavior extends FlowNodeActivityBehavior 
     // Continue with signal catch event activities for signal events
     // already fired and registered in process instance execution scope
     for(EventSubscriptionEntity subscription: subscriptions) {
-      if(isSignalEventAlreadyFired(execution, subscription.getEventName()))
+      if(isSignalEventAlreadyFired(execution, subscription))
       {
           // Execute signal event behavior 
           subscription.eventReceived(null, false);
