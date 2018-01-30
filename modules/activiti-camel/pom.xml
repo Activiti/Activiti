@@ -14,6 +14,12 @@
     <version>5.23.0-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <activiti.osgi.import.pkg>*</activiti.osgi.import.pkg>
+    <activiti.artifact>
+      org.activiti.camel
+    </activiti.artifact>
+  </properties>
 
   <dependencies>
     <dependency>
@@ -25,13 +31,9 @@
       <artifactId>camel-spring</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.sun.xml.bind</groupId>
-      <artifactId>jaxb-impl</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
-      <scope>provided</scope>
+      <scope>test</scope>
 	 </dependency>
    <dependency>
       <groupId>org.slf4j</groupId>
@@ -51,7 +53,6 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -61,22 +62,12 @@
       <groupId>org.apache.camel</groupId>
       <artifactId>camel-mvel</artifactId>
       <scope>test</scope>
-      <version>2.17.1</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.uuid</groupId>
       <artifactId>java-uuid-generator</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
-
-
-  <properties>
-    <activiti.osgi.import.pkg>*</activiti.osgi.import.pkg>
-    <activiti.artifact>
-      org.activiti.camel
-    </activiti.artifact>
-  </properties>
 
 </project>

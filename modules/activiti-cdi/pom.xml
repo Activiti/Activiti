@@ -3,17 +3,15 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Activiti - Cdi</name>
-  <artifactId>activiti-cdi</artifactId>
-  <packaging>jar</packaging>
-
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <relativePath>../..</relativePath>
     <version>5.23.0-SNAPSHOT</version>
+    <relativePath>../..</relativePath>
   </parent>
 
+  <artifactId>activiti-cdi</artifactId>
+  <name>Activiti - Cdi</name>
 
   <profiles>
     <profile>
@@ -78,13 +76,12 @@
           <scope>test</scope>
         </dependency>
       </dependencies>
-
       <dependencyManagement>
         <dependencies>
           <dependency>
             <groupId>org.jboss.weld</groupId>
             <artifactId>weld-core-bom</artifactId>
-            <version>1.1.5.Final</version>
+            <version>2.2.8.Final</version>
             <type>pom</type>
             <scope>import</scope>
           </dependency>
@@ -135,16 +132,6 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 
 </project>

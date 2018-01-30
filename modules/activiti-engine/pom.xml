@@ -13,6 +13,29 @@
     <version>5.23.0-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <activiti.artifact>
+      org.activiti.engine
+    </activiti.artifact>
+    <activiti.osgi.export.additional>
+      org.activiti.db.mapping.entity
+    </activiti.osgi.export.additional>
+    <activiti.osgi.import.additional>
+      junit*;resolution:=optional,
+      org.junit*;resolution:=optional,
+      com.sun*;resolution:=optional,
+      javax.persistence*;resolution:=optional,
+      org.apache.commons.mail*;resolution:=optional,
+      org.activiti.camel;resolution:=optional,
+      org.activiti.camel.impl;resolution:=optional,
+      org.springframework*;resolution:=optional,
+      org.drools*;resolution:=optional,
+      com.fasterxml*;resolution:=optional,
+      javax.transaction;resolution:=optional,
+      javax.enterprise.concurrent;resolution:=optional,
+    </activiti.osgi.import.additional>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -42,7 +65,6 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
     </dependency>
-
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -69,11 +91,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
       <artifactId>geronimo-jta_1.1_spec</artifactId>
       <scope>provided</scope>
@@ -94,8 +111,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.openjpa</groupId>
-      <artifactId>openjpa</artifactId>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -146,12 +168,6 @@
       <artifactId>slf4j-log4j12</artifactId>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>com.googlecode.catch-exception</groupId>
-          <artifactId>catch-exception</artifactId>
-          <scope>test</scope>
-      </dependency>
-    
     <!-- Required for testing JTA -->
     <dependency>
       <groupId>org.codehaus.btm</groupId>
@@ -159,32 +175,8 @@
       <version>2.1.3</version>
       <scope>test</scope>
     </dependency>
-    
   </dependencies>
   
-  <properties>
-    <activiti.artifact>
-      org.activiti.engine
-    </activiti.artifact>
-    <activiti.osgi.export.additional>
-      org.activiti.db.mapping.entity
-    </activiti.osgi.export.additional>
-    <activiti.osgi.import.additional>
-      junit*;resolution:=optional,
-      org.junit*;resolution:=optional,
-      com.sun*;resolution:=optional,
-      javax.persistence*;resolution:=optional,
-      org.apache.commons.mail*;resolution:=optional,
-      org.activiti.camel;resolution:=optional,
-      org.activiti.camel.impl;resolution:=optional,
-      org.springframework*;resolution:=optional,
-      org.drools*;resolution:=optional,
-      com.fasterxml*;resolution:=optional,
-      javax.transaction;resolution:=optional,
-      javax.enterprise.concurrent;resolution:=optional,
-    </activiti.osgi.import.additional>
-  </properties>
-
   <build>
     <plugins>      
       <plugin>
@@ -277,7 +269,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jar-plugin</artifactId>
-            <version>2.2</version>
             <executions>
               <execution>
                 <goals>
@@ -312,12 +303,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -363,12 +350,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -414,12 +397,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -448,12 +427,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>configExecution</id>
@@ -486,6 +461,7 @@
             </executions>
           </plugin>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <excludes>
@@ -514,10 +490,8 @@
     <build>
       <plugins>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-antrun-plugin</artifactId>
-          <!-- only worked with this version, there might be a bug with antrun 
-            see http://jira.codehaus.org/browse/MANTRUN-109 -->
-          <version>1.4</version>
           <executions>
             <execution>
               <id>configExecution</id>
@@ -551,6 +525,7 @@
           </executions>
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <excludes>
@@ -580,8 +555,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -622,12 +597,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -670,8 +641,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -713,8 +684,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -732,6 +703,7 @@
             </executions>
           </plugin>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <excludes>
@@ -767,6 +739,7 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <includes>
@@ -777,8 +750,8 @@
             </configuration>
           </plugin>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
