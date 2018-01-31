@@ -31,8 +31,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
       // There can be only one subscription entity 
       EventSubscriptionEntity subscription = subscriptions.get(0);
       
-      if(isSignalEventAlreadyFired(execution, subscription)) 
-      {
+      if(isSignalEventAlreadyFired(execution, subscription)) {
         // Handle signal event for matching throw signal 
         subscription.eventReceived(null, false);
       }
