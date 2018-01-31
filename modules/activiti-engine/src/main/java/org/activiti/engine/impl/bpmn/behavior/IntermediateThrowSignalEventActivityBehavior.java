@@ -33,22 +33,30 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
   
   protected final boolean processInstanceScope;
   protected final EventSubscriptionDeclaration signalDefinition;
+  protected final Signal signal;
 
   public IntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, Signal signal, EventSubscriptionDeclaration signalDefinition) {
     this.processInstanceScope = Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope());
     this.signalDefinition = signalDefinition;
+    this.signal = signal;
   }
   
+  @Override
   public void execute(ActivityExecution execution) throws Exception {
-    
+
     CommandContext commandContext = Context.getCommandContext();
+
+    // register fired signals to handle race conditions within current transaction scope 
+    registerFiredSignalEvent(execution, signal);
     
     List<SignalEventSubscriptionEntity> subscriptionEntities = null;
-    if (processInstanceScope) {
+    if(processInstanceScope) {
+
       subscriptionEntities = commandContext
               .getEventSubscriptionEntityManager()
               .findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalDefinition.getEventName());
     } else {
+      
       subscriptionEntities = commandContext
               .getEventSubscriptionEntityManager()
               .findSignalEventSubscriptionsByEventName(signalDefinition.getEventName(), execution.getTenantId());
@@ -62,5 +70,5 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
       leave(execution);
     }
   }
- 
+
 }

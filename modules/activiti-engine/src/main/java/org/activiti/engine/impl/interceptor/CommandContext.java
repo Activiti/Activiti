@@ -375,7 +375,7 @@ public class CommandContext {
   public EventSubscriptionEntityManager getEventSubscriptionEntityManager() {
     return getSession(EventSubscriptionEntityManager.class);
   }
-
+  
   public Map<Class< ? >, SessionFactory> getSessionFactories() {
     return sessionFactories;
   }
@@ -406,5 +406,5 @@ public class CommandContext {
   }
   public ActivitiEventDispatcher getEventDispatcher() {
   	return processEngineConfiguration.getEventDispatcher();
-  }
+ }
 }
