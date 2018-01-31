@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <!--
-  ~ Copyright 2017 Alfresco, Inc. and/or its affiliates.
+  ~ Copyright 2018 Alfresco, Inc. and/or its affiliates.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
