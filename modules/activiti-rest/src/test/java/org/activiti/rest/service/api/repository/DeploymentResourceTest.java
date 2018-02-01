@@ -188,6 +188,54 @@ public class DeploymentResourceTest extends BaseSpringRestTestCase {
         }
     }
 
+    /** Test deploying bar-file.
+     * POST repository/deployments
+     */
+    public void testPostNewDeploymentBarFileWithCategory() throws Exception {
+      try {
+        // Create zip with bpmn-file and resource
+        ByteArrayOutputStream zipOutput = new ByteArrayOutputStream();
+        ZipOutputStream zipStream = new ZipOutputStream(zipOutput);
+        
+        // Add bpmn-xml
+        zipStream.putNextEntry(new ZipEntry("oneTaskProcess.bpmn20.xml"));
+        IOUtils.copy(ReflectUtil.getResourceAsStream("org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"), zipStream);
+        zipStream.closeEntry();
+        
+        // Add text-resource
+        zipStream.putNextEntry(new ZipEntry("test.txt"));
+        IOUtils.write("Testing REST-deployment", zipStream);
+        zipStream.closeEntry();
+        zipStream.close();
+        
+        // Upload a bar-file using multipart-data
+        HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
+        httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("test-deployment.bar", "application/zip", 
+            new ByteArrayInputStream(zipOutput.toByteArray()), Collections.singletonMap("category", "myCategory")));
+        CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
+        
+        // Check deployment
+        JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+        closeResponse(response);
+        
+        String category = responseNode.get("category").textValue();
+        assertEquals("myCategory", category);
+        String id = responseNode.get("id").textValue();
+        
+        Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(id).singleResult();
+        assertNotNull(deployment);
+        assertEquals("myCategory", deployment.getCategory());
+        
+      } finally {
+        // Always cleanup any created deployments, even if the test failed
+        List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
+        for(Deployment deployment : deployments) {
+          repositoryService.deleteDeployment(deployment.getId(), true);
+        }
+      }
+    }
+
     /**
      * Test deploying an invalid file. POST repository/deployments
      */

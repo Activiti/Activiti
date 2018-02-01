@@ -101,6 +101,7 @@ public class DeploymentCollectionResource {
   
   @RequestMapping(value="/repository/deployments", method = RequestMethod.POST, produces = "application/json")
   public DeploymentResponse uploadDeployment(@RequestParam(value="tenantId", required=false) String tenantId, 
+      @RequestParam(value="category", required=false) String category,
       HttpServletRequest request, HttpServletResponse response) {
     
     if (request instanceof MultipartHttpServletRequest == false) {
@@ -136,6 +137,10 @@ public class DeploymentCollectionResource {
       
       if(tenantId != null) {
       	deploymentBuilder.tenantId(tenantId);
+      }
+      
+      if(category != null) {
+        deploymentBuilder.category(category);
       }
       
       Deployment deployment = deploymentBuilder.deploy();
