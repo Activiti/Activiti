@@ -280,6 +280,7 @@ create table ACT_RU_INTEGRATION (
     EXECUTION_ID_ varchar(64),
     PROCESS_INSTANCE_ID_ varchar(64),
     PROC_DEF_ID_ varchar(64),
+    FLOW_NODE_ID_ varchar(64),
     CREATED_DATE_ timestamp(3),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;

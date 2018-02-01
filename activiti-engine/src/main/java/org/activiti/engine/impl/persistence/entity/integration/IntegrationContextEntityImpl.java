@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2018 Alfresco, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,8 @@ public class IntegrationContextEntityImpl extends AbstractEntity implements Inte
 
     private String processDefinitionId;
 
+    private String flowNodeId;
+
     @Override
     public String getExecutionId() {
         return executionId;
@@ -55,6 +57,16 @@ public class IntegrationContextEntityImpl extends AbstractEntity implements Inte
 
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
+    }
+
+    @Override
+    public String getFlowNodeId() {
+        return flowNodeId;
+    }
+
+    @Override
+    public void setFlowNodeId(String flowNodeId) {
+        this.flowNodeId = flowNodeId;
     }
 
     public Date getCreatedDate() {
