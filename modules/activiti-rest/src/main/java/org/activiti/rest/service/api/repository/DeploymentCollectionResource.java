@@ -131,7 +131,7 @@ public class DeploymentCollectionResource {
       @ApiResponse(code = 400, message = "Indicates there was no content present in the request body or the content mime-type is not supported for deployment. The status-description contains additional information.")
   })
   @RequestMapping(value = "/repository/deployments", method = RequestMethod.POST, produces = "application/json")
-  public DeploymentResponse uploadDeployment(@ApiParam(name = "tenantId") @RequestParam(value = "tenantId", required = false) String tenantId, HttpServletRequest request, HttpServletResponse response) {
+  public DeploymentResponse uploadDeployment(@ApiParam(name = "tenantId") @RequestParam(value = "tenantId", required = false) String tenantId, @ApiParam(name = "category") @RequestParam(value = "category", required = false) String category, HttpServletRequest request, HttpServletResponse response) {
 
     if (request instanceof MultipartHttpServletRequest == false) {
       throw new ActivitiIllegalArgumentException("Multipart request is required");
@@ -166,6 +166,9 @@ public class DeploymentCollectionResource {
         deploymentBuilder.tenantId(tenantId);
       }
 
+      if(category != null) {
+        deploymentBuilder.category(category);
+      }
       Deployment deployment = deploymentBuilder.deploy();
 
       response.setStatus(HttpStatus.CREATED.value());
