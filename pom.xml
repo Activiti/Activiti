@@ -17,17 +17,18 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.6</java.version>
     <spring-boot.version>1.5.9.RELEASE</spring-boot.version>
-    <mule.version>3.7.0</mule.version>
-    <cxf.version>3.1.14</cxf.version>
-    <camel.version>2.17.6</camel.version>
     <batik.version>1.9.1</batik.version>
+    <bouncycastle.version>1.59</bouncycastle.version>
+    <camel.version>2.17.6</camel.version>
+    <cxf.version>3.1.14</cxf.version>
     <drools.version>6.5.0.Final</drools.version>
     <gwt.version>2.5.1</gwt.version>
-    <tomcat.version>7.0.82</tomcat.version>
-    <logback.version>1.2.0</logback.version>
     <hibernate.version>4.2.16.Final</hibernate.version>
-    <bouncycastle.version>1.59</bouncycastle.version>
+    <jackson.version>2.8.11</jackson.version>
     <jetty.version>9.2.24.v20180105</jetty.version>
+    <logback.version>1.2.0</logback.version>
+    <mule.version>3.7.0</mule.version>
+    <tomcat.version>7.0.82</tomcat.version>
 
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
@@ -70,6 +71,13 @@
   </properties>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.fasterxml.jackson</groupId>
+        <artifactId>jackson-bom</artifactId>
+        <version>${jackson.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
