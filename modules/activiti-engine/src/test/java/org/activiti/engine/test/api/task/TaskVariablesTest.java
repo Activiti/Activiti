@@ -13,6 +13,8 @@
 
 package org.activiti.engine.test.api.task;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
@@ -257,4 +260,23 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
 		}
   }
   
+  @Deployment
+  public void testTaskLocalVar() {
+    runtimeService.startProcessInstanceByKey("user_task_local_variable").getId();
+
+    List<Task> taskList = taskService.createTaskQuery().list();
+    String oldExecutionId = taskList.get(1).getExecutionId();
+
+    taskService.complete(taskList.get(0).getId());
+
+    Task task = taskService.createTaskQuery().singleResult();
+    String executionId = task.getExecutionId();
+
+    HistoricVariableInstance var1 = historyService.createHistoricVariableInstanceQuery().executionId(executionId).singleResult();
+    assertThat(var1.getValue()).isEqualTo("AAA");
+
+    HistoricVariableInstance var2 = historyService.createHistoricVariableInstanceQuery().executionId(oldExecutionId).singleResult();
+    assertThat(var2).isNull();
+
+  }
 }
