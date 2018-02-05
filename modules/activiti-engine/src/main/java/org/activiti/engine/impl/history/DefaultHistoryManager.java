@@ -394,6 +394,9 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
         historicActivityInstance.setExecutionId(replacedBy.getId());
       }
 
+      // keep record of unfinished tasks to only update related variables later
+      Set<String> unfinishedTasks = new HashSet<String>();
+      
       // Update the cached historic task instances that are open
       List<HistoricTaskInstanceEntity> cachedHistoricTaskInstances = getDbSqlSession().findInCache(HistoricTaskInstanceEntity.class);
       for (HistoricTaskInstanceEntity cachedHistoricTaskInstance: cachedHistoricTaskInstances) {
@@ -401,6 +404,7 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
                && (execution.getId().equals(cachedHistoricTaskInstance.getExecutionId()))
              ) {
               cachedHistoricTaskInstance.setExecutionId(replacedBy.getId());
+              unfinishedTasks.add(cachedHistoricTaskInstance.getId());
           }
         }
 
@@ -410,8 +414,7 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
         .unfinished()
         .list();
       
-      // keep record of unfinished tasks to only update related variables later
-      Set<String> unfinishedTasks = new HashSet<String>();
+      
       for (HistoricTaskInstanceEntity historicTaskInstance: historicTaskInstances) {
         historicTaskInstance.setExecutionId(replacedBy.getId());
         unfinishedTasks.add(historicTaskInstance.getId());
