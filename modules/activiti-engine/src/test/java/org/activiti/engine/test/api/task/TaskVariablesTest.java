@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
@@ -262,21 +263,28 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testTaskLocalVar() {
-    runtimeService.startProcessInstanceByKey("user_task_local_variable").getId();
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+        runtimeService.startProcessInstanceByKey("user_task_local_variable").getId();
 
-    List<Task> taskList = taskService.createTaskQuery().list();
-    String oldExecutionId = taskList.get(1).getExecutionId();
+        List<Task> taskList = taskService.createTaskQuery().list();
+        assertThat(taskList.get(1).getTaskDefinitionKey()).isEqualTo("user_task2");
+        taskService.complete(taskList.get(1).getId());
 
-    taskService.complete(taskList.get(0).getId());
+        taskList = taskService.createTaskQuery().list();
+        assertThat(taskList.get(1).getTaskDefinitionKey()).isEqualTo("user_task3");
+        String oldExecutionId = taskList.get(1).getExecutionId();
 
-    Task task = taskService.createTaskQuery().singleResult();
-    String executionId = task.getExecutionId();
+        assertThat(taskList.get(0).getTaskDefinitionKey()).isEqualTo("user_task1");
+        taskService.complete(taskList.get(0).getId());
 
-    HistoricVariableInstance var1 = historyService.createHistoricVariableInstanceQuery().executionId(executionId).singleResult();
-    assertThat(var1.getValue()).isEqualTo("AAA");
+        Task task = taskService.createTaskQuery().singleResult();
+        String executionId = task.getExecutionId();
 
-    HistoricVariableInstance var2 = historyService.createHistoricVariableInstanceQuery().executionId(oldExecutionId).singleResult();
-    assertThat(var2).isNull();
+        HistoricVariableInstance var1 = historyService.createHistoricVariableInstanceQuery().executionId(executionId).singleResult();
+        assertThat(var1.getValue()).isEqualTo("AAA");
 
+        HistoricVariableInstance var2 = historyService.createHistoricVariableInstanceQuery().executionId(oldExecutionId).singleResult();
+        assertThat(var2.getValue()).isEqualTo("old");
+    }
   }
 }
