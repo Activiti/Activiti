@@ -15,6 +15,9 @@ package org.activiti.editor.language.json.converter;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
@@ -22,10 +25,6 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.editor.language.json.model.ModelInfo;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
 
@@ -72,8 +71,10 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter implements Fo
     if (subProcess instanceof Transaction) {
       propertiesNode.put("istransaction", true);
     }
-    
+
     BpmnJsonConverterUtil.convertDataPropertiesToJson(subProcess.getDataObjects(), propertiesNode);
+    addLocalizationProperties(subProcess,
+                              propertiesNode);
   }
 
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
@@ -94,7 +95,8 @@ public class SubProcessJsonConverter extends BaseBpmnJsonConverter implements Fo
       subProcess.setDataObjects(dataObjects);
       subProcess.getFlowElements().addAll(dataObjects);
     }
-    
+    addLocalizationExtensionElement(elementNode,
+                                    subProcess);
     return subProcess;
   }
   

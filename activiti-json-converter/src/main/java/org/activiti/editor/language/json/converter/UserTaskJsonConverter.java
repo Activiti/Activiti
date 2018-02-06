@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
@@ -24,10 +27,6 @@ import org.activiti.editor.language.json.converter.util.CollectionUtils;
 import org.activiti.editor.language.json.model.ModelInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
 
@@ -270,6 +269,8 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
     setPropertyValue(PROPERTY_USERTASK_CATEGORY, userTask.getCategory(), propertiesNode);
 
     addFormProperties(userTask.getFormProperties(), propertiesNode);
+    addLocalizationProperties(userTask,
+                              propertiesNode);
   }
 
   protected int getExtensionElementValueAsInt(String name, UserTask userTask) {
@@ -364,6 +365,8 @@ public class UserTaskJsonConverter extends BaseBpmnJsonConverter implements Form
       }
     }
     convertJsonToFormProperties(elementNode, task);
+    addLocalizationExtensionElement(elementNode,
+                                    task);
     return task;
   }
 
