@@ -421,7 +421,8 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
       }
       List<HistoricVariableInstanceEntity> cachedHistoricVariableInstances = getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class);
       for (HistoricVariableInstanceEntity cachedHistoricVariableInstance: cachedHistoricVariableInstances) {
-          if ((execution.getId().equals(cachedHistoricVariableInstance.getExecutionId()))
+          if ((execution.getId().equals(cachedHistoricVariableInstance.getExecutionId()) )
+               && (unfinishedTasks.contains(cachedHistoricVariableInstance.getTaskId()))
              ) {
               cachedHistoricVariableInstance.setExecutionId(replacedBy.getId());
           }

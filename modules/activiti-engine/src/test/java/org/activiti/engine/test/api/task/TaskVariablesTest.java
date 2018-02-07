@@ -16,12 +16,16 @@ package org.activiti.engine.test.api.task;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
@@ -266,11 +270,11 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
         runtimeService.startProcessInstanceByKey("user_task_local_variable").getId();
 
-        List<Task> taskList = taskService.createTaskQuery().list();
+        List<Task> taskList = taskService.createTaskQuery().orderByTaskDefinitionKey().asc().list();
         assertThat(taskList.get(1).getTaskDefinitionKey()).isEqualTo("user_task2");
         taskService.complete(taskList.get(1).getId());
 
-        taskList = taskService.createTaskQuery().list();
+        taskList = taskService.createTaskQuery().orderByTaskDefinitionKey().asc().list();
         assertThat(taskList.get(1).getTaskDefinitionKey()).isEqualTo("user_task3");
         String oldExecutionId = taskList.get(1).getExecutionId();
 
@@ -283,8 +287,17 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
         HistoricVariableInstance var1 = historyService.createHistoricVariableInstanceQuery().executionId(executionId).singleResult();
         assertThat(var1.getValue()).isEqualTo("AAA");
 
-        HistoricVariableInstance var2 = historyService.createHistoricVariableInstanceQuery().executionId(oldExecutionId).singleResult();
-        assertThat(var2.getValue()).isEqualTo("old");
+        List<HistoricVariableInstance> historicVars = historyService.createHistoricVariableInstanceQuery().executionId(oldExecutionId).orderByVariableName().asc().list();
+        assertThat(historicVars.get(0).getValue()).isEqualTo("old");
+        assertThat(historicVars.get(1).getValue()).isEqualTo("cached");
     }
   }
+
+  public static class TestTaskCompletionListener implements TaskListener {
+      @Override
+      public void notify(DelegateTask delegateTask) {
+          delegateTask.getExecution().getEngineServices().getHistoryService().createHistoricVariableInstanceQuery().variableName("test2").singleResult();
+      }
+      
+    }
 }

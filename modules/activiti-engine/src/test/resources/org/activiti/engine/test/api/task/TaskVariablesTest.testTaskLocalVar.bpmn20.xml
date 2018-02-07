@@ -2,10 +2,15 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
   <process id="user_task_local_variable" name="user_task_local_variable" isExecutable="true">
     <startEvent id="startEvent1"></startEvent>
-    <userTask id="user_task1" name="User Task1" activiti:assignee="kermit"></userTask>
+    <userTask id="user_task1" name="User Task1" activiti:assignee="kermit">
+      <extensionElements>
+        <activiti:taskListener event="complete" class="org.activiti.engine.test.api.task.TaskVariablesTest$TestTaskCompletionListener"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
     <userTask id="user_task2" name="User Task2" activiti:assignee="kermit">
       <extensionElements>
         <activiti:taskListener event="create" expression="${task.setVariableLocal('test0', 'old')}"></activiti:taskListener>
+        <activiti:taskListener event="create" expression="${task.setVariableLocal('test2', 'cached')}"></activiti:taskListener>
       </extensionElements>
     </userTask>
     <parallelGateway id="sid-8AFF156F-ABB4-46C3-9EB4-3BE0FE410313"></parallelGateway>
