@@ -1013,7 +1013,7 @@ public class DbSqlSession implements Session {
       if (dbSqlSessionFactory.getDatabaseCatalog() != null && dbSqlSessionFactory.getDatabaseCatalog().length() > 0) {
         catalog = dbSqlSessionFactory.getDatabaseCatalog();
       }
-	  if (connection.getCatalog() != null && connection.getCatalog().length() > 0) {
+      if (connection.getCatalog() != null && connection.getCatalog().length() > 0) {
         catalog = connection.getCatalog();
       }
 
