@@ -5,6 +5,8 @@
 [![ASL 2.0](https://img.shields.io/hexpm/l/plug.svg)](https://github.com/Activiti/activiti-build/blob/master/LICENSE.txt)
 [![CLA](https://cla-assistant.io/readme/badge/Activiti/activiti-build)](https://cla-assistant.io/Activiti/activiti-build)
 [![Known Vulnerabilities](https://snyk.io/test/github/Activiti/activiti-build/badge.svg)](https://snyk.io/test/github/Activiti/activiti-build)
+[![security status](https://www.meterian.com/badge/gh/Activiti/activiti-build/security)](https://www.meterian.com/report/gh/Activiti/activiti-build)
+[![stability status](https://www.meterian.com/badge/gh/Activiti/activiti-build/stability)](https://www.meterian.com/report/gh/Activiti/activiti-build)
 
 BOMs (Bill of Materials) and scripts for all repos related with Activiti
 
