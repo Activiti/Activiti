@@ -14,8 +14,10 @@
 package org.activiti.engine.impl.history;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -392,13 +394,17 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
         historicActivityInstance.setExecutionId(replacedBy.getId());
       }
 
-      // Update the persisted historic task instances that are open
+      // keep record of unfinished tasks to only update related variables later
+      Set<String> unfinishedTasks = new HashSet<String>();
+      
+      // Update the cached historic task instances that are open
       List<HistoricTaskInstanceEntity> cachedHistoricTaskInstances = getDbSqlSession().findInCache(HistoricTaskInstanceEntity.class);
       for (HistoricTaskInstanceEntity cachedHistoricTaskInstance: cachedHistoricTaskInstances) {
           if ( (cachedHistoricTaskInstance.getEndTime()==null)
                && (execution.getId().equals(cachedHistoricTaskInstance.getExecutionId()))
              ) {
               cachedHistoricTaskInstance.setExecutionId(replacedBy.getId());
+              unfinishedTasks.add(cachedHistoricTaskInstance.getId());
           }
         }
 
@@ -407,12 +413,16 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
         .executionId(execution.getId())
         .unfinished()
         .list();
+      
+      
       for (HistoricTaskInstanceEntity historicTaskInstance: historicTaskInstances) {
         historicTaskInstance.setExecutionId(replacedBy.getId());
+        unfinishedTasks.add(historicTaskInstance.getId());
       }
       List<HistoricVariableInstanceEntity> cachedHistoricVariableInstances = getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class);
       for (HistoricVariableInstanceEntity cachedHistoricVariableInstance: cachedHistoricVariableInstances) {
-          if ((execution.getId().equals(cachedHistoricVariableInstance.getExecutionId()))
+          if ((execution.getId().equals(cachedHistoricVariableInstance.getExecutionId()) )
+               && (unfinishedTasks.contains(cachedHistoricVariableInstance.getTaskId()))
              ) {
               cachedHistoricVariableInstance.setExecutionId(replacedBy.getId());
           }
@@ -423,7 +433,11 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
         .executionId(execution.getId())
         .list();
       for (HistoricVariableInstanceEntity historicVariableInstance: historicVariableInstances) {
-          historicVariableInstance.setExecutionId(replacedBy.getId());
+    	  // only variables of unfinished tasks
+    	  if (unfinishedTasks.contains(historicVariableInstance.getTaskId())) {
+    		  historicVariableInstance.setExecutionId(replacedBy.getId());
+    	  }
+          
       }
     }
   }
