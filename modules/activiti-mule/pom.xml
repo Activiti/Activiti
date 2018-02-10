@@ -1,24 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <version>6.0.1-SNAPSHOT</version>
     <relativePath>../..</relativePath>
   </parent>
-
   <artifactId>activiti-mule</artifactId>
   <name>Activiti - Mule</name>
-
   <properties>
-    <activiti.artifact>
-      org.activiti.mule
-    </activiti.artifact>
+    <activiti.artifact>org.activiti.mule</activiti.artifact>
   </properties>
-
   <build>
     <resources>
       <resource>
@@ -32,7 +25,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.6</version>
         <configuration>
           <workingDirectory>${project.build.directory}</workingDirectory>
           <systemPropertyVariables>
@@ -106,7 +98,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -120,10 +111,6 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>commons-logging</groupId>
-      <artifactId>commons-logging</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -199,7 +186,6 @@
       <artifactId>mule-tests-functional</artifactId>
     </dependency>
   </dependencies>
-
   <profiles>
     <profile>
       <id>distro</id>
@@ -222,7 +208,6 @@
       </build>
     </profile>
   </profiles>
-
   <reporting>
     <plugins>
       <plugin>
@@ -234,7 +219,6 @@
       </plugin>
     </plugins>
   </reporting>
-  
   <repositories>
       <repository>
           <id>mulesoft-releases</id>
@@ -243,5 +227,4 @@
           <layout>default</layout>
       </repository>
   </repositories>
-
 </project>

@@ -10,15 +10,6 @@
   <artifactId>activiti-admin</artifactId>
   <packaging>war</packaging>
   <name>Activiti Admin</name>
-  <organization>
-    <name>Activiti</name>
-  </organization>
-  <inceptionYear>2016</inceptionYear>
-  <properties>
-    <!-- Web container version -->
-    <tomcat.version>7.0.53</tomcat.version>
-  </properties>
-
   <dependencies>
 
     <!-- Activiti -->
@@ -26,7 +17,6 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-bpmn-model</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-bpmn-converter</artifactId>
@@ -53,10 +43,6 @@
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-hppc</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-joda</artifactId>
     </dependency>
 
@@ -73,26 +59,6 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
     </dependency>
-    <!-- <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.oracle.jdbc</groupId>
-        <artifactId>ojdbc7</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.microsoft.sqlserver</groupId>
-        <artifactId>sqljdbc4</artifactId>
-    </dependency>
-    <dependency>
-        <groupId>com.ibm.db2.jcc</groupId>
-        <artifactId>db2jcc4</artifactId>
-    </dependency> -->
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
@@ -110,10 +76,6 @@
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -164,18 +126,12 @@
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjrt</artifactId>
-      <version>1.7.4</version>
-      <type>jar</type>
-      <scope>compile</scope>
     </dependency>
 
     <!-- SPRING -->
     <dependency>
       <groupId>org.aspectj</groupId>
       <artifactId>aspectjweaver</artifactId>
-      <version>1.7.4</version>
-      <type>jar</type>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -184,22 +140,18 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
-      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
-      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
-      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
-      <version>${spring.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

@@ -61,7 +61,7 @@ public class ActivitiClientService {
 	private final static Logger log = LoggerFactory.getLogger(ActivitiClientService.class);
 
 	protected static final String[] PAGING_AND_SORTING_PARAMETER_NAMES = new String[] {"sort", "order", "size"};
-	
+
 	public static final String DEFAULT_ACTIVITI_CONTEXT_ROOT = "activiti-rest";
 	public static final String DEFAULT_ACTIVITI_REST_ROOT = "service";
 
@@ -170,7 +170,7 @@ public class ActivitiClientService {
 
 		return null;
 	}
-	
+
 	public JsonNode executeDownloadRequest(HttpUriRequest request, HttpServletResponse httpResponse, ServerConfig serverConfig) {
         return executeDownloadRequest(request, httpResponse, serverConfig, HttpStatus.SC_OK);
     }
@@ -178,7 +178,7 @@ public class ActivitiClientService {
 	public JsonNode executeDownloadRequest(HttpUriRequest request, HttpServletResponse httpResponse, ServerConfig serverConfig, int expectedStatusCode) {
         return executeDownloadRequest(request, httpResponse, serverConfig.getUserName(), serverConfigService.decrypt(serverConfig.getPassword()), expectedStatusCode);
     }
-	
+
 	public JsonNode executeDownloadRequest(HttpUriRequest request, HttpServletResponse httpResponse, String userName, String password, int expectedStatusCode) {
 
         ActivitiServiceException exception = null;
@@ -226,7 +226,7 @@ public class ActivitiClientService {
 
         return null;
     }
-	
+
 	public AttachmentResponseInfo executeDownloadRequest(HttpUriRequest request, ServerConfig serverConfig) {
         return executeDownloadRequest(request, serverConfig, HttpStatus.SC_OK);
     }
@@ -238,7 +238,7 @@ public class ActivitiClientService {
     public AttachmentResponseInfo executeDownloadRequest(HttpUriRequest request, String userName, String password) {
         return executeDownloadRequest(request, userName, password, HttpStatus.SC_OK);
     }
-	
+
 	public AttachmentResponseInfo executeDownloadRequest(HttpUriRequest request, String userName, String password, Integer... expectedStatusCodes) {
 	    ActivitiServiceException exception = null;
         CloseableHttpClient client = getHttpClient(userName, password);
@@ -259,7 +259,7 @@ public class ActivitiClientService {
                     } else {
                         return new AttachmentResponseInfo(statusCode, readJsonContent(response.getEntity().getContent()));
                     }
-                    
+
                 } else {
                     exception = new ActivitiServiceException(extractError(readJsonContent(response.getEntity().getContent()), "An error occured while calling Activiti: " + response.getStatusLine()));
                 }
@@ -287,7 +287,7 @@ public class ActivitiClientService {
 
         return null;
 	}
-	
+
 	public ResponseInfo execute(HttpUriRequest request, ServerConfig serverConfig) {
         return execute(request, serverConfig, HttpStatus.SC_OK);
     }
@@ -311,7 +311,7 @@ public class ActivitiClientService {
                     statusCode = response.getStatusLine().getStatusCode();
                 }
                 boolean success = Arrays.asList(expectedStatusCodes).contains(statusCode);
-                
+
                 if (success) {
                     return new ResponseInfo(statusCode, bodyNode);
 
@@ -342,7 +342,7 @@ public class ActivitiClientService {
 
         return null;
     }
-    
+
     public void execute(HttpUriRequest request, HttpServletResponse httpResponse, ServerConfig serverConfig) {
         execute(request, httpResponse, serverConfig.getUserName(), serverConfigService.decrypt(serverConfig.getPassword()));
     }
@@ -569,7 +569,7 @@ public class ActivitiClientService {
 		} else {
 			actualContextRoot = DEFAULT_ACTIVITI_CONTEXT_ROOT;
 		}
-		
+
 		String actualRestRoot = null;
 		if (restRoot != null) {
 			actualRestRoot = stripSlashes(restRoot);
@@ -581,12 +581,16 @@ public class ActivitiClientService {
 		if (StringUtils.isNotEmpty(actualContextRoot)) {
 		    finalUrl += "/" + actualContextRoot;
 		}
-		
+
 		if (StringUtils.isNotEmpty(actualRestRoot)) {
             finalUrl += "/" + actualRestRoot;
         }
-		
-		URIBuilder builder = createUriBuilder(finalUrl + "/" + uri);
+
+        if (!uri.startsWith("/") && !finalUrl.endsWith("/")) {
+            finalUrl += "/";
+        }
+
+        URIBuilder builder = createUriBuilder(finalUrl + uri);
 
 		return builder.toString();
 	}
@@ -643,7 +647,7 @@ public class ActivitiClientService {
 		}
 		return url;
 	}
-	
+
 	protected JsonNode readJsonContent(InputStream requestContent) {
         try {
             return objectMapper.readTree(IOUtils.toString(requestContent));

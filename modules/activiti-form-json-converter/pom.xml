@@ -1,21 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>activiti-form-json-converter</artifactId>
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <relativePath>../..</relativePath>
     <version>6.0.1-SNAPSHOT</version>
+    <relativePath>../..</relativePath>
   </parent>
-  <packaging>jar</packaging>
-
+  <artifactId>activiti-form-json-converter</artifactId>
   <properties>
-    <activiti.artifact>
-      org.activiti.form.json.converter
-    </activiti.artifact>
+    <activiti.artifact>org.activiti.form.json.converter</activiti.artifact>
   </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -40,17 +35,19 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
-
   <build>
     <plugins>
       <plugin>
@@ -117,7 +114,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
   <profiles>
     <profile>
       <id>distro</id>
@@ -140,5 +136,4 @@
       </build>
     </profile>
   </profiles>
-
 </project>
