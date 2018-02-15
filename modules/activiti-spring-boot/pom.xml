@@ -20,7 +20,6 @@
 
   <properties>
     <activiti.artifact>org.activiti.spring.boot</activiti.artifact>
-    <logback.version>1.2.0</logback.version>
   </properties>
 
   <dependencyManagement>
@@ -29,21 +28,6 @@
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot-starter-basic</artifactId>
         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-access</artifactId>
-        <version>${logback.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>${logback.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-core</artifactId>
-        <version>${logback.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
