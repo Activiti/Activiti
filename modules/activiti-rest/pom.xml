@@ -13,9 +13,8 @@
   <name>Activiti - Rest - Classes</name>
 
   <properties>
-    <activiti.artifact>
-      org.activiti.rest.service
-    </activiti.artifact>
+    <activiti.artifact>org.activiti.rest.service</activiti.artifact>
+    <swagger.version>1.5.10</swagger.version>
   </properties>
 
   <build>
@@ -97,10 +96,6 @@
       <artifactId>slf4j-log4j12</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
@@ -246,14 +241,12 @@
     <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-annotations</artifactId>
-      <version>1.5.10</version>
-      <scope>compile</scope>
+      <version>${swagger.version}</version>
     </dependency>
     <dependency>
       <groupId>io.swagger</groupId>
       <artifactId>swagger-models</artifactId>
-      <version>1.5.10</version>
-      <scope>compile</scope>
+      <version>${swagger.version}</version>
     </dependency>
     <!-- swagger dependencies end -->
 
