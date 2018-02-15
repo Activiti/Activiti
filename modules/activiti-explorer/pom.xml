@@ -121,10 +121,10 @@
       <artifactId>activiti-crystalball</artifactId>
     </dependency>
 
-    <!-- Logging, using Log4j as SLF4J implementation -->
+    <!-- Logging, using Logback as SLF4J implementation -->
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
     </dependency>
 
     <!-- Vaadin -->
