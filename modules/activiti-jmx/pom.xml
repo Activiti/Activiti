@@ -9,8 +9,8 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <relativePath>../..</relativePath>
     <version>6.0.1-SNAPSHOT</version>
+    <relativePath>../..</relativePath>
   </parent>
 
   <properties>
@@ -37,8 +37,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

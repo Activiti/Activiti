@@ -10,6 +10,10 @@
 
   <artifactId>activiti-spring-boot-starter-rest-api</artifactId>
 
+  <properties>
+    <suppressionFile>${basedir}/../../../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -26,8 +30,8 @@
           <artifactId>slf4j-api</artifactId>
         </exclusion>
         <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-log4j12</artifactId>
+          <groupId>ch.qos.logback</groupId>
+          <artifactId>logback-classic</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

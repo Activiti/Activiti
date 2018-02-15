@@ -25,7 +25,8 @@
     <hibernate.version>4.2.16.Final</hibernate.version>
     <jackson.version>2.9.4</jackson.version>
     <jetty.version>9.2.24.v20180105</jetty.version>
-    <logback.version>1.2.0</logback.version>
+    <log4j2.version>2.8.2</log4j2.version>
+    <logback.version>1.2.3</logback.version>
     <mysql.version>5.1.45</mysql.version>
     <mule.version>3.7.0</mule.version>
     <spring.version>4.3.14.RELEASE</spring.version>
@@ -83,6 +84,13 @@
         <groupId>com.fasterxml.jackson</groupId>
         <artifactId>jackson-bom</artifactId>
         <version>${jackson.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.logging.log4j</groupId>
+        <artifactId>log4j-bom</artifactId>
+        <version>${log4j2.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -165,7 +173,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.0.1</version>
+        <version>2.4</version>
       </dependency>
       <dependency>
         <groupId>commons-fileupload</groupId>
@@ -244,12 +252,12 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-secure-tasks</artifactId>
+        <artifactId>activiti-engine</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-engine</artifactId>
+        <artifactId>activiti-secure-tasks</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -497,13 +505,51 @@
         <version>20070829</version>
       </dependency>
       <dependency>
-        <groupId>org.mule.modules</groupId>
-        <artifactId>mule-module-cxf</artifactId>
+        <groupId>org.mule</groupId>
+        <artifactId>mule-core</artifactId>
         <version>${mule.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jcl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.mule</groupId>
+        <artifactId>mule-core</artifactId>
+        <version>${mule.version}</version>
+        <classifier>tests</classifier>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-jcl</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.mule.tests</groupId>
         <artifactId>mule-tests-functional</artifactId>
+        <version>${mule.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mule.transports</groupId>
+        <artifactId>mule-transport-http</artifactId>
+        <version>${mule.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mule.transports</groupId>
+        <artifactId>mule-transport-vm</artifactId>
+        <version>${mule.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mule.modules</groupId>
+        <artifactId>mule-module-scripting</artifactId>
+        <version>${mule.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mule.modules</groupId>
+        <artifactId>mule-module-spring-security</artifactId>
         <version>${mule.version}</version>
       </dependency>
       <dependency>
@@ -566,6 +612,16 @@
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-bridge</artifactId>
         <version>${batik.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-script</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
@@ -576,6 +632,12 @@
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-css</artifactId>
         <version>${batik.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
@@ -618,7 +680,12 @@
       <dependency>
         <groupId>com.fasterxml.uuid</groupId>
         <artifactId>java-uuid-generator</artifactId>
-        <version>3.1.3</version>
+        <version>3.1.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.bouncycastle</groupId>
+        <artifactId>bcprov-jdk15on</artifactId>
+        <version>${bouncycastle.version}</version>
       </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -629,7 +696,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <modules>
     <module>modules/activiti-bpmn-model</module>
     <module>modules/activiti-process-validation</module>
@@ -642,7 +708,6 @@
     <module>modules/activiti-dmn-api</module>
     <module>modules/activiti-engine</module>
   </modules>
-
   <build>
     <plugins>
       <plugin>
@@ -745,6 +810,9 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven-javadoc-plugin.version}</version>
+          <configuration>
+            <quiet>true</quiet>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -902,7 +970,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
   <profiles>
     <profile>
       <id>nofail</id>
@@ -1241,6 +1308,7 @@
             <version>3.1.1</version>
             <configuration>
               <failBuildOnCVSS>7</failBuildOnCVSS>
+              <bundleAuditAnalyzerEnabled>false</bundleAuditAnalyzerEnabled>
             </configuration>
             <executions>
               <execution>
