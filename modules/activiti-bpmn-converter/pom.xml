@@ -12,7 +12,7 @@
     <relativePath>../..</relativePath>
     <version>6.0.1-SNAPSHOT</version>
   </parent>
-  
+
   <properties>
     <activiti.artifact>
       org.activiti.bpmn.converter
@@ -108,8 +108,8 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>jcl-over-slf4j</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -120,8 +120,8 @@
       <artifactId>joda-time</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -135,7 +135,7 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
-  
+
   <profiles>
     <profile>
       <id>distro</id>

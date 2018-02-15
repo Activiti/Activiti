@@ -160,30 +160,47 @@
     <dependency>
       <groupId>org.mule.transports</groupId>
       <artifactId>mule-transport-http</artifactId>
-      <version>${mule.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mule.transports</groupId>
       <artifactId>mule-transport-vm</artifactId>
-      <version>${mule.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mule.modules</groupId>
       <artifactId>mule-module-scripting</artifactId>
-      <version>${mule.version}</version>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mule</groupId>
+      <artifactId>mule-core</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.mule.modules</groupId>
       <artifactId>mule-module-spring-security</artifactId>
-      <version>${mule.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-ldap</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.mule.tests</groupId>
       <artifactId>mule-tests-functional</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.bouncycastle</groupId>
+          <artifactId>bcprov-jdk16</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15on</artifactId>
     </dependency>
   </dependencies>
   <profiles>
@@ -220,11 +237,10 @@
     </plugins>
   </reporting>
   <repositories>
-      <repository>
-          <id>mulesoft-releases</id>
-          <name>MuleSoft Releases Repository</name>
-          <url>https://repository-master.mulesoft.org/nexus/content/groups/public/</url>
-          <layout>default</layout>
-      </repository>
+    <repository>
+      <id>mulesoft-releases</id>
+      <name>MuleSoft Releases Repository</name>
+      <url>https://repository-master.mulesoft.org/nexus/content/groups/public/</url>
+    </repository>
   </repositories>
 </project>

@@ -10,6 +10,10 @@
 
   <artifactId>spring-boot-sample-actuator</artifactId>
 
+  <properties>
+    <suppressionFile>${basedir}/../../../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
