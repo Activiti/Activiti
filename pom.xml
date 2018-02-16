@@ -1,12 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <name>Activiti - Parent</name>
-  <description>BPM and workflow engine (Parent)</description>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-parent</artifactId>
-  <packaging>pom</packaging>
   <version>7-201802-EA-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Activiti - Parent</name>
+  <description>BPM and workflow engine (Parent)</description>
   <properties>
     <version.activiti>7-201802-EA-SNAPSHOT</version.activiti>
     <!--configuration properties-->
@@ -22,70 +22,44 @@
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
 
-    <!-- Spring Version: We need to keep these ones aligned with Spring Boot -->
-    <!--  Today this is aligned with Spring Boot 2.0.0.M7 -->
-    <spring.version>5.0.2.RELEASE</spring.version>
-    <jackson.version>2.9.2</jackson.version>
-
-
-    <!-- JPA Hibernate is needed for testing -->
-    <hibernate-core.version>5.2.2.Final</hibernate-core.version>
-    <hibernate-jpa-2.1-api.version>1.0.0.Final</hibernate-jpa-2.1-api.version>
-
-
-    <!-- other properties -->
-
-    <mockito.version>2.11.0</mockito.version>
-    <junit.version>4.12</junit.version>
+    <!-- dependency -->
+    <spring-boot.version>2.0.0.RC1</spring-boot.version>
+    <jackson.version>2.9.4</jackson.version>
     <assertj.version>3.8.0</assertj.version>
     <jsonunit.version>1.24.0</jsonunit.version>
     <el-api.version>2.2</el-api.version>
-    <slf4j.version>1.7.6</slf4j.version>
-    <commons-lang3.version>3.3.2</commons-lang3.version>
     <commons-io.version>2.0.1</commons-io.version>
     <commons-fileupload.version>1.2.2</commons-fileupload.version>
-    <servlet-api.version>2.5</servlet-api.version>
     <javax.enterprise.concurrent-api.version>1.0</javax.enterprise.concurrent-api.version>
     <juel.version>2.2.7</juel.version>
     <commons-email.version>1.5</commons-email.version>
     <geronimo.version>1.1.1</geronimo.version>
     <mybatis.version>3.4.2</mybatis.version>
-    <joda-time.version>2.6</joda-time.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
-    <httpclient.version>4.5</httpclient.version>
-    <httpcore.version>4.4.1</httpcore.version>
-    <javax.mail.version>1.4.1</javax.mail.version>
-    <groovy-all.version>2.4.5</groovy-all.version>
-    <groovy.version>1.7.5</groovy.version>
     <jaxb-api.version>2.2.11</jaxb-api.version>
-    <h2.version>1.4.193</h2.version>
-    <commons-dbcp.version>1.4</commons-dbcp.version>
-    <postgresql.version>9.4-1201-jdbc4</postgresql.version>
     <java-uuid-generator.version>3.1.3</java-uuid-generator.version>
     <jgraphx.version>1.10.4.1</jgraphx.version>
-    <btm.version>2.1.3</btm.version>
     <jsr250-api.version>1.0</jsr250-api.version>
-    <httpmime.version>4.3.5</httpmime.version>
     <batik.version>1.9.1</batik.version>
-
 
     <!-- plugins -->
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
-    <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
-    <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
-    <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
+    <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+    <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>2.20.1</maven-failsafe-plugin.version>
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>2.10.4</maven-javadoc-plugin.version>
+    <maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-    <maven.enforcer.plugin.version>1.4.1</maven.enforcer.plugin.version>
-    <jacoco.maven.plugin.version>0.7.9</jacoco.maven.plugin.version>
+    <maven-enforcer-plugin.version>1.4.1</maven-enforcer-plugin.version>
+    <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
     <extra-enforcer-rules.version>1.0-beta-6</extra-enforcer-rules.version>
     <illegal-transitive-dependency-check.version>1.7.4</illegal-transitive-dependency-check.version>
-    <directory.maven.plugin.version>0.1</directory.maven.plugin.version>
-    <assertions-generator-plugin.version>2.0.0</assertions-generator-plugin.version>
-    <jgitflow.plugin.version>1.0-m5.1</jgitflow.plugin.version>
+    <directory-maven-plugin.version>0.1</directory-maven-plugin.version>
+    <assertj-assertions-generator-maven-plugin.version>2.0.0</assertj-assertions-generator-maven-plugin.version>
+    <jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
     <dependency-check-maven.version>3.1.1</dependency-check-maven.version>
   </properties>
 
@@ -150,13 +124,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-framework-bom</artifactId>
-        <version>${spring.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>com.fasterxml.jackson</groupId>
         <artifactId>jackson-bom</artifactId>
         <version>${jackson.version}</version>
@@ -164,35 +131,16 @@
         <scope>import</scope>
       </dependency>
       <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>javax.el</groupId>
         <artifactId>el-api</artifactId>
         <version>${el-api.version}</version>
-      </dependency>
-      <!-- Logging -->
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>jcl-over-slf4j</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-jdk14</artifactId>
-        <version>${slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-lang3</artifactId>
-        <version>${commons-lang3.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -203,11 +151,6 @@
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
         <version>${commons-fileupload.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.servlet</groupId>
-        <artifactId>servlet-api</artifactId>
-        <version>${servlet-api.version}</version>
       </dependency>
       <dependency>
         <groupId>javax.enterprise.concurrent</groupId>
@@ -231,19 +174,6 @@
         <version>${juel.version}</version>
       </dependency>
 
-      <!-- JPA / Hibernate -> this should be removed -->
-      <dependency>
-        <groupId>org.hibernate.javax.persistence</groupId>
-        <artifactId>hibernate-jpa-2.1-api</artifactId>
-        <version>${hibernate-jpa-2.1-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-core</artifactId>
-        <version>${hibernate-core.version}</version>
-        <optional>true</optional>
-      </dependency>
-
       <!-- EMAIL -->
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -260,11 +190,6 @@
         <groupId>org.mybatis</groupId>
         <artifactId>mybatis</artifactId>
         <version>${mybatis.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time</artifactId>
-        <version>${joda-time.version}</version>
       </dependency>
       <dependency>
         <groupId>math.geom2d</groupId>
@@ -323,27 +248,9 @@
 
       <!-- Test -->
       <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-services-test</artifactId>
         <version>${project.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.assertj</groupId>
-        <artifactId>assertj-core</artifactId>
-        <version>${assertj.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-core</artifactId>
-        <version>${mockito.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -365,74 +272,9 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpclient</artifactId>
-        <version>${httpclient.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpcore</artifactId>
-        <version>${httpcore.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>javax.mail</groupId>
-        <artifactId>mail</artifactId>
-        <version>${javax.mail.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy-all</artifactId>
-        <version>${groovy-all.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.groovy</groupId>
-        <artifactId>groovy</artifactId>
-        <version>${groovy.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
         <groupId>javax.xml.bind</groupId>
         <artifactId>jaxb-api</artifactId>
         <version>${jaxb-api.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-validator</artifactId>
-        <version>${hibernate-validator.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.httpcomponents</groupId>
-        <artifactId>httpmime</artifactId>
-        <version>${httpmime.version}</version>
-        <scope>test</scope>
-      </dependency>
-
-      <!-- TEST(DB) -->
-      <dependency>
-        <groupId>com.h2database</groupId>
-        <artifactId>h2</artifactId>
-        <version>${h2.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>commons-dbcp</groupId>
-        <artifactId>commons-dbcp</artifactId>
-        <version>${commons-dbcp.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.postgresql</groupId>
-        <artifactId>postgresql</artifactId>
-        <version>${postgresql.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.codehaus.btm</groupId>
-        <artifactId>btm</artifactId>
-        <version>${btm.version}</version>
         <scope>test</scope>
       </dependency>
     </dependencies>
@@ -441,6 +283,7 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
@@ -452,6 +295,7 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
@@ -472,7 +316,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco.maven.plugin.version}</version>
+        <version>${jacoco-maven-plugin.version}</version>
         <executions>
           <!-- Unit tests configuration-->
           <execution>
@@ -508,6 +352,11 @@
     </plugins>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.commonjava.maven.plugins</groupId>
+          <artifactId>directory-maven-plugin</artifactId>
+          <version>${directory-maven-plugin.version}</version>
+        </plugin>
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
@@ -557,16 +406,14 @@
           <artifactId>maven-jar-plugin</artifactId>
           <version>${maven-jar-plugin.version}</version>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>${maven-javadoc-plugin.version}</version>
           <configuration>
-            <additionalparam>-Xdoclint:none</additionalparam>
+            <doclint>none</doclint>
           </configuration>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
@@ -582,7 +429,7 @@
         <plugin>
           <groupId>external.atlassian.jgitflow</groupId>
           <artifactId>jgitflow-maven-plugin</artifactId>
-          <version>${jgitflow.plugin.version}</version>
+          <version>${jgitflow-maven-plugin.version}</version>
           <configuration>
             <enableFeatureVersions>true</enableFeatureVersions>
             <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -600,7 +447,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-enforcer-plugin</artifactId>
-          <version>${maven.enforcer.plugin.version}</version>
+          <version>${maven-enforcer-plugin.version}</version>
           <dependencies>
             <dependency>
               <groupId>org.codehaus.mojo</groupId>
@@ -715,6 +562,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${maven-checkstyle-plugin.version}</version>
           <executions>
             <execution>
               <id>validate</id>
@@ -785,7 +633,7 @@
         <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
-          <version>${spring.boot.version}</version>
+          <version>${spring-boot.version}</version>
           <executions>
             <execution>
               <goals>
@@ -797,7 +645,7 @@
         <plugin>
           <groupId>org.assertj</groupId>
           <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
-          <version>${assertions-generator-plugin.version}</version>
+          <version>${assertj-assertions-generator-maven-plugin.version}</version>
           <dependencies>
             <dependency>
               <groupId>org.assertj</groupId>
@@ -823,6 +671,7 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
             <version>${maven-gpg-plugin.version}</version>
             <executions>
