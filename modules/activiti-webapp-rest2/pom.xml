@@ -12,14 +12,14 @@
     <relativePath>../..</relativePath>
     <version>6.0.1-SNAPSHOT</version>
   </parent>
-  
+
   <!-- swagger config -->
-   <properties>
+  <properties>
     <swagger.host>localhost:8080</swagger.host>
     <swagger.generated.directory>target/generated-swagger</swagger.generated.directory>
   </properties>
   <!-- swagger config end-->
-  
+
   <build>
     <plugins>
       <plugin>
@@ -36,15 +36,15 @@
         </executions>
       </plugin>
       <plugin>
-	    <groupId>org.apache.tomcat.maven</groupId>
+        <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat7-maven-plugin</artifactId>
-		<configuration>
-		  <port>8080</port>
-		  <path>/activiti-rest</path>
-		  <systemProperties>
-		    <com.sun.management.jmxremote.port>4000</com.sun.management.jmxremote.port>
+        <configuration>
+          <port>8080</port>
+          <path>/activiti-rest</path>
+          <systemProperties>
+            <com.sun.management.jmxremote.port>4000</com.sun.management.jmxremote.port>
           </systemProperties>
-		</configuration>
+        </configuration>
       </plugin>
     </plugins>
     <pluginManagement>
@@ -86,34 +86,33 @@
 
   <profiles>
     <profile>
-	  <id>buildExecutableWar</id>
-	    <build>
-		  <plugins>
-            <plugin>
-              <groupId>org.apache.tomcat.maven</groupId>
-			  <artifactId>tomcat7-maven-plugin</artifactId>
-			  <version>2.1</version>
-			  <configuration>
-			    <path>/</path>
-			  </configuration>
-			  <executions>
-			    <execution>
-				  <id>tomcat-run</id>
-				  <goals>
-				    <goal>exec-war-only</goal>
-				  </goals>
-				  <phase>package</phase>
-				  <configuration>
-                    <path>/activiti-rest</path>
-                  </configuration>
-				</execution>
-			  </executions>
-			</plugin>
-		  </plugins>
-	  </build>
+      <id>buildExecutableWar</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.tomcat.maven</groupId>
+            <artifactId>tomcat7-maven-plugin</artifactId>
+            <configuration>
+              <path>/</path>
+            </configuration>
+            <executions>
+              <execution>
+                <id>tomcat-run</id>
+                <goals>
+                  <goal>exec-war-only</goal>
+                </goals>
+                <phase>package</phase>
+                <configuration>
+                  <path>/activiti-rest</path>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
-    
-    
+
+
     <!-- swagger profile config -->
     <profile>
       <id>swagger</id>
@@ -160,7 +159,7 @@
                   <swaggerFileName>activiti</swaggerFileName>
                   <swaggerDirectory>${basedir}/src/main/webapp/docs</swaggerDirectory>
                 </apiSource>
-                
+
               </apiSources>
             </configuration>
             <executions>
@@ -176,9 +175,9 @@
       </build>
     </profile>
     <!-- swagger profile config end-->
-    
+
   </profiles>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
