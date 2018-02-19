@@ -14,7 +14,7 @@
   <description>BPM and workflow engine</description>
 
   <properties>
-    <version.activiti>7-201802-EA-daisuke_1687_signal_cloud-SNAPSHOT</version.activiti>
+    <version.activiti>7-201802-EA-SNAPSHOT</version.activiti>
   </properties>
 
   <distributionManagement>

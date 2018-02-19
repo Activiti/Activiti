@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <version>7-201802-EA-daisuke_1687_signal_cloud-SNAPSHOT</version>
+    <version>7-201802-EA-SNAPSHOT</version>
   </parent>
 
   <properties>
