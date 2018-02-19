@@ -54,7 +54,7 @@ import org.osgi.framework.Constants;
 
 /**
  * Test class to do basic testing against an OSGi container using the Activiti blueprint functionality
- * 
+ *
  * @author Tijs Rademakers
  */
 
@@ -62,110 +62,109 @@ import org.osgi.framework.Constants;
 @ExamReactorStrategy(PerMethod.class)
 public class BlueprintBasicTest {
 
-  @Inject
-  protected BundleContext ctx;
+    @Inject
+    protected BundleContext ctx;
 
-  @Inject
-  protected ProcessEngine processEngine;
+    @Inject
+    protected ProcessEngine processEngine;
 
-  @Inject
-  protected RuntimeService runtimeService;
+    @Inject
+    protected RuntimeService runtimeService;
 
-  @Inject
-  protected RepositoryService repositoryService;
+    @Inject
+    protected RepositoryService repositoryService;
 
-  @Inject
-  protected HistoryService historyService;
+    @Inject
+    protected HistoryService historyService;
 
-  @Configuration
-  public Option[] createConfiguration() {
-    Option[] coreBundles = options(
-        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version(asInProject()),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version(asInProject()),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version(asInProject()),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version(asInProject()),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-form-model").version(asInProject()),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-form-api").version(asInProject()),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-dmn-model").version(asInProject()),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-dmn-api").version(asInProject()),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version(asInProject()),
-        mavenBundle().groupId("org.apache.commons").artifactId("commons-lang3").version(asInProject()),
-        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-core").version(asInProject()),
-        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-databind").version(asInProject()),
-        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-annotations").version(asInProject()),
-        mavenBundle().groupId("de.odysseus.juel").artifactId("juel-api").version(asInProject()),
-        mavenBundle().groupId("de.odysseus.juel").artifactId("juel-impl").version(asInProject()),
-        mavenBundle().groupId("de.odysseus.juel").artifactId("juel-spi").version(asInProject()),
-        mavenBundle().groupId("log4j").artifactId("log4j").version(asInProject()),
-        mavenBundle().groupId("joda-time").artifactId("joda-time").version(asInProject()),
-        mavenBundle().groupId("com.h2database").artifactId("h2").version(asInProject()),
-        mavenBundle().groupId("org.mybatis").artifactId("mybatis").version(asInProject()),
-        mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").version(asInProject()),
-        mavenBundle().groupId("org.slf4j").artifactId("slf4j-log4j12").version(asInProject()).noStart(),
-        mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").version("3.5.4"),
-        mavenBundle().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint.core").version("1.6.2"),
-        mavenBundle().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy").version("1.0.1"),
-        mavenBundle().groupId("org.apache.aries").artifactId("org.apache.aries.util").version("1.1.1"), 
-        mavenBundle().groupId("org.osgi").artifactId("org.osgi.enterprise").version("5.0.0"),
-        bundle("reference:file:target/classes"));
+    @Configuration
+    public Option[] createConfiguration() {
+        Option[] coreBundles = options(
+                mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version(asInProject()),
+                mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version(asInProject()),
+                mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version(asInProject()),
+                mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version(asInProject()),
+                mavenBundle().groupId("org.activiti").artifactId("activiti-form-model").version(asInProject()),
+                mavenBundle().groupId("org.activiti").artifactId("activiti-form-api").version(asInProject()),
+                mavenBundle().groupId("org.activiti").artifactId("activiti-dmn-model").version(asInProject()),
+                mavenBundle().groupId("org.activiti").artifactId("activiti-dmn-api").version(asInProject()),
+                mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version(asInProject()),
+                mavenBundle().groupId("org.apache.commons").artifactId("commons-lang3").version(asInProject()),
+                mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-core").version(asInProject()),
+                mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-databind").version(asInProject()),
+                mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-annotations").version(asInProject()),
+                mavenBundle().groupId("de.odysseus.juel").artifactId("juel-api").version(asInProject()),
+                mavenBundle().groupId("de.odysseus.juel").artifactId("juel-impl").version(asInProject()),
+                mavenBundle().groupId("de.odysseus.juel").artifactId("juel-spi").version(asInProject()),
+                mavenBundle().groupId("joda-time").artifactId("joda-time").version(asInProject()),
+                mavenBundle().groupId("com.h2database").artifactId("h2").version(asInProject()),
+                mavenBundle().groupId("org.mybatis").artifactId("mybatis").version(asInProject()),
+                mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").version(asInProject()),
+                mavenBundle().groupId("ch.qos.logback").artifactId("logback-classic").version(asInProject()),
+                mavenBundle().groupId("org.apache.felix").artifactId("org.apache.felix.fileinstall").version("3.5.4"),
+                mavenBundle().groupId("org.apache.aries.blueprint").artifactId("org.apache.aries.blueprint.core").version("1.6.2"),
+                mavenBundle().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy").version("1.0.1"),
+                mavenBundle().groupId("org.apache.aries").artifactId("org.apache.aries.util").version("1.1.1"),
+                mavenBundle().groupId("org.osgi").artifactId("org.osgi.enterprise").version("5.0.0"),
+                bundle("reference:file:target/classes"));
 
-    Option[] optionArray = OptionUtils.combine(coreBundles, CoreOptions.junitBundles(),
-        provision(createTestBundleWithProcessEngineConfiguration(), createTestBundleWithProcessDefinition(), createTestBundleWithTask()));
-    return optionArray;
-  }
-
-  protected InputStream createTestBundleWithProcessEngineConfiguration() {
-    try {
-      return TinyBundles.bundle().add("OSGI-INF/blueprint/context.xml", new FileInputStream(new File("src/test/resources/config/context.xml")))
-          .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.config").set(Constants.DYNAMICIMPORT_PACKAGE, "*").build();
-    } catch (FileNotFoundException fnfe) {
-      fail("Failure in createTestBundleWithProcessEngineConfiguration " + fnfe.toString());
-      return null;
+        Option[] optionArray = OptionUtils.combine(coreBundles, CoreOptions.junitBundles(),
+                provision(createTestBundleWithProcessEngineConfiguration(), createTestBundleWithProcessDefinition(), createTestBundleWithTask()));
+        return optionArray;
     }
-  }
 
-  protected InputStream createTestBundleWithProcessDefinition() {
-    try {
-      return TinyBundles.bundle().add("OSGI-INF/activiti/example.bpmn20.xml", new FileInputStream(new File("src/test/resources/processes/example.bpmn20.xml")))
-          .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.example").build();
-    } catch (FileNotFoundException fnfe) {
-      fail("Failure in createTestBundleWithProcessDefinition " + fnfe.toString());
-      return null;
+    protected InputStream createTestBundleWithProcessEngineConfiguration() {
+        try {
+            return TinyBundles.bundle().add("OSGI-INF/blueprint/context.xml", new FileInputStream(new File("src/test/resources/config/context.xml")))
+                    .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.config").set(Constants.DYNAMICIMPORT_PACKAGE, "*").build();
+        } catch (FileNotFoundException fnfe) {
+            fail("Failure in createTestBundleWithProcessEngineConfiguration " + fnfe.toString());
+            return null;
+        }
     }
-  }
 
-  protected InputStream createTestBundleWithTask() {
-    try {
-      return TinyBundles.bundle().add("OSGI-INF/blueprint/context.xml", new FileInputStream(new File("src/test/resources/task/context.xml"))).add(SimpleBean.class).add(ActivityBehaviourBean.class)
-          .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.task").set(Constants.DYNAMICIMPORT_PACKAGE, "*").build();
-    } catch (FileNotFoundException fnfe) {
-      fail("Failure in createTestBundleWithTask " + fnfe.toString());
-      return null;
+    protected InputStream createTestBundleWithProcessDefinition() {
+        try {
+            return TinyBundles.bundle().add("OSGI-INF/activiti/example.bpmn20.xml", new FileInputStream(new File("src/test/resources/processes/example.bpmn20.xml")))
+                    .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.example").build();
+        } catch (FileNotFoundException fnfe) {
+            fail("Failure in createTestBundleWithProcessDefinition " + fnfe.toString());
+            return null;
+        }
     }
-  }
 
-  @Test
-  public void exportedServices() throws Exception {
-    assertNotNull(processEngine);
-    assertNotNull(repositoryService);
-    // wait for deployment to be done
-    Thread.sleep(5000);
-    Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
-    assertEquals("org.activiti.osgi.example", deployment.getName());
-    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-    assertEquals("osgiProcess", processDefinition.getKey());
-  }
+    protected InputStream createTestBundleWithTask() {
+        try {
+            return TinyBundles.bundle().add("OSGI-INF/blueprint/context.xml", new FileInputStream(new File("src/test/resources/task/context.xml"))).add(SimpleBean.class).add(ActivityBehaviourBean.class)
+                    .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.task").set(Constants.DYNAMICIMPORT_PACKAGE, "*").build();
+        } catch (FileNotFoundException fnfe) {
+            fail("Failure in createTestBundleWithTask " + fnfe.toString());
+            return null;
+        }
+    }
 
-  @Test
-  public void exportJavaDelegate() throws Exception {
-    // wait for deployment to be done
-    Thread.sleep(5000);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("osgiProcess");
-    assertTrue(processInstance.isEnded());
-    HistoricVariableInstance variable = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).variableName("visited").singleResult();
-    assertTrue((Boolean) variable.getValue());
-    HistoricVariableInstance activityBehaviourVisited = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).variableName("visitedActivityBehaviour")
-        .singleResult();
-    assertTrue((Boolean) activityBehaviourVisited.getValue());
-  }
+    @Test
+    public void exportedServices() throws Exception {
+        assertNotNull(processEngine);
+        assertNotNull(repositoryService);
+        // wait for deployment to be done
+        Thread.sleep(5000);
+        Deployment deployment = repositoryService.createDeploymentQuery().singleResult();
+        assertEquals("org.activiti.osgi.example", deployment.getName());
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+        assertEquals("osgiProcess", processDefinition.getKey());
+    }
+
+    @Test
+    public void exportJavaDelegate() throws Exception {
+        // wait for deployment to be done
+        Thread.sleep(5000);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("osgiProcess");
+        assertTrue(processInstance.isEnded());
+        HistoricVariableInstance variable = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).variableName("visited").singleResult();
+        assertTrue((Boolean) variable.getValue());
+        HistoricVariableInstance activityBehaviourVisited = historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).variableName("visitedActivityBehaviour")
+                .singleResult();
+        assertTrue((Boolean) activityBehaviourVisited.getValue());
+    }
 }

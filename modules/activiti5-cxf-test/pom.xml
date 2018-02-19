@@ -12,7 +12,7 @@
     <relativePath>../..</relativePath>
     <version>6.0.1-SNAPSHOT</version>
   </parent>
-  
+
   <build>
     <resources>
       <resource>
@@ -111,10 +111,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-	  <groupId>org.activiti</groupId>
-	  <artifactId>activiti5-spring-compatibility</artifactId>
-	  <scope>provided</scope>
-	</dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti5-spring-compatibility</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -163,11 +163,11 @@
       <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-log4j12</artifactId>
-         <scope>test</scope>
-      </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <profiles>
