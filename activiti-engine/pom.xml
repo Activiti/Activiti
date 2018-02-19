@@ -25,10 +25,6 @@
       <artifactId>activiti-process-validation</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.hibernate.javax.persistence</groupId>
-      <artifactId>hibernate-jpa-2.1-api</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-email</artifactId>
     </dependency>
@@ -137,8 +133,8 @@
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-core</artifactId>
-      <scope>test</scope>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <optional>true</optional>
     </dependency>
 
   </dependencies>
