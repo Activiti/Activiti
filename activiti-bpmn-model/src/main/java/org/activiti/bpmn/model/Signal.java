@@ -14,6 +14,7 @@ package org.activiti.bpmn.model;
 
 public class Signal extends BaseElement {
 
+  public static final String SCOPE_BROADCAST = "broadcast";
   public static final String SCOPE_GLOBAL = "global";
   public static final String SCOPE_PROCESS_INSTANCE = "processInstance";
 
