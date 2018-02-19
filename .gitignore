@@ -12,5 +12,6 @@ target
 migration.html
 /modules/**/bin
 modules/activiti-ui/activiti-app/data
+bower_components
 modules/activiti-webapp-rest2/src/main/webapp/docs/*.json
 modules/activiti-webapp-rest2/src/main/webapp/docs/*.yaml
