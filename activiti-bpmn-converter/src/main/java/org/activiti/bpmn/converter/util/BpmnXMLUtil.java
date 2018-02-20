@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.stream.Location;
+import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -400,5 +400,27 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       }
     }
     return false;
+  }
+
+  /**
+   * 'safe' is here reflecting:
+   * http://activiti.org/userguide/index.html#advanced.safe.bpmn.xml
+   */
+  public static XMLInputFactory createSafeXmlInputFactory() {
+    XMLInputFactory xif = XMLInputFactory.newInstance();
+    if (xif.isPropertySupported(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES)) {
+      xif.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES,
+                      false);
+    }
+
+    if (xif.isPropertySupported(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES)) {
+      xif.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES,
+                      false);
+    }
+
+    if (xif.isPropertySupported(XMLInputFactory.SUPPORT_DTD)) {
+      xif.setProperty(XMLInputFactory.SUPPORT_DTD, false);
+    }
+    return xif;
   }
 }
