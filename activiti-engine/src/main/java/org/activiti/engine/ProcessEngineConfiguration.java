@@ -117,7 +117,6 @@ public abstract class ProcessEngineConfiguration {
   protected String jdbcUsername = "sa";
   protected String jdbcPassword = "";
   protected String dataSourceJndiName;
-  protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
   protected HistoryLevel historyLevel;
   protected int jdbcMaxActiveConnections;
@@ -465,15 +464,6 @@ public abstract class ProcessEngineConfiguration {
 
   public ProcessEngineConfiguration setHistoryLevel(HistoryLevel historyLevel) {
     this.historyLevel = historyLevel;
-    return this;
-  }
-
-  public boolean isDbIdentityUsed() {
-    return isDbIdentityUsed;
-  }
-
-  public ProcessEngineConfiguration setDbIdentityUsed(boolean isDbIdentityUsed) {
-    this.isDbIdentityUsed = isDbIdentityUsed;
     return this;
   }
 
