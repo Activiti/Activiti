@@ -115,9 +115,11 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     if (!StringUtils.isEmpty(businessKey)) {
       Expression expression = expressionManager.createExpression(businessKey);
       subProcessInstance.setBusinessKey(expression.getValue(execution).toString());
+      Context.getCommandContext().getHistoryManager().updateProcessBusinessKeyInHistory((ExecutionEntity) subProcessInstance);
     } else if (inheritBusinessKey) {
       ExecutionEntity processInstance = executionEntityManager.findExecutionById(execution.getProcessInstanceId());
       subProcessInstance.setBusinessKey(processInstance.getBusinessKey());
+      Context.getCommandContext().getHistoryManager().updateProcessBusinessKeyInHistory((ExecutionEntity) subProcessInstance);
     }
 
     if (inheritVariables) {

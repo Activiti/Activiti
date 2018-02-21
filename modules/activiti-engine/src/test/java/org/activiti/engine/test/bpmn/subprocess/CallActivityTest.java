@@ -23,6 +23,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
@@ -268,10 +269,14 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     pi = runtimeService.startProcessInstanceByKey("mainProcessBusinessKey", variables);
     subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
     assertEquals("123", subProcessInstance.getBusinessKey());
+    HistoricProcessInstance historicSubProcessInstance = historyService.createHistoricProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertEquals("123", historicSubProcessInstance.getBusinessKey());
 
     // Inherit business key
     pi = runtimeService.startProcessInstanceByKey("mainProcessInheritBusinessKey", "123");
     subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
     assertEquals("123", subProcessInstance.getBusinessKey());
+    historicSubProcessInstance = historyService.createHistoricProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertEquals("123", historicSubProcessInstance.getBusinessKey());
   }
 }
