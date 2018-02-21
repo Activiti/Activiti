@@ -36,50 +36,85 @@ public class ServiceTaskParseHandler extends AbstractActivityBpmnParseHandler<Se
 
     // Email, Mule and Shell service tasks
     if (StringUtils.isNotEmpty(serviceTask.getType())) {
-
-      if (serviceTask.getType().equalsIgnoreCase("mail")) {
-        serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createMailActivityBehavior(serviceTask));
-
-      } else if (serviceTask.getType().equalsIgnoreCase("mule")) {
-        serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createMuleActivityBehavior(serviceTask));
-
-      } else if (serviceTask.getType().equalsIgnoreCase("camel")) {
-        serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(serviceTask));
-
-      } else if (serviceTask.getType().equalsIgnoreCase("shell")) {
-        serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createShellActivityBehavior(serviceTask));
-        
-      } else if (serviceTask.getType().equalsIgnoreCase("dmn")) {
-        serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createDmnActivityBehavior(serviceTask));
-
-      } else {
-        logger.warn("Invalid service task type: '" + serviceTask.getType() + "' " + " for service task " + serviceTask.getId());
-      }
-
+      createActivityBehaviorForServiceTaskType(bpmnParse, serviceTask);
       // activiti:class
     } else if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(serviceTask.getImplementationType())) {
-
       serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createClassDelegateServiceTask(serviceTask));
-
       // activiti:delegateExpression
     } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
-
       serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createServiceTaskDelegateExpressionActivityBehavior(serviceTask));
-
       // activiti:expression
     } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
-
       serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createServiceTaskExpressionActivityBehavior(serviceTask));
-
       // Webservice
     } else if (ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(serviceTask.getImplementationType()) && StringUtils.isNotEmpty(serviceTask.getOperationRef())) {
-
       WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(serviceTask);
       serviceTask.setBehavior(webServiceActivityBehavior);
-      
     } else {
-      logger.warn("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask " + serviceTask.getId());
+      createDefaultServiceTaskActivityBehavior(bpmnParse, serviceTask);
     }
 
   }
+  
+  protected void createActivityBehaviorForServiceTaskType(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    if (serviceTask.getType().equalsIgnoreCase("mail")) {
+      createMailActivityBehavior(bpmnParse, serviceTask);
+    } else if (serviceTask.getType().equalsIgnoreCase("mule")) {
+      createMuleActivityBehavior(bpmnParse, serviceTask);
+    } else if (serviceTask.getType().equalsIgnoreCase("camel")) {
+      createCamelActivityBehavior(bpmnParse, serviceTask);
+    } else if (serviceTask.getType().equalsIgnoreCase("shell")) {
+      createShellActivityBehavior(bpmnParse, serviceTask);
+    } else if (serviceTask.getType().equalsIgnoreCase("dmn")) {
+      createDmnActivityBehavior(bpmnParse, serviceTask);
+    } else {
+      createActivityBehaviorForCustomServiceTaskType(bpmnParse, serviceTask);
+    }
+  }
+
+  protected void createMailActivityBehavior(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createMailActivityBehavior(serviceTask));
+  }
+
+  protected void createMuleActivityBehavior(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createMuleActivityBehavior(serviceTask));
+  }
+
+  protected void createCamelActivityBehavior(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(serviceTask));
+  }
+
+  protected void createShellActivityBehavior(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createShellActivityBehavior(serviceTask));
+  }
+  
+  protected void createDmnActivityBehavior(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createDmnActivityBehavior(serviceTask));
+  }
+  
+  protected void createActivityBehaviorForCustomServiceTaskType(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    logger.warn("Invalid service task type: '" + serviceTask.getType() + "' " + " for service task " + serviceTask.getId());
+  }
+
+  protected void createClassDelegateServiceTask(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createClassDelegateServiceTask(serviceTask));
+  }
+
+  protected void createServiceTaskDelegateExpressionActivityBehavior(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createServiceTaskDelegateExpressionActivityBehavior(serviceTask));
+  }
+
+  protected void createServiceTaskExpressionActivityBehavior(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createServiceTaskExpressionActivityBehavior(serviceTask));
+  }
+
+  protected void createWebServiceActivityBehavior(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(serviceTask);
+    serviceTask.setBehavior(webServiceActivityBehavior);
+  }
+
+  protected void createDefaultServiceTaskActivityBehavior(BpmnParse bpmnParse, ServiceTask serviceTask) {
+    logger.warn("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask " + serviceTask.getId());
+  }
+
 }
