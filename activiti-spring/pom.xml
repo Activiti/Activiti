@@ -1,35 +1,14 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <name>Activiti - Spring</name>
-  <artifactId>activiti-spring</artifactId>
-
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <version>7-201802-EA-SNAPSHOT</version>
   </parent>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <activiti.artifact>
-      org.activiti.spring
-    </activiti.artifact>
-  </properties>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>${jdk.version}</source>
-          <target>${jdk.version}</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
+  <artifactId>activiti-spring</artifactId>
+  <name>Activiti :: Spring</name>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -120,15 +99,14 @@
       <artifactId>hibernate-entitymanager</artifactId>
       <optional>true</optional>
     </dependency>
-
   </dependencies>
-
   <profiles>
     <profile>
       <id>check</id>
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
@@ -158,6 +136,7 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
@@ -203,6 +182,7 @@
             </executions>
           </plugin>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <systemProperties>
@@ -214,12 +194,16 @@
               <excludes>
                 <exclude>org/activiti/standalone/**</exclude>
                 <exclude>**/*TestCase.java</exclude>
-                <exclude>**/ActivitiRuleJunit4Test.java</exclude><!-- Can't run in
-									Spring since ActivitiRule must be used different in Spring -->
-                <exclude>**/CompetingJobAcquisitionTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-234 -->
-                <exclude>**/WSDLImporterTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-315 -->
-                <exclude>**/JobExecutorTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-427 -->
-                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude> <!-- https://activiti.atlassian.net/browse/ACT-485 -->
+                <!-- Can't run in Spring since ActivitiRule must be used different in Spring -->
+                <exclude>**/ActivitiRuleJunit4Test.java</exclude>
+                <!-- https://activiti.atlassian.net/browse/ACT-234 -->
+                <exclude>**/CompetingJobAcquisitionTest.java</exclude>
+                <!-- https://activiti.atlassian.net/browse/ACT-315 -->
+                <exclude>**/WSDLImporterTest.java</exclude>
+                <!-- https://activiti.atlassian.net/browse/ACT-427 -->
+                <exclude>**/JobExecutorTest.java</exclude>
+                <!-- https://activiti.atlassian.net/browse/ACT-485 -->
+                <exclude>**/HistoricTaskInstanceUpdateTest.java</exclude>
               </excludes>
               <runOrder>alphabetical</runOrder>
             </configuration>
