@@ -1,9 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <name>Activiti - BPMN Model</name>
-  <artifactId>activiti-bpmn-model</artifactId>
 
   <parent>
     <groupId>org.activiti</groupId>
@@ -11,11 +9,8 @@
     <version>7-201802-EA-SNAPSHOT</version>
   </parent>
 
-  <properties>
-    <activiti.artifact>
-      org.activiti.bpmn.model
-    </activiti.artifact>
-  </properties>
+  <artifactId>activiti-bpmn-model</artifactId>
+  <name>Activiti :: BPMN Model</name>
 
   <dependencies>
     <dependency>
@@ -35,4 +30,5 @@
       <artifactId>jackson-databind</artifactId>
     </dependency>
   </dependencies>
+
 </project>
