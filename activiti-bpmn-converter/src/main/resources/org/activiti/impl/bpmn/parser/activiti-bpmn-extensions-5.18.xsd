@@ -323,6 +323,15 @@
     </annotation>
   </attribute>
   
+  <attribute name="businessCalendarName" type="tns:tExpression">
+    <annotation>
+      <documentation>
+        User Task attribute specifies business calendar to use to resolve dueDate expression.
+        Business calendar with the given name has to be configured in process engine configuration.
+      </documentation>
+    </annotation>
+  </attribute>
+  
   <attribute name="candidateUsers">
     <annotation>
       <documentation>
@@ -384,6 +393,8 @@
   </complexType>
   
   <element name="potentialStarter" type="string" />
+  
+  <element name="businessCalendarName" type="string" />
   
   <element name="taskListener">
     <annotation>
