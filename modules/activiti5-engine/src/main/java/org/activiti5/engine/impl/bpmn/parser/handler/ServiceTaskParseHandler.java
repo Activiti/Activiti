@@ -38,75 +38,107 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
   }
   
   protected void executeParse(BpmnParse bpmnParse, ServiceTask serviceTask) {
-    
-      ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, serviceTask, BpmnXMLConstants.ELEMENT_TASK_SERVICE);
-      activity.setAsync(serviceTask.isAsynchronous());
-      activity.setFailedJobRetryTimeCycleValue(serviceTask.getFailedJobRetryTimeCycleValue());
-      activity.setExclusive(!serviceTask.isNotExclusive());
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, serviceTask, BpmnXMLConstants.ELEMENT_TASK_SERVICE);
+    activity.setAsync(serviceTask.isAsynchronous());
+    activity.setFailedJobRetryTimeCycleValue(serviceTask.getFailedJobRetryTimeCycleValue());
+    activity.setExclusive(!serviceTask.isNotExclusive());
 
-      // Email, Mule and Shell service tasks
-      if (StringUtils.isNotEmpty(serviceTask.getType())) {
-        
-        if (serviceTask.getType().equalsIgnoreCase("mail")) {
-          activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMailActivityBehavior(serviceTask));
-          
-        } else if (serviceTask.getType().equalsIgnoreCase("mule")) {
-          activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMuleActivityBehavior(serviceTask, bpmnParse.getBpmnModel()));
-          
-        } else if (serviceTask.getType().equalsIgnoreCase("camel")) {
-          activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(serviceTask, bpmnParse.getBpmnModel()));
-          
-        } else if (serviceTask.getType().equalsIgnoreCase("shell")) {
-          activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createShellActivityBehavior(serviceTask));
-          
-        } else {
-        	logger.warn("Invalid service task type: '" + serviceTask.getType() + "' " + " for service task " + serviceTask.getId());
-        }
-
+    // Email, Mule and Shell service tasks
+    if (StringUtils.isNotEmpty(serviceTask.getType())) {
+      createActivityBehaviorForServiceTaskType(activity, bpmnParse, serviceTask);
       // activiti:class
-      } else if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(serviceTask.getImplementationType())) {
-        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createClassDelegateServiceTask(serviceTask));
-        
+    } else if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(serviceTask.getImplementationType())) {
+      createClassDelegateServiceTask(activity, bpmnParse, serviceTask);
       // activiti:delegateExpression
-      } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
-        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createServiceTaskDelegateExpressionActivityBehavior(serviceTask));
-
+    } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
+      createServiceTaskDelegateExpressionActivityBehavior(activity, bpmnParse, serviceTask);
       // activiti:expression      
-      } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
-        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createServiceTaskExpressionActivityBehavior(serviceTask));
-
+    } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
+      createServiceTaskExpressionActivityBehavior(activity, bpmnParse, serviceTask);
       // Webservice   
-      } else if (ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(serviceTask.getImplementationType()) && 
-          StringUtils.isNotEmpty(serviceTask.getOperationRef())) {
-        
-        if (!bpmnParse.getOperations().containsKey(serviceTask.getOperationRef())) {
-        	logger.warn(serviceTask.getOperationRef() + " does not exist for service task " + serviceTask.getId());
-        } else {
-          
-          WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(serviceTask);
-          webServiceActivityBehavior.setOperation(bpmnParse.getOperations().get(serviceTask.getOperationRef()));
+    } else if (ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(serviceTask.getImplementationType()) && 
+            StringUtils.isNotEmpty(serviceTask.getOperationRef())) {
+      createWebServiceActivityBehavior(activity, bpmnParse, serviceTask);
+    } else {
+      createDefaultServiceTaskActivityBehavior(activity, bpmnParse, serviceTask);
+    }
+  }
 
-          if (serviceTask.getIoSpecification() != null) {
-            IOSpecification ioSpecification = createIOSpecification(bpmnParse, serviceTask.getIoSpecification());
-            webServiceActivityBehavior.setIoSpecification(ioSpecification);
-          }
+  protected void createActivityBehaviorForServiceTaskType(ActivityImpl activity, BpmnParse bpmnParse, ServiceTask serviceTask) {
+    if (serviceTask.getType().equalsIgnoreCase("mail")) {
+      createMailActivityBehavior(activity, bpmnParse, serviceTask);
+    } else if (serviceTask.getType().equalsIgnoreCase("mule")) {
+      createMuleActivityBehavior(activity, bpmnParse, serviceTask);
+    } else if (serviceTask.getType().equalsIgnoreCase("camel")) {
+      createCamelActivityBehavior(activity, bpmnParse, serviceTask);
+    } else if (serviceTask.getType().equalsIgnoreCase("shell")) {
+      createShellActivityBehavior(activity, bpmnParse, serviceTask);
+    } else {
+      createActivityBehaviorForCustomServiceTaskType(activity, bpmnParse, serviceTask);
+    }
+  }
 
-          for (DataAssociation dataAssociationElement : serviceTask.getDataInputAssociations()) {
-            AbstractDataAssociation dataAssociation = createDataInputAssociation(bpmnParse, dataAssociationElement);
-            webServiceActivityBehavior.addDataInputAssociation(dataAssociation);
-          }
+  protected void createMailActivityBehavior(ActivityImpl activity, BpmnParse bpmnParse, ServiceTask serviceTask) {
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMailActivityBehavior(serviceTask));
+  }
 
-          for (DataAssociation dataAssociationElement : serviceTask.getDataOutputAssociations()) {
-            AbstractDataAssociation dataAssociation = createDataOutputAssociation(bpmnParse, dataAssociationElement);
-            webServiceActivityBehavior.addDataOutputAssociation(dataAssociation);
-          }
+  protected void createMuleActivityBehavior(ActivityImpl activity, BpmnParse bpmnParse, ServiceTask serviceTask) {
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMuleActivityBehavior(serviceTask, bpmnParse.getBpmnModel()));
+  }
 
-          activity.setActivityBehavior(webServiceActivityBehavior);
-        }
-      } else {
-        logger.warn("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask " + serviceTask.getId());
+  protected void createCamelActivityBehavior(ActivityImpl activity, BpmnParse bpmnParse, ServiceTask serviceTask) {
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(serviceTask, bpmnParse.getBpmnModel()));
+  }
+
+  protected void createShellActivityBehavior(ActivityImpl activity, BpmnParse bpmnParse, ServiceTask serviceTask) {
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createShellActivityBehavior(serviceTask));
+  }
+  
+  protected void createActivityBehaviorForCustomServiceTaskType(ActivityImpl activity, BpmnParse bpmnParse, ServiceTask serviceTask) {
+    logger.warn("Invalid service task type: '" + serviceTask.getType() + "' " + " for service task " + serviceTask.getId());
+  }
+
+  protected void createClassDelegateServiceTask(ActivityImpl activity, BpmnParse bpmnParse, ServiceTask serviceTask) {
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createClassDelegateServiceTask(serviceTask));
+  }
+
+  protected void createServiceTaskDelegateExpressionActivityBehavior(ActivityImpl activity, BpmnParse bpmnParse, ServiceTask serviceTask) {
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createServiceTaskDelegateExpressionActivityBehavior(serviceTask));
+  }
+
+  protected void createServiceTaskExpressionActivityBehavior(ActivityImpl activity, BpmnParse bpmnParse, ServiceTask serviceTask) {
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createServiceTaskExpressionActivityBehavior(serviceTask));
+  }
+
+  protected void createWebServiceActivityBehavior(ActivityImpl activity, BpmnParse bpmnParse, ServiceTask serviceTask) {
+    if (!bpmnParse.getOperations().containsKey(serviceTask.getOperationRef())) {
+      logger.warn(serviceTask.getOperationRef() + " does not exist for service task " + serviceTask.getId());
+    } else {
+
+      WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(serviceTask);
+      webServiceActivityBehavior.setOperation(bpmnParse.getOperations().get(serviceTask.getOperationRef()));
+
+      if (serviceTask.getIoSpecification() != null) {
+        IOSpecification ioSpecification = createIOSpecification(bpmnParse, serviceTask.getIoSpecification());
+        webServiceActivityBehavior.setIoSpecification(ioSpecification);
       }
 
+      for (DataAssociation dataAssociationElement : serviceTask.getDataInputAssociations()) {
+        AbstractDataAssociation dataAssociation = createDataInputAssociation(bpmnParse, dataAssociationElement);
+        webServiceActivityBehavior.addDataInputAssociation(dataAssociation);
+      }
+
+      for (DataAssociation dataAssociationElement : serviceTask.getDataOutputAssociations()) {
+        AbstractDataAssociation dataAssociation = createDataOutputAssociation(bpmnParse, dataAssociationElement);
+        webServiceActivityBehavior.addDataOutputAssociation(dataAssociation);
+      }
+
+      activity.setActivityBehavior(webServiceActivityBehavior);
     }
+  }
+
+  protected void createDefaultServiceTaskActivityBehavior(ActivityImpl activity, BpmnParse bpmnParse, ServiceTask serviceTask) {
+    logger.warn("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask " + serviceTask.getId());
+  }
 }
 
