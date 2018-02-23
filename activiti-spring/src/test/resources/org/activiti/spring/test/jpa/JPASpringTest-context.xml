@@ -10,7 +10,7 @@
 
     <context:component-scan base-package="org.activiti.spring.test.jpa"/>
 
-    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"/>
         <property name="username" value="sa"/>
