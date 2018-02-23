@@ -710,13 +710,6 @@
       </if>
       <choose>
         <when test="bothCandidateAndAssigned">
-          <!-- if dbIdentityUsed set true in process engine configuration -->
-          <if test="userIdForCandidateAndAssignee != null">
-            <if test="candidateGroups == null">
-              and (RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee} or (RES.ASSIGNEE_ is null and (I.USER_ID_ = #{userIdForCandidateAndAssignee}
-              or I.GROUP_ID_ IN (select g.GROUP_ID_ from ${prefix}ACT_ID_MEMBERSHIP g where g.USER_ID_ = #{userIdForCandidateAndAssignee} ) ) ) )
-            </if>
-          </if>
           <!-- if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager -->
           <if test="candidateGroups != null">
             and (RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee}
