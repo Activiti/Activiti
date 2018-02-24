@@ -232,6 +232,11 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
               propertyItemNode.put(PROPERTY_EVENTLISTENER_RETHROW_TYPE, "globalSignal");
               propertyItemNode.put(PROPERTY_EVENTLISTENER_SIGNAL_NAME, listener.getImplementation());
               implementationText = "Rethrow as signal " + listener.getImplementation();
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_BROADCAST_SIGNAL_EVENT.equals(listener.getImplementationType())) {
+              propertyItemNode.put(PROPERTY_EVENTLISTENER_RETHROW_EVENT, true);
+              propertyItemNode.put(PROPERTY_EVENTLISTENER_RETHROW_TYPE, "broadcastSignal");
+              propertyItemNode.put(PROPERTY_EVENTLISTENER_SIGNAL_NAME, listener.getImplementation());
+              implementationText = "Rethrow as signal " + listener.getImplementation();
           }
           
           if (StringUtils.isNotEmpty(implementationText)) {
@@ -435,6 +440,12 @@ public class BpmnJsonConverterUtil implements EditorJsonConstants, StencilConsta
                       String signalName = getValueAsString("signalname", listenerNode);
                       if (StringUtils.isNotEmpty(signalName)) {
                           listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT);
+                          listener.setImplementation(signalName);
+                      }
+                  } else if ("broadcastSignal".equalsIgnoreCase(rethrowTypeNode.asText())) {
+                      String signalName = getValueAsString("signalname", listenerNode);
+                      if (StringUtils.isNotEmpty(signalName)) {
+                          listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_BROADCAST_SIGNAL_EVENT);
                           listener.setImplementation(signalName);
                       }
                   }

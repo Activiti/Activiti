@@ -92,6 +92,7 @@ public interface BpmnXMLConstants {
 
   public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_SIGNAL = "signal";
   public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL = "globalSignal";
+  public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_BROADCAST_SIGNAL = "broadcastSignal";
   public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_MESSAGE = "message";
   public static final String ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_ERROR = "error";
 

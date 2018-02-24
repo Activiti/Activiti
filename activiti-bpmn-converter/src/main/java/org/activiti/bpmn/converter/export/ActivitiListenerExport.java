@@ -73,6 +73,10 @@ public class ActivitiListenerExport implements BpmnXMLConstants {
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME, eventListener.getImplementation(), xtw);
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_GLOBAL_SIGNAL, xtw);
           
+        } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_BROADCAST_SIGNAL_EVENT.equals(eventListener.getImplementationType())) {
+          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME, eventListener.getImplementation(), xtw);
+          BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_BROADCAST_SIGNAL, xtw);
+          
         } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(eventListener.getImplementationType())) {
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_MESSAGE_EVENT_NAME, eventListener.getImplementation(), xtw);
           BpmnXMLUtil.writeDefaultAttribute(ATTRIBUTE_LISTENER_THROW_EVENT_TYPE, ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_MESSAGE, xtw);

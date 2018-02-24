@@ -92,6 +92,7 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
         
         } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT.equals(eventListener.getImplementationType())
+            || ImplementationType.IMPLEMENTATION_TYPE_THROW_BROADCAST_SIGNAL_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(eventListener.getImplementationType())) {
         
