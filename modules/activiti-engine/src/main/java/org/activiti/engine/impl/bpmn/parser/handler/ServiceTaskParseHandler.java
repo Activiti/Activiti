@@ -39,17 +39,16 @@ public class ServiceTaskParseHandler extends AbstractActivityBpmnParseHandler<Se
       createActivityBehaviorForServiceTaskType(bpmnParse, serviceTask);
       // activiti:class
     } else if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(serviceTask.getImplementationType())) {
-      serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createClassDelegateServiceTask(serviceTask));
+      createClassDelegateServiceTask(bpmnParse, serviceTask);
       // activiti:delegateExpression
     } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
-      serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createServiceTaskDelegateExpressionActivityBehavior(serviceTask));
+      createServiceTaskDelegateExpressionActivityBehavior(bpmnParse, serviceTask);
       // activiti:expression
     } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
-      serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createServiceTaskExpressionActivityBehavior(serviceTask));
+      createServiceTaskExpressionActivityBehavior(bpmnParse, serviceTask);
       // Webservice
     } else if (ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(serviceTask.getImplementationType()) && StringUtils.isNotEmpty(serviceTask.getOperationRef())) {
-      WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(serviceTask);
-      serviceTask.setBehavior(webServiceActivityBehavior);
+      createWebServiceActivityBehavior(bpmnParse, serviceTask);
     } else {
       createDefaultServiceTaskActivityBehavior(bpmnParse, serviceTask);
     }
