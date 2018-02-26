@@ -167,7 +167,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                          delegateExpression);
     }
 
-    public ServiceTaskDelegateExpressionActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask) {
+    public ActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask) {
         logger.warn("No service task behavior can be set for service task " + serviceTask.getId());
         return null;
     }
