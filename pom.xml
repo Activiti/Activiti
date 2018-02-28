@@ -30,7 +30,6 @@
     <commons-io.version>2.0.1</commons-io.version>
     <el-api.version>2.2</el-api.version>
     <geronimo.version>1.1.1</geronimo.version>
-    <jackson.version>2.9.4</jackson.version>
     <java-uuid-generator.version>3.1.4</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <javax.enterprise.concurrent-api.version>1.0</javax.enterprise.concurrent-api.version>
@@ -40,7 +39,7 @@
     <jsr250-api.version>1.0</jsr250-api.version>
     <juel.version>2.2.7</juel.version>
     <mybatis.version>3.4.2</mybatis.version>
-    <spring-boot.version>2.0.0.RC1</spring-boot.version>
+    <spring-boot.version>2.0.0.RC2</spring-boot.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
 
     <!-- plugins -->
@@ -54,7 +53,7 @@
     <jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
     <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
-    <maven-enforcer-plugin.version>1.4.1</maven-enforcer-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
     <maven-failsafe-plugin.version>2.20.1</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
@@ -147,13 +146,6 @@
   <!-- Here we add 3rd Party Dependencies -->
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>com.fasterxml.jackson</groupId>
-        <artifactId>jackson-bom</artifactId>
-        <version>${jackson.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-dependencies</artifactId>
