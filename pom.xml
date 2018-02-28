@@ -40,9 +40,7 @@
     <jsr250-api.version>1.0</jsr250-api.version>
     <juel.version>2.2.7</juel.version>
     <mybatis.version>3.4.2</mybatis.version>
-    <spring.version>5.0.3.RELEASE</spring.version>
-    <spring-boot.version>2.0.0.M7</spring-boot.version>
-    <spring-security.version>5.0.1.RELEASE</spring-security.version>
+    <spring-boot.version>2.0.0.RC1</spring-boot.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
 
     <!-- plugins -->
@@ -153,20 +151,6 @@
         <groupId>com.fasterxml.jackson</groupId>
         <artifactId>jackson-bom</artifactId>
         <version>${jackson.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-framework-bom</artifactId>
-        <version>${spring.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.security</groupId>
-        <artifactId>spring-security-bom</artifactId>
-        <version>${spring-security.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
