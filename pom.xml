@@ -2,20 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
     <version>7-201802-EA-SNAPSHOT</version>
-    <relativePath />
+    <relativePath/>
   </parent>
-
   <artifactId>activiti-root</artifactId>
   <packaging>pom</packaging>
   <name>Activiti</name>
   <description>BPM and workflow engine</description>
   <url>http://activiti.org</url>
-
   <modules>
     <module>activiti-bpmn-model</module>
     <module>activiti-bpmn-layout</module>
@@ -26,17 +23,32 @@
     <module>activiti-engine</module>
     <module>activiti-spring</module>
   </modules>
-
   <scm>
     <url>https://github.com/Activiti/Activiti</url>
     <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
     <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
-
   <ciManagement>
     <system>Travis</system>
     <url>https://travis-ci.org/Activiti/Activiti</url>
   </ciManagement>
-
+  <repositories>
+    <repository>
+      <id>activiti-releases</id>
+      <name>Activiti Releases</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>activiti-snapshots</id>
+      <name>Activiti Snapshots</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
 </project>
