@@ -66,12 +66,12 @@
     <repository>
       <id>central-releases-staging</id>
       <name>Central Releases - Staging</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
     <snapshotRepository>
       <id>activiti-enterprise-snapshots</id>
       <name>Activiti Snapshots</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots</url>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
 
@@ -84,10 +84,7 @@
     <repository>
       <id>spring-milestones</id>
       <name>Spring Milestones</name>
-      <url>https://repo.spring.io/libs-milestone</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
+      <url>https://repo.spring.io/libs-milestone/</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -95,28 +92,17 @@
     <repository>
       <id>spring-snapshots</id>
       <name>Spring Snapshots</name>
-      <url>https://repo.spring.io/libs-snapshot</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
+      <url>https://repo.spring.io/libs-snapshot/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
     </repository>
     <repository>
       <id>jboss-thirdparty-releases</id>
       <name>JBOSS Maven Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
       <snapshots>
         <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>activiti-snapshots</id>
-      <name>Activiti Snapshots</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
       </snapshots>
     </repository>
   </repositories>
@@ -126,9 +112,6 @@
       <id>spring-milestones</id>
       <name>Spring Milestones</name>
       <url>https://repo.spring.io/libs-milestone</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -137,9 +120,9 @@
       <id>spring-snapshots</id>
       <name>Spring Snapshots</name>
       <url>https://repo.spring.io/libs-snapshot</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
     </pluginRepository>
   </pluginRepositories>
 
@@ -662,18 +645,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-
-    <!-- option to publish to alfresco-->
-    <profile>
-      <id>distroAlfresco</id>
-      <distributionManagement>
-        <repository>
-          <id>activiti-enterprise-snapshots</id>
-          <name>Activiti Snapshots</name>
-          <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases</url>
-        </repository>
-      </distributionManagement>
     </profile>
 
     <!-- profile to check dependencies for vulnerabilities -->
