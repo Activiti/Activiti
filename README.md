@@ -23,7 +23,7 @@ This BOM (Bill Of Materials) allow you to easily add the following section to yo
       <dependency>
         <groupId>org.activiti.cloud</groupId>
         <artifactId>activiti-dependencies</artifactId>
-        <version>${version.activiti}</version>
+        <version>${activiti.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
