@@ -8,21 +8,17 @@
   <packaging>pom</packaging>
   <name>Activiti :: Build</name>
   <description>${project.name}</description>
-
   <properties>
     <!-- configuration properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
-
     <!-- configuration properties for tests-->
     <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
     <generated-assertions-package>org.activiti.test</generated-assertions-package>
-
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
-
     <!-- dependency -->
     <batik.version>1.9.1</batik.version>
     <commons-email.version>1.5</commons-email.version>
@@ -41,7 +37,6 @@
     <mybatis.version>3.4.2</mybatis.version>
     <spring-boot.version>2.0.0.RC2</spring-boot.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
-
     <!-- plugins -->
     <assertj-assertions-generator-maven-plugin.version>2.0.0</assertj-assertions-generator-maven-plugin.version>
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
@@ -61,7 +56,6 @@
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
   </properties>
-
   <distributionManagement>
     <repository>
       <id>central-releases-staging</id>
@@ -74,17 +68,15 @@
       <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
     </snapshotRepository>
   </distributionManagement>
-
   <modules>
     <module>activiti-dependencies</module>
     <module>activiti-parent</module>
   </modules>
-
   <repositories>
     <repository>
       <id>spring-milestones</id>
       <name>Spring Milestones</name>
-      <url>https://repo.spring.io/libs-milestone/</url>
+      <url>https://repo.spring.io/milestone/</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -92,7 +84,7 @@
     <repository>
       <id>spring-snapshots</id>
       <name>Spring Snapshots</name>
-      <url>https://repo.spring.io/libs-snapshot/</url>
+      <url>https://repo.spring.io/snapshot/</url>
       <releases>
         <enabled>false</enabled>
       </releases>
@@ -106,12 +98,11 @@
       </snapshots>
     </repository>
   </repositories>
-
   <pluginRepositories>
     <pluginRepository>
       <id>spring-milestones</id>
       <name>Spring Milestones</name>
-      <url>https://repo.spring.io/libs-milestone</url>
+      <url>https://repo.spring.io/milestone/</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -119,13 +110,12 @@
     <pluginRepository>
       <id>spring-snapshots</id>
       <name>Spring Snapshots</name>
-      <url>https://repo.spring.io/libs-snapshot</url>
+      <url>https://repo.spring.io/snapshot/</url>
       <releases>
         <enabled>false</enabled>
       </releases>
     </pluginRepository>
   </pluginRepositories>
-
   <!-- Here we add 3rd Party Dependencies -->
   <dependencyManagement>
     <dependencies>
@@ -172,14 +162,11 @@
         <artifactId>juel-spi</artifactId>
         <version>${juel.version}</version>
       </dependency>
-
-      <!-- EMAIL -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-email</artifactId>
         <version>${commons-email.version}</version>
       </dependency>
-
       <dependency>
         <groupId>org.apache.geronimo.specs</groupId>
         <artifactId>geronimo-jta_1.1_spec</artifactId>
@@ -210,7 +197,7 @@
         <artifactId>jsr250-api</artifactId>
         <version>${jsr250-api.version}</version>
       </dependency>
-
+      <!-- batik -->
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-awt-util</artifactId>
@@ -278,7 +265,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <build>
     <plugins>
       <plugin>
@@ -617,7 +603,6 @@
       </plugins>
     </pluginManagement>
   </build>
-
   <profiles>
     <!-- Profile to sign artifacts, triggered when releasing -->
     <profile>
@@ -646,7 +631,6 @@
         </plugins>
       </build>
     </profile>
-
     <!-- profile to check dependencies for vulnerabilities -->
     <profile>
       <id>dependency-check</id>
@@ -670,7 +654,7 @@
         </plugins>
       </build>
     </profile>
-
+    <!-- profile to make eclipse happy -->
     <profile>
       <id>m2eclipse</id>
       <activation>
@@ -729,9 +713,7 @@
         </pluginManagement>
       </build>
     </profile>
-
   </profiles>
-
   <!-- Various information, not used by the build -->
   <url>http://activiti.org</url>
   <licenses>
@@ -781,5 +763,4 @@
       <organizationUrl>http://alfresco.com</organizationUrl>
     </developer>
   </developers>
-
 </project>
