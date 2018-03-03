@@ -16,42 +16,42 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-engine</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-model</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-image-generator</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-converter</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-json-converter</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-layout</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-process-validation</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

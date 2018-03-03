@@ -20,6 +20,7 @@
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
     <!-- dependency -->
+    <activiti.version>7-201802-EA-SNAPSHOT</activiti.version>
     <batik.version>1.9.1</batik.version>
     <commons-email.version>1.5</commons-email.version>
     <commons-fileupload.version>1.2.2</commons-fileupload.version>
