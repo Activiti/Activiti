@@ -36,7 +36,7 @@
     <jsr250-api.version>1.0</jsr250-api.version>
     <juel.version>2.2.7</juel.version>
     <mybatis.version>3.4.2</mybatis.version>
-    <spring-boot.version>2.0.0.RC2</spring-boot.version>
+    <spring-boot.version>2.0.0.RELEASE</spring-boot.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <!-- plugins -->
     <assertj-assertions-generator-maven-plugin.version>2.0.0</assertj-assertions-generator-maven-plugin.version>
