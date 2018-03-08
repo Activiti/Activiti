@@ -589,6 +589,8 @@
                     However this class is never referenced directly in the project: we are adding it to ignore list
                     to avoid a dependency that's not necessary.-->
                     <regexIgnoredClass>com\.google\.common\.base\.Predicate</regexIgnoredClass>
+                    <regexIgnoredClass>javax\.persistence.*</regexIgnoredClass>
+                    <regexIgnoredClass>org\.springframework.*</regexIgnoredClass>
                   </regexIgnoredClasses>
                   <suppressTypesFromJavaRuntime>true</suppressTypesFromJavaRuntime>
                   <useClassesFromLastBuild>true</useClassesFromLastBuild>
