@@ -8,6 +8,70 @@
   <packaging>pom</packaging>
   <name>Activiti :: Build</name>
   <description>${project.name}</description>
+  <url>http://activiti.org</url>
+  <inceptionYear>2010</inceptionYear>
+  <organization>
+    <name>Alfresco</name>
+    <url>http://www.alfresco.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache v2</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>salaboy</id>
+      <name>Mauricio Salatino</name>
+      <email>mauricio.salatino@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>erdemedeiros</id>
+      <name>Elias De Medeiros</name>
+      <email>elias.demedeiros@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+    <developer>
+      <id>ryandawsonuk</id>
+      <name>Ryan Dawson</name>
+      <email>ryan.dawson@alfresco.com</email>
+      <organization>Alfresco</organization>
+      <organizationUrl>http://alfresco.com</organizationUrl>
+    </developer>
+  </developers>
+  <modules>
+    <module>activiti-dependencies</module>
+    <module>activiti-parent</module>
+  </modules>
+  <scm>
+    <url>http://github.com/Activiti/${project.artifactId}</url>
+    <connection>scm:git:git://github.com/Activiti/${project.artifactId}.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Activiti/${project.artifactId}.git</developerConnection>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/Activiti/Activiti/issues</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Travis</system>
+    <url>https://travis-ci.org/Activiti/${project.artifactId}</url>
+  </ciManagement>
+  <distributionManagement>
+    <repository>
+      <id>central-releases-staging</id>
+      <name>Central Releases - Staging</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+    <snapshotRepository>
+      <id>activiti-enterprise-snapshots</id>
+      <name>Activiti Snapshots</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
+    </snapshotRepository>
+  </distributionManagement>
   <properties>
     <!-- configuration properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -38,88 +102,34 @@
     <mybatis.version>3.4.2</mybatis.version>
     <spring-boot.version>2.0.0.RELEASE</spring-boot.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
+    <xmlgraphics-commons.version>2.2</xmlgraphics-commons.version>
     <!-- plugins -->
     <assertj-assertions-generator-maven-plugin.version>2.0.0</assertj-assertions-generator-maven-plugin.version>
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     <dependency-check-maven.version>3.1.1</dependency-check-maven.version>
     <exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
-    <extra-enforcer-rules.version>1.0-beta-6</extra-enforcer-rules.version>
+    <extra-enforcer-rules.version>1.0-beta-7</extra-enforcer-rules.version>
     <illegal-transitive-dependency-check.version>1.7.4</illegal-transitive-dependency-check.version>
     <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
     <jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
+    <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
     <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+    <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
     <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
     <!-- had to downgrade failsafe plugin to avoid sun.reflect.annotation.TypeNotPresentExceptionProxy error in activiti-cloud-query
     workaround for https://github.com/spring-projects/spring-boot/issues/6254-->
     <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+    <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+    <maven-resources-plugin.version>3.0.1</maven-resources-plugin.version>
+    <maven-site-plugin.version>3.6</maven-site-plugin.version>
+    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
   </properties>
-  <distributionManagement>
-    <repository>
-      <id>central-releases-staging</id>
-      <name>Central Releases - Staging</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-    <snapshotRepository>
-      <id>activiti-enterprise-snapshots</id>
-      <name>Activiti Snapshots</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
-  <modules>
-    <module>activiti-dependencies</module>
-    <module>activiti-parent</module>
-  </modules>
-  <repositories>
-    <repository>
-      <id>spring-milestones</id>
-      <name>Spring Milestones</name>
-      <url>https://repo.spring.io/milestone/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>spring-snapshots</id>
-      <name>Spring Snapshots</name>
-      <url>https://repo.spring.io/snapshot/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-    <repository>
-      <id>jboss-thirdparty-releases</id>
-      <name>JBOSS Maven Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>spring-milestones</id>
-      <name>Spring Milestones</name>
-      <url>https://repo.spring.io/milestone/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>spring-snapshots</id>
-      <name>Spring Snapshots</name>
-      <url>https://repo.spring.io/snapshot/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
-  <!-- Here we add 3rd Party Dependencies -->
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -203,6 +213,17 @@
       <!-- batik -->
       <dependency>
         <groupId>org.apache.xmlgraphics</groupId>
+        <artifactId>xmlgraphics-commons</artifactId>
+        <version>${xmlgraphics-commons.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.xmlgraphics</groupId>
         <artifactId>batik-awt-util</artifactId>
         <version>${batik.version}</version>
       </dependency>
@@ -255,8 +276,8 @@
         <scope>test</scope>
         <exclusions>
           <exclusion>
-            <artifactId>commons-logging</artifactId>
             <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -268,233 +289,57 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <repositories>
+    <repository>
+      <id>spring-milestones</id>
+      <name>Spring Milestones</name>
+      <url>https://repo.spring.io/milestone/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>spring-snapshots</id>
+      <name>Spring Snapshots</name>
+      <url>https://repo.spring.io/snapshot/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>jboss-thirdparty-releases</id>
+      <name>JBOSS Maven Repository</name>
+      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>spring-milestones</id>
+      <name>Spring Milestones</name>
+      <url>https://repo.spring.io/milestone/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>spring-snapshots</id>
+      <name>Spring Snapshots</name>
+      <url>https://repo.spring.io/snapshot/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
   <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven-compiler-plugin.version}</version>
-        <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
-          <showDeprecation>true</showDeprecation>
-          <showWarnings>true</showWarnings>
-          <optimize>true</optimize>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven-surefire-plugin.version}</version>
-        <configuration>
-          <redirectTestOutputToFile>true</redirectTestOutputToFile>
-          <failIfNoTests>false</failIfNoTests>
-          <trimStackTrace>false</trimStackTrace>
-          <excludes>
-            <exclude>**/*TestCase.java</exclude>
-            <exclude>**/*IT.java</exclude>
-          </excludes>
-          <runOrder>alphabetical</runOrder>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco-maven-plugin.version}</version>
-        <executions>
-          <!-- Unit tests configuration-->
-          <execution>
-            <id>pre-unit-test</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>post-unit-test</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-          <!-- Integration tests configuration-->
-          <execution>
-            <id>pre-integration-test</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>prepare-agent-integration</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>post-integration-test</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>report-integration</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
     <pluginManagement>
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>${maven-jar-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${maven-javadoc-plugin.version}</version>
-          <configuration>
-            <doclint>none</doclint>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>${maven-release-plugin.version}</version>
-          <configuration>
-            <releaseProfiles>sign</releaseProfiles>
-            <autoVersionSubmodules>true</autoVersionSubmodules>
-            <tagNameFormat>activiti-@{project.version}</tagNameFormat>
-            <!-- Necessary until keycloak releases boot2 adaptor -->
-            <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>external.atlassian.jgitflow</groupId>
-          <artifactId>jgitflow-maven-plugin</artifactId>
-          <version>${jgitflow-maven-plugin.version}</version>
-          <configuration>
-            <enableFeatureVersions>true</enableFeatureVersions>
-            <autoVersionSubmodules>true</autoVersionSubmodules>
-            <allowSnapshots>true</allowSnapshots>
-            <noDeploy>false</noDeploy>
-            <useReleaseProfile>true</useReleaseProfile> <!-- Do not generate javadoc when releasing -->
-            <pushReleases>true</pushReleases>
-            <squash>false</squash>
-            <keepBranch>true</keepBranch>
-            <noFeatureBuild>true</noFeatureBuild>
-            <noFeatureMerge>true</noFeatureMerge>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>${maven-enforcer-plugin.version}</version>
-          <dependencies>
-            <dependency>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>extra-enforcer-rules</artifactId>
-              <version>${extra-enforcer-rules.version}</version>
-            </dependency>
-            <dependency>
-              <groupId>de.is24.maven.enforcer.rules</groupId>
-              <artifactId>illegal-transitive-dependency-check</artifactId>
-              <version>${illegal-transitive-dependency-check.version}</version>
-            </dependency>
-          </dependencies>
-          <executions>
-            <execution>
-              <id>enforce-plugin-versions</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <requirePluginVersions>
-                  </requirePluginVersions>
-                </rules>
-              </configuration>
-            </execution>
-            <execution>
-              <id>enforce-direct-dependencies</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
-                    <regexIgnoredClasses combine.children="append">
-                      <!-- The marshalling classes are generated by Errai during GWT compilation. These classes
-                                                 usually contain references to other dependencies which are not part of the project
-                                                 (transitive dependencies), which then results in the dependency check failure.
-                                                 From the maintenance point of view, ignoring these generated classes seems like the
-                                                 best option. -->
-                      <!-- The enforcer is complaining about Predicate class after adding the dependency to Swagger.
-                      However this class is never referenced directly in the project: we are adding it to ignore list
-                      to avoid a dependency that's not necessary.-->
-                      <regexIgnoredClass>com\.google\.common\.base\.Predicate</regexIgnoredClass>
-                    </regexIgnoredClasses>
-                    <suppressTypesFromJavaRuntime>true</suppressTypesFromJavaRuntime>
-                    <useClassesFromLastBuild>true</useClassesFromLastBuild>
-                  </illegalTransitiveDependencyCheck>
-                </rules>
-              </configuration>
-            </execution>
-            <execution>
-              <id>ban-blacklisted-dependencies</id>
-              <phase>validate</phase>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <bannedDependencies>
-                    <excludes combine.children="append">
-                      <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
-                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
-                      <exclude>commons-logging:commons-log*</exclude>
-                      <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
-                      <!--<exclude>log4j:log4j</exclude>-->
-                      <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
-                      <exclude>javassist:javassist</exclude>
-                    </excludes>
-                  </bannedDependencies>
-                </rules>
-                <fail>true</fail>
-              </configuration>
-            </execution>
-            <execution>
-              <id>ban-duplicated-classes</id>
-              <!-- Using phase=none as we don't want this execution as part of the default build. The phase
-                                 is specified in the "full" profile and thus the execution will only be activated when using that profile. -->
-              <phase>none</phase>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <banDuplicateClasses>
-                    <ignoreClasses>
-                      <!-- Servlet API is bundled in way too many different dependencies, causing nightmares trying to
-                                                 properly exclude everything. There were no real issues with this so far as mostly the APIs
-                                                 are just duplicates of the exactly same sources. In ideal world, this get eventually fixed,
-                                                 but it may very well not be worth the effort. -->
-                      <ignoreClass>javax.servlet.*</ignoreClass>
-                      <!-- Classes in javax.annotation package are just marker annotations used to aid the programmers.
-                                                 These annotations do not influence the actual behavior of the code, so it's reasonable to
-                                                 ignore them. Following dependencies contain these classes: 'com.google.code.findbugs:jsr305'
-                                                 and 'com.google.code.findbugs:annotations'. -->
-                      <ignoreClass>javax.annotation.*</ignoreClass>
-                      <!-- Exactly the same case as for above 'javax.annotation.*' classes. Following dependencies contain
-                                                 these classes: 'net.jcip:jcip-annotations' and 'com.google.code.findbugs:annotations'. -->
-                      <ignoreClass>net.jcip.annotations.*</ignoreClass>
-                    </ignoreClasses>
-                    <dependencies>
-
-                    </dependencies>
-                    <findAllDuplicates>true</findAllDuplicates>
-                  </banDuplicateClasses>
-                </rules>
-                <fail>${enforcer.failOnDuplicatedClasses}</fail>
-              </configuration>
-            </execution>
-          </executions>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>${maven-clean-plugin.version}</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -550,17 +395,70 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>${maven-failsafe-plugin.version}</version>
-          <executions>
-            <execution>
-              <id>integration-test</id>
-              <goals>
-                <goal>integration-test</goal>
-                <goal>verify</goal>
-              </goals>
-            </execution>
-          </executions>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>${maven-deploy-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven-jar-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven-javadoc-plugin.version}</version>
+          <configuration>
+            <doclint>none</doclint>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${maven-install-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven-release-plugin.version}</version>
+          <configuration>
+            <releaseProfiles>sign</releaseProfiles>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <tagNameFormat>activiti-@{project.version}</tagNameFormat>
+            <!-- Necessary until keycloak releases boot2 adaptor -->
+            <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${maven-resources-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${maven-source-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>external.atlassian.jgitflow</groupId>
+          <artifactId>jgitflow-maven-plugin</artifactId>
+          <version>${jgitflow-maven-plugin.version}</version>
+          <configuration>
+            <enableFeatureVersions>true</enableFeatureVersions>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <allowSnapshots>true</allowSnapshots>
+            <noDeploy>false</noDeploy>
+            <useReleaseProfile>true</useReleaseProfile> <!-- Do not generate javadoc when releasing -->
+            <pushReleases>true</pushReleases>
+            <squash>false</squash>
+            <keepBranch>true</keepBranch>
+            <noFeatureBuild>true</noFeatureBuild>
+            <noFeatureMerge>true</noFeatureMerge>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -605,6 +503,225 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>extra-enforcer-rules</artifactId>
+            <version>${extra-enforcer-rules.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>de.is24.maven.enforcer.rules</groupId>
+            <artifactId>illegal-transitive-dependency-check</artifactId>
+            <version>${illegal-transitive-dependency-check.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireJavaVersion>
+                  <version>${java.version}</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.5</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>enforce-plugin-versions</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requirePluginVersions>
+                </requirePluginVersions>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>enforce-direct-dependencies</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
+                  <regexIgnoredClasses combine.children="append">
+                    <!-- The marshalling classes are generated by Errai during GWT compilation. These classes
+                                               usually contain references to other dependencies which are not part of the project
+                                               (transitive dependencies), which then results in the dependency check failure.
+                                               From the maintenance point of view, ignoring these generated classes seems like the
+                                               best option. -->
+                    <!-- The enforcer is complaining about Predicate class after adding the dependency to Swagger.
+                    However this class is never referenced directly in the project: we are adding it to ignore list
+                    to avoid a dependency that's not necessary.-->
+                    <regexIgnoredClass>com\.google\.common\.base\.Predicate</regexIgnoredClass>
+                  </regexIgnoredClasses>
+                  <suppressTypesFromJavaRuntime>true</suppressTypesFromJavaRuntime>
+                  <useClassesFromLastBuild>true</useClassesFromLastBuild>
+                </illegalTransitiveDependencyCheck>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ban-blacklisted-dependencies</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes combine.children="append">
+                    <!-- Ban blacklisted logging deps (we only use SLF4J + Logback) -->
+                    <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
+                    <exclude>commons-logging:commons-log*</exclude>
+                    <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
+                    <!--<exclude>log4j:log4j</exclude>-->
+                    <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
+                    <exclude>javassist:javassist</exclude>
+                  </excludes>
+                </bannedDependencies>
+              </rules>
+              <fail>true</fail>
+            </configuration>
+          </execution>
+          <execution>
+            <id>ban-duplicated-classes</id>
+            <!-- Using phase=none as we don't want this execution as part of the default build. The phase
+                               is specified in the "full" profile and thus the execution will only be activated when using that profile. -->
+            <phase>none</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <banDuplicateClasses>
+                  <ignoreClasses>
+                    <!-- Servlet API is bundled in way too many different dependencies, causing nightmares trying to
+                                               properly exclude everything. There were no real issues with this so far as mostly the APIs
+                                               are just duplicates of the exactly same sources. In ideal world, this get eventually fixed,
+                                               but it may very well not be worth the effort. -->
+                    <ignoreClass>javax.servlet.*</ignoreClass>
+                    <!-- Classes in javax.annotation package are just marker annotations used to aid the programmers.
+                                               These annotations do not influence the actual behavior of the code, so it's reasonable to
+                                               ignore them. Following dependencies contain these classes: 'com.google.code.findbugs:jsr305'
+                                               and 'com.google.code.findbugs:annotations'. -->
+                    <ignoreClass>javax.annotation.*</ignoreClass>
+                    <!-- Exactly the same case as for above 'javax.annotation.*' classes. Following dependencies contain
+                                               these classes: 'net.jcip:jcip-annotations' and 'com.google.code.findbugs:annotations'. -->
+                    <ignoreClass>net.jcip.annotations.*</ignoreClass>
+                  </ignoreClasses>
+                  <dependencies>
+
+                  </dependencies>
+                  <findAllDuplicates>true</findAllDuplicates>
+                </banDuplicateClasses>
+              </rules>
+              <fail>${enforcer.failOnDuplicatedClasses}</fail>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>${maven-failsafe-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>${maven-surefire-plugin.version}</version>
+        <configuration>
+          <redirectTestOutputToFile>true</redirectTestOutputToFile>
+          <failIfNoTests>false</failIfNoTests>
+          <trimStackTrace>false</trimStackTrace>
+          <excludes>
+            <exclude>**/*TestCase.java</exclude>
+            <exclude>**/*IT.java</exclude>
+          </excludes>
+          <runOrder>alphabetical</runOrder>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco-maven-plugin.version}</version>
+        <executions>
+          <!-- Unit tests configuration-->
+          <execution>
+            <id>pre-unit-test</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>post-unit-test</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+          <!-- Integration tests configuration-->
+          <execution>
+            <id>pre-integration-test</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>prepare-agent-integration</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>post-integration-test</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>report-integration</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
   <profiles>
     <!-- Profile to sign artifacts, triggered when releasing -->
@@ -717,53 +834,4 @@
       </build>
     </profile>
   </profiles>
-  <!-- Various information, not used by the build -->
-  <url>http://activiti.org</url>
-  <licenses>
-    <license>
-      <name>Apache v2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-    </license>
-  </licenses>
-  <organization>
-    <name>Alfresco</name>
-    <url>http://www.alfresco.com</url>
-  </organization>
-  <inceptionYear>2010</inceptionYear>
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/Activiti/Activiti/issues</url>
-  </issueManagement>
-  <ciManagement>
-    <system>Travis</system>
-    <url>https://travis-ci.org/Activiti/${project.artifactId}</url>
-  </ciManagement>
-  <scm>
-    <url>http://github.com/Activiti/${project.artifactId}</url>
-    <connection>scm:git:git://github.com/Activiti/${project.artifactId}.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/Activiti/${project.artifactId}.git</developerConnection>
-  </scm>
-  <developers>
-    <developer>
-      <id>salaboy</id>
-      <name>Mauricio Salatino</name>
-      <email>mauricio.salatino@alfresco.com</email>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
-    </developer>
-    <developer>
-      <id>erdemedeiros</id>
-      <name>Elias De Medeiros</name>
-      <email>elias.demedeiros@alfresco.com</email>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
-    </developer>
-    <developer>
-      <id>ryandawsonuk</id>
-      <name>Ryan Dawson</name>
-      <email>ryan.dawson@alfresco.com</email>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
-    </developer>
-  </developers>
 </project>
