@@ -612,9 +612,13 @@
                     <!-- In case of transitive dependency, exclude it and use 'org.slf4j:jcl-over-slf4j' instead -->
                     <exclude>commons-logging:commons-log*</exclude>
                     <!-- In case of transitive dependency, exclude it and use 'org.slf4j:log4j-over-slf4j' instead -->
-                    <!--<exclude>log4j:log4j</exclude>-->
+                    <exclude>log4j:log4j</exclude>
                     <!-- In case of transitive dependency, exclude it and use 'org.javassist:javassist' instead -->
                     <exclude>javassist:javassist</exclude>
+                    <!-- Replaced by commons-lang3 -->
+                    <exclude>commons-lang:commons-lang:*:jar:compile</exclude>
+                    <!-- Replaced by commons-dbcp2 -->
+                    <exclude>commons-dbcp:commons-dbcp:*:jar:compile</exclude>
                   </excludes>
                 </bannedDependencies>
               </rules>
