@@ -10,7 +10,7 @@
   <name>Activiti</name>
 
   <artifactId>activiti-root</artifactId>
-  <version>7-201802-EA-lucian_1720_add_validation_endpoint_process_model-SNAPSHOT</version>
+  <version>7-201802-EA-SNAPSHOT</version>
   <packaging>pom</packaging>
   <description>BPM and workflow engine</description>
 
