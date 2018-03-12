@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <signal id="panicSignal" name="panicSignal"/>
+
+    <process id="signalOnUserTask">
+
+        <startEvent id="theStart"/>
+
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstTask"/>
+
+        <userTask id="firstTask" name="First Task"/>
+
+        <sequenceFlow id="flow2" sourceRef="firstTask" targetRef="theEnd"/>
+
+        <endEvent id="theEnd"/>
+
+        <boundaryEvent id="signalBoundary1" cancelActivity="false" attachedToRef="firstTask">
+            <signalEventDefinition signalRef="panicSignal"/>
+        </boundaryEvent>
+
+        <sequenceFlow id="flow3" sourceRef="signalBoundary1" targetRef="secondTask"/>
+
+        <userTask id="secondTask" name="Second Task"/>
+
+        <sequenceFlow id="flow4" sourceRef="secondTask" targetRef="escalatedEnd"/>
+
+        <endEvent id="escalatedEnd"/>
+
+    </process>
+
+</definitions>

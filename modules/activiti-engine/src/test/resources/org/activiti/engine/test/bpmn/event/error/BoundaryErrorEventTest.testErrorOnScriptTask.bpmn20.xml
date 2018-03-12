@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+
+    <error id="myError" errorCode="123"/>
+
+    <process id="errorOnScriptTask">
+
+        <startEvent id="theStart"/>
+
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstTask"/>
+
+        <scriptTask id="firstTask" scriptFormat="groovy">
+            <script><![CDATA[
+			import org.activiti.engine.delegate.BpmnError;
+
+			throw new BpmnError("123");
+			]]></script>
+        </scriptTask>
+
+        <sequenceFlow id="flow2" sourceRef="firstTask" targetRef="theEnd"/>
+
+        <endEvent id="theEnd"/>
+
+        <boundaryEvent id="catchError" cancelActivity="false" attachedToRef="firstTask">
+            <errorEventDefinition errorRef="myError"/>
+        </boundaryEvent>
+
+        <sequenceFlow id="flow3" sourceRef="catchError" targetRef="secondTask"/>
+
+        <userTask id="secondTask" name="Second Task"/>
+
+        <sequenceFlow id="flow4" sourceRef="secondTask" targetRef="escalatedEnd"/>
+
+        <endEvent id="escalatedEnd"/>
+
+    </process>
+
+</definitions>
