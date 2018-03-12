@@ -108,10 +108,8 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
     List<Job> jobs = jobQuery.list();
     assertEquals(1, jobs.size());
-
-    // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    Job job = managementService.createJobQuery().executable().singleResult();
+    
+    Job job = managementService.createJobQuery().singleResult();
     assertNotNull(job);
     managementService.executeJob(job.getId());
     
