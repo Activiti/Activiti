@@ -359,7 +359,13 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
     if (historicActivityInstances != null && !historicActivityInstances.isEmpty()) {
       return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
     }
-
+  
+    // fix ACTIVITI-937
+    if (execution.getTransition() != null && execution.getTransition().getSource().getProperties().get("type").equals("boundaryTimer")
+            && execution.getActivity().getId() != execution.getTransition().getSource().getId()) {
+      return null;
+    }
+  
     if (execution.getParentId() != null) {
       return findActivityInstance((ExecutionEntity) execution.getParent(), activityId, checkPersistentStore);
     }
