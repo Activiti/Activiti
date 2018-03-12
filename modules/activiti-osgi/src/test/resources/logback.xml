@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="CA" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{hh:mm:ss,SSS} [%t] %-5p %c %x - %m%n</pattern>
+    </encoder>
+  </appender>
+  <logger name="org.apache.ibatis.level" level="INFO"/>
+  <logger name="javax.activation.level" level="INFO"/>
+  <root level="INFO">
+    <appender-ref ref="CA"/>
+  </root>
+</configuration>

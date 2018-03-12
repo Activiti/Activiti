@@ -107,8 +107,12 @@ public class VariableInstanceEntity implements VariableInstance, BulkDeleteable,
   }
   
   protected static ActivitiVariableEvent createVariableDeleteEvent(VariableInstanceEntity variableInstance) {
+	String procDefinitionId = null;
+	if (Context.isExecutionContextActive()) {
+		procDefinitionId = Context.getExecutionContext().getExecution().getProcessDefinitionId();
+	}
     return ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, variableInstance.getName(), null, variableInstance.getType(),
-        variableInstance.getTaskId(), variableInstance.getExecutionId(), variableInstance.getProcessInstanceId(), null);
+        variableInstance.getTaskId(), variableInstance.getExecutionId(), variableInstance.getProcessInstanceId(), procDefinitionId);
   }
 
   public Object getPersistentState() {

@@ -24,13 +24,23 @@
   <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
   	<property name="dataSource" ref="dataSource" />
   </bean>
-  
+
   <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
   	<property name="dataSource" ref="dataSource" />
   	<property name="transactionManager" ref="transactionManager" />
   	<property name="databaseSchemaUpdate" value="true" />
   	<property name="jobExecutorActivate" value="true" />
     <property name="enableDatabaseEventLogging" value="true" />
+
+    &lt;!&ndash; Solution for Chinese Disorderly Code start &ndash;&gt;
+    &lt;!&ndash; Set activity default font that support Chinese characters, or others.
+         It resolves Disorderly Code Problem when editing with activiti-moduler.
+         '\u5fae\u8f6f\u96c5\u9ed1' is 'Microsoft YaHei' in Chinese.You also can change it what you like.
+    &ndash;&gt;
+    <property name="activityFontName" value="\u5fae\u8f6f\u96c5\u9ed1" />
+    <property name="labelFontName" value="\u5fae\u8f6f\u96c5\u9ed1"/>
+    &lt;!&ndash; solution for Chinese Disorderly Code end &ndash;&gt;
+
     <property name="customFormTypes">
       <list>
         <bean class="org.activiti.explorer.form.UserFormType"/>

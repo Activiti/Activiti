@@ -23,6 +23,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.history.HistoricVariableInstanceQuery;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
@@ -40,7 +41,10 @@ public class CallActivityTest extends ResourceActivitiTestCase {
   private static String INHERIT_VARIABLES_MAIN_PROCESS_RESOURCE = "org/activiti/engine/test/bpmn/subprocess/SubProcessTest.testInheritVariablesCallActivity_mainProcess.bpmn20.xml";
   private static String INHERIT_VARIABLES_CHILD_PROCESS_RESOURCE = "org/activiti/engine/test/bpmn/subprocess/SubProcessTest.testInheritVariablesCallActivity_childProcess.bpmn20.xml";
   private static String NOT_INHERIT_VARIABLES_MAIN_PROCESS_RESOURCE = "org/activiti/engine/test/bpmn/subprocess/SubProcessTest.testNotInheritVariablesCallActivity_mainProcess.bpmn20.xml";
-
+  private static String BUSINESS_KEY_TEST_MAIN_PROCESS_RESOURCE = "org/activiti/examples/bpmn/callactivity/mainProcess.bpmn20.xml";
+  private static String BUSINESS_KEY_TEST_CHILD_PROCESS_RESOURCE = "org/activiti/examples/bpmn/callactivity/childProcess.bpmn20.xml";
+  private static String NOT_INHERIT_BUSINESS_KEY_MAIN_PROCESS_RESOURCE = "org/activiti/examples/bpmn/callactivity/mainProcessBusinessKey.bpmn20.xml";
+  private static String INHERIT_BUSINESS_KEY_MAIN_PROCESS_RESOURCE = "org/activiti/examples/bpmn/callactivity/mainProcessInheritBusinessKey.bpmn20.xml";
   public CallActivityTest() {
     super("org/activiti/standalone/parsing/encoding.activiti.cfg.xml");
   }
@@ -178,12 +182,12 @@ public class CallActivityTest extends ResourceActivitiTestCase {
         .createDeployment()
         .name("childProcessDeployment")
         .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
-    
+
     processEngine.getRepositoryService()
         .createDeployment()
         .name("mainProcessDeployment")
         .addBpmnModel("mainProcess.bpmn20.xml", mainBpmnModel).deploy();
-    
+
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("var1", "String test value");
     variables.put("var2", true);
@@ -228,5 +232,51 @@ public class CallActivityTest extends ResourceActivitiTestCase {
     return bpmnModel;
   }
 
+  public void testCallActivityWithBusinessKey() throws Exception {
+    BpmnModel mainBpmnModel = loadBPMNModel(BUSINESS_KEY_TEST_MAIN_PROCESS_RESOURCE);
+    BpmnModel childBpmnModel = loadBPMNModel(BUSINESS_KEY_TEST_CHILD_PROCESS_RESOURCE);
+    BpmnModel notInheritBusinessKeyMainBpmnModel = loadBPMNModel(NOT_INHERIT_BUSINESS_KEY_MAIN_PROCESS_RESOURCE);
+    BpmnModel inheritBusinessKeyMainBpmnModel = loadBPMNModel(INHERIT_BUSINESS_KEY_MAIN_PROCESS_RESOURCE);
 
+    Deployment childDeployment = processEngine.getRepositoryService()
+      .createDeployment()
+      .name("childProcessDeployment")
+    .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
+
+    Deployment masterDeployment = processEngine.getRepositoryService()
+      .createDeployment()
+      .name("masterProcessDeployment")
+    .addBpmnModel("masterProcess.bpmn20.xml", mainBpmnModel).deploy();
+
+    Deployment notInheritBusinessKeyMainDeployment = processEngine.getRepositoryService()
+            .createDeployment()
+            .name("notInheritBusinessKeyMainDeployment")
+          .addBpmnModel("masterProcess.bpmn20.xml", notInheritBusinessKeyMainBpmnModel).deploy();
+
+    Deployment nheritBusinessKeyMainDeployment = processEngine.getRepositoryService()
+            .createDeployment()
+            .name("nheritBusinessKeyMainDeployment")
+          .addBpmnModel("masterProcess.bpmn20.xml", inheritBusinessKeyMainBpmnModel).deploy();
+
+    // No use of business key attributes
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("mainProcess");
+    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertNull(subProcessInstance.getBusinessKey());
+
+    // Modeled using expression: businessKey="${busKey}"
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("busKey", "123");
+    pi = runtimeService.startProcessInstanceByKey("mainProcessBusinessKey", variables);
+    subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertEquals("123", subProcessInstance.getBusinessKey());
+    HistoricProcessInstance historicSubProcessInstance = historyService.createHistoricProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertEquals("123", historicSubProcessInstance.getBusinessKey());
+
+    // Inherit business key
+    pi = runtimeService.startProcessInstanceByKey("mainProcessInheritBusinessKey", "123");
+    subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertEquals("123", subProcessInstance.getBusinessKey());
+    historicSubProcessInstance = historyService.createHistoricProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
+    assertEquals("123", historicSubProcessInstance.getBusinessKey());
+  }
 }

@@ -13,6 +13,29 @@
     <version>5.23.0-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <activiti.artifact>
+      org.activiti.engine
+    </activiti.artifact>
+    <activiti.osgi.export.additional>
+      org.activiti.db.mapping.entity
+    </activiti.osgi.export.additional>
+    <activiti.osgi.import.additional>
+      junit*;resolution:=optional,
+      org.junit*;resolution:=optional,
+      com.sun*;resolution:=optional,
+      javax.persistence*;resolution:=optional,
+      org.apache.commons.mail*;resolution:=optional,
+      org.activiti.camel;resolution:=optional,
+      org.activiti.camel.impl;resolution:=optional,
+      org.springframework*;resolution:=optional,
+      org.drools*;resolution:=optional,
+      com.fasterxml*;resolution:=optional,
+      javax.transaction;resolution:=optional,
+      javax.enterprise.concurrent;resolution:=optional,
+    </activiti.osgi.import.additional>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -42,7 +65,6 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
     </dependency>
-    
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -54,6 +76,11 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+	  <groupId>org.assertj</groupId>
+	  <artifactId>assertj-core</artifactId>
+	  <scope>provided</scope>
+	</dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
       <scope>provided</scope>
@@ -64,8 +91,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
+      <groupId>org.drools</groupId>
+      <artifactId>knowledge-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -77,7 +104,7 @@
       <groupId>javax.enterprise.concurrent</groupId>
       <artifactId>javax.enterprise.concurrent-api</artifactId>
       <scope>provided</scope>
-  	</dependency>
+    </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -89,8 +116,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.apache.openjpa</groupId>
-      <artifactId>openjpa</artifactId>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -127,7 +159,7 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-    </dependency>      
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -137,50 +169,18 @@
       <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-log4j12</artifactId>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-      <dependency>
-          <groupId>com.googlecode.catch-exception</groupId>
-          <artifactId>catch-exception</artifactId>
-          <scope>test</scope>
-      </dependency>
-    
     <!-- Required for testing JTA -->
     <dependency>
       <groupId>org.codehaus.btm</groupId>
       <artifactId>btm</artifactId>
-      <version>2.1.3</version>
       <scope>test</scope>
     </dependency>
-    
   </dependencies>
   
-  <properties>
-    <activiti.artifact>
-      org.activiti.engine
-    </activiti.artifact>
-    <activiti.osgi.export.additional>
-      org.activiti.db.mapping.entity
-    </activiti.osgi.export.additional>
-    <activiti.osgi.import.additional>
-      junit*;resolution:=optional,
-      org.junit*;resolution:=optional,
-      com.sun*;resolution:=optional,
-      javax.persistence*;resolution:=optional,
-      org.apache.commons.mail*;resolution:=optional,
-      org.apache.xerces*;resolution:=optional,
-      org.activiti.camel;resolution:=optional,
-      org.activiti.camel.impl;resolution:=optional,
-      org.springframework*;resolution:=optional,
-      org.drools*;resolution:=optional,
-      com.fasterxml*;resolution:=optional,
-      javax.transaction;resolution:=optional,
-      javax.enterprise.concurrent;resolution:=optional,
-    </activiti.osgi.import.additional>
-  </properties>
-
   <build>
     <plugins>      
       <plugin>
@@ -273,7 +273,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-jar-plugin</artifactId>
-            <version>2.2</version>
             <executions>
               <execution>
                 <goals>
@@ -296,28 +295,7 @@
         <skipTests>true</skipTests>
       </properties>
     </profile>
-    <profile>
-      <id>distro</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>2.1.1</version>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    
+
     <!--  database qa profile -->
     <profile>
       <id>database</id>
@@ -329,12 +307,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -380,12 +354,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -431,12 +401,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -465,12 +431,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>configExecution</id>
@@ -503,6 +465,7 @@
             </executions>
           </plugin>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <excludes>
@@ -526,80 +489,78 @@
       </dependencies>
     </profile>
 
-	<profile>
-		<id>configJta</id>
-		<build>
-			<plugins>
-				<plugin>
-					<artifactId>maven-antrun-plugin</artifactId>
-					<!-- only worked with this version, there might be a bug with antrun 
-						see http://jira.codehaus.org/browse/MANTRUN-109 -->
-					<version>1.4</version>
-					<executions>
-						<execution>
-							<id>configExecution</id>
-							<phase>process-test-classes</phase>
-							<goals>
-								<goal>run</goal>
-							</goals>
-							<configuration>
-								<tasks>
-								    <echo message="Copying jta enabled Activiti configuration file to target/test-classes" />
-									<echo message="Updating activiti configuration config to db ${database}" />
-									<copy file="${basedir}/../../qa/jta/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-									   <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
-									</copy>
-								</tasks>
-							</configuration>
-						</execution>
-						<execution>
-							<id>database-test-drop-schema</id>
-							<phase>prepare-package</phase>
-							<goals>
-								<goal>run</goal>
-							</goals>
-							<configuration>
-								<tasks>
-									<echo message="dropping schema in ${database}" />
-									<java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
-								</tasks>
-							</configuration>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<configuration>
-						<excludes>
-							<exclude>**/*TestCase.java</exclude>
+  <profile>
+    <id>configJta</id>
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>configExecution</id>
+              <phase>process-test-classes</phase>
+              <goals>
+                <goal>run</goal>
+              </goals>
+              <configuration>
+                <tasks>
+                    <echo message="Copying jta enabled Activiti configuration file to target/test-classes" />
+                  <echo message="Updating activiti configuration config to db ${database}" />
+                  <copy file="${basedir}/../../qa/jta/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
+                     <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+                  </copy>
+                </tasks>
+              </configuration>
+            </execution>
+            <execution>
+              <id>database-test-drop-schema</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>run</goal>
+              </goals>
+              <configuration>
+                <tasks>
+                  <echo message="dropping schema in ${database}" />
+                  <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
+                </tasks>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <excludes>
+              <exclude>**/*TestCase.java</exclude>
 
-							<!-- Disabling tests that run exclusively using standalone config -->
-							<exclude>**/ProcessDiagramRetrievalTest.java</exclude>
-							<exclude>org/activiti/standalone/**</exclude>
-						</excludes>
-						<runOrder>alphabetical</runOrder>
-					</configuration>
-				</plugin>
-			</plugins>
-		</build>
-		<dependencies>
-			<dependency>
-				<groupId>org.slf4j</groupId>
-				<artifactId>slf4j-jdk14</artifactId>
-				<version>1.7.6</version>
-				<scope>test</scope>
-			</dependency>
-		</dependencies>
-	</profile>
+              <!-- Disabling tests that run exclusively using standalone config -->
+              <exclude>**/ProcessDiagramRetrievalTest.java</exclude>
+              <exclude>org/activiti/standalone/**</exclude>
+            </excludes>
+            <runOrder>alphabetical</runOrder>
+          </configuration>
+        </plugin>
+      </plugins>
+    </build>
+    <dependencies>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-jdk14</artifactId>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </profile>
 
     <!--  check history full -->
-      <profile>
+    <profile>
       <id>cfghistoryfull</id>
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -640,12 +601,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <!--
-              only worked with this version, there might be a bug with antrun
-              see http://jira.codehaus.org/browse/MANTRUN-109
-            -->
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -688,8 +645,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -731,8 +688,8 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -750,6 +707,7 @@
             </executions>
           </plugin>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <excludes>
@@ -785,6 +743,7 @@
       <build>
         <plugins>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <includes>
@@ -795,8 +754,8 @@
             </configuration>
           </plugin>
           <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.4</version>
             <executions>
               <execution>
                 <id>database-test-create-schema</id>
@@ -908,7 +867,7 @@
         </dependency>
       </dependencies>
     </profile>
-	
+  
     <profile>
       <id>mysql</id>
       <activation>

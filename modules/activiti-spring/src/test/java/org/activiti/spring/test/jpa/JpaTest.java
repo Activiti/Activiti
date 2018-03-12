@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
  *
  * @author Frederik Heremans
  */
-@ContextConfiguration( locations =  "JPASpringTest-context.xml")
+@ContextConfiguration(locations = "JPASpringTest-context.xml")
 public class JpaTest extends SpringActivitiTestCase {
 
     public void testJpaVariableHappyPath() {
@@ -98,8 +98,9 @@ public class JpaTest extends SpringActivitiTestCase {
 
     protected void before() {
         String[] defs = {"org/activiti/spring/test/jpa/JPASpringTest.bpmn20.xml"};
-        for (String pd : defs)
+        for (String pd : defs) {
             repositoryService.createDeployment().addClasspathResource(pd).deploy();
+        }
     }
 
     protected void deleteDeployments() {
@@ -109,114 +110,3 @@ public class JpaTest extends SpringActivitiTestCase {
         }
     }
 }
-/*
-
-@Configuration
-@EnableTransactionManagement(proxyTargetClass = true)
-class JpaConfiguration {
-
-    @Bean LoanRequestBean loanRequestBean (){
-        return new LoanRequestBean();
-    }
-    @Bean
-    public OpenJpaVendorAdapter openJpaVendorAdapter() {
-        OpenJpaVendorAdapter openJpaVendorAdapter = new OpenJpaVendorAdapter();
-        openJpaVendorAdapter.setDatabasePlatform(H2Dictionary.class.getName());
-        return openJpaVendorAdapter;
-    }
-
-    @Bean
-    public DataSource dataSource() {
-        BasicDataSource basicDataSource = new BasicDataSource();
-        basicDataSource.setUsername("sa");
-        basicDataSource.setUrl("jdbc:h2:mem:activiti");
-        basicDataSource.setDefaultAutoCommit(false);
-        basicDataSource.setDriverClassName(org.h2.Driver.class.getName());
-        basicDataSource.setPassword("");
-        return basicDataSource;
-    }
-
-    @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactoryBean(
-            OpenJpaVendorAdapter openJpaVendorAdapter, DataSource ds) {
-        LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setPersistenceXmlLocation("classpath:/org/activiti/spring/test/jpa/custom-persistence.xml");
-        emf.setJpaVendorAdapter(openJpaVendorAdapter);
-        emf.setDataSource(ds);
-        return emf;
-    }
-
-    @Bean
-    public PlatformTransactionManager jpaTransactionManager(EntityManagerFactory emf) {
-        return new JpaTransactionManager(emf);
-    }
-
-    /// restoring manual JPA bits
-
-    @Bean
-    public SpringProcessEngineConfiguration activitiConfiguration(
-            ResourcePatternResolver resourcePatternResolver,
-            DataSource dataSource,
-            PlatformTransactionManager transactionManager ) throws IOException {
-
-        Resource[] resources = resourcePatternResolver.getResources("classpath://*/
-/**.bpmn20.xml");
-
-        SpringProcessEngineConfiguration engine = new SpringProcessEngineConfiguration();
-        if (resources != null && resources.length > 0) {
-            engine.setDeploymentResources(resources);
-        }
-        engine.setDataSource(dataSource);
-        engine.setTransactionManager(transactionManager);
-
-
-        */
-/*
-        conf.setDeploymentName(defaultText(
-                activitiProperties.getDeploymentName(),
-                conf.getDeploymentName()));
-        conf.setDatabaseSchema(defaultText(
-                activitiProperties.getDatabaseSchema(),
-                conf.getDatabaseSchema()));
-        *//*
-
-
-        engine.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
-
-        return engine;
-    }
-
-    @Bean
-    public ProcessEngineFactoryBean processEngine(SpringProcessEngineConfiguration configuration) throws Exception {
-        ProcessEngineFactoryBean processEngineFactoryBean = new ProcessEngineFactoryBean();
-        processEngineFactoryBean.setProcessEngineConfiguration(configuration);
-        return processEngineFactoryBean;
-    }
-}
-
-	*/
-/*@Bean
-    public AbstractActivitiConfigurer abstractActivitiConfigurer(
-	    final EntityManagerFactory emf,
-	    final PlatformTransactionManager transactionManager) {
-
-		return new AbstractActivitiConfigurer() {
-
-			@Override
-			public void postProcessSpringProcessEngineConfiguration(SpringProcessEngineConfiguration engine) {
-				engine.setTransactionManager(transactionManager);
-				engine.setJpaEntityManagerFactory(emf);
-				engine.setJpaHandleTransaction(false);
-				engine.setJobExecutorActivate(false);
-				engine.setJpaCloseEntityManager(false);
-				engine.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
-			}
-		};
-	}
-
-    @Bean
-    public LoanRequestBean loanRequestBean() {
-        return new LoanRequestBean();
-    }
-}
- */
