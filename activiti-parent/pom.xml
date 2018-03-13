@@ -11,4 +11,41 @@
   <artifactId>activiti-parent</artifactId>
   <packaging>pom</packaging>
   <name>Activiti :: Parent</name>
+  <profiles>
+    <!-- profile to check dependencies for vulnerabilities -->
+    <profile>
+      <id>dependency-check</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.activiti</groupId>
+          <artifactId>activiti-dependency-check</artifactId>
+          <version>${project.version}</version>
+          <type>xml</type>
+          <classifier>suppression</classifier>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>${dependency-check-maven.version}</version>
+            <configuration>
+              <failBuildOnCVSS>7</failBuildOnCVSS>
+              <suppressionFiles>
+                <suppressionFile>${settings.localRepository}/org/activiti/activiti-dependency-check/${project.version}/activiti-dependency-check-${project.version}-suppression.xml</suppressionFile>
+              </suppressionFiles>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
