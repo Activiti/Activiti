@@ -51,7 +51,7 @@ public class MuleVMTest extends AbstractMuleTest {
   }
 
   @Override
-  protected String getConfigResources() {
+  protected String getConfigFile() {
     return "mule-config.xml";
   }
 }

@@ -46,17 +46,12 @@ The example configuration below uses the jpaPersistenceUnitName:
 </bean>
 ----
 
-The next example configuration below provides a +EntityManagerFactory+ which we define ourselves (in this case, an open-jpa entity manager). Note that the snippet only contains the beans that are relevant for the example, the others are omitted. Full working example with open-jpa entity manager can be found in the activiti-spring-examples (++/activiti-spring/src/test/java/org/activiti/spring/test/jpa/JPASpringTest.java++)
+The next example configuration below provides a +EntityManagerFactory+ which we define ourselves (in this case, an Hibernate entity manager). Note that the snippet only contains the beans that are relevant for the example, the others are omitted. Full working example with Hibernate entity manager can be found in the activiti-spring tests (++/activiti-spring/src/test/java/org/activiti/spring/test/jpa/JPASpringTest.java++)
 
 [source,xml,linenums]
 ----
 <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
   <property name="persistenceUnitManager" ref="pum"/>
-  <property name="jpaVendorAdapter">
-    <bean class="org.springframework.orm.jpa.vendor.OpenJpaVendorAdapter">
-      <property name="databasePlatform" value="org.apache.openjpa.jdbc.sql.H2Dictionary" />
-    </bean>
-  </property>
 </bean>
 
 <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">

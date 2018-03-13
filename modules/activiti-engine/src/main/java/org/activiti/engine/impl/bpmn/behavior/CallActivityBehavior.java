@@ -24,12 +24,17 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -45,6 +50,8 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   private List<AbstractDataAssociation> dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
   private Expression processDefinitionExpression;
   protected List<MapExceptionEntry> mapExceptions;
+  protected String businessKey;
+  protected boolean inheritBusinessKey;
   protected boolean inheritVariables;
 
   public CallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions) {
@@ -66,6 +73,14 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     this.dataOutputAssociations.add(dataOutputAssociation);
   }
 
+  public void setBusinessKey(String businessKey) {
+      this.businessKey = businessKey;
+  }
+
+  public void setInheritBusinessKey(boolean inheritBusinessKey) {
+      this.inheritBusinessKey = inheritBusinessKey;
+  }
+
   public void setInheritVariables(boolean inheritVariables) {
     this.inheritVariables = inheritVariables;
   }
@@ -78,7 +93,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
     
     DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
-
+    ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+    ExpressionManager expressionManager = processEngineConfiguration.getExpressionManager();
+    
     ProcessDefinitionEntity processDefinition = null;
     if (execution.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(execution.getTenantId())) {
     	processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
@@ -93,6 +111,16 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     }
     
     PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
+    
+    if (!StringUtils.isEmpty(businessKey)) {
+      Expression expression = expressionManager.createExpression(businessKey);
+      subProcessInstance.setBusinessKey(expression.getValue(execution).toString());
+      Context.getCommandContext().getHistoryManager().updateProcessBusinessKeyInHistory((ExecutionEntity) subProcessInstance);
+    } else if (inheritBusinessKey) {
+      ExecutionEntity processInstance = executionEntityManager.findExecutionById(execution.getProcessInstanceId());
+      subProcessInstance.setBusinessKey(processInstance.getBusinessKey());
+      Context.getCommandContext().getHistoryManager().updateProcessBusinessKeyInHistory((ExecutionEntity) subProcessInstance);
+    }
 
     if (inheritVariables) {
       Map<String, Object> variables = execution.getVariables();

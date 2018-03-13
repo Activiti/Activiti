@@ -385,8 +385,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 				
 			if (i == 14 || i == 15) {
 			  assertEquals(entry.getType(), ActivitiEventType.VARIABLE_DELETED.name());
-			  // process definition Id can't be recognized in  DB flush
-			  assertNull(entry.getProcessDefinitionId());
+			  assertNotNull(entry.getProcessDefinitionId());
 			  assertNotNull(entry.getProcessInstanceId());
 			  assertNotNull(entry.getTimeStamp());
 			  assertNull(entry.getTaskId());
@@ -533,6 +532,34 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			Map<String, Object> data = objectMapper.readValue(eventLogEntry.getData(), new TypeReference<HashMap<String, Object>>(){});
 			assertEquals("myTenant", data.get(Fields.TENANT_ID));
 		}
+		
+		// Cleanup
+		taskService.deleteTask(task.getId(),true);
+		for (EventLogEntry eventLogEntry : managementService.getEventLogEntries(null, null)) {
+			managementService.deleteEventLogEntry(eventLogEntry.getLogNumber());
+		}
+		
+	}
+	
+
+	public void testStandaloneTaskWithVariableEvents() throws JsonParseException, JsonMappingException, IOException {
+		
+		Task task = taskService.newTask();
+		task.setAssignee("kermit");
+		task.setTenantId("myTenant");
+		taskService.saveTask(task);
+		
+		taskService.setVariable(task.getId(), "test", "test");
+		taskService.setVariable(task.getId(), "test", "newValue");
+		taskService.removeVariable(task.getId(), "test");
+		
+		List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
+		assertEquals(5, events.size());
+		assertEquals("TASK_CREATED", events.get(0).getType());
+		assertEquals("TASK_ASSIGNED", events.get(1).getType());
+		assertEquals("VARIABLE_CREATED", events.get(2).getType());
+		assertEquals("VARIABLE_UPDATED", events.get(3).getType());
+		assertEquals("VARIABLE_DELETED", events.get(4).getType());
 		
 		// Cleanup
 		taskService.deleteTask(task.getId(),true);

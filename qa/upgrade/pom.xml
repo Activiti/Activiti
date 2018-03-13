@@ -6,7 +6,6 @@
   <name>Activiti - Upgrade Fetcher</name>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-upgrade-fetcher</artifactId>
-  <version>5.23.0-SNAPSHOT</version>
 
   <parent>
     <groupId>org.activiti</groupId>
@@ -36,7 +35,6 @@
         <dependency>
           <groupId>com.oracle.jdbc</groupId>
           <artifactId>ojdbc5</artifactId>
-          <version>11.2.0.1.0</version>
         </dependency>
       </dependencies>
     </profile>
@@ -53,7 +51,6 @@
         <dependency>
           <groupId>com.ibm.db2.jcc</groupId>
           <artifactId>db2jcc4</artifactId>
-          <version>9.7</version>
         </dependency>
       </dependencies>
     </profile>
@@ -70,7 +67,6 @@
         <dependency>
           <groupId>com.microsoft.sqlserver</groupId>
           <artifactId>sqljdbc4</artifactId>
-          <version>4.0</version>
         </dependency>
       </dependencies>
     </profile>
@@ -87,7 +83,6 @@
         <dependency>
           <groupId>mysql</groupId>
           <artifactId>mysql-connector-java</artifactId>
-          <version>5.1.21</version>
         </dependency>
       </dependencies>
     </profile>

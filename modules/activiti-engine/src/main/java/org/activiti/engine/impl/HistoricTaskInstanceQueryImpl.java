@@ -122,7 +122,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     this.databaseType = databaseType;
   }
 
-  @Override
+  public HistoricTaskInstanceQueryImpl(CommandContext commandContext) {
+	super(commandContext);
+  }
+
+@Override
   public long executeCount(CommandContext commandContext) {
     ensureVariablesInitialized();
     checkQueryOk();

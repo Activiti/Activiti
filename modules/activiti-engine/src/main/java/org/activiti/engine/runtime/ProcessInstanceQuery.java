@@ -126,6 +126,11 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
    */
   ProcessInstanceQuery involvedUser(String userId);
   
+  /**
+   * Select the process instances with which the given groups are involved. 
+   */
+  ProcessInstanceQuery involvedGroupsIn(List<String> involvedGroups); 
+  
   /** 
    * Only select process instances which have a global variable with the given value. The type
    * of variable is determined based on the value, using types configured in 
