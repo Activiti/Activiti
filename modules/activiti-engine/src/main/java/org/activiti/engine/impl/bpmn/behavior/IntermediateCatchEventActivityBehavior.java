@@ -12,13 +12,31 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.List;
+
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 
 public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
-
+  @Override
   public void execute(ActivityExecution execution) throws Exception {
+    
+    // Find active subscriptions
+    List<EventSubscriptionEntity> subscriptions = ((ExecutionEntity)execution).getEventSubscriptions();
+    
+    if(!subscriptions.isEmpty()) {
+      // There can be only one subscription entity 
+      EventSubscriptionEntity subscription = subscriptions.get(0);
+      
+      if(isSignalEventAlreadyFired(execution, subscription)) {
+        // Handle signal event for matching throw signal 
+        subscription.eventReceived(null, false);
+      }
+    }
+    
     // Do nothing: waitstate behavior
   }
 

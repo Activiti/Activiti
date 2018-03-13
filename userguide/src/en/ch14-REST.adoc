@@ -254,7 +254,7 @@ GET repository/deployments
 |tenantId|No|String|Only return deployments with the given tenantId.
 |tenantIdLike|No|String|Only return deployments with a tenantId like the given value.
 |withoutTenantId|No|Boolean|If +true+, only returns deployments without a tenantId set. If +false+, the +withoutTenantId+ parameter is ignored.
-|sort|No|'id' (default), 'name', 'deploytime' or 'tenantId'|Property to sort on, to be used together with the 'order'.
+|sort|No|'id' (default), 'name', 'deployTime' or 'tenantId'|Property to sort on, to be used together with the 'order'.
 |The general <<restPagingAndSort,paging and sorting query-parameters>> can be used for this URL.
 
 |===============

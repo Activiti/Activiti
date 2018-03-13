@@ -380,6 +380,9 @@
   </sql>
   
   <sql id="commonSelectExecutionsByQueryCriteriaSql">
+    <if test="involvedGroups != null">
+      inner join ${prefix}ACT_RU_IDENTITYLINK I on I.PROC_INST_ID_ = RES.ID_
+    </if>
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
       <choose>
         <when test="queryVariableValue.local">
@@ -391,6 +394,9 @@
       </choose> 
     </foreach>
     <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
+      <if test="orQueryObject.involvedGroups != null">
+        left join ${prefix}ACT_RU_IDENTITYLINK I_OR${orIndex} on I_OR${orIndex}.PROC_INST_ID_ = RES.ID_
+      </if>
       <if test="orQueryObject.processDefinitionId != null || orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionVersion != null || orQueryObject.processDefinitionCategory != null || orQueryObject.processDefinitionName != null || (orQueryObject.processDefinitionIds != null &amp;&amp; !orQueryObject.processDefinitionIds.isEmpty()) || (orQueryObject.processDefinitionKeys != null &amp;&amp; !orQueryObject.processDefinitionKeys.isEmpty())">
         inner join ${prefix}ACT_RE_PROCDEF P_OR${orIndex} on RES.PROC_DEF_ID_ = P_OR${orIndex}.ID_
       </if>
@@ -519,6 +525,17 @@
       </if>
       <if test="involvedUser != null">
         and EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ = #{involvedUser})
+      </if>
+      <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+        and
+        (
+          I.TYPE_ = 'participant'
+          and
+          I.GROUP_ID_ IN
+          <foreach item="group" index="index" collection="involvedGroups" open="(" separator="," close=")">
+            #{group}
+          </foreach>
+        )
       </if>
       <!-- PLEASE NOTE: If you change anything have a look into the HistoricVariableInstance & HistoricProcessInstance, the same query object is used there! -->
       <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
@@ -691,6 +708,16 @@
           </if>
           <if test="orQueryObject.involvedUser != null">
             or EXISTS(select ID_ from ${prefix}ACT_RU_IDENTITYLINK I where I.PROC_INST_ID_ = RES.ID_ and I.USER_ID_ = #{orQueryObject.involvedUser})
+          </if>
+          <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+            or (
+              I_OR${orIndex}.TYPE_ = 'participant'
+              and
+              I_OR${orIndex}.GROUP_ID_ IN
+              <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+                #{group}
+              </foreach>
+            )
           </if>
           <!-- PLEASE NOTE: If you change anything have a look into the HistoricVariableInstance & HistoricProcessInstance, the same query object is used there! -->
           <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">

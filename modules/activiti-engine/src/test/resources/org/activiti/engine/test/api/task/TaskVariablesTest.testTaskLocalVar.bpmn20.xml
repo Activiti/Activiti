@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+  <process id="user_task_local_variable" name="user_task_local_variable" isExecutable="true">
+    <startEvent id="startEvent1"></startEvent>
+    <userTask id="user_task1" name="User Task1" activiti:assignee="kermit">
+      <extensionElements>
+        <activiti:taskListener event="complete" class="org.activiti.engine.test.api.task.TaskVariablesTest$TestTaskCompletionListener"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <userTask id="user_task2" name="User Task2" activiti:assignee="kermit">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${task.setVariableLocal('test0', 'old')}"></activiti:taskListener>
+        <activiti:taskListener event="create" expression="${task.setVariableLocal('test2', 'cached')}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <parallelGateway id="sid-8AFF156F-ABB4-46C3-9EB4-3BE0FE410313"></parallelGateway>
+    <sequenceFlow id="sid-D65AAA89-BA7A-4E62-B48F-31C15E82DF90" sourceRef="startEvent1" targetRef="sid-8AFF156F-ABB4-46C3-9EB4-3BE0FE410313"></sequenceFlow>
+    <sequenceFlow id="sid-11F0D97E-C800-457B-A16E-DCDEE12DE0FA" sourceRef="sid-8AFF156F-ABB4-46C3-9EB4-3BE0FE410313" targetRef="user_task1"></sequenceFlow>
+    <sequenceFlow id="sid-B0821832-D4D3-4905-87A0-92AD84825C0C" sourceRef="sid-8AFF156F-ABB4-46C3-9EB4-3BE0FE410313" targetRef="user_task2"></sequenceFlow>
+    <endEvent id="sid-F007D44F-3390-4B93-82B4-E238E55A0544"></endEvent>
+    <endEvent id="sid-8815EE49-E19C-4E84-9541-E024E0B0A4C9"></endEvent>
+    <sequenceFlow id="sid-1BD0A4DA-DAB0-4B43-A3A9-E01A27FE2A09" sourceRef="user_task1" targetRef="sid-F007D44F-3390-4B93-82B4-E238E55A0544"></sequenceFlow>
+    <sequenceFlow id="sid-3D82385E-939B-4874-8105-3F50B61542FC" sourceRef="user_task2" targetRef="user_task3"></sequenceFlow>
+    <userTask id="user_task3" name="User Task3">
+      <extensionElements>
+        <activiti:taskListener event="create" expression="${task.setVariableLocal('test1', 'AAA')}"></activiti:taskListener>
+      </extensionElements>
+    </userTask>
+    <sequenceFlow id="flow1" sourceRef="user_task3" targetRef="sid-8815EE49-E19C-4E84-9541-E024E0B0A4C9"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_user_task_local_variable">
+    <bpmndi:BPMNPlane bpmnElement="user_task_local_variable" id="BPMNPlane_user_task_local_variable">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="75.0" y="125.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="user_task1" id="BPMNShape_user_task1">
+        <omgdc:Bounds height="80.0" width="100.0" x="255.0" y="15.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="user_task2" id="BPMNShape_user_task2">
+        <omgdc:Bounds height="80.0" width="100.0" x="255.0" y="186.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-8AFF156F-ABB4-46C3-9EB4-3BE0FE410313" id="BPMNShape_sid-8AFF156F-ABB4-46C3-9EB4-3BE0FE410313">
+        <omgdc:Bounds height="40.0" width="40.0" x="165.0" y="120.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-F007D44F-3390-4B93-82B4-E238E55A0544" id="BPMNShape_sid-F007D44F-3390-4B93-82B4-E238E55A0544">
+        <omgdc:Bounds height="35.0" width="35.0" x="420.0" y="41.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-8815EE49-E19C-4E84-9541-E024E0B0A4C9" id="BPMNShape_sid-8815EE49-E19C-4E84-9541-E024E0B0A4C9">
+        <omgdc:Bounds height="35.0" width="35.0" x="590.0" y="209.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="user_task3" id="BPMNShape_user_task3">
+        <omgdc:Bounds height="80.0" width="105.0" x="420.0" y="186.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-D65AAA89-BA7A-4E62-B48F-31C15E82DF90" id="BPMNEdge_sid-D65AAA89-BA7A-4E62-B48F-31C15E82DF90">
+        <omgdi:waypoint x="110.0" y="142.0"></omgdi:waypoint>
+        <omgdi:waypoint x="165.0" y="140.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-11F0D97E-C800-457B-A16E-DCDEE12DE0FA" id="BPMNEdge_sid-11F0D97E-C800-457B-A16E-DCDEE12DE0FA">
+        <omgdi:waypoint x="185.0" y="120.0"></omgdi:waypoint>
+        <omgdi:waypoint x="305.0" y="95.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-B0821832-D4D3-4905-87A0-92AD84825C0C" id="BPMNEdge_sid-B0821832-D4D3-4905-87A0-92AD84825C0C">
+        <omgdi:waypoint x="185.0" y="160.0"></omgdi:waypoint>
+        <omgdi:waypoint x="305.0" y="186.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-1BD0A4DA-DAB0-4B43-A3A9-E01A27FE2A09" id="BPMNEdge_sid-1BD0A4DA-DAB0-4B43-A3A9-E01A27FE2A09">
+        <omgdi:waypoint x="355.0" y="55.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="58.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-3D82385E-939B-4874-8105-3F50B61542FC" id="BPMNEdge_sid-3D82385E-939B-4874-8105-3F50B61542FC">
+        <omgdi:waypoint x="355.0" y="226.0"></omgdi:waypoint>
+        <omgdi:waypoint x="420.0" y="226.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="525.0" y="226.0"></omgdi:waypoint>
+        <omgdi:waypoint x="590.0" y="226.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

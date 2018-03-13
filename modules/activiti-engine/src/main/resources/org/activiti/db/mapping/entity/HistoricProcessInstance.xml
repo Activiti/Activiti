@@ -345,10 +345,16 @@
   </sql>
   
   <sql id="commonSelectHistoricProcessInstancesByQueryCriteriaSql">
+    <if test="involvedGroups != null">
+      inner join ${prefix}ACT_HI_IDENTITYLINK I on I.PROC_INST_ID_ = RES.ID_
+    </if>
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
       inner join ${prefix}ACT_HI_VARINST  A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_
     </foreach>
     <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
+      <if test="orQueryObject.involvedGroups != null">
+        left join ${prefix}ACT_HI_IDENTITYLINK I_OR${orIndex} on I_OR${orIndex}.PROC_INST_ID_ = RES.ID_
+      </if>
       <if test="orQueryObject.processKeyNotIn != null || orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionCategory != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionVersion != null || (orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0)">
         inner join ${prefix}ACT_RE_PROCDEF DEF_OR${orIndex} on RES.PROC_DEF_ID_ = DEF_OR${orIndex}.ID_
       </if>
@@ -442,6 +448,17 @@
       <if test="involvedUser != null">
         and (
           exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.PROC_INST_ID_ = RES.ID_)
+        )
+      </if>
+      <if test="involvedGroups != null &amp;&amp; involvedGroups.size() &gt; 0">
+        and
+        (
+          I.TYPE_ = 'participant'
+          and
+          I.GROUP_ID_ IN
+          <foreach item="group" index="index" collection="involvedGroups" open="(" separator="," close=")">
+            #{group}
+          </foreach>
         )
       </if>
       <if test="startedBy != null">
@@ -613,6 +630,16 @@
           <if test="orQueryObject.involvedUser != null">
             or (
               exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{orQueryObject.involvedUser} and LINK.PROC_INST_ID_ = RES.ID_)
+            )
+          </if>
+          <if test="orQueryObject.involvedGroups != null &amp;&amp; orQueryObject.involvedGroups.size() &gt; 0">
+            or (
+              I_OR${orIndex}.TYPE_ = 'participant'
+              and
+              I_OR${orIndex}.GROUP_ID_ IN
+              <foreach item="group" index="index" collection="orQueryObject.involvedGroups" open="(" separator="," close=")">
+                #{group}
+              </foreach>
             )
           </if>
           <if test="orQueryObject.startedBy != null">

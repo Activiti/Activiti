@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -657,6 +659,51 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     runtimeService.signalEventReceived("signal3");
     validateTaskCounts(3, 1, 2);
 	}
+
+  @Deployment
+  public void testSignalRaceConditionsAfterParallelGateway() {
+
+    runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGateway");
+    
+    // No tasks should be open then and process should have ended
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+
+  @Deployment
+  public void testSignalRaceConditionsAfterParallelGatewayGlobal() {
+
+    runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGatewayGlobal");
+    
+    // No tasks should be open then and process should have ended
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+  
+  @Deployment
+  public void testSignalRaceConditionsAfterParallelGatewayAsync() {
+
+    runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGatewayAsync");
+
+    // No tasks should be open then and process should have ended
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }  
+
+  @Deployment
+  public void testSignalRaceConditionsAfterParallelGatewayGlobalAsync() {
+
+    runtimeService.startProcessInstanceByKey("testSignalRaceConditionsAfterParallelGatewayGlobalAsync");
+
+    // No tasks should be open then and process should have ended
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }  
+  
+  @Deployment
+  public void testSignalThrowCatchEventGateway() throws InterruptedException {
+
+    runtimeService.startProcessInstanceByKey("testSignalThrowCatchEventGateway");
+
+    // No tasks should be open then and process should have ended
+    assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
 	
 
   private void validateTaskCounts(long taskACount, long taskBCount, long taskCCount) {
@@ -665,4 +712,29 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 	  assertEquals(taskCCount, taskService.createTaskQuery().taskName("Task C").count());
   }
 
+  @Deployment(resources={
+          "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.nestCommandParent.bpmn20.xml",
+          "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.nestCommandSub.bpmn20.xml"})
+  public void testSignalCatchIntermediateWithNestedCommand() {
+    
+    runtimeService.startProcessInstanceByKey("nestCommandParent");
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+  }
+  
+  // Test delegate
+  public static class TestExecutionListener implements ExecutionListener {
+
+    @Override
+    public void notify(DelegateExecution execution) throws Exception {
+        execution.getEngineServices().getRuntimeService().startProcessInstanceByKey("nestCommandSub");
+        
+    }
+  }
+
+  @Deployment
+  public void testMessageCatch() {
+    
+    runtimeService.startProcessInstanceByKey("testMessageCatch");
+    assertEquals(1, runtimeService.createProcessInstanceQuery().count());
+  }
 }

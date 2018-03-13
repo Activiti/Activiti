@@ -2,74 +2,48 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <version>5.23.0-SNAPSHOT</version>
+    <relativePath>../..</relativePath>
+  </parent>
+
+  <artifactId>activiti-dbclean</artifactId>
   <name>Activiti DB Clean</name>
   <description>Activiti DB Clean</description>
-  <groupId>org.activiti</groupId>
-  <artifactId>activiti-dbclean</artifactId>
-
   <packaging>pom</packaging>
-  <version>5.23.0-SNAPSHOT</version>
 
   <dependencies>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>1.2.132</version>
     </dependency>
     <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
-      <version>2.3.2</version>
     </dependency>
     <dependency>
       <groupId>com.oracle.jdbc</groupId>
       <artifactId>ojdbc5</artifactId>
-      <version>11.2.0.1.0</version>
     </dependency>
     <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.6</version>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.jtds</groupId>
       <artifactId>jtds</artifactId>
-      <version>1.2.4</version>
     </dependency>
     <dependency>
-      <groupId>postgresql</groupId>
+      <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>8.4-701.jdbc4</version>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
-      <version>${version}</version>
     </dependency>
   </dependencies>
-
-  <repositories>
-    <repository>
-      <id>activiti</id>
-      <name>Activiti</name>
-      <url>https://maven.alfresco.com/nexus/content/repositories/activiti/</url>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>maven2.java.net</id>
-      <name>Java.net Repository for Maven 2</name>
-      <url>http://download.java.net/maven/2/</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>sonatype-snapshot-repo</id>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <url>https://repository.sonatype.org/content/repositories/apache-snapshots</url>
-    </pluginRepository>
-  </pluginRepositories>
 
   <build>
     <plugins>
@@ -85,16 +59,16 @@
             </goals>
             <configuration>
               <tasks>
-                <echo message="loading properties from ${user.home}/.activiti/${cfgdir}/build.${database}.properties" />
-                <property file="${user.home}/.activiti/${cfgdir}/build.${database}.properties" />
-                <echo message="cleaning db ${jdbc.url}" />
-                <sql driver="${jdbc.driver}" 
-                     password="${jdbc.password}" 
-                     url="${jdbc.url}" 
+                <echo message="loading properties from ${user.home}/.activiti/${cfgdir}/build.${database}.properties"/>
+                <property file="${user.home}/.activiti/${cfgdir}/build.${database}.properties"/>
+                <echo message="cleaning db ${jdbc.url}"/>
+                <sql driver="${jdbc.driver}"
+                     password="${jdbc.password}"
+                     url="${jdbc.url}"
                      userid="${jdbc.username}"
                      onerror="continue"
                      autocommit="true"
-                     classpathref="maven.test.classpath" 
+                     classpathref="maven.test.classpath"
                      src="scripts/drop.activiti.${database}.sql"/>
               </tasks>
             </configuration>

@@ -14,14 +14,18 @@
 package org.activiti.engine.impl.history;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
+import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
+import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
@@ -355,7 +359,13 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
     if (historicActivityInstances != null && !historicActivityInstances.isEmpty()) {
       return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
     }
-
+  
+    // fix ACTIVITI-937
+    if (execution.getTransition() != null && execution.getTransition().getSource().getProperties().get("type").equals("boundaryTimer")
+            && execution.getActivity().getId() != execution.getTransition().getSource().getId()) {
+      return null;
+    }
+  
     if (execution.getParentId() != null) {
       return findActivityInstance((ExecutionEntity) execution.getParent(), activityId, checkPersistentStore);
     }
@@ -370,7 +380,7 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
 @SuppressWarnings({ "unchecked", "rawtypes" })
   public void recordExecutionReplacedBy(ExecutionEntity execution, InterpretableExecution replacedBy) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      
+
       // Update the cached historic activity instances that are open
       List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
       for (HistoricActivityInstanceEntity cachedHistoricActivityInstance: cachedHistoricActivityInstances) {
@@ -380,7 +390,7 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
           cachedHistoricActivityInstance.setExecutionId(replacedBy.getId());
         }
       }
-    
+
       // Update the persisted historic activity instances that are open
       List<HistoricActivityInstanceEntity> historicActivityInstances = (List) new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
         .executionId(execution.getId())
@@ -388,6 +398,52 @@ public void recordActivityStart(ExecutionEntity executionEntity) {
         .list();
       for (HistoricActivityInstanceEntity historicActivityInstance: historicActivityInstances) {
         historicActivityInstance.setExecutionId(replacedBy.getId());
+      }
+
+      // keep record of unfinished tasks to only update related variables later
+      Set<String> unfinishedTasks = new HashSet<String>();
+      
+      // Update the cached historic task instances that are open
+      List<HistoricTaskInstanceEntity> cachedHistoricTaskInstances = getDbSqlSession().findInCache(HistoricTaskInstanceEntity.class);
+      for (HistoricTaskInstanceEntity cachedHistoricTaskInstance: cachedHistoricTaskInstances) {
+          if ( (cachedHistoricTaskInstance.getEndTime()==null)
+               && (execution.getId().equals(cachedHistoricTaskInstance.getExecutionId()))
+             ) {
+              cachedHistoricTaskInstance.setExecutionId(replacedBy.getId());
+              unfinishedTasks.add(cachedHistoricTaskInstance.getId());
+          }
+        }
+
+      // Update the persisted historic task instances that are open
+      List<HistoricTaskInstanceEntity> historicTaskInstances = (List) new HistoricTaskInstanceQueryImpl(Context.getCommandContext())
+        .executionId(execution.getId())
+        .unfinished()
+        .list();
+      
+      
+      for (HistoricTaskInstanceEntity historicTaskInstance: historicTaskInstances) {
+        historicTaskInstance.setExecutionId(replacedBy.getId());
+        unfinishedTasks.add(historicTaskInstance.getId());
+      }
+      List<HistoricVariableInstanceEntity> cachedHistoricVariableInstances = getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class);
+      for (HistoricVariableInstanceEntity cachedHistoricVariableInstance: cachedHistoricVariableInstances) {
+          if ((execution.getId().equals(cachedHistoricVariableInstance.getExecutionId()) )
+               && (unfinishedTasks.contains(cachedHistoricVariableInstance.getTaskId()))
+             ) {
+              cachedHistoricVariableInstance.setExecutionId(replacedBy.getId());
+          }
+        }
+
+      // Update the persisted historic variable instances
+      List<HistoricVariableInstanceEntity> historicVariableInstances = (List) new HistoricVariableInstanceQueryImpl(Context.getCommandContext())
+        .executionId(execution.getId())
+        .list();
+      for (HistoricVariableInstanceEntity historicVariableInstance: historicVariableInstances) {
+    	  // only variables of unfinished tasks
+    	  if (unfinishedTasks.contains(historicVariableInstance.getTaskId())) {
+    		  historicVariableInstance.setExecutionId(replacedBy.getId());
+    	  }
+          
       }
     }
   }
