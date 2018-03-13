@@ -734,6 +734,29 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <inherited>false</inherited>
+        <executions>
+          <execution>
+            <id>attach-artifacts</id>
+            <phase>package</phase>
+            <goals>
+              <goal>attach-artifact</goal>
+            </goals>
+            <configuration>
+              <artifacts>
+                <artifact>
+                  <file>${basedir}/dependency-check-suppression.xml</file>
+                  <type>xml</type>
+                  <classifier>dependency-check-suppression</classifier>
+                </artifact>
+              </artifacts>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <profiles>
@@ -775,6 +798,9 @@
             <version>${dependency-check-maven.version}</version>
             <configuration>
               <failBuildOnCVSS>7</failBuildOnCVSS>
+              <suppressionFiles>
+                <suppressionFile>${settings.localRepository}/org/activiti/activiti-build/${project.version}/activiti-build-${project.version}-dependency-check-suppression.xml</suppressionFile>
+              </suppressionFiles>
             </configuration>
             <executions>
               <execution>
