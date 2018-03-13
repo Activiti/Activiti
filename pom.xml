@@ -95,7 +95,7 @@
     <javaGeom.version>0.11.1</javaGeom.version>
     <javax.enterprise.concurrent-api.version>1.0</javax.enterprise.concurrent-api.version>
     <jaxb-api.version>2.2.11</jaxb-api.version>
-    <jgraphx.version>1.10.4.1</jgraphx.version>
+    <jgraphx.version>v3.9.3</jgraphx.version>
     <json-unit.version>1.24.0</json-unit.version>
     <jsr250-api.version>1.0</jsr250-api.version>
     <juel.version>2.2.7</juel.version>
@@ -201,7 +201,7 @@
         <version>${java-uuid-generator.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.tinyjee.jgraphx</groupId>
+        <groupId>com.github.jgraph</groupId>
         <artifactId>jgraphx</artifactId>
         <version>${jgraphx.version}</version>
       </dependency>
@@ -310,6 +310,13 @@
       <id>jboss-thirdparty-releases</id>
       <name>JBOSS Maven Repository</name>
       <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>jitpack.io</id>
+      <url>https://jitpack.io</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
