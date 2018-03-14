@@ -18,9 +18,6 @@
     <hibernate.version>4.2.16.Final</hibernate.version>
     <codahale.metrics.version>3.0.2</codahale.metrics.version>
     <hazelcastcache.version>3.1.5</hazelcastcache.version>
-
-    <!-- Web container version -->
-    <tomcat.version>7.0.53</tomcat.version>
   </properties>
 
   <modules>
