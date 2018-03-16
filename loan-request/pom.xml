@@ -4,12 +4,10 @@
   <name>Loan Request - Activiti Spring</name>
   <artifactId>loan-request</artifactId>
 
-  <groupId>org.activiti</groupId>
-
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-examples-root</artifactId>
-    <version>7-201801-EA</version>
+    <version>7-201802-EA</version>
   </parent>
 
   <packaging>jar</packaging>
@@ -129,8 +127,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>commons-dbcp</groupId>
-      <artifactId>commons-dbcp</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-dbcp2</artifactId>
       <scope>test</scope>
     </dependency>
 
