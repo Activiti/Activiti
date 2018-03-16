@@ -1,35 +1,38 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7-201801-EA</version>
+    <version>7-201802-EA</version>
+    <relativePath/>
   </parent>
-  <name>Activiti</name>
-
-  <description>BPM and workflow engine</description>
   <artifactId>activiti-root</artifactId>
-  <version>7-201801-EA</version>
   <packaging>pom</packaging>
-
-  <properties>
-    <version.activiti>${project.version}</version.activiti>
-  </properties>
-
-  <distributionManagement>
-    <repository>
-      <id>central-releases-staging</id>
-      <name>Central Releases - Staging</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-    </repository>
-    <snapshotRepository>
-      <id>activiti-enterprise-snapshots</id>
-      <name>Activiti Snapshots</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>
-
+  <name>Activiti</name>
+  <description>BPM and workflow engine</description>
+  <url>http://activiti.org</url>
+  <modules>
+    <module>activiti-bpmn-model</module>
+    <module>activiti-bpmn-layout</module>
+    <module>activiti-bpmn-converter</module>
+    <module>activiti-process-validation</module>
+    <module>activiti-image-generator</module>
+    <module>activiti-json-converter</module>
+    <module>activiti-engine</module>
+    <module>activiti-spring</module>
+  </modules>
+  <scm>
+    <url>https://github.com/Activiti/Activiti</url>
+    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
+    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+  <ciManagement>
+    <system>Travis</system>
+    <url>https://travis-ci.org/Activiti/Activiti</url>
+  </ciManagement>
   <repositories>
     <repository>
       <id>activiti-snapshots</id>
@@ -38,87 +41,6 @@
       <releases>
         <enabled>false</enabled>
       </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
     </repository>
   </repositories>
-
-  <dependencyManagement>
-    <!-- Important: Do not add any additional dependency versions here!
-         The dependency management should only import activiti-dependencies. 3rd party deps should go to activiti-parent -->
-    <dependencies>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-dependencies</artifactId>
-        <version>${version.activiti}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <modules>
-    <module>activiti-bpmn-model</module>
-    <module>activiti-process-validation</module>
-    <module>activiti-bpmn-layout</module>
-    <module>activiti-image-generator</module>
-    <module>activiti-json-converter</module>
-    <module>activiti-bpmn-converter</module>
-    <module>activiti-engine</module>
-    <module>activiti-spring</module>
-  </modules>
-
-  <!-- Various information, not used by the build -->
-
-  <url>http://activiti.org</url>
-  <licenses>
-    <license>
-      <name>Apache v2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-    </license>
-  </licenses>
-  <organization>
-    <name>Alfresco</name>
-    <url>http://www.alfresco.com</url>
-  </organization>
-  <inceptionYear>2010</inceptionYear>
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/Activiti/Activiti/issues</url>
-  </issueManagement>
-  <ciManagement>
-    <system>Travis</system>
-    <url>http://bamboo.ci.codehaus.org/browse/ACT</url>
-  </ciManagement>
-  <scm>
-    <url>https://github.com/Activiti/Activiti</url>
-    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
-    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
-  <developers>
-    <developer>
-      <id>salaboy</id>
-      <name>Mauricio Salatino</name>
-      <email>mauricio.salatino@alfresco.com</email>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
-    </developer>
-    <developer>
-      <id>erdemedeiros</id>
-      <name>Elias De Medeiros</name>
-      <email>elias.demedeiros@alfresco.com</email>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
-    </developer>
-    <developer>
-      <id>ryandawsonuk</id>
-      <name>Ryan Dawson</name>
-      <email>ryan.dawson@alfresco.com</email>
-      <organization>Alfresco</organization>
-      <organizationUrl>http://alfresco.com</organizationUrl>
-    </developer>
-  </developers>
-
 </project>

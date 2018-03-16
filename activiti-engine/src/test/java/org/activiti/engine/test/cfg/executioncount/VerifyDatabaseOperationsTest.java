@@ -64,7 +64,6 @@ public class VerifyDatabaseOperationsTest extends PluggableActivitiTestCase {
     newDbSqlSessionFactory.setDatabaseSchema(oldDbSqlSessionFactory.getDatabaseSchema());
     newDbSqlSessionFactory.setSqlSessionFactory(oldDbSqlSessionFactory.getSqlSessionFactory());
     newDbSqlSessionFactory.setIdGenerator(oldDbSqlSessionFactory.getIdGenerator());
-    newDbSqlSessionFactory.setDbIdentityUsed(oldDbSqlSessionFactory.isDbIdentityUsed());
     newDbSqlSessionFactory.setDbHistoryUsed(oldDbSqlSessionFactory.isDbHistoryUsed());
     processEngineConfiguration.addSessionFactory(newDbSqlSessionFactory);
   }
