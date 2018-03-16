@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-dependencies</artifactId>
+    <version>7-201802-EA</version>
+    <relativePath>../activiti-dependencies</relativePath>
+  </parent>
+  <artifactId>activiti-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>Activiti :: Parent</name>
+  <profiles>
+    <!-- profile to check dependencies for vulnerabilities -->
+    <profile>
+      <id>dependency-check</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.activiti</groupId>
+          <artifactId>activiti-dependency-check</artifactId>
+          <version>${project.version}</version>
+          <type>xml</type>
+          <classifier>suppression</classifier>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.owasp</groupId>
+            <artifactId>dependency-check-maven</artifactId>
+            <version>${dependency-check-maven.version}</version>
+            <configuration>
+              <failBuildOnCVSS>7</failBuildOnCVSS>
+              <suppressionFiles>
+                <suppressionFile>${settings.localRepository}/org/activiti/activiti-dependency-check/${project.version}/activiti-dependency-check-${project.version}-suppression.xml</suppressionFile>
+              </suppressionFiles>
+            </configuration>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

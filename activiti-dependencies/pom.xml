@@ -1,112 +1,58 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.activiti</groupId>
-    <artifactId>activiti-parent</artifactId>
-    <version>7-201801-EA</version>
+    <artifactId>activiti-build</artifactId>
+    <version>7-201802-EA</version>
   </parent>
-
   <artifactId>activiti-dependencies</artifactId>
   <packaging>pom</packaging>
-
-  <name>Activiti - Dependencies BOM (Bill Of Materials)</name>
-  <description>Activiti Dependencies BOM (Bill Of Materials)</description>
-
-  <repositories>
-    <repository>
-      <id>spring-milestones</id>
-      <name>Spring Milestones</name>
-      <url>https://repo.spring.io/libs-milestone</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>spring-snapshots</id>
-      <name>Spring Snapshots</name>
-      <url>https://repo.spring.io/libs-snapshot</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>jboss-thirdparty-releases</id>
-      <name>JBOSS Maven Repository</name>
-      <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases/</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
-  <pluginRepositories>
-    <pluginRepository>
-      <id>spring-snapshots</id>
-      <name>Spring Snapshots</name>
-      <url>http://repo.spring.io/snapshot</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </pluginRepository>
-    <pluginRepository>
-      <id>spring-milestones</id>
-      <name>Spring Milestones</name>
-      <url>http://repo.spring.io/milestone</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </pluginRepository>
-  </pluginRepositories>
-
-
+  <name>Activiti :: Dependencies BOM (Bill Of Materials)</name>
   <dependencyManagement>
     <dependencies>
       <!-- Activiti Modules for managed dependencies -->
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-engine</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-model</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-image-generator</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-converter</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-json-converter</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-bpmn-layout</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-process-validation</artifactId>
-        <version>${project.version}</version>
+        <version>${activiti.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
-
 </project>
