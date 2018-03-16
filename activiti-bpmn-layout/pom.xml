@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <version>7-201802-EA</version>
+    <version>7-201803-EA-SNAPSHOT</version>
   </parent>
 
   <artifactId>activiti-bpmn-layout</artifactId>
