@@ -9,6 +9,9 @@
   </parent>
   <artifactId>activiti-secure-javascript</artifactId>
   <name>Activiti - Secure JavaScript</name>
+  <properties>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>

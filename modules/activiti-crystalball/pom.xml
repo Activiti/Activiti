@@ -12,7 +12,11 @@
     <relativePath>../..</relativePath>
     <version>5.23.0-SNAPSHOT</version>
   </parent>
-  
+
+  <properties>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

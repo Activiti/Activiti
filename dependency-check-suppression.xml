@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
-
   <suppress>
     <notes><![CDATA[
       Has to do with weak permissions on a config file in default installations of tomcat on linux systems.
@@ -12,5 +11,11 @@
     <cve>CVE-2016-6325</cve>
     <cve>CVE-2016-5425</cve>
   </suppress>
-
+  <suppress>
+    <notes><![CDATA[
+      temporary suppression until jackson 2.9.5 is released for file name: jackson-databind-2.9.4.jar
+    ]]></notes>
+    <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
+    <cve>CVE-2018-7489</cve>
+  </suppress>
 </suppressions>

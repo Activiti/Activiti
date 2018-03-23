@@ -14,6 +14,19 @@
     <version>5.23.0-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <activiti.osgi.activator>
+      org.activiti.osgi.Activator
+    </activiti.osgi.activator>
+    <activiti.osgi.import.pkg>
+      org.apache.felix.fileinstall;resolution:=optional,*
+    </activiti.osgi.import.pkg>
+    <activiti.artifact>
+      org.activiti.osgi
+    </activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
+
   <build>
     <resources>
       <resource>
@@ -147,17 +160,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <properties>
-    <activiti.osgi.activator>
-      org.activiti.osgi.Activator
-    </activiti.osgi.activator>
-    <activiti.osgi.import.pkg>
-      org.apache.felix.fileinstall;resolution:=optional,*
-    </activiti.osgi.import.pkg>
-    <activiti.artifact>
-      org.activiti.osgi
-    </activiti.artifact>
-  </properties>
 
 </project>

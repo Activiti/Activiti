@@ -11,6 +11,7 @@
 
   <properties>
     <java.version>1.8</java.version>
+    <suppressionFile>${basedir}/../../../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <dependencies>

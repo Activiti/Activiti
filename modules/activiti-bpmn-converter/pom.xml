@@ -20,6 +20,7 @@
     <activiti.osgi.export.additional>
       org.activiti.bpmn.constants,org.activiti.bpmn.util,org.activiti.bpmn.exceptions
     </activiti.osgi.export.additional>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <build>

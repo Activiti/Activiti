@@ -13,6 +13,10 @@
   <artifactId>activiti-cdi</artifactId>
   <name>Activiti - Cdi</name>
 
+  <properties>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
+
   <profiles>
     <profile>
       <id>openwebbeans-embedded-1</id>

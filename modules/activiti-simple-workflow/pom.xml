@@ -20,6 +20,7 @@
     <activiti.osgi.export.additional>
       org.activiti.workflow*
     </activiti.osgi.export.additional>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <build>

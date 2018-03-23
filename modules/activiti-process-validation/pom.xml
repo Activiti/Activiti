@@ -13,6 +13,7 @@
     <activiti.artifact>
       org.activiti.validation
     </activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
   <build>
     <resources>

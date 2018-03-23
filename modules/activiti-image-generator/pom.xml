@@ -18,9 +18,10 @@
 		<activiti.artifact>
 			org.activiti.image
 		</activiti.artifact>
-        <activiti.osgi.export.additional>
-            org.activiti.icons
-        </activiti.osgi.export.additional>
+		<activiti.osgi.export.additional>
+			org.activiti.icons
+		</activiti.osgi.export.additional>
+		<suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
 	</properties>
 
 	<build>

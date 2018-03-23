@@ -34,6 +34,7 @@
       javax.transaction;resolution:=optional,
       javax.enterprise.concurrent;resolution:=optional,
     </activiti.osgi.import.additional>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <dependencies>

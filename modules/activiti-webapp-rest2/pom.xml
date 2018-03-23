@@ -13,6 +13,10 @@
   <packaging>war</packaging>
   <name>Activiti - Rest</name>
 
+  <properties>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

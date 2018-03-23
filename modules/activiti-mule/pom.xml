@@ -11,6 +11,7 @@
   <name>Activiti - Mule</name>
   <properties>
     <activiti.artifact>org.activiti.mule</activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
   <build>
     <resources>

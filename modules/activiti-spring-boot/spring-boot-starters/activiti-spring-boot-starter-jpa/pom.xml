@@ -7,6 +7,9 @@
     <version>5.23.0-SNAPSHOT</version>
   </parent>
   <artifactId>activiti-spring-boot-starter-jpa</artifactId>
+  <properties>
+    <suppressionFile>${basedir}/../../../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>com.h2database</groupId>

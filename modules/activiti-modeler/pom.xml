@@ -18,6 +18,7 @@
     <activiti.artifact>
       org.activiti.modeler
     </activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <repositories>
