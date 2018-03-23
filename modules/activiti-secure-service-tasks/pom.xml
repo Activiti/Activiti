@@ -9,6 +9,9 @@
   </parent>
   <artifactId>activiti-secure-service-tasks</artifactId>
   <name>Activiti - Secure Service Tasks</name>
+  <properties>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>

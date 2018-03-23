@@ -12,6 +12,10 @@
     <version>6.0.1-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -197,12 +201,12 @@
                 <phase>generate-sources</phase>
                 <configuration>
                   <tasks>
-                    <delete dir="src/test/java/org/activiti/engine/test"/>
-                    <delete dir="src/test/resources/org/activiti/engine/test"/>
-                    <delete dir="src/test/java/org/activiti/examples"/>
-                    <delete dir="src/test/resources/org/activiti/examples"/>
-                    <delete dir="src/test/java/org/activiti/standalone"/>
-                    <delete dir="src/test/resources/org/activiti/standalone"/>
+                    <delete dir="src/test/java/org/activiti/engine/test" />
+                    <delete dir="src/test/resources/org/activiti/engine/test" />
+                    <delete dir="src/test/java/org/activiti/examples" />
+                    <delete dir="src/test/resources/org/activiti/examples" />
+                    <delete dir="src/test/java/org/activiti/standalone" />
+                    <delete dir="src/test/resources/org/activiti/standalone" />
                   </tasks>
                 </configuration>
                 <goals>
@@ -229,17 +233,17 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <delete dir="src/test/java/org/activiti/engine/test"/>
-                    <delete dir="src/test/resources/org/activiti/engine/test"/>
-                    <delete dir="src/test/java/org/activiti/examples"/>
-                    <delete dir="src/test/resources/org/activiti/examples"/>
-                    <delete dir="src/test/java/org/activiti/standalone"/>
-                    <delete dir="src/test/resources/org/activiti/standalone"/>
+                    <delete dir="src/test/java/org/activiti/engine/test" />
+                    <delete dir="src/test/resources/org/activiti/engine/test" />
+                    <delete dir="src/test/java/org/activiti/examples" />
+                    <delete dir="src/test/resources/org/activiti/examples" />
+                    <delete dir="src/test/java/org/activiti/standalone" />
+                    <delete dir="src/test/resources/org/activiti/standalone" />
                     <copy todir="src/test/java" overwrite="true">
-                      <fileset dir="../activiti-engine/src/test/java"/>
+                      <fileset dir="../activiti-engine/src/test/java" />
                     </copy>
                     <copy todir="src/test/resources" overwrite="true">
-                      <fileset dir="../activiti-engine/src/test/resources"/>
+                      <fileset dir="../activiti-engine/src/test/resources" />
                     </copy>
                   </tasks>
                 </configuration>
@@ -252,12 +256,12 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <delete dir="src/test/java/org/activiti/engine/test"/>
-                    <delete dir="src/test/resources/org/activiti/engine/test"/>
-                    <delete dir="src/test/java/org/activiti/examples"/>
-                    <delete dir="src/test/resources/org/activiti/examples"/>
-                    <delete dir="src/test/java/org/activiti/standalone"/>
-                    <delete dir="src/test/resources/org/activiti/standalone"/>
+                    <delete dir="src/test/java/org/activiti/engine/test" />
+                    <delete dir="src/test/resources/org/activiti/engine/test" />
+                    <delete dir="src/test/java/org/activiti/examples" />
+                    <delete dir="src/test/resources/org/activiti/examples" />
+                    <delete dir="src/test/java/org/activiti/standalone" />
+                    <delete dir="src/test/resources/org/activiti/standalone" />
                   </tasks>
                 </configuration>
               </execution>

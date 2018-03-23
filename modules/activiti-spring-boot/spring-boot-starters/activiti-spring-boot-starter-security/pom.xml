@@ -10,6 +10,10 @@
 
   <artifactId>activiti-spring-boot-starter-security</artifactId>
 
+  <properties>
+    <suppressionFile>${basedir}/../../../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>

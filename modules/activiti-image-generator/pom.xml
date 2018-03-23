@@ -21,6 +21,7 @@
     <activiti.osgi.import.additional>
       javax.imageio*;resolution:=optional,
     </activiti.osgi.import.additional>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <build>

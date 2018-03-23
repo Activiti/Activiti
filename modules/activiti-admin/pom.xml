@@ -10,6 +10,9 @@
   <artifactId>activiti-admin</artifactId>
   <packaging>war</packaging>
   <name>Activiti Admin</name>
+  <properties>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
   <dependencies>
 
     <!-- Activiti -->

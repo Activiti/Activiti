@@ -17,6 +17,7 @@
     <activiti.artifact>
       org.activiti.mule.test
     </activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <build>

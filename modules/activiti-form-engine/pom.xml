@@ -17,6 +17,7 @@
     <activiti.artifact>
       org.activiti.form.engine
     </activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <dependencies>
@@ -218,11 +219,11 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="updating activiti form configuration to db ${databaseform}"/>
+                    <echo message="updating activiti form configuration to db ${databaseform}" />
                     <copy file="${basedir}/../../qa/db/activiti.form.cfg.xml"
                           todir="target/test-classes" overwrite="true">
                       <filterset
-                          filtersfile="${user.home}/.activiti/jdbc/build.activiti6.${databaseform}.properties"/>
+                          filtersfile="${user.home}/.activiti/jdbc/build.activiti6.${databaseform}.properties" />
                     </copy>
                   </tasks>
                 </configuration>
@@ -235,9 +236,9 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="dropping schema in ${databaseform}"/>
+                    <echo message="dropping schema in ${databaseform}" />
                     <java classname="org.activiti.form.engine.impl.db.DbSchemaDrop"
-                          classpathref="maven.test.classpath"/>
+                          classpathref="maven.test.classpath" />
                   </tasks>
                 </configuration>
               </execution>
@@ -268,11 +269,11 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="updating activiti form configuration to db ${databasewithschemaform}"/>
+                    <echo message="updating activiti form configuration to db ${databasewithschemaform}" />
                     <copy file="${basedir}/../../qa/db/schema/activiti.form.cfg.xml"
                           todir="target/test-classes" overwrite="true">
                       <filterset
-                          filtersfile="${user.home}/.activiti/jdbc/build.activiti6.${databasewithschemaform}.properties"/>
+                          filtersfile="${user.home}/.activiti/jdbc/build.activiti6.${databasewithschemaform}.properties" />
                     </copy>
                   </tasks>
                 </configuration>
@@ -285,9 +286,9 @@
                 </goals>
                 <configuration>
                   <tasks>
-                    <echo message="dropping schema in ${databasewithschemaform}"/>
+                    <echo message="dropping schema in ${databasewithschemaform}" />
                     <java classname="org.activiti.form.engine.impl.db.DbSchemaDrop"
-                          classpathref="maven.test.classpath"/>
+                          classpathref="maven.test.classpath" />
                   </tasks>
                 </configuration>
               </execution>

@@ -11,6 +11,7 @@
   <name>Activiti - DMN XML Converter</name>
   <properties>
     <activiti.artifact>org.activiti.dmn.converter</activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
   <dependencies>
     <dependency>

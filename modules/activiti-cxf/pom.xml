@@ -17,6 +17,7 @@
     <activiti.artifact>
       org.activiti.cxf
     </activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <build>

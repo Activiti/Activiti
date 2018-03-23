@@ -13,6 +13,31 @@
     <version>6.0.1-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <activiti.artifact>
+      org.activiti.engine
+    </activiti.artifact>
+    <activiti.osgi.export.additional>
+      org.activiti.db.mapping.entity
+    </activiti.osgi.export.additional>
+    <activiti.osgi.import.additional>
+      junit*;resolution:=optional,
+      org.junit*;resolution:=optional,
+      com.sun*;resolution:=optional,
+      javax.activation*;resolution:=optional,
+      javax.persistence*;resolution:=optional,
+      org.apache.commons.mail*;resolution:=optional,
+      org.activiti.camel;resolution:=optional,
+      org.activiti.camel.impl;resolution:=optional,
+      org.springframework*;resolution:=optional,
+      org.drools*;resolution:=optional,
+      com.fasterxml*;resolution:=optional,
+      javax.transaction;resolution:=optional,
+      javax.enterprise.concurrent;resolution:=optional,
+    </activiti.osgi.import.additional>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -182,30 +207,6 @@
     </dependency>
 
   </dependencies>
-
-  <properties>
-    <activiti.artifact>
-      org.activiti.engine
-    </activiti.artifact>
-    <activiti.osgi.export.additional>
-      org.activiti.db.mapping.entity
-    </activiti.osgi.export.additional>
-    <activiti.osgi.import.additional>
-      junit*;resolution:=optional,
-      org.junit*;resolution:=optional,
-      com.sun*;resolution:=optional,
-      javax.activation*;resolution:=optional,
-      javax.persistence*;resolution:=optional,
-      org.apache.commons.mail*;resolution:=optional,
-      org.activiti.camel;resolution:=optional,
-      org.activiti.camel.impl;resolution:=optional,
-      org.springframework*;resolution:=optional,
-      org.drools*;resolution:=optional,
-      com.fasterxml*;resolution:=optional,
-      javax.transaction;resolution:=optional,
-      javax.enterprise.concurrent;resolution:=optional,
-    </activiti.osgi.import.additional>
-  </properties>
 
   <build>
     <plugins>

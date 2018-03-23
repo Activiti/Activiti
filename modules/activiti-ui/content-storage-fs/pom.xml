@@ -9,6 +9,9 @@
   <artifactId>content-storage-fs</artifactId>
   <name>Activiti Content Storage - File System Implementation</name>
   <description>Implementation of the content-storage-api using a file-system.</description>
+  <properties>
+    <suppressionFile>${basedir}/../../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
