@@ -28,4 +28,11 @@
     <gav regex="true">^com\.graphql-java:java-dataloader:.*$</gav>
     <cve>CVE-2008-0660</cve>
   </suppress>
+  <suppress>
+    <notes><![CDATA[
+      temporary suppression until jackson 2.9.5 is released for file name: jackson-databind-2.9.4.jar
+    ]]></notes>
+    <gav regex="true">^com\.fasterxml\.jackson\.core:jackson-databind:.*$</gav>
+    <cve>CVE-2018-7489</cve>
+  </suppress>
 </suppressions>
