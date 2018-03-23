@@ -10,10 +10,6 @@
 
   <artifactId>spring-boot-sample-custom-mybatis-mapper</artifactId>
 
-  <properties>
-    <suppressionFile>${basedir}/../../../../dependency-check-suppression.xml</suppressionFile>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>

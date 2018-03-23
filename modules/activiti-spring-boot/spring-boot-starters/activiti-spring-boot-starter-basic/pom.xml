@@ -10,10 +10,6 @@
 
   <artifactId>activiti-spring-boot-starter-basic</artifactId>
 
-  <properties>
-    <suppressionFile>${basedir}/../../../../dependency-check-suppression.xml</suppressionFile>
-  </properties>
-
   <dependencies>
     <!-- Support for auto-completion support in Boot 1.2 -->
     <dependency>

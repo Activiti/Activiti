@@ -8,9 +8,9 @@
 
   <parent>
     <groupId>org.activiti</groupId>
-    <artifactId>activiti-root</artifactId>
-    <relativePath>../..</relativePath>
+    <artifactId>activiti-parent</artifactId>
     <version>6.0.1-SNAPSHOT</version>
+    <relativePath>../activiti-parent</relativePath>
   </parent>
 
   <properties>
@@ -35,7 +35,6 @@
       javax.transaction;resolution:=optional,
       javax.enterprise.concurrent;resolution:=optional,
     </activiti.osgi.import.additional>
-    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <dependencies>

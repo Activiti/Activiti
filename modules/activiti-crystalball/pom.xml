@@ -8,14 +8,10 @@
 
   <parent>
     <groupId>org.activiti</groupId>
-    <artifactId>activiti-root</artifactId>
-    <relativePath>../..</relativePath>
+    <artifactId>activiti-parent</artifactId>
     <version>6.0.1-SNAPSHOT</version>
+    <relativePath>../activiti-parent</relativePath>
   </parent>
-
-  <properties>
-    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
-  </properties>
 
   <build>
     <plugins>

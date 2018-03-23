@@ -5,9 +5,9 @@
 
   <parent>
     <groupId>org.activiti</groupId>
-    <artifactId>activiti-root</artifactId>
+    <artifactId>activiti-parent</artifactId>
     <version>6.0.1-SNAPSHOT</version>
-    <relativePath>../..</relativePath>
+    <relativePath>../activiti-parent</relativePath>
   </parent>
 
   <artifactId>activiti-json-converter</artifactId>
@@ -20,7 +20,6 @@
     <activiti.osgi.export.additional>
       org.activiti.editor*
     </activiti.osgi.export.additional>
-    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <build>
