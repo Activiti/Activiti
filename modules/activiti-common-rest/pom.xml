@@ -9,16 +9,15 @@
 
   <parent>
     <groupId>org.activiti</groupId>
-    <artifactId>activiti-root</artifactId>
-    <relativePath>../..</relativePath>
+    <artifactId>activiti-parent</artifactId>
     <version>5.23.0-SNAPSHOT</version>
+    <relativePath>../activiti-parent</relativePath>
   </parent>
 
   <properties>
     <activiti.artifact>
       org.activiti.rest.common
     </activiti.artifact>
-    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
   
   <repositories>

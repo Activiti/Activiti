@@ -3,15 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.activiti</groupId>
-    <artifactId>activiti-root</artifactId>
+    <artifactId>activiti-parent</artifactId>
     <version>5.23.0-SNAPSHOT</version>
-    <relativePath>../..</relativePath>
+    <relativePath>../activiti-parent</relativePath>
   </parent>
   <artifactId>activiti-mule</artifactId>
   <name>Activiti - Mule</name>
   <properties>
     <activiti.artifact>org.activiti.mule</activiti.artifact>
-    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
   <build>
     <resources>

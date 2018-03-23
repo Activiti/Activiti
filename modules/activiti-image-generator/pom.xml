@@ -5,13 +5,12 @@
 
 	<name>Activiti - Image Generator</name>
 	<artifactId>activiti-image-generator</artifactId>
-	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>org.activiti</groupId>
-		<artifactId>activiti-root</artifactId>
-		<relativePath>../..</relativePath>
-		<version>5.23.0-SNAPSHOT</version>
+    <artifactId>activiti-parent</artifactId>
+    <version>5.23.0-SNAPSHOT</version>
+    <relativePath>../activiti-parent</relativePath>
 	</parent>
 
 	<properties>
@@ -21,7 +20,6 @@
 		<activiti.osgi.export.additional>
 			org.activiti.icons
 		</activiti.osgi.export.additional>
-		<suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
 	</properties>
 
 	<build>
