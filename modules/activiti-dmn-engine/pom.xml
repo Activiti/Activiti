@@ -11,6 +11,7 @@
   <name>Activiti - DMN Engine</name>
   <properties>
     <activiti.artifact>org.activiti.dmn.engine</activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
   <dependencies>
     <dependency>

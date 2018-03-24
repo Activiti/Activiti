@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
@@ -702,6 +703,8 @@
     </dependencies>
   </dependencyManagement>
   <modules>
+    <module>modules/activiti-dependency-check</module>
+    <module>modules/activiti-parent</module>
     <module>modules/activiti-bpmn-model</module>
     <module>modules/activiti-process-validation</module>
     <module>modules/activiti-bpmn-layout</module>
@@ -1204,29 +1207,6 @@
                 <phase>process-resources</phase>
                 <goals>
                   <goal>generate</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-    <profile>
-      <id>dependency-check</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.owasp</groupId>
-            <artifactId>dependency-check-maven</artifactId>
-            <version>3.1.1</version>
-            <configuration>
-              <failBuildOnCVSS>7</failBuildOnCVSS>
-              <bundleAuditAnalyzerEnabled>false</bundleAuditAnalyzerEnabled>
-            </configuration>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>check</goal>
                 </goals>
               </execution>
             </executions>

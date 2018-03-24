@@ -9,6 +9,9 @@
 	<artifactId>content-storage-api</artifactId>
 	<name>Activiti Content Storage - API</name>
 	<description>API for storing and retreiving binary content</description>
+	<properties>
+		<suppressionFile>${basedir}/../../../dependency-check-suppression.xml</suppressionFile>
+	</properties>
 	<profiles>
 		<profile>
 			<id>distro</id>

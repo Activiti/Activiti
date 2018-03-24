@@ -14,6 +14,7 @@
     <activiti.artifact>
       org.activiti.dmn.json.converter
     </activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <dependencies>

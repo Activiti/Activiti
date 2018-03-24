@@ -10,6 +10,7 @@
   <artifactId>activiti-form-json-converter</artifactId>
   <properties>
     <activiti.artifact>org.activiti.form.json.converter</activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
   <dependencies>
     <dependency>

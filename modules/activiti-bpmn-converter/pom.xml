@@ -8,8 +8,8 @@
 
   <parent>
     <groupId>org.activiti</groupId>
-    <artifactId>activiti-root</artifactId>
-    <relativePath>../..</relativePath>
+    <artifactId>activiti-parent</artifactId>
+    <relativePath>../activiti-parent</relativePath>
     <version>6.0.1-SNAPSHOT</version>
   </parent>
 

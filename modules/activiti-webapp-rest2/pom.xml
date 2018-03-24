@@ -8,17 +8,16 @@
 
   <parent>
     <groupId>org.activiti</groupId>
-    <artifactId>activiti-root</artifactId>
-    <relativePath>../..</relativePath>
+    <artifactId>activiti-parent</artifactId>
     <version>6.0.1-SNAPSHOT</version>
+    <relativePath>../activiti-parent</relativePath>
   </parent>
 
-  <!-- swagger config -->
   <properties>
     <swagger.host>localhost:8080</swagger.host>
     <swagger.generated.directory>target/generated-swagger</swagger.generated.directory>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
-  <!-- swagger config end-->
 
   <build>
     <plugins>

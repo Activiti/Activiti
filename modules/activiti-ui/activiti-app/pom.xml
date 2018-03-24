@@ -10,13 +10,15 @@
   <artifactId>activiti-app</artifactId>
   <packaging>war</packaging>
 
-  <dependencies>
+  <properties>
+    <suppressionFile>${basedir}/../../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
 
+  <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-app-conf</artifactId>
     </dependency>
-
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
@@ -25,14 +27,10 @@
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
     </dependency>
-
   </dependencies>
 
-  <!-- BUILD -->
   <build>
-
     <finalName>activiti-app</finalName>
-
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -42,7 +40,6 @@
         </includes>
       </resource>
     </resources>
-
     <plugins>
       <plugin>
         <groupId>org.zeroturnaround</groupId>
@@ -70,10 +67,8 @@
         </configuration>
       </plugin>
     </plugins>
-
     <pluginManagement>
       <plugins>
-
         <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven
             build itself. -->
         <plugin>

@@ -18,8 +18,9 @@
 		<activiti.artifact>
 			org.activiti.dmn.api
 		</activiti.artifact>
+		<suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
 	</properties>
-	
+
 	<dependencies>
 		<dependency>
             <groupId>org.activiti</groupId>

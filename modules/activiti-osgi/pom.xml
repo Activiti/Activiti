@@ -9,10 +9,22 @@
 
   <parent>
     <groupId>org.activiti</groupId>
-    <artifactId>activiti-root</artifactId>
-    <relativePath>../..</relativePath>
+    <artifactId>activiti-parent</artifactId>
     <version>6.0.1-SNAPSHOT</version>
+    <relativePath>../activiti-parent</relativePath>
   </parent>
+
+  <properties>
+    <activiti.osgi.activator>
+      org.activiti.osgi.Activator
+    </activiti.osgi.activator>
+    <activiti.osgi.import.pkg>
+      org.apache.felix.fileinstall;resolution:=optional,*
+    </activiti.osgi.import.pkg>
+    <activiti.artifact>
+      org.activiti.osgi
+    </activiti.artifact>
+  </properties>
 
   <build>
     <resources>
@@ -147,18 +159,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <properties>
-    <activiti.osgi.activator>
-      org.activiti.osgi.Activator
-    </activiti.osgi.activator>
-    <activiti.osgi.import.pkg>
-      org.apache.felix.fileinstall;resolution:=optional,*
-    </activiti.osgi.import.pkg>
-    <activiti.artifact>
-      org.activiti.osgi
-    </activiti.artifact>
-  </properties>
 
   <profiles>
     <profile>

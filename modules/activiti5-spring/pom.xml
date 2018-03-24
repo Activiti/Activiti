@@ -19,6 +19,7 @@
     <activiti.osgi.import.additional>
       org.springframework.test.context*;resolution:=optional,
     </activiti.osgi.import.additional>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <build>

@@ -8,6 +8,9 @@
   </parent>
   <artifactId>editor-image-generator</artifactId>
   <name>Activiti editor - Image generator</name>
+  <properties>
+    <suppressionFile>${basedir}/../../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
   <build>
     <plugins>
       <plugin>

@@ -13,6 +13,10 @@
 	<artifactId>activiti5-compatibility-testdata</artifactId>
 	<name>Activiti 5 Compatibility - Test Data</name>
 
+	<properties>
+		<suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.activiti</groupId>

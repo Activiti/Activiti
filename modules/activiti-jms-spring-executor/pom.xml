@@ -12,6 +12,10 @@
 	<artifactId>activiti-jms-spring-executor</artifactId>
 	<name>Activiti - JMS - Spring - Executor</name>
 
+	<properties>
+		<suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>

@@ -17,6 +17,7 @@
     <activiti.artifact>
       org.activiti.rest.dmn.service
     </activiti.artifact>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
   </properties>
 
   <build>

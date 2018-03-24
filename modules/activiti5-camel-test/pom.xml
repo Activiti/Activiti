@@ -5,7 +5,6 @@
 
   <name>Activiti 5 - Camel - Compatability tests</name>
   <artifactId>activiti5-camel-test</artifactId>
-  <packaging>jar</packaging>
 
   <parent>
     <groupId>org.activiti</groupId>
@@ -14,6 +13,9 @@
     <version>6.0.1-SNAPSHOT</version>
   </parent>
 
+  <properties>
+    <suppressionFile>${basedir}/../../dependency-check-suppression.xml</suppressionFile>
+  </properties>
 
   <dependencies>
   	<dependency>
