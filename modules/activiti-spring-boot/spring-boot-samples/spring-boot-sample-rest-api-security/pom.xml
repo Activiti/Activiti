@@ -9,10 +9,6 @@
   </parent>
 
   <artifactId>spring-boot-sample-rest-api-security</artifactId>
-  
-  <properties>
-    <suppressionFile>${basedir}/../../../../dependency-check-suppression.xml</suppressionFile>
-  </properties>
 
   <dependencies>
     <dependency>
