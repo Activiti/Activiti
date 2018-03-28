@@ -21,6 +21,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -737,4 +738,31 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     runtimeService.startProcessInstanceByKey("testMessageCatch");
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
   }
+    
+    @Deployment
+    public void testSignalOnUserTask() {
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("signalOnUserTask");
+        Task task1 = taskService.createTaskQuery().singleResult();
+        assertEquals("First Task", task1.getName());
+        
+        runtimeService.signalEventReceived("panicSignal");
+        
+        HistoricActivityInstance userTaskActivity = historyService.createHistoricActivityInstanceQuery().activityId("firstTask").singleResult();
+        
+        assertNotNull(userTaskActivity);
+        assertNull("Activity should have not ended yet", userTaskActivity.getEndTime());
+        
+        Task userTask = taskService.createTaskQuery().taskDefinitionKey("firstTask").singleResult();
+        taskService.complete(userTask.getId());
+        
+        userTaskActivity = historyService.createHistoricActivityInstanceQuery().activityId("firstTask").singleResult();
+        
+        assertNotNull(userTaskActivity);
+        assertNotNull("Activity should have ended", userTaskActivity.getEndTime());
+        
+        userTask = taskService.createTaskQuery().singleResult();
+        taskService.complete(userTask.getId());
+        
+        assertProcessEnded(pi.getId());
+    }
 }

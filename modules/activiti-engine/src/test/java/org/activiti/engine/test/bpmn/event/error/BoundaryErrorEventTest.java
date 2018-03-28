@@ -24,6 +24,7 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.JvmUtil;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -485,6 +486,25 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     variables.put("bpmnErrorBean", new BpmnErrorBean());
     String procId = runtimeService.startProcessInstanceByKey("testCatchErrorThrownByJavaDelegateProvidedByDelegateExpressionOnServiceTask", variables).getId();
     assertThatErrorHasBeenCaught(procId);
+  }
+  
+  @Deployment
+  public void testErrorOnScriptTask() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("errorOnScriptTask");
+    
+    HistoricActivityInstance userTaskActivity = historyService.createHistoricActivityInstanceQuery().activityId("firstTask").singleResult();
+    
+    userTaskActivity = historyService.createHistoricActivityInstanceQuery().activityId("firstTask").singleResult();
+    
+    assertNotNull(userTaskActivity);
+    
+    // catchError boundary event is set as non interrupting which is not supported yet
+    assertNotNull("Activity should have ended", userTaskActivity.getEndTime());
+    
+    Task userTask = taskService.createTaskQuery().singleResult();
+    taskService.complete(userTask.getId());
+    
+    assertProcessEnded(pi.getId());
   }
 
 }

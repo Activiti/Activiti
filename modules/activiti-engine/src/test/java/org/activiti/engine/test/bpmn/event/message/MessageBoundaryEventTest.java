@@ -17,9 +17,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -703,5 +703,36 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         .singleResult();
     assertNull(execution);
   }
-
+  
+  @Deployment
+  public void testMessageOnUserTask() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("messageOnUserTask");
+    Task task1 = taskService.createTaskQuery().singleResult();
+    assertEquals("First Task", task1.getName());
+    
+    Execution execution = runtimeService.createExecutionQuery()
+            .messageEventSubscriptionName("messageName")
+            .singleResult();
+    
+    runtimeService.messageEventReceived("messageName", execution.getId());
+    
+    HistoricActivityInstance userTaskActivity = historyService.createHistoricActivityInstanceQuery().activityId("firstTask").singleResult();
+    
+    assertNotNull(userTaskActivity);
+    assertNull("Activity should have not ended yet", userTaskActivity.getEndTime());
+    
+    Task userTask = taskService.createTaskQuery().taskDefinitionKey("firstTask").singleResult();
+    taskService.complete(userTask.getId());
+    
+    userTaskActivity = historyService.createHistoricActivityInstanceQuery().activityId("firstTask").singleResult();
+    
+    assertNotNull(userTaskActivity);
+    assertNotNull("Activity should have ended", userTaskActivity.getEndTime());
+    
+    // one remaining task
+    userTask = taskService.createTaskQuery().singleResult();
+    taskService.complete(userTask.getId());
+    
+    assertProcessEnded(pi.getId());
+  }
 }

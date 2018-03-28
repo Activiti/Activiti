@@ -15,17 +15,36 @@ package org.activiti.engine.impl.history.handler;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
+import org.activiti.engine.impl.pvm.process.TransitionImpl;
+import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
 
 /**
  * @author Tom Baeyens
  */
 public class ActivityInstanceEndHandler implements ExecutionListener {
-
-  public void notify(DelegateExecution execution) {
-    Context.getCommandContext().getHistoryManager()
-      .recordActivityEnd((ExecutionEntity) execution);
-  }
+    
+    public void notify(DelegateExecution execution) {
+        if (!isSourceTransitionNotExecutionActivityAndNonInterrupting((ExecutionEntity) execution)) {
+            Context.getCommandContext().getHistoryManager()
+                    .recordActivityEnd((ExecutionEntity) execution);
+        }
+    }
+    
+    private boolean isSourceTransitionNotExecutionActivityAndNonInterrupting(InterpretableExecution execution) {
+        TransitionImpl transition = execution.getTransition();
+        if (transition != null) {
+            ActivityBehavior activityBehavior = transition.getSource().getActivityBehavior();
+        
+            return (!(execution.getActivity().getId().equals(execution.getTransition().getSource().getId())) &&
+                    activityBehavior instanceof BoundaryEventActivityBehavior &&
+                    !(((BoundaryEventActivityBehavior) activityBehavior).isInterrupting()));
+        }
+        return false;
+    }
 }
+
