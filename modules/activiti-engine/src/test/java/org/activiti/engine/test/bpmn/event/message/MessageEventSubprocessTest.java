@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.event.message;
 
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
@@ -71,7 +72,19 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
     assertEquals(0, createEventSubscriptionQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());
   }
-  
+
+  @Deployment
+  public void testInterruptingScopeExecution() {
+   ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
+   Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("message3").singleResult();
+
+   runtimeService.messageEventReceived("message3", execution.getId());
+
+   // check Process' history
+   HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+   assertNull(historicProcessInstance.getEndTime());
+  }
+
   @Deployment
   public void FAILING_testNonInterruptingUnderProcessDefinition() {
     

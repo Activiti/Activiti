@@ -25,7 +25,9 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 public class ProcessInstanceEndHandler implements ExecutionListener {
 
   public void notify(DelegateExecution execution) {
-    Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(
-            execution.getProcessInstanceId(), ((ExecutionEntity) execution).getDeleteReason(), ((ExecutionEntity) execution).getActivityId());
+    if (execution.getId().equals(execution.getProcessInstanceId())) {
+        Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(
+        execution.getProcessInstanceId(), ((ExecutionEntity) execution).getDeleteReason(), ((ExecutionEntity) execution).getActivityId());
+    }
   }
 }
