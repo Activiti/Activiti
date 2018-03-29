@@ -74,14 +74,44 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
   @Deployment
   public void testInterruptingScopeExecution() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
-    Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("message3").singleResult();
 
+    Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("message3").singleResult();
     runtimeService.messageEventReceived("message3", execution.getId());
 
     // check Process' history
     HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId())
             .singleResult();
     assertNull(historicProcessInstance.getEndTime());
+
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    taskService.complete(task.getId());
+
+    historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(historicProcessInstance.getEndTime());
+  }
+
+  @Deployment
+  public void testInterruptingScopeExecutionWithCallActivity() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
+
+    Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("message3").singleResult();
+    runtimeService.messageEventReceived("message3", execution.getId());
+
+    // check Process' history
+    HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId())
+            .singleResult();
+    assertNull(historicProcessInstance.getEndTime());
+
+    // check Sub process's history
+    historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("ChildProcess").singleResult();
+    assertNotNull(historicProcessInstance.getEndTime());
+
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    taskService.complete(task.getId());
+
+    // check Process' history
+    historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(historicProcessInstance.getEndTime());
   }
 
   @Deployment
