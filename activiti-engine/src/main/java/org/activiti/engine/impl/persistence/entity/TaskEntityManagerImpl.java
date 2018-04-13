@@ -70,16 +70,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   }
   
   @Override
-  public void insertNoAssignementEvents(TaskEntity taskEntity, ExecutionEntity execution) {
-    insertTask(taskEntity, execution, false);
-  }
-
-  @Override
   public void insert(TaskEntity taskEntity, ExecutionEntity execution) {
-    insertTask(taskEntity, execution, true);
-  }
-  
-  private void insertTask(TaskEntity taskEntity, ExecutionEntity execution, boolean fireAssigmentEvents) {
 
     // Inherit tenant id (if applicable)
     if (execution != null && execution.getTenantId() != null) {
@@ -100,13 +91,6 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     if (execution != null && isExecutionRelatedEntityCountEnabled(execution)) {
       CountingExecutionEntity countingExecutionEntity = (CountingExecutionEntity) execution;
       countingExecutionEntity.setTaskCount(countingExecutionEntity.getTaskCount() + 1);
-    }
-    
-    if (fireAssigmentEvents && getEventDispatcher().isEnabled()) {
-      if (taskEntity.getAssignee() != null) {
-        getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, taskEntity));
-      }
     }
     
     getHistoryManager().recordTaskCreated(taskEntity, execution);

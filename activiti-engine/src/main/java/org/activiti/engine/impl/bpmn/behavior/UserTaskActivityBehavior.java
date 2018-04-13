@@ -194,7 +194,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       }
     }
     
-    taskEntityManager.insertNoAssignementEvents(task, (ExecutionEntity) execution);
+    taskEntityManager.insert(task, (ExecutionEntity) execution);
     
     boolean skipUserTask = false;
     if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {

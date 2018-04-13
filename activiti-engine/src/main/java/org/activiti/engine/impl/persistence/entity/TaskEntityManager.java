@@ -22,8 +22,6 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
   void insert(TaskEntity taskEntity, ExecutionEntity execution);
   
-  void insertNoAssignementEvents(TaskEntity taskEntity, ExecutionEntity execution);
-  
   void changeTaskAssignee(TaskEntity taskEntity, String assignee);
   
   void changeTaskAssigneeNoEvents(TaskEntity taskEntity, String assignee);
