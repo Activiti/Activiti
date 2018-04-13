@@ -194,7 +194,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       }
     }
     
-    taskEntityManager.insertNoEvents(task, (ExecutionEntity) execution);
+    taskEntityManager.insertNoAssignementEvents(task, (ExecutionEntity) execution);
     
     boolean skipUserTask = false;
     if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
@@ -253,7 +253,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         assigneeValue = assigneeExpressionValue.toString();
       }
 
-      taskEntityManager.changeTaskAssignee(task, assigneeValue);
+      taskEntityManager.changeTaskAssigneeNoEvents(task, assigneeValue);
     }
 
     if (StringUtils.isNotEmpty(owner)) {
