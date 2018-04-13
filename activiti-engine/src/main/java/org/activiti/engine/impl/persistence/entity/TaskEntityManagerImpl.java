@@ -70,7 +70,16 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   }
   
   @Override
+  public void insertNoEvents(TaskEntity taskEntity, ExecutionEntity execution) {
+    insertTask(taskEntity, execution, false);
+  }
+
+  @Override
   public void insert(TaskEntity taskEntity, ExecutionEntity execution) {
+    insertTask(taskEntity, execution, true);
+  }
+  
+  private void insertTask(TaskEntity taskEntity, ExecutionEntity execution, boolean fireEvents) {
 
     // Inherit tenant id (if applicable)
     if (execution != null && execution.getTenantId() != null) {
@@ -93,7 +102,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       countingExecutionEntity.setTaskCount(countingExecutionEntity.getTaskCount() + 1);
     }
     
-    if (getEventDispatcher().isEnabled()) {
+    if (fireEvents && getEventDispatcher().isEnabled()) {
       if (taskEntity.getAssignee() != null) {
         getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, taskEntity));
@@ -106,6 +115,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       getHistoryManager().recordTaskFormKeyChange(taskEntity.getId(), taskEntity.getFormKey());
     }
   }
+  
   
   @Override
   public void changeTaskAssignee(TaskEntity taskEntity, String assignee) {
