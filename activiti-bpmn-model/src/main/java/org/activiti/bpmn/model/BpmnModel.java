@@ -266,6 +266,10 @@ public class BpmnModel {
     return locationMap;
   }
 
+  public boolean hasDiagramInterchangeInfo() {
+    return !locationMap.isEmpty();
+  }
+
   public Map<String, List<GraphicInfo>> getFlowLocationMap() {
     return flowLocationMap;
   }
