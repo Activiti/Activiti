@@ -68,6 +68,8 @@ import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.image.ProcessDiagramGenerator;
+import org.activiti.image.exception.ActivitiInterchangeInfoNotFoundException;
+import org.activiti.image.exception.ActivitiImageException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -77,29 +79,37 @@ import org.springframework.stereotype.Component;
 @Component
 public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
-    private String activityFontName = "Arial";
+    private static final String DEFAULT_ACTIVITY_FONT_NAME = "Arial";
 
-    private String labelFontName = "Arial";
+    private static final String DEFAULT_LABEL_FONT_NAME = "Arial";
 
-    private String annotationFontName = "Arial";
+    private static final String DEFAULT_ANNOTATION_FONT_NAME = "Arial";
+
+    private static final String DEFAULT_DIAGRAM_IMAGE_FILE_NAME = "/image/na.svg";
+
+    protected Map<Class<? extends BaseElement>, ActivityDrawInstruction> activityDrawInstructions = new HashMap<Class<? extends BaseElement>, ActivityDrawInstruction>();
+
+    protected Map<Class<? extends BaseElement>, ArtifactDrawInstruction> artifactDrawInstructions = new HashMap<Class<? extends BaseElement>, ArtifactDrawInstruction>();
 
     @Override
     public String getDefaultActivityFontName() {
-        return activityFontName;
+        return DEFAULT_ACTIVITY_FONT_NAME;
     }
 
     @Override
     public String getDefaultLabelFontName() {
-        return labelFontName;
+        return DEFAULT_LABEL_FONT_NAME;
     }
 
     @Override
     public String getDefaultAnnotationFontName() {
-        return annotationFontName;
+        return DEFAULT_ANNOTATION_FONT_NAME;
     }
 
-    protected Map<Class<? extends BaseElement>, ActivityDrawInstruction> activityDrawInstructions = new HashMap<Class<? extends BaseElement>, ActivityDrawInstruction>();
-    protected Map<Class<? extends BaseElement>, ArtifactDrawInstruction> artifactDrawInstructions = new HashMap<Class<? extends BaseElement>, ArtifactDrawInstruction>();
+    @Override
+    public String getDefaultDiagramImageFileName() {
+        return DEFAULT_DIAGRAM_IMAGE_FILE_NAME;
+    }
 
     // The instructions on how to draw a certain construct is
     // created statically and stored in a map for performance.
@@ -579,6 +589,51 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                        String activityFontName,
                                        String labelFontName,
                                        String annotationFontName) {
+        return generateDiagram(bpmnModel,
+                               highLightedActivities,
+                               highLightedFlows,
+                               activityFontName,
+                               labelFontName,
+                               annotationFontName,
+                               false,
+                               null);
+    }
+
+    @Override
+    public InputStream generateDiagram(BpmnModel bpmnModel,
+                                       List<String> highLightedActivities,
+                                       List<String> highLightedFlows,
+                                       String activityFontName,
+                                       String labelFontName,
+                                       String annotationFontName,
+                                       boolean generateDefaultDiagram) {
+        return generateDiagram(bpmnModel,
+                               highLightedActivities,
+                               highLightedFlows,
+                               activityFontName,
+                               labelFontName,
+                               annotationFontName,
+                               generateDefaultDiagram,
+                               null);
+    }
+
+    @Override
+    public InputStream generateDiagram(BpmnModel bpmnModel,
+                                       List<String> highLightedActivities,
+                                       List<String> highLightedFlows,
+                                       String activityFontName,
+                                       String labelFontName,
+                                       String annotationFontName,
+                                       boolean generateDefaultDiagram,
+                                       String defaultDiagramImageFileName) {
+
+        if (!bpmnModel.hasDiagramInterchangeInfo()) {
+            if (!generateDefaultDiagram) {
+                throw new ActivitiInterchangeInfoNotFoundException("No interchange information found.");
+            }
+
+            return getDefaultDiagram(defaultDiagramImageFileName);
+        }
 
         return generateProcessDiagram(bpmnModel,
                                       highLightedActivities,
@@ -586,6 +641,21 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                       activityFontName,
                                       labelFontName,
                                       annotationFontName).generateImage();
+    }
+
+    /**
+     * Get default diagram image as bytes array
+     * @return the default diagram image
+     */
+    protected InputStream getDefaultDiagram(String diagramImageFileName) {
+        String imageFileName = diagramImageFileName != null ?
+                diagramImageFileName :
+                getDefaultDiagramImageFileName();
+        InputStream imageStream = getClass().getResourceAsStream(imageFileName);
+        if (imageStream == null) {
+            throw new ActivitiImageException("Error occurred while getting default diagram image from file: " + imageFileName);
+        }
+        return imageStream;
     }
 
     @Override
@@ -597,6 +667,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                                highLightedFlows,
                                null,
                                null,
+                               null,
+                               false,
                                null);
     }
 
@@ -1020,6 +1092,10 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
             GraphicInfo flowNodeGraphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
 
+            if (flowNodeGraphicInfo == null) {
+                continue;
+            }
+
             // width
             if (flowNodeGraphicInfo.getX() + flowNodeGraphicInfo.getWidth() > maxX) {
                 maxX = flowNodeGraphicInfo.getX() + flowNodeGraphicInfo.getWidth();
@@ -1108,19 +1184,21 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                 nrOfLanes++;
 
                 GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(l.getId());
-                // // width
-                if (graphicInfo.getX() + graphicInfo.getWidth() > maxX) {
-                    maxX = graphicInfo.getX() + graphicInfo.getWidth();
-                }
-                if (graphicInfo.getX() < minX) {
-                    minX = graphicInfo.getX();
-                }
-                // height
-                if (graphicInfo.getY() + graphicInfo.getHeight() > maxY) {
-                    maxY = graphicInfo.getY() + graphicInfo.getHeight();
-                }
-                if (graphicInfo.getY() < minY) {
-                    minY = graphicInfo.getY();
+                if (graphicInfo != null) {
+                    // width
+                    if (graphicInfo.getX() + graphicInfo.getWidth() > maxX) {
+                        maxX = graphicInfo.getX() + graphicInfo.getWidth();
+                    }
+                    if (graphicInfo.getX() < minX) {
+                        minX = graphicInfo.getX();
+                    }
+                    // height
+                    if (graphicInfo.getY() + graphicInfo.getHeight() > maxY) {
+                        maxY = graphicInfo.getY() + graphicInfo.getHeight();
+                    }
+                    if (graphicInfo.getY() < minY) {
+                        minY = graphicInfo.getY();
+                    }
                 }
             }
         }

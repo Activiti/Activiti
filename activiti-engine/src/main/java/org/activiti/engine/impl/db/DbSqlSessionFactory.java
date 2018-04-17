@@ -63,8 +63,7 @@ public class DbSqlSessionFactory implements SessionFactory {
   protected Map<Class<?>,String> deleteStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String> bulkDeleteStatements = new ConcurrentHashMap<Class<?>, String>();
   protected Map<Class<?>,String> selectStatements = new ConcurrentHashMap<Class<?>, String>();
-  
-  protected boolean isDbIdentityUsed = true;
+
   protected boolean isDbHistoryUsed = true;
   protected int maxNrOfStatementsInBulkInsert = 100;
   
@@ -270,14 +269,6 @@ public class DbSqlSessionFactory implements SessionFactory {
 
   public void setSelectStatements(Map<Class<?>, String> selectStatements) {
     this.selectStatements = selectStatements;
-  }
-
-  public boolean isDbIdentityUsed() {
-    return isDbIdentityUsed;
-  }
-
-  public void setDbIdentityUsed(boolean isDbIdentityUsed) {
-    this.isDbIdentityUsed = isDbIdentityUsed;
   }
 
   public boolean isDbHistoryUsed() {
