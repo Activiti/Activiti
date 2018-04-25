@@ -36,10 +36,10 @@ public class UelExpressionCondition implements Condition {
     Object result = expression.getValue(execution);
 
     if (result == null) {
-      throw new ActivitiException("condition expression returns null");
+      throw new ActivitiException("condition expression returns null (sequenceFlowId: " + sequenceFlowId + " execution: " + execution + ")");
     }
     if (!(result instanceof Boolean)) {
-      throw new ActivitiException("condition expression returns non-Boolean: " + result + " (" + result.getClass().getName() + ")");
+      throw new ActivitiException("condition expression returns non-Boolean (sequenceFlowId: " + sequenceFlowId + " execution: " + execution + "): " + result + " (" + result.getClass().getName() + ")");
     }
     return (Boolean) result;
   }
