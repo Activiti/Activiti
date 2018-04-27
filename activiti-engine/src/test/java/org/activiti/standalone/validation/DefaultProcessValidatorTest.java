@@ -59,7 +59,7 @@ public class DefaultProcessValidatorTest {
     Assert.assertNotNull(bpmnModel);
 
     List<ValidationError> allErrors = processValidator.validate(bpmnModel);
-    Assert.assertEquals(64, allErrors.size());
+    Assert.assertEquals(65, allErrors.size());
 
     String setName = ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS; // shortening
                                                                     // it a

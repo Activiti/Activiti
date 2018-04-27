@@ -97,9 +97,6 @@ import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.test.NoOpServiceTask;
 
-/**
-
- */
 public class TestActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
 
   /**
@@ -181,7 +178,7 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   }
 
   @Override
-  public ServiceTaskDelegateExpressionActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask) {
+  public ActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask) {
     return wrappedActivityBehaviorFactory.createDefaultServiceTaskBehavior(serviceTask);
   }
 
