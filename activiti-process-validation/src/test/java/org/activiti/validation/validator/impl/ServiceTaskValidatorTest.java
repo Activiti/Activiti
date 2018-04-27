@@ -31,10 +31,33 @@ public class ServiceTaskValidatorTest {
     private ServiceTaskValidator validator = new ServiceTaskValidator();
 
     @Test
-    public void executeValidationShouldNotRiseErrorsForEmptyServiceTask() throws Exception {
+    public void executeValidationShouldRiseErrorsForEmptyServiceTask() {
         //given
         Process process = new Process();
         process.addFlowElement(new ServiceTask());
+        BpmnModel bpmnModel = new BpmnModel();
+        ArrayList<ValidationError> errors = new ArrayList<>();
+
+        //when
+        validator.executeValidation(bpmnModel, process,
+                                    errors);
+
+        //then
+        assertThat(errors).hasSize(1);
+        assertThat(errors.get(0).getProblem()).isEqualTo("activiti-servicetask-missing-implementation");
+        assertThat(errors.get(0).getDefaultDescription())
+                .isEqualTo(
+                        "One of the attributes 'implementation', 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask."
+                );
+    }
+
+    @Test
+    public void executeValidationShouldNotRiseErrorsForServiceTasksSettingOnlyTheImplementation() {
+        //given
+        Process process = new Process();
+        ServiceTask serviceTask = new ServiceTask();
+        serviceTask.setImplementation("myImpl");
+        process.addFlowElement(serviceTask);
         BpmnModel bpmnModel = new BpmnModel();
         ArrayList<ValidationError> errors = new ArrayList<>();
 
@@ -47,5 +70,5 @@ public class ServiceTaskValidatorTest {
                 .as("No error is expected: the default behavior will be used")
                 .isEmpty();
     }
-    
+
 }

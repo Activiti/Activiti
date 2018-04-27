@@ -98,15 +98,13 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of the {@link ActivityBehaviorFactory}. Used when no custom {@link ActivityBehaviorFactory} is injected on the {@link ProcessEngineConfigurationImpl}.
  */
 public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
 
-    private static Logger logger = LoggerFactory.getLogger(DefaultActivityBehaviorFactory.class);
+    public static final String DEFAULT_SERVICE_TASK_BEAN_NAME = "defaultServiceTaskBehavior";
     private final ClassDelegateFactory classDelegateFactory;
 
     public DefaultActivityBehaviorFactory(ClassDelegateFactory classDelegateFactory) {
@@ -168,8 +166,13 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     }
 
     public ActivityBehavior createDefaultServiceTaskBehavior(ServiceTask serviceTask) {
-        logger.warn("No service task behavior can be set for service task " + serviceTask.getId());
-        return null;
+        // this is covering the case where only the field `implementation` was defined in the process definition. I.e.
+        // <serviceTask id="serviceTask" implementation="myServiceTaskImpl"/>
+        // `myServiceTaskImpl` can be different things depending on the implementation of `defaultServiceTaskBehavior`
+        // could be for instance a Spring bean or a target for a Spring Stream
+        Expression delegateExpression = expressionManager.createExpression("${" + DEFAULT_SERVICE_TASK_BEAN_NAME + "}");
+        return createServiceTaskBehavior(serviceTask,
+                                         delegateExpression);
     }
 
     private ServiceTaskDelegateExpressionActivityBehavior createServiceTaskBehavior(ServiceTask serviceTask,
