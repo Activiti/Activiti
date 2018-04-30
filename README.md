@@ -31,20 +31,27 @@ Configuring IntelliJ
 
     * Click list item *Modules*, for each module, tab *Sources*, combobox *Language level* should be automatically set to `8.0 ...`
 
+
+* Note: In the remaining instructions, first open the **IntelliJ Settings Page**.  Access to the Settings page 
+differs depending on your choice of Linux, Windows or Mac OSX, as follows:
+
+    * Linux and Windows
+        * Open *File* | *Settings* 
+    * Mac OSX
+        * Open *IntelliJ IDEA* | *Preferences* 
+        
 * Avoid that changes in some resources are ignored in the next run/debug (and you are forced to use mvn)
 
-    * Open menu *File*, menu item *Settings*
-
-    * Click tree item *Compiler*, textfield *Resource patterns*: change to `!?*.java` (remove other content)
+    * Open *Build, Execution, Deployment* | *Compiler*
+      
+    * textfield *Resource patterns*: change to `!?*.java` (remove other content)
 
 * Avoid a `StackOverflowError` when building
 
-    * Open menu *File*, menu item *Settings*
+    * Open *Build, Execution, Deployment* | *Compiler* | *Java Compiler*
 
-    * Click tree item *Compiler*, tree item *Java Compiler*, textfield *Additional command line parameters*
-
-    * Add `-J-Xss1024k` so it becomes something like `-target 1.8 -J-Xss1024k`
-
+    * In textfield *Additional command line parameters* 
+        * Add `-J-Xss1024k` so it becomes something like `-target 1.8 -J-Xss1024k`
 
 * Recommended: import our code style
 
@@ -54,35 +61,31 @@ Configuring IntelliJ
 
     * Copy to `~/.IntelliJIdea*/config/codestyles/` (on mac: `~/Library/Preferences/IntelliJIdea*/config/codestyles/`)
 
-    * Restart, open menu *File*, menu item *Settings*
+    * Restart
+    
+    * Note: IntelliJ IDEA doesn't format your code automatically. You have to press Ctrl+Alt+L keyboard combination to trigger auto formatting when coding is done.
 
-    * Click tree item *Code Style* and select it.
+* Set the correct end-of-line characters (unix):
 
-        * Note: IntelliJ IDEA doesn't format your code automatically. You have to press Ctrl+Alt+L keyboard combination to trigger auto formatting when coding is done.
+    * Open  *Editor* | *Code Style* 
 
-* Set the correct file encoding (UTF-8 except for properties files) and end-of-line characters (unix):
+    * Combobox *Line separator (for new files)*: `Unix and OS X (\n)`
 
-    * Open menu *File*, menu item *Settings*
+* Set the correct file encoding (UTF-8 except for properties files):
 
-    * Click tree item *Code Style*, tree item *General*
+    * Open *Editor* | *File Encodings* 
+      
+    * Combobox *Global Encoding*: `UTF-8`
 
-        * Combobox *Line separator (for new files)*: `Unix`
+    * Combobox *Default encoding for properties files*: `ISO-8859-1`
 
-    * Click tree item *File Encodings*
-
-        * Combobox *IDE Encoding*: `UTF-8`
-
-        * Combobox *Default encoding for properties files*: `ISO-8859-1`
-
-            * Note: normal i18n properties files must be in `ISO-8859-1` as specified by the java `ResourceBundle` contract.
+        * Note: normal i18n properties files must be in `ISO-8859-1` as specified by the java `ResourceBundle` contract.
 
 * Set the correct number of spaces when pressing tab:
 
-    * Open menu *File*, menu item *Settings*
+    * Open *Editor* | *Code Style* 
 
-    * Click tree item *Code Style*, tree item *General*
-
-    * Click tab *Java*
+    * Select *Java*
 
         * Checkbox *Use tab character*: `off`
 
@@ -92,7 +95,7 @@ Configuring IntelliJ
 
         * Textfield *Continuation indent*: `8`
 
-    * Open tab *XML*
+    * Select *XML*
 
         * Checkbox *Use tab character*: `off`
 
@@ -104,9 +107,9 @@ Configuring IntelliJ
 
 * Set the correct file headers (do not include @author or a meaningless javadoc):
 
-    * Open menu *File*, menu item *Settings*
+    * Open *Editor* | *Code Style* | *File and Code Templates*
 
-    * Click tree item *File templates*, tab *Includes*, list item `File Header`
+    * Select `File Header`
 
     * Remove the line *@author Your Name*.
 
@@ -116,37 +119,35 @@ Configuring IntelliJ
 
 * Set the correct license header
 
-    * Open menu *File*, menu item *Settings*
+    * Open *Editor* | *Code Style* | *Copyright* | *Copyright Profiles*
 
-    * Click tree item *Copyright*, tree item *Copyright profiles*
+    * Click button *+* to add a *Copyright Profile*
 
-        * Click button *+* to add a *Copyright profile*
+    * Textfield *name*: `Alfresco, Inc. and/or its affiliates`
 
-        * Textfield *name*: `Alfresco, Inc. and/or its affiliates`
+    * Textarea with content:
 
-        * Textarea with content:
+        ```
+        Copyright $today.year Alfresco, Inc. and/or its affiliates.
 
-            ```
-            Copyright $today.year Alfresco, Inc. and/or its affiliates.
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
 
-            Licensed under the Apache License, Version 2.0 (the "License");
-            you may not use this file except in compliance with the License.
-            You may obtain a copy of the License at
+              http://www.apache.org/licenses/LICENSE-2.0
 
-                  http://www.apache.org/licenses/LICENSE-2.0
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+        ```
 
-            Unless required by applicable law or agreed to in writing, software
-            distributed under the License is distributed on an "AS IS" BASIS,
-            WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-            See the License for the specific language governing permissions and
-            limitations under the License.
-            ```
+    * Note: Do not start or end with a newline character
 
-        * Note: Do not start or end with a newline character
+    * Note: Do not start with `/**`: it is not a valid javadoc.
 
-        * Note: Do not start with `/**`: it is not a valid javadoc.
-
-    * Click tree item *Copyright*
+    * Click parent item *Copyright*
 
         * Combobox *Default project copyright*: `Alfresco, Inc. and/or its affiliates`
 
