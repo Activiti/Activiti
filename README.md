@@ -50,7 +50,7 @@ Configuring IntelliJ
 
     * If you don't do this, you need to set the file encoding and number of spaces correctly manually.
 
-    * Use the one from `Activiti/ide-configuration`
+    * Use the one from `activiti-build/ide-configuration` in the [activiti-build repo](https://github.com/Activiti/activiti-build)
 
     * Copy to `~/.IntelliJIdea*/config/codestyles/` (on mac: `~/Library/Preferences/IntelliJIdea*/config/codestyles/`)
 
