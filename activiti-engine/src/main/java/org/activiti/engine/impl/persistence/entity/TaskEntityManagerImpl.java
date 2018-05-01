@@ -93,13 +93,6 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       countingExecutionEntity.setTaskCount(countingExecutionEntity.getTaskCount() + 1);
     }
     
-    if (getEventDispatcher().isEnabled()) {
-      if (taskEntity.getAssignee() != null) {
-        getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, taskEntity));
-      }
-    }
-    
     getHistoryManager().recordTaskCreated(taskEntity, execution);
     getHistoryManager().recordTaskId(taskEntity);
     if (taskEntity.getFormKey() != null) {
@@ -107,12 +100,26 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     }
   }
   
+  
   @Override
   public void changeTaskAssignee(TaskEntity taskEntity, String assignee) {
+    changeTaskAssignee(taskEntity, assignee, true);
+  }
+  
+  @Override
+  public void changeTaskAssigneeNoEvents(TaskEntity taskEntity, String assignee) {
+    changeTaskAssignee(taskEntity, assignee, false);
+  }
+  
+  private void changeTaskAssignee(TaskEntity taskEntity, String assignee, boolean fireEvents) {
     if ( (taskEntity.getAssignee() != null && !taskEntity.getAssignee().equals(assignee)) 
         || (taskEntity.getAssignee() == null && assignee != null)) {
       taskEntity.setAssignee(assignee);
-      fireAssignmentEvents(taskEntity);
+      if (fireEvents) {
+        fireAssignmentEvents(taskEntity);
+      } else {
+        recordTaskAssignment(taskEntity);
+      }
       
       if (taskEntity.getId() != null) {
         getHistoryManager().recordTaskAssigneeChange(taskEntity.getId(), taskEntity.getAssignee());
@@ -137,13 +144,17 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
   }
   
   protected void fireAssignmentEvents(TaskEntity taskEntity) {
-    getProcessEngineConfiguration().getListenerNotificationHelper()
-      .executeTaskListeners(taskEntity, TaskListener.EVENTNAME_ASSIGNMENT);
-    getHistoryManager().recordTaskAssignment(taskEntity);
-
+    recordTaskAssignment(taskEntity);
     if (getEventDispatcher().isEnabled()) {
       getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, taskEntity));
     }
+
+  }
+  
+  protected void recordTaskAssignment(TaskEntity taskEntity) {
+    getProcessEngineConfiguration().getListenerNotificationHelper()
+      .executeTaskListeners(taskEntity, TaskListener.EVENTNAME_ASSIGNMENT);
+    getHistoryManager().recordTaskAssignment(taskEntity);
 
   }
 

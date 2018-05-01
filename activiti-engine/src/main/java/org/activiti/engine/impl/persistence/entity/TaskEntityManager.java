@@ -24,6 +24,8 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
   
   void changeTaskAssignee(TaskEntity taskEntity, String assignee);
   
+  void changeTaskAssigneeNoEvents(TaskEntity taskEntity, String assignee);
+  
   void changeTaskOwner(TaskEntity taskEntity, String owner);
 
   List<TaskEntity> findTasksByExecutionId(String executionId);

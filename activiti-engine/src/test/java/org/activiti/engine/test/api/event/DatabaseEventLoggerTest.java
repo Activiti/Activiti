@@ -208,7 +208,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       if (i == 11 || i == 14) {
 
         assertNotNull(entry.getType());
-        assertEquals(ActivitiEventType.TASK_CREATED.name(), entry.getType());
+        assertEquals(ActivitiEventType.TASK_ASSIGNED.name(), entry.getType());
         assertNotNull(entry.getTimeStamp());
         assertNotNull(entry.getProcessDefinitionId());
         assertNotNull(entry.getProcessInstanceId());
@@ -239,7 +239,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       if (i == 10 || i == 13) {
 
         assertNotNull(entry.getType());
-        assertEquals(ActivitiEventType.TASK_ASSIGNED.name(), entry.getType());
+        assertEquals(ActivitiEventType.TASK_CREATED.name(), entry.getType());
         assertNotNull(entry.getTimeStamp());
         assertNotNull(entry.getProcessDefinitionId());
         assertNotNull(entry.getProcessInstanceId());
@@ -491,14 +491,14 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
       // Tasks
       if (i == 11 || i == 14) {
-        assertEquals(entry.getType(), ActivitiEventType.TASK_CREATED.name());
+        assertEquals(entry.getType(), ActivitiEventType.TASK_ASSIGNED.name());
         Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
         });
         assertNull(data.get(Fields.TENANT_ID));
       }
 
       if (i == 10 || i == 13) {
-        assertEquals(entry.getType(), ActivitiEventType.TASK_ASSIGNED.name());
+        assertEquals(entry.getType(), ActivitiEventType.TASK_CREATED.name());
         Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
         });
         assertNull(data.get(Fields.TENANT_ID));
@@ -521,11 +521,19 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
     task.setAssignee("kermit");
     task.setTenantId("myTenant");
     taskService.saveTask(task);
+    
+    taskService.setAssignee(task.getId(), "gonzo");
+    
+    task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
+    task.setAssignee("kermit");
+    taskService.saveTask(task);
 
     List<EventLogEntry> events = managementService.getEventLogEntries(null, null);
-    assertEquals(2, events.size());
-    assertEquals("TASK_ASSIGNED", events.get(0).getType());
-    assertEquals("TASK_CREATED", events.get(1).getType());
+    assertEquals(4, events.size());
+    assertEquals("TASK_CREATED", events.get(0).getType());
+    assertEquals("TASK_ASSIGNED", events.get(1).getType());
+    assertEquals("TASK_ASSIGNED", events.get(2).getType());
+    assertEquals("TASK_ASSIGNED", events.get(3).getType());
 
     for (EventLogEntry eventLogEntry : events) {
       Map<String, Object> data = objectMapper.readValue(eventLogEntry.getData(), new TypeReference<HashMap<String, Object>>() {

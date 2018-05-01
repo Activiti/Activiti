@@ -59,6 +59,9 @@ public class SaveTaskCmd implements Command<Void>, Serializable {
 
       if (commandContext.getEventDispatcher().isEnabled()) {
         commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
+        if (task.getAssignee() != null) {
+          commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, task));
+        }
       }
 
     } else {
