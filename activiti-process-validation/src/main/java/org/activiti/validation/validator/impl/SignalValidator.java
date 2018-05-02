@@ -45,7 +45,7 @@ public class SignalValidator extends ValidatorImpl {
           addError(errors, Problems.SIGNAL_DUPLICATE_NAME, signal, "Duplicate signal name found");
         }
 
-        if (signal.getScope() != null && !signal.getScope().equals(Signal.SCOPE_GLOBAL) && !signal.getScope().equals(Signal.SCOPE_PROCESS_INSTANCE)) {
+        if (signal.getScope() != null && !signal.getScope().equals(Signal.SCOPE_GLOBAL) && !signal.getScope().equals(Signal.SCOPE_PROCESS_INSTANCE) && !Signal.SCOPE_BROADCAST.equals(signal.getScope())) {
           addError(errors, Problems.SIGNAL_INVALID_SCOPE, signal, "Invalid value for 'scope'. Only values 'global' and 'processInstance' are supported");
         }
       }

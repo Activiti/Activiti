@@ -50,6 +50,9 @@ public class ActivitiEventListenerParser extends BaseChildElementParser {
       } else if (ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_ERROR.equals(eventType)) {
         listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT);
         listener.setImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_THROW_ERROR_EVENT_CODE));
+      } else if (ATTRIBUTE_LISTENER_THROW_EVENT_TYPE_BROADCAST_SIGNAL.equals(eventType)) {
+        listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_THROW_BROADCAST_SIGNAL_EVENT);
+        listener.setImplementation(xtr.getAttributeValue(null, ATTRIBUTE_LISTENER_THROW_SIGNAL_EVENT_NAME));
       } else {
         listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_INVALID_THROW_EVENT);
       }
