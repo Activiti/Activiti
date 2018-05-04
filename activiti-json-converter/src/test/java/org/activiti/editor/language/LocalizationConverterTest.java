@@ -42,19 +42,19 @@ public class LocalizationConverterTest extends AbstractConverterTest {
             assertNotNull(docs);
             assertEquals(docs.size(),
                          1);
-            if (locale.equals("fa")) {
+            if ("fa".equals(locale)) {
                 assertEquals(name,
                              "ثبت نام");
             }
-            if (locale.equals("en")) {
+            if ("en".equals(locale)) {
                 assertEquals(name,
                              "registration");
             }
-            if (locale.equals("fa")) {
+            if ("fa".equals(locale)) {
                 assertEquals(docs.get(0).getElementText(),
                              "توضیحات ثبت نام");
             }
-            if (locale.equals("en")) {
+            if ("en".equals(locale)) {
                 assertEquals(docs.get(0).getElementText(),
                              "registration description");
             }

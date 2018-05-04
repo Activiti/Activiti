@@ -623,11 +623,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
                                                                         "name");
                     String documentation = null;
                     List<ExtensionElement> documentationElements = localizationElement.getChildElements().get("documentation");
-                    if (documentationElements != null) {
-                        for (ExtensionElement documentationElement : documentationElements) {
-                            documentation = StringUtils.trimToNull(documentationElement.getElementText());
-                            break;
-                        }
+                    if (documentationElements != null && documentationElements.size() > 0) {
+                        documentation = StringUtils.trimToNull(documentationElements.get(0).getElementText());
                     }
                     if (name != null && !name.trim().isEmpty()) {
                         nameNode.put(locale,
@@ -676,7 +673,6 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
             }
         }
     }
-
 
     protected void convertJsonToFormProperties(JsonNode objectNode,
                                                BaseElement element) {
@@ -931,58 +927,49 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
                                                       String name,
                                                       String description,
                                                       BaseElement element) {
-        final List<ExtensionElement> localizations = element.getExtensionElements().get("localization");
-        ExtensionElement localization = null;
-        ExtensionAttribute localeAttr = null;
-        ExtensionAttribute nameAttr = null;
-        if (localizations != null) {
-            for (ExtensionElement extensionElement : localizations) {
-                if ((locale.equals(extensionElement.getAttributeValue(null,
-                                                                      "locale"))) &&
-                        extensionElement.getAttributeValue(null,
-                                                           "name") != null) {
-                    localization = extensionElement;
-                    localeAttr = extensionElement.getAttributes().get("locale").get(0);
-                    nameAttr = extensionElement.getAttributes().get("name").get(0);
-                    break;
-                }
-            }
-        }
-        if (localization == null) {
-            localization = new ExtensionElement();
-            localization.setNamespace(ACTIVITI_EXTENSIONS_NAMESPACE);
-            localization.setName("localization");
-            element.addExtensionElement(localization);
-            localeAttr = new ExtensionAttribute("locale");
-            nameAttr = new ExtensionAttribute("name");
-            localization.addAttribute(localeAttr);
-            localization.addAttribute(nameAttr);
-        }
-        if (name == null) {
-            name = localization.getAttributeValue(null,
-                                                  "name");
-        }
-        ExtensionElement documentationElement = null;
-        if (description == null) {
+
+        ExtensionElement localization = getOrCreateLocalizationExtensionElement(element,
+                                                                                locale);
+
+        if (StringUtils.isNotBlank(description)) {
+            final ExtensionElement documentationElement;
             List<ExtensionElement> documentationElements = localization.getChildElements().get("documentation");
-            if (documentationElements != null) {
-                for (ExtensionElement docElement : documentationElements) {
-                    documentationElement = docElement;
-                    description = StringUtils.trimToNull(docElement.getElementText());
-                    break;
-                }
-            }
-        }
-        if (description != null && !description.trim().isEmpty()) {
-            if (documentationElement == null) {
+            if (documentationElements != null && documentationElements.size() > 0) {
+                documentationElement = documentationElements.get(0);
+            } else {
                 documentationElement = new ExtensionElement();
                 documentationElement.setNamespace(ACTIVITI_EXTENSIONS_NAMESPACE);
                 documentationElement.setName("documentation");
-                documentationElement.setElementText(description);
                 localization.addChildElement(documentationElement);
             }
+            documentationElement.setElementText(description);
         }
+        if (StringUtils.isNotBlank(name)) {
+            localization.getAttributes().get("name").get(0).setValue(name);
+        }
+    }
+
+    private ExtensionElement getOrCreateLocalizationExtensionElement(BaseElement element,
+                                                                     String locale) {
+        final List<ExtensionElement> localizations = element.getExtensionElements().get("localization");
+        if (localizations != null) {
+            for (ExtensionElement extensionElement : localizations) {
+                if (locale.equals(extensionElement.getAttributeValue(null,
+                                                                     "locale")) &&
+                        extensionElement.getAttributeValue(null,
+                                                           "name") != null) {
+                    return extensionElement;
+                }
+            }
+        }
+        ExtensionElement localization = new ExtensionElement();
+        localization.setNamespace(ACTIVITI_EXTENSIONS_NAMESPACE);
+        localization.setName("localization");
+        localization.addAttribute(new ExtensionAttribute("name"));
+        ExtensionAttribute localeAttr = new ExtensionAttribute("locale");
+        localization.addAttribute(localeAttr);
         localeAttr.setValue(locale);
-        nameAttr.setValue(name);
+        element.addExtensionElement(localization);
+        return localization;
     }
 }
