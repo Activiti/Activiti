@@ -2,30 +2,44 @@
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
   <suppress>
     <notes><![CDATA[
-   false positive on Spring Boot 2.0.0.RELEASE
-   ]]></notes>
+    false positive on Spring Boot 2.0.0.RELEASE
+    ]]></notes>
     <gav regex="true">^org\.springframework\.boot:.*:.*$</gav>
     <cve>CVE-2017-8046</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
-   false positive on file name: spring-tuple-1.0.0.RELEASE.jar
-   ]]></notes>
+    file name: spring-tuple-1.0.0.RELEASE.jar
+    ]]></notes>
     <gav regex="true">^org\.springframework:spring-tuple:.*$</gav>
     <cve>CVE-2011-2730</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
-   false positive file name: jersey-apache-client4-1.19.1.jar
-   ]]></notes>
+    file name: jersey-apache-client4-1.19.1.jar
+    ]]></notes>
     <gav regex="true">^com\.sun\.jersey\.contribs:jersey-apache-client4:.*$</gav>
     <cve>CVE-2006-0550</cve>
   </suppress>
   <suppress>
     <notes><![CDATA[
-    false positive file name: java-dataloader-2.0.1.jar
+    file name: java-dataloader-2.0.1.jar
     ]]></notes>
     <gav regex="true">^com\.graphql-java:java-dataloader:.*$</gav>
     <cve>CVE-2008-0660</cve>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+    file name: feign-form-spring-3.3.0.jar
+    ]]></notes>
+    <gav regex="true">^io\.github\.openfeign\.form:feign-form-spring:.*$</gav>
+    <cpe>cpe:/a:pivotal_software:spring_framework</cpe>
+  </suppress>
+  <suppress>
+    <notes><![CDATA[
+    file name: rxnetty-0.4.9.jar
+    ]]></notes>
+    <gav regex="true">^io\.reactivex:rxnetty:.*$</gav>
+    <cpe>cpe:/a:netty_project:netty</cpe>
   </suppress>
 </suppressions>
