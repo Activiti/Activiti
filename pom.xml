@@ -103,7 +103,7 @@
     <juel.version>2.2.7</juel.version>
     <hibernate-jpa-2.1-api.version>1.0.2.Final</hibernate-jpa-2.1-api.version>
     <mybatis.version>3.4.2</mybatis.version>
-    <spring-boot.version>2.0.2.RELEASE</spring-boot.version>
+    <spring-boot.version>2.0.1.RELEASE</spring-boot.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.2</xmlgraphics-commons.version>
     <!-- plugins -->
