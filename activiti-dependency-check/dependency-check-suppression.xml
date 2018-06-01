@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.1.xsd">
-  <!--
-    <suppress>
-      <notes><![CDATA[
-      false positive on Spring Boot 2.0.0.RELEASE
-      ]]></notes>
-      <gav regex="true">^org\.springframework\.boot:.*:.*$</gav>
-      <cve>CVE-2017-8046</cve>
-    </suppress>
-  -->
+  <suppress>
+    <notes><![CDATA[
+     file name: spring-boot-starter-data-rest-2.0.1.RELEASE.jar
+    ]]></notes>
+    <gav regex="true">^org\.springframework\.boot:spring-boot-starter-data-rest:.*$</gav>
+    <cve>CVE-2018-1273</cve>
+  </suppress>
   <suppress>
     <notes><![CDATA[
     file name: spring-tuple-1.0.0.RELEASE.jar
