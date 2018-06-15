@@ -17,6 +17,7 @@ import java.io.IOException;
 import javax.sql.DataSource;
 
 import org.activiti.spring.SpringAsyncExecutor;
+import org.activiti.spring.SpringJobManager;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -52,9 +53,9 @@ public class DataSourceProcessEngineAutoConfiguration {
         public SpringProcessEngineConfiguration springProcessEngineConfiguration(
                 DataSource dataSource,
                 PlatformTransactionManager transactionManager,
-                SpringAsyncExecutor springAsyncExecutor) throws IOException {
+                SpringAsyncExecutor springAsyncExecutor, SpringJobManager springJobManager) throws IOException {
 
-            return this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springAsyncExecutor);
+            return this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springAsyncExecutor, springJobManager);
         }
     }
 }

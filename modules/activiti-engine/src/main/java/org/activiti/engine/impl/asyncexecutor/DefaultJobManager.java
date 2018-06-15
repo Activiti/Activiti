@@ -21,12 +21,11 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.TransactionListener;
-import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
+import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
@@ -403,12 +402,9 @@ public class DefaultJobManager implements JobManager {
     return businessCalendarName;
   }
   
-  protected void hintAsyncExecutor(final JobEntity job) {
-	Context.getTransactionContext().addTransactionListener(TransactionState.COMMITTED, new TransactionListener() {
-	    public void execute(CommandContext commandContext) {
-	    	getAsyncExecutor().executeAsyncJob(job);
-	    }
-	});
+  protected void hintAsyncExecutor(JobEntity job) {
+    AsyncJobAddedNotification jobAddedNotification = new AsyncJobAddedNotification(job, getAsyncExecutor());
+    getCommandContext().addCloseListener(jobAddedNotification);
   }
   
   protected JobEntity internalCreateAsyncJob(ExecutionEntity execution, boolean exclusive) {
