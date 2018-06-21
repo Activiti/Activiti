@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="activiti-archetype-unittest2">
+  <fileSets>
+    <fileSet filtered="true" packaged="true">
+      <directory>src/main/java</directory>
+      <includes>
+        <include>**/*.java</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="false" packaged="false">
+      <directory>src/main/resources</directory>
+      <includes>
+        <include>activiti.cfg.xml</include>
+        <include>logback.xml</include>
+        <include>second_approve.bpmn20.xml</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="true">
+      <directory>src/test/java</directory>
+      <includes>
+        <include>**/*.java</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="true">
+      <directory>src/test/resources</directory>
+      <includes>
+        <include>my-process.bpmn20.xml</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</archetype-descriptor>
