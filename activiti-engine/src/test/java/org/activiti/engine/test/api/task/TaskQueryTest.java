@@ -24,7 +24,6 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -38,6 +37,7 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.activiti.runtime.api.identity.IdentityLookup;
 import org.mockito.Mockito;
 
 /**
@@ -58,12 +58,12 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   private static final String FOZZIE = "fozzie";
   private static final List<String> FOZZIESGROUPS = Arrays.asList("management");
 
-  private UserGroupLookupProxy userGroupLookupProxy = Mockito.mock(UserGroupLookupProxy.class);
+  private IdentityLookup identityLookup = Mockito.mock(IdentityLookup.class);
 
 
   public void setUp() throws Exception {
     ProcessEngineConfigurationImpl engineConfiguration = (ProcessEngineConfigurationImpl)cachedProcessEngine.getProcessEngineConfiguration();
-    engineConfiguration.setUserGroupLookupProxy(userGroupLookupProxy);
+    engineConfiguration.setIdentityLookup(identityLookup);
     taskIds = generateTestTasks();
   }
 
@@ -868,9 +868,9 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   public void testQueryByCandidateOrAssignedWithUserGroupProxy() {
     //don't specify groups in query calls, instead get them through UserGroupLookupProxy (which could be remote service)
 
-    Mockito.when(userGroupLookupProxy.getGroupsForCandidateUser(KERMIT)).thenReturn(KERMITSGROUPS);
-    Mockito.when(userGroupLookupProxy.getGroupsForCandidateUser(GONZO)).thenReturn(GONZOSGROUPS);
-    Mockito.when(userGroupLookupProxy.getGroupsForCandidateUser(FOZZIE)).thenReturn(FOZZIESGROUPS);
+    Mockito.when(identityLookup.getGroupsForCandidateUser(KERMIT)).thenReturn(KERMITSGROUPS);
+    Mockito.when(identityLookup.getGroupsForCandidateUser(GONZO)).thenReturn(GONZOSGROUPS);
+    Mockito.when(identityLookup.getGroupsForCandidateUser(FOZZIE)).thenReturn(FOZZIESGROUPS);
 
     TaskQuery query = taskService.createTaskQuery().taskCandidateOrAssigned(KERMIT);
     assertEquals(11, query.count());
@@ -1047,8 +1047,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   public void testQueryByCandidateGroupInOrUsingUserGroupLookupProxy() {
     //don't specify groups in query calls, instead get them through UserGroupLookupProxy (which could be remote service)
 
-    Mockito.when(userGroupLookupProxy.getGroupsForCandidateUser(KERMIT)).thenReturn(KERMITSGROUPS);
-    Mockito.when(userGroupLookupProxy.getGroupsForCandidateUser(GONZO)).thenReturn(GONZOSGROUPS);
+    Mockito.when(identityLookup.getGroupsForCandidateUser(KERMIT)).thenReturn(KERMITSGROUPS);
+    Mockito.when(identityLookup.getGroupsForCandidateUser(GONZO)).thenReturn(GONZOSGROUPS);
 
     List<String> groups = Arrays.asList("management", "accountancy");
     TaskQuery query = taskService.createTaskQuery().or().taskId("invalid").taskCandidateGroupIn(groups);

@@ -21,6 +21,7 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
 import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.engine.runtime.Clock;
+import org.activiti.runtime.api.identity.IdentityLookup;
 
 import javax.sql.DataSource;
 import java.io.InputStream;
@@ -234,12 +235,6 @@ public abstract class ProcessEngineConfiguration {
     return new StandaloneInMemProcessEngineConfiguration();
   }
 
-  // TODO add later when we have test coverage for this
-  // public static ProcessEngineConfiguration
-  // createJtaProcessEngineConfiguration() {
-  // return new JtaProcessEngineConfiguration();
-  // }
-
   public abstract RepositoryService getRepositoryService();
 
   public abstract RuntimeService getRuntimeService();
@@ -252,7 +247,7 @@ public abstract class ProcessEngineConfiguration {
 
   public abstract ProcessEngineConfiguration getProcessEngineConfiguration();
 
-  public abstract UserGroupLookupProxy getUserGroupLookupProxy();
+  public abstract IdentityLookup getIdentityLookup();
 
   public abstract IntegrationContextService getIntegrationContextService();
 

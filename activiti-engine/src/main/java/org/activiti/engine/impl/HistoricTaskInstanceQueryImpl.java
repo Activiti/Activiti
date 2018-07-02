@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,6 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.DynamicBpmnConstants;
-import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.context.Context;
@@ -31,6 +30,7 @@ import org.activiti.engine.impl.variable.VariableTypes;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.activiti.runtime.api.identity.IdentityLookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,13 +145,13 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     } else {
       tasks = commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesByQueryCriteria(this);
     }
-    
+
     if (tasks != null && Context.getProcessEngineConfiguration().getPerformanceSettings().isEnableLocalization()) {
       for (HistoricTaskInstance task : tasks) {
         localize(task);
       }
     }
-    
+
     return tasks;
   }
 
@@ -257,7 +257,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
      }
      return this;
   }
-  
+
   public HistoricTaskInstanceQuery processDefinitionKeyIn(List<String> processDefinitionKeys) {
     if (inOrStatement) {
       this.currentOrQueryObject.processDefinitionKeys = processDefinitionKeys;
@@ -266,7 +266,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
     return this;
   }
-  
+
   public HistoricTaskInstanceQuery processDefinitionName(String processDefinitionName) {
     if (inOrStatement) {
       this.currentOrQueryObject.processDefinitionName = processDefinitionName;
@@ -527,7 +527,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
      }
      return this;
   }
-  
+
   @Override
   public HistoricTaskInstanceQuery taskAssigneeIds(List<String> assigneeIds) {
     if (assigneeIds == null) {
@@ -694,7 +694,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       return variableValueLike(name, value);
     }
   }
-  
+
   public HistoricTaskInstanceQuery taskVariableValueLikeIgnoreCase(String name, String value) {
     if (inOrStatement) {
       currentOrQueryObject.variableValueLikeIgnoreCase(name, value, true);
@@ -793,7 +793,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       return variableValueLike(name, value, false);
     }
   }
-  
+
   public HistoricTaskInstanceQuery processVariableValueLikeIgnoreCase(String name, String value) {
     if (inOrStatement) {
       currentOrQueryObject.variableValueLikeIgnoreCase(name, value, false);
@@ -802,7 +802,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       return variableValueLikeIgnoreCase(name, value, false);
     }
   }
-  
+
   public HistoricTaskInstanceQuery taskDefinitionKey(String taskDefinitionKey) {
     if (inOrStatement) {
       this.currentOrQueryObject.taskDefinitionKey = taskDefinitionKey;
@@ -871,7 +871,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     for (QueryVariableValue var : queryVariableValues) {
       var.initialize(types);
     }
-    
+
     for (HistoricTaskInstanceQueryImpl orQueryObject : orQueryObjects) {
       orQueryObject.ensureVariablesInitialized();
     }
@@ -1009,7 +1009,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     if (candidateGroup == null) {
       throw new ActivitiIllegalArgumentException("Candidate group is null");
     }
-    
+
     if (candidateGroups != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroup and candidateGroupIn");
     }
@@ -1026,11 +1026,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     if (candidateGroups == null) {
       throw new ActivitiIllegalArgumentException("Candidate group list is null");
     }
-    
+
     if (candidateGroups.isEmpty()) {
       throw new ActivitiIllegalArgumentException("Candidate group list is empty");
     }
-    
+
     if (candidateGroup != null) {
       throw new ActivitiIllegalArgumentException("Invalid query usage: cannot set both candidateGroupIn and candidateGroup");
     }
@@ -1099,7 +1099,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     }
     return this;
   }
-  
+
   public HistoricTaskInstanceQuery locale(String locale) {
     this.locale = locale;
     return this;
@@ -1109,7 +1109,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     withLocalizationFallback = true;
     return this;
   }
-  
+
   public HistoricTaskInstanceQuery includeTaskLocalVariables() {
     this.includeTaskLocalVariables = true;
     return this;
@@ -1119,7 +1119,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     this.includeProcessVariables = true;
     return this;
   }
-  
+
   public HistoricTaskInstanceQuery limitTaskVariables(Integer taskVariablesLimit) {
     this.taskVariablesLimit = taskVariablesLimit;
     return this;
@@ -1133,7 +1133,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     if (inOrStatement) {
       throw new ActivitiException("the query is already in an or statement");
     }
-    
+
     inOrStatement = true;
     currentOrQueryObject = new HistoricTaskInstanceQueryImpl();
     orQueryObjects.add(currentOrQueryObject);
@@ -1144,7 +1144,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     if (!inOrStatement) {
       throw new ActivitiException("endOr() can only be called after calling or()");
     }
-    
+
     inOrStatement = false;
     currentOrQueryObject = null;
     return this;
@@ -1315,11 +1315,11 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   }
 
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
-    UserGroupLookupProxy userGroupLookupProxy = Context.getProcessEngineConfiguration().getUserGroupLookupProxy();
-    if(userGroupLookupProxy !=null){
-      return userGroupLookupProxy.getGroupsForCandidateUser(candidateUser);
+    IdentityLookup identityLookup = Context.getProcessEngineConfiguration().getIdentityLookup();
+    if(identityLookup !=null){
+      return identityLookup.getGroupsForCandidateUser(candidateUser);
     } else{
-      log.warn("No UserGroupLookupProxy set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
+      log.warn("No IdentityLookup set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
     }
     return null;
   }
@@ -1354,7 +1354,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public String getProcessDefinitionKeyLike() {
     return processDefinitionKeyLike;
   }
-  public List<String> getProcessDefinitionKeys() { 
+  public List<String> getProcessDefinitionKeys() {
     return processDefinitionKeys;
   }
   public String getProcessDefinitionName() {

@@ -19,8 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -29,6 +27,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.activiti.runtime.api.identity.IdentityLookup;
 import org.mockito.Mockito;
 
 /**
@@ -48,11 +47,11 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
     private static final String FOZZIE = "fozzie";
     private static final List<String> FOZZIESGROUPS = Arrays.asList("management");
 
-    private UserGroupLookupProxy userGroupLookupProxy = Mockito.mock(UserGroupLookupProxy.class);
+    private IdentityLookup identityLookup = Mockito.mock(IdentityLookup.class);
 
     public void setUp() throws Exception {
         ProcessEngineConfigurationImpl engineConfiguration = (ProcessEngineConfigurationImpl) cachedProcessEngine.getProcessEngineConfiguration();
-        engineConfiguration.setUserGroupLookupProxy(userGroupLookupProxy);
+        engineConfiguration.setIdentityLookup(identityLookup);
         taskIds = generateTestTasks();
     }
 
@@ -564,9 +563,9 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
     public void testCandidateWithUserGroupProxy() {
         //don't specify groups in query calls, instead get them through UserGroupLookupProxy (which could be remote service)
 
-        Mockito.when(userGroupLookupProxy.getGroupsForCandidateUser(KERMIT)).thenReturn(KERMITSGROUPS);
-        Mockito.when(userGroupLookupProxy.getGroupsForCandidateUser(GONZO)).thenReturn(GONZOSGROUPS);
-        Mockito.when(userGroupLookupProxy.getGroupsForCandidateUser(FOZZIE)).thenReturn(FOZZIESGROUPS);
+        Mockito.when(identityLookup.getGroupsForCandidateUser(KERMIT)).thenReturn(KERMITSGROUPS);
+        Mockito.when(identityLookup.getGroupsForCandidateUser(GONZO)).thenReturn(GONZOSGROUPS);
+        Mockito.when(identityLookup.getGroupsForCandidateUser(FOZZIE)).thenReturn(FOZZIESGROUPS);
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             runtimeService.startProcessInstanceByKey("oneTaskProcess");

@@ -18,7 +18,6 @@ import javax.sql.DataSource;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.multitenant.ExecutorPerTenantAsyncExecutor;
 import org.activiti.engine.impl.asyncexecutor.multitenant.SharedExecutorServiceAsyncExecutor;
@@ -28,6 +27,7 @@ import org.activiti.engine.impl.db.DbIdGenerator;
 import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.runtime.api.identity.IdentityLookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -170,7 +170,7 @@ public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEng
   }
 
   @Override
-  public UserGroupLookupProxy getUserGroupLookupProxy() {
+  public IdentityLookup getIdentityLookup() {
     return null; //no external identity provider supplied
   }
 }

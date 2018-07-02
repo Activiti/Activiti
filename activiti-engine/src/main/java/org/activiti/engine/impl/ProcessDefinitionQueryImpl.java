@@ -18,13 +18,13 @@ import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.runtime.api.identity.IdentityLookup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -289,11 +289,11 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         // includes the groups the candidate
         // user is part of
         if (authorizationUserId != null) {
-            UserGroupLookupProxy userGroupLookupProxy = Context.getProcessEngineConfiguration().getUserGroupLookupProxy();
-            if (userGroupLookupProxy != null) {
-                return userGroupLookupProxy.getGroupsForCandidateUser(authorizationUserId);
+            IdentityLookup identityLookup = Context.getProcessEngineConfiguration().getIdentityLookup();
+            if (identityLookup != null) {
+                return identityLookup.getGroupsForCandidateUser(authorizationUserId);
             } else {
-                log.warn("No UserGroupLookupProxy set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
+                log.warn("No IdentityLookup set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
             }
         }
 

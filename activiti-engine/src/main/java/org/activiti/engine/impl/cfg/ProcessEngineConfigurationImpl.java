@@ -48,7 +48,6 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.UserGroupLookupProxy;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandlerFactory;
@@ -309,6 +308,7 @@ import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.engine.integration.IntegrationContextServiceImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.engine.runtime.Clock;
+import org.activiti.runtime.api.identity.IdentityLookup;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
@@ -348,7 +348,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected TaskService taskService = new TaskServiceImpl(this);
   protected ManagementService managementService = new ManagementServiceImpl();
   protected DynamicBpmnService dynamicBpmnService = new DynamicBpmnServiceImpl(this);
-  protected UserGroupLookupProxy userGroupLookupProxy;
+  protected IdentityLookup identityLookup;
   private IntegrationContextService integrationContextService;
 
   // COMMAND EXECUTORS ////////////////////////////////////////////////////////
@@ -2296,13 +2296,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public void setUserGroupLookupProxy(UserGroupLookupProxy userGroupLookupProxy) {
-        this.userGroupLookupProxy = userGroupLookupProxy;
+  public void setIdentityLookup(IdentityLookup identityLookup) {
+        this.identityLookup = identityLookup;
     }
 
     @Override
-    public UserGroupLookupProxy getUserGroupLookupProxy() {
-        return userGroupLookupProxy;
+    public IdentityLookup getIdentityLookup() {
+        return identityLookup;
     }
 
     public IntegrationContextManager getIntegrationContextManager() {
