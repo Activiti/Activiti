@@ -14,7 +14,7 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>5.21.0.dgit-fix-7</version>
+  <version>5.21.0.dgit-fix-8</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>4.2.5.RELEASE</spring.framework.version>

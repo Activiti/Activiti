@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.21.0.dgit-fix-7</version>
+    <version>5.21.0.dgit-fix-8</version>
   </parent>
 
   <build>
@@ -29,7 +29,7 @@
         <artifactId>maven-bundle-plugin</artifactId>
         <extensions>true</extensions>
         <executions>
-          <!-- This execution makes sure that the manifest is available when 
+          <!-- This execution makes sure that the manifest is available when
             the tests are executed -->
           <execution>
             <goals>

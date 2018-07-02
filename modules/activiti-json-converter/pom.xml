@@ -10,9 +10,9 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.21.0.dgit-fix-7</version>
+    <version>5.21.0.dgit-fix-8</version>
   </parent>
-  
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <activiti.artifact>
@@ -131,11 +131,11 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>provided</scope>
-    </dependency>     
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-    </dependency>     
+    </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>jcl-over-slf4j</artifactId>
@@ -146,7 +146,7 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  
+
   <profiles>
     <profile>
       <id>distro</id>

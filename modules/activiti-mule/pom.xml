@@ -10,9 +10,9 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.21.0.dgit-fix-7</version>
+    <version>5.21.0.dgit-fix-8</version>
   </parent>
-  
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.mule.version>${spring.framework.version}</spring.mule.version>
@@ -253,7 +253,7 @@
       </plugin>
     </plugins>
   </reporting>
-  
+
   <repositories>
       <repository>
           <id>mulesoft-releases</id>

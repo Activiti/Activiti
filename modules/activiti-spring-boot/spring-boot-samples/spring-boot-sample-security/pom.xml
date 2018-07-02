@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot-samples</artifactId>
-        <version>5.21.0.dgit-fix-7</version>
+        <version>5.21.0.dgit-fix-8</version>
     </parent>
 
     <artifactId>spring-boot-sample-security</artifactId>
