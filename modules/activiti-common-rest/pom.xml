@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.21.0.dgit-fix-6</version>
+    <version>5.21.0.dgit-fix-8</version>
   </parent>
 
   <properties>
@@ -20,7 +20,7 @@
       org.activiti.rest.common
     </activiti.artifact>
   </properties>
-  
+
   <repositories>
     <repository>
       <id>maven-restlet</id>
@@ -102,7 +102,7 @@
       </plugins>
     </pluginManagement>
   </build>
-  
+
   <dependencies>
     <!-- Activiti -->
     <dependency>

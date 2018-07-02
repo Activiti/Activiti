@@ -10,9 +10,9 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.21.0.dgit-fix-6</version>
+    <version>5.21.0.dgit-fix-8</version>
   </parent>
-  
+
   <properties>
     <activiti.artifact>
       org.activiti.bpmn.model
@@ -102,7 +102,7 @@
       <artifactId>jackson-databind</artifactId>
     </dependency>
   </dependencies>
-  
+
   <profiles>
     <profile>
       <id>distro</id>

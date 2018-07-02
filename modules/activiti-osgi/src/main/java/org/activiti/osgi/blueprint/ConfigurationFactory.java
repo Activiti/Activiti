@@ -13,6 +13,7 @@ public class ConfigurationFactory {
 
     private DataSource dataSource;
     private String databaseSchemaUpdate;
+    private boolean isCreateDiagramOnDeploy = true;
     private boolean jobExecutorActivate = true;
     private List<ProcessEngineConfigurator> configurators;
     private List<ActivitiEventListener> customEventListeners;
@@ -31,6 +32,7 @@ public class ConfigurationFactory {
       conf.setCustomDefaultBpmnParseHandlers(this.customDefaultBpmnParseHandlers);
       conf.setCustomMybatisMappers(this.customMybatisMappers);
       conf.setActivityBehaviorFactory(this.activityBehaviorFactory);
+        conf.setCreateDiagramOnDeploy(this.isCreateDiagramOnDeploy);
       return conf;
     }
 
@@ -68,5 +70,9 @@ public class ConfigurationFactory {
 
     public void setCustomEventListeners(List<ActivitiEventListener> listeners) {
         this.customEventListeners = listeners;
+    }
+
+    public void setCreateDiagramOnDeploy(boolean isSetCreateDiagramOnDeploy) {
+        this.isCreateDiagramOnDeploy = isSetCreateDiagramOnDeploy;
     }
 }

@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.21.0.dgit-fix-6</version>
+    <version>5.21.0.dgit-fix-8</version>
   </parent>
 
   <properties>
@@ -68,7 +68,7 @@
     </plugins>
     <pluginManagement>
       <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
+        <!--This plugin's configuration is used to store Eclipse m2e settings
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
@@ -201,7 +201,7 @@
     </dependency>
 
     <!-- Vaadin add-ons -->
-    <!-- Must be defined both in activiti-explorer and activiti-webapp-explorer, 
+    <!-- Must be defined both in activiti-explorer and activiti-webapp-explorer,
       as otherwise the gwt compiler won't find it -->
     <dependency>
       <groupId>org.vaadin.addons</groupId>

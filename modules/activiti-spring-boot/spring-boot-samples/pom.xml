@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot</artifactId>
-        <version>5.21.0.dgit-fix-6</version>
+        <version>5.21.0.dgit-fix-8</version>
     </parent>
 
     <artifactId>activiti-spring-boot-samples</artifactId>
@@ -16,7 +16,7 @@
         <module>spring-boot-sample-basic</module>
         <module>spring-boot-sample-jpa</module>
         <module>spring-boot-sample-security</module>
-        <module>spring-boot-sample-rest-api</module>      
+        <module>spring-boot-sample-rest-api</module>
 		  <module>spring-boot-sample-rest-api-security</module>
         <module>spring-boot-sample-actuator</module>
         <module>spring-boot-sample-integration</module>
@@ -33,7 +33,7 @@
             <artifactId>h2</artifactId>
         </dependency>
     </dependencies>
-    
+
      <build>
             <plugins>
                 <plugin>
