@@ -77,3 +77,51 @@ select if (
 PREPARE stmt1 FROM @a;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;
+
+
+select if (
+    exists(
+        select distinct index_name
+        from information_schema.statistics
+        where table_schema = 'activiti' and table_name = 'ACT_HI_COMMENT' 
+              and index_name = 'IX_ACT_HI_COMMENT_TASK_ID_'
+    )
+    , 'select ''index IX_ACT_HI_COMMENT_TASK_ID_ exists'' _______;'
+    , 'create index IX_ACT_HI_COMMENT_TASK_ID_ on ACT_HI_COMMENT(TASK_ID_)'
+) into @a;
+
+PREPARE stmt1 FROM @a;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+
+
+select if (
+    exists(
+        select distinct index_name
+        from information_schema.statistics
+        where table_schema = 'activiti' and table_name = 'ACT_HI_COMMENT' 
+              and index_name = 'IX_ACT_HI_COMMENT_TYPE_'
+    )
+    , 'select ''index IX_ACT_HI_COMMENT_TYPE_ exists'' _______;'
+    , 'create index IX_ACT_HI_COMMENT_TYPE_ on ACT_HI_COMMENT(TYPE_)'
+) into @a;
+
+PREPARE stmt1 FROM @a;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+
+
+select if (
+    exists(
+        select distinct index_name
+        from information_schema.statistics
+        where table_schema = 'activiti' and table_name = 'ACT_HI_COMMENT' 
+              and index_name = 'IX_ACT_HI_COMMENT_TIME_'
+    )
+    , 'select ''index IX_ACT_HI_COMMENT_TIME_ exists'' _______;'
+    , 'create index IX_ACT_HI_COMMENT_TIME_ on ACT_HI_COMMENT(TIME_ desc)'
+) into @a;
+
+PREPARE stmt1 FROM @a;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
