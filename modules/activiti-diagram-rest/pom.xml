@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
+
   <name>Activiti - Diagram - REST</name>
   <artifactId>activiti-diagram-rest</artifactId>
   <packaging>jar</packaging>
@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.21.0.dgit-fix-7</version>
+    <version>5.21.0.dgit-fix-8</version>
   </parent>
 
   <properties>
@@ -103,7 +103,7 @@
       <groupId>org.activiti</groupId>
       <artifactId>activiti-common-rest</artifactId>
     </dependency>
-    
+
     <!-- SPRING -->
     <dependency>
       <groupId>org.springframework</groupId>
@@ -141,9 +141,9 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
     </dependency>
-    
+
   </dependencies>
-  
+
   <profiles>
     <profile>
       <id>distro</id>

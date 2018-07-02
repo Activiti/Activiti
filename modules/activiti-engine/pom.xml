@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.21.0.dgit-fix-7</version>
+    <version>5.21.0.dgit-fix-8</version>
   </parent>
 
   <dependencies>
@@ -42,7 +42,7 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -127,7 +127,7 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-    </dependency>      
+    </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
@@ -146,7 +146,7 @@
           <artifactId>catch-exception</artifactId>
           <scope>test</scope>
       </dependency>
-    
+
     <!-- Required for testing JTA -->
     <dependency>
       <groupId>org.codehaus.btm</groupId>
@@ -154,9 +154,9 @@
       <version>2.1.3</version>
       <scope>test</scope>
     </dependency>
-    
+
   </dependencies>
-  
+
   <properties>
     <activiti.artifact>
       org.activiti.engine
@@ -182,7 +182,7 @@
   </properties>
 
   <build>
-    <plugins>      
+    <plugins>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
@@ -256,7 +256,7 @@
       </plugins>
     </pluginManagement>
   </build>
-  
+
   <profiles>
 
     <profile>
@@ -265,7 +265,7 @@
         <skipTests>true</skipTests>
       </properties>
     </profile>
-    
+
     <profile>
       <id>create-test-jar</id>
       <build>
@@ -281,7 +281,7 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>          
+          </plugin>
         </plugins>
       </build>
     </profile>
@@ -317,7 +317,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <!--  database qa profile -->
     <profile>
       <id>database</id>
@@ -369,7 +369,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>databasewithschema</id>
       <activation>
@@ -420,7 +420,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>databasemssql</id>
       <activation>
@@ -458,7 +458,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <!--  Config qa profile -->
     <profile>
       <id>configSpring</id>
@@ -507,7 +507,7 @@
             <configuration>
               <excludes>
                 <exclude>**/*TestCase.java</exclude>
-                
+
                 <!-- Disabling tests that run exclusively using standalone config -->
                 <exclude>**/ProcessDiagramRetrievalTest.java</exclude>
                 <exclude>org/activiti/standalone/**</exclude>
@@ -532,7 +532,7 @@
 			<plugins>
 				<plugin>
 					<artifactId>maven-antrun-plugin</artifactId>
-					<!-- only worked with this version, there might be a bug with antrun 
+					<!-- only worked with this version, there might be a bug with antrun
 						see http://jira.codehaus.org/browse/MANTRUN-109 -->
 					<version>1.4</version>
 					<executions>
@@ -634,7 +634,7 @@
         </plugins>
       </build>
     </profile>
-    
+
     <profile>
       <id>databasehistoryfull</id>
       <build>
@@ -857,7 +857,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>oraclewithschema</id>
       <activation>
@@ -874,7 +874,7 @@
         </dependency>
       </dependencies>
     </profile>
-    
+
     <profile>
       <id>db2</id>
       <activation>
@@ -908,7 +908,7 @@
         </dependency>
       </dependencies>
     </profile>
-	
+
     <profile>
       <id>mysql</id>
       <activation>
