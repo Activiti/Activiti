@@ -26,11 +26,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class MybatisIntegrationContextDataManagerTest {
@@ -49,7 +46,7 @@ public class MybatisIntegrationContextDataManagerTest {
     }
 
     @Test
-    public void createShouldReturnANewInstanceOfIntegrationContextEntityImpl() throws Exception {
+    public void createShouldReturnANewInstanceOfIntegrationContextEntityImpl() {
         //when
         IntegrationContextEntity entity = manager.create();
 
@@ -58,27 +55,12 @@ public class MybatisIntegrationContextDataManagerTest {
     }
 
     @Test
-    public void getManagedEntityClassShouldReturnIntegrationContextEntityImpl() throws Exception {
+    public void getManagedEntityClassShouldReturnIntegrationContextEntityImpl() {
         //when
         Class<? extends IntegrationContextEntity> managedEntityClass = manager.getManagedEntityClass();
 
         //then
         assertThat(managedEntityClass).isEqualTo(IntegrationContextEntityImpl.class);
-    }
-
-    @Test
-    public void findIntegrationContextByExecutionIdShouldReturnResultOfDbSessionSelectOne() throws Exception {
-        //given
-        String executionId = "executionId";
-        IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
-        doReturn(Arrays.asList(entity)).when(dbSqlSession).selectList("selectIntegrationContextByExecutionId", executionId);
-
-        //when
-        Collection<IntegrationContextEntity> retrievedValues = manager.findIntegrationContextByExecutionId(executionId);
-
-        //then
-        assertThat(retrievedValues).contains(entity);
-        assertThat(retrievedValues).hasSize(1);
     }
 
 }

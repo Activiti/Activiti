@@ -23,9 +23,6 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -45,7 +42,7 @@ public class IntegrationContextManagerImplTest {
     }
 
     @Test
-    public void getDataManagerShouldReturnIntegrationContextDataManager() throws Exception {
+    public void getDataManagerShouldReturnIntegrationContextDataManager() {
         //when
         DataManager<IntegrationContextEntity> retrievedDataManager = manager.getDataManager();
 
@@ -54,17 +51,16 @@ public class IntegrationContextManagerImplTest {
     }
 
     @Test
-    public void findIntegrationContextByExecutionIdShouldReturnResultFromDataManager() throws Exception {
+    public void findByIdShouldReturnResultFromDataManager() {
         //given
         IntegrationContextEntity entity = mock(IntegrationContextEntity.class);
-        given(dataManager.findIntegrationContextByExecutionId("execId")).willReturn(Arrays.asList(entity));
+        given(dataManager.findById("id")).willReturn(entity);
 
         //when
-        List<IntegrationContextEntity> retrievedResults = manager.findIntegrationContextByExecutionId("execId");
+        IntegrationContextEntity retrievedResult = manager.findById("id");
 
         //then
-        assertThat(retrievedResults).contains(entity);
-        assertThat(retrievedResults).hasSize(1);
+        assertThat(retrievedResult).isEqualTo(entity);
     }
 
 }

@@ -24,12 +24,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import java.util.Arrays;
-import java.util.Collection;
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class RetrieveIntegrationContextCmdTest {
@@ -51,20 +48,19 @@ public class RetrieveIntegrationContextCmdTest {
     }
 
     @Test
-    public void executeShouldReturnResultOfIntegrationContextManager() throws Exception {
+    public void executeShouldReturnResultOfIntegrationContextManager() {
         //given
-        String executionId = "executionId";
-        RetrieveIntegrationContextsCmd command = new RetrieveIntegrationContextsCmd(executionId);
+        String id = "id";
+        RetrieveIntegrationContextsCmd command = new RetrieveIntegrationContextsCmd(id);
 
         IntegrationContextEntity contextEntity = mock(IntegrationContextEntity.class);
-        given(integrationContextManager.findIntegrationContextByExecutionId(executionId)).willReturn(Arrays.asList(contextEntity));
+        given(integrationContextManager.findById(id)).willReturn(contextEntity);
 
         //when
-        Collection<IntegrationContextEntity> executeResult = command.execute(commandContext);
+        IntegrationContextEntity executeResult = command.execute(commandContext);
 
         //then
-        assertThat(executeResult).contains(contextEntity);
-        assertThat(executeResult).hasSize(1);
+        assertThat(executeResult).isEqualTo(contextEntity);
     }
 
 }

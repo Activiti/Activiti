@@ -21,8 +21,6 @@ import org.activiti.engine.impl.cmd.integration.RetrieveIntegrationContextsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
-import java.util.List;
-
 public class IntegrationContextServiceImpl implements IntegrationContextService {
 
     private CommandExecutor commandExecutor;
@@ -32,8 +30,8 @@ public class IntegrationContextServiceImpl implements IntegrationContextService 
     }
 
     @Override
-    public List<IntegrationContextEntity> findIntegrationContextByExecutionId(String executionId) {
-        return commandExecutor.execute(new RetrieveIntegrationContextsCmd(executionId));
+    public IntegrationContextEntity findById(String id) {
+        return commandExecutor.execute(new RetrieveIntegrationContextsCmd(id));
     }
 
     @Override

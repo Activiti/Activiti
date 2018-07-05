@@ -18,11 +18,9 @@ package org.activiti.engine.integration;
 
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
-import java.util.List;
-
 public interface IntegrationContextService {
 
-    List<IntegrationContextEntity> findIntegrationContextByExecutionId(String executionId);
+    IntegrationContextEntity findById(String id);
 
     void deleteIntegrationContext(IntegrationContextEntity integrationContextEntity);
 

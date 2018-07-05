@@ -59,15 +59,8 @@
 
   <!-- Selects -->
 
-  <select id="selectIntegrationcontext" parameterType="string" resultMap="integrationContextResultMap">
+  <select id="selectIntegrationContext" parameterType="string" resultMap="integrationContextResultMap">
     select * from ${prefix}ACT_RU_INTEGRATION where ID_ = #{id, jdbcType=VARCHAR}
   </select>
-
-  <select id="selectIntegrationContextByExecutionId" parameterType="string" resultMap="integrationContextResultMap">
-    select *
-    from ${prefix}ACT_RU_INTEGRATION I
-    where I.EXECUTION_ID_ = #{parameter}
-  </select>
-
 
 </mapper>

@@ -21,8 +21,6 @@ import org.activiti.engine.impl.persistence.entity.AbstractEntityManager;
 import org.activiti.engine.impl.persistence.entity.data.DataManager;
 import org.activiti.engine.impl.persistence.entity.data.integration.IntegrationContextDataManager;
 
-import java.util.List;
-
 public class IntegrationContextManagerImpl extends AbstractEntityManager<IntegrationContextEntity> implements IntegrationContextManager {
 
     private final IntegrationContextDataManager dataManager;
@@ -35,11 +33,6 @@ public class IntegrationContextManagerImpl extends AbstractEntityManager<Integra
     @Override
     protected DataManager<IntegrationContextEntity> getDataManager() {
         return dataManager;
-    }
-
-    @Override
-    public List<IntegrationContextEntity> findIntegrationContextByExecutionId(String executionId) {
-        return dataManager.findIntegrationContextByExecutionId(executionId);
     }
 
 }
