@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>activiti-app-rest</artifactId>
+	<artifactId>activiti-app-logic</artifactId>
 	<parent>
 		<groupId>org.activiti</groupId>
     	<artifactId>activiti-ui-root</artifactId>
-    	<version>6.0.0-boot2</version>
+    	<version>6.0.0</version>
 	</parent>
 	<packaging>jar</packaging>
 
@@ -23,7 +23,7 @@
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
-            <artifactId>activiti-app-logic</artifactId>
+            <artifactId>editor-image-generator</artifactId>
         </dependency>
 
 		<!-- Activiti -->
@@ -39,10 +39,6 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-bpmn-converter</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>activiti-json-converter</artifactId>
-		</dependency>
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-bpmn-layout</artifactId>
@@ -50,6 +46,30 @@
 		<dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-process-validation</artifactId>
+        </dependency>
+        <dependency>
+        	<groupId>org.activiti</groupId>
+        	<artifactId>activiti-json-converter</artifactId>
+        </dependency>
+        <dependency>
+        	<groupId>org.activiti</groupId>
+        	<artifactId>activiti-dmn-xml-converter</artifactId>
+        </dependency>
+        <dependency>
+       	 	<groupId>org.activiti</groupId>
+        	<artifactId>activiti-dmn-json-converter</artifactId>
+      	</dependency>
+      	<dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-form-engine</artifactId>
+        </dependency>
+		<dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-form-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-form-json-converter</artifactId>
         </dependency>
         <dependency>
         	<groupId>org.activiti</groupId>
@@ -63,18 +83,6 @@
 		</dependency>
         
 		<!-- JSON -->
-		<dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-        </dependency>
-		<dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-		<dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-json-org</artifactId>
@@ -117,6 +125,10 @@
   			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
@@ -140,10 +152,6 @@
 			<groupId>javax.validation</groupId>
 			<artifactId>validation-api</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
 
 		<!-- JODA TIME -->
 		<dependency>
@@ -158,7 +166,7 @@
 			<groupId>org.jadira.usertype</groupId>
 			<artifactId>usertype.core</artifactId>
 		</dependency>
-		
+
 		<!-- SPRING -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -243,7 +251,7 @@
         	<groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy-all</artifactId>
        </dependency>
-	   
+
 	</dependencies>
 
 	<!-- BUILD -->

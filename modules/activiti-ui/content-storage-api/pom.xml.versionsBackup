@@ -1,37 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>content-storage-fs</artifactId>
+	<artifactId>content-storage-api</artifactId>
 	<parent>
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-ui-root</artifactId>
-		<version>6.0.0-boot2</version>
+		<version>6.0.0</version>
 	</parent>
-	<name>Activiti Content Storage - File System Implementation</name>
-	<description>Implementation of the content-storage-api using a file-system.</description>
-	<dependencies>
-		<dependency>
-			<groupId>org.activiti</groupId>
-			<artifactId>content-storage-api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-
-		<!-- LOGGING -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-		</dependency>
-
-		<!-- TESTING -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+	<name>Activiti Content Storage - API</name>
+	<description>API for storing and retreiving binary content</description>
 
 	<profiles>
 		<profile>

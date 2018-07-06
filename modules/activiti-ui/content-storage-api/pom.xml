@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-ui-root</artifactId>
-		<version>6.0.0</version>
+		<version>6.0.0-boot2</version>
 	</parent>
 	<name>Activiti Content Storage - API</name>
 	<description>API for storing and retreiving binary content</description>
