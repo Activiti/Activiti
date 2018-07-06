@@ -14,6 +14,7 @@
   <description>BPM and workflow engine</description>
   <url>http://activiti.org</url>
   <modules>
+    <module>activiti-api</module>
     <module>activiti-bpmn-model</module>
     <module>activiti-bpmn-layout</module>
     <module>activiti-bpmn-converter</module>
