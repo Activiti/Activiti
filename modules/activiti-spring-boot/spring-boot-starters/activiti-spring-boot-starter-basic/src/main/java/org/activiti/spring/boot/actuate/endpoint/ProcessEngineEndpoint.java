@@ -19,7 +19,8 @@ import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.*;
@@ -30,18 +31,18 @@ import java.util.*;
  *
  * @author Josh Long
  */
-@ConfigurationProperties(prefix = "endpoints.activiti")
-public class ProcessEngineEndpoint extends AbstractEndpoint<Map<String, Object>> {
+//@ConfigurationProperties(prefix = "endpoints.activiti")
+    @Endpoint(id = "activiti")
+public class ProcessEngineEndpoint{
 
     private final ProcessEngine processEngine;
 
     public ProcessEngineEndpoint(ProcessEngine processEngine) {
-        super("activiti");
         this.processEngine = processEngine;
     }
 
-    @Override
-    public Map<String, Object> invoke() {
+    @ReadOperation
+    public Map<String, Object> activiti() {
 
         Map<String, Object> metrics = new HashMap<String, Object>();
 

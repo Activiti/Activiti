@@ -20,7 +20,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
-import org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter;
+//import org.springframework.boot.actuate.endpoint.mvc.EndpointMvcAdapter;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,12 +38,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author Joram Barrez
  * @author Josh Long
  */
-public class ProcessEngineMvcEndpoint extends EndpointMvcAdapter {
+public class ProcessEngineMvcEndpoint{
 
     private final RepositoryService repositoryService;
+    private final ProcessEngineEndpoint processEngineEndpoint;
 
     public ProcessEngineMvcEndpoint(ProcessEngineEndpoint processEngineEndpoint, RepositoryService repositoryService) {
-        super(processEngineEndpoint);
+//        super(processEngineEndpoint);
+        this.processEngineEndpoint = processEngineEndpoint;
         this.repositoryService = repositoryService;
     }
 

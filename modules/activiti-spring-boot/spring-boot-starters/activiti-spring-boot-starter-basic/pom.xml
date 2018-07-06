@@ -10,6 +10,8 @@
 	</parent>
 
 	<artifactId>activiti-spring-boot-starter-basic</artifactId>
+	<version>6.0.0-boot2</version>
+
 	<!-- <properties> <spring.framework.version>4.1.4.RELEASE</spring.framework.version> 
 		</properties> -->
 
@@ -25,10 +27,12 @@
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-engine</artifactId>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-spring</artifactId>
+			<version>6.0.0</version>
 
 		</dependency>
 		<dependency>
@@ -56,6 +60,7 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-common-rest</artifactId>
 			<optional>true</optional>
+			<version>6.0.0</version>
 		</dependency>
 
 		<!-- integration -->
@@ -77,16 +82,19 @@
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-image-generator</artifactId>
 			<optional>true</optional>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-bpmn-model</artifactId>
 			<optional>true</optional>
+			<version>6.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>activiti-bpmn-layout</artifactId>
 			<optional>true</optional>
+			<version>6.0.0</version>
 		</dependency>
 
 
