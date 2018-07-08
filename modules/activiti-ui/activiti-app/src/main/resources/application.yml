@@ -1,0 +1,5 @@
+liquibase:
+  enabled: false
+spring:
+  freemarker:
+    check-template-location: false

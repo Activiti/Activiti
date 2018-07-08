@@ -6,36 +6,30 @@
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot-starters</artifactId>
-        <version>6.0.0-boot2</version>
+        <version>6.0.0</version>
     </parent>
 
-    <artifactId>activiti-spring-boot-starter-rest-api</artifactId>
+    <artifactId>activiti-spring-boot-starter-security</artifactId>
+
 
     <dependencies>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-engine</artifactId>
+            <version>6.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
-            <artifactId>activiti-rest</artifactId>
+            <artifactId>activiti-spring</artifactId>
             <version>6.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
-          <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-common-rest</artifactId>
-            <version>6.0.0</version>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
@@ -43,10 +37,9 @@
             <version>6.0.0</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
-
     </dependencies>
-
 </project>

@@ -6,21 +6,19 @@
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot-starters</artifactId>
-        <version>6.0.0-boot2</version>
+        <version>6.0.0</version>
     </parent>
 
-    <artifactId>activiti-spring-boot-starter-security</artifactId>
-
-
+    <artifactId>activiti-spring-boot-starter-jpa</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-engine</artifactId>
-            <version>6.0.0</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
-            <artifactId>activiti-spring</artifactId>
+            <artifactId>activiti-spring-boot-starter-basic</artifactId>
             <version>6.0.0</version>
         </dependency>
         <dependency>
@@ -29,17 +27,9 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-spring-boot-starter-basic</artifactId>
-            <version>6.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>test</scope>
-        </dependency>
+
     </dependencies>
+
 </project>
