@@ -16,6 +16,9 @@
 
 package org.activiti.runtime.api.event;
 
-public interface CloudProcessCreatedEvent extends CloudProcessRuntimeEvent {
+import org.activiti.runtime.api.model.ProcessInstance;
+
+public interface CloudProcessResumed extends CloudProcessRuntimeEvent,
+                                             ProcessRuntimeEvent<ProcessInstance> {
 
 }

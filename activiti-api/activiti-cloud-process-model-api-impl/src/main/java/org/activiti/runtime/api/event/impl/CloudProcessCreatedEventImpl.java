@@ -16,11 +16,11 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.CloudProcessCreatedEvent;
+import org.activiti.runtime.api.event.CloudProcessCreated;
 import org.activiti.runtime.api.event.ProcessRuntimeEvent;
 import org.activiti.runtime.api.model.ProcessInstance;
 
-public class CloudProcessCreatedEventImpl extends CloudRuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents> implements CloudProcessCreatedEvent {
+public class CloudProcessCreatedEventImpl extends CloudRuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents> implements CloudProcessCreated {
 
     public CloudProcessCreatedEventImpl() {
     }

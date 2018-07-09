@@ -16,6 +16,6 @@
 
 package org.activiti.runtime.api.event;
 
-public interface CloudProcessCompletedEvent extends CloudProcessRuntimeEvent {
+public interface CloudProcessCompleted extends CloudProcessRuntimeEvent {
 
 }

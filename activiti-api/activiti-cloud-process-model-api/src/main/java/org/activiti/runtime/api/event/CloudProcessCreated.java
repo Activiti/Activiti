@@ -16,9 +16,6 @@
 
 package org.activiti.runtime.api.event;
 
-import org.activiti.runtime.api.model.ProcessInstance;
-
-public interface CloudProcessSuspendedEvent extends CloudProcessRuntimeEvent,
-                                                    ProcessRuntimeEvent<ProcessInstance> {
+public interface CloudProcessCreated extends CloudProcessRuntimeEvent {
 
 }

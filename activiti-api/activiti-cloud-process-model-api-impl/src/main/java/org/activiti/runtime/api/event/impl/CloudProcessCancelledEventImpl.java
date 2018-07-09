@@ -16,11 +16,11 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.CloudProcessCancelledEvent;
+import org.activiti.runtime.api.event.CloudProcessCancelled;
 import org.activiti.runtime.api.event.ProcessRuntimeEvent;
 import org.activiti.runtime.api.model.ProcessInstance;
 
-public class CloudProcessCancelledEventImpl extends CloudRuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents> implements CloudProcessCancelledEvent {
+public class CloudProcessCancelledEventImpl extends CloudRuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents> implements CloudProcessCancelled {
 
     private String cause;
 

@@ -16,11 +16,11 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.CloudProcessCompletedEvent;
+import org.activiti.runtime.api.event.CloudProcessCompleted;
 import org.activiti.runtime.api.event.ProcessRuntimeEvent;
 import org.activiti.runtime.api.model.ProcessInstance;
 
-public class CloudProcessCompletedEventImpl extends CloudRuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents> implements CloudProcessCompletedEvent {
+public class CloudProcessCompletedEventImpl extends CloudRuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents> implements CloudProcessCompleted {
 
     public CloudProcessCompletedEventImpl() {
     }

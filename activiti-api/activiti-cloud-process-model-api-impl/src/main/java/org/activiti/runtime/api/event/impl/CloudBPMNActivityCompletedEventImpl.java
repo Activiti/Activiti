@@ -17,10 +17,10 @@
 package org.activiti.runtime.api.event.impl;
 
 import org.activiti.runtime.api.event.BPMNActivityEvent;
-import org.activiti.runtime.api.event.CloudBPMNActivityCompletedEvent;
+import org.activiti.runtime.api.event.CloudBPMNActivityCompleted;
 import org.activiti.runtime.api.model.BPMNActivity;
 
-public class CloudBPMNActivityCompletedEventImpl extends CloudBPMNActivityEventImpl implements CloudBPMNActivityCompletedEvent {
+public class CloudBPMNActivityCompletedEventImpl extends CloudBPMNActivityEventImpl implements CloudBPMNActivityCompleted {
 
     public CloudBPMNActivityCompletedEventImpl() {
     }

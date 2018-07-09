@@ -16,6 +16,6 @@
 
 package org.activiti.runtime.api.event;
 
-public interface CloudBPMNActivityCompletedEvent extends CloudBPMNActivityEvent {
+public interface CloudVariableCreated extends CloudVariableEvent {
 
 }

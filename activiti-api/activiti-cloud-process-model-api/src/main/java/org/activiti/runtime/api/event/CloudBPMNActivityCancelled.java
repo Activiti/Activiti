@@ -16,6 +16,6 @@
 
 package org.activiti.runtime.api.event;
 
-public interface CloudVariableDeletedEvent extends CloudVariableEvent {
-
+public interface CloudBPMNActivityCancelled extends CloudBPMNActivityEvent {
+    String getCause();
 }

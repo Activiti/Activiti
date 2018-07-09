@@ -16,11 +16,11 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.CloudVariableCreatedEvent;
+import org.activiti.runtime.api.event.CloudVariableCreated;
 import org.activiti.runtime.api.event.VariableEvent;
 import org.activiti.runtime.api.model.VariableInstance;
 
-public class CloudVariableCreatedEventImpl extends CloudVariableEventImpl implements CloudVariableCreatedEvent {
+public class CloudVariableCreatedEventImpl extends CloudVariableEventImpl implements CloudVariableCreated {
 
     public CloudVariableCreatedEventImpl() {
     }

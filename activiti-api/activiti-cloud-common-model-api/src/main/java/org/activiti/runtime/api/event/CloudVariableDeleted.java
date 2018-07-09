@@ -16,9 +16,6 @@
 
 package org.activiti.runtime.api.event;
 
-import org.activiti.runtime.api.model.ProcessInstance;
-
-public interface CloudProcessStartedEvent extends CloudProcessRuntimeEvent,
-                                                  ExtendedProcessRuntimeEvent<ProcessInstance> {
+public interface CloudVariableDeleted extends CloudVariableEvent {
 
 }

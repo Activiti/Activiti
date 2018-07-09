@@ -16,11 +16,11 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.CloudProcessResumedEvent;
+import org.activiti.runtime.api.event.CloudProcessResumed;
 import org.activiti.runtime.api.event.ProcessRuntimeEvent;
 import org.activiti.runtime.api.model.ProcessInstance;
 
-public class CloudProcessResumedEventImpl extends CloudRuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents> implements CloudProcessResumedEvent {
+public class CloudProcessResumedEventImpl extends CloudRuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents> implements CloudProcessResumed {
 
     public CloudProcessResumedEventImpl() {
     }

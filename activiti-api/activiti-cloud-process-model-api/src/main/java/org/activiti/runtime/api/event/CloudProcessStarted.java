@@ -16,6 +16,9 @@
 
 package org.activiti.runtime.api.event;
 
-public interface CloudBPMNActivityCancelledEvent extends CloudBPMNActivityEvent {
-    String getCause();
+import org.activiti.runtime.api.model.ProcessInstance;
+
+public interface CloudProcessStarted extends CloudProcessRuntimeEvent,
+                                             ExtendedProcessRuntimeEvent<ProcessInstance> {
+
 }
