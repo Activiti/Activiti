@@ -21,8 +21,16 @@ import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.activiti.runtime.api.cmd.TaskCommands;
+import org.activiti.runtime.api.cmd.impl.ClaimTaskImpl;
+import org.activiti.runtime.api.cmd.impl.CompleteTaskImpl;
+import org.activiti.runtime.api.cmd.impl.ReleaseTaskImpl;
+import org.activiti.runtime.api.cmd.result.impl.ClaimTaskResultImpl;
+import org.activiti.runtime.api.cmd.result.impl.CompleteTaskResultImpl;
+import org.activiti.runtime.api.cmd.result.impl.ReleaseTaskResultImpl;
 import org.activiti.runtime.api.model.Task;
 import org.activiti.runtime.api.model.TaskCandidateGroup;
 import org.activiti.runtime.api.model.TaskCandidateUser;
@@ -58,6 +66,22 @@ public class TaskModelAutoConfiguration {
 
 
         module.setAbstractTypes(resolver);
+
+        module.registerSubtypes(new NamedType(ClaimTaskImpl.class,
+                                              TaskCommands.CLAIM_TASK.name()));
+        module.registerSubtypes(new NamedType(ClaimTaskResultImpl.class,
+                                              TaskCommands.CLAIM_TASK.name()));
+
+        module.registerSubtypes(new NamedType(ReleaseTaskImpl.class,
+                                              TaskCommands.RELEASE_TASK.name()));
+        module.registerSubtypes(new NamedType(ReleaseTaskResultImpl.class,
+                                              TaskCommands.RELEASE_TASK.name()));
+
+        module.registerSubtypes(new NamedType(CompleteTaskImpl.class,
+                                              TaskCommands.COMPLETE_TASK.name()));
+        module.registerSubtypes(new NamedType(CompleteTaskResultImpl.class,
+                                              TaskCommands.COMPLETE_TASK.name()));
+
         return module;
     }
 
