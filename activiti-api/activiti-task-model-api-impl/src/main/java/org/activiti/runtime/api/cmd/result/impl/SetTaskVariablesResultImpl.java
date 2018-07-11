@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime.api.cmd;
+package org.activiti.runtime.api.cmd.result.impl;
 
-public enum TaskCommands {
+import org.activiti.runtime.api.cmd.SetTaskVariables;
+import org.activiti.runtime.api.cmd.result.SetTaskVariablesResult;
 
-    CREATE_TASK,
+public class SetTaskVariablesResultImpl extends CommandResultImpl<SetTaskVariables> implements SetTaskVariablesResult {
 
-    CLAIM_TASK,
+    public SetTaskVariablesResultImpl() {
+    }
 
-    RELEASE_TASK,
-
-    COMPLETE_TASK,
-
-    SET_TASK_VARIABLES
-
+    public SetTaskVariablesResultImpl(SetTaskVariables command) {
+        super(command);
+    }
 }

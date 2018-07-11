@@ -18,8 +18,6 @@ package org.activiti.runtime.api.cmd;
 
 public interface ClaimTask extends TaskCommand {
 
-    String getTaskId();
-
     String getAssignee();
 
 }

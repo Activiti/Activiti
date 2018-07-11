@@ -18,4 +18,5 @@ package org.activiti.runtime.api.cmd;
 
 public interface TaskCommand extends Command<TaskCommands> {
 
+    String getTaskId();
 }

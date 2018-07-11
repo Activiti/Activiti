@@ -16,16 +16,10 @@
 
 package org.activiti.runtime.api.cmd;
 
-public enum TaskCommands {
+public interface CreateTask extends TaskCommand {
 
-    CREATE_TASK,
+    String getName();
 
-    CLAIM_TASK,
-
-    RELEASE_TASK,
-
-    COMPLETE_TASK,
-
-    SET_TASK_VARIABLES
+    String getDescription();
 
 }

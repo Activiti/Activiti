@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime.api.cmd;
+package org.activiti.runtime.api.cmd.result.impl;
 
-public enum TaskCommands {
+import org.activiti.runtime.api.cmd.CreateTask;
+import org.activiti.runtime.api.cmd.result.CreateTaskResult;
 
-    CREATE_TASK,
+public class CreateTaskResultImpl extends CommandResultImpl<CreateTask> implements CreateTaskResult {
 
-    CLAIM_TASK,
+    public CreateTaskResultImpl() {
+    }
 
-    RELEASE_TASK,
-
-    COMPLETE_TASK,
-
-    SET_TASK_VARIABLES
-
+    public CreateTaskResultImpl(CreateTask command) {
+        super(command);
+    }
 }

@@ -16,16 +16,10 @@
 
 package org.activiti.runtime.api.cmd;
 
-public enum TaskCommands {
+import java.util.Map;
 
-    CREATE_TASK,
+public interface SetTaskVariables extends TaskCommand {
 
-    CLAIM_TASK,
-
-    RELEASE_TASK,
-
-    COMPLETE_TASK,
-
-    SET_TASK_VARIABLES
+    Map<String, Object> getVariables();
 
 }

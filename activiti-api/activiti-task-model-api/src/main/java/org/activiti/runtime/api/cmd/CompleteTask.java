@@ -20,8 +20,6 @@ import java.util.Map;
 
 public interface CompleteTask extends TaskCommand {
 
-    String getTaskId();
-
     Map<String, Object> getOutputVariables();
 
 }
