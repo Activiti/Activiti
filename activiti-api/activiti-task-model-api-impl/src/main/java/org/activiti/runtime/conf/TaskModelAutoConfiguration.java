@@ -27,10 +27,12 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activiti.runtime.api.cmd.TaskCommands;
 import org.activiti.runtime.api.cmd.impl.ClaimTaskImpl;
 import org.activiti.runtime.api.cmd.impl.CompleteTaskImpl;
+import org.activiti.runtime.api.cmd.impl.CreateTaskImpl;
 import org.activiti.runtime.api.cmd.impl.ReleaseTaskImpl;
 import org.activiti.runtime.api.cmd.impl.SetTaskVariablesImpl;
 import org.activiti.runtime.api.cmd.result.impl.ClaimTaskResultImpl;
 import org.activiti.runtime.api.cmd.result.impl.CompleteTaskResultImpl;
+import org.activiti.runtime.api.cmd.result.impl.CreateTaskResultImpl;
 import org.activiti.runtime.api.cmd.result.impl.ReleaseTaskResultImpl;
 import org.activiti.runtime.api.cmd.result.impl.SetTaskVariablesResultImpl;
 import org.activiti.runtime.api.model.Task;
@@ -73,6 +75,11 @@ public class TaskModelAutoConfiguration {
                                               TaskCommands.CLAIM_TASK.name()));
         module.registerSubtypes(new NamedType(ClaimTaskResultImpl.class,
                                               TaskCommands.CLAIM_TASK.name()));
+
+        module.registerSubtypes(new NamedType(CreateTaskImpl.class,
+                                              TaskCommands.CREATE_TASK.name()));
+        module.registerSubtypes(new NamedType(CreateTaskResultImpl.class,
+                                              TaskCommands.CREATE_TASK.name()));
 
         module.registerSubtypes(new NamedType(ReleaseTaskImpl.class,
                                               TaskCommands.RELEASE_TASK.name()));
