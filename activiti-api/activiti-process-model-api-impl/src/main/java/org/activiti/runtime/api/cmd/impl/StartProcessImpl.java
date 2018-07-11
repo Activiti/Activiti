@@ -42,6 +42,11 @@ public class StartProcessImpl extends CommandImpl<ProcessCommands> implements St
         this.variables = variables;
     }
 
+    @Override
+    public String getProcessInstanceId() {
+        return null; // we don't need the process definition id for starting a new process
+    }
+
     public String getProcessDefinitionKey() {
         return processDefinitionKey;
     }

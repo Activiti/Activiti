@@ -18,6 +18,4 @@ package org.activiti.runtime.api.cmd;
 
 public interface SuspendProcess extends ProcessCommand {
 
-    String getProcessInstanceId();
-
 }

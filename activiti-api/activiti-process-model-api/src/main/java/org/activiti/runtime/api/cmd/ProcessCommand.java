@@ -17,5 +17,5 @@
 package org.activiti.runtime.api.cmd;
 
 public interface ProcessCommand extends Command<ProcessCommands> {
-
+    String getProcessInstanceId();
 }

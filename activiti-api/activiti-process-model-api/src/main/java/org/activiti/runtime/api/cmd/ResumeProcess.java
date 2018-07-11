@@ -18,6 +18,4 @@ package org.activiti.runtime.api.cmd;
 
 public interface ResumeProcess extends ProcessCommand {
 
-    String getProcessInstanceId();
-
 }
