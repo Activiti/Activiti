@@ -16,6 +16,8 @@
 
 package org.activiti.runtime.api.cmd.impl;
 
+import java.util.Date;
+
 import org.activiti.runtime.api.cmd.CreateTask;
 import org.activiti.runtime.api.cmd.TaskCommands;
 
@@ -23,6 +25,10 @@ public class CreateTaskImpl extends CommandImpl<TaskCommands> implements CreateT
 
     private String name;
     private String description;
+    private Date dueDate;
+    private Integer priority;
+    private String assignee;
+    private String parentTaskId;
 
     public CreateTaskImpl() {
     }
@@ -51,5 +57,41 @@ public class CreateTaskImpl extends CommandImpl<TaskCommands> implements CreateT
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public Date getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Date dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    @Override
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    @Override
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
+
+    @Override
+    public String getParentTaskId() {
+        return parentTaskId;
+    }
+
+    public void setParentTaskId(String parentTaskId) {
+        this.parentTaskId = parentTaskId;
     }
 }

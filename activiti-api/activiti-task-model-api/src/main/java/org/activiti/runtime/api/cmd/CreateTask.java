@@ -16,10 +16,20 @@
 
 package org.activiti.runtime.api.cmd;
 
+import java.util.Date;
+
 public interface CreateTask extends TaskCommand {
 
     String getName();
 
     String getDescription();
+
+    Date getDueDate();
+
+    Integer getPriority();
+
+    String getAssignee();
+
+    String getParentTaskId();
 
 }

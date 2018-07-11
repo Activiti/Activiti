@@ -16,16 +16,10 @@
 
 package org.activiti.runtime.api.cmd;
 
-public enum ProcessCommands {
+import java.util.List;
 
-    START_PROCESS,
+public interface RemoveProcessVariables extends ProcessCommand{
 
-    SUSPEND_PROCESS,
-
-    RESUME_PROCESS,
-
-    SET_PROCESS_VARIABLES,
-
-    REMOVE_PROCESS_VARIABLES
+    List<String> getVariableNames();
 
 }

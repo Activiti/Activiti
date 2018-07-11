@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime.api.cmd;
+package org.activiti.runtime.api.cmd.result.impl;
 
-public enum ProcessCommands {
+import org.activiti.runtime.api.cmd.SetProcessVariables;
+import org.activiti.runtime.api.cmd.SetProcessVariablesResult;
 
-    START_PROCESS,
+public class SetProcessVariablesResultImpl extends CommandResultImpl<SetProcessVariables> implements SetProcessVariablesResult {
 
-    SUSPEND_PROCESS,
+    public SetProcessVariablesResultImpl() {
+    }
 
-    RESUME_PROCESS,
-
-    SET_PROCESS_VARIABLES,
-
-    REMOVE_PROCESS_VARIABLES
-
+    public SetProcessVariablesResultImpl(SetProcessVariables command) {
+        super(command);
+    }
 }

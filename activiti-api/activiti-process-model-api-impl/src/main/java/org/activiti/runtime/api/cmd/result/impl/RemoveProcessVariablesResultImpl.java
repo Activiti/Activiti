@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime.api.cmd;
+package org.activiti.runtime.api.cmd.result.impl;
 
-public enum ProcessCommands {
+import org.activiti.runtime.api.cmd.RemoveProcessVariables;
+import org.activiti.runtime.api.cmd.result.RemoveProcessVariablesResult;
 
-    START_PROCESS,
+public class RemoveProcessVariablesResultImpl extends CommandResultImpl<RemoveProcessVariables> implements RemoveProcessVariablesResult {
 
-    SUSPEND_PROCESS,
+    public RemoveProcessVariablesResultImpl() {
+    }
 
-    RESUME_PROCESS,
-
-    SET_PROCESS_VARIABLES,
-
-    REMOVE_PROCESS_VARIABLES
+    public RemoveProcessVariablesResultImpl(RemoveProcessVariables command) {
+        super(command);
+    }
 
 }

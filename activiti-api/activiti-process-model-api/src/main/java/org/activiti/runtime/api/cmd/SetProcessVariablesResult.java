@@ -16,16 +16,8 @@
 
 package org.activiti.runtime.api.cmd;
 
-public enum ProcessCommands {
+import org.activiti.runtime.api.cmd.result.CommandResult;
 
-    START_PROCESS,
-
-    SUSPEND_PROCESS,
-
-    RESUME_PROCESS,
-
-    SET_PROCESS_VARIABLES,
-
-    REMOVE_PROCESS_VARIABLES
+public interface SetProcessVariablesResult extends CommandResult<SetProcessVariables> {
 
 }
