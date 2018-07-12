@@ -17,8 +17,12 @@
 package org.activiti.runtime.conf;
 
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.BeanDescription;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
+import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activiti.runtime.api.event.TaskCandidateGroupEvent;
 import org.activiti.runtime.api.event.TaskCandidateUserEvent;
@@ -33,6 +37,8 @@ import org.activiti.runtime.api.event.impl.CloudTaskCandidateUserRemovedEventImp
 import org.activiti.runtime.api.event.impl.CloudTaskCompletedEventImpl;
 import org.activiti.runtime.api.event.impl.CloudTaskCreatedEventImpl;
 import org.activiti.runtime.api.event.impl.CloudTaskSuspendedEventImpl;
+import org.activiti.runtime.api.model.CloudTask;
+import org.activiti.runtime.api.model.impl.CloudTaskImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -68,6 +74,23 @@ public class CloudTaskModelAutoConfiguration {
                                               TaskCandidateGroupEvent.TaskCandidateGroupEvents.TASK_CANDIDATE_GROUP_ADDED.name()));
         module.registerSubtypes(new NamedType(CloudTaskCandidateGroupRemovedEventImpl.class,
                                               TaskCandidateGroupEvent.TaskCandidateGroupEvents.TASK_CANDIDATE_GROUP_REMOVED.name()));
+
+        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
+            //this is a workaround for https://github.com/FasterXML/jackson-databind/issues/2019
+            //once version 2.9.6 is related we can remove this @override method
+            @Override
+            public JavaType resolveAbstractType(DeserializationConfig config,
+                                                BeanDescription typeDesc) {
+                return findTypeMapping(config,
+                                       typeDesc.getType());
+            }
+        };
+
+        resolver.addMapping(CloudTask.class,
+                            CloudTaskImpl.class);
+
+        module.setAbstractTypes(resolver);
+
         return module;
     }
 

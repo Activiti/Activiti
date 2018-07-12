@@ -17,14 +17,20 @@
 package org.conf.activiti.runtime;
 
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.BeanDescription;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
+import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activiti.runtime.api.event.CloudRuntimeEvent;
 import org.activiti.runtime.api.event.VariableEvent;
 import org.activiti.runtime.api.event.impl.CloudVariableCreatedEventImpl;
 import org.activiti.runtime.api.event.impl.CloudVariableDeletedEventImpl;
 import org.activiti.runtime.api.event.impl.CloudVariableUpdatedEventImpl;
+import org.activiti.runtime.api.model.CloudVariableInstance;
+import org.activiti.runtime.api.model.impl.CloudVariableInstanceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -43,6 +49,22 @@ public class CloudCommonModelAutoConfiguration {
                                               VariableEvent.VariableEvents.VARIABLE_UPDATED.name()));
         module.registerSubtypes(new NamedType(CloudVariableDeletedEventImpl.class,
                                               VariableEvent.VariableEvents.VARIABLE_DELETED.name()));
+
+        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
+            //this is a workaround for https://github.com/FasterXML/jackson-databind/issues/2019
+            //once version 2.9.6 is related we can remove this @override method
+            @Override
+            public JavaType resolveAbstractType(DeserializationConfig config,
+                                                BeanDescription typeDesc) {
+                return findTypeMapping(config,
+                                       typeDesc.getType());
+            }
+        };
+
+        resolver.addMapping(CloudVariableInstance.class,
+                            CloudVariableInstanceImpl.class);
+
+        module.setAbstractTypes(resolver);
 
         module.setMixInAnnotation(CloudRuntimeEvent.class, CloudRuntimeMixIn.class);
         return module;
