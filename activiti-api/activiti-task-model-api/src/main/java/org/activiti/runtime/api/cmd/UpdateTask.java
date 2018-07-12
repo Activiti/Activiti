@@ -16,18 +16,20 @@
 
 package org.activiti.runtime.api.cmd;
 
-public enum TaskCommands {
+import java.util.Date;
 
-    CREATE_TASK,
+public interface UpdateTask extends TaskCommand {
 
-    CLAIM_TASK,
+    String getName();
 
-    RELEASE_TASK,
+    String getDescription();
 
-    COMPLETE_TASK,
+    Date getDueDate();
 
-    SET_TASK_VARIABLES,
+    Integer getPriority();
 
-    UPDATE_TASK
+    String getAssignee();
+
+    String getParentTaskId();
 
 }

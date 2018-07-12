@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime.api.cmd;
+package org.activiti.runtime.api.cmd.result.impl;
 
-public enum TaskCommands {
+import org.activiti.runtime.api.cmd.UpdateTask;
+import org.activiti.runtime.api.cmd.result.UpdateTaskResult;
 
-    CREATE_TASK,
+public class UpdateTaskResultImpl extends CommandResultImpl<UpdateTask> implements UpdateTaskResult {
 
-    CLAIM_TASK,
+    public UpdateTaskResultImpl() {
+    }
 
-    RELEASE_TASK,
-
-    COMPLETE_TASK,
-
-    SET_TASK_VARIABLES,
-
-    UPDATE_TASK
+    public UpdateTaskResultImpl(UpdateTask command) {
+        super(command);
+    }
 
 }

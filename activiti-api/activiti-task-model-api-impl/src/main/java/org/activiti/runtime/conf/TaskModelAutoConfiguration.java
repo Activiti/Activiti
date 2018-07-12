@@ -30,11 +30,13 @@ import org.activiti.runtime.api.cmd.impl.CompleteTaskImpl;
 import org.activiti.runtime.api.cmd.impl.CreateTaskImpl;
 import org.activiti.runtime.api.cmd.impl.ReleaseTaskImpl;
 import org.activiti.runtime.api.cmd.impl.SetTaskVariablesImpl;
+import org.activiti.runtime.api.cmd.impl.UpdateTaskImpl;
 import org.activiti.runtime.api.cmd.result.impl.ClaimTaskResultImpl;
 import org.activiti.runtime.api.cmd.result.impl.CompleteTaskResultImpl;
 import org.activiti.runtime.api.cmd.result.impl.CreateTaskResultImpl;
 import org.activiti.runtime.api.cmd.result.impl.ReleaseTaskResultImpl;
 import org.activiti.runtime.api.cmd.result.impl.SetTaskVariablesResultImpl;
+import org.activiti.runtime.api.cmd.result.impl.UpdateTaskResultImpl;
 import org.activiti.runtime.api.model.Task;
 import org.activiti.runtime.api.model.TaskCandidateGroup;
 import org.activiti.runtime.api.model.TaskCandidateUser;
@@ -90,6 +92,11 @@ public class TaskModelAutoConfiguration {
                                               TaskCommands.COMPLETE_TASK.name()));
         module.registerSubtypes(new NamedType(CompleteTaskResultImpl.class,
                                               TaskCommands.COMPLETE_TASK.name()));
+
+        module.registerSubtypes(new NamedType(UpdateTaskImpl.class,
+                                              TaskCommands.UPDATE_TASK.name()));
+        module.registerSubtypes(new NamedType(UpdateTaskResultImpl.class,
+                                              TaskCommands.UPDATE_TASK.name()));
 
         module.registerSubtypes(new NamedType(SetTaskVariablesImpl.class,
                                               TaskCommands.SET_TASK_VARIABLES.name()));
