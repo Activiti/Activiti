@@ -19,8 +19,11 @@ package org.activiti.runtime.api.event.internal;
 import java.util.List;
 
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.task.Task;
 import org.activiti.runtime.api.event.TaskCancelled;
 import org.activiti.runtime.api.event.impl.ToTaskCancelledConverter;
 import org.activiti.runtime.api.event.listener.TaskRuntimeEventListener;

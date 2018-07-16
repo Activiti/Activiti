@@ -26,6 +26,8 @@ public class SetTaskVariablesImpl extends CommandImpl<TaskCommands> implements S
     private String taskId;
     private Map<String, Object> variables;
 
+    private TaskCommands commandType = TaskCommands.SET_TASK_VARIABLES;
+
     public SetTaskVariablesImpl() {
     }
 
@@ -42,7 +44,7 @@ public class SetTaskVariablesImpl extends CommandImpl<TaskCommands> implements S
 
     @Override
     public TaskCommands getCommandType() {
-        return TaskCommands.SET_TASK_VARIABLES;
+        return commandType;
     }
 
     @Override

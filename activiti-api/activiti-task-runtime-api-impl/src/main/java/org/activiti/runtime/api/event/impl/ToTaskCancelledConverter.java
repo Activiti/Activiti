@@ -21,6 +21,9 @@ import java.util.Optional;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.runtime.api.event.TaskCancelled;
 import org.activiti.runtime.api.model.impl.APITaskConverter;

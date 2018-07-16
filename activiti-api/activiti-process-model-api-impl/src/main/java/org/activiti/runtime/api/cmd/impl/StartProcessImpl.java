@@ -27,6 +27,7 @@ public class StartProcessImpl extends CommandImpl<ProcessCommands> implements St
     private String processDefinitionId;
     private Map<String, Object> variables;
     private String businessKey;
+    private ProcessCommands commandType = ProcessCommands.START_PROCESS;
 
     public StartProcessImpl() {
         super();
@@ -73,6 +74,6 @@ public class StartProcessImpl extends CommandImpl<ProcessCommands> implements St
 
     @Override
     public ProcessCommands getCommandType() {
-        return ProcessCommands.START_PROCESS;
+        return commandType;
     }
 }

@@ -126,6 +126,22 @@ public interface TaskService {
   void deleteTask(String taskId, String deleteReason);
 
   /**
+   * Deletes the given task, not deleting historic information that is related to this task..
+   *
+   * @param taskId
+   *          The id of the task that will be deleted, cannot be null. If no task exists with the given taskId, the operation is ignored.
+   * @param deleteReason
+   *          reason the task is deleted. Is recorded in history, if enabled.
+   * @param cancel
+   *          mark the task as cancelled
+   * @throws ActivitiObjectNotFoundException
+   *           when the task with given id does not exist.
+   * @throws ActivitiException
+   *           when an error occurs while deleting the task or in case the task is part of a running process
+   */
+  void deleteTask(String taskId, String deleteReason, boolean cancel);
+
+  /**
    * Deletes all tasks of the given collection, not deleting historic information that is related to these tasks.
    * 
    * @param taskIds
@@ -138,6 +154,22 @@ public interface TaskService {
    *           when an error occurs while deleting the tasks or in case one of the tasks is part of a running process.
    */
   void deleteTasks(Collection<String> taskIds, String deleteReason);
+
+  /**
+   * Deletes all tasks of the given collection, not deleting historic information that is related to these tasks.
+   *
+   * @param taskIds
+   *          The id's of the tasks that will be deleted, cannot be null. All id's in the list that don't have an existing task will be ignored.
+   * @param deleteReason
+   *          reason the task is deleted. Is recorded in history, if enabled.
+   * @oaramn cancel
+   *           mark the task as cancelled
+   * @throws ActivitiObjectNotFoundException
+   *           when one of the tasks does not exist.
+   * @throws ActivitiException
+   *           when an error occurs while deleting the tasks or in case one of the tasks is part of a running process.
+   */
+  void deleteTasks(Collection<String> taskIds, String deleteReason, boolean cancel);
 
   /**
    * Claim responsibility for a task: the given user is made assignee for the task. The difference with {@link #setAssignee(String, String)} is that here a check is done if the task already has a user

@@ -47,6 +47,8 @@ public interface TaskEntityManager extends EntityManager<TaskEntity> {
   void updateTaskTenantIdForDeployment(String deploymentId, String newTenantId);
 
   void deleteTask(String taskId, String deleteReason, boolean cascade);
+
+  void deleteTask(String taskId, String deleteReason, boolean cascade, boolean cancel);
   
   void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade);
 

@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,17 +29,29 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
   protected Collection<String> taskIds;
   protected boolean cascade;
   protected String deleteReason;
+  protected boolean cancel;
 
   public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade) {
+    this(taskId, deleteReason, cascade, false);
+
+  }
+
+  public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade, boolean cancel) {
     this.taskId = taskId;
     this.cascade = cascade;
     this.deleteReason = deleteReason;
+    this.cancel = cancel;
   }
 
   public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade) {
+      this(taskIds,deleteReason,cascade,false);
+  }
+
+  public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade, boolean cancel) {
     this.taskIds = taskIds;
     this.cascade = cascade;
     this.deleteReason = deleteReason;
+    this.cancel = cancel;
   }
 
   public Void execute(CommandContext commandContext) {
@@ -57,6 +69,6 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
   }
 
   protected void deleteTask(CommandContext commandContext, String taskId) {
-    commandContext.getTaskEntityManager().deleteTask(taskId, deleteReason, cascade);
+    commandContext.getTaskEntityManager().deleteTask(taskId, deleteReason, cascade, cancel);
   }
 }

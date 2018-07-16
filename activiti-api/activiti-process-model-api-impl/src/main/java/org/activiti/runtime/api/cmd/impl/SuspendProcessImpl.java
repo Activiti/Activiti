@@ -22,6 +22,7 @@ import org.activiti.runtime.api.cmd.SuspendProcess;
 public class SuspendProcessImpl extends CommandImpl<ProcessCommands> implements SuspendProcess {
 
     private String processInstanceId;
+    private ProcessCommands commandType = ProcessCommands.SUSPEND_PROCESS;
 
     public SuspendProcessImpl() {
         super();
@@ -38,6 +39,6 @@ public class SuspendProcessImpl extends CommandImpl<ProcessCommands> implements 
 
     @Override
     public ProcessCommands getCommandType() {
-        return ProcessCommands.SUSPEND_PROCESS;
+        return commandType;
     }
 }

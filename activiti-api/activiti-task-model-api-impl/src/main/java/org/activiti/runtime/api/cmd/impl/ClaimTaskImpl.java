@@ -23,6 +23,7 @@ public class ClaimTaskImpl extends CommandImpl<TaskCommands> implements ClaimTas
 
     private String taskId;
     private String assignee;
+    private TaskCommands commandType = TaskCommands.CLAIM_TASK;
 
     public ClaimTaskImpl() {
     }
@@ -35,7 +36,7 @@ public class ClaimTaskImpl extends CommandImpl<TaskCommands> implements ClaimTas
 
     @Override
     public TaskCommands getCommandType() {
-        return TaskCommands.CLAIM_TASK;
+        return commandType;
     }
 
     @Override

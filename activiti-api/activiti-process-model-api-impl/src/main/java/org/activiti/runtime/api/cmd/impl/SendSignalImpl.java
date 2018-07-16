@@ -18,6 +18,7 @@ package org.activiti.runtime.api.cmd.impl;
 
 import java.util.Map;
 
+import org.activiti.runtime.api.cmd.ProcessCommands;
 import org.activiti.runtime.api.cmd.RuntimeCommands;
 import org.activiti.runtime.api.cmd.SendSignal;
 
@@ -25,6 +26,7 @@ public class SendSignalImpl extends CommandImpl<RuntimeCommands> implements Send
 
     private String name;
     private Map<String, Object> inputVariables;
+    private RuntimeCommands commandType = RuntimeCommands.SEND_SIGNAL;
 
     public SendSignalImpl() {
     }
@@ -51,7 +53,7 @@ public class SendSignalImpl extends CommandImpl<RuntimeCommands> implements Send
 
     @Override
     public RuntimeCommands getCommandType() {
-        return RuntimeCommands.SEND_SIGNAL;
+        return commandType;
     }
 
 }

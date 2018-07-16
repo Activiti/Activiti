@@ -19,6 +19,7 @@ package org.activiti.runtime.api.cmd.impl;
 import java.util.Map;
 
 import org.activiti.runtime.api.cmd.ProcessCommands;
+import org.activiti.runtime.api.cmd.RuntimeCommands;
 import org.activiti.runtime.api.cmd.SetProcessVariables;
 
 public class SetProcessVariablesImpl extends CommandImpl<ProcessCommands> implements SetProcessVariables {
@@ -26,6 +27,7 @@ public class SetProcessVariablesImpl extends CommandImpl<ProcessCommands> implem
     private String processInstanceId;
 
     private Map<String, Object> variables;
+    private ProcessCommands commandType = ProcessCommands.SET_PROCESS_VARIABLES;
 
     public SetProcessVariablesImpl() {
     }
@@ -48,6 +50,6 @@ public class SetProcessVariablesImpl extends CommandImpl<ProcessCommands> implem
 
     @Override
     public ProcessCommands getCommandType() {
-        return ProcessCommands.SET_PROCESS_VARIABLES;
+        return commandType;
     }
 }

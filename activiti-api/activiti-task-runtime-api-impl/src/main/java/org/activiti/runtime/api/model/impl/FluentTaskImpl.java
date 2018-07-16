@@ -152,7 +152,7 @@ public class FluentTaskImpl extends TaskImpl implements FluentTask {
 
     @Override
     public void delete(String reason) {
-        taskService.deleteTask(getId(), reason);
+        taskService.deleteTask(getId(), reason, true);
     }
 
     @Override

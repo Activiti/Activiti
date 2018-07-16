@@ -25,6 +25,7 @@ public class CompleteTaskImpl extends CommandImpl<TaskCommands> implements Compl
 
     private String taskId;
     private Map<String,Object> outputVariables;
+    private TaskCommands commandType = TaskCommands.COMPLETE_TASK;
 
     public CompleteTaskImpl() {
     }
@@ -47,7 +48,7 @@ public class CompleteTaskImpl extends CommandImpl<TaskCommands> implements Compl
 
     @Override
     public TaskCommands getCommandType() {
-        return TaskCommands.COMPLETE_TASK;
+        return commandType;
     }
 
 }

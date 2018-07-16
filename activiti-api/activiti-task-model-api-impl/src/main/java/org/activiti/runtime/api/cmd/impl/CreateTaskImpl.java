@@ -29,6 +29,7 @@ public class CreateTaskImpl extends CommandImpl<TaskCommands> implements CreateT
     private Integer priority;
     private String assignee;
     private String parentTaskId;
+    private TaskCommands commandType = TaskCommands.CREATE_TASK;
 
     public CreateTaskImpl() {
     }
@@ -46,7 +47,7 @@ public class CreateTaskImpl extends CommandImpl<TaskCommands> implements CreateT
 
     @Override
     public TaskCommands getCommandType() {
-        return TaskCommands.CREATE_TASK;
+        return commandType;
     }
 
     @Override

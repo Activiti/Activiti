@@ -25,6 +25,7 @@ public class RemoveProcessVariablesImpl extends CommandImpl<ProcessCommands> imp
 
     private String processInstanceId;
     private List<String> variableNames;
+    private ProcessCommands commandType = ProcessCommands.REMOVE_PROCESS_VARIABLES;
 
     public RemoveProcessVariablesImpl() {
     }
@@ -47,6 +48,6 @@ public class RemoveProcessVariablesImpl extends CommandImpl<ProcessCommands> imp
 
     @Override
     public ProcessCommands getCommandType() {
-        return ProcessCommands.REMOVE_PROCESS_VARIABLES;
+        return commandType;
     }
 }

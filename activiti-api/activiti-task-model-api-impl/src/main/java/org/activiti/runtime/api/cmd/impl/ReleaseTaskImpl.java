@@ -22,6 +22,7 @@ import org.activiti.runtime.api.cmd.TaskCommands;
 public class ReleaseTaskImpl extends CommandImpl<TaskCommands> implements ReleaseTask {
 
     private String taskId;
+    private TaskCommands commandType = TaskCommands.RELEASE_TASK;
 
     public ReleaseTaskImpl() {
     }
@@ -37,7 +38,7 @@ public class ReleaseTaskImpl extends CommandImpl<TaskCommands> implements Releas
 
     @Override
     public TaskCommands getCommandType() {
-        return TaskCommands.RELEASE_TASK;
+        return commandType;
     }
 
 }

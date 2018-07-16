@@ -227,7 +227,6 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
                       "userTask", 
                       deleteReason));
         }
-        
         getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, task));
       }
     }
@@ -285,26 +284,31 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
     return taskDataManager.findTasksByParentTaskId(parentTaskId);
   }
 
+
   @Override
-  public void deleteTask(String taskId, String deleteReason, boolean cascade) {
-    
+  public void deleteTask(String taskId, String deleteReason, boolean cascade, boolean cancel) {
     TaskEntity task = findById(taskId);
 
     if (task != null) {
       if (task.getExecutionId() != null) {
         throw new ActivitiException("The task cannot be deleted because is part of a running process");
       }
-      
+
       if (Activiti5Util.isActiviti5ProcessDefinitionId(getCommandContext(), task.getProcessDefinitionId())) {
-        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
         activiti5CompatibilityHandler.deleteTask(taskId, deleteReason, cascade);
         return;
       }
 
-      deleteTask(task, deleteReason, cascade, false);
+      deleteTask(task, deleteReason, cascade, cancel);
     } else if (cascade) {
       getHistoricTaskInstanceEntityManager().delete(taskId);
     }
+  }
+
+  @Override
+  public void deleteTask(String taskId, String deleteReason, boolean cascade) {
+    this.deleteTask(taskId, deleteReason, cascade, false);
   }
 
   @Override

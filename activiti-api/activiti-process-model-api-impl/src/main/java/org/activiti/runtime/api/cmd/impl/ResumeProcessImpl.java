@@ -22,6 +22,7 @@ import org.activiti.runtime.api.cmd.ResumeProcess;
 public class ResumeProcessImpl extends CommandImpl<ProcessCommands> implements ResumeProcess {
 
     private String processInstanceId;
+    private ProcessCommands commandType = ProcessCommands.RESUME_PROCESS;
 
     public ResumeProcessImpl() {
         super();
@@ -38,6 +39,6 @@ public class ResumeProcessImpl extends CommandImpl<ProcessCommands> implements R
 
     @Override
     public ProcessCommands getCommandType() {
-        return ProcessCommands.RESUME_PROCESS;
+        return commandType;
     }
 }
