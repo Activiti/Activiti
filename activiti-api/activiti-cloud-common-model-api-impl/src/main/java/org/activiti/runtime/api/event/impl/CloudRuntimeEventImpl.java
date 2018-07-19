@@ -18,7 +18,7 @@ package org.activiti.runtime.api.event.impl;
 
 import org.activiti.runtime.api.event.CloudRuntimeEvent;
 
-public abstract class CloudRuntimeEventImpl< ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE>
+public abstract class CloudRuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> extends RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE>
         implements CloudRuntimeEvent<ENTITY_TYPE, EVENT_TYPE> {
 
     private String appName;
@@ -27,6 +27,7 @@ public abstract class CloudRuntimeEventImpl< ENTITY_TYPE, EVENT_TYPE extends Enu
     private String serviceName;
     private String serviceVersion;
     private String serviceType;
+    private String entityId;
 
     public CloudRuntimeEventImpl() {
     }
@@ -97,4 +98,12 @@ public abstract class CloudRuntimeEventImpl< ENTITY_TYPE, EVENT_TYPE extends Enu
         this.serviceFullName = serviceFullName;
     }
 
+    @Override
+    public String getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
+    }
 }

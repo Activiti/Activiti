@@ -26,6 +26,7 @@ public abstract class CloudVariableEventImpl extends CloudRuntimeEventImpl<Varia
 
     public CloudVariableEventImpl(VariableInstance entity) {
         super(entity);
+        setEntityId(entity.getName());
     }
 
     public CloudVariableEventImpl(String id,
@@ -34,5 +35,6 @@ public abstract class CloudVariableEventImpl extends CloudRuntimeEventImpl<Varia
         super(id,
               timestamp,
               entity);
+        setEntityId(entity.getName());
     }
 }

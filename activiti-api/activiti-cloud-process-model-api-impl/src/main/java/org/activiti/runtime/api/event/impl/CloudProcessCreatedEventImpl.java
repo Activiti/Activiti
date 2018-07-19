@@ -27,14 +27,16 @@ public class CloudProcessCreatedEventImpl extends CloudRuntimeEventImpl<ProcessI
 
     public CloudProcessCreatedEventImpl(ProcessInstance processInstance) {
         super(processInstance);
+        setEntityId(processInstance.getId());
     }
 
     public CloudProcessCreatedEventImpl(String id,
                                         Long timestamp,
-                                        ProcessInstance entity) {
+                                        ProcessInstance processInstance) {
         super(id,
               timestamp,
-              entity);
+              processInstance);
+        setEntityId(processInstance.getId());
     }
 
     @Override

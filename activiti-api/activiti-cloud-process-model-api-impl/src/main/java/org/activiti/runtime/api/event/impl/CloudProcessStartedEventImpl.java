@@ -32,6 +32,7 @@ public class CloudProcessStartedEventImpl extends CloudRuntimeEventImpl<ProcessI
                                         String nestedProcessDefinitionId,
                                         String nestedProcessInstanceId) {
         super(processInstance);
+        setEntityId(processInstance.getId());
         this.nestedProcessDefinitionId = nestedProcessDefinitionId;
         this.nestedProcessInstanceId = nestedProcessInstanceId;
     }
@@ -44,20 +45,22 @@ public class CloudProcessStartedEventImpl extends CloudRuntimeEventImpl<ProcessI
 
     public CloudProcessStartedEventImpl(String id,
                                         Long timestamp,
-                                        ProcessInstance entity) {
+                                        ProcessInstance processInstance) {
         super(id,
               timestamp,
-              entity);
+              processInstance);
+        setEntityId(processInstance.getId());
     }
 
     public CloudProcessStartedEventImpl(String id,
                                         Long timestamp,
-                                        ProcessInstance entity,
+                                        ProcessInstance processInstance,
                                         String nestedProcessDefinitionId,
                                         String nestedProcessInstanceId) {
         super(id,
               timestamp,
-              entity);
+              processInstance);
+        setEntityId(processInstance.getId());
         this.nestedProcessDefinitionId = nestedProcessDefinitionId;
         this.nestedProcessInstanceId = nestedProcessInstanceId;
     }

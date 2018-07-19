@@ -27,14 +27,16 @@ public class CloudProcessResumedEventImpl extends CloudRuntimeEventImpl<ProcessI
 
     public CloudProcessResumedEventImpl(ProcessInstance processInstance) {
         super(processInstance);
+        setEntityId(processInstance.getId());
     }
 
     public CloudProcessResumedEventImpl(String id,
                                         Long timestamp,
-                                        ProcessInstance entity) {
+                                        ProcessInstance processInstance) {
         super(id,
               timestamp,
-              entity);
+              processInstance);
+        setEntityId(processInstance.getId());
     }
 
     @Override

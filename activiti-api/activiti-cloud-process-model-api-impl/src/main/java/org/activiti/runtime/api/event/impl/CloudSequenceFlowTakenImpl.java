@@ -25,8 +25,9 @@ public class CloudSequenceFlowTakenImpl extends CloudRuntimeEventImpl<SequenceFl
     public CloudSequenceFlowTakenImpl() {
     }
 
-    public CloudSequenceFlowTakenImpl(SequenceFlow entity) {
-        super(entity);
+    public CloudSequenceFlowTakenImpl(SequenceFlow sequenceFlow) {
+        super(sequenceFlow);
+        setEntityId(sequenceFlow.getProcessInstanceId());
     }
 
     public CloudSequenceFlowTakenImpl(String id,

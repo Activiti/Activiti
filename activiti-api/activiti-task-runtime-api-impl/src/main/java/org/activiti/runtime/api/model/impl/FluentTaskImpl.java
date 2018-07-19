@@ -150,6 +150,7 @@ public class FluentTaskImpl extends TaskImpl implements FluentTask {
         setParentTaskId(parentTaskId);
     }
 
+
     @Override
     public void delete(String reason) {
         taskService.deleteTask(getId(), reason, true);

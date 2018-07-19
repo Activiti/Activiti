@@ -172,4 +172,24 @@ public class CloudTaskImpl extends CloudRuntimeEntityImpl implements CloudTask {
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
+
+    @Override
+    public String toString() {
+        return "CloudTaskImpl{" +
+                "id='" + id + '\'' +
+                ", owner='" + owner + '\'' +
+                ", assignee='" + assignee + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", createdDate=" + createdDate +
+                ", claimedDate=" + claimedDate +
+                ", dueDate=" + dueDate +
+                ", priority=" + priority +
+                ", processDefinitionId='" + processDefinitionId + '\'' +
+                ", processInstanceId='" + processInstanceId + '\'' +
+                ", parentTaskId='" + parentTaskId + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }
+

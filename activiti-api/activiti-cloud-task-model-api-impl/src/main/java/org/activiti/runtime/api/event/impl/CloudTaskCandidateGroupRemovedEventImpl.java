@@ -26,16 +26,18 @@ public class CloudTaskCandidateGroupRemovedEventImpl extends CloudRuntimeEventIm
     public CloudTaskCandidateGroupRemovedEventImpl() {
     }
 
-    public CloudTaskCandidateGroupRemovedEventImpl(TaskCandidateGroup entity) {
-        super(entity);
+    public CloudTaskCandidateGroupRemovedEventImpl(TaskCandidateGroup taskCandidateGroup) {
+        super(taskCandidateGroup);
+        setEntityId(taskCandidateGroup.getGroupId());
     }
 
     public CloudTaskCandidateGroupRemovedEventImpl(String id,
                                                    Long timestamp,
-                                                   TaskCandidateGroup entity) {
+                                                   TaskCandidateGroup taskCandidateGroup) {
         super(id,
               timestamp,
-              entity);
+              taskCandidateGroup);
+        setEntityId(taskCandidateGroup.getGroupId());
     }
 
     @Override

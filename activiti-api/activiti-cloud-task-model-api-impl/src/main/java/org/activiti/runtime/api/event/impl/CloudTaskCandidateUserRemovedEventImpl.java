@@ -26,16 +26,18 @@ public class CloudTaskCandidateUserRemovedEventImpl extends CloudRuntimeEventImp
     public CloudTaskCandidateUserRemovedEventImpl() {
     }
 
-    public CloudTaskCandidateUserRemovedEventImpl(TaskCandidateUser entity) {
-        super(entity);
+    public CloudTaskCandidateUserRemovedEventImpl(TaskCandidateUser taskCandidateUser) {
+        super(taskCandidateUser);
+        setEntityId(taskCandidateUser.getUserId());
     }
 
     public CloudTaskCandidateUserRemovedEventImpl(String id,
                                                   Long timestamp,
-                                                  TaskCandidateUser entity) {
+                                                  TaskCandidateUser taskCandidateUser) {
         super(id,
               timestamp,
-              entity);
+              taskCandidateUser);
+        setEntityId(taskCandidateUser.getUserId());
     }
 
     @Override

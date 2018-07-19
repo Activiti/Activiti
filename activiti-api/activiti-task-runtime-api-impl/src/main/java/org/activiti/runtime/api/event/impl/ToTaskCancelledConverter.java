@@ -26,7 +26,9 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.runtime.api.event.TaskCancelled;
+import org.activiti.runtime.api.model.FluentTask;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
+import org.activiti.runtime.api.model.impl.TaskImpl;
 
 public class ToTaskCancelledConverter implements EventConverter<TaskCancelled, ActivitiActivityCancelledEvent> {
 
@@ -48,7 +50,9 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelled, A
                 .list();
         TaskCancelled event = null;
         if (!tasks.isEmpty()) {
-            event = new TaskCancelledImpl(taskConverter.from(tasks.get(0)));
+            FluentTask fluentTask = taskConverter.from(tasks.get(0));
+            ((TaskImpl)fluentTask).setStatus(org.activiti.runtime.api.model.Task.TaskStatus.CANCELLED);
+            event = new TaskCancelledImpl(fluentTask);
         }
         return Optional.ofNullable(event);
     }

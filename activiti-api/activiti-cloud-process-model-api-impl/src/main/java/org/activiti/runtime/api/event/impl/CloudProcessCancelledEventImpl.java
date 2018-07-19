@@ -29,11 +29,13 @@ public class CloudProcessCancelledEventImpl extends CloudRuntimeEventImpl<Proces
 
     public CloudProcessCancelledEventImpl(ProcessInstance processInstance) {
         super(processInstance);
+        setEntityId(processInstance.getId());
     }
 
     public CloudProcessCancelledEventImpl(ProcessInstance processInstance,
                                           String cause) {
         super(processInstance);
+        setEntityId(processInstance.getId());
         this.cause = cause;
     }
 
@@ -43,6 +45,7 @@ public class CloudProcessCancelledEventImpl extends CloudRuntimeEventImpl<Proces
         super(id,
               timestamp,
               processInstance);
+        setEntityId(processInstance.getId());
     }
 
     @Override

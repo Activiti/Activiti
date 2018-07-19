@@ -28,6 +28,7 @@ public class CloudTaskAssignedEventImpl extends CloudRuntimeEventImpl<Task, Task
 
     public CloudTaskAssignedEventImpl(Task task) {
         super(task);
+        setEntityId(task.getId());
     }
 
     public CloudTaskAssignedEventImpl(String id,
@@ -36,6 +37,7 @@ public class CloudTaskAssignedEventImpl extends CloudRuntimeEventImpl<Task, Task
         super(id,
               timestamp,
               task);
+        setEntityId(task.getId());
     }
 
     @Override

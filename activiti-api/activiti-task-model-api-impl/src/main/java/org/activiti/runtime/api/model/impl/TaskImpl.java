@@ -49,6 +49,7 @@ public class TaskImpl implements Task {
     }
 
 
+
     public String getId() {
         return id;
     }
@@ -143,6 +144,10 @@ public class TaskImpl implements Task {
 
     public void setParentTaskId(String parentTaskId) {
         this.parentTaskId = parentTaskId;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
     }
 
     @Override

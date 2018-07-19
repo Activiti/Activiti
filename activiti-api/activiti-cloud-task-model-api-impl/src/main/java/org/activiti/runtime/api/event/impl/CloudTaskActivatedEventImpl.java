@@ -26,16 +26,18 @@ public class CloudTaskActivatedEventImpl extends CloudRuntimeEventImpl<Task, Tas
     public CloudTaskActivatedEventImpl() {
     }
 
-    public CloudTaskActivatedEventImpl(Task entity) {
-        super(entity);
+    public CloudTaskActivatedEventImpl(Task task) {
+        super(task);
+        setEntityId(task.getId());
     }
 
     public CloudTaskActivatedEventImpl(String id,
                                        Long timestamp,
-                                       Task entity) {
+                                       Task task) {
         super(id,
               timestamp,
-              entity);
+              task);
+        setEntityId(task.getId());
     }
 
     @Override

@@ -25,16 +25,24 @@ public class CloudBPMNActivityCompletedEventImpl extends CloudBPMNActivityEventI
     public CloudBPMNActivityCompletedEventImpl() {
     }
 
-    public CloudBPMNActivityCompletedEventImpl(BPMNActivity entity) {
-        super(entity);
+    public CloudBPMNActivityCompletedEventImpl(BPMNActivity entity,
+                                               String processDefinitionId,
+                                               String processInstanceId) {
+        super(entity,
+              processDefinitionId,
+              processInstanceId);
     }
 
     public CloudBPMNActivityCompletedEventImpl(String id,
                                                Long timestamp,
-                                               BPMNActivity entity) {
+                                               BPMNActivity entity,
+                                               String processDefinitionId,
+                                               String processInstanceId) {
         super(id,
               timestamp,
-              entity);
+              entity,
+              processDefinitionId,
+              processInstanceId);
     }
 
     @Override

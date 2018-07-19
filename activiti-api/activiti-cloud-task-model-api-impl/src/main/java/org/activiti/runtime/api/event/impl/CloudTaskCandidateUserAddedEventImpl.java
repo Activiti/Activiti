@@ -26,16 +26,18 @@ public class CloudTaskCandidateUserAddedEventImpl extends CloudRuntimeEventImpl<
     public CloudTaskCandidateUserAddedEventImpl() {
     }
 
-    public CloudTaskCandidateUserAddedEventImpl(TaskCandidateUser entity) {
-        super(entity);
+    public CloudTaskCandidateUserAddedEventImpl(TaskCandidateUser taskCandidateUser) {
+        super(taskCandidateUser);
+        setEntityId(taskCandidateUser.getUserId());
     }
 
     public CloudTaskCandidateUserAddedEventImpl(String id,
                                                 Long timestamp,
-                                                TaskCandidateUser entity) {
+                                                TaskCandidateUser taskCandidateUser) {
         super(id,
               timestamp,
-              entity);
+              taskCandidateUser);
+        setEntityId(taskCandidateUser.getUserId());
     }
 
     @Override

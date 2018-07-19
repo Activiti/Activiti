@@ -28,22 +28,25 @@ public class CloudTaskCancelledEventImpl extends CloudRuntimeEventImpl<Task, Tas
     public CloudTaskCancelledEventImpl() {
     }
 
-    public CloudTaskCancelledEventImpl(Task entity) {
-        super(entity);
+    public CloudTaskCancelledEventImpl(Task task) {
+        super(task);
+        setEntityId(task.getId());
     }
 
-    public CloudTaskCancelledEventImpl(Task entity,
+    public CloudTaskCancelledEventImpl(Task task,
                                        String cause) {
-        super(entity);
+        super(task);
+        setEntityId(task.getId());
         this.cause = cause;
     }
 
     public CloudTaskCancelledEventImpl(String id,
                                        Long timestamp,
-                                       Task entity) {
+                                       Task task) {
         super(id,
               timestamp,
-              entity);
+              task);
+        setEntityId(task.getId());
     }
 
     @Override

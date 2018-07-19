@@ -27,16 +27,28 @@ public class CloudBPMNActivityCancelledEventImpl extends CloudBPMNActivityEventI
     public CloudBPMNActivityCancelledEventImpl() {
     }
 
-    public CloudBPMNActivityCancelledEventImpl(BPMNActivity entity) {
-        super(entity);
+    public CloudBPMNActivityCancelledEventImpl(BPMNActivity entity,
+                                               String processDefinitionId,
+                                               String processInstanceId,
+                                               String cause) {
+        super(entity,
+              processDefinitionId,
+              processInstanceId);
+        this.cause = cause;
     }
 
     public CloudBPMNActivityCancelledEventImpl(String id,
                                                Long timestamp,
-                                               BPMNActivity entity) {
+                                               BPMNActivity entity,
+                                               String processDefinitionId,
+                                               String processInstanceId,
+                                               String cause) {
         super(id,
               timestamp,
-              entity);
+              entity,
+              processDefinitionId,
+              processInstanceId);
+        this.cause = cause;
     }
 
     @Override
