@@ -58,10 +58,8 @@ import org.activiti.runtime.api.event.internal.ProcessSuspendedListenerDelegate;
 import org.activiti.runtime.api.event.internal.SequenceFlowTakenListenerDelegate;
 import org.activiti.runtime.api.event.listener.ProcessRuntimeEventListener;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
-import org.activiti.runtime.api.model.builder.impl.ProcessStarterFactory;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
-import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,32 +85,20 @@ public class ProcessRuntimeAutoConfiguration {
     }
 
     @Bean
-    public APIProcessDefinitionConverter apiProcessDefinitionConverter(ProcessStarterFactory processStarterFactory,
-                                                                       RuntimeService runtimeService,
-                                                                       APIProcessInstanceConverter processInstanceConverter) {
-        return new APIProcessDefinitionConverter(processStarterFactory,
-                                                 runtimeService,
-                                                 processInstanceConverter);
+    public APIProcessDefinitionConverter apiProcessDefinitionConverter() {
+        return new APIProcessDefinitionConverter();
     }
 
     @Bean
-    public ProcessStarterFactory processStarterFactory(RuntimeService runtimeService,
-                                                       APIProcessInstanceConverter processInstanceConverter) {
-        return new ProcessStarterFactory(runtimeService,
-                                         processInstanceConverter);
-    }
-
-    @Bean
-    public APIProcessInstanceConverter apiProcessInstanceConverter(RuntimeService runtimeService,
-                                                                   APIVariableInstanceConverter variableInstanceConverter) {
-        return new APIProcessInstanceConverter(runtimeService,
-                                               variableInstanceConverter);
+    public APIProcessInstanceConverter apiProcessInstanceConverter() {
+        return new APIProcessInstanceConverter();
     }
 
     @Bean
     public ProcessRuntimeConfiguration processRuntimeConfiguration(@Autowired(required = false) List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners,
-                                                                   @Autowired(required = false)List<VariableEventListener<?>> variableEventListeners) {
-        return new ProcessRuntimeConfigurationImpl(getInitializedListeners(processRuntimeEventListeners), getInitializedListeners(variableEventListeners));
+                                                                   @Autowired(required = false) List<VariableEventListener<?>> variableEventListeners) {
+        return new ProcessRuntimeConfigurationImpl(getInitializedListeners(processRuntimeEventListeners),
+                                                   getInitializedListeners(variableEventListeners));
     }
 
     @Bean

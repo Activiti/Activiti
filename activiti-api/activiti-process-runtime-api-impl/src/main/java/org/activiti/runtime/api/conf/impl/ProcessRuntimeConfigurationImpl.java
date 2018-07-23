@@ -43,4 +43,9 @@ public class ProcessRuntimeConfigurationImpl implements ProcessRuntimeConfigurat
     public List<VariableEventListener<?>> variableEventListeners() {
         return Collections.unmodifiableList(variableEventListeners);
     }
+
+    @Override
+    public int maxPagedResults() {
+        return 100;
+    }
 }

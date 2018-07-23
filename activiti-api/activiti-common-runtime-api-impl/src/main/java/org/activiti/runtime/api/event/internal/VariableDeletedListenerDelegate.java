@@ -42,8 +42,10 @@ public class VariableDeletedListenerDelegate implements ActivitiEventListener {
         if (event instanceof ActivitiVariableEvent) {
             converter.from((ActivitiVariableEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (VariableEventListener<VariableDeleted> listener : listeners) {
-                            listener.onEvent(convertedEvent);
+                        if(listeners != null) {
+                            for (VariableEventListener<VariableDeleted> listener : listeners) {
+                                listener.onEvent(convertedEvent);
+                            }
                         }
                     });
         }

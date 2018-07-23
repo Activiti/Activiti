@@ -42,8 +42,10 @@ public class VariableCreatedListenerDelegate implements ActivitiEventListener {
         if (event instanceof ActivitiVariableEvent) {
             converter.from((ActivitiVariableEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (VariableEventListener<VariableCreated> listener : listeners) {
-                            listener.onEvent(convertedEvent);
+                        if(listeners != null) {
+                            for (VariableEventListener<VariableCreated> listener : listeners) {
+                                listener.onEvent(convertedEvent);
+                            }
                         }
                     });
         }

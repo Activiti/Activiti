@@ -16,30 +16,13 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.engine.RuntimeService;
-import org.activiti.runtime.api.model.FluentProcessDefinition;
-import org.activiti.runtime.api.model.builder.impl.ProcessStarterFactory;
+import org.activiti.runtime.api.model.ProcessDefinition;
 
-public class APIProcessDefinitionConverter extends ListConverter<org.activiti.engine.repository.ProcessDefinition, FluentProcessDefinition>
-        implements ModelConverter<org.activiti.engine.repository.ProcessDefinition, FluentProcessDefinition> {
+public class APIProcessDefinitionConverter extends ListConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition>
+        implements ModelConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition> {
 
-    private final ProcessStarterFactory processStarterFactory;
-    private final RuntimeService runtimeService;
-    private final APIProcessInstanceConverter processInstanceConverter;
-
-    public APIProcessDefinitionConverter(ProcessStarterFactory processStarterFactory,
-                                         RuntimeService runtimeService,
-                                         APIProcessInstanceConverter processInstanceConverter) {
-        this.processStarterFactory = processStarterFactory;
-        this.runtimeService = runtimeService;
-        this.processInstanceConverter = processInstanceConverter;
-    }
-
-    public FluentProcessDefinition from(org.activiti.engine.repository.ProcessDefinition internalProcessDefinition) {
-        FluentProcessDefinitionImpl processDefinition = new FluentProcessDefinitionImpl(processStarterFactory,
-                                                                                        runtimeService,
-                                                                                        processInstanceConverter);
-
+    public ProcessDefinition from(org.activiti.engine.repository.ProcessDefinition internalProcessDefinition) {
+        ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
         processDefinition.setId(internalProcessDefinition.getId());
         processDefinition.setName(internalProcessDefinition.getName());
         processDefinition.setDescription(internalProcessDefinition.getDescription());
