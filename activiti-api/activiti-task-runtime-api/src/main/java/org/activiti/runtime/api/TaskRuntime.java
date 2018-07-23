@@ -17,22 +17,39 @@
 package org.activiti.runtime.api;
 
 import org.activiti.runtime.api.conf.TaskRuntimeConfiguration;
-import org.activiti.runtime.api.model.FluentTask;
-import org.activiti.runtime.api.model.builder.TaskCreator;
+import org.activiti.runtime.api.model.Task;
+import org.activiti.runtime.api.model.VariableInstance;
+import org.activiti.runtime.api.model.payloads.ClaimTaskPayload;
+import org.activiti.runtime.api.model.payloads.CompleteTaskPayload;
+import org.activiti.runtime.api.model.payloads.DeleteTaskPayload;
+import org.activiti.runtime.api.model.payloads.GetTaskVariablesPayload;
+import org.activiti.runtime.api.model.payloads.GetTasksPayload;
+import org.activiti.runtime.api.model.payloads.ReleaseTaskPayload;
+import org.activiti.runtime.api.model.payloads.UpdateTaskPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
-import org.activiti.runtime.api.query.TaskFilter;
 
 public interface TaskRuntime {
 
     TaskRuntimeConfiguration configuration();
 
-    TaskCreator createTaskWith();
+    Task task(String taskId);
 
-    FluentTask task(String taskId);
+    Page<Task> tasks(Pageable pageable);
 
-    Page<FluentTask> tasks(Pageable pageable);
+    Page<Task> tasks(Pageable pageable,
+                     GetTasksPayload getTasksPayload); // for sub tasks we just set the parentId
 
-    Page<FluentTask> tasks(Pageable pageable, TaskFilter filter);
+    Page<VariableInstance> variables(Pageable pageable,
+                                     GetTaskVariablesPayload getTaskVariablesPayload);
 
+    Task complete(CompleteTaskPayload completeTaskPayload);
+
+    Task claim(ClaimTaskPayload claimTaskPayload);
+
+    Task release(ReleaseTaskPayload releaseTaskPayload);
+
+    Task update(UpdateTaskPayload updateTaskPayload);
+
+    Task delete(DeleteTaskPayload deleteTaskPayload);
 }

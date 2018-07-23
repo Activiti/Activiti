@@ -18,12 +18,12 @@ package org.activiti.runtime.api.event.impl;
 
 import org.activiti.runtime.api.event.TaskAssigned;
 import org.activiti.runtime.api.event.TaskRuntimeEvent;
-import org.activiti.runtime.api.model.FluentTask;
+import org.activiti.runtime.api.model.Task;
 
-public class TaskAssignedEventImpl extends RuntimeEventImpl<FluentTask, TaskRuntimeEvent.TaskEvents>
+public class TaskAssignedEventImpl extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents>
         implements TaskAssigned {
 
-    public TaskAssignedEventImpl(FluentTask entity) {
+    public TaskAssignedEventImpl(Task entity) {
         super(entity);
     }
 
