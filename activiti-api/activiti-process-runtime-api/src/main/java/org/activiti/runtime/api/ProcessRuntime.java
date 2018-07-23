@@ -21,6 +21,8 @@ import org.activiti.runtime.api.model.ProcessDefinition;
 import org.activiti.runtime.api.model.ProcessInstance;
 import org.activiti.runtime.api.model.VariableInstance;
 import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
+import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
+import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
 import org.activiti.runtime.api.model.payloads.GetVariablesPayload;
 import org.activiti.runtime.api.model.payloads.RemoveVariablesPayload;
 import org.activiti.runtime.api.model.payloads.ResumeProcessPayload;
@@ -30,30 +32,24 @@ import org.activiti.runtime.api.model.payloads.StartProcessPayload;
 import org.activiti.runtime.api.model.payloads.SuspendProcessPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
-import org.activiti.runtime.api.query.ProcessDefinitionFilter;
-import org.activiti.runtime.api.query.ProcessInstanceFilter;
 
 public interface ProcessRuntime {
 
     ProcessRuntimeConfiguration configuration();
 
-    Page<ProcessDefinition> processDefinitions();
+    ProcessDefinition processDefinition(String processDefinitionKey);
 
     Page<ProcessDefinition> processDefinitions(Pageable pageable);
 
     Page<ProcessDefinition> processDefinitions(Pageable pageable,
-                                               ProcessDefinitionFilter filter);
-
-    ProcessDefinition processDefinitionByKey(String processDefinitionKey);
-
-    ProcessDefinition processDefinitionById(String processDefinitionId);
+                                               GetProcessDefinitionsPayload getProcessDefinitionsPayload);
 
     ProcessInstance processInstance(String processInstanceId);
 
     Page<ProcessInstance> processInstances(Pageable pageable);
 
     Page<ProcessInstance> processInstances(Pageable pageable,
-                                           ProcessInstanceFilter filter);
+                                           GetProcessInstancesPayload getProcessInstancesPayload);
 
     ProcessInstance start(StartProcessPayload startProcessPayload);
 
@@ -65,11 +61,11 @@ public interface ProcessRuntime {
 
     Page<VariableInstance> variables(GetVariablesPayload getVariablesPayload); //I want to rename VariableInstance to Variable and it needs to be paged
 
-    void removeVariables(RemoveVariablesPayload removeVariablesPayload);
+    void removeVariables(RemoveVariablesPayload removeVariablesPayload); // review if we need to return removed variables// DO WE NEED THIS?>
 
     void signal(SignalPayload signalPayload);
 
-    void setVariables(SetVariablesPayload setVariablesPayload);
+    void setVariables(SetVariablesPayload setVariablesPayload); // review if we need to return set variables
 
     // List<String> activeActivityIds(); -> do we really need this?
 }

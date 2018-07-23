@@ -1,8 +1,7 @@
 package org.activiti.runtime.api.model.payloads;
 
-import java.util.Map;
-
 public class SuspendProcessPayload {
+
     private String processInstanceId;
 
     public SuspendProcessPayload() {
