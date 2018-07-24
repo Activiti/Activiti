@@ -21,22 +21,8 @@ import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.activiti.runtime.api.cmd.TaskCommands;
-import org.activiti.runtime.api.cmd.impl.ClaimTaskImpl;
-import org.activiti.runtime.api.cmd.impl.CompleteTaskImpl;
-import org.activiti.runtime.api.cmd.impl.CreateTaskImpl;
-import org.activiti.runtime.api.cmd.impl.ReleaseTaskImpl;
-import org.activiti.runtime.api.cmd.impl.SetTaskVariablesImpl;
-import org.activiti.runtime.api.cmd.impl.UpdateTaskImpl;
-import org.activiti.runtime.api.cmd.result.impl.ClaimTaskResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.CompleteTaskResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.CreateTaskResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.ReleaseTaskResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.SetTaskVariablesResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.UpdateTaskResultImpl;
 import org.activiti.runtime.api.model.Task;
 import org.activiti.runtime.api.model.TaskCandidateGroup;
 import org.activiti.runtime.api.model.TaskCandidateUser;
@@ -54,13 +40,14 @@ public class TaskModelAutoConfiguration {
     public Module customizeTaskModelObjectMapper() {
         SimpleModule module = new SimpleModule("mapTaskRuntimeInterfaces",
                                                Version.unknownVersion());
-        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver(){
+        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
             //this is a workaround for https://github.com/FasterXML/jackson-databind/issues/2019
             //once version 2.9.6 is related we can remove this @override method
             @Override
             public JavaType resolveAbstractType(DeserializationConfig config,
                                                 BeanDescription typeDesc) {
-                return findTypeMapping(config, typeDesc.getType());
+                return findTypeMapping(config,
+                                       typeDesc.getType());
             }
         };
         resolver.addMapping(Task.class,
@@ -70,41 +57,13 @@ public class TaskModelAutoConfiguration {
         resolver.addMapping(TaskCandidateGroup.class,
                             TaskCandidateGroupImpl.class);
 
-
         module.setAbstractTypes(resolver);
 
-        module.registerSubtypes(new NamedType(ClaimTaskImpl.class,
-                                              TaskCommands.CLAIM_TASK.name()));
-        module.registerSubtypes(new NamedType(ClaimTaskResultImpl.class,
-                                              TaskCommands.CLAIM_TASK.name()));
-
-        module.registerSubtypes(new NamedType(CreateTaskImpl.class,
-                                              TaskCommands.CREATE_TASK.name()));
-        module.registerSubtypes(new NamedType(CreateTaskResultImpl.class,
-                                              TaskCommands.CREATE_TASK.name()));
-
-        module.registerSubtypes(new NamedType(ReleaseTaskImpl.class,
-                                              TaskCommands.RELEASE_TASK.name()));
-        module.registerSubtypes(new NamedType(ReleaseTaskResultImpl.class,
-                                              TaskCommands.RELEASE_TASK.name()));
-
-        module.registerSubtypes(new NamedType(CompleteTaskImpl.class,
-                                              TaskCommands.COMPLETE_TASK.name()));
-        module.registerSubtypes(new NamedType(CompleteTaskResultImpl.class,
-                                              TaskCommands.COMPLETE_TASK.name()));
-
-        module.registerSubtypes(new NamedType(UpdateTaskImpl.class,
-                                              TaskCommands.UPDATE_TASK.name()));
-        module.registerSubtypes(new NamedType(UpdateTaskResultImpl.class,
-                                              TaskCommands.UPDATE_TASK.name()));
-
-        module.registerSubtypes(new NamedType(SetTaskVariablesImpl.class,
-                                              TaskCommands.SET_TASK_VARIABLES.name()));
-        module.registerSubtypes(new NamedType(SetTaskVariablesResultImpl.class,
-                                              TaskCommands.SET_TASK_VARIABLES.name()));
+        // @TODO: register Payloads??
+//        module.registerSubtypes(new NamedType(ClaimTaskImpl.class,
+//                                              TaskCommands.CLAIM_TASK.name()));
+//
 
         return module;
     }
-
-
 }

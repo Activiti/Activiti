@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.runtime.api.model.ProcessInstance;
-import org.activiti.runtime.api.model.payloads.RemoveVariablesPayload;
+import org.activiti.runtime.api.model.payloads.RemoveProcessVariablesPayload;
 
 public class RemoveVariablesPayloadBuilder {
 
@@ -41,14 +41,14 @@ public class RemoveVariablesPayloadBuilder {
         return this;
     }
 
-    public RemoveVariablesPayload build() {
+    public RemoveProcessVariablesPayload build() {
         if (processInstance != null) {
-            return new RemoveVariablesPayload(processInstance.getId(),
-                                              variableNames,
-                                              localOnly);
+            return new RemoveProcessVariablesPayload(processInstance.getId(),
+                                                     variableNames,
+                                                     localOnly);
         }
-        return new RemoveVariablesPayload(processInstanceId,
-                                          variableNames,
-                                          localOnly);
+        return new RemoveProcessVariablesPayload(processInstanceId,
+                                                 variableNames,
+                                                 localOnly);
     }
 }

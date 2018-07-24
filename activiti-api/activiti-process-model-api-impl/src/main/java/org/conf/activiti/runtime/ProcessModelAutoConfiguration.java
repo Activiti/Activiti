@@ -21,23 +21,8 @@ import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.activiti.runtime.api.cmd.ProcessCommands;
-import org.activiti.runtime.api.cmd.RuntimeCommands;
-import org.activiti.runtime.api.cmd.impl.RemoveProcessVariablesImpl;
-import org.activiti.runtime.api.cmd.impl.ResumeProcessImpl;
-import org.activiti.runtime.api.cmd.impl.SendSignalImpl;
-import org.activiti.runtime.api.cmd.impl.SetProcessVariablesImpl;
-import org.activiti.runtime.api.cmd.impl.StartProcessImpl;
-import org.activiti.runtime.api.cmd.impl.SuspendProcessImpl;
-import org.activiti.runtime.api.cmd.result.impl.RemoveProcessVariablesResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.ResumeProcessResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.SendSignalResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.SetProcessVariablesResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.StartProcessResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.SuspendProcessResultImpl;
 import org.activiti.runtime.api.model.BPMNActivity;
 import org.activiti.runtime.api.model.IntegrationContext;
 import org.activiti.runtime.api.model.ProcessDefinition;
@@ -85,35 +70,10 @@ public class ProcessModelAutoConfiguration {
         resolver.addMapping(IntegrationContext.class,
                             IntegrationContextImpl.class);
 
-        module.registerSubtypes(new NamedType(StartProcessImpl.class,
-                                              ProcessCommands.START_PROCESS.name()));
-        module.registerSubtypes(new NamedType(StartProcessResultImpl.class,
-                                              ProcessCommands.START_PROCESS.name()));
-
-        module.registerSubtypes(new NamedType(SuspendProcessImpl.class,
-                                              ProcessCommands.SUSPEND_PROCESS.name()));
-        module.registerSubtypes(new NamedType(SuspendProcessResultImpl.class,
-                                              ProcessCommands.SUSPEND_PROCESS.name()));
-
-        module.registerSubtypes(new NamedType(ResumeProcessImpl.class,
-                                              ProcessCommands.RESUME_PROCESS.name()));
-        module.registerSubtypes(new NamedType(ResumeProcessResultImpl.class,
-                                              ProcessCommands.RESUME_PROCESS.name()));
-
-        module.registerSubtypes(new NamedType(SetProcessVariablesImpl.class,
-                                              ProcessCommands.SET_PROCESS_VARIABLES.name()));
-        module.registerSubtypes(new NamedType(SetProcessVariablesResultImpl.class,
-                                              ProcessCommands.SET_PROCESS_VARIABLES.name()));
-
-        module.registerSubtypes(new NamedType(RemoveProcessVariablesImpl.class,
-                                              ProcessCommands.REMOVE_PROCESS_VARIABLES.name()));
-        module.registerSubtypes(new NamedType(RemoveProcessVariablesResultImpl.class,
-                                              ProcessCommands.REMOVE_PROCESS_VARIABLES.name()));
-
-        module.registerSubtypes(new NamedType(SendSignalImpl.class,
-                                              RuntimeCommands.SEND_SIGNAL.name()));
-        module.registerSubtypes(new NamedType(SendSignalResultImpl.class,
-                                              RuntimeCommands.SEND_SIGNAL.name()));
+        // @TODO: do we need to register payloads here?
+//        module.registerSubtypes(new NamedType(StartProcessImpl.class,
+//                                              ProcessCommands.START_PROCESS.name()));
+//
 
         module.setAbstractTypes(resolver);
         return module;

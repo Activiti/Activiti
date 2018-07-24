@@ -60,6 +60,7 @@ import org.activiti.runtime.api.event.listener.ProcessRuntimeEventListener;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
+import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,11 +77,13 @@ public class ProcessRuntimeAutoConfiguration {
                                          APIProcessDefinitionConverter processDefinitionConverter,
                                          RuntimeService runtimeService,
                                          APIProcessInstanceConverter processInstanceConverter,
+                                         APIVariableInstanceConverter variableInstanceConverter,
                                          ProcessRuntimeConfiguration processRuntimeConfiguration) {
         return new ProcessRuntimeImpl(repositoryService,
                                       processDefinitionConverter,
                                       runtimeService,
                                       processInstanceConverter,
+                                      variableInstanceConverter,
                                       processRuntimeConfiguration);
     }
 
@@ -92,6 +95,11 @@ public class ProcessRuntimeAutoConfiguration {
     @Bean
     public APIProcessInstanceConverter apiProcessInstanceConverter() {
         return new APIProcessInstanceConverter();
+    }
+
+    @Bean
+    public APIVariableInstanceConverter apiVariableInstanceConverter() {
+        return new APIVariableInstanceConverter();
     }
 
     @Bean

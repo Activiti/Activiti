@@ -26,12 +26,16 @@ import org.activiti.runtime.api.conf.TaskRuntimeConfiguration;
 import org.activiti.runtime.api.model.Task;
 import org.activiti.runtime.api.model.VariableInstance;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
+import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.payloads.ClaimTaskPayload;
 import org.activiti.runtime.api.model.payloads.CompleteTaskPayload;
+import org.activiti.runtime.api.model.payloads.CreateTaskPayload;
 import org.activiti.runtime.api.model.payloads.DeleteTaskPayload;
+import org.activiti.runtime.api.model.payloads.GetSubTasksPayload;
 import org.activiti.runtime.api.model.payloads.GetTaskVariablesPayload;
 import org.activiti.runtime.api.model.payloads.GetTasksPayload;
 import org.activiti.runtime.api.model.payloads.ReleaseTaskPayload;
+import org.activiti.runtime.api.model.payloads.SetTaskVariablesPayload;
 import org.activiti.runtime.api.model.payloads.UpdateTaskPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
@@ -43,13 +47,17 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     private final APITaskConverter taskConverter;
 
+    private final APIVariableInstanceConverter variableInstanceConverter;
+
     private final TaskRuntimeConfiguration configuration;
 
     public TaskRuntimeImpl(TaskService taskService,
                            APITaskConverter taskConverter,
+                           APIVariableInstanceConverter variableInstanceConverter,
                            TaskRuntimeConfiguration configuration) {
         this.taskService = taskService;
         this.taskConverter = taskConverter;
+        this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
     }
 
@@ -93,9 +101,12 @@ public class TaskRuntimeImpl implements TaskRuntime {
     }
 
     @Override
-    public Page<VariableInstance> variables(Pageable pageable,
-                                            GetTaskVariablesPayload getTaskVariablesPayload) {
-        return null;
+    public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
+        if (getTaskVariablesPayload.isLocalOnly()) {
+            return variableInstanceConverter.from(taskService.getVariableInstancesLocal(getTaskVariablesPayload.getTaskId()).values());
+        } else {
+            return variableInstanceConverter.from(taskService.getVariableInstances(getTaskVariablesPayload.getTaskId()).values());
+        }
     }
 
     @Override
@@ -108,7 +119,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     @Override
     public Task claim(ClaimTaskPayload claimTaskPayload) {
         taskService.claim(claimTaskPayload.getTaskId(),
-                          claimTaskPayload.getUserId());
+                          claimTaskPayload.getAssignee());
         return task(claimTaskPayload.getTaskId());
     }
 
@@ -138,11 +149,40 @@ public class TaskRuntimeImpl implements TaskRuntime {
         return task(deleteTaskPayload.getTaskId());
     }
 
+    @Override
+    public Task create(CreateTaskPayload createTaskPayload) {
+        org.activiti.engine.task.Task task = taskService.newTask();
+        task.setName(createTaskPayload.getName());
+        task.setDescription(createTaskPayload.getDescription());
+        task.setDueDate(createTaskPayload.getDueDate());
+        task.setPriority(createTaskPayload.getPriority());
+        task.setAssignee(createTaskPayload.getAssignee());
+        task.setParentTaskId(createTaskPayload.getParentTaskId());
+        taskService.saveTask(task);
+        return taskConverter.from(task);
+    }
+
+    @Override
+    public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
+        if (setTaskVariablesPayload.isLocalOnly()) {
+            taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
+                                          setTaskVariablesPayload.getVariables());
+        } else {
+            taskService.setVariables(setTaskVariablesPayload.getTaskId(),
+                                     setTaskVariablesPayload.getVariables());
+        }
+    }
+
     private org.activiti.engine.task.Task getInternalTask(String taskId) {
         org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (internalTask == null) {
             throw new NotFoundException("Unable to find task for the given id: " + taskId);
         }
         return internalTask;
+    }
+
+    @Override
+    public List<Task> subTasks(GetSubTasksPayload getSubTasksPayload) {
+        return taskConverter.from(taskService.getSubTasks(getSubTasksPayload.getParentTaskId()));
     }
 }

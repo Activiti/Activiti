@@ -10,6 +10,12 @@ public class CompleteTaskPayload {
     public CompleteTaskPayload() {
     }
 
+    public CompleteTaskPayload(String taskId,
+                               Map<String, Object> variables) {
+        this.taskId = taskId;
+        this.variables = variables;
+    }
+
     public String getTaskId() {
         return taskId;
     }

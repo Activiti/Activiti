@@ -16,6 +16,9 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
@@ -27,13 +30,14 @@ import org.activiti.runtime.api.model.ProcessInstance;
 import org.activiti.runtime.api.model.VariableInstance;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
+import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
 import org.activiti.runtime.api.model.payloads.GetVariablesPayload;
-import org.activiti.runtime.api.model.payloads.RemoveVariablesPayload;
+import org.activiti.runtime.api.model.payloads.RemoveProcessVariablesPayload;
 import org.activiti.runtime.api.model.payloads.ResumeProcessPayload;
-import org.activiti.runtime.api.model.payloads.SetVariablesPayload;
+import org.activiti.runtime.api.model.payloads.SetProcessVariablesPayload;
 import org.activiti.runtime.api.model.payloads.SignalPayload;
 import org.activiti.runtime.api.model.payloads.StartProcessPayload;
 import org.activiti.runtime.api.model.payloads.SuspendProcessPayload;
@@ -51,17 +55,21 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final APIProcessInstanceConverter processInstanceConverter;
 
+    private final APIVariableInstanceConverter variableInstanceConverter;
+
     private final ProcessRuntimeConfiguration configuration;
 
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
                               APIProcessInstanceConverter processInstanceConverter,
+                              APIVariableInstanceConverter variableInstanceConverter,
                               ProcessRuntimeConfiguration configuration) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
         this.processInstanceConverter = processInstanceConverter;
+        this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
     }
 
@@ -131,18 +139,26 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     @Override
-    public Page<VariableInstance> variables(GetVariablesPayload getVariablesPayload) {
-        return null; // need to implement the paged ones
+    public List<VariableInstance> variables(GetVariablesPayload getVariablesPayload) {
+        Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables = null;
+        if(getVariablesPayload.isLocalOnly()) {
+            variables = runtimeService.getVariableInstancesLocal(getVariablesPayload.getProcessInstanceId());
+        }else{
+            variables = runtimeService.getVariableInstances(getVariablesPayload.getProcessInstanceId());
+        }
+        return variableInstanceConverter.from(variables.values());
+
+
     }
 
     @Override
-    public void removeVariables(RemoveVariablesPayload removeVariablesPayload) {
-        if (removeVariablesPayload.isLocalOnly()) {
-            runtimeService.removeVariablesLocal(removeVariablesPayload.getProcessInstanceId(),
-                                                removeVariablesPayload.getVariableNames());
+    public void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload) {
+        if (removeProcessVariablesPayload.isLocalOnly()) {
+            runtimeService.removeVariablesLocal(removeProcessVariablesPayload.getProcessInstanceId(),
+                                                removeProcessVariablesPayload.getVariableNames());
         } else {
-            runtimeService.removeVariables(removeVariablesPayload.getProcessInstanceId(),
-                                           removeVariablesPayload.getVariableNames());
+            runtimeService.removeVariables(removeProcessVariablesPayload.getProcessInstanceId(),
+                                           removeProcessVariablesPayload.getVariableNames());
         }
     }
 
@@ -153,13 +169,13 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     @Override
-    public void setVariables(SetVariablesPayload setVariablesPayload) {
-        if (setVariablesPayload.isLocalOnly()) {
-            runtimeService.setVariablesLocal(setVariablesPayload.getProcessInstanceId(),
-                                             setVariablesPayload.getVariables());
+    public void setVariables(SetProcessVariablesPayload setProcessVariablesPayload) {
+        if (setProcessVariablesPayload.isLocalOnly()) {
+            runtimeService.setVariablesLocal(setProcessVariablesPayload.getProcessInstanceId(),
+                                             setProcessVariablesPayload.getVariables());
         } else {
-            runtimeService.setVariables(setVariablesPayload.getProcessInstanceId(),
-                                        setVariablesPayload.getVariables());
+            runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
+                                        setProcessVariablesPayload.getVariables());
         }
     }
 

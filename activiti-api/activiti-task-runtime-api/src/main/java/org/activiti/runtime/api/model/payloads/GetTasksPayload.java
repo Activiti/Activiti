@@ -8,6 +8,17 @@ public class GetTasksPayload {
     private List<String> groups;
     private String processInstanceId;
 
+    public GetTasksPayload() {
+    }
+
+    public GetTasksPayload(String assigneeId,
+                           List<String> groups,
+                           String processInstanceId) {
+        this.assigneeId = assigneeId;
+        this.groups = groups;
+        this.processInstanceId = processInstanceId;
+    }
+
     public String getAssigneeId() {
         return assigneeId;
     }

@@ -1,16 +1,21 @@
 package org.activiti.runtime.api.model.payloads;
 
-public class GetTaskVariablesPayload {
+import java.util.Map;
+
+public class SetTaskVariablesPayload {
 
     private String taskId;
+    private Map<String, Object> variables;
     private boolean localOnly;
 
-    public GetTaskVariablesPayload() {
+    public SetTaskVariablesPayload() {
     }
 
-    public GetTaskVariablesPayload(String taskId,
+    public SetTaskVariablesPayload(String taskId,
+                                   Map<String, Object> variables,
                                    boolean localOnly) {
         this.taskId = taskId;
+        this.variables = variables;
         this.localOnly = localOnly;
     }
 
@@ -20,6 +25,14 @@ public class GetTaskVariablesPayload {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
+    }
+
+    public Map<String, Object> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(Map<String, Object> variables) {
+        this.variables = variables;
     }
 
     public boolean isLocalOnly() {

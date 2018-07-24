@@ -72,9 +72,11 @@ public class TaskRuntimeAutoConfiguration {
     @Bean
     public TaskRuntime taskRuntime(TaskService taskService,
                                    APITaskConverter taskConverter,
+                                   APIVariableInstanceConverter variableInstanceConverter,
                                    TaskRuntimeConfiguration configuration) {
         return new TaskRuntimeImpl(taskService,
                                    taskConverter,
+                                   variableInstanceConverter,
                                    configuration);
     }
 
@@ -84,6 +86,12 @@ public class TaskRuntimeAutoConfiguration {
         return new APITaskConverter(taskService,
                                     variableInstanceConverter);
     }
+
+    @Bean
+    public APIVariableInstanceConverter apiVariableInstanceConverter(APIVariableInstanceConverter variableInstanceConverter) {
+        return new APIVariableInstanceConverter();
+    }
+
 
     @Bean
     public TaskRuntimeConfiguration taskRuntimeConfiguration(@Autowired(required = false) List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners,

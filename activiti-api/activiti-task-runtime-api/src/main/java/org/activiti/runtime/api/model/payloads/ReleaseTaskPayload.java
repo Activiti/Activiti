@@ -4,6 +4,13 @@ public class ReleaseTaskPayload {
 
     private String taskId;
 
+    public ReleaseTaskPayload() {
+    }
+
+    public ReleaseTaskPayload(String taskId) {
+        this.taskId = taskId;
+    }
+
     public String getTaskId() {
         return taskId;
     }
