@@ -472,6 +472,9 @@
       <if test="unassigned">
         and RES.ASSIGNEE_ IS NULL
       </if>
+      <if test="taskParentTaskId != null">
+        and RES.PARENT_TASK_ID_ = #{taskParentTaskId}
+      </if>
       <if test="noDelegationState">
         and RES.DELEGATION_ IS NULL
       </if>
@@ -800,6 +803,9 @@
             </if>
             <if test="orQueryObject.unassigned">
               or RES.ASSIGNEE_ IS NULL
+            </if>
+            <if test="orQueryObject.taskParentTaskId != null">
+              or RES.PARENT_TASK_ID_ = #{orQueryObject.taskParentTaskId}
             </if>
             <if test="orQueryObject.noDelegationState">
               or RES.DELEGATION_ IS NULL
