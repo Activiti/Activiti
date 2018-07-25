@@ -53,9 +53,6 @@ public interface HistoricTaskInstanceQuery extends TaskInfoQuery<HistoricTaskIns
    */
   HistoricTaskInstanceQuery processUnfinished();
 
-  /** Only select subtasks of the given parent task */
-  HistoricTaskInstanceQuery taskParentTaskId(String parentTaskId);
-
   /**
    * Only select select historic task instances which are completed on the given date
    */

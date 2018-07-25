@@ -50,6 +50,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String name;
   protected String nameLike;
   protected String nameLikeIgnoreCase;
+  protected String taskParentTaskId;
   protected List<String> nameList;
   protected List<String> nameListIgnoreCase;
   protected String description;
@@ -626,6 +627,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       currentOrQueryObject.withoutTenantId = true;
     } else {
       this.withoutTenantId = true;
+    }
+    return this;
+  }
+
+  public TaskQuery taskParentTaskId(String parentTaskId) {
+    if (orActive) {
+      this.currentOrQueryObject.taskParentTaskId = parentTaskId;
+    } else {
+      this.taskParentTaskId = parentTaskId;
     }
     return this;
   }
@@ -1554,6 +1564,10 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
 
   public String getOwnerLike() {
     return ownerLike;
+  }
+
+  public String getTaskParentTaskId() {
+    return taskParentTaskId;
   }
 
   public String getCategory() {
