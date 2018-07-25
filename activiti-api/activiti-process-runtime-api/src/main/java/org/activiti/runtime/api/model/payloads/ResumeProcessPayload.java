@@ -1,10 +1,21 @@
 package org.activiti.runtime.api.model.payloads;
 
-public class ResumeProcessPayload {
+import java.util.UUID;
 
+import org.activiti.runtime.api.Payload;
+
+public class ResumeProcessPayload implements Payload {
+
+    private String id;
     private String processInstanceId;
 
     public ResumeProcessPayload() {
+        this.id = UUID.randomUUID().toString();
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public ResumeProcessPayload(String processInstanceId) {

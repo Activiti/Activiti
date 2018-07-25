@@ -1,17 +1,29 @@
 package org.activiti.runtime.api.model.payloads;
 
-public class DeleteTaskPayload {
+import java.util.UUID;
 
+import org.activiti.runtime.api.Payload;
+
+public class DeleteTaskPayload implements Payload {
+
+    private String id;
     private String taskId;
     private String reason;
 
     public DeleteTaskPayload() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public DeleteTaskPayload(String taskId,
                              String reason) {
+        this();
         this.taskId = taskId;
         this.reason = reason;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public String getTaskId() {

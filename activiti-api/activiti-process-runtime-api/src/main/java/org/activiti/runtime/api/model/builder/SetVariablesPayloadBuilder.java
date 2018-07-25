@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.runtime.api.model.ProcessInstance;
-import org.activiti.runtime.api.model.payloads.GetVariablesPayload;
+import org.activiti.runtime.api.model.payloads.SetProcessVariablesPayload;
 
 public class SetVariablesPayloadBuilder {
 
@@ -43,12 +43,14 @@ public class SetVariablesPayloadBuilder {
         return this;
     }
 
-    public GetVariablesPayload build() {
+    public SetProcessVariablesPayload build() {
         if (processInstance != null) {
-            return new GetVariablesPayload(processInstance.getId(),
-                                           localOnly);
+            return new SetProcessVariablesPayload(processInstance.getId(),
+                                                  variables,
+                                                  localOnly);
         }
-        return new GetVariablesPayload(processInstanceId,
-                                       localOnly);
+        return new SetProcessVariablesPayload(processInstanceId,
+                                              variables,
+                                              localOnly);
     }
 }

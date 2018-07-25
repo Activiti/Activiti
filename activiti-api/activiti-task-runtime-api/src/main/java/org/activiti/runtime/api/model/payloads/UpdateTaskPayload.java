@@ -1,9 +1,13 @@
 package org.activiti.runtime.api.model.payloads;
 
 import java.util.Date;
+import java.util.UUID;
 
-public class UpdateTaskPayload {
+import org.activiti.runtime.api.Payload;
 
+public class UpdateTaskPayload implements Payload {
+
+    private String id;
     private String taskId;
     private String taskName;
     private String description;
@@ -12,6 +16,7 @@ public class UpdateTaskPayload {
     private String assignee;
 
     public UpdateTaskPayload() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public UpdateTaskPayload(String taskId,
@@ -20,12 +25,18 @@ public class UpdateTaskPayload {
                              Date dueDate,
                              int priority,
                              String assignee) {
+        this();
         this.taskId = taskId;
         this.taskName = taskName;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
         this.assignee = assignee;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public String getTaskId() {

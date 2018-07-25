@@ -1,22 +1,33 @@
 package org.activiti.runtime.api.model.payloads;
 
 import java.util.Map;
+import java.util.UUID;
 
-public class SetTaskVariablesPayload {
+import org.activiti.runtime.api.Payload;
 
+public class SetTaskVariablesPayload implements Payload {
+
+    private String id;
     private String taskId;
     private Map<String, Object> variables;
     private boolean localOnly;
 
     public SetTaskVariablesPayload() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public SetTaskVariablesPayload(String taskId,
                                    Map<String, Object> variables,
                                    boolean localOnly) {
+        this();
         this.taskId = taskId;
         this.variables = variables;
         this.localOnly = localOnly;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public String getTaskId() {

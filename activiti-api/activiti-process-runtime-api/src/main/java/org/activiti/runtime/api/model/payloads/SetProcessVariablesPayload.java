@@ -1,22 +1,33 @@
 package org.activiti.runtime.api.model.payloads;
 
 import java.util.Map;
+import java.util.UUID;
 
-public class SetProcessVariablesPayload {
+import org.activiti.runtime.api.Payload;
 
+public class SetProcessVariablesPayload implements Payload {
+
+    private String id;
     private String processInstanceId;
     private Map<String, Object> variables;
     private boolean localOnly = false;
 
     public SetProcessVariablesPayload() {
+        this.id = UUID.randomUUID().toString();
     }
 
     public SetProcessVariablesPayload(String processInstanceId,
                                       Map<String, Object> variables,
                                       boolean localOnly) {
+        this();
         this.processInstanceId = processInstanceId;
         this.variables = variables;
         this.localOnly = localOnly;
+    }
+
+    @Override
+    public String getId() {
+        return id;
     }
 
     public String getProcessInstanceId() {

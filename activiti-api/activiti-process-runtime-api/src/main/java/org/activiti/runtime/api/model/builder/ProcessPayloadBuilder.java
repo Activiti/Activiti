@@ -27,6 +27,10 @@ public class ProcessPayloadBuilder {
         return new GetVariablesPayloadBuilder();
     }
 
+    public static SetVariablesPayloadBuilder setVariables() {
+        return new SetVariablesPayloadBuilder();
+    }
+
     public static RemoveVariablesPayloadBuilder removeVariables() {
         return new RemoveVariablesPayloadBuilder();
     }

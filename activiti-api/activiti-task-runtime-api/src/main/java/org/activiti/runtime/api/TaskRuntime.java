@@ -45,8 +45,6 @@ public interface TaskRuntime {
     Page<Task> tasks(Pageable pageable,
                      GetTasksPayload getTasksPayload);
 
-    List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
-
     void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);
 
     Task complete(CompleteTaskPayload completeTaskPayload);
@@ -61,7 +59,12 @@ public interface TaskRuntime {
 
     Task create(CreateTaskPayload createTaskPayload);
 
+
+    /* this should be paged */
+    List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
+
     /* this method might be deprecated in future versions of this API */
     List<Task> subTasks(GetSubTasksPayload getSubTasksPayload);
+
 
 }
