@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activiti.runtime.api.model.Task;
@@ -29,6 +30,15 @@ import org.activiti.runtime.api.model.TaskCandidateUser;
 import org.activiti.runtime.api.model.impl.TaskCandidateGroupImpl;
 import org.activiti.runtime.api.model.impl.TaskCandidateUserImpl;
 import org.activiti.runtime.api.model.impl.TaskImpl;
+import org.activiti.runtime.api.model.payloads.ClaimTaskPayload;
+import org.activiti.runtime.api.model.payloads.CompleteTaskPayload;
+import org.activiti.runtime.api.model.payloads.CreateTaskPayload;
+import org.activiti.runtime.api.model.payloads.DeleteTaskPayload;
+import org.activiti.runtime.api.model.payloads.GetTaskVariablesPayload;
+import org.activiti.runtime.api.model.payloads.GetTasksPayload;
+import org.activiti.runtime.api.model.payloads.ReleaseTaskPayload;
+import org.activiti.runtime.api.model.payloads.SetTaskVariablesPayload;
+import org.activiti.runtime.api.model.payloads.UpdateTaskPayload;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -59,10 +69,32 @@ public class TaskModelAutoConfiguration {
 
         module.setAbstractTypes(resolver);
 
-        // @TODO: register Payloads??
-//        module.registerSubtypes(new NamedType(ClaimTaskImpl.class,
-//                                              TaskCommands.CLAIM_TASK.name()));
-//
+        module.registerSubtypes(new NamedType(ClaimTaskPayload.class,
+                                              ClaimTaskPayload.class.getName()));
+
+        module.registerSubtypes(new NamedType(CompleteTaskPayload.class,
+                                              CompleteTaskPayload.class.getName()));
+
+        module.registerSubtypes(new NamedType(CreateTaskPayload.class,
+                                              CreateTaskPayload.class.getName()));
+
+        module.registerSubtypes(new NamedType(DeleteTaskPayload.class,
+                                              DeleteTaskPayload.class.getName()));
+
+        module.registerSubtypes(new NamedType(GetTasksPayload.class,
+                                              GetTasksPayload.class.getName()));
+
+        module.registerSubtypes(new NamedType(GetTaskVariablesPayload.class,
+                                              GetTaskVariablesPayload.class.getName()));
+
+        module.registerSubtypes(new NamedType(ReleaseTaskPayload.class,
+                                              ReleaseTaskPayload.class.getName()));
+
+        module.registerSubtypes(new NamedType(SetTaskVariablesPayload.class,
+                                              SetTaskVariablesPayload.class.getName()));
+
+        module.registerSubtypes(new NamedType(UpdateTaskPayload.class,
+                                              UpdateTaskPayload.class.getName()));
 
         return module;
     }

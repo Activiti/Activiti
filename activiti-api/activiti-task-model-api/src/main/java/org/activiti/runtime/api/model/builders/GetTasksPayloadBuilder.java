@@ -1,4 +1,4 @@
-package org.activiti.runtime.api.model.builder;
+package org.activiti.runtime.api.model.builders;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ public class GetTasksPayloadBuilder {
     private String assignee;
     private List<String> groups;
     private String processInstanceId;
-
+    private String parentTaskId;
 
     public GetTasksPayloadBuilder withAssignee(String assignee) {
         this.assignee = assignee;
@@ -27,6 +27,10 @@ public class GetTasksPayloadBuilder {
         return this;
     }
 
+    public GetTasksPayloadBuilder withParentTaskId(String parentTaskId) {
+        this.parentTaskId = parentTaskId;
+        return this;
+    }
 
     public GetTasksPayloadBuilder withGroup(String group) {
         if (this.groups == null) {
@@ -39,6 +43,7 @@ public class GetTasksPayloadBuilder {
     public GetTasksPayload build() {
         return new GetTasksPayload(assignee,
                                    groups,
-                                   processInstanceId);
+                                   processInstanceId,
+                                   parentTaskId);
     }
 }

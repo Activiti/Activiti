@@ -27,11 +27,11 @@ import org.activiti.runtime.api.model.Task;
 import org.activiti.runtime.api.model.VariableInstance;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
+import org.activiti.runtime.api.model.impl.TaskImpl;
 import org.activiti.runtime.api.model.payloads.ClaimTaskPayload;
 import org.activiti.runtime.api.model.payloads.CompleteTaskPayload;
 import org.activiti.runtime.api.model.payloads.CreateTaskPayload;
 import org.activiti.runtime.api.model.payloads.DeleteTaskPayload;
-import org.activiti.runtime.api.model.payloads.GetSubTasksPayload;
 import org.activiti.runtime.api.model.payloads.GetTaskVariablesPayload;
 import org.activiti.runtime.api.model.payloads.GetTasksPayload;
 import org.activiti.runtime.api.model.payloads.ReleaseTaskPayload;
@@ -93,6 +93,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
             if (getTasksPayload.getProcessInstanceId() != null) {
                 taskQuery = taskQuery.processInstanceId(getTasksPayload.getProcessInstanceId());
             }
+            if (getTasksPayload.getParentTaskId() != null) {
+                taskQuery = taskQuery.taskParentTaskId(getTasksPayload.getParentTaskId());
+            }
         }
         List<Task> tasks = taskConverter.from(taskQuery.listPage(pageable.getStartIndex(),
                                                                  pageable.getMaxItems()));
@@ -111,9 +114,13 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Task complete(CompleteTaskPayload completeTaskPayload) {
+        //@TODO: not the most efficient way to return the just completed task, improve
+        //      we might need to create an empty shell with the task ID and Status only
+        Task task = task(completeTaskPayload.getTaskId());
+        TaskImpl competedTaskData = new TaskImpl(task.getId(), task.getName(), Task.TaskStatus.COMPLETED);
         taskService.complete(completeTaskPayload.getTaskId(),
                              completeTaskPayload.getVariables());
-        return task(completeTaskPayload.getTaskId());
+        return competedTaskData;
     }
 
     @Override
@@ -138,6 +145,15 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (updateTaskPayload.getDescription() != null) {
             internalTask.setDescription(updateTaskPayload.getDescription());
         }
+        if (Integer.valueOf(updateTaskPayload.getPriority()) != null) {
+            internalTask.setPriority(updateTaskPayload.getPriority());
+        }
+        if (updateTaskPayload.getAssignee() != null) {
+            internalTask.setAssignee(updateTaskPayload.getAssignee());
+        }
+        if (updateTaskPayload.getDueDate() != null) {
+            internalTask.setDueDate(updateTaskPayload.getDueDate());
+        }
         //@TODO: add check to see if something was changed before saving + add all other updateable values
         taskService.saveTask(internalTask);
         return task(updateTaskPayload.getTaskId());
@@ -145,8 +161,12 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Task delete(DeleteTaskPayload deleteTaskPayload) {
+        //@TODO: not the most efficient way to return the just deleted task, improve
+        //      we might need to create an empty shell with the task ID and Status only
+        Task task = task(deleteTaskPayload.getTaskId());
+        TaskImpl deletedTaskData = new TaskImpl(task.getId(), task.getName(), Task.TaskStatus.DELETED);
         taskService.deleteTask(deleteTaskPayload.getTaskId());
-        return task(deleteTaskPayload.getTaskId());
+        return deletedTaskData;
     }
 
     @Override
@@ -179,10 +199,5 @@ public class TaskRuntimeImpl implements TaskRuntime {
             throw new NotFoundException("Unable to find task for the given id: " + taskId);
         }
         return internalTask;
-    }
-
-    @Override
-    public List<Task> subTasks(GetSubTasksPayload getSubTasksPayload) {
-        return taskConverter.from(taskService.getSubTasks(getSubTasksPayload.getParentTaskId()));
     }
 }

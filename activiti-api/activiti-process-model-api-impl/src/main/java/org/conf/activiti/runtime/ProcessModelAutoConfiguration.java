@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activiti.runtime.api.model.BPMNActivity;
@@ -33,6 +34,15 @@ import org.activiti.runtime.api.model.impl.IntegrationContextImpl;
 import org.activiti.runtime.api.model.impl.ProcessDefinitionImpl;
 import org.activiti.runtime.api.model.impl.ProcessInstanceImpl;
 import org.activiti.runtime.api.model.impl.SequenceFlowImpl;
+import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
+import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
+import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
+import org.activiti.runtime.api.model.payloads.GetVariablesPayload;
+import org.activiti.runtime.api.model.payloads.RemoveProcessVariablesPayload;
+import org.activiti.runtime.api.model.payloads.SetProcessVariablesPayload;
+import org.activiti.runtime.api.model.payloads.SignalPayload;
+import org.activiti.runtime.api.model.payloads.StartProcessPayload;
+import org.activiti.runtime.api.model.payloads.SuspendProcessPayload;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -70,10 +80,24 @@ public class ProcessModelAutoConfiguration {
         resolver.addMapping(IntegrationContext.class,
                             IntegrationContextImpl.class);
 
-        // @TODO: do we need to register payloads here?
-//        module.registerSubtypes(new NamedType(StartProcessImpl.class,
-//                                              ProcessCommands.START_PROCESS.name()));
-//
+        module.registerSubtypes(new NamedType(DeleteProcessPayload.class,
+                                              DeleteProcessPayload.class.getName()));
+        module.registerSubtypes(new NamedType(GetProcessDefinitionsPayload.class,
+                                              GetProcessDefinitionsPayload.class.getName()));
+        module.registerSubtypes(new NamedType(GetProcessInstancesPayload.class,
+                                              GetProcessInstancesPayload.class.getName()));
+        module.registerSubtypes(new NamedType(GetVariablesPayload.class,
+                                              GetVariablesPayload.class.getName()));
+        module.registerSubtypes(new NamedType(RemoveProcessVariablesPayload.class,
+                                              RemoveProcessVariablesPayload.class.getName()));
+        module.registerSubtypes(new NamedType(SetProcessVariablesPayload.class,
+                                              SetProcessVariablesPayload.class.getName()));
+        module.registerSubtypes(new NamedType(SignalPayload.class,
+                                              SignalPayload.class.getName()));
+        module.registerSubtypes(new NamedType(StartProcessPayload.class,
+                                              StartProcessPayload.class.getName()));
+        module.registerSubtypes(new NamedType(SuspendProcessPayload.class,
+                                              SuspendProcessPayload.class.getName()));
 
         module.setAbstractTypes(resolver);
         return module;

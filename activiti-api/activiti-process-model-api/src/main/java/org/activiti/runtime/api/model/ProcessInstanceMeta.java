@@ -16,42 +16,11 @@
 
 package org.activiti.runtime.api.model;
 
-import java.util.Date;
+import java.util.List;
 
-public interface Task {
-
-    enum TaskStatus {
-        CREATED,
-        ASSIGNED,
-        SUSPENDED,
-        COMPLETED,
-        CANCELLED,
-        DELETED
-    }
-
-    String getId();
-
-    String getOwner();
-
-    String getAssignee();
-
-    String getName();
-
-    String getDescription();
-
-    Date getCreatedDate();
-
-    Date getClaimedDate();
-
-    Date getDueDate();
-
-    int getPriority();
-
-    String getProcessDefinitionId();
+public interface ProcessInstanceMeta {
 
     String getProcessInstanceId();
 
-    String getParentTaskId();
-
-    TaskStatus getStatus();
+    List<String> getActiveActivitiesIds();
 }

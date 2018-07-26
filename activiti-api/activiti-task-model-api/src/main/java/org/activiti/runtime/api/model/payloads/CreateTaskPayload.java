@@ -19,6 +19,20 @@ public class CreateTaskPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
+    public CreateTaskPayload(String name,
+                             String description,
+                             Date dueDate,
+                             int priority,
+                             String assignee,
+                             String parentTaskId) {
+        this.name = name;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.priority = priority;
+        this.assignee = assignee;
+        this.parentTaskId = parentTaskId;
+    }
+
     @Override
     public String getId() {
         return id;

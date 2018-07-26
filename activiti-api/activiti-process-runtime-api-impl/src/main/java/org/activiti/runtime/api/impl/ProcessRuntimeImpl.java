@@ -26,11 +26,15 @@ import org.activiti.runtime.api.NotFoundException;
 import org.activiti.runtime.api.ProcessRuntime;
 import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
 import org.activiti.runtime.api.model.ProcessDefinition;
+import org.activiti.runtime.api.model.ProcessDefinitionMeta;
 import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.runtime.api.model.ProcessInstanceMeta;
 import org.activiti.runtime.api.model.VariableInstance;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
+import org.activiti.runtime.api.model.impl.ProcessDefinitionMetaImpl;
+import org.activiti.runtime.api.model.impl.ProcessInstanceMetaImpl;
 import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
@@ -128,10 +132,10 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance delete(DeleteProcessPayload deleteProcessPayload) {
-        runtimeService.deleteProcessInstance(deleteProcessPayload.getProcessInstanceId(),
-                                             deleteProcessPayload.getReason());
         org.activiti.engine.runtime.ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
                 .processInstanceId(deleteProcessPayload.getProcessInstanceId()).singleResult();
+        runtimeService.deleteProcessInstance(deleteProcessPayload.getProcessInstanceId(),
+                                             deleteProcessPayload.getReason());
         if (processInstance != null) {
             return processInstanceConverter.from(processInstance);
         }
@@ -141,14 +145,12 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     @Override
     public List<VariableInstance> variables(GetVariablesPayload getVariablesPayload) {
         Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables = null;
-        if(getVariablesPayload.isLocalOnly()) {
+        if (getVariablesPayload.isLocalOnly()) {
             variables = runtimeService.getVariableInstancesLocal(getVariablesPayload.getProcessInstanceId());
-        }else{
+        } else {
             variables = runtimeService.getVariableInstances(getVariablesPayload.getProcessInstanceId());
         }
         return variableInstanceConverter.from(variables.values());
-
-
     }
 
     @Override
@@ -180,13 +182,30 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     @Override
-    public ProcessDefinition processDefinition(String processDefinitionKey) {
-        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionKey).singleResult();
-
+    public ProcessDefinition processDefinition(String processDefinitionId) {
+        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
         if (processDefinition == null) {
-            throw new NotFoundException("Unable to find process definition for the given key:'" + processDefinitionKey + "'");
+            // try searching by Key if there is matching ID
+            List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionId).list();
+            if (!list.isEmpty()) {
+                processDefinition = list.get(0);
+            } else {
+                throw new NotFoundException("Unable to find process definition for the given key:'" + processDefinitionId + "'");
+            }
         }
         return processDefinitionConverter.from(processDefinition);
+    }
+
+    @Override
+    public ProcessDefinitionMeta processDefinitionMeta(String processDefinitionKey) {
+        return new ProcessDefinitionMetaImpl(processDefinitionKey);
+    }
+
+    @Override
+    public ProcessInstanceMeta processInstanceMeta(String processInstanceId) {
+        ProcessInstanceMetaImpl processInstanceMeta = new ProcessInstanceMetaImpl(processInstanceId);
+        processInstanceMeta.setActiveActivitiesIds(runtimeService.getActiveActivityIds(processInstanceId));
+        return processInstanceMeta;
     }
 
     @Override

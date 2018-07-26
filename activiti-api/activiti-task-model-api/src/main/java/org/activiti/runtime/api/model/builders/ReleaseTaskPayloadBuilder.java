@@ -1,9 +1,5 @@
-package org.activiti.runtime.api.model.builder;
+package org.activiti.runtime.api.model.builders;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.activiti.runtime.api.model.payloads.GetTasksPayload;
 import org.activiti.runtime.api.model.payloads.ReleaseTaskPayload;
 
 public class ReleaseTaskPayloadBuilder {

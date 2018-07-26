@@ -1,4 +1,4 @@
-package org.activiti.runtime.api.model.builder;
+package org.activiti.runtime.api.model.builders;
 
 import org.activiti.runtime.api.model.payloads.ClaimTaskPayload;
 

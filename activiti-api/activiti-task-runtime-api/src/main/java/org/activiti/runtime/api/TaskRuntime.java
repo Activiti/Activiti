@@ -25,7 +25,6 @@ import org.activiti.runtime.api.model.payloads.ClaimTaskPayload;
 import org.activiti.runtime.api.model.payloads.CompleteTaskPayload;
 import org.activiti.runtime.api.model.payloads.CreateTaskPayload;
 import org.activiti.runtime.api.model.payloads.DeleteTaskPayload;
-import org.activiti.runtime.api.model.payloads.GetSubTasksPayload;
 import org.activiti.runtime.api.model.payloads.GetTaskVariablesPayload;
 import org.activiti.runtime.api.model.payloads.GetTasksPayload;
 import org.activiti.runtime.api.model.payloads.ReleaseTaskPayload;
@@ -59,12 +58,6 @@ public interface TaskRuntime {
 
     Task create(CreateTaskPayload createTaskPayload);
 
-
     /* this should be paged */
     List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
-
-    /* this method might be deprecated in future versions of this API */
-    List<Task> subTasks(GetSubTasksPayload getSubTasksPayload);
-
-
 }

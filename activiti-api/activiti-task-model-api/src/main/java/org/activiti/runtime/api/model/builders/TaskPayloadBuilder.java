@@ -1,4 +1,4 @@
-package org.activiti.runtime.api.model.builder;
+package org.activiti.runtime.api.model.builders;
 
 public class TaskPayloadBuilder {
 
@@ -32,5 +32,9 @@ public class TaskPayloadBuilder {
 
     public static DeleteTaskPayloadBuilder delete() {
         return new DeleteTaskPayloadBuilder();
+    }
+
+    public static CreateTaskPayloadBuilder create() {
+        return new CreateTaskPayloadBuilder();
     }
 }

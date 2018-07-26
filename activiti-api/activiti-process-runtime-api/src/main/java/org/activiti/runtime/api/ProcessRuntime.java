@@ -20,7 +20,9 @@ import java.util.List;
 
 import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
 import org.activiti.runtime.api.model.ProcessDefinition;
+import org.activiti.runtime.api.model.ProcessDefinitionMeta;
 import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.runtime.api.model.ProcessInstanceMeta;
 import org.activiti.runtime.api.model.VariableInstance;
 import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
@@ -41,12 +43,16 @@ public interface ProcessRuntime {
 
     ProcessDefinition processDefinition(String processDefinitionKey);
 
+    ProcessDefinitionMeta processDefinitionMeta(String processDefinitionKey);
+
     Page<ProcessDefinition> processDefinitions(Pageable pageable);
 
     Page<ProcessDefinition> processDefinitions(Pageable pageable,
                                                GetProcessDefinitionsPayload getProcessDefinitionsPayload);
 
     ProcessInstance processInstance(String processInstanceId);
+
+    ProcessInstanceMeta processInstanceMeta(String processInstanceId);
 
     Page<ProcessInstance> processInstances(Pageable pageable);
 
@@ -69,5 +75,4 @@ public interface ProcessRuntime {
 
     void setVariables(SetProcessVariablesPayload setProcessVariablesPayload); // review if we need to return set variables
 
-    // List<String> activeActivityIds(); -> do we really need this?
 }

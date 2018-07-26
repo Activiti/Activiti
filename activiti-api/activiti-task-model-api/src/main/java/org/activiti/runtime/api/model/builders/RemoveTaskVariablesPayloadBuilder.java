@@ -1,10 +1,10 @@
-package org.activiti.runtime.api.model.builder;
+package org.activiti.runtime.api.model.builders;
 
 import java.util.Date;
 
 import org.activiti.runtime.api.model.payloads.UpdateTaskPayload;
 
-public class UpdateTaskPayloadBuilder {
+public class RemoveTaskVariablesPayloadBuilder {
 
     private String taskId;
     private String name;
@@ -13,32 +13,32 @@ public class UpdateTaskPayloadBuilder {
     private int priority;
     private String assignee;
 
-    public UpdateTaskPayloadBuilder withAssignee(String assignee) {
+    public RemoveTaskVariablesPayloadBuilder withAssignee(String assignee) {
         this.assignee = assignee;
         return this;
     }
 
-    public UpdateTaskPayloadBuilder withTaskId(String taskId) {
+    public RemoveTaskVariablesPayloadBuilder withTaskId(String taskId) {
         this.taskId = taskId;
         return this;
     }
 
-    public UpdateTaskPayloadBuilder withName(String name) {
+    public RemoveTaskVariablesPayloadBuilder withName(String name) {
         this.name = name;
         return this;
     }
 
-    public UpdateTaskPayloadBuilder withDescription(String description) {
+    public RemoveTaskVariablesPayloadBuilder withDescription(String description) {
         this.description = description;
         return this;
     }
 
-    public UpdateTaskPayloadBuilder withDueDate(Date dueDate) {
+    public RemoveTaskVariablesPayloadBuilder withDueDate(Date dueDate) {
         this.dueDate = dueDate;
         return this;
     }
 
-    public UpdateTaskPayloadBuilder withPriority(int priority) {
+    public RemoveTaskVariablesPayloadBuilder withPriority(int priority) {
         this.priority = priority;
         return this;
     }

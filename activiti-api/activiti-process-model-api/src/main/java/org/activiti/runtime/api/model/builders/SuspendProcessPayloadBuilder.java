@@ -1,7 +1,6 @@
-package org.activiti.runtime.api.model.builder;
+package org.activiti.runtime.api.model.builders;
 
 import org.activiti.runtime.api.model.ProcessInstance;
-import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
 import org.activiti.runtime.api.model.payloads.SuspendProcessPayload;
 
 public class SuspendProcessPayloadBuilder {
