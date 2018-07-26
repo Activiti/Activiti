@@ -13,6 +13,10 @@
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
+      <artifactId>activiti-task-model-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-cloud-task-model-api</artifactId>
     </dependency>
     <dependency>
@@ -26,6 +30,10 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
