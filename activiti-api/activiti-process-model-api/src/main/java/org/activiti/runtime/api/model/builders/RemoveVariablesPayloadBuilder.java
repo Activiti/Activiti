@@ -9,7 +9,6 @@ import org.activiti.runtime.api.model.payloads.RemoveProcessVariablesPayload;
 public class RemoveVariablesPayloadBuilder {
 
     private String processInstanceId;
-    private ProcessInstance processInstance;
     private List<String> variableNames = new ArrayList<>();
     private boolean localOnly = false;
 
@@ -19,7 +18,7 @@ public class RemoveVariablesPayloadBuilder {
     }
 
     public RemoveVariablesPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
-        this.processInstance = processInstance;
+        this.processInstanceId = processInstance.getId();
         return this;
     }
 
@@ -31,8 +30,8 @@ public class RemoveVariablesPayloadBuilder {
         return this;
     }
 
-    public RemoveVariablesPayloadBuilder localOnly(boolean localOnly) {
-        this.localOnly = localOnly;
+    public RemoveVariablesPayloadBuilder localOnly() {
+        this.localOnly = true;
         return this;
     }
 
@@ -42,11 +41,6 @@ public class RemoveVariablesPayloadBuilder {
     }
 
     public RemoveProcessVariablesPayload build() {
-        if (processInstance != null) {
-            return new RemoveProcessVariablesPayload(processInstance.getId(),
-                                                     variableNames,
-                                                     localOnly);
-        }
         return new RemoveProcessVariablesPayload(processInstanceId,
                                                  variableNames,
                                                  localOnly);

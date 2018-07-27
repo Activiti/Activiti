@@ -6,8 +6,7 @@ import org.activiti.runtime.api.model.payloads.GetVariablesPayload;
 public class GetVariablesPayloadBuilder {
 
     private String processInstanceId;
-    private ProcessInstance processInstance;
-    private boolean localOnly;
+    private boolean localOnly = false;
 
     public GetVariablesPayloadBuilder withProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
@@ -15,20 +14,17 @@ public class GetVariablesPayloadBuilder {
     }
 
     public GetVariablesPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
-        this.processInstance = processInstance;
+        this.processInstanceId = processInstance.getId();
         return this;
     }
 
 
-    public GetVariablesPayloadBuilder localOnly(boolean localOnly) {
-        this.localOnly = localOnly;
+    public GetVariablesPayloadBuilder localOnly() {
+        this.localOnly = true;
         return this;
     }
 
     public GetVariablesPayload build() {
-        if (processInstance != null) {
-            return new GetVariablesPayload(processInstance.getId(), localOnly);
-        }
         return new GetVariablesPayload(processInstanceId, localOnly);
     }
 }

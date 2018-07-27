@@ -9,8 +9,7 @@ import org.activiti.runtime.api.model.payloads.SetProcessVariablesPayload;
 public class SetVariablesPayloadBuilder {
 
     private String processInstanceId;
-    private ProcessInstance processInstance;
-    private boolean localOnly;
+    private boolean localOnly = false;
     private Map<String, Object> variables = new HashMap<>();
 
     public SetVariablesPayloadBuilder withProcessInstanceId(String processInstanceId) {
@@ -19,7 +18,7 @@ public class SetVariablesPayloadBuilder {
     }
 
     public SetVariablesPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
-        this.processInstance = processInstance;
+        this.processInstanceId = processInstance.getId();
         return this;
     }
 
@@ -38,17 +37,12 @@ public class SetVariablesPayloadBuilder {
         return this;
     }
 
-    public SetVariablesPayloadBuilder localOnly(boolean localOnly) {
-        this.localOnly = localOnly;
+    public SetVariablesPayloadBuilder localOnly() {
+        this.localOnly = true;
         return this;
     }
 
     public SetProcessVariablesPayload build() {
-        if (processInstance != null) {
-            return new SetProcessVariablesPayload(processInstance.getId(),
-                                                  variables,
-                                                  localOnly);
-        }
         return new SetProcessVariablesPayload(processInstanceId,
                                               variables,
                                               localOnly);

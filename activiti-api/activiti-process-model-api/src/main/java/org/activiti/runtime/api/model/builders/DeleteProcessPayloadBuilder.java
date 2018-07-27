@@ -6,7 +6,6 @@ import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
 public class DeleteProcessPayloadBuilder {
 
     private String processInstanceId;
-    private ProcessInstance processInstance;
     private String reason;
 
     public DeleteProcessPayloadBuilder withProcessInstanceId(String processDefinitionId) {
@@ -20,15 +19,11 @@ public class DeleteProcessPayloadBuilder {
     }
 
     public DeleteProcessPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
-        this.processInstance = processInstance;
+        this.processInstanceId = processInstance.getId();
         return this;
     }
 
     public DeleteProcessPayload build() {
-        if (processInstance != null) {
-            return new DeleteProcessPayload(processInstance.getId(),
-                                            reason);
-        }
         return new DeleteProcessPayload(processInstanceId,
                                         reason);
     }
