@@ -18,7 +18,6 @@ package org.activiti.runtime.api.cmd.impl;
 
 import java.util.Map;
 
-import org.activiti.runtime.api.cmd.ProcessCommands;
 import org.activiti.runtime.api.cmd.RuntimeCommands;
 import org.activiti.runtime.api.cmd.SendSignal;
 

@@ -88,7 +88,7 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
                                                            signalEventSubscriptionEntity.getProcessDefinitionId()));
 
             eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity,
-                                                         null,
+                                                         execution.getVariables(),
                                                          signalEventDefinition.isAsync());
         }
 
