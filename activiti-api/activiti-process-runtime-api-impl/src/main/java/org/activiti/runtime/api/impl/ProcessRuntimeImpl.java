@@ -19,6 +19,7 @@ package org.activiti.runtime.api.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
@@ -183,7 +184,12 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessDefinition processDefinition(String processDefinitionId) {
-        org.activiti.engine.repository.ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        org.activiti.engine.repository.ProcessDefinition processDefinition = null;
+        try {
+            processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        }catch(ActivitiObjectNotFoundException internalEx){
+
+        }
         if (processDefinition == null) {
             // try searching by Key if there is matching ID
             List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionId).list();

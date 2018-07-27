@@ -21,6 +21,7 @@ import java.util.Properties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -30,12 +31,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-
 @Configuration
 @EnableWebSecurity
-@EnableAutoConfiguration(exclude = SecurityAutoConfiguration.class)
+@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
 
     @Value("classpath:users.properties")
     private Resource users;
@@ -45,9 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().anyRequest().fullyAuthenticated();
         http.httpBasic();
         http.csrf().disable();
-
     }
-    
 
     @Bean
     public UserDetailsService userDetailsServiceBean() throws Exception {

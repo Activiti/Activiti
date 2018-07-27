@@ -1,6 +1,6 @@
 package org.activiti.runtime.api;
 
-public class Result<T> {
+public abstract class Result<T> {
 
     private Payload payload;
     private T entity;

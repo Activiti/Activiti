@@ -37,7 +37,6 @@ public class BasicIdentityLookupTest {
         User user = new User("test",
                              "pass",
                              authorities);
-
         when(userDetailsService.loadUserByUsername("test"))
                 .thenReturn(user);
 

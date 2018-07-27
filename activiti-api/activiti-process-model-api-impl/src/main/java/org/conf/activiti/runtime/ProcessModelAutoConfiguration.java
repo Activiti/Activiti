@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.activiti.runtime.api.Payload;
+import org.activiti.runtime.api.Result;
 import org.activiti.runtime.api.model.BPMNActivity;
 import org.activiti.runtime.api.model.IntegrationContext;
 import org.activiti.runtime.api.model.ProcessDefinition;
@@ -39,10 +41,12 @@ import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
 import org.activiti.runtime.api.model.payloads.GetVariablesPayload;
 import org.activiti.runtime.api.model.payloads.RemoveProcessVariablesPayload;
+import org.activiti.runtime.api.model.payloads.ResumeProcessPayload;
 import org.activiti.runtime.api.model.payloads.SetProcessVariablesPayload;
 import org.activiti.runtime.api.model.payloads.SignalPayload;
 import org.activiti.runtime.api.model.payloads.StartProcessPayload;
 import org.activiti.runtime.api.model.payloads.SuspendProcessPayload;
+import org.activiti.runtime.api.model.results.ProcessInstanceResult;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -76,9 +80,18 @@ public class ProcessModelAutoConfiguration {
                             ProcessDefinitionImpl.class);
         resolver.addMapping(SequenceFlow.class,
                             SequenceFlowImpl.class);
-
         resolver.addMapping(IntegrationContext.class,
                             IntegrationContextImpl.class);
+        resolver.addMapping(Result.class,
+                            ProcessInstanceResult.class);
+
+        module.setMixInAnnotation(Result.class,
+                                  ProcessInstanceResultMixIn.class);
+        module.setMixInAnnotation(Payload.class,
+                                  ProcessPayloadMixIn.class);
+
+        module.registerSubtypes(new NamedType(ProcessInstanceResult.class,
+                                              ProcessInstanceResult.class.getName()));
 
         module.registerSubtypes(new NamedType(DeleteProcessPayload.class,
                                               DeleteProcessPayload.class.getName()));
@@ -98,6 +111,8 @@ public class ProcessModelAutoConfiguration {
                                               StartProcessPayload.class.getName()));
         module.registerSubtypes(new NamedType(SuspendProcessPayload.class,
                                               SuspendProcessPayload.class.getName()));
+        module.registerSubtypes(new NamedType(ResumeProcessPayload.class,
+                                              ResumeProcessPayload.class.getName()));
 
         module.setAbstractTypes(resolver);
         return module;

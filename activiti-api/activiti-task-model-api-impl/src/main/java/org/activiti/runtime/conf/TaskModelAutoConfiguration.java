@@ -24,6 +24,8 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.activiti.runtime.api.Payload;
+import org.activiti.runtime.api.Result;
 import org.activiti.runtime.api.model.Task;
 import org.activiti.runtime.api.model.TaskCandidateGroup;
 import org.activiti.runtime.api.model.TaskCandidateUser;
@@ -39,9 +41,13 @@ import org.activiti.runtime.api.model.payloads.GetTasksPayload;
 import org.activiti.runtime.api.model.payloads.ReleaseTaskPayload;
 import org.activiti.runtime.api.model.payloads.SetTaskVariablesPayload;
 import org.activiti.runtime.api.model.payloads.UpdateTaskPayload;
+import org.activiti.runtime.api.model.results.TaskResult;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@AutoConfigureBefore({JacksonAutoConfiguration.class})
 @Configuration
 public class TaskModelAutoConfiguration {
 
@@ -66,8 +72,16 @@ public class TaskModelAutoConfiguration {
                             TaskCandidateUserImpl.class);
         resolver.addMapping(TaskCandidateGroup.class,
                             TaskCandidateGroupImpl.class);
+        resolver.addMapping(Result.class,
+                            TaskResult.class);
 
-        module.setAbstractTypes(resolver);
+        module.setMixInAnnotation(Result.class,
+                                  TaskResultMixIn.class);
+        module.setMixInAnnotation(Payload.class,
+                                  TaskPayloadMixIn.class);
+
+        module.registerSubtypes(new NamedType(TaskResult.class,
+                                              TaskResult.class.getName()));
 
         module.registerSubtypes(new NamedType(ClaimTaskPayload.class,
                                               ClaimTaskPayload.class.getName()));
@@ -95,6 +109,8 @@ public class TaskModelAutoConfiguration {
 
         module.registerSubtypes(new NamedType(UpdateTaskPayload.class,
                                               UpdateTaskPayload.class.getName()));
+
+        module.setAbstractTypes(resolver);
 
         return module;
     }
