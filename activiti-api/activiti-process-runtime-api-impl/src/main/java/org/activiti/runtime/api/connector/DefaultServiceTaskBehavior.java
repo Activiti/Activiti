@@ -49,7 +49,9 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
     }
 
     protected boolean hasConnectorBean(DelegateExecution execution) {
-        return applicationContext.containsBean(getServiceTaskImplementation(execution));
+        String implementation = getServiceTaskImplementation(execution);
+        return applicationContext.containsBean(implementation)
+                && applicationContext.getBean(implementation) instanceof Connector;
     }
 
 }

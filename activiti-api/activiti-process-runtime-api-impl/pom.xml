@@ -12,7 +12,27 @@
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
+      <artifactId>activiti-common-model-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-common-model-api-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-common-runtime-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-cloud-common-model-api-impl</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-process-runtime-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-process-model-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -45,6 +65,10 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-bpmn-model</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
