@@ -165,7 +165,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         //      we might need to create an empty shell with the task ID and Status only
         Task task = task(deleteTaskPayload.getTaskId());
         TaskImpl deletedTaskData = new TaskImpl(task.getId(), task.getName(), Task.TaskStatus.DELETED);
-        taskService.deleteTask(deleteTaskPayload.getTaskId());
+        taskService.deleteTask(deleteTaskPayload.getTaskId(),deleteTaskPayload.getReason(), true);
         return deletedTaskData;
     }
 
