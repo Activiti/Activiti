@@ -30,7 +30,7 @@ import org.activiti.engine.task.TaskQuery;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.activiti.runtime.api.identity.IdentityLookup;
+import org.activiti.runtime.api.identity.UserGroupManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1220,11 +1220,11 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
 
   protected List<String> getGroupsForCandidateUser(String candidateUser) {
-    IdentityLookup identityLookup = Context.getProcessEngineConfiguration().getIdentityLookup();
-    if(identityLookup !=null){
-      return identityLookup.getGroupsForCandidateUser(candidateUser);
+    UserGroupManager userGroupManager = Context.getProcessEngineConfiguration().getUserGroupManager();
+    if(userGroupManager !=null){
+      return userGroupManager.getUserGroups(candidateUser);
     } else{
-      log.warn("No IdentityLookup set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
+      log.warn("No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
     }
     return null;
   }

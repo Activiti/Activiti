@@ -308,7 +308,7 @@ import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.engine.integration.IntegrationContextServiceImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.engine.runtime.Clock;
-import org.activiti.runtime.api.identity.IdentityLookup;
+import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;
@@ -348,7 +348,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected TaskService taskService = new TaskServiceImpl(this);
   protected ManagementService managementService = new ManagementServiceImpl();
   protected DynamicBpmnService dynamicBpmnService = new DynamicBpmnServiceImpl(this);
-  protected IdentityLookup identityLookup;
+  protected UserGroupManager userGroupManager;
   private IntegrationContextService integrationContextService;
 
   // COMMAND EXECUTORS ////////////////////////////////////////////////////////
@@ -2296,13 +2296,13 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
-  public void setIdentityLookup(IdentityLookup identityLookup) {
-        this.identityLookup = identityLookup;
+  public void setUserGroupManager(UserGroupManager userGroupManager) {
+        this.userGroupManager = userGroupManager;
     }
 
     @Override
-    public IdentityLookup getIdentityLookup() {
-        return identityLookup;
+    public UserGroupManager getUserGroupManager() {
+        return userGroupManager;
     }
 
     public IntegrationContextManager getIntegrationContextManager() {

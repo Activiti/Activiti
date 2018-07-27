@@ -27,7 +27,7 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.runtime.api.identity.IdentityLookup;
+import org.activiti.runtime.api.identity.UserGroupManager;
 import org.mockito.Mockito;
 
 /**
@@ -47,11 +47,11 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
     private static final String FOZZIE = "fozzie";
     private static final List<String> FOZZIESGROUPS = Arrays.asList("management");
 
-    private IdentityLookup identityLookup = Mockito.mock(IdentityLookup.class);
+    private UserGroupManager userGroupManager = Mockito.mock(UserGroupManager.class);
 
     public void setUp() throws Exception {
         ProcessEngineConfigurationImpl engineConfiguration = (ProcessEngineConfigurationImpl) cachedProcessEngine.getProcessEngineConfiguration();
-        engineConfiguration.setIdentityLookup(identityLookup);
+        engineConfiguration.setUserGroupManager(userGroupManager);
         taskIds = generateTestTasks();
     }
 
@@ -563,9 +563,9 @@ public class HistoricTaskAndVariablesQueryTest extends PluggableActivitiTestCase
     public void testCandidateWithUserGroupProxy() {
         //don't specify groups in query calls, instead get them through UserGroupLookupProxy (which could be remote service)
 
-        Mockito.when(identityLookup.getGroupsForCandidateUser(KERMIT)).thenReturn(KERMITSGROUPS);
-        Mockito.when(identityLookup.getGroupsForCandidateUser(GONZO)).thenReturn(GONZOSGROUPS);
-        Mockito.when(identityLookup.getGroupsForCandidateUser(FOZZIE)).thenReturn(FOZZIESGROUPS);
+        Mockito.when(userGroupManager.getUserGroups(KERMIT)).thenReturn(KERMITSGROUPS);
+        Mockito.when(userGroupManager.getUserGroups(GONZO)).thenReturn(GONZOSGROUPS);
+        Mockito.when(userGroupManager.getUserGroups(FOZZIE)).thenReturn(FOZZIESGROUPS);
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             runtimeService.startProcessInstanceByKey("oneTaskProcess");

@@ -21,7 +21,7 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
 import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.engine.runtime.Clock;
-import org.activiti.runtime.api.identity.IdentityLookup;
+import org.activiti.runtime.api.identity.UserGroupManager;
 
 import javax.sql.DataSource;
 import java.io.InputStream;
@@ -247,7 +247,7 @@ public abstract class ProcessEngineConfiguration {
 
   public abstract ProcessEngineConfiguration getProcessEngineConfiguration();
 
-  public abstract IdentityLookup getIdentityLookup();
+  public abstract UserGroupManager getUserGroupManager();
 
   public abstract IntegrationContextService getIntegrationContextService();
 
@@ -745,7 +745,7 @@ public abstract class ProcessEngineConfiguration {
   public void setEngineAgendaFactory(ActivitiEngineAgendaFactory engineAgendaFactory) {
     this.engineAgendaFactory = engineAgendaFactory;
   }
-  
+
   public ActivitiEngineAgendaFactory getEngineAgendaFactory() {
     return engineAgendaFactory;
   }
