@@ -98,6 +98,7 @@ public class ProcessRuntimeAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public APIVariableInstanceConverter apiVariableInstanceConverter() {
         return new APIVariableInstanceConverter();
     }

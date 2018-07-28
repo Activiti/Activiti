@@ -20,11 +20,13 @@ import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnResource;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.Resource;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -34,16 +36,25 @@ import org.springframework.security.provisioning.UserDetailsManager;
 @Configuration
 @EnableWebSecurity
 @EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
-@ConditionalOnResource(resources = "classpath:users.properties")
+
 public class InMemoryIdentityAutoConfiguration extends WebSecurityConfigurerAdapter {
 
     @Value("classpath:users.properties")
     private Resource users;
 
     @Bean
+    @Primary
+    @ConditionalOnResource(resources = "classpath:users.properties")
     public UserDetailsManager userDetailsServiceBean() throws Exception {
         Properties properties = new Properties();
         properties.load(users.getInputStream());
+        return new InMemoryUserDetailsManager(properties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public UserDetailsManager emptyUserDetailsServiceBean() {
+        Properties properties = new Properties();
         return new InMemoryUserDetailsManager(properties);
     }
 }
