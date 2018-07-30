@@ -243,6 +243,13 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                     !getProcessInstancesPayload.getBusinessKey().isEmpty()) {
                 internalQuery.processInstanceBusinessKey(getProcessInstancesPayload.getBusinessKey());
             }
+            // @TODO: check by status
+//            if(getProcessInstancesPayload.get){
+//                internalQuery.suspended()
+//                internalQuery.active()
+//
+//            }
+
         }
         return new PageImpl<>(processInstanceConverter.from(internalQuery.listPage(pageable.getStartIndex(),
                                                                                    pageable.getMaxItems())),

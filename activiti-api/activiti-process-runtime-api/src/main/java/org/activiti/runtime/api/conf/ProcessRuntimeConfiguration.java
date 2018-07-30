@@ -23,10 +23,9 @@ import org.activiti.runtime.api.event.listener.ProcessRuntimeEventListener;
 
 public interface ProcessRuntimeConfiguration {
 
-    List<ProcessRuntimeEventListener<?>> eventProcessRuntimeListeners();
+    List<ProcessRuntimeEventListener<?>> processEventListeners();
 
     List<VariableEventListener<?>> variableEventListeners();
 
-    int maxPagedResults();
 
 }

@@ -14,7 +14,6 @@ import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.security.SecurityManager;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +48,9 @@ public class TaskRuntimeTest {
     public void init() {
         if (!userGroupManager.exists("admin")) {
             admin = userGroupManager.create("admin",
-                                              "password",
-                                              Arrays.asList("adminGroup"),
-                                              Arrays.asList("admin"));
+                                            "password",
+                                            Arrays.asList("adminGroup"),
+                                            Arrays.asList("admin"));
         } else {
             admin = userGroupManager.loadUser("admin");
         }
@@ -154,8 +153,6 @@ public class TaskRuntimeTest {
     }
 
     @Test
-    @Ignore
-    // @TODO: The task owner should be able to see the task even if he/she is not assigned or belong to the target groups
     public void createStandaloneTaskForAnotherAssignee() {
 
         securityManager.authorize(garth);
@@ -522,4 +519,5 @@ public class TaskRuntimeTest {
     //  - Complete task with variables
     //  - Add other users to test group and claim/release combinations
     //  - Add get/set variables tests
+    //  - Add Impersonation methods to TaskAdminRuntime
 }

@@ -129,11 +129,5 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         throw new IllegalStateException("Only users with Role Admin can use the Admin Runtimes");
     }
 
-    private org.activiti.engine.task.Task getInternalTask(String taskId) {
-        org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskId(taskId).singleResult();
-        if (internalTask == null) {
-            throw new NotFoundException("Unable to find task for the given id: " + taskId);
-        }
-        return internalTask;
-    }
+    
 }

@@ -119,8 +119,11 @@ public class TaskRuntimeImpl implements TaskRuntime {
         } else {
             throw new IllegalStateException("You need an authenticated user to perform a task query");
         }
-        taskQuery = taskQuery.taskCandidateOrAssigned(getTasksPayload.getAssigneeId(),
-                                                      getTasksPayload.getGroups());
+        taskQuery = taskQuery.or()
+                .taskCandidateOrAssigned(getTasksPayload.getAssigneeId(),
+                                         getTasksPayload.getGroups())
+                .taskOwner(authenticatedUserId)
+                .endOr();
 
         if (getTasksPayload.getProcessInstanceId() != null) {
             taskQuery = taskQuery.processInstanceId(getTasksPayload.getProcessInstanceId());
