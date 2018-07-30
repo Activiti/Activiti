@@ -64,53 +64,69 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
 
     @Override
     public Task task(String taskId) {
-        //@TODO: add admin role validation here
-        org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskId(taskId).singleResult();
-        if (internalTask == null) {
-            throw new NotFoundException("Unable to find task for the given id: " + taskId);
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
+        if (userRoles != null && userRoles.contains("admin")) { //@TODO: make it flexible with a Env Var
+            org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskId(taskId).singleResult();
+            if (internalTask == null) {
+                throw new NotFoundException("Unable to find task for the given id: " + taskId);
+            }
+            return taskConverter.from(internalTask);
         }
-        return taskConverter.from(internalTask);
+        throw new IllegalStateException("Only users with Role Admin can use the Admin Runtimes");
     }
 
     @Override
     public Page<Task> tasks(Pageable pageable) {
-        //@TODO: add admin role validation here
-        return tasks(pageable,
-              TaskPayloadBuilder.tasks().build());
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
+        if (userRoles != null && userRoles.contains("admin")) { //@TODO: make it flexible with a Env Var
+            return tasks(pageable,
+                         TaskPayloadBuilder.tasks().build());
+        }
+        throw new IllegalStateException("Only users with Role Admin can use the Admin Runtimes");
     }
 
     @Override
     public Page<Task> tasks(Pageable pageable,
                             GetTasksPayload getTasksPayload) {
-        //@TODO: add admin role validation here
-        TaskQuery taskQuery = taskService.createTaskQuery();
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
+        if (userRoles != null && userRoles.contains("admin")) { //@TODO: make it flexible with a Env Var
+            TaskQuery taskQuery = taskService.createTaskQuery();
 
-        if (getTasksPayload.getProcessInstanceId() != null) {
-            taskQuery = taskQuery.processInstanceId(getTasksPayload.getProcessInstanceId());
-        }
-        if (getTasksPayload.getParentTaskId() != null) {
-            taskQuery = taskQuery.taskParentTaskId(getTasksPayload.getParentTaskId());
-        }
+            if (getTasksPayload.getProcessInstanceId() != null) {
+                taskQuery = taskQuery.processInstanceId(getTasksPayload.getProcessInstanceId());
+            }
+            if (getTasksPayload.getParentTaskId() != null) {
+                taskQuery = taskQuery.taskParentTaskId(getTasksPayload.getParentTaskId());
+            }
 
-        List<Task> tasks = taskConverter.from(taskQuery.listPage(pageable.getStartIndex(),
-                                                                 pageable.getMaxItems()));
-        return new PageImpl<>(tasks,
-                              Math.toIntExact(taskQuery.count()));
+            List<Task> tasks = taskConverter.from(taskQuery.listPage(pageable.getStartIndex(),
+                                                                     pageable.getMaxItems()));
+            return new PageImpl<>(tasks,
+                                  Math.toIntExact(taskQuery.count()));
+        }
+        throw new IllegalStateException("Only users with Role Admin can use the Admin Runtimes");
     }
 
     @Override
     public Task delete(DeleteTaskPayload deleteTaskPayload) {
-        //@TODO: not the most efficient way to return the just deleted task, improve
-        //      we might need to create an empty shell with the task ID and Status only
-        Task task = task(deleteTaskPayload.getTaskId());
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
+        if (userRoles != null && userRoles.contains("admin")) { //@TODO: make it flexible with a Env Var
+            //      we might need to create an empty shell with the task ID and Status only
+            Task task = task(deleteTaskPayload.getTaskId());
 
-        TaskImpl deletedTaskData = new TaskImpl(task.getId(),
-                                                task.getName(),
-                                                Task.TaskStatus.DELETED);
-        taskService.deleteTask(deleteTaskPayload.getTaskId(),
-                               deleteTaskPayload.getReason(),
-                               true);
-        return deletedTaskData;
+            TaskImpl deletedTaskData = new TaskImpl(task.getId(),
+                                                    task.getName(),
+                                                    Task.TaskStatus.DELETED);
+            taskService.deleteTask(deleteTaskPayload.getTaskId(),
+                                   deleteTaskPayload.getReason(),
+                                   true);
+            return deletedTaskData;
+        }
+        throw new IllegalStateException("Only users with Role Admin can use the Admin Runtimes");
     }
 
     private org.activiti.engine.task.Task getInternalTask(String taskId) {

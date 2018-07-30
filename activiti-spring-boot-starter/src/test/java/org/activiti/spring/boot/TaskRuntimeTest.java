@@ -43,14 +43,23 @@ public class TaskRuntimeTest {
 
     private ActivitiUser garth;
 
+    private ActivitiUser admin;
+
     @Before
     public void init() {
+        if (!userGroupManager.exists("admin")) {
+            admin = userGroupManager.create("admin",
+                                              "password",
+                                              Arrays.asList("adminGroup"),
+                                              Arrays.asList("admin"));
+        } else {
+            admin = userGroupManager.loadUser("admin");
+        }
         if (!userGroupManager.exists("salaboy")) {
             salaboy = userGroupManager.create("salaboy",
                                               "password",
                                               Arrays.asList("activitiTeam"),
-                                              Arrays.asList("user",
-                                                            "admin"));
+                                              Arrays.asList("user"));
         } else {
             salaboy = userGroupManager.loadUser("salaboy");
         }
@@ -68,7 +77,7 @@ public class TaskRuntimeTest {
     public void tearDown() {
         // Created Task clean up
 
-        securityManager.authorize(garth);
+        securityManager.authorize(admin);
 
         Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0,
                                                               50));
