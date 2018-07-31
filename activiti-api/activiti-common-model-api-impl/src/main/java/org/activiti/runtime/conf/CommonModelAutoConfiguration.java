@@ -21,8 +21,12 @@ import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import org.activiti.runtime.api.EmptyResult;
+import org.activiti.runtime.api.Payload;
+import org.activiti.runtime.api.Result;
 import org.activiti.runtime.api.model.VariableInstance;
 import org.activiti.runtime.api.model.impl.VariableInstanceImpl;
 import org.springframework.context.annotation.Bean;
@@ -53,6 +57,14 @@ public class CommonModelAutoConfiguration {
                             VariableInstanceImpl.class);
 
         module.setAbstractTypes(resolver);
+
+        module.setMixInAnnotation(Payload.class,
+                                  PayloadMixIn.class);
+        module.setMixInAnnotation(Result.class,
+                                  ResultMixIn.class);
+
+        module.registerSubtypes(new NamedType(EmptyResult.class,
+                                              EmptyResult.class.getSimpleName()));
 
         return module;
     }

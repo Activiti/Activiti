@@ -24,8 +24,6 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.activiti.runtime.api.Payload;
-import org.activiti.runtime.api.Result;
 import org.activiti.runtime.api.model.Task;
 import org.activiti.runtime.api.model.TaskCandidateGroup;
 import org.activiti.runtime.api.model.TaskCandidateUser;
@@ -72,43 +70,36 @@ public class TaskModelAutoConfiguration {
                             TaskCandidateUserImpl.class);
         resolver.addMapping(TaskCandidateGroup.class,
                             TaskCandidateGroupImpl.class);
-        resolver.addMapping(Result.class,
-                            TaskResult.class);
-
-        module.setMixInAnnotation(Result.class,
-                                  TaskResultMixIn.class);
-        module.setMixInAnnotation(Payload.class,
-                                  TaskPayloadMixIn.class);
 
         module.registerSubtypes(new NamedType(TaskResult.class,
-                                              TaskResult.class.getName()));
+                                              TaskResult.class.getSimpleName()));
 
         module.registerSubtypes(new NamedType(ClaimTaskPayload.class,
-                                              ClaimTaskPayload.class.getName()));
+                                              ClaimTaskPayload.class.getSimpleName()));
 
         module.registerSubtypes(new NamedType(CompleteTaskPayload.class,
-                                              CompleteTaskPayload.class.getName()));
+                                              CompleteTaskPayload.class.getSimpleName()));
 
         module.registerSubtypes(new NamedType(CreateTaskPayload.class,
-                                              CreateTaskPayload.class.getName()));
+                                              CreateTaskPayload.class.getSimpleName()));
 
         module.registerSubtypes(new NamedType(DeleteTaskPayload.class,
-                                              DeleteTaskPayload.class.getName()));
+                                              DeleteTaskPayload.class.getSimpleName()));
 
         module.registerSubtypes(new NamedType(GetTasksPayload.class,
-                                              GetTasksPayload.class.getName()));
+                                              GetTasksPayload.class.getSimpleName()));
 
         module.registerSubtypes(new NamedType(GetTaskVariablesPayload.class,
-                                              GetTaskVariablesPayload.class.getName()));
+                                              GetTaskVariablesPayload.class.getSimpleName()));
 
         module.registerSubtypes(new NamedType(ReleaseTaskPayload.class,
-                                              ReleaseTaskPayload.class.getName()));
+                                              ReleaseTaskPayload.class.getSimpleName()));
 
         module.registerSubtypes(new NamedType(SetTaskVariablesPayload.class,
-                                              SetTaskVariablesPayload.class.getName()));
+                                              SetTaskVariablesPayload.class.getSimpleName()));
 
         module.registerSubtypes(new NamedType(UpdateTaskPayload.class,
-                                              UpdateTaskPayload.class.getName()));
+                                              UpdateTaskPayload.class.getSimpleName()));
 
         module.setAbstractTypes(resolver);
 

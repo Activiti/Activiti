@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package org.activiti.runtime.conf;
+package org.activiti.runtime.api;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+public class EmptyResult extends Result<Void> {
 
-@JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "command.commandType")
-public class CommandResultMixin {
+    public EmptyResult() {
+    }
 
+    public EmptyResult(Payload payload) {
+        super(payload,
+              null);
+    }
 }

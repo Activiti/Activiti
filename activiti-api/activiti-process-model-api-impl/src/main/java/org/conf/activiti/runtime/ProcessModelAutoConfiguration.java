@@ -24,8 +24,6 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.activiti.runtime.api.Payload;
-import org.activiti.runtime.api.Result;
 import org.activiti.runtime.api.model.BPMNActivity;
 import org.activiti.runtime.api.model.IntegrationContext;
 import org.activiti.runtime.api.model.ProcessDefinition;
@@ -82,37 +80,30 @@ public class ProcessModelAutoConfiguration {
                             SequenceFlowImpl.class);
         resolver.addMapping(IntegrationContext.class,
                             IntegrationContextImpl.class);
-        resolver.addMapping(Result.class,
-                            ProcessInstanceResult.class);
-
-        module.setMixInAnnotation(Result.class,
-                                  ProcessInstanceResultMixIn.class);
-        module.setMixInAnnotation(Payload.class,
-                                  ProcessPayloadMixIn.class);
 
         module.registerSubtypes(new NamedType(ProcessInstanceResult.class,
-                                              ProcessInstanceResult.class.getName()));
+                                              ProcessInstanceResult.class.getSimpleName()));
 
         module.registerSubtypes(new NamedType(DeleteProcessPayload.class,
-                                              DeleteProcessPayload.class.getName()));
+                                              DeleteProcessPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(GetProcessDefinitionsPayload.class,
-                                              GetProcessDefinitionsPayload.class.getName()));
+                                              GetProcessDefinitionsPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(GetProcessInstancesPayload.class,
-                                              GetProcessInstancesPayload.class.getName()));
+                                              GetProcessInstancesPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(GetVariablesPayload.class,
-                                              GetVariablesPayload.class.getName()));
+                                              GetVariablesPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(RemoveProcessVariablesPayload.class,
-                                              RemoveProcessVariablesPayload.class.getName()));
+                                              RemoveProcessVariablesPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(SetProcessVariablesPayload.class,
-                                              SetProcessVariablesPayload.class.getName()));
+                                              SetProcessVariablesPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(SignalPayload.class,
-                                              SignalPayload.class.getName()));
+                                              SignalPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(StartProcessPayload.class,
-                                              StartProcessPayload.class.getName()));
+                                              StartProcessPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(SuspendProcessPayload.class,
-                                              SuspendProcessPayload.class.getName()));
+                                              SuspendProcessPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(ResumeProcessPayload.class,
-                                              ResumeProcessPayload.class.getName()));
+                                              ResumeProcessPayload.class.getSimpleName()));
 
         module.setAbstractTypes(resolver);
         return module;
