@@ -153,4 +153,19 @@ public class ProcessInstanceImpl implements ProcessInstance {
                             businessKey,
                             status);
     }
+
+    @Override
+    public String toString() {
+        return "ProcessInstance{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", processDefinitionId='" + processDefinitionId + '\'' +
+                ", processDefinitionKey='" + processDefinitionKey + '\'' +
+                ", initiator='" + initiator + '\'' +
+                ", startDate=" + startDate +
+                ", businessKey='" + businessKey + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }

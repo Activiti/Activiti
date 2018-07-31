@@ -16,26 +16,14 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.engine.RuntimeService;
-import org.activiti.runtime.api.model.FluentProcessInstance;
 import org.activiti.runtime.api.model.ProcessInstance;
 
-public class APIProcessInstanceConverter extends ListConverter<org.activiti.engine.runtime.ProcessInstance, FluentProcessInstance>
-        implements ModelConverter<org.activiti.engine.runtime.ProcessInstance, FluentProcessInstance> {
-
-    private final RuntimeService runtimeService;
-    private final APIVariableInstanceConverter variableInstanceConverter;
-
-    public APIProcessInstanceConverter(RuntimeService runtimeService,
-                                       APIVariableInstanceConverter variableInstanceConverter) {
-        this.runtimeService = runtimeService;
-        this.variableInstanceConverter = variableInstanceConverter;
-    }
+public class APIProcessInstanceConverter extends ListConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance>
+        implements ModelConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance> {
 
     @Override
-    public FluentProcessInstance from(org.activiti.engine.runtime.ProcessInstance internalProcessInstance) {
-        FluentProcessInstanceImpl processInstance = new FluentProcessInstanceImpl(runtimeService,
-                                                                             variableInstanceConverter);
+    public ProcessInstance from(org.activiti.engine.runtime.ProcessInstance internalProcessInstance) {
+        ProcessInstanceImpl processInstance = new ProcessInstanceImpl();
         processInstance.setId(internalProcessInstance.getId());
         processInstance.setName(internalProcessInstance.getName());
         processInstance.setDescription(internalProcessInstance.getDescription());

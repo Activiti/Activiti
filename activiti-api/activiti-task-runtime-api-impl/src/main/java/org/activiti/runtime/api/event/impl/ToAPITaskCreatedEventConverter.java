@@ -19,7 +19,6 @@ package org.activiti.runtime.api.event.impl;
 import java.util.Optional;
 
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti.engine.task.Task;
 import org.activiti.runtime.api.event.TaskCreated;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
@@ -33,7 +32,6 @@ public class ToAPITaskCreatedEventConverter implements EventConverter<TaskCreate
 
     @Override
     public Optional<TaskCreated> from(ActivitiEntityEvent internalEvent) {
-        return Optional.of(new TaskCreatedEventImpl(taskConverter.from((Task) internalEvent.getEntity())));
+        return Optional.of(new TaskCreatedEventImpl(taskConverter.from((org.activiti.engine.task.Task) internalEvent.getEntity())));
     }
-
 }

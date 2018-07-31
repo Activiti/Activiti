@@ -25,7 +25,8 @@ public interface Task {
         ASSIGNED,
         SUSPENDED,
         COMPLETED,
-        CANCELLED
+        CANCELLED,
+        DELETED
     }
 
     String getId();

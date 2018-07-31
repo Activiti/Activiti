@@ -18,15 +18,15 @@ package org.activiti.runtime.api.event.impl;
 
 import org.activiti.runtime.api.event.ProcessRuntimeEvent;
 import org.activiti.runtime.api.event.ProcessStarted;
-import org.activiti.runtime.api.model.FluentProcessInstance;
+import org.activiti.runtime.api.model.ProcessInstance;
 
-public class ProcessStartedEventImpl extends RuntimeEventImpl<FluentProcessInstance, ProcessRuntimeEvent.ProcessEvents>
+public class ProcessStartedEventImpl extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
         implements ProcessStarted {
 
     private String nestedProcessDefinitionId;
     private String nestedProcessInstanceId;
 
-    public ProcessStartedEventImpl(FluentProcessInstance entity) {
+    public ProcessStartedEventImpl(ProcessInstance entity) {
         super(entity);
     }
 
@@ -52,5 +52,4 @@ public class ProcessStartedEventImpl extends RuntimeEventImpl<FluentProcessInsta
     public ProcessEvents getEventType() {
         return ProcessEvents.PROCESS_STARTED;
     }
-
 }

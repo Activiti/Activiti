@@ -27,4 +27,6 @@ public interface ProcessRuntimeConfiguration {
 
     List<VariableEventListener<?>> variableEventListeners();
 
+    int maxPagedResults();
+
 }

@@ -22,7 +22,9 @@
     <module>activiti-image-generator</module>
     <module>activiti-json-converter</module>
     <module>activiti-engine</module>
+    <module>activiti-identity-basic</module>
     <module>activiti-spring</module>
+    <module>activiti-spring-boot-starter</module>
   </modules>
   <scm>
     <url>https://github.com/Activiti/Activiti</url>

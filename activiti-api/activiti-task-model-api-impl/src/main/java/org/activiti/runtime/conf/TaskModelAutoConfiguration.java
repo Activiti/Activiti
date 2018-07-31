@@ -24,28 +24,28 @@ import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.activiti.runtime.api.cmd.TaskCommands;
-import org.activiti.runtime.api.cmd.impl.ClaimTaskImpl;
-import org.activiti.runtime.api.cmd.impl.CompleteTaskImpl;
-import org.activiti.runtime.api.cmd.impl.CreateTaskImpl;
-import org.activiti.runtime.api.cmd.impl.ReleaseTaskImpl;
-import org.activiti.runtime.api.cmd.impl.SetTaskVariablesImpl;
-import org.activiti.runtime.api.cmd.impl.UpdateTaskImpl;
-import org.activiti.runtime.api.cmd.result.impl.ClaimTaskResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.CompleteTaskResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.CreateTaskResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.ReleaseTaskResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.SetTaskVariablesResultImpl;
-import org.activiti.runtime.api.cmd.result.impl.UpdateTaskResultImpl;
 import org.activiti.runtime.api.model.Task;
 import org.activiti.runtime.api.model.TaskCandidateGroup;
 import org.activiti.runtime.api.model.TaskCandidateUser;
 import org.activiti.runtime.api.model.impl.TaskCandidateGroupImpl;
 import org.activiti.runtime.api.model.impl.TaskCandidateUserImpl;
 import org.activiti.runtime.api.model.impl.TaskImpl;
+import org.activiti.runtime.api.model.payloads.ClaimTaskPayload;
+import org.activiti.runtime.api.model.payloads.CompleteTaskPayload;
+import org.activiti.runtime.api.model.payloads.CreateTaskPayload;
+import org.activiti.runtime.api.model.payloads.DeleteTaskPayload;
+import org.activiti.runtime.api.model.payloads.GetTaskVariablesPayload;
+import org.activiti.runtime.api.model.payloads.GetTasksPayload;
+import org.activiti.runtime.api.model.payloads.ReleaseTaskPayload;
+import org.activiti.runtime.api.model.payloads.SetTaskVariablesPayload;
+import org.activiti.runtime.api.model.payloads.UpdateTaskPayload;
+import org.activiti.runtime.api.model.results.TaskResult;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+@AutoConfigureBefore({JacksonAutoConfiguration.class})
 @Configuration
 public class TaskModelAutoConfiguration {
 
@@ -54,13 +54,14 @@ public class TaskModelAutoConfiguration {
     public Module customizeTaskModelObjectMapper() {
         SimpleModule module = new SimpleModule("mapTaskRuntimeInterfaces",
                                                Version.unknownVersion());
-        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver(){
+        SimpleAbstractTypeResolver resolver = new SimpleAbstractTypeResolver() {
             //this is a workaround for https://github.com/FasterXML/jackson-databind/issues/2019
             //once version 2.9.6 is related we can remove this @override method
             @Override
             public JavaType resolveAbstractType(DeserializationConfig config,
                                                 BeanDescription typeDesc) {
-                return findTypeMapping(config, typeDesc.getType());
+                return findTypeMapping(config,
+                                       typeDesc.getType());
             }
         };
         resolver.addMapping(Task.class,
@@ -70,41 +71,38 @@ public class TaskModelAutoConfiguration {
         resolver.addMapping(TaskCandidateGroup.class,
                             TaskCandidateGroupImpl.class);
 
+        module.registerSubtypes(new NamedType(TaskResult.class,
+                                              TaskResult.class.getSimpleName()));
+
+        module.registerSubtypes(new NamedType(ClaimTaskPayload.class,
+                                              ClaimTaskPayload.class.getSimpleName()));
+
+        module.registerSubtypes(new NamedType(CompleteTaskPayload.class,
+                                              CompleteTaskPayload.class.getSimpleName()));
+
+        module.registerSubtypes(new NamedType(CreateTaskPayload.class,
+                                              CreateTaskPayload.class.getSimpleName()));
+
+        module.registerSubtypes(new NamedType(DeleteTaskPayload.class,
+                                              DeleteTaskPayload.class.getSimpleName()));
+
+        module.registerSubtypes(new NamedType(GetTasksPayload.class,
+                                              GetTasksPayload.class.getSimpleName()));
+
+        module.registerSubtypes(new NamedType(GetTaskVariablesPayload.class,
+                                              GetTaskVariablesPayload.class.getSimpleName()));
+
+        module.registerSubtypes(new NamedType(ReleaseTaskPayload.class,
+                                              ReleaseTaskPayload.class.getSimpleName()));
+
+        module.registerSubtypes(new NamedType(SetTaskVariablesPayload.class,
+                                              SetTaskVariablesPayload.class.getSimpleName()));
+
+        module.registerSubtypes(new NamedType(UpdateTaskPayload.class,
+                                              UpdateTaskPayload.class.getSimpleName()));
 
         module.setAbstractTypes(resolver);
 
-        module.registerSubtypes(new NamedType(ClaimTaskImpl.class,
-                                              TaskCommands.CLAIM_TASK.name()));
-        module.registerSubtypes(new NamedType(ClaimTaskResultImpl.class,
-                                              TaskCommands.CLAIM_TASK.name()));
-
-        module.registerSubtypes(new NamedType(CreateTaskImpl.class,
-                                              TaskCommands.CREATE_TASK.name()));
-        module.registerSubtypes(new NamedType(CreateTaskResultImpl.class,
-                                              TaskCommands.CREATE_TASK.name()));
-
-        module.registerSubtypes(new NamedType(ReleaseTaskImpl.class,
-                                              TaskCommands.RELEASE_TASK.name()));
-        module.registerSubtypes(new NamedType(ReleaseTaskResultImpl.class,
-                                              TaskCommands.RELEASE_TASK.name()));
-
-        module.registerSubtypes(new NamedType(CompleteTaskImpl.class,
-                                              TaskCommands.COMPLETE_TASK.name()));
-        module.registerSubtypes(new NamedType(CompleteTaskResultImpl.class,
-                                              TaskCommands.COMPLETE_TASK.name()));
-
-        module.registerSubtypes(new NamedType(UpdateTaskImpl.class,
-                                              TaskCommands.UPDATE_TASK.name()));
-        module.registerSubtypes(new NamedType(UpdateTaskResultImpl.class,
-                                              TaskCommands.UPDATE_TASK.name()));
-
-        module.registerSubtypes(new NamedType(SetTaskVariablesImpl.class,
-                                              TaskCommands.SET_TASK_VARIABLES.name()));
-        module.registerSubtypes(new NamedType(SetTaskVariablesResultImpl.class,
-                                              TaskCommands.SET_TASK_VARIABLES.name()));
-
         return module;
     }
-
-
 }
