@@ -19,7 +19,7 @@ package org.activiti.runtime.api.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.cloud.services.security.SecurityPoliciesManager;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -28,6 +28,7 @@ import org.activiti.runtime.api.NotFoundException;
 import org.activiti.runtime.api.ProcessRuntime;
 import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
 import org.activiti.runtime.api.identity.UserGroupManager;
+import org.activiti.runtime.api.security.SecurityManager;
 import org.activiti.runtime.api.model.ProcessDefinition;
 import org.activiti.runtime.api.model.ProcessDefinitionMeta;
 import org.activiti.runtime.api.model.ProcessInstance;
@@ -47,6 +48,8 @@ import org.activiti.runtime.api.model.payloads.SuspendProcessPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.query.impl.PageImpl;
+import org.activiti.spring.security.policies.SecurityPoliciesManager;
+import org.activiti.spring.security.policies.SecurityPolicy;
 
 public class ProcessRuntimeImpl implements ProcessRuntime {
 
@@ -89,19 +92,69 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     @Override
+    public ProcessDefinition processDefinition(String processDefinitionId) {
+        org.activiti.engine.repository.ProcessDefinition processDefinition = null;
+        try {
+            processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        } catch (ActivitiObjectNotFoundException internalEx) {
+
+        }
+        if (processDefinition == null) {
+            // try searching by Key if there is matching ID
+            List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionId).list();
+            if (!list.isEmpty()) {
+                processDefinition = list.get(0);
+            } else {
+                throw new NotFoundException("Unable to find process definition for the given key:'" + processDefinitionId + "'");
+            }
+        }
+        if (!securityPoliciesManager.canRead(processDefinition.getKey())) {
+            throw new ActivitiObjectNotFoundException("Unable to find process definition for the given id:'" + processDefinitionId + "'");
+        }
+        return processDefinitionConverter.from(processDefinition);
+    }
+
+
+    @Override
     public Page<ProcessDefinition> processDefinitions(Pageable pageable) {
         return processDefinitions(pageable,
                 null);
     }
 
     @Override
+    public Page<ProcessDefinition> processDefinitions(Pageable pageable,
+                                                      GetProcessDefinitionsPayload getProcessDefinitionsPayload) {
+        //@TODO: do the user role check here
+        GetProcessDefinitionsPayload securityKeysInPayload = securityPoliciesManager.restrictProcessDefQuery(SecurityPolicy.READ);
+        // If the security policies keys are not empty it means that I will need to use them to filter results,
+        //   else ignore and use the user provided ones.
+        if(!securityKeysInPayload.getProcessDefinitionKeys().isEmpty()){
+            getProcessDefinitionsPayload.setProcessDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());
+        }
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService
+                .createProcessDefinitionQuery();
+        if (getProcessDefinitionsPayload != null &&
+                getProcessDefinitionsPayload.getProcessDefinitionKeys() != null &&
+                !getProcessDefinitionsPayload.getProcessDefinitionKeys().isEmpty()) {
+            processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
+        }
+        return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
+                Math.toIntExact(processDefinitionQuery.count()));
+    }
+
+    @Override
     public ProcessInstance processInstance(String processInstanceId) {
+        //@TODO: do the user role check here
         org.activiti.engine.runtime.ProcessInstance internalProcessInstance = runtimeService
                 .createProcessInstanceQuery()
                 .processInstanceId(processInstanceId)
                 .singleResult();
         if (internalProcessInstance == null) {
             throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
+        }
+        if (!securityPoliciesManager.canRead(internalProcessInstance.getProcessDefinitionKey())) {
+            throw new ActivitiObjectNotFoundException("You cannot read the process instance with Id:'"
+                    + processInstanceId + "' due to security policies violation");
         }
         return processInstanceConverter.from(internalProcessInstance);
     }
@@ -110,6 +163,45 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     public Page<ProcessInstance> processInstances(Pageable pageable) {
         return processInstances(pageable,
                 null);
+
+
+    }
+
+    @Override
+    public Page<ProcessInstance> processInstances(Pageable pageable,
+                                                  GetProcessInstancesPayload getProcessInstancesPayload) {
+
+        GetProcessInstancesPayload securityKeysInPayload = securityPoliciesManager.restrictProcessInstQuery(SecurityPolicy.READ);
+
+        org.activiti.engine.runtime.ProcessInstanceQuery internalQuery = runtimeService.createProcessInstanceQuery();
+
+        if (getProcessInstancesPayload != null) {
+            if(!securityKeysInPayload.getProcessDefinitionKeys().isEmpty()){
+                getProcessInstancesPayload.setProcessDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());
+            }
+            if (getProcessInstancesPayload.getProcessDefinitionKeys() != null &&
+                    !getProcessInstancesPayload.getProcessDefinitionKeys().isEmpty()) {
+                internalQuery.processDefinitionKeys(getProcessInstancesPayload.getProcessDefinitionKeys());
+            }
+            if (getProcessInstancesPayload.getBusinessKey() != null &&
+                    !getProcessInstancesPayload.getBusinessKey().isEmpty()) {
+                internalQuery.processInstanceBusinessKey(getProcessInstancesPayload.getBusinessKey());
+            }
+
+            if (getProcessInstancesPayload.isSuspendedOnly()) {
+                internalQuery.suspended();
+            }
+
+            if (getProcessInstancesPayload.isActiveOnly()) {
+                internalQuery.active();
+            }
+
+        } else{
+            internalQuery.processDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());
+        }
+        return new PageImpl<>(processInstanceConverter.from(internalQuery.listPage(pageable.getStartIndex(),
+                pageable.getMaxItems())),
+                Math.toIntExact(internalQuery.count()));
     }
 
     @Override
@@ -195,25 +287,6 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         }
     }
 
-    @Override
-    public ProcessDefinition processDefinition(String processDefinitionId) {
-        org.activiti.engine.repository.ProcessDefinition processDefinition = null;
-        try {
-            processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
-        } catch (ActivitiObjectNotFoundException internalEx) {
-
-        }
-        if (processDefinition == null) {
-            // try searching by Key if there is matching ID
-            List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionId).list();
-            if (!list.isEmpty()) {
-                processDefinition = list.get(0);
-            } else {
-                throw new NotFoundException("Unable to find process definition for the given key:'" + processDefinitionId + "'");
-            }
-        }
-        return processDefinitionConverter.from(processDefinition);
-    }
 
     @Override
     public ProcessDefinitionMeta processDefinitionMeta(String processDefinitionKey) {
@@ -227,47 +300,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         return processInstanceMeta;
     }
 
-    @Override
-    public Page<ProcessDefinition> processDefinitions(Pageable pageable,
-                                                      GetProcessDefinitionsPayload getProcessDefinitionsPayload) {
 
-        ProcessDefinitionQuery processDefinitionQuery = repositoryService
-                .createProcessDefinitionQuery();
-        if (getProcessDefinitionsPayload != null &&
-                getProcessDefinitionsPayload.getProcessDefinitionKeys() != null &&
-                !getProcessDefinitionsPayload.getProcessDefinitionKeys().isEmpty()) {
-            processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
-        }
-        return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
-                Math.toIntExact(processDefinitionQuery.count()));
-    }
 
-    @Override
-    public Page<ProcessInstance> processInstances(Pageable pageable,
-                                                  GetProcessInstancesPayload getProcessInstancesPayload) {
-        org.activiti.engine.runtime.ProcessInstanceQuery internalQuery = runtimeService.createProcessInstanceQuery();
 
-        if (getProcessInstancesPayload != null) {
-            if (getProcessInstancesPayload.getProcessDefinitionKeys() != null &&
-                    !getProcessInstancesPayload.getProcessDefinitionKeys().isEmpty()) {
-                internalQuery.processDefinitionKeys(getProcessInstancesPayload.getProcessDefinitionKeys());
-            }
-            if (getProcessInstancesPayload.getBusinessKey() != null &&
-                    !getProcessInstancesPayload.getBusinessKey().isEmpty()) {
-                internalQuery.processInstanceBusinessKey(getProcessInstancesPayload.getBusinessKey());
-            }
-
-            if (getProcessInstancesPayload.isSuspendedOnly()) {
-                internalQuery.suspended();
-            }
-
-            if (getProcessInstancesPayload.isActiveOnly()) {
-                internalQuery.active();
-            }
-
-        }
-        return new PageImpl<>(processInstanceConverter.from(internalQuery.listPage(pageable.getStartIndex(),
-                pageable.getMaxItems())),
-                Math.toIntExact(internalQuery.count()));
-    }
 }

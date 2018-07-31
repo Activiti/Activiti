@@ -3,6 +3,9 @@ package org.activiti.cloud.services.security;
 
 import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.runtime.api.security.SecurityManager;
+import org.activiti.spring.security.policies.BaseSecurityPoliciesManagerImpl;
+import org.activiti.spring.security.policies.SecurityPoliciesService;
+import org.activiti.spring.security.policies.SecurityPolicy;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -26,7 +29,7 @@ public class BaseSecurityPoliciesApplicationServiceTest {
 
     @InjectMocks
     @Spy
-    private BaseSecurityPoliciesManager securityPoliciesApplicationService;
+    private BaseSecurityPoliciesManagerImpl securityPoliciesApplicationService;
 
     @Mock
     private UserGroupManager userGroupManager;

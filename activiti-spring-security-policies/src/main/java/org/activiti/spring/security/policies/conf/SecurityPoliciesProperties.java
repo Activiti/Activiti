@@ -1,4 +1,4 @@
-package org.activiti.cloud.services.security.conf;
+package org.activiti.spring.security.policies.conf;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,7 +9,7 @@ import java.util.Map;
 
 @ConfigurationProperties("activiti.security.policies")
 @Component
-public class SecurityProperties implements InitializingBean {
+public class SecurityPoliciesProperties implements InitializingBean {
 
     private Map<String, String> group = new HashMap<String, String>();
     private Map<String, String> user = new HashMap<String,String>();

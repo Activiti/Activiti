@@ -24,7 +24,7 @@ public class StartProcessPayloadBuilder {
             this.variables = new HashMap<>();
         }
         this.variables.put(name,
-                           value);
+                value);
         return this;
     }
 
@@ -50,8 +50,9 @@ public class StartProcessPayloadBuilder {
 
     public StartProcessPayload build() {
         return new StartProcessPayload(processDefinitionId,
-                                       processDefinitionKey,
-                                       businessKey,
-                                       variables);
+                processDefinitionKey,
+                processInstanceName,
+                businessKey,
+                variables);
     }
 }

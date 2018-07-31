@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import org.activiti.cloud.services.security.conf.SecurityProperties;
+import org.activiti.spring.security.policies.SecurityPoliciesService;
+import org.activiti.spring.security.policies.SecurityPolicy;
+import org.activiti.spring.security.policies.conf.SecurityPoliciesProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -22,7 +23,7 @@ public class SecurityPoliciesServiceTest {
     private SecurityPoliciesService securityPoliciesService;
 
     @Mock
-    private SecurityProperties securityProperties;
+    private SecurityPoliciesProperties securityPoliciesProperties;
 
     private final String rb1 = "rb1";
     private final String rb2 = "rb2";
@@ -49,8 +50,8 @@ public class SecurityPoliciesServiceTest {
         user.put("bob." + rb1 + ".policy.read",
                  "TestProcess");
 
-        when(securityProperties.getGroup()).thenReturn(group);
-        when(securityProperties.getUser()).thenReturn(user);
+        when(securityPoliciesProperties.getGroup()).thenReturn(group);
+        when(securityPoliciesProperties.getUser()).thenReturn(user);
     }
 
     @Test

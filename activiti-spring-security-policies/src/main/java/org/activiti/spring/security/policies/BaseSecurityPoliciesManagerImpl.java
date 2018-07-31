@@ -1,4 +1,4 @@
-package org.activiti.cloud.services.security;
+package org.activiti.spring.security.policies;
 
 import java.util.HashSet;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.runtime.api.security.SecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class BaseSecurityPoliciesManager implements SecurityPoliciesManager {
+public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPoliciesManager {
 
     @Autowired
     protected UserGroupManager userGroupManager;
@@ -20,11 +20,11 @@ public class BaseSecurityPoliciesManager implements SecurityPoliciesManager {
     @Autowired
     protected SecurityPoliciesService securityPoliciesService;
 
-    protected boolean noSecurityPoliciesOrNoUser() {
+    public boolean noSecurityPoliciesOrNoUser() {
         return !securityPoliciesService.policiesDefined() || securityManager.getAuthenticatedUserId() == null;
     }
 
-    protected Map<String, Set<String>> definitionKeysAllowedForPolicy(SecurityPolicy securityPolicy) {
+    public Map<String, Set<String>> definitionKeysAllowedForPolicy(SecurityPolicy securityPolicy) {
         List<String> groups = null;
 
         if (userGroupManager != null && securityManager.getAuthenticatedUserId()!= null) {
@@ -52,7 +52,7 @@ public class BaseSecurityPoliciesManager implements SecurityPoliciesManager {
     }
 
 
-    protected boolean hasPermission(String processDefinitionKey,
+    public boolean hasPermission(String processDefinitionKey,
                                   SecurityPolicy securityPolicy,
                                   String appName) {
 
