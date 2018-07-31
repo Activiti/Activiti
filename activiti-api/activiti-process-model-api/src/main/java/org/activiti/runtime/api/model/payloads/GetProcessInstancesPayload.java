@@ -10,6 +10,8 @@ public class GetProcessInstancesPayload implements Payload {
     private String id;
     private Set<String> processDefinitionKeys;
     private String businessKey;
+    private boolean suspendedOnly;
+    private boolean activeOnly;
 
     public GetProcessInstancesPayload() {
         this.id = UUID.randomUUID().toString();
@@ -34,5 +36,21 @@ public class GetProcessInstancesPayload implements Payload {
 
     public void setProcessDefinitionKeys(Set<String> processDefinitionKeys) {
         this.processDefinitionKeys = processDefinitionKeys;
+    }
+
+    public boolean isSuspendedOnly() {
+        return suspendedOnly;
+    }
+
+    public void setSuspendedOnly(boolean suspendedOnly) {
+        this.suspendedOnly = suspendedOnly;
+    }
+
+    public boolean isActiveOnly() {
+        return activeOnly;
+    }
+
+    public void setActiveOnly(boolean activeOnly) {
+        this.activeOnly = activeOnly;
     }
 }

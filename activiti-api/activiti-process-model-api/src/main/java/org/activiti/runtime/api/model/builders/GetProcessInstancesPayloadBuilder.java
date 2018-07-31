@@ -9,6 +9,8 @@ public class GetProcessInstancesPayloadBuilder {
 
     private String businessKey;
     private Set<String> processDefinitionKeys;
+    private boolean suspendedOnly = false;
+    private boolean activeOnly = false;
 
     public GetProcessInstancesPayloadBuilder withBusinessKey(String businessKey) {
         this.businessKey = businessKey;
@@ -28,10 +30,22 @@ public class GetProcessInstancesPayloadBuilder {
         return this;
     }
 
+    public GetProcessInstancesPayloadBuilder suspended() {
+        this.suspendedOnly = true;
+        return this;
+    }
+
+    public GetProcessInstancesPayloadBuilder active() {
+        this.activeOnly = true;
+        return this;
+    }
+
     public GetProcessInstancesPayload build() {
         GetProcessInstancesPayload getProcessInstancesPayload = new GetProcessInstancesPayload();
         getProcessInstancesPayload.setBusinessKey(businessKey);
         getProcessInstancesPayload.setProcessDefinitionKeys(processDefinitionKeys);
+        getProcessInstancesPayload.setActiveOnly(activeOnly);
+        getProcessInstancesPayload.setSuspendedOnly(suspendedOnly);
         return getProcessInstancesPayload;
     }
 }

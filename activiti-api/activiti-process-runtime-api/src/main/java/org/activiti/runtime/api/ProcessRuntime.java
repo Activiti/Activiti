@@ -83,25 +83,42 @@ public interface ProcessRuntime {
     Page<ProcessInstance> processInstances(Pageable pageable,
                                            GetProcessInstancesPayload getProcessInstancesPayload);
 
+    /*
+     * Get Process Instance by id
+     */
+    ProcessInstance processInstance(String processInstanceId);
+
+    /*
+     * Suspend a process instance
+     */
+    ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload);
+
+
+    /*
+     * Resume a suspended process instance
+     */
+    ProcessInstance resume(ResumeProcessPayload resumeProcessPayload);
+
+
+    /*
+     * Delete a Process Instance
+     */
+    ProcessInstance delete(DeleteProcessPayload deleteProcessPayload);
+
+    /*
+     * Signal
+     */
+    void signal(SignalPayload signalPayload);
 
     ProcessDefinitionMeta processDefinitionMeta(String processDefinitionKey);
 
-
-    ProcessInstance processInstance(String processInstanceId);
-
     ProcessInstanceMeta processInstanceMeta(String processInstanceId);
-
-    ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload);
-
-    ProcessInstance resume(ResumeProcessPayload resumeProcessPayload);
-
-    ProcessInstance delete(DeleteProcessPayload deleteProcessPayload);
 
     List<VariableInstance> variables(GetVariablesPayload getVariablesPayload); //I want to rename VariableInstance to Variable and it needs to be paged
 
     void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload); // review if we need to return removed variables// DO WE NEED THIS?>
 
-    void signal(SignalPayload signalPayload);
+
 
     void setVariables(SetProcessVariablesPayload setProcessVariablesPayload); // review if we need to return set variables
 

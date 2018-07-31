@@ -31,11 +31,7 @@ import org.activiti.runtime.api.model.ProcessDefinitionMeta;
 import org.activiti.runtime.api.model.ProcessInstance;
 import org.activiti.runtime.api.model.ProcessInstanceMeta;
 import org.activiti.runtime.api.model.VariableInstance;
-import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
-import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
-import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
-import org.activiti.runtime.api.model.impl.ProcessDefinitionMetaImpl;
-import org.activiti.runtime.api.model.impl.ProcessInstanceMetaImpl;
+import org.activiti.runtime.api.model.impl.*;
 import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
@@ -81,7 +77,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     @Override
     public Page<ProcessDefinition> processDefinitions(Pageable pageable) {
         return processDefinitions(pageable,
-                                  null);
+                null);
     }
 
     @Override
@@ -99,7 +95,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     @Override
     public Page<ProcessInstance> processInstances(Pageable pageable) {
         return processInstances(pageable,
-                                null);
+                null);
     }
 
     @Override
@@ -110,12 +106,12 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     @Override
     public ProcessInstance start(StartProcessPayload startProcessPayload) {
         return processInstanceConverter.from(runtimeService
-                                                     .createProcessInstanceBuilder()
-                                                     .processDefinitionId(startProcessPayload.getProcessDefinitionId())
-                                                     .processDefinitionKey(startProcessPayload.getProcessDefinitionKey())
-                                                     .businessKey(startProcessPayload.getBusinessKey())
-                                                     .variables(startProcessPayload.getVariables())
-                                                     .start());
+                .createProcessInstanceBuilder()
+                .processDefinitionId(startProcessPayload.getProcessDefinitionId())
+                .processDefinitionKey(startProcessPayload.getProcessDefinitionKey())
+                .businessKey(startProcessPayload.getBusinessKey())
+                .variables(startProcessPayload.getVariables())
+                .start());
     }
 
     @Override
@@ -128,7 +124,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     public ProcessInstance resume(ResumeProcessPayload resumeProcessPayload) {
         runtimeService.activateProcessInstanceById(resumeProcessPayload.getProcessInstanceId());
         return processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
-                                                     .processInstanceId(resumeProcessPayload.getProcessInstanceId()).singleResult());
+                .processInstanceId(resumeProcessPayload.getProcessInstanceId()).singleResult());
     }
 
     @Override
@@ -136,9 +132,11 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         org.activiti.engine.runtime.ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
                 .processInstanceId(deleteProcessPayload.getProcessInstanceId()).singleResult();
         runtimeService.deleteProcessInstance(deleteProcessPayload.getProcessInstanceId(),
-                                             deleteProcessPayload.getReason());
+                deleteProcessPayload.getReason());
         if (processInstance != null) {
-            return processInstanceConverter.from(processInstance);
+            ProcessInstanceImpl deletedProcessInstance = (ProcessInstanceImpl) processInstanceConverter.from(processInstance);
+            deletedProcessInstance.setStatus(ProcessInstance.ProcessInstanceStatus.DELETED);
+            return deletedProcessInstance;
         }
         return null;
     }
@@ -158,27 +156,27 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     public void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload) {
         if (removeProcessVariablesPayload.isLocalOnly()) {
             runtimeService.removeVariablesLocal(removeProcessVariablesPayload.getProcessInstanceId(),
-                                                removeProcessVariablesPayload.getVariableNames());
+                    removeProcessVariablesPayload.getVariableNames());
         } else {
             runtimeService.removeVariables(removeProcessVariablesPayload.getProcessInstanceId(),
-                                           removeProcessVariablesPayload.getVariableNames());
+                    removeProcessVariablesPayload.getVariableNames());
         }
     }
 
     @Override
     public void signal(SignalPayload signalPayload) {
         runtimeService.signalEventReceived(signalPayload.getName(),
-                                           signalPayload.getVariables());
+                signalPayload.getVariables());
     }
 
     @Override
     public void setVariables(SetProcessVariablesPayload setProcessVariablesPayload) {
         if (setProcessVariablesPayload.isLocalOnly()) {
             runtimeService.setVariablesLocal(setProcessVariablesPayload.getProcessInstanceId(),
-                                             setProcessVariablesPayload.getVariables());
+                    setProcessVariablesPayload.getVariables());
         } else {
             runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
-                                        setProcessVariablesPayload.getVariables());
+                    setProcessVariablesPayload.getVariables());
         }
     }
 
@@ -187,7 +185,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         org.activiti.engine.repository.ProcessDefinition processDefinition = null;
         try {
             processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
-        }catch(ActivitiObjectNotFoundException internalEx){
+        } catch (ActivitiObjectNotFoundException internalEx) {
 
         }
         if (processDefinition == null) {
@@ -226,7 +224,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
         return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
-                              Math.toIntExact(processDefinitionQuery.count()));
+                Math.toIntExact(processDefinitionQuery.count()));
     }
 
     @Override
@@ -243,16 +241,18 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                     !getProcessInstancesPayload.getBusinessKey().isEmpty()) {
                 internalQuery.processInstanceBusinessKey(getProcessInstancesPayload.getBusinessKey());
             }
-            // @TODO: check by status
-//            if(getProcessInstancesPayload.get){
-//                internalQuery.suspended()
-//                internalQuery.active()
-//
-//            }
+
+            if (getProcessInstancesPayload.isSuspendedOnly()) {
+                internalQuery.suspended();
+            }
+
+            if (getProcessInstancesPayload.isActiveOnly()) {
+                internalQuery.active();
+            }
 
         }
         return new PageImpl<>(processInstanceConverter.from(internalQuery.listPage(pageable.getStartIndex(),
-                                                                                   pageable.getMaxItems())),
-                              Math.toIntExact(internalQuery.count()));
+                pageable.getMaxItems())),
+                Math.toIntExact(internalQuery.count()));
     }
 }

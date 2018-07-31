@@ -38,6 +38,10 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
+      <artifactId>activiti-common-runtime-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-process-runtime-api-impl</artifactId>
     </dependency>
     <dependency>

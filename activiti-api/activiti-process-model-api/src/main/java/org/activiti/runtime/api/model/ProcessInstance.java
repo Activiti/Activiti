@@ -21,11 +21,11 @@ import java.util.Date;
 public interface ProcessInstance {
 
     enum ProcessInstanceStatus {
-        CREATED,
         RUNNING,
         SUSPENDED,
         CANCELLED,
-        COMPLETED
+        COMPLETED,
+        DELETED
     }
 
     String getId();
