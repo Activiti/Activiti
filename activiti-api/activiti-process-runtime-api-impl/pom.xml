@@ -67,6 +67,12 @@
       <artifactId>activiti-process-model-api-impl</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring-security-policies</artifactId>
+      <!-- @TODO: add to dep management -->
+      <version>7-201803-EA-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
     </dependency>
@@ -105,5 +111,6 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 </project>

@@ -1,6 +1,6 @@
 package org.activiti.cloud.services.security;
 
-public interface SecurityPoliciesApplicationService {
+public interface SecurityPoliciesManager {
 
     boolean canRead(String processDefinitionKey,
                     String appName);

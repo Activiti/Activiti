@@ -9,7 +9,7 @@ import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.runtime.api.security.SecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class BaseSecurityPoliciesApplicationService implements SecurityPoliciesApplicationService {
+public class BaseSecurityPoliciesManager implements SecurityPoliciesManager {
 
     @Autowired
     protected UserGroupManager userGroupManager;

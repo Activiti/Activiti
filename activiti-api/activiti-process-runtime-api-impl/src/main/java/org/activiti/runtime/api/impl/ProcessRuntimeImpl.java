@@ -19,6 +19,7 @@ package org.activiti.runtime.api.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.cloud.services.security.SecurityPoliciesManager;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -26,6 +27,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.NotFoundException;
 import org.activiti.runtime.api.ProcessRuntime;
 import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
+import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.runtime.api.model.ProcessDefinition;
 import org.activiti.runtime.api.model.ProcessDefinitionMeta;
 import org.activiti.runtime.api.model.ProcessInstance;
@@ -60,15 +62,27 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final ProcessRuntimeConfiguration configuration;
 
+    private final UserGroupManager userGroupManager;
+
+    private final SecurityManager securityManager;
+
+    private final SecurityPoliciesManager securityPoliciesManager;
+
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
+                              UserGroupManager userGroupManager,
+                              SecurityManager securityManager,
+                              SecurityPoliciesManager securityPoliciesManager,
                               APIProcessInstanceConverter processInstanceConverter,
                               APIVariableInstanceConverter variableInstanceConverter,
                               ProcessRuntimeConfiguration configuration) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
+        this.userGroupManager = userGroupManager;
+        this.securityManager = securityManager;
+        this.securityPoliciesManager = securityPoliciesManager;
         this.processInstanceConverter = processInstanceConverter;
         this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
@@ -111,6 +125,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                 .processDefinitionKey(startProcessPayload.getProcessDefinitionKey())
                 .businessKey(startProcessPayload.getBusinessKey())
                 .variables(startProcessPayload.getVariables())
+                .name(startProcessPayload.getProcessInstanceName())
                 .start());
     }
 

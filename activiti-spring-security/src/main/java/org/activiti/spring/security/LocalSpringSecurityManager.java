@@ -25,7 +25,7 @@ public class LocalSpringSecurityManager implements SecurityManager {
     @Autowired
     private UserGroupManager userGroupManager;
 
-    public void authorize(ActivitiUser user) {
+    public void authenticate(ActivitiUser user) {
         if (userGroupManager.exists(user.getUsername())) {
             SecurityContextHolder.setContext(new SecurityContextImpl(new Authentication() {
                 @Override

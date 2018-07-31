@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -63,13 +62,13 @@ public class IdentityAndSecurityManagersTest {
         assertThat(garth.getRoles()).hasSize(1);
         assertThat(((User) garth).getAuthorities()).hasSize(2);
 
-        securityManager.authorize(salaboy);
+        securityManager.authenticate(salaboy);
 
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
 
         assertThat(authenticatedUserId).isEqualTo(salaboy.getUsername());
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         authenticatedUserId = securityManager.getAuthenticatedUserId();
 
@@ -77,7 +76,7 @@ public class IdentityAndSecurityManagersTest {
 
         Exception exception = null;
         try {
-            securityManager.authorize(new ActivitiUserImpl("sanchez", "password", null, null));
+            securityManager.authenticate(new ActivitiUserImpl("sanchez", "password", null, null));
         }catch(Exception ex){
             exception = ex;
         }

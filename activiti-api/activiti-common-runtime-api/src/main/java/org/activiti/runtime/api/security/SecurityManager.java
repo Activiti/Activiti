@@ -4,7 +4,7 @@ import org.activiti.runtime.api.identity.ActivitiUser;
 
 public interface SecurityManager {
 
-    void authorize(ActivitiUser user);
+    void authenticate(ActivitiUser user);
 
     String getAuthenticatedUserId();
 

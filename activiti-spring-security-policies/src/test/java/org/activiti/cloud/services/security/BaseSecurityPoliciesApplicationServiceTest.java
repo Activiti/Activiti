@@ -26,7 +26,7 @@ public class BaseSecurityPoliciesApplicationServiceTest {
 
     @InjectMocks
     @Spy
-    private BaseSecurityPoliciesApplicationService securityPoliciesApplicationService;
+    private BaseSecurityPoliciesManager securityPoliciesApplicationService;
 
     @Mock
     private UserGroupManager userGroupManager;

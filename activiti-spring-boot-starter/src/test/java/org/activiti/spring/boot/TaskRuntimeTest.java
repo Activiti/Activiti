@@ -76,7 +76,7 @@ public class TaskRuntimeTest {
     public void tearDown() {
         // Created Task clean up
 
-        securityManager.authorize(admin);
+        securityManager.authenticate(admin);
 
         Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0,
                                                               50));
@@ -88,7 +88,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskForGarth() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("cure Skipper")
@@ -108,7 +108,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskForGroup() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("find Lucien Sanchez")
@@ -125,7 +125,7 @@ public class TaskRuntimeTest {
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
         // salaboy doesn't belong to the doctor's group so no task for him
-        securityManager.authorize(salaboy);
+        securityManager.authenticate(salaboy);
 
         tasks = taskRuntime.tasks(Pageable.of(0,
                                               50));
@@ -135,7 +135,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskWithNoCandidates() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("task with no candidates besides owner")
@@ -155,7 +155,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskForAnotherAssignee() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("task for salaboy")
@@ -172,7 +172,7 @@ public class TaskRuntimeTest {
         assertThat(task.getAssignee()).isEqualTo(salaboy.getUsername());
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-        securityManager.authorize(salaboy);
+        securityManager.authenticate(salaboy);
         // the target user should be able to see the task as well
         tasks = taskRuntime.tasks(Pageable.of(0,
                                               50));
@@ -187,7 +187,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskForGroupAndClaim() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("group task")
@@ -212,7 +212,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskForGroupAndClaimUnAuthorized() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("group task")
@@ -229,7 +229,7 @@ public class TaskRuntimeTest {
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-        securityManager.authorize(salaboy);
+        securityManager.authenticate(salaboy);
         Exception e = null;
         try {
             // UnAuthorized Claim
@@ -244,7 +244,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskForGroupAndClaimAuthorized() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("group task")
@@ -261,7 +261,7 @@ public class TaskRuntimeTest {
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-        securityManager.authorize(salaboy);
+        securityManager.authenticate(salaboy);
 
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo(salaboy.getUsername());
@@ -271,7 +271,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskForGroupAndClaimAndRelease() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("group task")
@@ -288,7 +288,7 @@ public class TaskRuntimeTest {
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-        securityManager.authorize(salaboy);
+        securityManager.authenticate(salaboy);
 
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo(salaboy.getUsername());
@@ -302,7 +302,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskReleaseUnAuthorized() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("group task")
@@ -333,7 +333,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskAndClaimAndReleaseUnAuthorized() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("group task")
@@ -350,13 +350,13 @@ public class TaskRuntimeTest {
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-        securityManager.authorize(salaboy);
+        securityManager.authenticate(salaboy);
 
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo(salaboy.getUsername());
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Exception e = null;
         try {
@@ -372,7 +372,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskAndComplete() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("simple task")
@@ -395,7 +395,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskAndCompleteUnAuthorized() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("simple task")
@@ -412,7 +412,7 @@ public class TaskRuntimeTest {
         assertThat(task.getAssignee()).isEqualTo(garth.getUsername());
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-        securityManager.authorize(salaboy);
+        securityManager.authenticate(salaboy);
         Exception e = null;
         try {
             // UnAuthorized Complete
@@ -427,7 +427,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneTaskAndDelete() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("simple task")
@@ -450,7 +450,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneGroupTaskAndDeleteFail() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("simple task")
@@ -480,7 +480,7 @@ public class TaskRuntimeTest {
     @Test
     public void createStandaloneGroupTaskClaimAndDeleteFail() {
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("simple task")
@@ -496,13 +496,13 @@ public class TaskRuntimeTest {
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-        securityManager.authorize(salaboy);
+        securityManager.authenticate(salaboy);
 
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo(salaboy.getUsername());
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-        securityManager.authorize(garth);
+        securityManager.authenticate(garth);
 
         Exception e = null;
         try {

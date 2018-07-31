@@ -33,6 +33,9 @@ import org.activiti.runtime.api.model.payloads.UpdateTaskPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 
+/*
+ * User Based Integrations against the Task Runtime
+ */
 public interface TaskRuntime {
 
     TaskRuntimeConfiguration configuration();
