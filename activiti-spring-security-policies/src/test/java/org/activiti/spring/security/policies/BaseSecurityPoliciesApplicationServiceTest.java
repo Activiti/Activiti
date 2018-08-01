@@ -1,11 +1,8 @@
-package org.activiti.cloud.services.security;
+package org.activiti.spring.security.policies;
 
 
 import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.runtime.api.security.SecurityManager;
-import org.activiti.spring.security.policies.BaseSecurityPoliciesManagerImpl;
-import org.activiti.spring.security.policies.SecurityPoliciesService;
-import org.activiti.spring.security.policies.SecurityPolicy;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -29,7 +26,7 @@ public class BaseSecurityPoliciesApplicationServiceTest {
 
     @InjectMocks
     @Spy
-    private BaseSecurityPoliciesManagerImpl securityPoliciesApplicationService;
+    private SecurityPoliciesApplicationServiceImpl securityPoliciesApplicationService;
 
     @Mock
     private UserGroupManager userGroupManager;
@@ -60,7 +57,8 @@ public class BaseSecurityPoliciesApplicationServiceTest {
         when(securityPoliciesService.policiesDefined()).thenReturn(true);
 
         when(securityManager.getAuthenticatedUserId()).thenReturn("bob");
-        when(userGroupManager.getUserRoles("bob").contains("admin")).thenReturn(false);
+        List<String> roles = Arrays.asList("user");
+        when(userGroupManager.getUserRoles("bob")).thenReturn(roles);
 
         when(userGroupManager.getUserGroups("bob")).thenReturn(groups);
         Map<String,Set<String>> map = new HashMap<String,Set<String>>();
@@ -78,7 +76,9 @@ public class BaseSecurityPoliciesApplicationServiceTest {
 
         when(securityPoliciesService.policiesDefined()).thenReturn(true);
         when(securityManager.getAuthenticatedUserId()).thenReturn("bob");
-        when(userGroupManager.getUserRoles("admin").contains("admin")).thenReturn(false);
+        List<String> roles = Arrays.asList("admin");
+        when(userGroupManager.getUserRoles("admin")).thenReturn(roles);
+
 
         when(userGroupManager.getUserGroups("bob")).thenReturn(groups);
         Map<String,Set<String>> map = new HashMap<String,Set<String>>();
@@ -95,7 +95,8 @@ public class BaseSecurityPoliciesApplicationServiceTest {
     public void shouldHavePermissionWhenAdmin(){
         when(securityPoliciesService.policiesDefined()).thenReturn(true);
         when(securityManager.getAuthenticatedUserId()).thenReturn("admin");
-        when(userGroupManager.getUserRoles("admin").contains("admin")).thenReturn(true);
+        List<String> roles = Arrays.asList("admin");
+        when(userGroupManager.getUserRoles("admin")).thenReturn(roles);
 
         assertThat(securityPoliciesApplicationService.canRead("key","rb1")).isTrue();
     }

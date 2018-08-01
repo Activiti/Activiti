@@ -8,7 +8,7 @@ import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
 public class GetProcessInstancesPayloadBuilder {
 
     private String businessKey;
-    private Set<String> processDefinitionKeys;
+    private Set<String> processDefinitionKeys = new HashSet<>();
     private boolean suspendedOnly = false;
     private boolean activeOnly = false;
 

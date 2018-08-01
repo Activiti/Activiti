@@ -1,5 +1,6 @@
 package org.activiti.runtime.api.model.payloads;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ public class RemoveProcessVariablesPayload implements Payload {
 
     private String id;
     private String processInstanceId;
-    private List<String> variableNames;
+    private List<String> variableNames = new ArrayList<>();
     private boolean localOnly;
 
     public RemoveProcessVariablesPayload() {

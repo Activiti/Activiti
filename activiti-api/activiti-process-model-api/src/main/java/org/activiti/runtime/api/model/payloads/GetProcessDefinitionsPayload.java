@@ -1,5 +1,6 @@
 package org.activiti.runtime.api.model.payloads;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 

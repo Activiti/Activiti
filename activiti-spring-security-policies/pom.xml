@@ -18,6 +18,12 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring-identity</artifactId>
+      <!-- Add to dep management -->
+      <version>7-201803-EA-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-process-model-api</artifactId>
     </dependency>
     <dependency>

@@ -74,6 +74,12 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring-identity</artifactId>
+      <!-- @TODO: add to dep management -->
+      <version>7-201803-EA-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-security-policies</artifactId>
       <!-- @TODO: add to dep management -->
       <version>7-201803-EA-SNAPSHOT</version>

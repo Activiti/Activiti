@@ -1,5 +1,6 @@
 package org.activiti.runtime.api.model.payloads;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -8,7 +9,7 @@ import org.activiti.runtime.api.Payload;
 public class GetProcessInstancesPayload implements Payload {
 
     private String id;
-    private Set<String> processDefinitionKeys;
+    private Set<String> processDefinitionKeys = new HashSet<>();
     private String businessKey;
     private boolean suspendedOnly;
     private boolean activeOnly;

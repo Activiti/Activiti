@@ -1,5 +1,6 @@
 package org.activiti.runtime.api.model.payloads;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ public class StartProcessPayload implements Payload {
     private String processDefinitionKey;
     private String processInstanceName;
     private String businessKey;
-    private Map<String, Object> variables;
+    private Map<String, Object> variables = new HashMap<>();
 
     public StartProcessPayload() {
         this.id = UUID.randomUUID().toString();

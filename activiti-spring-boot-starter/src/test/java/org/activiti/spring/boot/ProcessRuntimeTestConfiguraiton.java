@@ -15,6 +15,8 @@ public class ProcessRuntimeTestConfiguraiton {
 
     public static boolean discardImageConnectorExecuted = false;
 
+
+
     @Bean
     public Connector processImageConnector() {
         return integrationContext -> {

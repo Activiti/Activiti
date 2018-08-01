@@ -1,100 +1,52 @@
 package org.activiti.spring.boot;
 
-import java.util.Arrays;
-
+import org.activiti.runtime.api.ProcessAdminRuntime;
 import org.activiti.runtime.api.ProcessRuntime;
 import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
-import org.activiti.runtime.api.identity.ActivitiUser;
-import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.runtime.api.model.ProcessDefinition;
 import org.activiti.runtime.api.model.ProcessInstance;
 import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
-import org.activiti.runtime.api.security.SecurityManager;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @Import(ProcessRuntimeTestConfiguraiton.class)
+@ContextConfiguration
 public class ProcessRuntimeTest {
 
     @Autowired
     private ProcessRuntime processRuntime;
 
     @Autowired
-    private UserGroupManager userGroupManager;
+    private ProcessAdminRuntime processAdminRuntime;
 
-    @Autowired
-    private SecurityManager securityManager;
-
-    private ActivitiUser salaboy;
-
-    private ActivitiUser garth;
-
-    private ActivitiUser admin;
 
     @Before
+
     public void init() {
 
         //Reset test variables
-
         ProcessRuntimeTestConfiguraiton.processImageConnectorExecuted = false;
         ProcessRuntimeTestConfiguraiton.tagImageConnectorExecuted = false;
         ProcessRuntimeTestConfiguraiton.discardImageConnectorExecuted = false;
 
-        if (!userGroupManager.exists("admin")) {
-            admin = userGroupManager.create("admin",
-                    "password",
-                    Arrays.asList("adminGroup"),
-                    Arrays.asList("admin"));
-        } else {
-            admin = userGroupManager.loadUser("admin");
-        }
-        if (!userGroupManager.exists("salaboy")) {
-            salaboy = userGroupManager.create("salaboy",
-                    "password",
-                    Arrays.asList("activitiTeam"),
-                    Arrays.asList("user"));
-        } else {
-            salaboy = userGroupManager.loadUser("salaboy");
-        }
-        if (!userGroupManager.exists("garth")) {
-            garth = userGroupManager.create("Garth",
-                    "darkplace",
-                    Arrays.asList("doctor"),
-                    Arrays.asList("user"));
-        } else {
-            garth = userGroupManager.loadUser("garth");
-        }
-
-
     }
 
-    @After
-    public void tearDown() {
-        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
-                50),
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .build());
-        for (ProcessInstance pi : processInstancePage.getContent()) {
-            processRuntime.delete(ProcessPayloadBuilder.delete(pi));
-        }
-
-
-    }
 
     @Test
+    @WithMockUser(username = "salaboy", roles = {"ROLE:ACTIVITI_USER"})
     public void createProcessInstanceAndValidateHappyPath() {
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
@@ -121,6 +73,7 @@ public class ProcessRuntimeTest {
     }
 
     @Test
+    @WithMockUser(username = "salaboy", roles = {"ROLE:ACTIVITI_USER"})
     public void createProcessInstanceAndValidateDiscardPath() {
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
@@ -147,6 +100,7 @@ public class ProcessRuntimeTest {
     }
 
     @Test
+    @WithMockUser(username = "salaboy", roles = {"ROLE:ACTIVITI_USER"})
     public void getProcessInstances() {
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
@@ -295,11 +249,21 @@ public class ProcessRuntimeTest {
         assertThat(getSingleProcessInstance).isNotNull();
         assertThat(getSingleProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
+        // I need to clean up the Process Instances that I started because @WithMockUser cannot be used in @Before method
+        ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(getSingleProcessInstance));
+        assertThat(deletedProcessInstance).isNotNull();
+
+        processInstancePage = processRuntime.processInstances(Pageable.of(0,
+                50));
+
+        assertThat(processInstancePage).isNotNull();
+        assertThat(processInstancePage.getContent()).hasSize(0);
 
     }
 
 
     @Test
+    @WithMockUser(username = "salaboy", roles = {"ROLE:ACTIVITI_USER"})
     public void deleteProcessInstance() {
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
@@ -340,9 +304,19 @@ public class ProcessRuntimeTest {
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(0);
 
+    }
 
+    @Test(expected = AccessDeniedException.class)
+    @WithMockUser(username = "salaboy", roles = {"ROLE:ACTIVITI_USER"})
+    public void adminFailTest() {
+        ProcessInstance fakeId = processAdminRuntime.processInstance("fakeId");
+    }
 
-
+    @Test(expected = AccessDeniedException.class)
+    @WithMockUser(username = "admin", roles = {"ROLE:ACTIVITI_ADMIN"})
+    public void userFailTest() {
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
+                50));
     }
 
 

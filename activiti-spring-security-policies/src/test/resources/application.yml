@@ -1,6 +1,6 @@
 activiti:
-  cloud:
-    security:
+  security:
+    policies:
       group:
         hr:
           runtime-bundle:

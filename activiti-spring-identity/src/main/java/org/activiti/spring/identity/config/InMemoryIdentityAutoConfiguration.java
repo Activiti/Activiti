@@ -36,7 +36,6 @@ import org.springframework.security.provisioning.UserDetailsManager;
 @Configuration
 @EnableWebSecurity
 @EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class, UserDetailsServiceAutoConfiguration.class})
-
 public class InMemoryIdentityAutoConfiguration extends WebSecurityConfigurerAdapter {
 
     @Value("classpath:users.properties")

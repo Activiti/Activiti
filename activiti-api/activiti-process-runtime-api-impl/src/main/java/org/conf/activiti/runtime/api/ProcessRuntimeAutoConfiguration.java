@@ -22,6 +22,7 @@ import java.util.List;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.runtime.api.ProcessAdminRuntime;
 import org.activiti.runtime.api.ProcessRuntime;
 import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
 import org.activiti.runtime.api.conf.impl.ProcessRuntimeConfigurationImpl;
@@ -58,6 +59,7 @@ import org.activiti.runtime.api.event.internal.ProcessSuspendedListenerDelegate;
 import org.activiti.runtime.api.event.internal.SequenceFlowTakenListenerDelegate;
 import org.activiti.runtime.api.event.listener.ProcessRuntimeEventListener;
 import org.activiti.runtime.api.identity.UserGroupManager;
+import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -86,14 +88,36 @@ public class ProcessRuntimeAutoConfiguration {
                                          APIVariableInstanceConverter variableInstanceConverter,
                                          ProcessRuntimeConfiguration processRuntimeConfiguration) {
         return new ProcessRuntimeImpl(repositoryService,
-                                      processDefinitionConverter,
-                                      runtimeService,
-                                      userGroupManager,
-                                      securityManager,
-                                      securityPoliciesManager,
-                                      processInstanceConverter,
-                                      variableInstanceConverter,
-                                      processRuntimeConfiguration);
+                processDefinitionConverter,
+                runtimeService,
+                userGroupManager,
+                securityManager,
+                securityPoliciesManager,
+                processInstanceConverter,
+                variableInstanceConverter,
+                processRuntimeConfiguration);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessAdminRuntime processAdminRuntime(RepositoryService repositoryService,
+                                                   APIProcessDefinitionConverter processDefinitionConverter,
+                                                   RuntimeService runtimeService,
+                                                   UserGroupManager userGroupManager,
+                                                   SecurityManager securityManager,
+                                                   SecurityPoliciesManager securityPoliciesManager,
+                                                   APIProcessInstanceConverter processInstanceConverter,
+                                                   APIVariableInstanceConverter variableInstanceConverter,
+                                                   ProcessRuntimeConfiguration processRuntimeConfiguration) {
+        return new ProcessAdminRuntimeImpl(repositoryService,
+                processDefinitionConverter,
+                runtimeService,
+                userGroupManager,
+                securityManager,
+                securityPoliciesManager,
+                processInstanceConverter,
+                variableInstanceConverter,
+                processRuntimeConfiguration);
     }
 
     @Bean
@@ -116,7 +140,7 @@ public class ProcessRuntimeAutoConfiguration {
     public ProcessRuntimeConfiguration processRuntimeConfiguration(@Autowired(required = false) List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners,
                                                                    @Autowired(required = false) List<VariableEventListener<?>> variableEventListeners) {
         return new ProcessRuntimeConfigurationImpl(getInitializedListeners(processRuntimeEventListeners),
-                                                   getInitializedListeners(variableEventListeners));
+                getInitializedListeners(variableEventListeners));
     }
 
     @Bean
@@ -148,8 +172,8 @@ public class ProcessRuntimeAutoConfiguration {
                                                                         @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessStarted>> listeners,
                                                                         ToAPIProcessStartedEventConverter processStartedEventConverter) {
         return () -> runtimeService.addEventListener(new ProcessStartedListenerDelegate(getInitializedListeners(listeners),
-                                                                                        processStartedEventConverter),
-                                                     ActivitiEventType.PROCESS_STARTED);
+                        processStartedEventConverter),
+                ActivitiEventType.PROCESS_STARTED);
     }
 
     @Bean
@@ -157,8 +181,8 @@ public class ProcessRuntimeAutoConfiguration {
                                                                         @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCreated>> eventListeners,
                                                                         ToAPIProcessCreatedEventConverter converter) {
         return () -> runtimeService.addEventListener(new ProcessCreatedListenerDelegate(getInitializedListeners(eventListeners),
-                                                                                        converter),
-                                                     ActivitiEventType.ENTITY_CREATED);
+                        converter),
+                ActivitiEventType.ENTITY_CREATED);
     }
 
     @Bean
@@ -166,8 +190,8 @@ public class ProcessRuntimeAutoConfiguration {
                                                                           @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessSuspended>> eventListeners,
                                                                           ToProcessSuspendedConverter converter) {
         return () -> runtimeService.addEventListener(new ProcessSuspendedListenerDelegate(getInitializedListeners(eventListeners),
-                                                                                          converter),
-                                                     ActivitiEventType.ENTITY_SUSPENDED);
+                        converter),
+                ActivitiEventType.ENTITY_SUSPENDED);
     }
 
     @Bean
@@ -175,8 +199,8 @@ public class ProcessRuntimeAutoConfiguration {
                                                                         @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessResumed>> eventListeners,
                                                                         ToProcessResumedConverter converter) {
         return () -> runtimeService.addEventListener(new ProcessResumedEventListenerDelegate(getInitializedListeners(eventListeners),
-                                                                                             converter),
-                                                     ActivitiEventType.ENTITY_ACTIVATED);
+                        converter),
+                ActivitiEventType.ENTITY_ACTIVATED);
     }
 
     @Bean
@@ -189,16 +213,16 @@ public class ProcessRuntimeAutoConfiguration {
                                                                      @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCompleted>> eventListeners,
                                                                      ToProcessCompletedConverter converter) {
         return () -> runtimeService.addEventListener(new ProcessCompletedListenerDelegate(getInitializedListeners(eventListeners),
-                                                                                          converter),
-                                                     ActivitiEventType.PROCESS_COMPLETED);
+                        converter),
+                ActivitiEventType.PROCESS_COMPLETED);
     }
 
     @Bean
     public InitializingBean registerProcessCancelledListenerDelegate(RuntimeService runtimeService,
                                                                      @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessCancelled>> eventListeners) {
         return () -> runtimeService.addEventListener(new ProcessCancelledListenerDelegate(getInitializedListeners(eventListeners),
-                                                                                          new ToProcessCancelledConverter()),
-                                                     ActivitiEventType.PROCESS_CANCELLED);
+                        new ToProcessCancelledConverter()),
+                ActivitiEventType.PROCESS_CANCELLED);
     }
 
     @Bean
@@ -211,8 +235,8 @@ public class ProcessRuntimeAutoConfiguration {
                                                                     @Autowired(required = false) List<ProcessRuntimeEventListener<BPMNActivityStarted>> eventListeners,
                                                                     ToActivityConverter activityConverter) {
         return () -> runtimeService.addEventListener(new ActivityStartedListenerDelegate(getInitializedListeners(eventListeners),
-                                                                                         new ToActivityStartedConverter(activityConverter)),
-                                                     ActivitiEventType.ACTIVITY_STARTED);
+                        new ToActivityStartedConverter(activityConverter)),
+                ActivitiEventType.ACTIVITY_STARTED);
     }
 
     @Bean
@@ -220,8 +244,8 @@ public class ProcessRuntimeAutoConfiguration {
                                                                       @Autowired(required = false) List<ProcessRuntimeEventListener<BPMNActivityCompleted>> eventListeners,
                                                                       ToActivityConverter activityConverter) {
         return () -> runtimeService.addEventListener(new ActivityCompletedListenerDelegate(getInitializedListeners(eventListeners),
-                                                                                           new ToActivityCompletedConverter(activityConverter)),
-                                                     ActivitiEventType.ACTIVITY_COMPLETED);
+                        new ToActivityCompletedConverter(activityConverter)),
+                ActivitiEventType.ACTIVITY_COMPLETED);
     }
 
     @Bean
@@ -229,15 +253,15 @@ public class ProcessRuntimeAutoConfiguration {
                                                                       @Autowired(required = false) List<ProcessRuntimeEventListener<BPMNActivityCancelled>> eventListeners,
                                                                       ToActivityConverter activityConverter) {
         return () -> runtimeService.addEventListener(new ActivityCancelledListenerDelegate(getInitializedListeners(eventListeners),
-                                                                                           new ToActivityCancelledConverter(activityConverter)),
-                                                     ActivitiEventType.ACTIVITY_CANCELLED);
+                        new ToActivityCancelledConverter(activityConverter)),
+                ActivitiEventType.ACTIVITY_CANCELLED);
     }
 
     @Bean
     public InitializingBean registerSequenceFlowTakenListenerDelegate(RuntimeService runtimeService,
                                                                       @Autowired(required = false) List<ProcessRuntimeEventListener<SequenceFlowTaken>> eventListeners) {
         return () -> runtimeService.addEventListener(new SequenceFlowTakenListenerDelegate(getInitializedListeners(eventListeners),
-                                                                                           new ToSequenceFlowTakenConverter()),
-                                                     ActivitiEventType.SEQUENCEFLOW_TAKEN);
+                        new ToSequenceFlowTakenConverter()),
+                ActivitiEventType.SEQUENCEFLOW_TAKEN);
     }
 }

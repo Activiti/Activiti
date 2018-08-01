@@ -1,5 +1,6 @@
 package org.activiti.runtime.api.model.payloads;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ public class SetProcessVariablesPayload implements Payload {
 
     private String id;
     private String processInstanceId;
-    private Map<String, Object> variables;
+    private Map<String, Object> variables = new HashMap<>();
     private boolean localOnly = false;
 
     public SetProcessVariablesPayload() {
