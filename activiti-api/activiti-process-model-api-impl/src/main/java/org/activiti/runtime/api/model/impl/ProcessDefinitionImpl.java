@@ -101,4 +101,15 @@ public class ProcessDefinitionImpl implements ProcessDefinition {
                             version,
                             key);
     }
+
+    @Override
+    public String toString() {
+        return "ProcessDefinition{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", key='" + key + '\'' +
+                ", description='" + description + '\'' +
+                ", version=" + version +
+                '}';
+    }
 }

@@ -18,12 +18,12 @@ package org.activiti.runtime.api.event.impl;
 
 import org.activiti.runtime.api.event.TaskCompleted;
 import org.activiti.runtime.api.event.TaskRuntimeEvent;
-import org.activiti.runtime.api.model.FluentTask;
+import org.activiti.runtime.api.model.Task;
 
-public class TaskCompletedImpl extends RuntimeEventImpl<FluentTask, TaskRuntimeEvent.TaskEvents>
+public class TaskCompletedImpl extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents>
         implements TaskCompleted {
 
-    public TaskCompletedImpl(FluentTask entity) {
+    public TaskCompletedImpl(Task entity) {
         super(entity);
     }
 

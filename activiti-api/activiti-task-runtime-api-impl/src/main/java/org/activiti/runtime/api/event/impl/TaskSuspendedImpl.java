@@ -18,14 +18,14 @@ package org.activiti.runtime.api.event.impl;
 
 import org.activiti.runtime.api.event.TaskRuntimeEvent;
 import org.activiti.runtime.api.event.TaskSuspended;
-import org.activiti.runtime.api.model.FluentTask;
+import org.activiti.runtime.api.model.Task;
 
-public class TaskSuspendedImpl extends RuntimeEventImpl<FluentTask, TaskRuntimeEvent.TaskEvents> implements TaskSuspended {
+public class TaskSuspendedImpl extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents> implements TaskSuspended {
 
     public TaskSuspendedImpl() {
     }
 
-    public TaskSuspendedImpl(FluentTask entity) {
+    public TaskSuspendedImpl(Task entity) {
         super(entity);
     }
 

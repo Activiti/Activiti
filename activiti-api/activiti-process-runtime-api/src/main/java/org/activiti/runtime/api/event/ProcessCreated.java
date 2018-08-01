@@ -16,8 +16,8 @@
 
 package org.activiti.runtime.api.event;
 
-import org.activiti.runtime.api.model.FluentProcessInstance;
+import org.activiti.runtime.api.model.ProcessInstance;
 
-public interface ProcessCreated extends ProcessRuntimeEvent<FluentProcessInstance> {
+public interface ProcessCreated extends ProcessRuntimeEvent<ProcessInstance> {
 
 }

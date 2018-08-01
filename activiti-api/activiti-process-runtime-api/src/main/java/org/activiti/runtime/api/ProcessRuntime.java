@@ -16,36 +16,63 @@
 
 package org.activiti.runtime.api;
 
+import java.util.List;
+
 import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
-import org.activiti.runtime.api.model.FluentProcessDefinition;
-import org.activiti.runtime.api.model.FluentProcessInstance;
-import org.activiti.runtime.api.model.builder.SignalPayload;
+import org.activiti.runtime.api.model.ProcessDefinition;
+import org.activiti.runtime.api.model.ProcessDefinitionMeta;
+import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.runtime.api.model.ProcessInstanceMeta;
+import org.activiti.runtime.api.model.VariableInstance;
+import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
+import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
+import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
+import org.activiti.runtime.api.model.payloads.GetVariablesPayload;
+import org.activiti.runtime.api.model.payloads.RemoveProcessVariablesPayload;
+import org.activiti.runtime.api.model.payloads.ResumeProcessPayload;
+import org.activiti.runtime.api.model.payloads.SetProcessVariablesPayload;
+import org.activiti.runtime.api.model.payloads.SignalPayload;
+import org.activiti.runtime.api.model.payloads.StartProcessPayload;
+import org.activiti.runtime.api.model.payloads.SuspendProcessPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
-import org.activiti.runtime.api.query.ProcessDefinitionFilter;
-import org.activiti.runtime.api.query.ProcessInstanceFilter;
 
 public interface ProcessRuntime {
 
     ProcessRuntimeConfiguration configuration();
 
-    Page<FluentProcessDefinition> processDefinitions(Pageable pageable);
+    ProcessDefinition processDefinition(String processDefinitionKey);
 
-    Page<FluentProcessDefinition>  processDefinitions(Pageable pageable,
-                                              ProcessDefinitionFilter filter);
+    ProcessDefinitionMeta processDefinitionMeta(String processDefinitionKey);
 
-    FluentProcessDefinition processDefinitionByKey(String processDefinitionKey);
+    Page<ProcessDefinition> processDefinitions(Pageable pageable);
 
-    FluentProcessDefinition processDefinitionById(String processDefinitionId);
+    Page<ProcessDefinition> processDefinitions(Pageable pageable,
+                                               GetProcessDefinitionsPayload getProcessDefinitionsPayload);
 
-    FluentProcessInstance processInstance(String processInstanceId);
+    ProcessInstance processInstance(String processInstanceId);
 
-    Page<FluentProcessInstance> processInstances(Pageable pageable);
+    ProcessInstanceMeta processInstanceMeta(String processInstanceId);
 
-    Page<FluentProcessInstance> processInstances(Pageable pageable, ProcessInstanceFilter filter);
+    Page<ProcessInstance> processInstances(Pageable pageable);
 
-    SignalPayload sendSignalWith();
+    Page<ProcessInstance> processInstances(Pageable pageable,
+                                           GetProcessInstancesPayload getProcessInstancesPayload);
 
-    void sendSignal(String name);
+    ProcessInstance start(StartProcessPayload startProcessPayload);
+
+    ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload);
+
+    ProcessInstance resume(ResumeProcessPayload resumeProcessPayload);
+
+    ProcessInstance delete(DeleteProcessPayload deleteProcessPayload);
+
+    List<VariableInstance> variables(GetVariablesPayload getVariablesPayload); //I want to rename VariableInstance to Variable and it needs to be paged
+
+    void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload); // review if we need to return removed variables// DO WE NEED THIS?>
+
+    void signal(SignalPayload signalPayload);
+
+    void setVariables(SetProcessVariablesPayload setProcessVariablesPayload); // review if we need to return set variables
 
 }

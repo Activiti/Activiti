@@ -18,9 +18,9 @@ package org.activiti.runtime.api.model.impl;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.runtime.api.model.FluentTask;
+import org.activiti.runtime.api.model.Task;
 
-public class APITaskConverter extends ListConverter<org.activiti.engine.task.Task, FluentTask> implements ModelConverter<org.activiti.engine.task.Task, FluentTask> {
+public class APITaskConverter extends ListConverter<org.activiti.engine.task.Task, Task> implements ModelConverter<org.activiti.engine.task.Task, Task> {
 
     private final TaskService taskService;
     private final APIVariableInstanceConverter variableInstanceConverter;
@@ -32,14 +32,10 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
     }
 
     @Override
-    public FluentTask from(org.activiti.engine.task.Task internalTask) {
-        FluentTaskImpl task = new FluentTaskImpl(taskService,
-                                                 variableInstanceConverter,
-                                                 this,
-                                                 internalTask.getId(),
-                                                 internalTask.getName(),
-                                                 calculateStatus(internalTask)
-        );
+    public Task from(org.activiti.engine.task.Task internalTask) {
+        TaskImpl task = new TaskImpl(internalTask.getId(),
+                                     internalTask.getName(),
+                                     calculateStatus(internalTask));
         task.setProcessDefinitionId(internalTask.getProcessDefinitionId());
         task.setProcessInstanceId(internalTask.getProcessInstanceId());
         task.setAssignee(internalTask.getAssignee());
@@ -53,16 +49,15 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
         return task;
     }
 
-    private FluentTask.TaskStatus calculateStatus(org.activiti.engine.task.Task source) {
+    private Task.TaskStatus calculateStatus(org.activiti.engine.task.Task source) {
         if (source instanceof TaskEntity &&
                 (((TaskEntity) source).isDeleted() || ((TaskEntity) source).isCanceled())) {
-            return FluentTask.TaskStatus.CANCELLED;
+            return Task.TaskStatus.CANCELLED;
         } else if (source.isSuspended()) {
-            return FluentTask.TaskStatus.SUSPENDED;
+            return Task.TaskStatus.SUSPENDED;
         } else if (source.getAssignee() != null && !source.getAssignee().isEmpty()) {
-            return FluentTask.TaskStatus.ASSIGNED;
+            return Task.TaskStatus.ASSIGNED;
         }
-        return FluentTask.TaskStatus.CREATED;
+        return Task.TaskStatus.CREATED;
     }
-
 }
