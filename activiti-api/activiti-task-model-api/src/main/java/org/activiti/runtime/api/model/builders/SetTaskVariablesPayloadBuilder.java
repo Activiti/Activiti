@@ -8,10 +8,10 @@ public class SetTaskVariablesPayloadBuilder {
 
     private String taskId;
     private Map<String, Object> variables;
-    private boolean localOnly;
+    private boolean localOnly = false;
 
-    public SetTaskVariablesPayloadBuilder withLocalOnly(boolean localOnly) {
-        this.localOnly = localOnly;
+    public SetTaskVariablesPayloadBuilder localOnly() {
+        this.localOnly = true;
         return this;
     }
 
