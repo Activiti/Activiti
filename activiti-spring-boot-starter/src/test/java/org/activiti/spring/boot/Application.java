@@ -13,4 +13,9 @@ public class Application {
     }
 
 
+    //@TODO: add tests for
+    //  - Complete task with variables
+    //  - Add other users to test group and claim/release combinations
+    //  - Add get/set variables tests
+    //  - Add Impersonation methods to TaskAdminRuntime
 }

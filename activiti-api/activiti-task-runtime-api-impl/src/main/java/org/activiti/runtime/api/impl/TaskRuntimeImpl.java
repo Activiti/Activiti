@@ -43,7 +43,9 @@ import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.activiti.runtime.api.security.SecurityManager;
+import org.springframework.security.access.prepost.PreAuthorize;
 
+@PreAuthorize("hasRole('ACTIVITI_USER')")
 public class TaskRuntimeImpl implements TaskRuntime {
 
     private final TaskService taskService;
@@ -265,9 +267,10 @@ public class TaskRuntimeImpl implements TaskRuntime {
             throw new IllegalStateException("The authenticated user cannot delete the task" + deleteTaskPayload.getTaskId() + " due it is not the current assignee");
         }
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        // validate that you are trying to update task where you are the assignee
-        if (task.getAssignee() == null || task.getAssignee().isEmpty() || !task.getAssignee().equals(authenticatedUserId)) {
-            throw new IllegalStateException("You cannot delete a task where you are not the assignee");
+        // validate that you are trying to delete task where you are the assignee or the owner
+        if ((task.getAssignee() == null || task.getAssignee().isEmpty() || !task.getAssignee().equals(authenticatedUserId))
+                && (task.getOwner() == null || task.getOwner().isEmpty() || !task.getOwner().equals(authenticatedUserId))) {
+            throw new IllegalStateException("You cannot delete a task where you are not the assignee/owner");
         }
         TaskImpl deletedTaskData = new TaskImpl(task.getId(),
                                                 task.getName(),

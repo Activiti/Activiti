@@ -23,7 +23,7 @@ public class SecurityPoliciesApplicationServiceImpl extends BaseSecurityPolicies
     @Autowired
     private SecurityPoliciesProcessInstanceRestrictionApplier processInstanceRestrictionApplier;
 
-    @Value("${spring.application.name}")
+    @Value("${spring.application.name:application}")
     private String applicationName;
 
     public GetProcessDefinitionsPayload restrictProcessDefQuery(SecurityPolicy securityPolicy) {

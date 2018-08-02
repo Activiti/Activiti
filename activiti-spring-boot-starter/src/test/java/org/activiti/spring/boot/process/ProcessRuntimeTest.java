@@ -1,4 +1,4 @@
-package org.activiti.spring.boot;
+package org.activiti.spring.boot.process;
 
 import org.activiti.runtime.api.ProcessAdminRuntime;
 import org.activiti.runtime.api.ProcessRuntime;
@@ -8,21 +8,22 @@ import org.activiti.runtime.api.model.ProcessInstance;
 import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
+import org.activiti.spring.boot.RuntimeTestConfiguraiton;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import static org.assertj.core.api.Assertions.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@Import(ProcessRuntimeTestConfiguraiton.class)
 @ContextConfiguration
 public class ProcessRuntimeTest {
 
@@ -32,21 +33,22 @@ public class ProcessRuntimeTest {
     @Autowired
     private ProcessAdminRuntime processAdminRuntime;
 
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Before
-
     public void init() {
 
         //Reset test variables
-        ProcessRuntimeTestConfiguraiton.processImageConnectorExecuted = false;
-        ProcessRuntimeTestConfiguraiton.tagImageConnectorExecuted = false;
-        ProcessRuntimeTestConfiguraiton.discardImageConnectorExecuted = false;
+        RuntimeTestConfiguraiton.processImageConnectorExecuted = false;
+        RuntimeTestConfiguraiton.tagImageConnectorExecuted = false;
+        RuntimeTestConfiguraiton.discardImageConnectorExecuted = false;
 
     }
 
 
     @Test
-    @WithMockUser(username = "salaboy", roles = {"ROLE:ACTIVITI_USER"})
+    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void createProcessInstanceAndValidateHappyPath() {
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
@@ -67,13 +69,13 @@ public class ProcessRuntimeTest {
         assertThat(categorizeProcess).isNotNull();
 
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
-        assertThat(ProcessRuntimeTestConfiguraiton.processImageConnectorExecuted).isEqualTo(true);
-        assertThat(ProcessRuntimeTestConfiguraiton.tagImageConnectorExecuted).isEqualTo(true);
-        assertThat(ProcessRuntimeTestConfiguraiton.discardImageConnectorExecuted).isEqualTo(false);
+        assertThat(RuntimeTestConfiguraiton.processImageConnectorExecuted).isEqualTo(true);
+        assertThat(RuntimeTestConfiguraiton.tagImageConnectorExecuted).isEqualTo(true);
+        assertThat(RuntimeTestConfiguraiton.discardImageConnectorExecuted).isEqualTo(false);
     }
 
     @Test
-    @WithMockUser(username = "salaboy", roles = {"ROLE:ACTIVITI_USER"})
+    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void createProcessInstanceAndValidateDiscardPath() {
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
@@ -94,13 +96,13 @@ public class ProcessRuntimeTest {
         assertThat(categorizeProcess).isNotNull();
 
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
-        assertThat(ProcessRuntimeTestConfiguraiton.processImageConnectorExecuted).isEqualTo(true);
-        assertThat(ProcessRuntimeTestConfiguraiton.tagImageConnectorExecuted).isEqualTo(false);
-        assertThat(ProcessRuntimeTestConfiguraiton.discardImageConnectorExecuted).isEqualTo(true);
+        assertThat(RuntimeTestConfiguraiton.processImageConnectorExecuted).isEqualTo(true);
+        assertThat(RuntimeTestConfiguraiton.tagImageConnectorExecuted).isEqualTo(false);
+        assertThat(RuntimeTestConfiguraiton.discardImageConnectorExecuted).isEqualTo(true);
     }
 
     @Test
-    @WithMockUser(username = "salaboy", roles = {"ROLE:ACTIVITI_USER"})
+    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void getProcessInstances() {
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
@@ -263,7 +265,7 @@ public class ProcessRuntimeTest {
 
 
     @Test
-    @WithMockUser(username = "salaboy", roles = {"ROLE:ACTIVITI_USER"})
+    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void deleteProcessInstance() {
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
@@ -307,13 +309,13 @@ public class ProcessRuntimeTest {
     }
 
     @Test(expected = AccessDeniedException.class)
-    @WithMockUser(username = "salaboy", roles = {"ROLE:ACTIVITI_USER"})
+    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void adminFailTest() {
         ProcessInstance fakeId = processAdminRuntime.processInstance("fakeId");
     }
 
     @Test(expected = AccessDeniedException.class)
-    @WithMockUser(username = "admin", roles = {"ROLE:ACTIVITI_ADMIN"})
+    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "myUserDetailsService")
     public void userFailTest() {
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                 50));

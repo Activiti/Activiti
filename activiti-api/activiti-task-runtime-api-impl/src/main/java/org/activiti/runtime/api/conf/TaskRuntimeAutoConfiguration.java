@@ -23,7 +23,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.runtime.api.TaskAdminRuntime;
-import org.activiti.runtime.api.TaskAdminRuntimeImpl;
+import org.activiti.runtime.api.impl.TaskAdminRuntimeImpl;
 import org.activiti.runtime.api.TaskRuntime;
 import org.activiti.runtime.api.conf.impl.TaskRuntimeConfigurationImpl;
 import org.activiti.runtime.api.event.TaskActivated;

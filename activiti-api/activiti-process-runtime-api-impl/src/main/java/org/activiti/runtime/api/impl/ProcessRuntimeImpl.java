@@ -54,7 +54,7 @@ import org.activiti.spring.security.policies.SecurityPoliciesManager;
 import org.activiti.spring.security.policies.SecurityPolicy;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-@PreAuthorize("hasRole('ROLE:ACTIVITI_USER')")
+@PreAuthorize("hasRole('ACTIVITI_USER')")
 public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final RepositoryService repositoryService;
