@@ -20,16 +20,6 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-spring-security-policies</artifactId>
-      <!-- @TODO: add to deps management -->
-      <version>7-201803-EA-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-common-runtime-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
       <artifactId>activiti-common-model-api</artifactId>
     </dependency>
     <dependency>
@@ -39,6 +29,10 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-common-runtime-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-common-runtime-api-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -54,35 +48,15 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-common-model-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-common-model-api-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-common-runtime-api-impl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-process-model-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
       <artifactId>activiti-process-model-api-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-identity</artifactId>
-      <!-- @TODO: add to dep management -->
-      <version>7-201803-EA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-security-policies</artifactId>
-      <!-- @TODO: add to dep management -->
-      <version>7-201803-EA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -103,10 +77,6 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-bpmn-model</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

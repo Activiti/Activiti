@@ -13,14 +13,10 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring-identity</artifactId>
-            <!-- @TODO: add to dep mgmt -->
-            <version>7-201803-EA-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring-security</artifactId>
-            <!-- @TODO: add to dep mgmt -->
-            <version>7-201803-EA-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
@@ -37,10 +33,6 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-bpmn-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.activiti</groupId>
-            <artifactId>activiti-common-runtime-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>

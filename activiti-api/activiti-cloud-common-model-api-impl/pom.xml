@@ -21,8 +21,6 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-security-policies</artifactId>
-      <!-- @TODO: add to deps management -->
-      <version>7-201803-EA-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -43,10 +41,6 @@
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
     </dependency>
   </dependencies>
 </project>
