@@ -1,25 +1,22 @@
 package org.activiti.spring.security.policies;
 
-import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
-import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
+import java.util.Map;
+import java.util.Set;
 
-/* is this too process specific? */
 public interface SecurityPoliciesManager {
 
     boolean canRead(String processDefinitionKey,
-                    String appName);
+                    String serviceName);
 
     boolean canWrite(String processDefinitionKey,
-                     String appName);
+                     String serviceName);
 
     boolean canRead(String processDefinitionKey);
 
     boolean canWrite(String processDefinitionKey);
 
-    /* Find the right level for this methods */
+    boolean arePoliciesDefined();
 
-    GetProcessDefinitionsPayload restrictProcessDefQuery(SecurityPolicy securityPolicy);
-
-    GetProcessInstancesPayload restrictProcessInstQuery(SecurityPolicy securityPolicy);
+    Map<String, Set<String>> getAllowedKeys(SecurityPolicyAccess... securityPolicyAccess);
 
 }

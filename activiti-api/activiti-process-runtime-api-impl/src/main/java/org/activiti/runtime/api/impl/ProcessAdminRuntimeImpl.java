@@ -19,7 +19,6 @@ package org.activiti.runtime.api.impl;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.*;
 import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
 import org.activiti.runtime.api.identity.UserGroupManager;
@@ -30,13 +29,8 @@ import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.activiti.runtime.api.security.SecurityManager;
-import org.activiti.spring.security.policies.ActivitiForbiddenException;
 import org.activiti.spring.security.policies.SecurityPoliciesManager;
-import org.activiti.spring.security.policies.SecurityPolicy;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.List;
-import java.util.Map;
 
 @PreAuthorize("hasRole('ROLE:ACTIVITI_ADMIN')")
 public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {

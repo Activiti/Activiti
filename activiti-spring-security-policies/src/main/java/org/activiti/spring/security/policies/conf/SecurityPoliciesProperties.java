@@ -1,25 +1,30 @@
 package org.activiti.spring.security.policies.conf;
 
+import org.activiti.spring.security.policies.SecurityPolicy;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-@ConfigurationProperties("activiti.security.policies")
+@Configuration
+@ConfigurationProperties("salaboy.security")
 @Component
 public class SecurityPoliciesProperties implements InitializingBean {
 
-    private Map<String, String> group = new HashMap<String, String>();
-    private Map<String, String> user = new HashMap<String,String>();
+    private List<SecurityPolicy> policies = new ArrayList<>();
 
-    public Map<String, String> getGroup() {
-        return this.group;
+    private String wildcard = "*";
+
+
+    public List<SecurityPolicy> getPolicies() {
+        return policies;
     }
 
-    public Map<String, String> getUser() {
-        return this.user;
+    public String getWildcard() {
+        return wildcard;
     }
 
     @Override

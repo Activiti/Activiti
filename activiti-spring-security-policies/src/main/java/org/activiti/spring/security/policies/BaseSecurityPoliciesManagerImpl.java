@@ -1,13 +1,11 @@
 package org.activiti.spring.security.policies;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.runtime.api.security.SecurityManager;
+import org.activiti.spring.security.policies.conf.SecurityPoliciesProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPoliciesManager {
 
@@ -18,45 +16,101 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
     protected SecurityManager securityManager;
 
     @Autowired
-    protected SecurityPoliciesService securityPoliciesService;
+    protected SecurityPoliciesProperties securityPoliciesProperties;
 
-    public boolean noSecurityPoliciesOrNoUser() {
-        return !securityPoliciesService.policiesDefined() || securityManager.getAuthenticatedUserId() == null;
+    public boolean arePoliciesDefined() {
+        return !securityPoliciesProperties.getPolicies().isEmpty();
     }
 
-    public Map<String, Set<String>> definitionKeysAllowedForPolicy(SecurityPolicy securityPolicy) {
-        List<String> groups = null;
+    @Override
+    public Map<String, Set<String>> getAllowedKeys(SecurityPolicyAccess... securityPoliciesAccess) {
 
-        if (userGroupManager != null && securityManager.getAuthenticatedUserId()!= null) {
-            groups = userGroupManager.getUserGroups(securityManager.getAuthenticatedUserId());
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
+        List<SecurityPolicy> policies = securityPoliciesProperties.getPolicies();
+        Map<String, Set<String>> definitionKeysAllowedByPolicy = new HashMap<>();
+        if (userRoles.contains("ACTIVITI_ADMIN")) {
+            for (SecurityPolicy ssp : policies) {
+                if (definitionKeysAllowedByPolicy.get(ssp.getServiceName()) == null) {
+                    definitionKeysAllowedByPolicy.put(ssp.getServiceName(), new HashSet<>());
+                }
+                definitionKeysAllowedByPolicy.get(ssp.getServiceName()).addAll(ssp.getKeys());
+            }
+
+        } else if (userRoles.contains("ACTIVITI_USER")) {
+            List<String> groups = null;
+
+            if (userGroupManager != null && authenticatedUserId != null) {
+                groups = userGroupManager.getUserGroups(authenticatedUserId);
+            }
+
+
+            for (SecurityPolicy ssp : policies) {
+                if (definitionKeysAllowedByPolicy.get(ssp.getServiceName()) == null) {
+                    definitionKeysAllowedByPolicy.put(ssp.getServiceName(), new HashSet<>());
+                }
+
+                // I need to check that the user is listed in the user lists or that at least one of the user groups is in the group list
+                if (isUserInPolicy(ssp, authenticatedUserId) || isGroupInPolicy(ssp, groups)) {
+
+                    // Here if securityPolicyAccess is READ, it should also include WRITES, if it is NONE nothing, and if it is WRITE only WRITE
+                    List<SecurityPolicyAccess> securityPolicyAccesses = Arrays.asList(securityPoliciesAccess);
+                    if (securityPolicyAccesses.contains(SecurityPolicyAccess.WRITE)) {
+                        if (ssp.getAccess().equals(SecurityPolicyAccess.WRITE)) {
+                            definitionKeysAllowedByPolicy.get(ssp.getServiceName()).addAll(ssp.getKeys());
+                        }
+
+                    } else if (securityPolicyAccesses.contains(SecurityPolicyAccess.READ)) {
+                        if (ssp.getAccess().equals(SecurityPolicyAccess.READ) || ssp.getAccess().equals(SecurityPolicyAccess.WRITE)) {
+                            definitionKeysAllowedByPolicy.get(ssp.getServiceName()).addAll(ssp.getKeys());
+                        }
+                    }
+
+
+                }
+            }
         }
 
-        return securityPoliciesService.getProcessDefinitionKeys(securityManager.getAuthenticatedUserId(),
-                groups,
-                securityPolicy);
+
+        return definitionKeysAllowedByPolicy;
+    }
+
+
+    private boolean isUserInPolicy(SecurityPolicy ssp, String userId) {
+        return (!ssp.getUsers().isEmpty() && ssp.getUsers().contains(userId));
+    }
+
+    private boolean isGroupInPolicy(SecurityPolicy ssp, List<String> groups) {
+        for (String g : ssp.getGroups()) {
+            if (groups.contains(g)) {
+                return true;
+            }
+
+        }
+        return false;
     }
 
     @Override
     public boolean canRead(String processDefinitionKey,
                            String appName) {
         return hasPermission(processDefinitionKey,
-                SecurityPolicy.READ,
+                SecurityPolicyAccess.READ,
                 appName);
     }
 
 
     @Override
     public boolean canWrite(String processDefinitionKey,
-                            String appName){
-        return hasPermission(processDefinitionKey, SecurityPolicy.WRITE,appName);
+                            String appName) {
+        return hasPermission(processDefinitionKey, SecurityPolicyAccess.WRITE, appName);
     }
 
 
     public boolean hasPermission(String processDefinitionKey,
-                                  SecurityPolicy securityPolicy,
-                                  String appName) {
+                                 SecurityPolicyAccess securityPolicyAccess,
+                                 String appName) {
 
-        if (!securityPoliciesService.policiesDefined() || userGroupManager == null || securityManager.getAuthenticatedUserId() == null) {
+        if (!securityPoliciesProperties.getPolicies().isEmpty() || userGroupManager == null || securityManager.getAuthenticatedUserId() == null) {
             return true;
         }
 
@@ -65,25 +119,25 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
         }
 
         Set<String> keys = new HashSet<>();
-        Map<String, Set<String>> policiesMap = definitionKeysAllowedForPolicy(securityPolicy);
-        if(policiesMap.get(appName) !=null) {
+        Map<String, Set<String>> policiesMap = getAllowedKeys(securityPolicyAccess);
+        if (policiesMap.get(appName) != null) {
             keys.addAll(policiesMap.get(appName));
         }
         //also factor for case sensitivity and hyphens (which are stripped when specified through env var)
-        if(appName!=null && policiesMap.get(appName.replaceAll("-","").toLowerCase()) != null){
-            keys.addAll(policiesMap.get(appName.replaceAll("-","").toLowerCase()));
+        if (appName != null && policiesMap.get(appName.replaceAll("-", "").toLowerCase()) != null) {
+            keys.addAll(policiesMap.get(appName.replaceAll("-", "").toLowerCase()));
         }
 
         return anEntryInSetStartsKey(keys,
-                                     processDefinitionKey) || keys.contains(securityPoliciesService.getWildcard());
+                processDefinitionKey) || keys.contains(securityPoliciesProperties.getWildcard());
     }
 
     //startsWith logic supports the case of audit where only definition id might be available and it would start with the key
     //protected scope means we can override where exact matching more appropriate (consider keys ProcessWithVariables and ProcessWithVariables2)
     //even for audit would be better if we had a known separator which cant be part of key - this seems best we can do for now
-    protected boolean anEntryInSetStartsKey(Set<String> keys, String processDefinitionKey){
-        for(String key:keys){
-            if(processDefinitionKey.startsWith(key)){
+    protected boolean anEntryInSetStartsKey(Set<String> keys, String processDefinitionKey) {
+        for (String key : keys) {
+            if (processDefinitionKey.startsWith(key)) {
                 return true;
             }
         }

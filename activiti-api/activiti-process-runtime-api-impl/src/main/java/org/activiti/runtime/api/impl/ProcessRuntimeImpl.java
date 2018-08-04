@@ -51,7 +51,7 @@ import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.activiti.spring.security.policies.ActivitiForbiddenException;
 import org.activiti.spring.security.policies.SecurityPoliciesManager;
-import org.activiti.spring.security.policies.SecurityPolicy;
+import org.activiti.spring.security.policies.SecurityPolicyAccess;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 @PreAuthorize("hasRole('ACTIVITI_USER')")
@@ -125,7 +125,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (getProcessDefinitionsPayload == null) {
             throw new IllegalStateException("payload cannot be null");
         }
-        GetProcessDefinitionsPayload securityKeysInPayload = securityPoliciesManager.restrictProcessDefQuery(SecurityPolicy.READ);
+        GetProcessDefinitionsPayload securityKeysInPayload = securityPoliciesManager.restrictProcessDefQuery(SecurityPolicyAccess.READ);
         // If the security policies keys are not empty it means that I will need to use them to filter results,
         //   else ignore and use the user provided ones.
         if (!securityKeysInPayload.getProcessDefinitionKeys().isEmpty()) {
@@ -173,7 +173,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (getProcessInstancesPayload == null) {
             throw new IllegalStateException("payload cannot be null");
         }
-        GetProcessInstancesPayload securityKeysInPayload = securityPoliciesManager.restrictProcessInstQuery(SecurityPolicy.READ);
+        GetProcessInstancesPayload securityKeysInPayload = securityPoliciesManager.restrictProcessInstQuery(SecurityPolicyAccess.READ);
 
         org.activiti.engine.runtime.ProcessInstanceQuery internalQuery = runtimeService.createProcessInstanceQuery();
 

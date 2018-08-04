@@ -11,11 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SecurityPoliciesApplicationServiceImpl extends BaseSecurityPoliciesManagerImpl {
-
-
-    @Autowired
-    private SecurityPoliciesService securityPoliciesService;
+public class ProcessSecurityPoliciesManagerImpl extends BaseSecurityPoliciesManagerImpl implements ProcessSecurityPoliciesManager{
 
     @Autowired
     private SecurityPoliciesProcessDefinitionRestrictionApplier processDefinitionRestrictionApplier;
@@ -26,12 +22,12 @@ public class SecurityPoliciesApplicationServiceImpl extends BaseSecurityPolicies
     @Value("${spring.application.name:application}")
     private String applicationName;
 
-    public GetProcessDefinitionsPayload restrictProcessDefQuery(SecurityPolicy securityPolicy) {
-        return restrictQuery(processDefinitionRestrictionApplier, securityPolicy);
+    public GetProcessDefinitionsPayload restrictProcessDefQuery(SecurityPolicyAccess securityPolicyAccess) {
+        return restrictQuery(processDefinitionRestrictionApplier, securityPolicyAccess);
     }
 
-    private Set<String> definitionKeysAllowedForApplicationPolicy(SecurityPolicy securityPolicy) {
-        Map<String, Set<String>> restrictions = definitionKeysAllowedForPolicy(securityPolicy);
+    private Set<String> definitionKeysAllowedForApplicationPolicy(SecurityPolicyAccess securityPolicyAccess) {
+        Map<String, Set<String>> restrictions = getAllowedKeys(securityPolicyAccess);
         Set<String> keys = new HashSet<>();
 
         for (String appName : restrictions.keySet()) {
@@ -46,20 +42,20 @@ public class SecurityPoliciesApplicationServiceImpl extends BaseSecurityPolicies
     }
 
 
-    public GetProcessInstancesPayload restrictProcessInstQuery(SecurityPolicy securityPolicy) {
-        return restrictQuery(processInstanceRestrictionApplier, securityPolicy);
+    public GetProcessInstancesPayload restrictProcessInstQuery(SecurityPolicyAccess securityPolicyAccess) {
+        return restrictQuery(processInstanceRestrictionApplier, securityPolicyAccess);
     }
 
-    private <T> T restrictQuery(SecurityPoliciesRestrictionApplier<T> restrictionApplier, SecurityPolicy securityPolicy) {
-        if (noSecurityPoliciesOrNoUser()) {
+    private <T> T restrictQuery(SecurityPoliciesRestrictionApplier<T> restrictionApplier, SecurityPolicyAccess securityPolicyAccess) {
+        if (!arePoliciesDefined()) {
             return restrictionApplier.allowAll();
         }
 
-        Set<String> keys = definitionKeysAllowedForApplicationPolicy(securityPolicy);
+        Set<String> keys = definitionKeysAllowedForApplicationPolicy(securityPolicyAccess);
 
         if (keys != null && !keys.isEmpty()) {
 
-            if (keys.contains(securityPoliciesService.getWildcard())) {
+            if (keys.contains(securityPoliciesProperties.getWildcard())) {
                 return restrictionApplier.allowAll();
             }
 
@@ -67,7 +63,7 @@ public class SecurityPoliciesApplicationServiceImpl extends BaseSecurityPolicies
         }
 
         //policies are in place but if we've got here then none for this user
-        if ((keys == null || keys.isEmpty()) && securityPoliciesService.policiesDefined()) {
+        if ((keys == null || keys.isEmpty()) && !securityPoliciesProperties.getPolicies().isEmpty()) {
             return restrictionApplier.denyAll();
         }
 
@@ -75,13 +71,13 @@ public class SecurityPoliciesApplicationServiceImpl extends BaseSecurityPolicies
     }
 
     public boolean canWrite(String processDefinitionKey) {
-        return hasPermission(processDefinitionKey, SecurityPolicy.WRITE, applicationName)
-                || hasPermission(processDefinitionKey, SecurityPolicy.WRITE, applicationName);
+        return hasPermission(processDefinitionKey, SecurityPolicyAccess.WRITE, applicationName)
+                || hasPermission(processDefinitionKey, SecurityPolicyAccess.WRITE, applicationName);
     }
 
     public boolean canRead(String processDefinitionKey) {
-        return hasPermission(processDefinitionKey, SecurityPolicy.READ, applicationName)
-                || hasPermission(processDefinitionKey, SecurityPolicy.WRITE, applicationName);
+        return hasPermission(processDefinitionKey, SecurityPolicyAccess.READ, applicationName)
+                || hasPermission(processDefinitionKey, SecurityPolicyAccess.WRITE, applicationName);
     }
 
     protected boolean anEntryInSetStartsKey(Set<String> keys, String processDefinitionKey) {

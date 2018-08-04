@@ -2,6 +2,7 @@ package org.activiti.spring.security.policies;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -15,8 +16,4 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @Bean
-    public UserDetailsManager inMemoryUserDetailsManager() {
-        return new InMemoryUserDetailsManager();
-    }
 }
