@@ -16,10 +16,6 @@
 
 package org.activiti.runtime.api.impl;
 
-import java.util.List;
-import java.util.Map;
-
-
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -28,31 +24,21 @@ import org.activiti.runtime.api.NotFoundException;
 import org.activiti.runtime.api.ProcessRuntime;
 import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
 import org.activiti.runtime.api.identity.UserGroupManager;
+import org.activiti.runtime.api.model.*;
 import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
-import org.activiti.runtime.api.security.SecurityManager;
-import org.activiti.runtime.api.model.ProcessDefinition;
-import org.activiti.runtime.api.model.ProcessDefinitionMeta;
-import org.activiti.runtime.api.model.ProcessInstance;
-import org.activiti.runtime.api.model.ProcessInstanceMeta;
-import org.activiti.runtime.api.model.VariableInstance;
 import org.activiti.runtime.api.model.impl.*;
-import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
-import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
-import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
-import org.activiti.runtime.api.model.payloads.GetVariablesPayload;
-import org.activiti.runtime.api.model.payloads.RemoveProcessVariablesPayload;
-import org.activiti.runtime.api.model.payloads.ResumeProcessPayload;
-import org.activiti.runtime.api.model.payloads.SetProcessVariablesPayload;
-import org.activiti.runtime.api.model.payloads.SignalPayload;
-import org.activiti.runtime.api.model.payloads.StartProcessPayload;
-import org.activiti.runtime.api.model.payloads.SuspendProcessPayload;
+import org.activiti.runtime.api.model.payloads.*;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.query.impl.PageImpl;
+import org.activiti.runtime.api.security.SecurityManager;
 import org.activiti.spring.security.policies.ActivitiForbiddenException;
-import org.activiti.spring.security.policies.SecurityPoliciesManager;
+import org.activiti.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.spring.security.policies.SecurityPolicyAccess;
 import org.springframework.security.access.prepost.PreAuthorize;
+
+import java.util.List;
+import java.util.Map;
 
 @PreAuthorize("hasRole('ACTIVITI_USER')")
 public class ProcessRuntimeImpl implements ProcessRuntime {
@@ -69,14 +55,14 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final ProcessRuntimeConfiguration configuration;
 
-    private final SecurityPoliciesManager securityPoliciesManager;
+    private final ProcessSecurityPoliciesManager securityPoliciesManager;
 
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
                               UserGroupManager userGroupManager,
                               SecurityManager securityManager,
-                              SecurityPoliciesManager securityPoliciesManager,
+                              ProcessSecurityPoliciesManager securityPoliciesManager,
                               APIProcessInstanceConverter processInstanceConverter,
                               APIVariableInstanceConverter variableInstanceConverter,
                               ProcessRuntimeConfiguration configuration) {

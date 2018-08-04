@@ -77,15 +77,17 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
 
 
     private boolean isUserInPolicy(SecurityPolicy ssp, String userId) {
-        return (!ssp.getUsers().isEmpty() && ssp.getUsers().contains(userId));
+        return (ssp.getUsers() != null && !ssp.getUsers().isEmpty() && ssp.getUsers().contains(userId));
     }
 
     private boolean isGroupInPolicy(SecurityPolicy ssp, List<String> groups) {
-        for (String g : ssp.getGroups()) {
-            if (groups.contains(g)) {
-                return true;
-            }
+        if (ssp.getGroups() != null && groups != null) {
+            for (String g : ssp.getGroups()) {
+                if (groups.contains(g)) {
+                    return true;
+                }
 
+            }
         }
         return false;
     }
@@ -110,11 +112,13 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
                                  SecurityPolicyAccess securityPolicyAccess,
                                  String appName) {
 
-        if (!securityPoliciesProperties.getPolicies().isEmpty() || userGroupManager == null || securityManager.getAuthenticatedUserId() == null) {
+        // No security policies defined, allowed to see everything
+        if (securityPoliciesProperties.getPolicies().isEmpty()) {
             return true;
         }
 
-        if (securityManager != null && userGroupManager.getUserRoles(securityManager.getAuthenticatedUserId()).contains("admin")) {
+        // If you are an admin you can see everything , @TODO: make it more flexible
+        if (userGroupManager.getUserRoles(securityManager.getAuthenticatedUserId()).contains("ACTIVITI_ADMIN")) {
             return true;
         }
 

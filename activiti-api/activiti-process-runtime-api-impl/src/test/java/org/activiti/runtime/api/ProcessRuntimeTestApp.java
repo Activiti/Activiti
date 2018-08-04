@@ -20,7 +20,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.runtime.api.security.SecurityManager;
-import org.activiti.spring.security.policies.SecurityPoliciesManager;
+import org.activiti.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -55,7 +55,7 @@ public class ProcessRuntimeTestApp {
     }
 
     @Bean
-    public SecurityPoliciesManager securityPolicyManager() {
-        return mock(SecurityPoliciesManager.class);
+    public ProcessSecurityPoliciesManager securityPolicyManager() {
+        return mock(ProcessSecurityPoliciesManager.class);
     }
 }

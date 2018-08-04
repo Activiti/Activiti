@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
-@ConfigurationProperties("salaboy.security")
+@ConfigurationProperties("activiti.security")
 @Component
 public class SecurityPoliciesProperties implements InitializingBean {
 

@@ -16,23 +16,30 @@
 
 package org.activiti.runtime.api.impl;
 
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.runtime.api.*;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.runtime.api.NotFoundException;
+import org.activiti.runtime.api.ProcessAdminRuntime;
 import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
-import org.activiti.runtime.api.identity.UserGroupManager;
-import org.activiti.runtime.api.model.*;
-import org.activiti.runtime.api.model.impl.*;
-import org.activiti.runtime.api.model.payloads.*;
+import org.activiti.runtime.api.model.ProcessDefinition;
+import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
+import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
+import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
+import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
+import org.activiti.runtime.api.model.impl.ProcessInstanceImpl;
+import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
+import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
+import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.query.impl.PageImpl;
-import org.activiti.runtime.api.security.SecurityManager;
-import org.activiti.spring.security.policies.SecurityPoliciesManager;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-@PreAuthorize("hasRole('ROLE:ACTIVITI_ADMIN')")
+import java.util.List;
+
+@PreAuthorize("hasRole('ACTIVITI_ADMIN')")
 public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     private final RepositoryService repositoryService;
@@ -47,30 +54,63 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     private final ProcessRuntimeConfiguration configuration;
 
-    private final UserGroupManager userGroupManager;
-
-    private final SecurityManager securityManager;
-
-    private final SecurityPoliciesManager securityPoliciesManager;
-
     public ProcessAdminRuntimeImpl(RepositoryService repositoryService,
                                    APIProcessDefinitionConverter processDefinitionConverter,
                                    RuntimeService runtimeService,
-                                   UserGroupManager userGroupManager,
-                                   SecurityManager securityManager,
-                                   SecurityPoliciesManager securityPoliciesManager,
                                    APIProcessInstanceConverter processInstanceConverter,
                                    APIVariableInstanceConverter variableInstanceConverter,
                                    ProcessRuntimeConfiguration configuration) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
-        this.userGroupManager = userGroupManager;
-        this.securityManager = securityManager;
-        this.securityPoliciesManager = securityPoliciesManager;
         this.processInstanceConverter = processInstanceConverter;
         this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
+    }
+
+
+    @Override
+    public ProcessDefinition processDefinition(String processDefinitionId) {
+        org.activiti.engine.repository.ProcessDefinition processDefinition = null;
+        try {
+            processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        } catch (Exception internalEx) {
+            // no action, by ID didn't worked, we will try by Key
+        }
+        if (processDefinition == null) {
+            // try searching by Key if there is no matching by Id
+            List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionId).list();
+            if (!list.isEmpty()) {
+                processDefinition = list.get(0);
+            } else {
+                throw new NotFoundException("Unable to find process definition for the given key:'" + processDefinitionId + "'");
+            }
+        }
+        return processDefinitionConverter.from(processDefinition);
+    }
+
+
+    @Override
+    public Page<ProcessDefinition> processDefinitions(Pageable pageable) {
+        return processDefinitions(pageable,
+                ProcessPayloadBuilder.processDefinitions().build());
+    }
+
+    @Override
+    public Page<ProcessDefinition> processDefinitions(Pageable pageable,
+                                                      GetProcessDefinitionsPayload getProcessDefinitionsPayload) {
+        if (getProcessDefinitionsPayload == null) {
+            throw new IllegalStateException("payload cannot be null");
+        }
+        ProcessDefinitionQuery processDefinitionQuery = repositoryService
+                .createProcessDefinitionQuery();
+        if (getProcessDefinitionsPayload != null &&
+                getProcessDefinitionsPayload.getProcessDefinitionKeys() != null &&
+                !getProcessDefinitionsPayload.getProcessDefinitionKeys().isEmpty()) {
+            processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
+        }
+        return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
+                Math.toIntExact(processDefinitionQuery.count()));
     }
 
     @Override
@@ -89,10 +129,6 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
                 .singleResult();
         if (internalProcessInstance == null) {
             throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
-        }
-        if (!securityPoliciesManager.canRead(internalProcessInstance.getProcessDefinitionKey())) {
-            throw new ActivitiObjectNotFoundException("You cannot read the process instance with Id:'"
-                    + processInstanceId + "' due to security policies violation");
         }
         return processInstanceConverter.from(internalProcessInstance);
 

@@ -81,7 +81,7 @@ public class SecurityPoliciesServiceIT {
 
         assertThat(policies.get(2).getGroups()).hasSize(1);
 
-        assertThat(policies.get(2).getAccess()).isEqualTo(SecurityPolicyAccess.READ);
+        assertThat(policies.get(2).getAccess()).isEqualTo(SecurityPolicyAccess.WRITE);
 
         assertThat(policies.get(2).getKeys()).hasSize(1);
 
@@ -95,7 +95,7 @@ public class SecurityPoliciesServiceIT {
     public void shouldBePoliciesDefined() throws Exception {
         assertThat(processSecurityPoliciesManager.arePoliciesDefined()).isTrue();
         assertThat(!securityPoliciesProperties.getPolicies().isEmpty()).isTrue();
-        assertThat(securityPoliciesProperties.getPolicies()).hasSize(2);
+        assertThat(securityPoliciesProperties.getPolicies()).hasSize(3);
     }
 
     @Test
@@ -111,11 +111,13 @@ public class SecurityPoliciesServiceIT {
 
         Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys(SecurityPolicyAccess.WRITE,
                 SecurityPolicyAccess.READ);
-        assertThat(keys.keySet()).hasSize(2);
+        assertThat(keys.keySet()).hasSize(3);
 
         assertThat(keys.get("runtime-bundle")).hasSize(2);
         assertThat(keys.get("runtime-bundle")).contains("SampleProcess1", "SampleProcess2");
         assertThat(keys.get("application")).hasSize(0);
+        assertThat(keys.get("default")).hasSize(1);
+        assertThat(keys.get("default")).contains(securityPoliciesProperties.getWildcard());
     }
 
 
@@ -131,9 +133,10 @@ public class SecurityPoliciesServiceIT {
         assertThat(userGroups).contains("doctor");
 
         Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys(SecurityPolicyAccess.WRITE);
-        assertThat(keys.keySet()).hasSize(2);
+        assertThat(keys.keySet()).hasSize(3);
         assertThat(keys.get("application")).hasSize(0);
         assertThat(keys.get("runtime-bundle")).hasSize(0);
+        assertThat(keys.get("default")).hasSize(0);
     }
 
     @Test
@@ -149,10 +152,11 @@ public class SecurityPoliciesServiceIT {
 
         Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys(SecurityPolicyAccess.READ);
 
-        assertThat(keys.keySet()).hasSize(2);
+        assertThat(keys.keySet()).hasSize(3);
         assertThat(keys.get("application")).hasSize(2);
         assertThat(keys.get("application")).contains("SampleProcess2", "SampleProcess3");
         assertThat(keys.get("runtime-bundle")).hasSize(0);
+        assertThat(keys.get("default")).hasSize(0);
 
     }
 
@@ -169,9 +173,10 @@ public class SecurityPoliciesServiceIT {
 
         Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys();
 
-        assertThat(keys.keySet()).hasSize(2);
+        assertThat(keys.keySet()).hasSize(3);
         assertThat(keys.get("application")).hasSize(0);
         assertThat(keys.get("runtime-bundle")).hasSize(0);
+        assertThat(keys.get("default")).hasSize(0);
 
     }
 
@@ -186,9 +191,10 @@ public class SecurityPoliciesServiceIT {
 
         Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys();
 
-        assertThat(keys.keySet()).hasSize(2);
+        assertThat(keys.keySet()).hasSize(3);
         assertThat(keys.get("application")).hasSize(2);
         assertThat(keys.get("runtime-bundle")).hasSize(2);
+        assertThat(keys.get("default")).contains(securityPoliciesProperties.getWildcard());
 
 
     }

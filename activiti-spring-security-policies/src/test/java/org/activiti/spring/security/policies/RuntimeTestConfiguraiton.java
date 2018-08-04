@@ -1,5 +1,6 @@
 package org.activiti.spring.security.policies;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
+@EnableConfigurationProperties
 public class RuntimeTestConfiguraiton {
 
     @Bean
