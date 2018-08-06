@@ -21,6 +21,7 @@ import org.activiti.runtime.api.model.ProcessInstance;
 import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
+import org.activiti.runtime.api.model.payloads.StartProcessPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 
@@ -41,6 +42,12 @@ public interface ProcessAdminRuntime {
      */
     Page<ProcessDefinition> processDefinitions(Pageable pageable,
                                                GetProcessDefinitionsPayload getProcessDefinitionsPayload);
+
+
+    /*
+     * Start a new Process Instance based on the payload parameters
+     */
+    ProcessInstance start(StartProcessPayload startProcessPayload);
 
     /*
      * Get all process instances by pages

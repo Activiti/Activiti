@@ -32,6 +32,7 @@ import org.activiti.runtime.api.model.impl.ProcessInstanceImpl;
 import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
+import org.activiti.runtime.api.model.payloads.StartProcessPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.query.impl.PageImpl;
@@ -112,6 +113,30 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
                 Math.toIntExact(processDefinitionQuery.count()));
     }
+
+
+    @Override
+    public ProcessInstance start(StartProcessPayload startProcessPayload) {
+        ProcessDefinition processDefinition = null;
+        if (startProcessPayload.getProcessDefinitionId() != null) {
+            processDefinition = processDefinition(startProcessPayload.getProcessDefinitionId());
+        }
+        if (processDefinition == null && startProcessPayload.getProcessDefinitionKey() != null) {
+            processDefinition = processDefinition(startProcessPayload.getProcessDefinitionKey());
+        }
+        if (processDefinition == null) {
+            throw new IllegalStateException("At least Process Definition Id or Key needs to be provided to start a process");
+        }
+        return processInstanceConverter.from(runtimeService
+                .createProcessInstanceBuilder()
+                .processDefinitionId(startProcessPayload.getProcessDefinitionId())
+                .processDefinitionKey(startProcessPayload.getProcessDefinitionKey())
+                .businessKey(startProcessPayload.getBusinessKey())
+                .variables(startProcessPayload.getVariables())
+                .name(startProcessPayload.getProcessInstanceName())
+                .start());
+    }
+
 
     @Override
     public Page<ProcessInstance> processInstances(Pageable pageable) {

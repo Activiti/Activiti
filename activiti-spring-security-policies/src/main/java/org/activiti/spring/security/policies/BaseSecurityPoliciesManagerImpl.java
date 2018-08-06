@@ -29,49 +29,36 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
         List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
         List<SecurityPolicy> policies = securityPoliciesProperties.getPolicies();
         Map<String, Set<String>> definitionKeysAllowedByPolicy = new HashMap<>();
-        if (userRoles.contains("ACTIVITI_ADMIN")) {
-            for (SecurityPolicy ssp : policies) {
-                if (definitionKeysAllowedByPolicy.get(ssp.getServiceName()) == null) {
-                    definitionKeysAllowedByPolicy.put(ssp.getServiceName(), new HashSet<>());
-                }
-                definitionKeysAllowedByPolicy.get(ssp.getServiceName()).addAll(ssp.getKeys());
+
+        List<String> groups = null;
+
+        if (userGroupManager != null && authenticatedUserId != null) {
+            groups = userGroupManager.getUserGroups(authenticatedUserId);
+        }
+        for (SecurityPolicy ssp : policies) {
+            if (definitionKeysAllowedByPolicy.get(ssp.getServiceName()) == null) {
+                definitionKeysAllowedByPolicy.put(ssp.getServiceName(), new HashSet<>());
             }
 
-        } else if (userRoles.contains("ACTIVITI_USER")) {
-            List<String> groups = null;
+            // I need to check that the user is listed in the user lists or that at least one of the user groups is in the group list
+            if (isUserInPolicy(ssp, authenticatedUserId) || isGroupInPolicy(ssp, groups)) {
 
-            if (userGroupManager != null && authenticatedUserId != null) {
-                groups = userGroupManager.getUserGroups(authenticatedUserId);
-            }
-
-
-            for (SecurityPolicy ssp : policies) {
-                if (definitionKeysAllowedByPolicy.get(ssp.getServiceName()) == null) {
-                    definitionKeysAllowedByPolicy.put(ssp.getServiceName(), new HashSet<>());
-                }
-
-                // I need to check that the user is listed in the user lists or that at least one of the user groups is in the group list
-                if (isUserInPolicy(ssp, authenticatedUserId) || isGroupInPolicy(ssp, groups)) {
-
-                    // Here if securityPolicyAccess is READ, it should also include WRITES, if it is NONE nothing, and if it is WRITE only WRITE
-                    List<SecurityPolicyAccess> securityPolicyAccesses = Arrays.asList(securityPoliciesAccess);
-                    if (securityPolicyAccesses.contains(SecurityPolicyAccess.WRITE)) {
-                        if (ssp.getAccess().equals(SecurityPolicyAccess.WRITE)) {
-                            definitionKeysAllowedByPolicy.get(ssp.getServiceName()).addAll(ssp.getKeys());
-                        }
-
-                    } else if (securityPolicyAccesses.contains(SecurityPolicyAccess.READ)) {
-                        if (ssp.getAccess().equals(SecurityPolicyAccess.READ) || ssp.getAccess().equals(SecurityPolicyAccess.WRITE)) {
-                            definitionKeysAllowedByPolicy.get(ssp.getServiceName()).addAll(ssp.getKeys());
-                        }
+                // Here if securityPolicyAccess is READ, it should also include WRITES, if it is NONE nothing, and if it is WRITE only WRITE
+                List<SecurityPolicyAccess> securityPolicyAccesses = Arrays.asList(securityPoliciesAccess);
+                if (securityPolicyAccesses.contains(SecurityPolicyAccess.WRITE)) {
+                    if (ssp.getAccess().equals(SecurityPolicyAccess.WRITE)) {
+                        definitionKeysAllowedByPolicy.get(ssp.getServiceName()).addAll(ssp.getKeys());
                     }
 
-
+                } else if (securityPolicyAccesses.contains(SecurityPolicyAccess.READ)) {
+                    if (ssp.getAccess().equals(SecurityPolicyAccess.READ) || ssp.getAccess().equals(SecurityPolicyAccess.WRITE)) {
+                        definitionKeysAllowedByPolicy.get(ssp.getServiceName()).addAll(ssp.getKeys());
+                    }
                 }
+
+
             }
         }
-
-
         return definitionKeysAllowedByPolicy;
     }
 
