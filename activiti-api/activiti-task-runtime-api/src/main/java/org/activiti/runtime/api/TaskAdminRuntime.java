@@ -17,12 +17,7 @@
 package org.activiti.runtime.api;
 
 import org.activiti.runtime.api.model.Task;
-import org.activiti.runtime.api.model.payloads.ClaimTaskPayload;
-import org.activiti.runtime.api.model.payloads.CompleteTaskPayload;
-import org.activiti.runtime.api.model.payloads.DeleteTaskPayload;
-import org.activiti.runtime.api.model.payloads.GetTasksPayload;
-import org.activiti.runtime.api.model.payloads.ReleaseTaskPayload;
-import org.activiti.runtime.api.model.payloads.UpdateTaskPayload;
+import org.activiti.runtime.api.model.payloads.*;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 
@@ -53,30 +48,31 @@ public interface TaskAdminRuntime {
     Page<Task> tasks(Pageable pageable,
                      GetTasksPayload getTasksPayload);
 
-//    /*
-//     * Claim a task with impersonation support
-//     *  - The user that is clamming the task is supported as parameter
-//     *  - after the claim the task should be in assigned status
-//     */
-//    Task claim(ClaimTaskPayload claimTaskPayload);
-//
-//    /*
-//     * Release a previously claimed task  with impersonation support
-//     */
-//    Task release(ReleaseTaskPayload releaseTaskPayload);
-//
-//    /*
-//     * Completes the selected task with impersonation support
-//     */
-//    Task complete(CompleteTaskPayload completeTaskPayload);
-//
-//
-//    /*
-//     * Updates details with impersonation support
-//     * - The authenticated user should be able to see the task in order to update its details
-//     * - The authenticated user needs to be the assignee of the task to update its details, if not he/she will need to claim the task first
-//     */
-//    Task update(UpdateTaskPayload updateTaskPayload);
+    /*
+     * Claim a task with the currently authenticated user
+     *  - If there is no authenticated user throw an IllegalStateException
+     *  - If the currently authenticated user is not a candidate throw an IllegalStateException
+     *  - The current approach doesn't support impersonation, it will always take the currently authenticated user
+     *  - after the claim the task should be in assigned status
+     */
+    Task claim(ClaimTaskPayload claimTaskPayload);
+
+    /*
+     * Release a previously claimed task
+     * - The authenticated user needs to be the assignee in order to release it
+     */
+    Task release(ReleaseTaskPayload releaseTaskPayload);
+
+    /*
+     * Completes the selected task with the variables set in the payload
+     * - This method checks that the task is visible by the authenticated user
+     * - This method also check that the task is assigned to the currently authenticated user before complete
+     * - This method return a shallow Task object with the basic information needed to validate that the task was completed
+     */
+    Task complete(CompleteTaskPayload completeTaskPayload);
+
+
+    void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);
 
 
 }

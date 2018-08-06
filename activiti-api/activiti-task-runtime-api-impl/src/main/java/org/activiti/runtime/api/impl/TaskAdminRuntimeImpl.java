@@ -27,8 +27,7 @@ import org.activiti.runtime.api.model.builders.TaskPayloadBuilder;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.TaskImpl;
-import org.activiti.runtime.api.model.payloads.DeleteTaskPayload;
-import org.activiti.runtime.api.model.payloads.GetTasksPayload;
+import org.activiti.runtime.api.model.payloads.*;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.query.impl.PageImpl;
@@ -116,5 +115,45 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         return deletedTaskData;
     }
 
+
+    @Override
+    public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
+        if (setTaskVariablesPayload.isLocalOnly()) {
+            taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
+                    setTaskVariablesPayload.getVariables());
+        } else {
+            taskService.setVariables(setTaskVariablesPayload.getTaskId(),
+                    setTaskVariablesPayload.getVariables());
+        }
+    }
+
+
+    @Override
+    public Task complete(CompleteTaskPayload completeTaskPayload) {
+        Task task = task(completeTaskPayload.getTaskId());
+        if(task == null){
+            throw new IllegalStateException("Task with id: " + completeTaskPayload.getTaskId() + " cannot be completed because it cannot be found.");
+        }
+        TaskImpl competedTaskData = new TaskImpl(task.getId(),
+                task.getName(),
+                Task.TaskStatus.COMPLETED);
+        taskService.complete(completeTaskPayload.getTaskId(),
+                completeTaskPayload.getVariables());
+        return competedTaskData;
+    }
+
+    @Override
+    public Task claim(ClaimTaskPayload claimTaskPayload) {
+        taskService.claim(claimTaskPayload.getTaskId(),
+                claimTaskPayload.getAssignee());
+
+        return task(claimTaskPayload.getTaskId());
+    }
+
+    @Override
+    public Task release(ReleaseTaskPayload releaseTaskPayload) {
+        taskService.unclaim(releaseTaskPayload.getTaskId());
+        return task(releaseTaskPayload.getTaskId());
+    }
 
 }

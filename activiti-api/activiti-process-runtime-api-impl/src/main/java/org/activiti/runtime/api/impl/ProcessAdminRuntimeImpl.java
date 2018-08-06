@@ -29,10 +29,7 @@ import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ProcessInstanceImpl;
-import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
-import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
-import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
-import org.activiti.runtime.api.model.payloads.StartProcessPayload;
+import org.activiti.runtime.api.model.payloads.*;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.query.impl.PageImpl;
@@ -204,5 +201,46 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         return null;
     }
 
+    @Override
+    public void signal(SignalPayload signalPayload) {
+        //@TODO: define security policies for signalling
+        runtimeService.signalEventReceived(signalPayload.getName(),
+                signalPayload.getVariables());
+    }
+
+    @Override
+    public ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload) {
+        runtimeService.suspendProcessInstanceById(suspendProcessPayload.getProcessInstanceId());
+        return processInstanceConverter.from(runtimeService.createProcessInstanceQuery().processInstanceId(suspendProcessPayload.getProcessInstanceId()).singleResult());
+    }
+
+    @Override
+    public ProcessInstance resume(ResumeProcessPayload resumeProcessPayload) {
+        runtimeService.activateProcessInstanceById(resumeProcessPayload.getProcessInstanceId());
+        return processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
+                .processInstanceId(resumeProcessPayload.getProcessInstanceId()).singleResult());
+    }
+
+    @Override
+    public void setVariables(SetProcessVariablesPayload setProcessVariablesPayload) {
+        if (setProcessVariablesPayload.isLocalOnly()) {
+            runtimeService.setVariablesLocal(setProcessVariablesPayload.getProcessInstanceId(),
+                    setProcessVariablesPayload.getVariables());
+        } else {
+            runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
+                    setProcessVariablesPayload.getVariables());
+        }
+    }
+
+    @Override
+    public void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload) {
+        if (removeProcessVariablesPayload.isLocalOnly()) {
+            runtimeService.removeVariablesLocal(removeProcessVariablesPayload.getProcessInstanceId(),
+                    removeProcessVariablesPayload.getVariableNames());
+        } else {
+            runtimeService.removeVariables(removeProcessVariablesPayload.getProcessInstanceId(),
+                    removeProcessVariablesPayload.getVariableNames());
+        }
+    }
 
 }

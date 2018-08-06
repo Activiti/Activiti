@@ -18,10 +18,7 @@ package org.activiti.runtime.api;
 
 import org.activiti.runtime.api.model.ProcessDefinition;
 import org.activiti.runtime.api.model.ProcessInstance;
-import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
-import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
-import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
-import org.activiti.runtime.api.model.payloads.StartProcessPayload;
+import org.activiti.runtime.api.model.payloads.*;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 
@@ -76,4 +73,24 @@ public interface ProcessAdminRuntime {
     ProcessInstance delete(DeleteProcessPayload deleteProcessPayload);
 
 
+    /*
+     * Signal
+     */
+    void signal(SignalPayload signalPayload);
+
+    /*
+     * Suspend a process instance
+     */
+    ProcessInstance suspend(SuspendProcessPayload suspendProcessPayload);
+
+
+    /*
+     * Resume a suspended process instance
+     */
+    ProcessInstance resume(ResumeProcessPayload resumeProcessPayload);
+
+
+    void setVariables(SetProcessVariablesPayload setProcessVariablesPayload);
+
+    void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload);
 }
