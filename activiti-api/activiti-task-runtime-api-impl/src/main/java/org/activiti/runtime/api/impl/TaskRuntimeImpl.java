@@ -17,6 +17,7 @@
 package org.activiti.runtime.api.impl;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
@@ -153,7 +154,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public Task complete(CompleteTaskPayload completeTaskPayload) {
         //@TODO: not the most efficient way to return the just completed task, improve
         //      we might need to create an empty shell with the task ID and Status only
-        Task task = null;
+        Task task;
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         try {
             task = task(completeTaskPayload.getTaskId());
@@ -178,7 +179,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     @Override
     public Task claim(ClaimTaskPayload claimTaskPayload) {
         // Validate that the task is visible by the currently authorized user
-        Task task = null;
+        Task task;
         try {
             task = task(claimTaskPayload.getTaskId());
         } catch (IllegalStateException ex) {
@@ -200,7 +201,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     @Override
     public Task release(ReleaseTaskPayload releaseTaskPayload) {
         // Validate that the task is visible by the currently authorized user
-        Task task = null;
+        Task task;
         try {
             task = task(releaseTaskPayload.getTaskId());
         } catch (IllegalStateException ex) {
@@ -223,7 +224,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     @Override
     public Task update(UpdateTaskPayload updateTaskPayload) {
         // Validate that the task is visible by the authenticated user
-        Task task = null;
+        Task task;
         try {
             task = task(updateTaskPayload.getTaskId());
         } catch (IllegalStateException ex) {
@@ -231,7 +232,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         // validate that you are trying to update task where you are the assignee
-        if (!task.getAssignee().equals(authenticatedUserId)) {
+        if (!Objects.equals(task.getAssignee(), authenticatedUserId)) {
             throw new IllegalStateException("You cannot update a task where you are not the assignee");
         }
         org.activiti.engine.task.Task internalTask = getInternalTask(updateTaskPayload.getTaskId());
@@ -242,7 +243,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (updateTaskPayload.getDescription() != null) {
             internalTask.setDescription(updateTaskPayload.getDescription());
         }
-        if (Integer.valueOf(updateTaskPayload.getPriority()) != null) {
+        if (updateTaskPayload.getPriority() != null) {
             internalTask.setPriority(updateTaskPayload.getPriority());
         }
         if (updateTaskPayload.getAssignee() != null) {
@@ -260,7 +261,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public Task delete(DeleteTaskPayload deleteTaskPayload) {
         //@TODO: not the most efficient way to return the just deleted task, improve
         //      we might need to create an empty shell with the task ID and Status only
-        Task task = null;
+        Task task;
         try {
             task = task(deleteTaskPayload.getTaskId());
         } catch (IllegalStateException ex) {
