@@ -19,6 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -88,15 +89,12 @@ public class TaskRuntimeClaimReleaseTest {
         assertThat(standAloneTask.getAssignee()).isNull();
         assertThat(standAloneTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-        Exception e = null;
-        try {
-            // UnAuthorized release, task is not assigned
-            Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(standAloneTask.getId()).build());
-        } catch (Exception ex) {
-            e = ex;
-        }
-        assertThat(e).isNotNull();
-        assertThat(e).isInstanceOf(IllegalStateException.class);
+        Throwable thrown = catchThrowable(() -> {
+                                                 // UnAuthorized release, task is not assigned
+                                                 taskRuntime.release(TaskPayloadBuilder.release().withTaskId(standAloneTask.getId()).build());
+                                             }
+        );
+        assertThat(thrown).isInstanceOf(IllegalStateException.class);
     }
 
 

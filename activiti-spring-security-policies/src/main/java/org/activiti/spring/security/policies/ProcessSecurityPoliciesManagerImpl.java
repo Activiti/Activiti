@@ -4,23 +4,33 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.activiti.runtime.api.security.SecurityManager;
+import org.activiti.spring.security.policies.conf.SecurityPoliciesProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ProcessSecurityPoliciesManagerImpl extends BaseSecurityPoliciesManagerImpl implements ProcessSecurityPoliciesManager{
 
-    @Autowired
-    private SecurityPoliciesProcessDefinitionRestrictionApplier processDefinitionRestrictionApplier;
+    private final SecurityPoliciesProcessDefinitionRestrictionApplier processDefinitionRestrictionApplier;
 
-    @Autowired
-    private SecurityPoliciesProcessInstanceRestrictionApplier processInstanceRestrictionApplier;
+    private final SecurityPoliciesProcessInstanceRestrictionApplier processInstanceRestrictionApplier;
 
     @Value("${spring.application.name:application}")
     private String applicationName;
+
+    public ProcessSecurityPoliciesManagerImpl(UserGroupManager userGroupManager,
+                                              SecurityManager securityManager,
+                                              SecurityPoliciesProperties securityPoliciesProperties,
+                                              SecurityPoliciesProcessDefinitionRestrictionApplier processDefinitionRestrictionApplier,
+                                              SecurityPoliciesProcessInstanceRestrictionApplier processInstanceRestrictionApplier) {
+        super(userGroupManager, securityManager, securityPoliciesProperties);
+        this.processDefinitionRestrictionApplier = processDefinitionRestrictionApplier;
+        this.processInstanceRestrictionApplier = processInstanceRestrictionApplier;
+    }
 
     public GetProcessDefinitionsPayload restrictProcessDefQuery(SecurityPolicyAccess securityPolicyAccess) {
         return restrictQuery(processDefinitionRestrictionApplier, securityPolicyAccess);
@@ -55,7 +65,7 @@ public class ProcessSecurityPoliciesManagerImpl extends BaseSecurityPoliciesMana
 
         if (keys != null && !keys.isEmpty()) {
 
-            if (keys.contains(securityPoliciesProperties.getWildcard())) {
+            if (keys.contains(getSecurityPoliciesProperties().getWildcard())) {
                 return restrictionApplier.allowAll();
             }
 
@@ -63,7 +73,7 @@ public class ProcessSecurityPoliciesManagerImpl extends BaseSecurityPoliciesMana
         }
 
         //policies are in place but if we've got here then none for this user
-        if ((keys == null || keys.isEmpty()) && !securityPoliciesProperties.getPolicies().isEmpty()) {
+        if (!getSecurityPoliciesProperties().getPolicies().isEmpty()) {
             return restrictionApplier.denyAll();
         }
 

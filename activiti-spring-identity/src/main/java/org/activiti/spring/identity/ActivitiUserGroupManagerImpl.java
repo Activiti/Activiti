@@ -1,20 +1,21 @@
 package org.activiti.spring.identity;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.activiti.runtime.api.identity.UserGroupManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
 public class ActivitiUserGroupManagerImpl implements UserGroupManager {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
+    public ActivitiUserGroupManagerImpl(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     @Override
     public List<String> getUserGroups(String username) {

@@ -1,22 +1,31 @@
 package org.activiti.spring.security.policies;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.runtime.api.security.SecurityManager;
 import org.activiti.spring.security.policies.conf.SecurityPoliciesProperties;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.*;
 
 public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPoliciesManager {
 
-    @Autowired
-    protected UserGroupManager userGroupManager;
+    private UserGroupManager userGroupManager;
 
-    @Autowired
-    protected SecurityManager securityManager;
+    private SecurityManager securityManager;
 
-    @Autowired
-    protected SecurityPoliciesProperties securityPoliciesProperties;
+    private SecurityPoliciesProperties securityPoliciesProperties;
+
+    public BaseSecurityPoliciesManagerImpl(UserGroupManager userGroupManager,
+                                           SecurityManager securityManager,
+                                           SecurityPoliciesProperties securityPoliciesProperties) {
+        this.userGroupManager = userGroupManager;
+        this.securityManager = securityManager;
+        this.securityPoliciesProperties = securityPoliciesProperties;
+    }
 
     public boolean arePoliciesDefined() {
         return !securityPoliciesProperties.getPolicies().isEmpty();
@@ -36,9 +45,8 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
             groups = userGroupManager.getUserGroups(authenticatedUserId);
         }
         for (SecurityPolicy ssp : policies) {
-            if (definitionKeysAllowedByPolicy.get(ssp.getServiceName()) == null) {
-                definitionKeysAllowedByPolicy.put(ssp.getServiceName(), new HashSet<>());
-            }
+            definitionKeysAllowedByPolicy.computeIfAbsent(ssp.getServiceName(),
+                                                          k -> new HashSet<>());
 
             // I need to check that the user is listed in the user lists or that at least one of the user groups is in the group list
             if (isUserInPolicy(ssp, authenticatedUserId) || isGroupInPolicy(ssp, groups)) {
@@ -133,5 +141,9 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
             }
         }
         return false;
+    }
+
+    protected SecurityPoliciesProperties getSecurityPoliciesProperties() {
+        return securityPoliciesProperties;
     }
 }
