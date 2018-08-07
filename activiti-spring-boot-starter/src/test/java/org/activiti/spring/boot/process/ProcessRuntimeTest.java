@@ -27,6 +27,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration
 public class ProcessRuntimeTest {
 
+    private static final String CATEGORIZE_PROCESS = "categorizeProcess";
+    private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
+
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -46,26 +49,41 @@ public class ProcessRuntimeTest {
 
     }
 
+    @Test
+    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
+    public void shouldGetConfiguration() {
+        //when
+        ProcessRuntimeConfiguration configuration = processRuntime.configuration();
+
+        //then
+        assertThat(configuration).isNotNull();
+    }
+
+    @Test
+    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
+    public void shouldGetAvailableProcessDefinitionForTheGivenUser() {
+        //when
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
+                                                                                                     50));
+        //then
+        assertThat(processDefinitionPage.getContent()).isNotNull();
+        assertThat(processDefinitionPage.getContent())
+                .extracting(ProcessDefinition::getKey)
+                .contains(CATEGORIZE_PROCESS,
+                          CATEGORIZE_HUMAN_PROCESS);
+    }
 
     @Test
     @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void createProcessInstanceAndValidateHappyPath() {
-
-        ProcessRuntimeConfiguration configuration = processRuntime.configuration();
-        assertThat(configuration).isNotNull();
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                50));
-        assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent())
-                .extracting((ProcessDefinition pd) -> pd.getKey())
-                .contains("categorizeProcess");
-
+        //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey("categorizeProcess")
+                .withProcessDefinitionKey(CATEGORIZE_PROCESS)
                 .withVariable("expectedKey",
                         true)
                 .build());
 
+        //then
         assertThat(categorizeProcess).isNotNull();
 
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
@@ -77,22 +95,14 @@ public class ProcessRuntimeTest {
     @Test
     @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void createProcessInstanceAndValidateDiscardPath() {
-
-        ProcessRuntimeConfiguration configuration = processRuntime.configuration();
-        assertThat(configuration).isNotNull();
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                50));
-        assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent())
-                .extracting((ProcessDefinition pd) -> pd.getKey())
-                .contains("categorizeProcess");
-
+        //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey("categorizeProcess")
+                .withProcessDefinitionKey(CATEGORIZE_PROCESS)
                 .withVariable("expectedKey",
                         false)
                 .build());
 
+        //then
         assertThat(categorizeProcess).isNotNull();
 
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
@@ -103,42 +113,38 @@ public class ProcessRuntimeTest {
 
     @Test
     @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
+    public void shouldGetProcessDefinitionFromDefinitionKey() {
+        //when
+        ProcessDefinition categorizeHumanProcess = processRuntime.processDefinition(CATEGORIZE_HUMAN_PROCESS);
+
+        //then
+        assertThat(categorizeHumanProcess).isNotNull();
+        assertThat(categorizeHumanProcess.getName()).isEqualTo(CATEGORIZE_HUMAN_PROCESS);
+        assertThat(categorizeHumanProcess.getId()).contains(CATEGORIZE_HUMAN_PROCESS);
+    }
+
+    @Test
+    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void getProcessInstances() {
 
-        ProcessRuntimeConfiguration configuration = processRuntime.configuration();
-        assertThat(configuration).isNotNull();
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                50));
-        assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent()).extracting((ProcessDefinition pd) -> pd.getKey())
-                .contains("categorizeHumanProcess");
-
-        ProcessDefinition categorizeHumanProcess = processRuntime.processDefinition("categorizeHumanProcess");
-        assertThat(categorizeHumanProcess).isNotNull();
-        assertThat(categorizeHumanProcess.getName()).isEqualTo("categorizeHumanProcess");
-        assertThat(categorizeHumanProcess.getId()).contains("categorizeHumanProcess");
-
+        //when
         Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
                 50));
 
+        //then
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(0);
 
-        processInstancePage = processRuntime.processInstances(Pageable.of(0,
-                50),
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .build());
-
-
+        //given
         // start a process with a business key to check filters
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey("categorizeHumanProcess")
+        processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
                 .withVariable("expectedKey",
                         true)
                 .withBusinessKey("my business key")
                 .build());
 
+        //when
         processInstancePage = processRuntime.processInstances(Pageable.of(0,
                 50),
                 ProcessPayloadBuilder
@@ -225,7 +231,7 @@ public class ProcessRuntimeTest {
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
 
-        ProcessInstance resumedProcessInstance = processRuntime.resume(ProcessPayloadBuilder.resume(processInstance));
+        processRuntime.resume(ProcessPayloadBuilder.resume(processInstance));
 
         processInstancePage = processRuntime.processInstances(Pageable.of(0,
                 50),
@@ -274,12 +280,12 @@ public class ProcessRuntimeTest {
                 50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()).extracting((ProcessDefinition pd) -> pd.getKey())
-                .contains("categorizeHumanProcess");
+                .contains(CATEGORIZE_HUMAN_PROCESS);
 
 
         // start a process with a business key to check filters
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey("categorizeHumanProcess")
+                .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
                 .withVariable("expectedKey",
                         true)
                 .withBusinessKey("my business key")

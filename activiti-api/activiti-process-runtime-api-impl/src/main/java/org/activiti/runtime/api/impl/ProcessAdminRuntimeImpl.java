@@ -16,26 +16,32 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.List;
+
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.NotFoundException;
 import org.activiti.runtime.api.ProcessAdminRuntime;
-import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
 import org.activiti.runtime.api.model.ProcessDefinition;
 import org.activiti.runtime.api.model.ProcessInstance;
 import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
-import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ProcessInstanceImpl;
-import org.activiti.runtime.api.model.payloads.*;
+import org.activiti.runtime.api.model.payloads.DeleteProcessPayload;
+import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
+import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
+import org.activiti.runtime.api.model.payloads.RemoveProcessVariablesPayload;
+import org.activiti.runtime.api.model.payloads.ResumeProcessPayload;
+import org.activiti.runtime.api.model.payloads.SetProcessVariablesPayload;
+import org.activiti.runtime.api.model.payloads.SignalPayload;
+import org.activiti.runtime.api.model.payloads.StartProcessPayload;
+import org.activiti.runtime.api.model.payloads.SuspendProcessPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.List;
 
 @PreAuthorize("hasRole('ACTIVITI_ADMIN')")
 public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
@@ -48,22 +54,14 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     private final APIProcessInstanceConverter processInstanceConverter;
 
-    private final APIVariableInstanceConverter variableInstanceConverter;
-
-    private final ProcessRuntimeConfiguration configuration;
-
     public ProcessAdminRuntimeImpl(RepositoryService repositoryService,
                                    APIProcessDefinitionConverter processDefinitionConverter,
                                    RuntimeService runtimeService,
-                                   APIProcessInstanceConverter processInstanceConverter,
-                                   APIVariableInstanceConverter variableInstanceConverter,
-                                   ProcessRuntimeConfiguration configuration) {
+                                   APIProcessInstanceConverter processInstanceConverter) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
         this.processInstanceConverter = processInstanceConverter;
-        this.variableInstanceConverter = variableInstanceConverter;
-        this.configuration = configuration;
     }
 
 
@@ -77,7 +75,12 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         }
         if (processDefinition == null) {
             // try searching by Key if there is no matching by Id
-            List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().processDefinitionKey(processDefinitionId).list();
+            List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService
+                    .createProcessDefinitionQuery()
+                    .processDefinitionKey(processDefinitionId)
+                    .orderByProcessDefinitionVersion()
+                    .asc()
+                    .list();
             if (!list.isEmpty()) {
                 processDefinition = list.get(0);
             } else {
@@ -102,9 +105,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         }
         ProcessDefinitionQuery processDefinitionQuery = repositoryService
                 .createProcessDefinitionQuery();
-        if (getProcessDefinitionsPayload != null &&
-                getProcessDefinitionsPayload.getProcessDefinitionKeys() != null &&
-                !getProcessDefinitionsPayload.getProcessDefinitionKeys().isEmpty()) {
+        if (getProcessDefinitionsPayload.hasDefinitionKeys()) {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
         return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),

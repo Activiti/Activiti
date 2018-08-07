@@ -33,14 +33,14 @@ import org.activiti.runtime.api.model.payloads.UpdateTaskPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 
-/*
+/**
  * User Based Integrations against the Task Runtime
  */
 public interface TaskRuntime {
 
     TaskRuntimeConfiguration configuration();
 
-    /*
+    /**
      * Get task by id if the authenticated user:
      *  - is the assignee or
      *  - is in a group with is assigned to the task or
@@ -48,14 +48,14 @@ public interface TaskRuntime {
      */
     Task task(String taskId);
 
-    /*
+    /**
      * Get all tasks where
      *  - the authenticated user is the actual assignee
      *  - the user belongs to a group that is a candidate for the task
      */
     Page<Task> tasks(Pageable pageable);
 
-    /*
+    /**
      * Get all tasks where applying the filters in the Payload
      *  - the authenticated user is the actual assignee
      *  - the user belongs to a group that is a candidate for the task
@@ -63,7 +63,7 @@ public interface TaskRuntime {
     Page<Task> tasks(Pageable pageable,
                      GetTasksPayload getTasksPayload);
 
-    /*
+    /**
      * Creates a task based on the following rules
      *  - If an assignee is provided it creates and assign the task to the provided user
      *  - If there is no assignee the task is not assigned, just created
@@ -72,7 +72,7 @@ public interface TaskRuntime {
      */
     Task create(CreateTaskPayload createTaskPayload);
 
-    /*
+    /**
      * Claim a task with the currently authenticated user
      *  - If there is no authenticated user throw an IllegalStateException
      *  - If the currently authenticated user is not a candidate throw an IllegalStateException
@@ -81,13 +81,13 @@ public interface TaskRuntime {
      */
     Task claim(ClaimTaskPayload claimTaskPayload);
 
-    /*
+    /**
      * Release a previously claimed task
      * - The authenticated user needs to be the assignee in order to release it
      */
     Task release(ReleaseTaskPayload releaseTaskPayload);
 
-    /*
+    /**
      * Completes the selected task with the variables set in the payload
      * - This method checks that the task is visible by the authenticated user
      * - This method also check that the task is assigned to the currently authenticated user before complete
@@ -96,14 +96,14 @@ public interface TaskRuntime {
     Task complete(CompleteTaskPayload completeTaskPayload);
 
 
-    /*
+    /**
      * Updates details of a task
      * - The authenticated user should be able to see the task in order to update its details
      * - The authenticated user needs to be the assignee of the task to update its details, if not he/she will need to claim the task first
      */
     Task update(UpdateTaskPayload updateTaskPayload);
 
-    /*
+    /**
      * Deletes a task
      * - The authenticated user should be able to see the task in order to delete it
      * - The authenticated user needs to be the assignee of the task in order to delete it
@@ -111,7 +111,6 @@ public interface TaskRuntime {
      */
     Task delete(DeleteTaskPayload deleteTaskPayload);
 
-    /* this should be paged */
     List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
 
     void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);

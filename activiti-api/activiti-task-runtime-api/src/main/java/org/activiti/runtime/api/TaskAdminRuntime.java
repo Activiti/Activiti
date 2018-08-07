@@ -21,34 +21,34 @@ import org.activiti.runtime.api.model.payloads.*;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 
-/*
+/**
  * All the methods require an authenticated Admin user
  */
 public interface TaskAdminRuntime {
 
-    /*
+    /**
      * Deletes a task
      * - no matter the assignee or if the admin user can see the task
      */
     Task delete(DeleteTaskPayload deleteTaskPayload);
 
-    /*
+    /**
      * Get Task By Id
      */
     Task task(String taskId);
 
-    /*
+    /**
      * Get all tasks
      */
     Page<Task> tasks(Pageable pageable);
 
-    /*
+    /**
      * Get all tasks with payload filters
      */
     Page<Task> tasks(Pageable pageable,
                      GetTasksPayload getTasksPayload);
 
-    /*
+    /**
      * Claim a task with the currently authenticated user
      *  - If there is no authenticated user throw an IllegalStateException
      *  - If the currently authenticated user is not a candidate throw an IllegalStateException
@@ -57,13 +57,13 @@ public interface TaskAdminRuntime {
      */
     Task claim(ClaimTaskPayload claimTaskPayload);
 
-    /*
+    /**
      * Release a previously claimed task
      * - The authenticated user needs to be the assignee in order to release it
      */
     Task release(ReleaseTaskPayload releaseTaskPayload);
 
-    /*
+    /**
      * Completes the selected task with the variables set in the payload
      * - This method checks that the task is visible by the authenticated user
      * - This method also check that the task is assigned to the currently authenticated user before complete

@@ -1,6 +1,5 @@
 package org.activiti.runtime.api.model.payloads;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,6 +33,10 @@ public class GetProcessDefinitionsPayload implements Payload {
 
     public Set<String> getProcessDefinitionKeys() {
         return processDefinitionKeys;
+    }
+
+    public boolean hasDefinitionKeys() {
+        return processDefinitionKeys != null && !processDefinitionKeys.isEmpty();
     }
 
     public void setProcessDefinitionKeys(Set<String> processDefinitionKeys) {

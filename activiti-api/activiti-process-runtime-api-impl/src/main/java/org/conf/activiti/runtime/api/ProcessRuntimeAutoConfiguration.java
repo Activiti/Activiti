@@ -58,16 +58,13 @@ import org.activiti.runtime.api.event.internal.ProcessStartedListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessSuspendedListenerDelegate;
 import org.activiti.runtime.api.event.internal.SequenceFlowTakenListenerDelegate;
 import org.activiti.runtime.api.event.listener.ProcessRuntimeEventListener;
-import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
-import org.activiti.runtime.api.security.SecurityManager;
 import org.activiti.spring.security.policies.ProcessSecurityPoliciesManager;
-import org.activiti.spring.security.policies.SecurityPoliciesManager;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -82,8 +79,6 @@ public class ProcessRuntimeAutoConfiguration {
     public ProcessRuntime processRuntime(RepositoryService repositoryService,
                                          APIProcessDefinitionConverter processDefinitionConverter,
                                          RuntimeService runtimeService,
-                                         UserGroupManager userGroupManager,
-                                         SecurityManager securityManager,
                                          ProcessSecurityPoliciesManager securityPoliciesManager,
                                          APIProcessInstanceConverter processInstanceConverter,
                                          APIVariableInstanceConverter variableInstanceConverter,
@@ -91,9 +86,7 @@ public class ProcessRuntimeAutoConfiguration {
         return new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
-                userGroupManager,
-                securityManager,
-                securityPoliciesManager,
+                                      securityPoliciesManager,
                 processInstanceConverter,
                 variableInstanceConverter,
                 processRuntimeConfiguration);
@@ -104,15 +97,12 @@ public class ProcessRuntimeAutoConfiguration {
     public ProcessAdminRuntime processAdminRuntime(RepositoryService repositoryService,
                                                    APIProcessDefinitionConverter processDefinitionConverter,
                                                    RuntimeService runtimeService,
-                                                   APIProcessInstanceConverter processInstanceConverter,
-                                                   APIVariableInstanceConverter variableInstanceConverter,
-                                                   ProcessRuntimeConfiguration processRuntimeConfiguration) {
+                                                   APIProcessInstanceConverter processInstanceConverter) {
         return new ProcessAdminRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
-                processInstanceConverter,
-                variableInstanceConverter,
-                processRuntimeConfiguration);
+                processInstanceConverter
+        );
     }
 
     @Bean
