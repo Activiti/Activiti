@@ -8,7 +8,7 @@ import org.activiti.runtime.api.model.ProcessInstance;
 import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
-import org.activiti.spring.boot.RuntimeTestConfiguraiton;
+import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,9 +40,9 @@ public class ProcessRuntimeTest {
     public void init() {
 
         //Reset test variables
-        RuntimeTestConfiguraiton.processImageConnectorExecuted = false;
-        RuntimeTestConfiguraiton.tagImageConnectorExecuted = false;
-        RuntimeTestConfiguraiton.discardImageConnectorExecuted = false;
+        RuntimeTestConfiguration.processImageConnectorExecuted = false;
+        RuntimeTestConfiguration.tagImageConnectorExecuted = false;
+        RuntimeTestConfiguration.discardImageConnectorExecuted = false;
 
     }
 
@@ -69,9 +69,9 @@ public class ProcessRuntimeTest {
         assertThat(categorizeProcess).isNotNull();
 
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
-        assertThat(RuntimeTestConfiguraiton.processImageConnectorExecuted).isEqualTo(true);
-        assertThat(RuntimeTestConfiguraiton.tagImageConnectorExecuted).isEqualTo(true);
-        assertThat(RuntimeTestConfiguraiton.discardImageConnectorExecuted).isEqualTo(false);
+        assertThat(RuntimeTestConfiguration.processImageConnectorExecuted).isEqualTo(true);
+        assertThat(RuntimeTestConfiguration.tagImageConnectorExecuted).isEqualTo(true);
+        assertThat(RuntimeTestConfiguration.discardImageConnectorExecuted).isEqualTo(false);
     }
 
     @Test
@@ -96,9 +96,9 @@ public class ProcessRuntimeTest {
         assertThat(categorizeProcess).isNotNull();
 
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
-        assertThat(RuntimeTestConfiguraiton.processImageConnectorExecuted).isEqualTo(true);
-        assertThat(RuntimeTestConfiguraiton.tagImageConnectorExecuted).isEqualTo(false);
-        assertThat(RuntimeTestConfiguraiton.discardImageConnectorExecuted).isEqualTo(true);
+        assertThat(RuntimeTestConfiguration.processImageConnectorExecuted).isEqualTo(true);
+        assertThat(RuntimeTestConfiguration.tagImageConnectorExecuted).isEqualTo(false);
+        assertThat(RuntimeTestConfiguration.discardImageConnectorExecuted).isEqualTo(true);
     }
 
     @Test

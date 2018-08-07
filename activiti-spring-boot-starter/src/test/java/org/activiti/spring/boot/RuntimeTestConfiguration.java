@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
-public class RuntimeTestConfiguraiton {
+public class RuntimeTestConfiguration {
 
     public static boolean processImageConnectorExecuted = false;
 
