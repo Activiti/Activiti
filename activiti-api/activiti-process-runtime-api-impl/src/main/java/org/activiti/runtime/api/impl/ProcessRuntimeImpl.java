@@ -91,25 +91,18 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessDefinition processDefinition(String processDefinitionId) {
-        org.activiti.engine.repository.ProcessDefinition processDefinition = null;
-        try {
+        org.activiti.engine.repository.ProcessDefinition processDefinition;
+        // try searching by Key if there is no matching by Id
+        List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService
+                .createProcessDefinitionQuery()
+                .processDefinitionKey(processDefinitionId)
+                .orderByProcessDefinitionVersion()
+                .asc()
+                .list();
+        if (!list.isEmpty()) {
+            processDefinition = list.get(0);
+        } else {
             processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
-        } catch (Exception internalEx) {
-            // no action, by ID didn't worked, we will try by Key
-        }
-        if (processDefinition == null) {
-            // try searching by Key if there is no matching by Id
-            List<org.activiti.engine.repository.ProcessDefinition> list = repositoryService
-                    .createProcessDefinitionQuery()
-                    .processDefinitionKey(processDefinitionId)
-                    .orderByProcessDefinitionVersion()
-                    .asc()
-                    .list();
-            if (!list.isEmpty()) {
-                processDefinition = list.get(0);
-            } else {
-                throw new NotFoundException("Unable to find process definition for the given key:'" + processDefinitionId + "'");
-            }
         }
         if (!securityPoliciesManager.canRead(processDefinition.getKey())) {
             throw new ActivitiObjectNotFoundException("Unable to find process definition for the given id:'" + processDefinitionId + "'");
@@ -265,11 +258,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         }
         runtimeService.deleteProcessInstance(deleteProcessPayload.getProcessInstanceId(),
                 deleteProcessPayload.getReason());
-        if (processInstance != null) {
-            processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.DELETED);
-            return processInstance;
-        }
-        return null;
+        processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.DELETED);
+        return processInstance;
     }
 
     @Override
@@ -277,7 +267,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         //Process Instance will check security policies on read
         processInstance(getVariablesPayload.getProcessInstanceId());
 
-        Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables = null;
+        Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables;
         if (getVariablesPayload.isLocalOnly()) {
             variables = runtimeService.getVariableInstancesLocal(getVariablesPayload.getProcessInstanceId());
         } else {
