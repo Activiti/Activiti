@@ -92,7 +92,7 @@ public class SecurityPoliciesServiceIT {
 
 
     @Test
-    public void shouldBePoliciesDefined() throws Exception {
+    public void shouldBePoliciesDefined() {
         assertThat(processSecurityPoliciesManager.arePoliciesDefined()).isTrue();
         assertThat(!securityPoliciesProperties.getPolicies().isEmpty()).isTrue();
         assertThat(securityPoliciesProperties.getPolicies()).hasSize(3);
@@ -100,7 +100,7 @@ public class SecurityPoliciesServiceIT {
 
     @Test
     @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
-    public void shouldGetPoliciesForSalaboy() throws Exception {
+    public void shouldGetPoliciesForSalaboy() {
 
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("salaboy");
@@ -123,7 +123,7 @@ public class SecurityPoliciesServiceIT {
 
     @Test
     @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
-    public void shouldNotGetKeysForWrite() throws Exception {
+    public void shouldNotGetKeysForWrite() {
 
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");
@@ -141,7 +141,7 @@ public class SecurityPoliciesServiceIT {
 
     @Test
     @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
-    public void shouldGetKeysForRead() throws Exception {
+    public void shouldGetKeysForRead() {
 
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");
@@ -162,7 +162,7 @@ public class SecurityPoliciesServiceIT {
 
     @Test
     @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
-    public void shouldNotGetAnyKey() throws Exception {
+    public void shouldNotGetAnyKey() {
 
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");
@@ -180,164 +180,4 @@ public class SecurityPoliciesServiceIT {
 
     }
 
-
-    @Test
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "myUserDetailsService")
-    public void shouldGetAllTheKeysForAdmin() throws Exception {
-
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        assertThat(authenticatedUserId).isEqualTo("admin");
-
-
-        Map<String, Set<String>> keys = processSecurityPoliciesManager.getAllowedKeys();
-
-        assertThat(keys.keySet()).hasSize(3);
-        assertThat(keys.get("application")).hasSize(2);
-        assertThat(keys.get("runtime-bundle")).hasSize(2);
-        assertThat(keys.get("default")).contains(securityPoliciesProperties.getWildcard());
-
-
-    }
-
-//    @Test
-//    public void shouldGetProcessDefsByUserAndMinPolicy() throws Exception {
-//
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys("jEff",
-//                null,
-//                SecurityPolicyAccess.READ);
-//
-//        assertThat(keys.get(rb1)).hasSize(1);
-//        assertThat(keys.get(rb1)).contains("SimpleProcess");
-//
-//        //write as min policy should work too for this case
-//        keys = securityPoliciesService.getProcessDefinitionKeys("jEff",
-//                null,
-//                SecurityPolicyAccess.WRITE);
-//
-//        assertThat(keys.get(rb1)).contains("SimpleProcess");
-//    }
-//
-//    @Test
-//    public void shouldGetProcessDefsByGroupAndPolicies() throws Exception {
-//
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys(null,
-//                Arrays.asList("finance"),
-//                Arrays.asList(SecurityPolicyAccess.READ));
-//
-//        assertThat(keys.get(rb1)).hasSize(2);
-//        assertThat(keys.get(rb1)).contains("SimpleProcess1",
-//                "SimpleProcess2");
-//    }
-//
-//    @Test
-//    public void shouldGetProcessDefsByGroupsAndMinPolicy() throws Exception {
-//
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys(null,
-//                Arrays.asList("finance",
-//                        "nonexistent"),
-//                SecurityPolicyAccess.READ);
-//
-//        assertThat(keys.get(rb1)).hasSize(2);
-//        assertThat(keys.get(rb1)).contains("SimpleProcess1",
-//                "SimpleProcess2");
-//    }
-//
-//    @Test
-//    public void shouldNotGetProcessDefsForGroupWithoutDefs() throws Exception {
-//
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys(null,
-//                Arrays.asList("hrbitlikerealgroupbutnot",
-//                        "nonexistent"),
-//                SecurityPolicyAccess.READ);
-//
-//        assertThat(keys.get(rb1)).isNullOrEmpty();
-//    }
-//
-//    @Test
-//    public void shouldNotGetProcessDefsWithoutUserOrGroup() throws Exception {
-//
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys(null,
-//                null,
-//                Arrays.asList(SecurityPolicyAccess.WRITE));
-//
-//        assertThat(keys.get(rb1)).isNullOrEmpty();
-//    }
-//
-//    @Test
-//    public void shouldNotGetProcessDefsWithoutPolicyLevels() throws Exception {
-//
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys(null,
-//                Arrays.asList("finance"),
-//                new HashSet<>());
-//
-//        assertThat(keys.get(rb1)).isNullOrEmpty();
-//    }
-//
-//    @Test
-//    public void shouldNotGetProcessDefsWhenEntryMissingPolicyLevels() throws Exception {
-//
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys("fredslinehasanerror",
-//                null,
-//                SecurityPolicyAccess.READ);
-//        assertThat(keys.get(rb1)).isNullOrEmpty();
-//    }
-//
-//    @Test
-//    public void shouldNotGetProcessDefsWhenEntryMissingProcDefKeys() throws Exception {
-//
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys("jimhasnothing",
-//                null,
-//                SecurityPolicyAccess.READ);
-//        assertThat(keys.get(rb1)).isNullOrEmpty();
-//    }
-//
-//    //cases from YAML
-//    @Test
-//    public void shouldGetProcessDefsByUserAndPoliciesYml() throws Exception {
-//
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys("bOb",
-//                null,
-//                Arrays.asList(SecurityPolicyAccess.WRITE,
-//                        SecurityPolicyAccess.READ));
-//
-//        assertThat(keys.get(rb1)).hasSize(1);
-//        assertThat(keys.get(rb1)).contains("TestProcess");
-//    }
-//
-//    @Test
-//    public void shouldGetProcessDefsByGroupAndPoliciesYml() throws Exception {
-//
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys(null,
-//                Arrays.asList("hr"),
-//                Arrays.asList(SecurityPolicyAccess.READ));
-//
-//        assertThat(keys.get(rb1)).hasSize(2);
-//        assertThat(keys.get(rb1)).contains("SimpleProcessYML1");
-//        assertThat(keys.get(rb1)).contains("SimpleProcessYML2");
-//    }
-//
-//    @Test
-//    public void shouldGetWildcardByUserAndPoliciesIgnoringHyphens() throws Exception {
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys("jim-bob",
-//                null,
-//                Arrays.asList(SecurityPolicyAccess.WRITE,
-//                        SecurityPolicyAccess.READ));
-//
-//        assertThat(keys.get(rb1)).hasSize(1);
-//        assertThat(keys.get(rb1)).contains("*");
-//    }
-//
-//    @Test
-//    @Ignore
-//    //@TODO: check with Ryan
-//    public void shouldGetWildcardByGroupsAndMinPolicy() throws Exception {
-//
-//        Map<String, Set<String>> keys = securityPoliciesService.getProcessDefinitionKeys(null,
-//                Arrays.asList("accounts",
-//                        "nonexistent"),
-//                SecurityPolicyAccess.READ);
-//
-//        assertThat(keys.get(rb1)).hasSize(1);
-//        assertThat(keys.get(rb1)).contains(securityPoliciesService.getWildcard());
-//    }
 }
