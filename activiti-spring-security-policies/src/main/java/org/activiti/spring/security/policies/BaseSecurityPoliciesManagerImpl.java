@@ -13,11 +13,11 @@ import org.activiti.spring.security.policies.conf.SecurityPoliciesProperties;
 
 public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPoliciesManager {
 
-    private UserGroupManager userGroupManager;
+    protected UserGroupManager userGroupManager;
 
-    private SecurityManager securityManager;
+    protected SecurityManager securityManager;
 
-    private SecurityPoliciesProperties securityPoliciesProperties;
+    protected SecurityPoliciesProperties securityPoliciesProperties;
 
     public BaseSecurityPoliciesManagerImpl(UserGroupManager userGroupManager,
                                            SecurityManager securityManager,
