@@ -33,31 +33,85 @@ import org.activiti.runtime.api.model.payloads.UpdateTaskPayload;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 
+/**
+ * User Based Integrations against the Task Runtime
+ */
 public interface TaskRuntime {
 
     TaskRuntimeConfiguration configuration();
 
+    /**
+     * Get task by id if the authenticated user:
+     *  - is the assignee or
+     *  - is in a group with is assigned to the task or
+     *  - has admin role
+     */
     Task task(String taskId);
 
+    /**
+     * Get all tasks where
+     *  - the authenticated user is the actual assignee
+     *  - the user belongs to a group that is a candidate for the task
+     */
     Page<Task> tasks(Pageable pageable);
 
+    /**
+     * Get all tasks where applying the filters in the Payload
+     *  - the authenticated user is the actual assignee
+     *  - the user belongs to a group that is a candidate for the task
+     */
     Page<Task> tasks(Pageable pageable,
                      GetTasksPayload getTasksPayload);
 
-    void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);
-
-    Task complete(CompleteTaskPayload completeTaskPayload);
-
-    Task claim(ClaimTaskPayload claimTaskPayload);
-
-    Task release(ReleaseTaskPayload releaseTaskPayload);
-
-    Task update(UpdateTaskPayload updateTaskPayload);
-
-    Task delete(DeleteTaskPayload deleteTaskPayload);
-
+    /**
+     * Creates a task based on the following rules
+     *  - If an assignee is provided it creates and assign the task to the provided user
+     *  - If there is no assignee the task is not assigned, just created
+     *  - The owner of the task is the currently authenticated user (which is automatically added as a candidate)
+     *  - If a group or list of groups is provided those groups are added as candidates for claiming the task
+     */
     Task create(CreateTaskPayload createTaskPayload);
 
-    /* this should be paged */
+    /**
+     * Claim a task with the currently authenticated user
+     *  - If there is no authenticated user throw an IllegalStateException
+     *  - If the currently authenticated user is not a candidate throw an IllegalStateException
+     *  - The current approach doesn't support impersonation, it will always take the currently authenticated user
+     *  - after the claim the task should be in assigned status
+     */
+    Task claim(ClaimTaskPayload claimTaskPayload);
+
+    /**
+     * Release a previously claimed task
+     * - The authenticated user needs to be the assignee in order to release it
+     */
+    Task release(ReleaseTaskPayload releaseTaskPayload);
+
+    /**
+     * Completes the selected task with the variables set in the payload
+     * - This method checks that the task is visible by the authenticated user
+     * - This method also check that the task is assigned to the currently authenticated user before complete
+     * - This method return a shallow Task object with the basic information needed to validate that the task was completed
+     */
+    Task complete(CompleteTaskPayload completeTaskPayload);
+
+
+    /**
+     * Updates details of a task
+     * - The authenticated user should be able to see the task in order to update its details
+     * - The authenticated user needs to be the assignee of the task to update its details, if not he/she will need to claim the task first
+     */
+    Task update(UpdateTaskPayload updateTaskPayload);
+
+    /**
+     * Deletes a task
+     * - The authenticated user should be able to see the task in order to delete it
+     * - The authenticated user needs to be the assignee of the task in order to delete it
+     * - this method returns a shallow Task with the necessary information to validate that the task was deleted
+     */
+    Task delete(DeleteTaskPayload deleteTaskPayload);
+
     List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
+
+    void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);
 }

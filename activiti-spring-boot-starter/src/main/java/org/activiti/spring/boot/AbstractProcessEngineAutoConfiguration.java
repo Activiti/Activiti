@@ -28,7 +28,7 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
-import org.activiti.runtime.api.identity.IdentityLookup;
+import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringCallerRunsRejectedJobsHandler;
@@ -71,7 +71,7 @@ public abstract class AbstractProcessEngineAutoConfiguration
   }
 
   protected SpringProcessEngineConfiguration baseSpringProcessEngineConfiguration(DataSource dataSource, PlatformTransactionManager platformTransactionManager,
-                                                                                  SpringAsyncExecutor springAsyncExecutor, IdentityLookup identityLookup) throws IOException {
+                                                                                  SpringAsyncExecutor springAsyncExecutor, UserGroupManager userGroupManager) throws IOException {
 
     List<Resource> procDefResources = this.discoverProcessDefinitionResources(
         this.resourceLoader, this.activitiProperties.getProcessDefinitionLocationPrefix(),
@@ -98,8 +98,8 @@ public abstract class AbstractProcessEngineAutoConfiguration
     conf.setMailServerUseSSL(activitiProperties.isMailServerUseSsl());
     conf.setMailServerUseTLS(activitiProperties.isMailServerUseTls());
 
-    if(identityLookup!=null) {
-      conf.setIdentityLookup(identityLookup);
+    if(userGroupManager!=null) {
+      conf.setUserGroupManager(userGroupManager);
     }
     
     conf.setHistoryLevel(activitiProperties.getHistoryLevel());

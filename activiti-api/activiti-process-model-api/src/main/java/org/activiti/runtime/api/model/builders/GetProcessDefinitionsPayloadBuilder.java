@@ -8,7 +8,7 @@ import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
 public class GetProcessDefinitionsPayloadBuilder {
 
     private String processDefinitionId;
-    private Set<String> processDefinitionKeys;
+    private Set<String> processDefinitionKeys = new HashSet<>();
 
     public GetProcessDefinitionsPayloadBuilder withProcessDefinitionKeys(Set<String> processDefinitionKeys) {
         this.processDefinitionKeys = processDefinitionKeys;

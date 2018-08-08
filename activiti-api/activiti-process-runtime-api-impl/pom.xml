@@ -12,6 +12,14 @@
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
+      <artifactId>activiti-bpmn-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-common-model-api</artifactId>
     </dependency>
     <dependency>
@@ -21,6 +29,10 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-common-runtime-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-common-runtime-api-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -36,11 +48,15 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-common-runtime-api-impl</artifactId>
+      <artifactId>activiti-process-model-api-impl</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-process-model-api-impl</artifactId>
+      <artifactId>activiti-spring-identity</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring-security-policies</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -55,20 +71,12 @@
       <artifactId>spring-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-spring</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-bpmn-model</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

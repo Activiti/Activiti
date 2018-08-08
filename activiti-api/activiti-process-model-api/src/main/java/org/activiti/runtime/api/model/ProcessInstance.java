@@ -25,7 +25,8 @@ public interface ProcessInstance {
         RUNNING,
         SUSPENDED,
         CANCELLED,
-        COMPLETED
+        COMPLETED,
+        DELETED
     }
 
     String getId();

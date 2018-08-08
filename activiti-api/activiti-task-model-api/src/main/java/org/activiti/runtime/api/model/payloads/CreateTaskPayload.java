@@ -1,6 +1,7 @@
 package org.activiti.runtime.api.model.payloads;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.activiti.runtime.api.Payload;
@@ -13,6 +14,7 @@ public class CreateTaskPayload implements Payload {
     private Date dueDate;
     private int priority;
     private String assignee;
+    private List<String> groups;
     private String parentTaskId;
 
     public CreateTaskPayload() {
@@ -24,12 +26,14 @@ public class CreateTaskPayload implements Payload {
                              Date dueDate,
                              int priority,
                              String assignee,
+                             List<String> groups,
                              String parentTaskId) {
         this.name = name;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
         this.assignee = assignee;
+        this.groups = groups;
         this.parentTaskId = parentTaskId;
     }
 
@@ -84,5 +88,13 @@ public class CreateTaskPayload implements Payload {
 
     public void setParentTaskId(String parentTaskId) {
         this.parentTaskId = parentTaskId;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<String> groups) {
+        this.groups = groups;
     }
 }

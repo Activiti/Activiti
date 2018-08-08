@@ -5,15 +5,15 @@ import org.activiti.runtime.api.model.payloads.GetTaskVariablesPayload;
 public class GetTaskVariablesPayloadBuilder {
 
     private String taskId;
-    private boolean localOnly;
+    private boolean localOnly = false;
 
     public GetTaskVariablesPayloadBuilder withTaskId(String taskId) {
         this.taskId = taskId;
         return this;
     }
 
-    public GetTaskVariablesPayloadBuilder withLocalOnly(boolean localOnly) {
-        this.localOnly = localOnly;
+    public GetTaskVariablesPayloadBuilder localOnly() {
+        this.localOnly = true;
         return this;
     }
 

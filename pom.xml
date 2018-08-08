@@ -22,8 +22,10 @@
     <module>activiti-image-generator</module>
     <module>activiti-json-converter</module>
     <module>activiti-engine</module>
-    <module>activiti-identity-basic</module>
     <module>activiti-spring</module>
+    <module>activiti-spring-identity</module>
+    <module>activiti-spring-security</module>
+    <module>activiti-spring-security-policies</module>
     <module>activiti-spring-boot-starter</module>
   </modules>
   <scm>

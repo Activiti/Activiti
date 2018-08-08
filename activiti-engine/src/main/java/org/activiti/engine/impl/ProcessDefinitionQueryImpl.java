@@ -24,7 +24,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
-import org.activiti.runtime.api.identity.IdentityLookup;
+import org.activiti.runtime.api.identity.UserGroupManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -289,11 +289,11 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
         // includes the groups the candidate
         // user is part of
         if (authorizationUserId != null) {
-            IdentityLookup identityLookup = Context.getProcessEngineConfiguration().getIdentityLookup();
-            if (identityLookup != null) {
-                return identityLookup.getGroupsForCandidateUser(authorizationUserId);
+            UserGroupManager userGroupManager = Context.getProcessEngineConfiguration().getUserGroupManager();
+            if (userGroupManager != null) {
+                return userGroupManager.getUserGroups(authorizationUserId);
             } else {
-                log.warn("No IdentityLookup set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
+                log.warn("No UserGroupManager set on ProcessEngineConfiguration. Tasks queried only where user is directly related, not through groups.");
             }
         }
 

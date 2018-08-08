@@ -22,6 +22,8 @@ import java.util.List;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.runtime.api.TaskAdminRuntime;
+import org.activiti.runtime.api.impl.TaskAdminRuntimeImpl;
 import org.activiti.runtime.api.TaskRuntime;
 import org.activiti.runtime.api.conf.impl.TaskRuntimeConfigurationImpl;
 import org.activiti.runtime.api.event.TaskActivated;
@@ -56,6 +58,8 @@ import org.activiti.runtime.api.event.internal.TaskCompletedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TaskCreatedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TaskSuspendedListenerDelegate;
 import org.activiti.runtime.api.event.listener.TaskRuntimeEventListener;
+import org.activiti.runtime.api.identity.UserGroupManager;
+import org.activiti.runtime.api.security.SecurityManager;
 import org.activiti.runtime.api.impl.TaskRuntimeImpl;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
@@ -63,6 +67,7 @@ import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -71,13 +76,32 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public TaskRuntime taskRuntime(TaskService taskService,
+                                   UserGroupManager userGroupManager,
+                                   SecurityManager securityManager,
                                    APITaskConverter taskConverter,
                                    APIVariableInstanceConverter variableInstanceConverter,
                                    TaskRuntimeConfiguration configuration) {
         return new TaskRuntimeImpl(taskService,
+                                   userGroupManager,
+                                   securityManager,
                                    taskConverter,
                                    variableInstanceConverter,
                                    configuration);
+    }
+
+    @Bean
+    public TaskAdminRuntime taskAdminRuntime(TaskService taskService,
+                                        UserGroupManager userGroupManager,
+                                        SecurityManager securityManager,
+                                        APITaskConverter taskConverter,
+                                        APIVariableInstanceConverter variableInstanceConverter,
+                                        TaskRuntimeConfiguration configuration) {
+        return new TaskAdminRuntimeImpl(taskService,
+                                        userGroupManager,
+                                        securityManager,
+                                        taskConverter,
+                                        variableInstanceConverter,
+                                        configuration);
     }
 
     @Bean
@@ -88,6 +112,7 @@ public class TaskRuntimeAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public APIVariableInstanceConverter apiVariableInstanceConverter(APIVariableInstanceConverter variableInstanceConverter) {
         return new APIVariableInstanceConverter();
     }

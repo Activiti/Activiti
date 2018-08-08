@@ -18,15 +18,16 @@ package org.activiti.runtime.api;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.runtime.api.identity.UserGroupManager;
+import org.activiti.runtime.api.security.SecurityManager;
+import org.activiti.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import static org.mockito.Mockito.mock;
 
 @SpringBootApplication
-@EnableAutoConfiguration
 public class ProcessRuntimeTestApp {
 
     public static void main(String[] args) {
@@ -43,4 +44,18 @@ public class ProcessRuntimeTestApp {
         return mock(RuntimeService.class);
     }
 
+    @Bean
+    public UserGroupManager userGroupManager() {
+        return mock(UserGroupManager.class);
+    }
+
+    @Bean
+    public SecurityManager securityManager() {
+        return mock(SecurityManager.class);
+    }
+
+    @Bean
+    public ProcessSecurityPoliciesManager securityPolicyManager() {
+        return mock(ProcessSecurityPoliciesManager.class);
+    }
 }

@@ -12,7 +12,7 @@ public class UpdateTaskPayload implements Payload {
     private String taskName;
     private String description;
     private Date dueDate;
-    private int priority;
+    private Integer priority;
     private String assignee;
 
     public UpdateTaskPayload() {
@@ -23,7 +23,7 @@ public class UpdateTaskPayload implements Payload {
                              String taskName,
                              String description,
                              Date dueDate,
-                             int priority,
+                             Integer priority,
                              String assignee) {
         this();
         this.taskId = taskId;
@@ -71,11 +71,11 @@ public class UpdateTaskPayload implements Payload {
         this.dueDate = dueDate;
     }
 
-    public int getPriority() {
+    public Integer getPriority() {
         return priority;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(Integer priority) {
         this.priority = priority;
     }
 

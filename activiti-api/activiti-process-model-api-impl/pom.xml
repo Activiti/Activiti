@@ -35,6 +35,10 @@
       <artifactId>activiti-process-model-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-common-model-api-impl</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
     </dependency>
@@ -47,8 +51,8 @@
       <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-common-model-api-impl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

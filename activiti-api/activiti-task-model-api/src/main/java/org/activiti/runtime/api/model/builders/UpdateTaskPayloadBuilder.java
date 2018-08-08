@@ -10,7 +10,7 @@ public class UpdateTaskPayloadBuilder {
     private String name;
     private String description;
     private Date dueDate;
-    private int priority;
+    private Integer priority;
     private String assignee;
 
     public UpdateTaskPayloadBuilder withAssignee(String assignee) {
@@ -38,7 +38,7 @@ public class UpdateTaskPayloadBuilder {
         return this;
     }
 
-    public UpdateTaskPayloadBuilder withPriority(int priority) {
+    public UpdateTaskPayloadBuilder withPriority(Integer priority) {
         this.priority = priority;
         return this;
     }

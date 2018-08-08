@@ -1,5 +1,6 @@
 package org.activiti.runtime.api.model.payloads;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -9,7 +10,7 @@ public class SignalPayload implements Payload {
 
     private String id;
     private String name;
-    private Map<String, Object> variables;
+    private Map<String, Object> variables = new HashMap<>();
 
     public SignalPayload() {
         this.id = UUID.randomUUID().toString();

@@ -38,6 +38,10 @@ public class DeleteTaskPayload implements Payload {
         return reason;
     }
 
+    public boolean hasReason() {
+        return reason != null;
+    }
+
     public void setReason(String reason) {
         this.reason = reason;
     }

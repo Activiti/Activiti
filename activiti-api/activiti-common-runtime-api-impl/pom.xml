@@ -16,6 +16,10 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
+      <artifactId>activiti-common-model-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
       <artifactId>activiti-common-model-api-impl</artifactId>
     </dependency>
     <dependency>

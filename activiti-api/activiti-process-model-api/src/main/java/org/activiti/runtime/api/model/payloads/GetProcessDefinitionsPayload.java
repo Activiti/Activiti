@@ -35,6 +35,10 @@ public class GetProcessDefinitionsPayload implements Payload {
         return processDefinitionKeys;
     }
 
+    public boolean hasDefinitionKeys() {
+        return processDefinitionKeys != null && !processDefinitionKeys.isEmpty();
+    }
+
     public void setProcessDefinitionKeys(Set<String> processDefinitionKeys) {
         this.processDefinitionKeys = processDefinitionKeys;
     }

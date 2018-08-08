@@ -9,6 +9,7 @@ public class StartProcessPayloadBuilder {
 
     private String processDefinitionId;
     private String processDefinitionKey;
+    private String processInstanceName;
     private String businessKey;
     private Map<String, Object> variables = new HashMap<>();
 
@@ -23,7 +24,7 @@ public class StartProcessPayloadBuilder {
             this.variables = new HashMap<>();
         }
         this.variables.put(name,
-                           value);
+                value);
         return this;
     }
 
@@ -37,6 +38,11 @@ public class StartProcessPayloadBuilder {
         return this;
     }
 
+    public StartProcessPayloadBuilder withProcessInstanceName(String processInstanceName) {
+        this.processInstanceName = processInstanceName;
+        return this;
+    }
+
     public StartProcessPayloadBuilder withProcessDefinitionKey(String processDefinitionKey) {
         this.processDefinitionKey = processDefinitionKey;
         return this;
@@ -44,8 +50,9 @@ public class StartProcessPayloadBuilder {
 
     public StartProcessPayload build() {
         return new StartProcessPayload(processDefinitionId,
-                                       processDefinitionKey,
-                                       businessKey,
-                                       variables);
+                processDefinitionKey,
+                processInstanceName,
+                businessKey,
+                variables);
     }
 }
