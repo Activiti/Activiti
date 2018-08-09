@@ -90,7 +90,7 @@ public class SignalEventTest extends PluggableActivitiTestCase {
     variables2.put("processName", "throwSignal");
     runtimeService.startProcessInstanceByKey("throwSignal", variables2);
 
-    assertEquals("catchSignal", runtimeService.getVariable(pi.getId(), "processName"));
+    assertEquals("throwSignal", runtimeService.getVariable(pi.getId(), "processName"));
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignal.bpmn20.xml",
