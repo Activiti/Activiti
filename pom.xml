@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-build</artifactId>
-  <version>7-201803-EA-SNAPSHOT</version>
+  <version>7.0.0.Beta1</version>
   <packaging>pom</packaging>
   <name>Activiti :: Build</name>
   <description>${project.name}</description>
@@ -85,7 +85,7 @@
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
     <!-- dependency -->
-    <activiti.version>7-201803-EA-SNAPSHOT</activiti.version>
+    <activiti.version>7.0.0.Beta1</activiti.version>
     <asm.version>6.1.1</asm.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
