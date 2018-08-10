@@ -64,7 +64,7 @@ public class DemoApplication implements CommandLineRunner {
     }
 
     @GetMapping("/process-definitions")
-    public List<ProcessDefinition> getSomething(){
+    public List<ProcessDefinition> getProcessDefinition(){
         return processRuntime.processDefinitions(Pageable.of(0, 100)).getContent();
     }
 
