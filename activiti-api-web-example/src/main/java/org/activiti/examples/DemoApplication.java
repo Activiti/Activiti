@@ -55,7 +55,7 @@ public class DemoApplication implements CommandLineRunner {
         ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
                                                                        .start()
                                                                        .withProcessDefinitionKey("categorizeProcess")
-                                                                       .withVariable("content",
+                                                                       .withVariable("fileContent",
                                                                                      content)
                                                                        .build());
         String message = ">>> Created Process Instance: " + processInstance;
