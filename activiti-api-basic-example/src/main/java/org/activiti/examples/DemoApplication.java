@@ -56,14 +56,15 @@ public class DemoApplication implements CommandLineRunner {
         String randomText = pickRandomString();
         if (processDefinitionKey != null) {
             System.out.println("Processing file: " + randomText);
-            String fileContent = randomText;
+            String content = randomText;
 
             securityUtil.logInAs("system");
 
             ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
                     .start()
                     .withProcessDefinitionKey(processDefinitionKey)
-                    .withVariable("content", fileContent)
+                    .withProcessInstanceName("Processing Content: " + content)
+                    .withVariable("content", content)
                     .build());
             System.out.println(">>> Created Process Instance: " + processInstance);
 
