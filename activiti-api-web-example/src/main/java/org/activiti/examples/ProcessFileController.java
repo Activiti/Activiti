@@ -24,6 +24,7 @@ import org.activiti.runtime.api.model.ProcessInstance;
 import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
 import org.apache.commons.io.IOUtils;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,6 +57,11 @@ public class ProcessFileController {
         String message = ">>> Created Process Instance: " + processInstance;
         System.out.println(message);
         return message;
+    }
+
+    @GetMapping
+    public String getSomething(){
+        return "something";
     }
 
 }

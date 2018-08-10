@@ -28,8 +28,7 @@ import org.springframework.integration.channel.DirectChannel;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.web.bind.annotation.RestController;
 
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
-@RestController
+@SpringBootApplication
 public class DemoApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
