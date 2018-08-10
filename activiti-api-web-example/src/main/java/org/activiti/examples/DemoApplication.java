@@ -16,37 +16,61 @@
 
 package org.activiti.examples;
 
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.runtime.api.ProcessRuntime;
 import org.activiti.runtime.api.connector.Connector;
+import org.activiti.runtime.api.model.ProcessDefinition;
+import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
+import org.activiti.runtime.api.query.Pageable;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.integration.channel.DirectChannel;
-import org.springframework.messaging.MessageChannel;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
+@RestController
 public class DemoApplication implements CommandLineRunner {
+
+    private ProcessRuntime processRuntime;
+
+    public DemoApplication(ProcessRuntime processRuntime) {
+        this.processRuntime = processRuntime;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
-
-
     }
 
+
+    @PostMapping("/documents")
+    public String processFile(@RequestBody String content) {
+
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+                                                                       .start()
+                                                                       .withProcessDefinitionKey("categorizeProcess")
+                                                                       .withVariable("content",
+                                                                                     content)
+                                                                       .build());
+        String message = ">>> Created Process Instance: " + processInstance;
+        System.out.println(message);
+        return message;
+    }
+
+    @GetMapping("/process-definitions")
+    public List<ProcessDefinition> getSomething(){
+        return processRuntime.processDefinitions(Pageable.of(0, 100)).getContent();
+    }
 
     @Override
     public void run(String... args) {
     }
-
-    @Bean
-    public MessageChannel fileChannel() {
-        return new DirectChannel();
-    }
-
 
     @Bean
     public Connector processTextConnector() {
