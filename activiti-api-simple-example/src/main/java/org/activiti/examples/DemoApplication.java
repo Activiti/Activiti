@@ -53,7 +53,7 @@ public class DemoApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("system");
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 10));
         System.out.println("process definitions: " + processDefinitionPage.getTotalItems());
@@ -87,7 +87,7 @@ public class DemoApplication implements CommandLineRunner {
             System.out.println("Processing file: " + payload.getName());
             String fileContent = FileUtils.readFileToString(payload, "UTF-8");
 
-            securityUtil.logInAs("salaboy");
+            securityUtil.logInAs("system");
 
             ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
                     .start()
