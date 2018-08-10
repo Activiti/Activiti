@@ -18,11 +18,9 @@ public class DemoApplicationConfiguration {
     public UserDetailsService myUserDetailsService() {
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
 
-        List<GrantedAuthority> salaboyAuthorities = new ArrayList<>();
-        salaboyAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
-        salaboyAuthorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
-
-        inMemoryUserDetailsManager.createUser(new User("salaboy", "password", salaboyAuthorities));
+        List<GrantedAuthority> systemAuthorities = new ArrayList<>();
+        systemAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
+        inMemoryUserDetailsManager.createUser(new User("system", "password", systemAuthorities));
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
