@@ -7,6 +7,7 @@ import org.activiti.runtime.api.model.builders.TaskPayloadBuilder;
 import org.activiti.runtime.api.query.Page;
 import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.security.SecurityManager;
+import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +46,8 @@ public class TaskRuntimeStandaloneTaskTest {
                 .withName("cure Skipper")
                 .withAssignee(authenticatedUserId)
                 .build());
+
+        assertThat(RuntimeTestConfiguration.createdTasks).contains(standAloneTask.getId());
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
                 50));

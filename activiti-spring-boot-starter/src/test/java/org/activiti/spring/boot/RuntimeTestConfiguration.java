@@ -1,10 +1,14 @@
 package org.activiti.spring.boot;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.runtime.api.connector.Connector;
+import org.activiti.runtime.api.event.TaskCreated;
+import org.activiti.runtime.api.event.listener.TaskRuntimeEventListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,6 +25,8 @@ public class RuntimeTestConfiguration {
     public static boolean tagImageConnectorExecuted = false;
 
     public static boolean discardImageConnectorExecuted = false;
+
+    public static Set<String> createdTasks = new HashSet<>();
 
 
     @Bean
@@ -76,5 +82,10 @@ public class RuntimeTestConfiguration {
             discardImageConnectorExecuted = true;
             return integrationContext;
         };
+    }
+
+    @Bean
+    public TaskRuntimeEventListener<TaskCreated> taskCreatedListener () {
+        return taskCreated -> createdTasks.add(taskCreated.getEntity().getId());
     }
 }
