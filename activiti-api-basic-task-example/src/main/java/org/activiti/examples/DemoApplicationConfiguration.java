@@ -1,50 +1,53 @@
 package org.activiti.examples;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 public class DemoApplicationConfiguration {
 
+    private Logger logger = LoggerFactory.getLogger(DemoApplicationConfiguration.class);
+
     @Bean
     public UserDetailsService myUserDetailsService() {
+
         InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
 
-        List<GrantedAuthority> salaboyAuthorities = new ArrayList<>();
-        salaboyAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
-        salaboyAuthorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
-        inMemoryUserDetailsManager.createUser(new User("salaboy", "password", salaboyAuthorities));
+        String[][] usersGroupsAndRoles = {
+                {"salaboy", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
+                {"ryandawsonuk", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
+                {"erdemedeiros", "password", "ROLE_ACTIVITI_USER", "GROUP_activitiTeam"},
+                {"other", "password", "ROLE_ACTIVITI_USER", "GROUP_otherTeam"},
+                {"admin", "password", "ROLE_ACTIVITI_ADMIN"},
+        };
 
-        List<GrantedAuthority> ryanAuthorities = new ArrayList<>();
-        ryanAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
-        ryanAuthorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
-        inMemoryUserDetailsManager.createUser(new User("ryandawsonuk", "password", ryanAuthorities));
+        for (String[] user : usersGroupsAndRoles) {
+            List<String> authoritiesStrings = Arrays.asList(Arrays.copyOfRange(user, 2, user.length));
+            logger.info("> Registering new user: " + user[0] + " with the following Authorities[" + authoritiesStrings + "]");
+            inMemoryUserDetailsManager.createUser(new User(user[0], passwordEncoder().encode(user[1]),
+                    authoritiesStrings.stream().map(s -> new SimpleGrantedAuthority(s)).collect(Collectors.toList())));
+        }
 
-        List<GrantedAuthority> eliasAuthorities = new ArrayList<>();
-        eliasAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
-        eliasAuthorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
-        inMemoryUserDetailsManager.createUser(new User("erdemedeiros", "password", eliasAuthorities));
-
-        List<GrantedAuthority> otherAuthorities = new ArrayList<>();
-        otherAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
-        otherAuthorities.add(new SimpleGrantedAuthority("GROUP_otherTeam"));
-        inMemoryUserDetailsManager.createUser(new User("other", "password", otherAuthorities));
-
-        List<GrantedAuthority> adminAuthorities = new ArrayList<>();
-        adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
-
-        inMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
 
         return inMemoryUserDetailsManager;
     }
 
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 }
