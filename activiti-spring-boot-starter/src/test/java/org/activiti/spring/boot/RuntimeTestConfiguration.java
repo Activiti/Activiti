@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.runtime.api.connector.Connector;
+import org.activiti.runtime.api.event.ProcessCompleted;
 import org.activiti.runtime.api.event.TaskCreated;
+import org.activiti.runtime.api.event.listener.ProcessRuntimeEventListener;
 import org.activiti.runtime.api.event.listener.TaskRuntimeEventListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,8 @@ public class RuntimeTestConfiguration {
     public static boolean discardImageConnectorExecuted = false;
 
     public static Set<String> createdTasks = new HashSet<>();
+
+    public static Set<String> completedProcesses = new HashSet<>();
 
 
     @Bean
@@ -87,5 +91,10 @@ public class RuntimeTestConfiguration {
     @Bean
     public TaskRuntimeEventListener<TaskCreated> taskCreatedListener () {
         return taskCreated -> createdTasks.add(taskCreated.getEntity().getId());
+    }
+
+    @Bean
+    public ProcessRuntimeEventListener<ProcessCompleted> processCompletedListener () {
+        return processCompleted -> completedProcesses.add(processCompleted.getEntity().getId());
     }
 }

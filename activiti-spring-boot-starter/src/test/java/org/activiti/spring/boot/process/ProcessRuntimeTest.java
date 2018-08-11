@@ -83,6 +83,7 @@ public class ProcessRuntimeTest {
                         true)
                 .build());
 
+        assertThat(RuntimeTestConfiguration.completedProcesses).contains(categorizeProcess.getId());
         //then
         assertThat(categorizeProcess).isNotNull();
 
@@ -101,6 +102,8 @@ public class ProcessRuntimeTest {
                 .withVariable("expectedKey",
                         false)
                 .build());
+
+        assertThat(RuntimeTestConfiguration.completedProcesses).contains(categorizeProcess.getId());
 
         //then
         assertThat(categorizeProcess).isNotNull();
