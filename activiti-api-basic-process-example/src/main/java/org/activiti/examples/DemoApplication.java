@@ -51,8 +51,7 @@ public class DemoApplication implements CommandLineRunner {
         }
 
     }
-
-
+    
     @Scheduled(initialDelay = 1000, fixedDelay = 1000)
     public void processText() {
 
