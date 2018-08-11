@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.activiti</groupId>
-	<artifactId>activiti-api-simple-examples</artifactId>
+	<artifactId>activiti-api-spring-integration-example</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Activiti API Simple Examples</name>
-	<description>Activiti API Simple Examples</description>
+	<name>Activiti API Spring Integration Examples</name>
+	<description>Activiti API Spring Integration Examples</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
