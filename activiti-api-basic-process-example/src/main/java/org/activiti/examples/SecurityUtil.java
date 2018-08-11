@@ -1,5 +1,7 @@
 package org.activiti.examples;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,6 +16,8 @@ import java.util.Collection;
 @Component
 public class SecurityUtil {
 
+    private Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
+
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -23,7 +27,7 @@ public class SecurityUtil {
         if (user == null) {
             throw new IllegalStateException("User " + username + " doesn't exist, please provide a valid user");
         }
-
+        logger.info("> Logged in as: " + username);
         SecurityContextHolder.setContext(new SecurityContextImpl(new Authentication() {
             @Override
             public Collection<? extends GrantedAuthority> getAuthorities() {

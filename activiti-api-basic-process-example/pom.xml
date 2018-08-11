@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.activiti</groupId>
-	<artifactId>activiti-api-basic-examples</artifactId>
+	<artifactId>activiti-api-basic-process-examples</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Activiti API Basic Examples</name>
-	<description>Activiti API Basic Examples</description>
+	<name>Activiti API Basic Process Examples</name>
+	<description>Activiti API Basic Process Examples</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -65,13 +65,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<repositories>
-		<repository>
-			<id>central-staging</id>
-			<name>staging</name>
-			<url>https://oss.sonatype.org/content/repositories/orgactiviti-1110</url>
-		</repository>
-	</repositories>
-
 </project>
