@@ -19,7 +19,7 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0upfncf" sourceRef="Task_1asxw87" targetRef="EndEvent_13bsqqd" />
     <bpmn:sequenceFlow id="SequenceFlow_1nn2llw" sourceRef="Task_0snvh02" targetRef="EndEvent_1ogwwp9" />
-    <bpmn:serviceTask id="Task_1ylvdew" name="Process Contentt" implementation="processTextConnector">
+    <bpmn:serviceTask id="Task_1ylvdew" name="Process Content" implementation="processTextConnector">
       <bpmn:incoming>SequenceFlow_09xowo4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1jzbgkj</bpmn:outgoing>
     </bpmn:serviceTask>

@@ -3,7 +3,6 @@ package org.activiti.examples;
 import org.activiti.runtime.api.ProcessRuntime;
 import org.activiti.runtime.api.connector.Connector;
 import org.activiti.runtime.api.event.ProcessCompleted;
-import org.activiti.runtime.api.event.ProcessStarted;
 import org.activiti.runtime.api.event.listener.ProcessRuntimeEventListener;
 import org.activiti.runtime.api.model.ProcessDefinition;
 import org.activiti.runtime.api.model.ProcessInstance;
