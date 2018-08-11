@@ -2,6 +2,9 @@ package org.activiti.examples;
 
 import org.activiti.runtime.api.ProcessRuntime;
 import org.activiti.runtime.api.connector.Connector;
+import org.activiti.runtime.api.event.ProcessCompleted;
+import org.activiti.runtime.api.event.ProcessStarted;
+import org.activiti.runtime.api.event.listener.ProcessRuntimeEventListener;
 import org.activiti.runtime.api.model.ProcessDefinition;
 import org.activiti.runtime.api.model.ProcessInstance;
 import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
@@ -51,7 +54,7 @@ public class DemoApplication implements CommandLineRunner {
         }
 
     }
-    
+
     @Scheduled(initialDelay = 1000, fixedDelay = 1000)
     public void processText() {
 
@@ -115,6 +118,13 @@ public class DemoApplication implements CommandLineRunner {
             logger.info("Final Content: " + contentToDiscard);
             return integrationContext;
         };
+    }
+
+    @Bean
+    public ProcessRuntimeEventListener<ProcessCompleted> processCompletedListener() {
+        return processCompleted -> logger.info(">>> Process Completed: '"
+                + processCompleted.getEntity().getName() +
+                "' We can send a notification to the initiator: " + processCompleted.getEntity().getInitiator());
     }
 
     private String pickRandomString() {
