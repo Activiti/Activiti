@@ -33,11 +33,9 @@
     </bpmn:serviceTask>
     <bpmn:endEvent id="EndEvent_13bsqqd">
       <bpmn:incoming>SequenceFlow_0upfncf</bpmn:incoming>
-      <bpmn:terminateEventDefinition />
     </bpmn:endEvent>
     <bpmn:endEvent id="EndEvent_1ogwwp9">
       <bpmn:incoming>SequenceFlow_1nn2llw</bpmn:incoming>
-      <bpmn:terminateEventDefinition />
     </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
