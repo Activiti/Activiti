@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.springframework.core.io.Resource;
 
 /**
  * Builder for creating new deployments.
@@ -33,6 +34,9 @@ import org.activiti.bpmn.model.BpmnModel;
 public interface DeploymentBuilder {
 
   DeploymentBuilder addInputStream(String resourceName, InputStream inputStream);
+
+  DeploymentBuilder addInputStream(String resourceName,
+                                   Resource resource);
 
   DeploymentBuilder addClasspathResource(String resource);
 

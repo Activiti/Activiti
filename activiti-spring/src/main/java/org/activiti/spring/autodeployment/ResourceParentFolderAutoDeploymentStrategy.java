@@ -13,18 +13,16 @@
 
 package org.activiti.spring.autodeployment;
 
-import org.activiti.engine.ActivitiException;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.repository.DeploymentBuilder;
-import org.springframework.core.io.Resource;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.zip.ZipInputStream;
+
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.DeploymentBuilder;
+import org.springframework.core.io.Resource;
 
 /**
  * Implementation of {@link AutoDeploymentStrategy} that performs a separate deployment for each set of {@link Resource}s that share the same parent folder. The namehint is used to prefix the names of
@@ -63,15 +61,8 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
       for (final Resource resource : group.getValue()) {
         final String resourceName = determineResourceName(resource);
 
-        try {
-          if (resourceName.endsWith(".bar") || resourceName.endsWith(".zip") || resourceName.endsWith(".jar")) {
-            deploymentBuilder.addZipInputStream(new ZipInputStream(resource.getInputStream()));
-          } else {
-            deploymentBuilder.addInputStream(resourceName, resource.getInputStream());
-          }
-        } catch (IOException e) {
-          throw new ActivitiException("couldn't auto deploy resource '" + resource + "': " + e.getMessage(), e);
-        }
+        deploymentBuilder.addInputStream(resourceName,
+                                         resource);
       }
       deploymentBuilder.deploy();
     }

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.repository;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -34,6 +35,7 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.springframework.core.io.Resource;
 
 /**
 
@@ -69,6 +71,26 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     resource.setName(resourceName);
     resource.setBytes(bytes);
     deployment.addResource(resource);
+    return this;
+  }
+
+  @Override
+  public DeploymentBuilder addInputStream(String resourceName,
+                                          Resource resource) {
+    try {
+      if (resourceName.endsWith(".bar") || resourceName.endsWith(".zip") || resourceName.endsWith(".jar")) {
+        try(ZipInputStream inputStream = new ZipInputStream(resource.getInputStream())) {
+          addZipInputStream(inputStream);
+        }
+      } else {
+        try(InputStream inputStream = resource.getInputStream()) {
+          addInputStream(resourceName,
+                         inputStream);
+        }
+      }
+    } catch (IOException e) {
+      throw new ActivitiException("couldn't auto deploy resource '" + resource + "': " + e.getMessage(), e);
+    }
     return this;
   }
 
