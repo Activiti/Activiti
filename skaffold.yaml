@@ -1,0 +1,31 @@
+apiVersion: skaffold/v1alpha2
+kind: Config
+build:
+  tagPolicy:
+    envTemplate:
+      template: "{{.DOCKER_REGISTRY}}/activiti/activiti-build:{{.VERSION}}"
+  artifacts:
+  - imageName: changeme
+    workspace: .
+    docker: {}
+  local: {}
+deploy:
+  kubectl:
+    manifests:
+profiles:
+- name: dev
+  build:
+    tagPolicy:
+      envTemplate:
+        template: "{{.DOCKER_REGISTRY}}/activiti/activiti-build:{{.DIGEST_HEX}}"
+    artifacts:
+    - docker: {}
+    local: {}
+  deploy:
+    helm:
+      releases:
+      - name: activiti-build
+        chartPath: charts/activiti-build
+        setValueTemplates:
+          image.repository: "{{.DOCKER_REGISTRY}}/activiti/activiti-build"
+          image.tag: "{{.TAG}}"
