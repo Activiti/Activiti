@@ -54,12 +54,20 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   protected boolean isProcessValidationEnabled = true;
   protected boolean isDuplicateFilterEnabled;
   protected Date processDefinitionsActivationDate;
-  protected Map<String, Object> deploymentProperties = new HashMap<String, Object>();
+  protected Map<String, Object> deploymentProperties = new HashMap<>();
 
   public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
+    this(repositoryService,
+         Context.getProcessEngineConfiguration().getDeploymentEntityManager().create(),
+         Context.getProcessEngineConfiguration().getResourceEntityManager());
+  }
+
+  public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService,
+                               DeploymentEntity deployment,
+                               ResourceEntityManager resourceEntityManager) {
     this.repositoryService = repositoryService;
-    this.deployment = Context.getProcessEngineConfiguration().getDeploymentEntityManager().create();
-    this.resourceEntityManager = Context.getProcessEngineConfiguration().getResourceEntityManager();
+    this.deployment = deployment;
+    this.resourceEntityManager = resourceEntityManager;
   }
 
   public DeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
@@ -89,7 +97,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
         }
       }
     } catch (IOException e) {
-      throw new ActivitiException("couldn't auto deploy resource '" + resource + "': " + e.getMessage(), e);
+      throw new ActivitiException("Couldn't auto deploy resource '" + resource + "': " + e.getMessage(), e);
     }
     return this;
   }
