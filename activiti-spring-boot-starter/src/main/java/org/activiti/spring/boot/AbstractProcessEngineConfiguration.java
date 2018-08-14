@@ -22,8 +22,6 @@ import org.activiti.engine.impl.persistence.entity.integration.IntegrationContex
 import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringProcessEngineConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides sane definitions for the various beans required to be productive with Activiti in Spring.
@@ -31,8 +29,6 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractProcessEngineConfiguration {
 	
-	private static final Logger logger = LoggerFactory.getLogger(AbstractProcessEngineConfiguration.class);
-
   public ProcessEngineFactoryBean springProcessEngineBean(SpringProcessEngineConfiguration configuration) {
     ProcessEngineFactoryBean processEngineFactoryBean = new ProcessEngineFactoryBean();
     processEngineFactoryBean.setProcessEngineConfiguration(configuration);
