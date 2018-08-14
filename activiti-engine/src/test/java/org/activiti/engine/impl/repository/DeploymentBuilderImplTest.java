@@ -75,21 +75,23 @@ public class DeploymentBuilderImplTest {
                                                                            inputStream);
 
         //when
-        deploymentBuilder.addInputStream(resourceName, resource);
+        deploymentBuilder.addInputStream(resourceName,
+                                         resource);
 
         //then
-        verify(deploymentBuilder).addInputStream(resourceName, inputStream);
+        verify(deploymentBuilder).addInputStream(resourceName,
+                                                 inputStream);
     }
 
     @Test
-    public void ShouldThrowActivitiExceptionWhenIOExceptionIsThrown() throws Exception {
+    public void addInputStreamShouldThrowActivitiExceptionWhenIOExceptionIsThrown() throws Exception {
         //given
         given(resource.getInputStream()).willThrow(new IOException());
 
         //when
         Throwable thrown = catchThrowable(() ->
-                                                     deploymentBuilder.addInputStream("any.xml",
-                                                                                      resource));
+                                                  deploymentBuilder.addInputStream("any.xml",
+                                                                                   resource));
 
         //then
         assertThat(thrown)
