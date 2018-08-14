@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.activiti.api</groupId>
+  <artifactId>activiti-api</artifactId>
+  <version>7.0.0-SNAPSHOT</version>
+
+  <name>Activiti :: Runtime API Parent</name>
+  <packaging>pom</packaging>
+  <modules>
+    <module>activiti-api-model-common</module>
+    <module>activiti-api-runtime-common</module>
+    <module>activiti-api-process-model</module>
+    <module>activiti-api-process-runtime</module>
+    <module>activiti-api-task-model</module>
+    <module>activiti-api-task-runtime</module>
+  </modules>
+
+  <properties>
+    <!-- configuration properties -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>1.8</java.version>
+    <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+  </properties>
+  <!-- @TODO: Move to dep management in activiti-build-->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-bpmn-model</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-model-common</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-runtime-common</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-process-model</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-process-runtime</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-task-model</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-task-runtime</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+        </configuration>
+      </plugin>
+    </plugins>
+
+  </build>
+
+</project>
