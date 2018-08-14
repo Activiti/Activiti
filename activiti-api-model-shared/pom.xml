@@ -23,6 +23,6 @@
     <artifactId>activiti-api</artifactId>
     <version>7.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>activiti-api-model-common</artifactId>
+  <artifactId>activiti-api-model-shared</artifactId>
   <name>Activiti API :: Model Common</name>
 </project>

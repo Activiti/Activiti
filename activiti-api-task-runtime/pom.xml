@@ -12,11 +12,11 @@
   <dependencies>
     <dependency>
       <groupId>org.activiti.api</groupId>
-      <artifactId>activiti-api-runtime-common</artifactId>
+      <artifactId>activiti-api-runtime-shared</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti.api</groupId>
-      <artifactId>activiti-api-model-common</artifactId>
+      <artifactId>activiti-api-model-shared</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti.api</groupId>

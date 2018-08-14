@@ -28,7 +28,7 @@
   <dependencies>
     <dependency>
       <groupId>org.activiti.api</groupId>
-      <artifactId>activiti-api-model-common</artifactId>
+      <artifactId>activiti-api-model-shared</artifactId>
     </dependency>
   </dependencies>
 </project>
