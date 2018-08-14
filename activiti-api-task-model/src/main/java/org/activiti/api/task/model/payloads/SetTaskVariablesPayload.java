@@ -3,7 +3,7 @@ package org.activiti.api.task.model.payloads;
 import java.util.Map;
 import java.util.UUID;
 
-import org.activiti.api.model.common.Payload;
+import org.activiti.api.model.shared.Payload;
 
 public class SetTaskVariablesPayload implements Payload {
 

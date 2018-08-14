@@ -16,7 +16,7 @@
 
 package org.activiti.api.task.runtime.events.listener;
 
-import org.activiti.api.model.common.event.RuntimeEvent;
+import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.Task;
 
 public interface TaskEventListener<E extends RuntimeEvent<? extends Task, ?>> extends TaskRuntimeEventListener<E> {

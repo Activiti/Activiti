@@ -17,7 +17,7 @@
 package org.activiti.api.process.model.events;
 
 import org.activiti.api.process.model.SequenceFlow;
-import org.activiti.api.model.common.event.RuntimeEvent;
+import org.activiti.api.model.shared.event.RuntimeEvent;
 
 public interface SequenceFlowEvent extends RuntimeEvent<SequenceFlow, SequenceFlowEvent.SequenceFlowEvents> {
 

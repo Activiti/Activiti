@@ -16,7 +16,7 @@
 
 package org.activiti.api.task.model.events;
 
-import org.activiti.api.model.common.event.RuntimeEvent;
+import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.Task;
 
 

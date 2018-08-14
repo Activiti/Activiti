@@ -17,7 +17,7 @@
 package org.activiti.api.task.model.events;
 
 
-import org.activiti.api.model.common.event.RuntimeEvent;
+import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.TaskCandidateGroup;
 
 public interface TaskCandidateGroupEvent extends RuntimeEvent<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents> {

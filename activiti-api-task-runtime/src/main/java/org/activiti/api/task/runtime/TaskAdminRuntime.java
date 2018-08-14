@@ -16,8 +16,8 @@
 
 package org.activiti.api.task.runtime;
 
-import org.activiti.api.runtime.common.query.Page;
-import org.activiti.api.runtime.common.query.Pageable;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.payloads.*;
 

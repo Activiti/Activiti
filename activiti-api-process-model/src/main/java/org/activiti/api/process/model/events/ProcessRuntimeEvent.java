@@ -17,7 +17,7 @@
 package org.activiti.api.process.model.events;
 
 import org.activiti.api.process.model.ProcessInstance;
-import org.activiti.api.model.common.event.RuntimeEvent;
+import org.activiti.api.model.shared.event.RuntimeEvent;
 
 public interface ProcessRuntimeEvent<T extends ProcessInstance> extends RuntimeEvent<T, ProcessRuntimeEvent.ProcessEvents> {
 

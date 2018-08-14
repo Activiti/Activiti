@@ -16,14 +16,22 @@
 
 package org.activiti.api.task.runtime;
 
-import org.activiti.api.model.common.model.VariableInstance;
-import org.activiti.api.runtime.common.query.Page;
-import org.activiti.api.runtime.common.query.Pageable;
-import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.payloads.*;
-import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
-
 import java.util.List;
+
+import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.payloads.ClaimTaskPayload;
+import org.activiti.api.task.model.payloads.CompleteTaskPayload;
+import org.activiti.api.task.model.payloads.CreateTaskPayload;
+import org.activiti.api.task.model.payloads.DeleteTaskPayload;
+import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
+import org.activiti.api.task.model.payloads.GetTasksPayload;
+import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
+import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
+import org.activiti.api.task.model.payloads.UpdateTaskPayload;
+import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 
 
 /**

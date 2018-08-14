@@ -10,8 +10,8 @@
   <name>Activiti :: Runtime API Parent</name>
   <packaging>pom</packaging>
   <modules>
-    <module>activiti-api-model-common</module>
-    <module>activiti-api-runtime-common</module>
+    <module>activiti-api-model-shared</module>
+    <module>activiti-api-runtime-shared</module>
     <module>activiti-api-process-model</module>
     <module>activiti-api-process-runtime</module>
     <module>activiti-api-task-model</module>

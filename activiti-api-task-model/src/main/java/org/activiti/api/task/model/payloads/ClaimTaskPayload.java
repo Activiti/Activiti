@@ -1,8 +1,8 @@
 package org.activiti.api.task.model.payloads;
 
-import org.activiti.api.model.common.Payload;
-
 import java.util.UUID;
+
+import org.activiti.api.model.shared.Payload;
 
 
 

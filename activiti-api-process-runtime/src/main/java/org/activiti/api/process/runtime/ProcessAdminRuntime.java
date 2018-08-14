@@ -20,8 +20,8 @@ package org.activiti.api.process.runtime;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.payloads.*;
-import org.activiti.api.runtime.common.query.Page;
-import org.activiti.api.runtime.common.query.Pageable;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
 
 public interface ProcessAdminRuntime {
 
