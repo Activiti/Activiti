@@ -22,9 +22,5 @@
       <groupId>org.activiti.api</groupId>
       <artifactId>activiti-api-process-model</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-bpmn-model</artifactId>
-    </dependency>
   </dependencies>
 </project>
