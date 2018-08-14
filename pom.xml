@@ -2,10 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-parent</artifactId>
+    <version>7.0.0-SNAPSHOT</version>
+    <relativePath/>
+  </parent>
   <groupId>org.activiti.api</groupId>
   <artifactId>activiti-api</artifactId>
-  <version>7.0.0-SNAPSHOT</version>
 
   <name>Activiti :: Runtime API Parent</name>
   <packaging>pom</packaging>
@@ -25,46 +29,6 @@
     <java.version>1.8</java.version>
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
   </properties>
-  <!-- @TODO: Move to dep management in activiti-build-->
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-bpmn-model</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-model-shared</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-runtime-shared</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-process-model</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-process-runtime</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-task-model</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-task-runtime</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
   <build>
     <plugins>
       <plugin>
