@@ -12,6 +12,12 @@
  */
 package org.activiti.engine;
 
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import javax.sql.DataSource;
+
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.cfg.MailServerInfo;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
@@ -21,12 +27,6 @@ import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextManager;
 import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.engine.runtime.Clock;
-import org.activiti.runtime.api.identity.UserGroupManager;
-
-import javax.sql.DataSource;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Configuration information from which a process engine can be build.
