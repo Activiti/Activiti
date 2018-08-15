@@ -7,15 +7,16 @@
     <artifactId>activiti-root</artifactId>
     <version>7.0.0-SNAPSHOT</version>
   </parent>
+  <groupId>org.activiti.api</groupId>
   <artifactId>activiti-api-impl</artifactId>
   <name>Activiti :: Runtime API Parent</name>
   <packaging>pom</packaging>
   <modules>
-    <module>activiti-common-model-api-impl</module>
-    <module>activiti-common-runtime-api-impl</module>
-    <module>activiti-process-model-api-impl</module>
-    <module>activiti-process-runtime-api-impl</module>
-    <module>activiti-task-model-api-impl</module>
-    <module>activiti-task-runtime-api-impl</module>
+    <module>activiti-api-model-shared-impl</module>
+    <module>activiti-api-runtime-shared-impl</module>
+    <module>activiti-api-process-model-impl</module>
+    <module>activiti-api-process-runtime-impl</module>
+    <module>activiti-api-task-model-impl</module>
+    <module>activiti-api-task-runtime-impl</module>
   </modules>
 </project>
