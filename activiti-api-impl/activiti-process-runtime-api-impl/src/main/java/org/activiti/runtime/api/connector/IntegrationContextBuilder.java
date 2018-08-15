@@ -19,7 +19,7 @@ package org.activiti.runtime.api.connector;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
-import org.activiti.runtime.api.model.IntegrationContext;
+import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.runtime.api.model.impl.IntegrationContextImpl;
 
 public class IntegrationContextBuilder {

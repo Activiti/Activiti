@@ -18,14 +18,14 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
+import org.activiti.api.model.shared.event.VariableDeletedEvent;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti.runtime.api.event.VariableDeleted;
 import org.activiti.runtime.api.model.impl.VariableInstanceImpl;
 
-public class ToVariableDeletedConverter implements EventConverter<VariableDeleted, ActivitiVariableEvent> {
+public class ToVariableDeletedConverter implements EventConverter<VariableDeletedEvent, ActivitiVariableEvent> {
 
     @Override
-    public Optional<VariableDeleted> from(ActivitiVariableEvent internalEvent) {
+    public Optional<VariableDeletedEvent> from(ActivitiVariableEvent internalEvent) {
         VariableInstanceImpl<Object> variableInstance = new VariableInstanceImpl<>(internalEvent.getVariableName(),
                                                                                    internalEvent.getVariableType().getTypeName(),
                                                                                    internalEvent.getVariableValue(),

@@ -18,20 +18,20 @@ package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
 
+import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
+import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.runtime.api.event.BPMNActivityCancelled;
 import org.activiti.runtime.api.event.impl.ToActivityCancelledConverter;
-import org.activiti.runtime.api.event.listener.ProcessRuntimeEventListener;
 
 public class ActivityCancelledListenerDelegate implements ActivitiEventListener {
 
-    private List<ProcessRuntimeEventListener<BPMNActivityCancelled>> processRuntimeEventListeners;
+    private List<ProcessRuntimeEventListener<BPMNActivityCancelledEvent>> processRuntimeEventListeners;
 
     private ToActivityCancelledConverter converter;
 
-    public ActivityCancelledListenerDelegate(List<ProcessRuntimeEventListener<BPMNActivityCancelled>> processRuntimeEventListeners,
+    public ActivityCancelledListenerDelegate(List<ProcessRuntimeEventListener<BPMNActivityCancelledEvent>> processRuntimeEventListeners,
                                              ToActivityCancelledConverter converter) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
@@ -42,7 +42,7 @@ public class ActivityCancelledListenerDelegate implements ActivitiEventListener 
         if (event instanceof ActivitiActivityEvent) {
             converter.from((ActivitiActivityEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (ProcessRuntimeEventListener<BPMNActivityCancelled> listener : processRuntimeEventListeners) {
+                        for (ProcessRuntimeEventListener<BPMNActivityCancelledEvent> listener : processRuntimeEventListeners) {
                             listener.onEvent(convertedEvent);
                         }
                     });

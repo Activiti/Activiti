@@ -18,20 +18,20 @@ package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
 
+import org.activiti.api.model.shared.event.VariableDeletedEvent;
+import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti.runtime.api.event.VariableEventListener;
-import org.activiti.runtime.api.event.VariableDeleted;
 import org.activiti.runtime.api.event.impl.ToVariableDeletedConverter;
 
 public class VariableDeletedListenerDelegate implements ActivitiEventListener {
 
-    private final List<VariableEventListener<VariableDeleted>> listeners;
+    private final List<VariableEventListener<VariableDeletedEvent>> listeners;
 
     private final ToVariableDeletedConverter converter;
 
-    public VariableDeletedListenerDelegate(List<VariableEventListener<VariableDeleted>> listeners,
+    public VariableDeletedListenerDelegate(List<VariableEventListener<VariableDeletedEvent>> listeners,
                                            ToVariableDeletedConverter converter) {
         this.listeners = listeners;
         this.converter = converter;
@@ -42,8 +42,8 @@ public class VariableDeletedListenerDelegate implements ActivitiEventListener {
         if (event instanceof ActivitiVariableEvent) {
             converter.from((ActivitiVariableEvent) event)
                     .ifPresent(convertedEvent -> {
-                        if(listeners != null) {
-                            for (VariableEventListener<VariableDeleted> listener : listeners) {
+                        if (listeners != null) {
+                            for (VariableEventListener<VariableDeletedEvent> listener : listeners) {
                                 listener.onEvent(convertedEvent);
                             }
                         }

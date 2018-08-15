@@ -18,23 +18,20 @@ package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
 
+import org.activiti.api.task.runtime.events.TaskCancelledEvent;
+import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.task.Task;
-import org.activiti.runtime.api.event.TaskCancelled;
 import org.activiti.runtime.api.event.impl.ToTaskCancelledConverter;
-import org.activiti.runtime.api.event.listener.TaskRuntimeEventListener;
 
 public class TaskCancelledListenerDelegate implements ActivitiEventListener {
 
-    private final List<TaskRuntimeEventListener<TaskCancelled>> listeners;
+    private final List<TaskRuntimeEventListener<TaskCancelledEvent>> listeners;
 
     private final ToTaskCancelledConverter toTaskCancelledConverter;
 
-    public TaskCancelledListenerDelegate(List<TaskRuntimeEventListener<TaskCancelled>> listeners,
+    public TaskCancelledListenerDelegate(List<TaskRuntimeEventListener<TaskCancelledEvent>> listeners,
                                          ToTaskCancelledConverter toTaskCancelledConverter) {
         this.listeners = listeners;
         this.toTaskCancelledConverter = toTaskCancelledConverter;
@@ -45,7 +42,7 @@ public class TaskCancelledListenerDelegate implements ActivitiEventListener {
         if (event instanceof ActivitiActivityCancelledEvent) {
             toTaskCancelledConverter.from((ActivitiActivityCancelledEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (TaskRuntimeEventListener<TaskCancelled> listener : listeners) {
+                        for (TaskRuntimeEventListener<TaskCancelledEvent> listener : listeners) {
                             listener.onEvent(convertedEvent);
                         }
                     });

@@ -16,10 +16,11 @@
 
 package org.activiti.runtime.api.connector;
 
+import org.activiti.api.process.model.IntegrationContext;
+import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-import org.activiti.runtime.api.model.IntegrationContext;
 import org.springframework.context.ApplicationContext;
 
 public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {

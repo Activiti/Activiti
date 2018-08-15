@@ -16,7 +16,7 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.runtime.api.model.SequenceFlow;
+import org.activiti.api.process.model.SequenceFlow;
 
 public class SequenceFlowImpl extends BPMNElementImpl implements SequenceFlow {
 

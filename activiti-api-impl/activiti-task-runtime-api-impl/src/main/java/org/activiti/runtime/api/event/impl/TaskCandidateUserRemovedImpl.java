@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.TaskCandidateUserEvent;
-import org.activiti.runtime.api.event.TaskCandidateUserRemoved;
-import org.activiti.runtime.api.model.TaskCandidateUser;
+import org.activiti.api.task.model.TaskCandidateUser;
+import org.activiti.api.task.model.events.TaskCandidateUserEvent;
+import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
 
 public class TaskCandidateUserRemovedImpl extends RuntimeEventImpl<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents>
-        implements TaskCandidateUserRemoved {
+        implements TaskCandidateUserRemovedEvent {
 
     public TaskCandidateUserRemovedImpl() {
     }

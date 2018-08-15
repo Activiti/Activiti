@@ -17,7 +17,7 @@
 package org.activiti.runtime.api.event.impl;
 
 import org.activiti.runtime.api.event.VariableEvent;
-import org.activiti.runtime.api.model.VariableInstance;
+import org.activiti.api.model.shared.model.VariableInstance;
 
 public abstract class CloudVariableEventImpl extends CloudRuntimeEventImpl<VariableInstance, VariableEvent.VariableEvents> {
 

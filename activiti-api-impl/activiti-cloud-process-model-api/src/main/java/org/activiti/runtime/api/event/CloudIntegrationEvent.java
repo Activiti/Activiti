@@ -16,7 +16,7 @@
 
 package org.activiti.runtime.api.event;
 
-import org.activiti.runtime.api.model.IntegrationContext;
+import org.activiti.api.process.model.IntegrationContext;
 
 public interface CloudIntegrationEvent extends CloudRuntimeEvent<IntegrationContext, IntegrationEvent.IntegrationEvents> {
 

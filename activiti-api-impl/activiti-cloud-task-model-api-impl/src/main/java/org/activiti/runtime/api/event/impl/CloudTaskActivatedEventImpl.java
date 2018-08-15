@@ -18,7 +18,7 @@ package org.activiti.runtime.api.event.impl;
 
 import org.activiti.runtime.api.event.CloudTaskActivatedEvent;
 import org.activiti.runtime.api.event.TaskRuntimeEvent;
-import org.activiti.runtime.api.model.Task;
+import org.activiti.api.task.model.Task;
 
 public class CloudTaskActivatedEventImpl extends CloudRuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents>
         implements CloudTaskActivatedEvent {

@@ -15,7 +15,7 @@ package org.activiti.spring.boot;
 import java.io.IOException;
 import javax.sql.DataSource;
 
-import org.activiti.runtime.api.identity.UserGroupManager;
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;

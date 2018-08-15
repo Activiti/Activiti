@@ -18,8 +18,8 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
+import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
-import org.activiti.runtime.api.event.RuntimeEvent;
 
 public interface EventConverter<API_EVENT_TYPE extends RuntimeEvent<?, ?>, INTERNAL_API_TYPE extends ActivitiEvent> {
 

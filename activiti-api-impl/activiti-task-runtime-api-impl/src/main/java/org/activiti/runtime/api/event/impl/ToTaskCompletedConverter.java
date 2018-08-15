@@ -18,12 +18,12 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
+import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.Task;
-import org.activiti.runtime.api.event.TaskCompleted;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
-public class ToTaskCompletedConverter implements EventConverter<TaskCompleted, ActivitiEntityEvent> {
+public class ToTaskCompletedConverter implements EventConverter<TaskCompletedEvent, ActivitiEntityEvent> {
 
     private APITaskConverter converter;
 
@@ -32,7 +32,7 @@ public class ToTaskCompletedConverter implements EventConverter<TaskCompleted, A
     }
 
     @Override
-    public Optional<TaskCompleted> from(ActivitiEntityEvent internalEvent) {
+    public Optional<TaskCompletedEvent> from(ActivitiEntityEvent internalEvent) {
         return Optional.of(new TaskCompletedImpl(converter.from((Task) internalEvent.getEntity())));
     }
 }

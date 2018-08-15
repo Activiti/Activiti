@@ -17,7 +17,7 @@
 package org.activiti.runtime.api.model.impl;
 
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.runtime.api.model.TaskCandidateGroup;
+import org.activiti.api.task.model.TaskCandidateGroup;
 
 public class APITaskCandidateGroupConverter extends ListConverter<IdentityLink, TaskCandidateGroup>
         implements ModelConverter<IdentityLink, TaskCandidateGroup> {

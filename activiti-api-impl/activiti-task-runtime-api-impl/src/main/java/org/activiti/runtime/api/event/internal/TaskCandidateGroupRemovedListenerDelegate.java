@@ -18,20 +18,20 @@ package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
 
+import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
+import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.runtime.api.event.TaskCandidateGroupRemoved;
 import org.activiti.runtime.api.event.impl.ToTaskCandidateGroupRemovedConverter;
-import org.activiti.runtime.api.event.listener.TaskRuntimeEventListener;
 
 public class TaskCandidateGroupRemovedListenerDelegate implements ActivitiEventListener {
 
-    private final List<TaskRuntimeEventListener<TaskCandidateGroupRemoved>> listeners;
+    private final List<TaskRuntimeEventListener<TaskCandidateGroupRemovedEvent>> listeners;
 
     private final ToTaskCandidateGroupRemovedConverter converter;
 
-    public TaskCandidateGroupRemovedListenerDelegate(List<TaskRuntimeEventListener<TaskCandidateGroupRemoved>> listeners,
+    public TaskCandidateGroupRemovedListenerDelegate(List<TaskRuntimeEventListener<TaskCandidateGroupRemovedEvent>> listeners,
                                                      ToTaskCandidateGroupRemovedConverter converter) {
         this.listeners = listeners;
         this.converter = converter;
@@ -42,7 +42,7 @@ public class TaskCandidateGroupRemovedListenerDelegate implements ActivitiEventL
         if (event instanceof ActivitiEntityEvent) {
             converter.from((ActivitiEntityEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (TaskRuntimeEventListener<TaskCandidateGroupRemoved> listener : listeners) {
+                        for (TaskRuntimeEventListener<TaskCandidateGroupRemovedEvent> listener : listeners) {
                             listener.onEvent(convertedEvent);
                         }
                     });

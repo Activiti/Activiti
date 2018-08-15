@@ -16,7 +16,7 @@
 
 package org.activiti.runtime.api.event;
 
-import org.activiti.runtime.api.model.TaskCandidateGroup;
+import org.activiti.api.task.model.TaskCandidateGroup;
 
 public interface CloudTaskCandidateGroupEvent extends CloudRuntimeEvent<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents>,
                                                       TaskCandidateGroupEvent {

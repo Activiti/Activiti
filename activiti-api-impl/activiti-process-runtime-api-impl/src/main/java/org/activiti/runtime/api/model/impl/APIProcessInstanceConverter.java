@@ -16,7 +16,7 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.api.process.model.ProcessInstance;
 
 public class APIProcessInstanceConverter extends ListConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance>
         implements ModelConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance> {
@@ -38,10 +38,10 @@ public class APIProcessInstanceConverter extends ListConverter<org.activiti.engi
 
     private ProcessInstance.ProcessInstanceStatus calculateStatus(org.activiti.engine.runtime.ProcessInstance internalProcessInstance) {
         if (internalProcessInstance.isSuspended()) {
-            return org.activiti.runtime.api.model.ProcessInstance.ProcessInstanceStatus.SUSPENDED;
+            return ProcessInstance.ProcessInstanceStatus.SUSPENDED;
         } else if (internalProcessInstance.isEnded()) {
-            return org.activiti.runtime.api.model.ProcessInstance.ProcessInstanceStatus.COMPLETED;
+            return ProcessInstance.ProcessInstanceStatus.COMPLETED;
         }
-        return org.activiti.runtime.api.model.ProcessInstance.ProcessInstanceStatus.RUNNING;
+        return ProcessInstance.ProcessInstanceStatus.RUNNING;
     }
 }

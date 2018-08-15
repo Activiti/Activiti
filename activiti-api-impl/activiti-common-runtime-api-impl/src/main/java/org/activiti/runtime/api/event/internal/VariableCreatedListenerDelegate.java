@@ -18,20 +18,20 @@ package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
 
+import org.activiti.api.model.shared.event.VariableCreatedEvent;
+import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
-import org.activiti.runtime.api.event.VariableEventListener;
-import org.activiti.runtime.api.event.VariableCreated;
 import org.activiti.runtime.api.event.impl.ToVariableCreatedConverter;
 
 public class VariableCreatedListenerDelegate implements ActivitiEventListener {
 
-    private final List<VariableEventListener<VariableCreated>> listeners;
+    private final List<VariableEventListener<VariableCreatedEvent>> listeners;
 
     private final ToVariableCreatedConverter converter;
 
-    public VariableCreatedListenerDelegate(List<VariableEventListener<VariableCreated>> listeners,
+    public VariableCreatedListenerDelegate(List<VariableEventListener<VariableCreatedEvent>> listeners,
                                            ToVariableCreatedConverter converter) {
         this.listeners = listeners;
         this.converter = converter;
@@ -43,7 +43,7 @@ public class VariableCreatedListenerDelegate implements ActivitiEventListener {
             converter.from((ActivitiVariableEvent) event)
                     .ifPresent(convertedEvent -> {
                         if(listeners != null) {
-                            for (VariableEventListener<VariableCreated> listener : listeners) {
+                            for (VariableEventListener<VariableCreatedEvent> listener : listeners) {
                                 listener.onEvent(convertedEvent);
                             }
                         }

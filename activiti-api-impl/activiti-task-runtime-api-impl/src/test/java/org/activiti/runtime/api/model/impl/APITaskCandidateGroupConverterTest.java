@@ -16,7 +16,7 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.runtime.api.model.TaskCandidateGroup;
+import org.activiti.api.task.model.TaskCandidateGroup;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -18,14 +18,14 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
+import org.activiti.api.process.runtime.events.ProcessSuspendedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.runtime.api.event.ProcessSuspended;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 
 import static org.activiti.runtime.api.event.impl.ActivitiEntityEventHelper.isProcessInstanceEntity;
 
-public class ToProcessSuspendedConverter implements EventConverter<ProcessSuspended, ActivitiEntityEvent> {
+public class ToProcessSuspendedConverter implements EventConverter<ProcessSuspendedEvent, ActivitiEntityEvent> {
 
     private final APIProcessInstanceConverter processInstanceConverter;
 
@@ -34,8 +34,8 @@ public class ToProcessSuspendedConverter implements EventConverter<ProcessSuspen
     }
 
     @Override
-    public Optional<ProcessSuspended> from(ActivitiEntityEvent internalEvent) {
-        ProcessSuspended event = null;
+    public Optional<ProcessSuspendedEvent> from(ActivitiEntityEvent internalEvent) {
+        ProcessSuspendedEvent event = null;
         if (isProcessInstanceEntity(internalEvent.getEntity())) {
             event = new ProcessSuspendedEventImpl(processInstanceConverter.from(((ExecutionEntity)
                     internalEvent.getEntity()).getProcessInstance()));

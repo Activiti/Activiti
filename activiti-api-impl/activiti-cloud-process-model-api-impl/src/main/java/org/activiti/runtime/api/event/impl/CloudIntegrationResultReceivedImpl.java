@@ -18,7 +18,7 @@ package org.activiti.runtime.api.event.impl;
 
 import org.activiti.runtime.api.event.CloudIntegrationResultReceived;
 import org.activiti.runtime.api.event.IntegrationEvent;
-import org.activiti.runtime.api.model.IntegrationContext;
+import org.activiti.api.process.model.IntegrationContext;
 
 public class CloudIntegrationResultReceivedImpl extends CloudRuntimeEventImpl<IntegrationContext, IntegrationEvent.IntegrationEvents>
         implements CloudIntegrationResultReceived {

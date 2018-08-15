@@ -1,9 +1,10 @@
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.BPMNActivityStarted;
-import org.activiti.runtime.api.model.BPMNActivity;
+import org.activiti.api.process.model.BPMNActivity;
+import org.activiti.api.process.model.events.BPMNActivityEvent;
+import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
 
-public class BPMNActivityStartedEventImpl extends BPMNActivityEventImpl implements BPMNActivityStarted {
+public class BPMNActivityStartedEventImpl extends BPMNActivityEventImpl implements BPMNActivityStartedEvent {
 
     public BPMNActivityStartedEventImpl() {
     }
@@ -13,7 +14,7 @@ public class BPMNActivityStartedEventImpl extends BPMNActivityEventImpl implemen
     }
 
     @Override
-    public ActivityEvents getEventType() {
-        return ActivityEvents.ACTIVITY_STARTED;
+    public BPMNActivityEvent.ActivityEvents getEventType() {
+        return BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED;
     }
 }

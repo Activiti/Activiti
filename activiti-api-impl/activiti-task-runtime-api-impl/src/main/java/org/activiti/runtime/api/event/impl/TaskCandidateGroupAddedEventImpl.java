@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.TaskCandidateGroupAdded;
-import org.activiti.runtime.api.event.TaskCandidateGroupEvent;
-import org.activiti.runtime.api.model.TaskCandidateGroup;
+import org.activiti.api.task.model.TaskCandidateGroup;
+import org.activiti.api.task.model.events.TaskCandidateGroupEvent;
+import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
 
 public class TaskCandidateGroupAddedEventImpl extends RuntimeEventImpl<TaskCandidateGroup, TaskCandidateGroupEvent.TaskCandidateGroupEvents>
-        implements TaskCandidateGroupAdded {
+        implements TaskCandidateGroupAddedEvent {
 
     public TaskCandidateGroupAddedEventImpl() {
     }
@@ -31,7 +31,7 @@ public class TaskCandidateGroupAddedEventImpl extends RuntimeEventImpl<TaskCandi
     }
 
     @Override
-    public TaskCandidateGroupEvents getEventType() {
-        return TaskCandidateGroupEvents.TASK_CANDIDATE_GROUP_ADDED;
+    public TaskCandidateGroupEvent.TaskCandidateGroupEvents getEventType() {
+        return TaskCandidateGroupEvent.TaskCandidateGroupEvents.TASK_CANDIDATE_GROUP_ADDED;
     }
 }

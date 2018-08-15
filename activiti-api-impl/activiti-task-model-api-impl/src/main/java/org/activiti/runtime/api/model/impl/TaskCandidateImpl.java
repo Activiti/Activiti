@@ -18,7 +18,7 @@ package org.activiti.runtime.api.model.impl;
 
 import java.util.Objects;
 
-import org.activiti.runtime.api.model.TaskCandidate;
+import org.activiti.api.task.model.TaskCandidate;
 
 public abstract class TaskCandidateImpl implements TaskCandidate {
 

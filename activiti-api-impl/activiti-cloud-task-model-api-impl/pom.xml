@@ -12,8 +12,8 @@
   <name>Activiti Cloud Task Model API Impl</name>
   <dependencies>
     <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-task-model-api</artifactId>
+      <groupId>org.activiti.api</groupId>
+      <artifactId>activiti-api-task-model</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>

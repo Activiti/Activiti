@@ -16,13 +16,13 @@
 
 package org.activiti.runtime.api.impl;
 
+import org.activiti.api.runtime.shared.security.SecurityManager;
+import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.runtime.api.model.builders.TaskPayloadBuilder;
 import org.activiti.runtime.api.model.impl.TaskImpl;
-import org.activiti.runtime.api.model.payloads.UpdateTaskPayload;
-import org.activiti.runtime.api.security.SecurityManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;

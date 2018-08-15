@@ -16,20 +16,10 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.engine.TaskService;
+import org.activiti.api.task.model.Task;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.runtime.api.model.Task;
 
 public class APITaskConverter extends ListConverter<org.activiti.engine.task.Task, Task> implements ModelConverter<org.activiti.engine.task.Task, Task> {
-
-    private final TaskService taskService;
-    private final APIVariableInstanceConverter variableInstanceConverter;
-
-    public APITaskConverter(TaskService taskService,
-                            APIVariableInstanceConverter variableInstanceConverter) {
-        this.taskService = taskService;
-        this.variableInstanceConverter = variableInstanceConverter;
-    }
 
     @Override
     public Task from(org.activiti.engine.task.Task internalTask) {

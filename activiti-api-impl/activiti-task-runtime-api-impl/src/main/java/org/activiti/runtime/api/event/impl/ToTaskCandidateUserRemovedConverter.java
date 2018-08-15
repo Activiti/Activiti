@@ -18,14 +18,14 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
+import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.runtime.api.event.TaskCandidateUserRemoved;
 import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
 
 import static org.activiti.engine.task.IdentityLinkType.CANDIDATE;
 
-public class ToTaskCandidateUserRemovedConverter implements EventConverter<TaskCandidateUserRemoved, ActivitiEntityEvent> {
+public class ToTaskCandidateUserRemovedConverter implements EventConverter<TaskCandidateUserRemovedEvent, ActivitiEntityEvent> {
 
     private APITaskCandidateUserConverter converter;
 
@@ -34,8 +34,8 @@ public class ToTaskCandidateUserRemovedConverter implements EventConverter<TaskC
     }
 
     @Override
-    public Optional<TaskCandidateUserRemoved> from(ActivitiEntityEvent internalEvent) {
-        TaskCandidateUserRemoved event = null;
+    public Optional<TaskCandidateUserRemovedEvent> from(ActivitiEntityEvent internalEvent) {
+        TaskCandidateUserRemovedEvent event = null;
         if (internalEvent.getEntity() instanceof IdentityLink) {
             IdentityLink entity = (IdentityLink) internalEvent.getEntity();
             if (isCandidateUserEntity(entity)) {

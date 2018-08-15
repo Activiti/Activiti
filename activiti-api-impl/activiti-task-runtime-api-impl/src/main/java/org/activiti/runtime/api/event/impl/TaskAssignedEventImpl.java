@@ -16,19 +16,19 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.TaskAssigned;
-import org.activiti.runtime.api.event.TaskRuntimeEvent;
-import org.activiti.runtime.api.model.Task;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
+import org.activiti.api.task.runtime.events.TaskAssignedEvent;
 
 public class TaskAssignedEventImpl extends RuntimeEventImpl<Task, TaskRuntimeEvent.TaskEvents>
-        implements TaskAssigned {
+        implements TaskAssignedEvent {
 
     public TaskAssignedEventImpl(Task entity) {
         super(entity);
     }
 
     @Override
-    public TaskEvents getEventType() {
+    public TaskRuntimeEvent.TaskEvents getEventType() {
         return TaskEvents.TASK_ASSIGNED;
     }
 }

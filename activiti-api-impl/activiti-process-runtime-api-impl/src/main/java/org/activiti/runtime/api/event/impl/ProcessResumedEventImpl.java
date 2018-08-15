@@ -16,19 +16,19 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.ProcessResumed;
-import org.activiti.runtime.api.event.ProcessRuntimeEvent;
-import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.events.ProcessRuntimeEvent;
+import org.activiti.api.process.runtime.events.ProcessResumedEvent;
 
 public class ProcessResumedEventImpl extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
-        implements ProcessResumed {
+        implements ProcessResumedEvent {
 
     public ProcessResumedEventImpl(ProcessInstance entity) {
         super(entity);
     }
 
     @Override
-    public ProcessEvents getEventType() {
-        return ProcessEvents.PROCESS_RESUMED;
+    public ProcessRuntimeEvent.ProcessEvents getEventType() {
+        return ProcessRuntimeEvent.ProcessEvents.PROCESS_RESUMED;
     }
 }

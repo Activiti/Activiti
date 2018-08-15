@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.connector;
 
+import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.junit.Before;

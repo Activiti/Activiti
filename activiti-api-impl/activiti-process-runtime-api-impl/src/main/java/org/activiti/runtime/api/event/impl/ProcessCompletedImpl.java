@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.ProcessCompleted;
-import org.activiti.runtime.api.event.ProcessRuntimeEvent;
-import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
+import org.activiti.api.process.model.events.ProcessRuntimeEvent;
+import org.activiti.api.process.model.ProcessInstance;
 
 public class ProcessCompletedImpl extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>
-        implements ProcessCompleted {
+        implements ProcessCompletedEvent {
 
     public ProcessCompletedImpl(ProcessInstance entity) {
         super(entity);

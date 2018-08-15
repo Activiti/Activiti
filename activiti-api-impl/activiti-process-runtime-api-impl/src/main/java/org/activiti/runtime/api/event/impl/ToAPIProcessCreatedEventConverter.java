@@ -18,14 +18,14 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
+import org.activiti.api.process.runtime.events.ProcessCreatedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.runtime.api.event.ProcessCreated;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 
 import static org.activiti.runtime.api.event.impl.ActivitiEntityEventHelper.isProcessInstanceEntity;
 
-public class ToAPIProcessCreatedEventConverter implements EventConverter<ProcessCreated, ActivitiEntityEvent> {
+public class ToAPIProcessCreatedEventConverter implements EventConverter<ProcessCreatedEvent, ActivitiEntityEvent> {
 
     private final APIProcessInstanceConverter processInstanceConverter;
 
@@ -34,7 +34,7 @@ public class ToAPIProcessCreatedEventConverter implements EventConverter<Process
     }
 
     @Override
-    public Optional<ProcessCreated> from(ActivitiEntityEvent internalEvent) {
+    public Optional<ProcessCreatedEvent> from(ActivitiEntityEvent internalEvent) {
         Object entity = internalEvent.getEntity();
 
         ProcessCreatedEventImpl event = null;

@@ -17,8 +17,8 @@
 package org.activiti.runtime.api.event.impl;
 
 import org.activiti.runtime.api.event.CloudProcessCompleted;
-import org.activiti.runtime.api.event.ProcessRuntimeEvent;
-import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.api.process.model.events.ProcessRuntimeEvent;
+import org.activiti.api.process.model.ProcessInstance;
 
 public class CloudProcessCompletedEventImpl extends CloudRuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents> implements CloudProcessCompleted {
 

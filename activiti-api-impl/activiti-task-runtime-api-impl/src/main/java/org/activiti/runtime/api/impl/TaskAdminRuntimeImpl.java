@@ -16,25 +16,30 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.List;
+
+import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.runtime.shared.security.SecurityManager;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.model.payloads.ClaimTaskPayload;
+import org.activiti.api.task.model.payloads.CompleteTaskPayload;
+import org.activiti.api.task.model.payloads.DeleteTaskPayload;
+import org.activiti.api.task.model.payloads.GetTasksPayload;
+import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
+import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
+import org.activiti.api.task.runtime.TaskAdminRuntime;
+import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.runtime.api.NotFoundException;
-import org.activiti.runtime.api.TaskAdminRuntime;
-import org.activiti.runtime.api.conf.TaskRuntimeConfiguration;
-import org.activiti.runtime.api.identity.UserGroupManager;
-import org.activiti.runtime.api.model.Task;
-import org.activiti.runtime.api.model.builders.TaskPayloadBuilder;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.TaskImpl;
-import org.activiti.runtime.api.model.payloads.*;
-import org.activiti.runtime.api.query.Page;
-import org.activiti.runtime.api.query.Pageable;
 import org.activiti.runtime.api.query.impl.PageImpl;
-import org.activiti.runtime.api.security.SecurityManager;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.List;
 
 @PreAuthorize("hasRole('ACTIVITI_ADMIN')")
 public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
@@ -72,13 +77,12 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
             throw new NotFoundException("Unable to find task for the given id: " + taskId);
         }
         return taskConverter.from(internalTask);
-
     }
 
     @Override
     public Page<Task> tasks(Pageable pageable) {
         return tasks(pageable,
-                TaskPayloadBuilder.tasks().build());
+                     TaskPayloadBuilder.tasks().build());
     }
 
     @Override
@@ -94,10 +98,9 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         }
 
         List<Task> tasks = taskConverter.from(taskQuery.listPage(pageable.getStartIndex(),
-                pageable.getMaxItems()));
+                                                                 pageable.getMaxItems()));
         return new PageImpl<>(tasks,
-                Math.toIntExact(taskQuery.count()));
-
+                              Math.toIntExact(taskQuery.count()));
     }
 
     @Override
@@ -107,45 +110,43 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         Task task = task(deleteTaskPayload.getTaskId());
 
         TaskImpl deletedTaskData = new TaskImpl(task.getId(),
-                task.getName(),
-                Task.TaskStatus.DELETED);
+                                                task.getName(),
+                                                Task.TaskStatus.DELETED);
         taskService.deleteTask(deleteTaskPayload.getTaskId(),
-                deleteTaskPayload.getReason(),
-                true);
+                               deleteTaskPayload.getReason(),
+                               true);
         return deletedTaskData;
     }
-
 
     @Override
     public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
         if (setTaskVariablesPayload.isLocalOnly()) {
             taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
-                    setTaskVariablesPayload.getVariables());
+                                          setTaskVariablesPayload.getVariables());
         } else {
             taskService.setVariables(setTaskVariablesPayload.getTaskId(),
-                    setTaskVariablesPayload.getVariables());
+                                     setTaskVariablesPayload.getVariables());
         }
     }
-
 
     @Override
     public Task complete(CompleteTaskPayload completeTaskPayload) {
         Task task = task(completeTaskPayload.getTaskId());
-        if(task == null){
+        if (task == null) {
             throw new IllegalStateException("Task with id: " + completeTaskPayload.getTaskId() + " cannot be completed because it cannot be found.");
         }
         TaskImpl competedTaskData = new TaskImpl(task.getId(),
-                task.getName(),
-                Task.TaskStatus.COMPLETED);
+                                                 task.getName(),
+                                                 Task.TaskStatus.COMPLETED);
         taskService.complete(completeTaskPayload.getTaskId(),
-                completeTaskPayload.getVariables());
+                             completeTaskPayload.getVariables());
         return competedTaskData;
     }
 
     @Override
     public Task claim(ClaimTaskPayload claimTaskPayload) {
         taskService.claim(claimTaskPayload.getTaskId(),
-                claimTaskPayload.getAssignee());
+                          claimTaskPayload.getAssignee());
 
         return task(claimTaskPayload.getTaskId());
     }
@@ -155,5 +156,4 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         taskService.unclaim(releaseTaskPayload.getTaskId());
         return task(releaseTaskPayload.getTaskId());
     }
-
 }

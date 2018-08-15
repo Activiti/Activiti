@@ -1,13 +1,13 @@
 package org.activiti.spring.boot.process;
 
-import org.activiti.runtime.api.ProcessAdminRuntime;
-import org.activiti.runtime.api.ProcessRuntime;
-import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
-import org.activiti.runtime.api.model.ProcessDefinition;
-import org.activiti.runtime.api.model.ProcessInstance;
-import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
-import org.activiti.runtime.api.query.Page;
-import org.activiti.runtime.api.query.Pageable;
+import org.activiti.api.process.model.ProcessDefinition;
+import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.runtime.ProcessAdminRuntime;
+import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,7 +64,7 @@ public class ProcessRuntimeTest {
     public void shouldGetAvailableProcessDefinitionForTheGivenUser() {
         //when
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                                                                                                     50));
+                                                                                                      50));
         //then
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent())

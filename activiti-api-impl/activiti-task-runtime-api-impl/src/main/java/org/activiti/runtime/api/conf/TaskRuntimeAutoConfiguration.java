@@ -19,24 +19,27 @@ package org.activiti.runtime.api.conf;
 import java.util.Collections;
 import java.util.List;
 
+import org.activiti.api.runtime.shared.events.VariableEventListener;
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import org.activiti.api.runtime.shared.security.SecurityManager;
+import org.activiti.api.task.runtime.TaskAdminRuntime;
+import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
+import org.activiti.api.task.runtime.events.TaskActivatedEvent;
+import org.activiti.api.task.runtime.events.TaskAssignedEvent;
+import org.activiti.api.task.runtime.events.TaskCancelledEvent;
+import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;
+import org.activiti.api.task.runtime.events.TaskCandidateGroupRemovedEvent;
+import org.activiti.api.task.runtime.events.TaskCandidateUserAddedEvent;
+import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
+import org.activiti.api.task.runtime.events.TaskCompletedEvent;
+import org.activiti.api.task.runtime.events.TaskCreatedEvent;
+import org.activiti.api.task.runtime.events.TaskSuspendedEvent;
+import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.runtime.api.TaskAdminRuntime;
-import org.activiti.runtime.api.impl.TaskAdminRuntimeImpl;
-import org.activiti.runtime.api.TaskRuntime;
 import org.activiti.runtime.api.conf.impl.TaskRuntimeConfigurationImpl;
-import org.activiti.runtime.api.event.TaskActivated;
-import org.activiti.runtime.api.event.TaskAssigned;
-import org.activiti.runtime.api.event.TaskCancelled;
-import org.activiti.runtime.api.event.TaskCandidateGroupAdded;
-import org.activiti.runtime.api.event.TaskCandidateGroupRemoved;
-import org.activiti.runtime.api.event.TaskCandidateUserAdded;
-import org.activiti.runtime.api.event.TaskCandidateUserRemoved;
-import org.activiti.runtime.api.event.TaskCompleted;
-import org.activiti.runtime.api.event.TaskCreated;
-import org.activiti.runtime.api.event.TaskSuspended;
-import org.activiti.runtime.api.event.VariableEventListener;
 import org.activiti.runtime.api.event.impl.ToAPITaskAssignedEventConverter;
 import org.activiti.runtime.api.event.impl.ToAPITaskCandidateGroupAddedEventConverter;
 import org.activiti.runtime.api.event.impl.ToAPITaskCandidateUserAddedEventConverter;
@@ -57,9 +60,7 @@ import org.activiti.runtime.api.event.internal.TaskCandidateUserRemovedListenerD
 import org.activiti.runtime.api.event.internal.TaskCompletedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TaskCreatedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TaskSuspendedListenerDelegate;
-import org.activiti.runtime.api.event.listener.TaskRuntimeEventListener;
-import org.activiti.runtime.api.identity.UserGroupManager;
-import org.activiti.runtime.api.security.SecurityManager;
+import org.activiti.runtime.api.impl.TaskAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.TaskRuntimeImpl;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
@@ -91,11 +92,11 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public TaskAdminRuntime taskAdminRuntime(TaskService taskService,
-                                        UserGroupManager userGroupManager,
-                                        SecurityManager securityManager,
-                                        APITaskConverter taskConverter,
-                                        APIVariableInstanceConverter variableInstanceConverter,
-                                        TaskRuntimeConfiguration configuration) {
+                                             UserGroupManager userGroupManager,
+                                             SecurityManager securityManager,
+                                             APITaskConverter taskConverter,
+                                             APIVariableInstanceConverter variableInstanceConverter,
+                                             TaskRuntimeConfiguration configuration) {
         return new TaskAdminRuntimeImpl(taskService,
                                         userGroupManager,
                                         securityManager,
@@ -105,10 +106,9 @@ public class TaskRuntimeAutoConfiguration {
     }
 
     @Bean
-    public APITaskConverter apiTaskConverter(TaskService taskService,
-                                             APIVariableInstanceConverter variableInstanceConverter) {
-        return new APITaskConverter(taskService,
-                                    variableInstanceConverter);
+    public APITaskConverter apiTaskConverter() {
+        return new APITaskConverter(
+        );
     }
 
     @Bean
@@ -127,7 +127,7 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerTaskCreatedEventListener(RuntimeService runtimeService,
-                                                             @Autowired(required = false) List<TaskRuntimeEventListener<TaskCreated>> listeners,
+                                                             @Autowired(required = false) List<TaskRuntimeEventListener<TaskCreatedEvent>> listeners,
                                                              ToAPITaskCreatedEventConverter taskCreatedEventConverter) {
         return () -> runtimeService.addEventListener(new TaskCreatedListenerDelegate(getInitializedTaskRuntimeEventListeners(listeners),
                                                                                      taskCreatedEventConverter),
@@ -140,7 +140,7 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerTaskAssignedEventListener(RuntimeService runtimeService,
-                                                              @Autowired(required = false) List<TaskRuntimeEventListener<TaskAssigned>> listeners,
+                                                              @Autowired(required = false) List<TaskRuntimeEventListener<TaskAssignedEvent>> listeners,
                                                               ToAPITaskAssignedEventConverter taskAssignedEventConverter) {
         return () -> runtimeService.addEventListener(new TaskAssignedListenerDelegate(getInitializedTaskRuntimeEventListeners(listeners),
                                                                                       taskAssignedEventConverter),
@@ -149,7 +149,7 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerTaskCompletedEventListener(RuntimeService runtimeService,
-                                                               @Autowired(required = false) List<TaskRuntimeEventListener<TaskCompleted>> listeners,
+                                                               @Autowired(required = false) List<TaskRuntimeEventListener<TaskCompletedEvent>> listeners,
                                                                APITaskConverter taskConverter) {
         return () -> runtimeService.addEventListener(new TaskCompletedListenerDelegate(getInitializedTaskRuntimeEventListeners(listeners),
                                                                                        new ToTaskCompletedConverter(taskConverter)),
@@ -158,7 +158,7 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerTaskCancelledEventListener(RuntimeService runtimeService,
-                                                               @Autowired(required = false) List<TaskRuntimeEventListener<TaskCancelled>> taskRuntimeEventListeners,
+                                                               @Autowired(required = false) List<TaskRuntimeEventListener<TaskCancelledEvent>> taskRuntimeEventListeners,
                                                                TaskService taskService,
                                                                APITaskConverter taskConverter) {
         return () -> runtimeService.addEventListener(new TaskCancelledListenerDelegate(getInitializedTaskRuntimeEventListeners(taskRuntimeEventListeners),
@@ -169,7 +169,7 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerTaskSuspendedListener(RuntimeService runtimeService,
-                                                          @Autowired(required = false) List<TaskRuntimeEventListener<TaskSuspended>> listeners,
+                                                          @Autowired(required = false) List<TaskRuntimeEventListener<TaskSuspendedEvent>> listeners,
                                                           APITaskConverter taskConverter) {
         return () -> runtimeService.addEventListener(new TaskSuspendedListenerDelegate(getInitializedTaskRuntimeEventListeners(listeners),
                                                                                        new ToTaskSuspendedConverter(taskConverter)),
@@ -178,7 +178,7 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerTaskActivatedListener(RuntimeService runtimeService,
-                                                          @Autowired(required = false) List<TaskRuntimeEventListener<TaskActivated>> listeners,
+                                                          @Autowired(required = false) List<TaskRuntimeEventListener<TaskActivatedEvent>> listeners,
                                                           APITaskConverter taskConverter) {
         return () -> runtimeService.addEventListener(new TaskActivatedListenerDelegate(getInitializedTaskRuntimeEventListeners(listeners),
                                                                                        new ToTaskActivatedConverter(taskConverter)),
@@ -207,7 +207,7 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerTaskCandidateUserAddedEventListener(RuntimeService runtimeService,
-                                                                        @Autowired(required = false) List<TaskRuntimeEventListener<TaskCandidateUserAdded>> listeners,
+                                                                        @Autowired(required = false) List<TaskRuntimeEventListener<TaskCandidateUserAddedEvent>> listeners,
                                                                         ToAPITaskCandidateUserAddedEventConverter taskCandidateUserAddedEventConverter) {
         return () -> runtimeService.addEventListener(new TaskCandidateUserAddedListenerDelegate(getInitializedTaskRuntimeEventListeners(listeners),
                                                                                                 taskCandidateUserAddedEventConverter),
@@ -216,7 +216,7 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerTaskCandidateUserRemovedEventListener(RuntimeService runtimeService,
-                                                                          @Autowired(required = false) List<TaskRuntimeEventListener<TaskCandidateUserRemoved>> listeners,
+                                                                          @Autowired(required = false) List<TaskRuntimeEventListener<TaskCandidateUserRemovedEvent>> listeners,
                                                                           APITaskCandidateUserConverter taskCandidateUserConverter) {
         return () -> runtimeService.addEventListener(new TaskCandidateUserRemovedListenerDelegate(getInitializedTaskRuntimeEventListeners(listeners),
                                                                                                   new ToTaskCandidateUserRemovedConverter(taskCandidateUserConverter)),
@@ -235,7 +235,7 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerTaskCandidateGroupAddedEventListener(RuntimeService runtimeService,
-                                                                         @Autowired(required = false) List<TaskRuntimeEventListener<TaskCandidateGroupAdded>> listeners,
+                                                                         @Autowired(required = false) List<TaskRuntimeEventListener<TaskCandidateGroupAddedEvent>> listeners,
                                                                          ToAPITaskCandidateGroupAddedEventConverter taskCandidateGroupAddedEventConverter) {
         return () -> runtimeService.addEventListener(new TaskCandidateGroupAddedListenerDelegate(getInitializedTaskRuntimeEventListeners(listeners),
                                                                                                  taskCandidateGroupAddedEventConverter),
@@ -244,7 +244,7 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerTaskCandidateGroupRemovedEventListener(RuntimeService runtimeService,
-                                                                           @Autowired(required = false) List<TaskRuntimeEventListener<TaskCandidateGroupRemoved>> listeners,
+                                                                           @Autowired(required = false) List<TaskRuntimeEventListener<TaskCandidateGroupRemovedEvent>> listeners,
                                                                            APITaskCandidateGroupConverter taskCandidateGroupConverter) {
         return () -> runtimeService.addEventListener(new TaskCandidateGroupRemovedListenerDelegate(getInitializedTaskRuntimeEventListeners(listeners),
                                                                                                    new ToTaskCandidateGroupRemovedConverter(taskCandidateGroupConverter)),

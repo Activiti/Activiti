@@ -17,7 +17,7 @@
 package org.activiti.runtime.api.model.impl;
 
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti.runtime.api.model.BPMNActivity;
+import org.activiti.api.process.model.BPMNActivity;
 
 public class ToActivityConverter {
 

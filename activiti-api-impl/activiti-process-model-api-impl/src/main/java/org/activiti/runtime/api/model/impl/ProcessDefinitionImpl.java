@@ -18,7 +18,7 @@ package org.activiti.runtime.api.model.impl;
 
 import java.util.Objects;
 
-import org.activiti.runtime.api.model.ProcessDefinition;
+import org.activiti.api.process.model.ProcessDefinition;
 
 public class ProcessDefinitionImpl implements ProcessDefinition {
 

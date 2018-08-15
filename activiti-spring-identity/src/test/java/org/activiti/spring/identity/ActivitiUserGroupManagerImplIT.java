@@ -16,7 +16,7 @@
 
 package org.activiti.spring.identity;
 
-import org.activiti.runtime.api.identity.UserGroupManager;
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

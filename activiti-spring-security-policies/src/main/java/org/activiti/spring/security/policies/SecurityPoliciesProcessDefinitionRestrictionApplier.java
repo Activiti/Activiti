@@ -19,8 +19,8 @@ package org.activiti.spring.security.policies;
 import java.util.Set;
 import java.util.UUID;
 
-import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
-import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
+import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.springframework.stereotype.Component;
 
 @Component

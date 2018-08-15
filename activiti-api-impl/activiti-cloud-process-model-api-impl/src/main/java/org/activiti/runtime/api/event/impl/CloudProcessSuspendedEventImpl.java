@@ -17,8 +17,8 @@
 package org.activiti.runtime.api.event.impl;
 
 import org.activiti.runtime.api.event.CloudProcessSuspended;
-import org.activiti.runtime.api.event.ProcessRuntimeEvent;
-import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.api.process.model.events.ProcessRuntimeEvent;
+import org.activiti.api.process.model.ProcessInstance;
 
 public class CloudProcessSuspendedEventImpl extends CloudRuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents> implements CloudProcessSuspended {
 

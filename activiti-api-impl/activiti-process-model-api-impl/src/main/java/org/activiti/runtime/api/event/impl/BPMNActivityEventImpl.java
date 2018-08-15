@@ -1,7 +1,7 @@
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.BPMNActivityEvent;
-import org.activiti.runtime.api.model.BPMNActivity;
+import org.activiti.api.process.model.BPMNActivity;
+import org.activiti.api.process.model.events.BPMNActivityEvent;
 
 public abstract class BPMNActivityEventImpl extends RuntimeEventImpl<BPMNActivity, BPMNActivityEvent.ActivityEvents>
         implements BPMNActivityEvent {

@@ -16,7 +16,7 @@
 
 package org.activiti.runtime.api.event;
 
-import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.api.process.model.ProcessInstance;
 
 public interface CloudProcessRuntimeEvent extends CloudRuntimeEvent<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>,
                                                   ProcessRuntimeEvent<ProcessInstance> {

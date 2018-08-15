@@ -19,7 +19,7 @@ package org.activiti.spring.security.policies;
 import java.util.Collections;
 import java.util.Set;
 
-import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
+import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.*;

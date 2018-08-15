@@ -1,11 +1,11 @@
 package org.activiti.spring.boot.process;
 
-import org.activiti.runtime.api.ProcessAdminRuntime;
-import org.activiti.runtime.api.ProcessRuntime;
-import org.activiti.runtime.api.conf.ProcessRuntimeConfiguration;
-import org.activiti.runtime.api.model.ProcessDefinition;
-import org.activiti.runtime.api.query.Page;
-import org.activiti.runtime.api.query.Pageable;
+import org.activiti.api.process.model.ProcessDefinition;
+import org.activiti.api.process.runtime.ProcessAdminRuntime;
+import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class ProcessRuntimeSecurityPoliciesTest {
         ProcessRuntimeConfiguration configuration = processRuntime.configuration(); //@TODO: I should get the security policies defined here.
         assertThat(configuration).isNotNull();
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                50));
+                                                                                                      50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent()).hasSize(2);
 

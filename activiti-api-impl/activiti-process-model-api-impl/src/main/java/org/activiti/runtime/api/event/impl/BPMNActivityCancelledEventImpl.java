@@ -1,9 +1,9 @@
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.BPMNActivityCancelled;
-import org.activiti.runtime.api.model.BPMNActivity;
+import org.activiti.api.process.model.BPMNActivity;
+import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 
-public class BPMNActivityCancelledEventImpl extends BPMNActivityEventImpl implements BPMNActivityCancelled {
+public class BPMNActivityCancelledEventImpl extends BPMNActivityEventImpl implements BPMNActivityCancelledEvent {
 
     public BPMNActivityCancelledEventImpl() {
     }

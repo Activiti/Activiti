@@ -18,14 +18,14 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
+import org.activiti.api.process.model.events.SequenceFlowTakenEvent;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
-import org.activiti.runtime.api.event.SequenceFlowTaken;
 import org.activiti.runtime.api.model.impl.SequenceFlowImpl;
 
-public class ToSequenceFlowTakenConverter implements EventConverter<SequenceFlowTaken, ActivitiSequenceFlowTakenEvent>{
+public class ToSequenceFlowTakenConverter implements EventConverter<SequenceFlowTakenEvent, ActivitiSequenceFlowTakenEvent>{
 
     @Override
-    public Optional<SequenceFlowTaken> from(ActivitiSequenceFlowTakenEvent internalEvent) {
+    public Optional<SequenceFlowTakenEvent> from(ActivitiSequenceFlowTakenEvent internalEvent) {
         SequenceFlowImpl sequenceFlow = new SequenceFlowImpl(internalEvent.getSourceActivityId(),
                                                              internalEvent.getTargetActivityId());
         sequenceFlow.setProcessDefinitionId(internalEvent.getProcessDefinitionId());

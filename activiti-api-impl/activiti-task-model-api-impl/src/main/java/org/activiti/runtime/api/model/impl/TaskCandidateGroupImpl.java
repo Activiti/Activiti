@@ -18,7 +18,7 @@ package org.activiti.runtime.api.model.impl;
 
 import java.util.Objects;
 
-import org.activiti.runtime.api.model.TaskCandidateGroup;
+import org.activiti.api.task.model.TaskCandidateGroup;
 
 public class TaskCandidateGroupImpl extends TaskCandidateImpl implements TaskCandidateGroup {
 

@@ -17,7 +17,7 @@
 package org.activiti.runtime.api.model.impl;
 
 import org.activiti.runtime.api.model.CloudProcessDefinition;
-import org.activiti.runtime.api.model.ProcessDefinition;
+import org.activiti.api.process.model.ProcessDefinition;
 
 public class CloudProcessDefinitionImpl extends CloudRuntimeEntityImpl implements CloudProcessDefinition {
 

@@ -18,11 +18,11 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
+import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti.runtime.api.event.BPMNActivityCompleted;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 
-public class ToActivityCompletedConverter implements EventConverter<BPMNActivityCompleted, ActivitiActivityEvent> {
+public class ToActivityCompletedConverter implements EventConverter<BPMNActivityCompletedEvent, ActivitiActivityEvent> {
 
     private ToActivityConverter toActivityConverter;
 
@@ -31,7 +31,7 @@ public class ToActivityCompletedConverter implements EventConverter<BPMNActivity
     }
 
     @Override
-    public Optional<BPMNActivityCompleted> from(ActivitiActivityEvent internalEvent) {
+    public Optional<BPMNActivityCompletedEvent> from(ActivitiActivityEvent internalEvent) {
         return Optional.of(new BPMNActivityCompletedEventImpl(toActivityConverter.from(internalEvent)));
     }
 }

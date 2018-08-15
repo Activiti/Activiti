@@ -19,7 +19,7 @@ package org.activiti.runtime.api.model.impl;
 import java.util.Date;
 import java.util.Objects;
 
-import org.activiti.runtime.api.model.ProcessInstance;
+import org.activiti.api.process.model.ProcessInstance;
 
 public class ProcessInstanceImpl implements ProcessInstance {
 

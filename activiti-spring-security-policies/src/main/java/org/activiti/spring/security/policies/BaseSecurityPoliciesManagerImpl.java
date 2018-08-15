@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.runtime.api.identity.UserGroupManager;
-import org.activiti.runtime.api.security.SecurityManager;
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.spring.security.policies.conf.SecurityPoliciesProperties;
 
 public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPoliciesManager {

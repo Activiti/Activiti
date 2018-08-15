@@ -16,7 +16,7 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.runtime.api.model.IntegrationContext;
+import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.runtime.api.model.IntegrationRequest;
 import org.activiti.runtime.api.model.IntegrationResult;
 

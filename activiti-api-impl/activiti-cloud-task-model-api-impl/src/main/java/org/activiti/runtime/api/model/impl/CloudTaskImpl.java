@@ -19,7 +19,7 @@ package org.activiti.runtime.api.model.impl;
 import java.util.Date;
 
 import org.activiti.runtime.api.model.CloudTask;
-import org.activiti.runtime.api.model.Task;
+import org.activiti.api.task.model.Task;
 
 public class CloudTaskImpl extends CloudRuntimeEntityImpl implements CloudTask {
 

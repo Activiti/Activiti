@@ -18,11 +18,11 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
+import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti.runtime.api.event.BPMNActivityCancelled;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 
-public class ToActivityCancelledConverter implements EventConverter<BPMNActivityCancelled, ActivitiActivityEvent> {
+public class ToActivityCancelledConverter implements EventConverter<BPMNActivityCancelledEvent, ActivitiActivityEvent> {
 
     private ToActivityConverter toActivityConverter;
 
@@ -31,7 +31,7 @@ public class ToActivityCancelledConverter implements EventConverter<BPMNActivity
     }
 
     @Override
-    public Optional<BPMNActivityCancelled> from(ActivitiActivityEvent internalEvent) {
+    public Optional<BPMNActivityCancelledEvent> from(ActivitiActivityEvent internalEvent) {
         BPMNActivityCancelledEventImpl bpmnActivityCancelledEvent = null;
         if(internalEvent.getActivityId() != null && !internalEvent.getActivityId().isEmpty()){ // we are making sure that it is a BPMN Activity
             bpmnActivityCancelledEvent = new BPMNActivityCancelledEventImpl(toActivityConverter.from(internalEvent));

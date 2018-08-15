@@ -16,7 +16,7 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.runtime.api.model.ProcessDefinition;
+import org.activiti.api.process.model.ProcessDefinition;
 
 public class APIProcessDefinitionConverter extends ListConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition>
         implements ModelConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition> {

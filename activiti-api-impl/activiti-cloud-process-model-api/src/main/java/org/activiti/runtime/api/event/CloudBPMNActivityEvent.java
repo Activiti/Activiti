@@ -16,7 +16,7 @@
 
 package org.activiti.runtime.api.event;
 
-import org.activiti.runtime.api.model.BPMNActivity;
+import org.activiti.api.process.model.BPMNActivity;
 
 public interface CloudBPMNActivityEvent extends CloudRuntimeEvent<BPMNActivity, BPMNActivityEvent.ActivityEvents> {
 

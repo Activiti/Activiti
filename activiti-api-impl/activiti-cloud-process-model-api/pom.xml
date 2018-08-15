@@ -27,12 +27,12 @@
   <name>Activiti Cloud API :: Process Model API</name>
   <dependencies>
     <dependency>
-      <groupId>org.activiti</groupId>
+      <groupId>org.activiti.api</groupId>
       <artifactId>activiti-cloud-common-model-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-process-model-api</artifactId>
+      <artifactId>activiti-api-process-model</artifactId>
     </dependency>
   </dependencies>
 </project>

@@ -18,8 +18,8 @@ package org.activiti.runtime.api;
 
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.runtime.api.identity.UserGroupManager;
-import org.activiti.runtime.api.security.SecurityManager;
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

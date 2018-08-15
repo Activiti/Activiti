@@ -18,7 +18,7 @@ package org.activiti.runtime.api.model.impl;
 
 import java.util.Objects;
 
-import org.activiti.runtime.api.model.BPMNElement;
+import org.activiti.api.process.model.BPMNElement;
 
 public class BPMNElementImpl implements BPMNElement {
 

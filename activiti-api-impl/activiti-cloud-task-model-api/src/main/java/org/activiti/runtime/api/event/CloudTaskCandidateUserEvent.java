@@ -16,7 +16,7 @@
 
 package org.activiti.runtime.api.event;
 
-import org.activiti.runtime.api.model.TaskCandidateUser;
+import org.activiti.api.task.model.TaskCandidateUser;
 
 public interface CloudTaskCandidateUserEvent extends CloudRuntimeEvent<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents>,
                                                      TaskCandidateUserEvent {

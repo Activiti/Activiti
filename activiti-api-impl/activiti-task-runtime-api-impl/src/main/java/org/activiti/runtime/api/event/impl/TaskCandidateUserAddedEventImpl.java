@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.runtime.api.event.TaskCandidateUserAdded;
-import org.activiti.runtime.api.event.TaskCandidateUserEvent;
-import org.activiti.runtime.api.model.TaskCandidateUser;
+import org.activiti.api.task.model.TaskCandidateUser;
+import org.activiti.api.task.model.events.TaskCandidateUserEvent;
+import org.activiti.api.task.runtime.events.TaskCandidateUserAddedEvent;
 
 public class TaskCandidateUserAddedEventImpl extends RuntimeEventImpl<TaskCandidateUser, TaskCandidateUserEvent.TaskCandidateUserEvents>
-        implements TaskCandidateUserAdded {
+        implements TaskCandidateUserAddedEvent {
 
     public TaskCandidateUserAddedEventImpl() {
     }
@@ -31,8 +31,8 @@ public class TaskCandidateUserAddedEventImpl extends RuntimeEventImpl<TaskCandid
     }
 
     @Override
-    public TaskCandidateUserEvents getEventType() {
-        return TaskCandidateUserEvents.TASK_CANDIDATE_USER_ADDED;
+    public TaskCandidateUserEvent.TaskCandidateUserEvents getEventType() {
+        return TaskCandidateUserEvent.TaskCandidateUserEvents.TASK_CANDIDATE_USER_ADDED;
     }
 
 }
