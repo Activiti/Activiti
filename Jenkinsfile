@@ -27,12 +27,12 @@ pipeline {
            // sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
           }
 
-          dir ('./charts/preview') {
-           container('maven') {
-             sh "make preview"
-             sh "jx preview --app $APP_NAME --dir ../.."
-           }
-          }
+          // dir ('./charts/preview') {
+          //  container('maven') {
+          //    sh "make preview"
+          //    sh "jx preview --app $APP_NAME --dir ../.."
+          //  }
+          // }
         }
       }
       stage('Build Release') {
@@ -50,11 +50,11 @@ pipeline {
             sh "echo \$(jx-release-version) > VERSION"
             sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
           }
-          dir ('./charts/activiti-build') {
-            container('maven') {
-              sh "make tag"
-            }
-          }
+          // dir ('./charts/activiti-build') {
+          //   container('maven') {
+          //     sh "make tag"
+          //   }
+          // }
           container('maven') {
             sh 'mvn clean deploy'
 
