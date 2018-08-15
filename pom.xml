@@ -5,10 +5,12 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.0.6</version> <!-- using fixed version for CI/CD --> 
+    <!--<version>7.0.0-SNAPSHOT</version>-->
   </parent>
   <groupId>org.activiti.api</groupId>
   <artifactId>activiti-api</artifactId>
+  <version>7.0.0-SNAPSHOT</version>
 
   <name>Activiti :: Runtime API Parent</name>
   <packaging>pom</packaging>
@@ -26,32 +28,32 @@
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-model-shared</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-runtime-shared</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-process-model</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-process-runtime</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-task-model</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-task-runtime</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
+        <version>${project.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
