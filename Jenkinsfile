@@ -53,7 +53,7 @@ pipeline {
          //   container('maven') {
          //     sh "make tag"
          //   }
-          }
+          // }
           container('maven') {
             sh 'mvn clean deploy'
 
