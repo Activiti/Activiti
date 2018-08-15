@@ -63,6 +63,7 @@ pipeline {
 
           //  sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
           }
+        }
       }
       //stage('Promote to Environments') {
       //  when {
