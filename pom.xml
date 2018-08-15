@@ -6,7 +6,6 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
     <version>7.0.0-SNAPSHOT</version>
-    <relativePath/>
   </parent>
   <groupId>org.activiti.api</groupId>
   <artifactId>activiti-api</artifactId>
@@ -22,6 +21,40 @@
     <module>activiti-api-task-runtime</module>
   </modules>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-model-shared</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-runtime-shared</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-process-model</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-process-runtime</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-task-model</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-task-runtime</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <properties>
     <!-- configuration properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
