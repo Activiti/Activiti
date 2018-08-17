@@ -44,6 +44,7 @@
     </developer>
   </developers>
   <modules>
+    <module>activiti-api-dependencies</module>
     <module>activiti-dependency-check</module>
     <module>activiti-dependencies</module>
     <module>activiti-parent</module>
@@ -86,6 +87,7 @@
     <argLine>-Duser.language=en</argLine>
     <!-- dependency -->
     <activiti.version>7.0.0-SNAPSHOT</activiti.version>
+    <activiti-api.version>${activiti.version}</activiti-api.version>
     <asm.version>6.1.1</asm.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
