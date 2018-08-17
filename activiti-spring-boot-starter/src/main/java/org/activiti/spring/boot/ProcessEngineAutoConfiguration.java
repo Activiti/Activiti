@@ -18,7 +18,6 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
-import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
