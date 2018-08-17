@@ -25,9 +25,6 @@ public class BPMNElementImpl implements BPMNElement {
     private String processInstanceId;
     private String processDefinitionId;
 
-    public BPMNElementImpl() {
-    }
-
     @Override
     public String getProcessInstanceId() {
         return processInstanceId;

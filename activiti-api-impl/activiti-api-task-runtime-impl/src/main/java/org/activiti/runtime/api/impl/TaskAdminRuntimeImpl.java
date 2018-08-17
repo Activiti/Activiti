@@ -19,10 +19,8 @@ package org.activiti.runtime.api.impl;
 import java.util.List;
 
 import org.activiti.api.runtime.shared.NotFoundException;
-import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
-import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
@@ -32,11 +30,9 @@ import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
-import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.TaskImpl;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,26 +44,10 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
 
     private final APITaskConverter taskConverter;
 
-    private final APIVariableInstanceConverter variableInstanceConverter;
-
-    private final TaskRuntimeConfiguration configuration;
-
-    private final UserGroupManager userGroupManager;
-
-    private final SecurityManager securityManager;
-
     public TaskAdminRuntimeImpl(TaskService taskService,
-                                UserGroupManager userGroupManager,
-                                SecurityManager securityManager,
-                                APITaskConverter taskConverter,
-                                APIVariableInstanceConverter variableInstanceConverter,
-                                TaskRuntimeConfiguration configuration) {
+                                APITaskConverter taskConverter) {
         this.taskService = taskService;
-        this.userGroupManager = userGroupManager;
-        this.securityManager = securityManager;
         this.taskConverter = taskConverter;
-        this.variableInstanceConverter = variableInstanceConverter;
-        this.configuration = configuration;
     }
 
     @Override

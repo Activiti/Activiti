@@ -92,17 +92,10 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public TaskAdminRuntime taskAdminRuntime(TaskService taskService,
-                                             UserGroupManager userGroupManager,
-                                             SecurityManager securityManager,
-                                             APITaskConverter taskConverter,
-                                             APIVariableInstanceConverter variableInstanceConverter,
-                                             TaskRuntimeConfiguration configuration) {
+                                             APITaskConverter taskConverter) {
         return new TaskAdminRuntimeImpl(taskService,
-                                        userGroupManager,
-                                        securityManager,
-                                        taskConverter,
-                                        variableInstanceConverter,
-                                        configuration);
+                                        taskConverter
+        );
     }
 
     @Bean
