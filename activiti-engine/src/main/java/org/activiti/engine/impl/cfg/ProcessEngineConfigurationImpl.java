@@ -39,6 +39,7 @@ import javax.sql.DataSource;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.DynamicBpmnService;
 import org.activiti.engine.HistoryService;
@@ -308,7 +309,6 @@ import org.activiti.engine.integration.IntegrationContextService;
 import org.activiti.engine.integration.IntegrationContextServiceImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.activiti.engine.runtime.Clock;
-import org.activiti.runtime.api.identity.UserGroupManager;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
 import org.apache.ibatis.builder.xml.XMLConfigBuilder;

@@ -1,6 +1,6 @@
 package org.activiti.spring.security;
 
-import org.activiti.runtime.api.security.SecurityManager;
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package org.activiti.spring.security.policies;
 
-import org.activiti.runtime.api.model.payloads.GetProcessDefinitionsPayload;
-import org.activiti.runtime.api.model.payloads.GetProcessInstancesPayload;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
+import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 
 public interface ProcessSecurityPoliciesManager extends SecurityPoliciesManager {
 

@@ -11,8 +11,8 @@
   <name>Activiti :: Spring Identity</name>
   <dependencies>
     <dependency>
-      <groupId>org.activiti</groupId>
-      <artifactId>activiti-common-runtime-api</artifactId>
+      <groupId>org.activiti.api</groupId>
+      <artifactId>activiti-api-runtime-shared</artifactId>
     </dependency>
 
 

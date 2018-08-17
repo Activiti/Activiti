@@ -1,12 +1,11 @@
 package org.activiti.spring.boot.tasks;
 
-import org.activiti.runtime.api.TaskAdminRuntime;
-import org.activiti.runtime.api.TaskRuntime;
-import org.activiti.runtime.api.model.Task;
-import org.activiti.runtime.api.model.builders.TaskPayloadBuilder;
-import org.activiti.runtime.api.query.Page;
-import org.activiti.runtime.api.query.Pageable;
-import org.activiti.runtime.api.security.SecurityManager;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.runtime.TaskAdminRuntime;
+import org.activiti.api.task.runtime.TaskRuntime;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,7 +40,7 @@ public class TaskRuntimeTaskForOtherTest {
 
         // the owner should be able to see the created task
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                50));
+                                                         50));
 
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
