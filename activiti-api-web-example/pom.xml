@@ -38,7 +38,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
-    <activiti.version>7.0.0.Beta1</activiti.version>
+    <activiti.version>7.0.0-SNAPSHOT</activiti.version>
   </properties>
   <dependencyManagement>
     <dependencies>
