@@ -5,8 +5,8 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.6</version> <!-- using fixed version for CI/CD --> 
-    <!--<version>7.0.0-SNAPSHOT</version>-->
+    <!--<version>7.0.6</version>--> <!-- using fixed version for CI/CD -->
+    <version>7.0.0-SNAPSHOT</version>
   </parent>
   <groupId>org.activiti.api</groupId>
   <artifactId>activiti-api</artifactId>
