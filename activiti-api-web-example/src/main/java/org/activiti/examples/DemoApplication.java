@@ -19,12 +19,12 @@ package org.activiti.examples;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.runtime.api.ProcessRuntime;
-import org.activiti.runtime.api.connector.Connector;
-import org.activiti.runtime.api.model.ProcessDefinition;
-import org.activiti.runtime.api.model.ProcessInstance;
-import org.activiti.runtime.api.model.builders.ProcessPayloadBuilder;
-import org.activiti.runtime.api.query.Pageable;
+import org.activiti.api.process.model.ProcessDefinition;
+import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.process.runtime.connector.Connector;
+import org.activiti.api.runtime.shared.query.Pageable;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

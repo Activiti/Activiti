@@ -1,7 +1,7 @@
 package org.activiti.examples;
 
-import org.activiti.runtime.api.ProcessRuntime;
-import org.activiti.runtime.api.model.ProcessDefinition;
+import org.activiti.api.process.model.ProcessDefinition;
+import org.activiti.api.process.runtime.ProcessRuntime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
