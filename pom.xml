@@ -5,12 +5,14 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
-    <relativePath/>
+    <version>7.0.6</version>
+<!--    <version>7.0.0-SNAPSHOT</version>
+    <relativePath/>-->
   </parent>
   <artifactId>activiti-root</artifactId>
   <packaging>pom</packaging>
   <name>Activiti</name>
+  <version>7.0.0-SNAPSHOT</version>
   <description>BPM and workflow engine</description>
   <url>http://activiti.org</url>
   <dependencyManagement>
