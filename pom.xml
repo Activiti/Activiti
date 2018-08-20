@@ -151,14 +151,4 @@
     <system>Travis</system>
     <url>https://travis-ci.org/Activiti/Activiti</url>
   </ciManagement>
-  <repositories>
-    <repository>
-      <id>activiti-snapshots</id>
-      <name>Activiti Snapshots</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
 </project>
