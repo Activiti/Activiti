@@ -24,7 +24,7 @@ public class ActivitiProperties {
 
   private boolean checkProcessDefinitions = true;
   private boolean asyncExecutorActivate = false;
-  private String deploymentName;
+  private String deploymentName = "SpringAutoDeployment";
   private String mailServerHost = "localhost";
   private int mailServerPort = 1025;
   private String mailServerUserName;

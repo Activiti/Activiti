@@ -13,13 +13,9 @@
 
 package org.activiti.spring.autodeployment;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.core.io.Resource;
-
-import java.io.IOException;
-import java.util.zip.ZipInputStream;
 
 /**
  * Default implementation of {@link AutoDeploymentStrategy} that groups all {@link Resource}s into a single deployment. This implementation is equivalent to the previously used implementation.
@@ -49,19 +45,11 @@ public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrateg
     for (final Resource resource : resources) {
       final String resourceName = determineResourceName(resource);
 
-      try {
-        if (resourceName.endsWith(".bar") || resourceName.endsWith(".zip") || resourceName.endsWith(".jar")) {
-          deploymentBuilder.addZipInputStream(new ZipInputStream(resource.getInputStream()));
-        } else {
-          deploymentBuilder.addInputStream(resourceName, resource.getInputStream());
-        }
-      } catch (IOException e) {
-        throw new ActivitiException("couldn't auto deploy resource '" + resource + "': " + e.getMessage(), e);
-      }
+      deploymentBuilder.addInputStream(resourceName,
+                                       resource);
     }
 
     deploymentBuilder.deploy();
 
   }
-
 }

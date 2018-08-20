@@ -17,69 +17,66 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.zip.ZipInputStream;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.spring.autodeployment.DefaultAutoDeploymentStrategy;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.core.io.Resource;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.Silent.class)
 public class DefaultAutoDeploymentStrategyTest extends AbstractAutoDeploymentStrategyTest {
 
-    private DefaultAutoDeploymentStrategy classUnderTest;
+    private DefaultAutoDeploymentStrategy deploymentStrategy;
 
     @Before
     public void before() throws Exception {
         super.before();
-        classUnderTest = new DefaultAutoDeploymentStrategy();
-        assertNotNull(classUnderTest);
+        deploymentStrategy = new DefaultAutoDeploymentStrategy();
     }
 
     @Test
     public void testHandlesMode() {
-        assertTrue(classUnderTest.handlesMode(DefaultAutoDeploymentStrategy.DEPLOYMENT_MODE));
-        assertFalse(classUnderTest.handlesMode("other-mode"));
-        assertFalse(classUnderTest.handlesMode(null));
+        assertTrue(deploymentStrategy.handlesMode(DefaultAutoDeploymentStrategy.DEPLOYMENT_MODE));
+        assertFalse(deploymentStrategy.handlesMode("other-mode"));
+        assertFalse(deploymentStrategy.handlesMode(null));
     }
 
     @Test
     public void testDeployResources() {
         final Resource[] resources = new Resource[]{resourceMock1, resourceMock2, resourceMock3, resourceMock4, resourceMock5};
-        classUnderTest.deployResources(deploymentNameHint,
-                                       resources,
-                                       repositoryServiceMock);
+        deploymentStrategy.deployResources(deploymentNameHint,
+                                           resources,
+                                           repositoryServiceMock);
 
-        verify(repositoryServiceMock,
-               times(1)).createDeployment();
-        verify(deploymentBuilderMock,
-               times(1)).enableDuplicateFiltering();
-        verify(deploymentBuilderMock,
-               times(1)).name(deploymentNameHint);
-        verify(deploymentBuilderMock,
-               times(1)).addInputStream(eq(resourceName1),
-                                        isA(InputStream.class));
-        verify(deploymentBuilderMock,
-               times(1)).addInputStream(eq(resourceName2),
-                                        isA(InputStream.class));
-        verify(deploymentBuilderMock,
-               times(3)).addZipInputStream(isA(ZipInputStream.class));
-        verify(deploymentBuilderMock,
-               times(1)).deploy();
+        verify(repositoryServiceMock).createDeployment();
+        verify(deploymentBuilderMock).enableDuplicateFiltering();
+        verify(deploymentBuilderMock).name(deploymentNameHint);
+        verify(deploymentBuilderMock).addInputStream(eq(resourceName1),
+                                        isA(Resource.class));
+        verify(deploymentBuilderMock).addInputStream(eq(resourceName2),
+                                        isA(Resource.class));
+        verify(deploymentBuilderMock).addInputStream(eq(resourceName3),
+                                        isA(Resource.class));
+        verify(deploymentBuilderMock).addInputStream(eq(resourceName4),
+                                        isA(Resource.class));
+        verify(deploymentBuilderMock).addInputStream(eq(resourceName5),
+                                        isA(Resource.class));
+        verify(deploymentBuilderMock).deploy();
     }
 
     @Test
     public void testDeployResourcesNoResources() {
         final Resource[] resources = new Resource[]{};
-        classUnderTest.deployResources(deploymentNameHint,
-                                       resources,
-                                       repositoryServiceMock);
+        deploymentStrategy.deployResources(deploymentNameHint,
+                                           resources,
+                                           repositoryServiceMock);
 
         verify(repositoryServiceMock,
                times(1)).createDeployment();
@@ -99,26 +96,14 @@ public class DefaultAutoDeploymentStrategyTest extends AbstractAutoDeploymentStr
                times(1)).deploy();
     }
 
-    @Test(expected = ActivitiException.class)
-    public void testDeployResourcesIOExceptionYieldsActivitiException() throws Exception {
-        when(resourceMock3.getInputStream()).thenThrow(new IOException());
-
-        final Resource[] resources = new Resource[]{resourceMock3};
-        classUnderTest.deployResources(deploymentNameHint,
-                                       resources,
-                                       repositoryServiceMock);
-
-        fail("Expected exception for IOException");
-    }
-
     @Test
     public void testDetermineResourceNameWithExceptionFailsGracefully() throws Exception {
         when(resourceMock3.getFile()).thenThrow(new IOException());
         when(resourceMock3.getFilename()).thenReturn(resourceName3);
 
         final Resource[] resources = new Resource[]{resourceMock3};
-        classUnderTest.deployResources(deploymentNameHint,
-                                       resources,
-                                       repositoryServiceMock);
+        deploymentStrategy.deployResources(deploymentNameHint,
+                                           resources,
+                                           repositoryServiceMock);
     }
 }

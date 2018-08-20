@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.repository;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -34,6 +35,7 @@ import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.springframework.core.io.Resource;
 
 /**
 
@@ -52,12 +54,20 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   protected boolean isProcessValidationEnabled = true;
   protected boolean isDuplicateFilterEnabled;
   protected Date processDefinitionsActivationDate;
-  protected Map<String, Object> deploymentProperties = new HashMap<String, Object>();
+  protected Map<String, Object> deploymentProperties = new HashMap<>();
 
   public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
+    this(repositoryService,
+         Context.getProcessEngineConfiguration().getDeploymentEntityManager().create(),
+         Context.getProcessEngineConfiguration().getResourceEntityManager());
+  }
+
+  public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService,
+                               DeploymentEntity deployment,
+                               ResourceEntityManager resourceEntityManager) {
     this.repositoryService = repositoryService;
-    this.deployment = Context.getProcessEngineConfiguration().getDeploymentEntityManager().create();
-    this.resourceEntityManager = Context.getProcessEngineConfiguration().getResourceEntityManager();
+    this.deployment = deployment;
+    this.resourceEntityManager = resourceEntityManager;
   }
 
   public DeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
@@ -69,6 +79,26 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     resource.setName(resourceName);
     resource.setBytes(bytes);
     deployment.addResource(resource);
+    return this;
+  }
+
+  @Override
+  public DeploymentBuilder addInputStream(String resourceName,
+                                          Resource resource) {
+    try {
+      if (resourceName.endsWith(".bar") || resourceName.endsWith(".zip") || resourceName.endsWith(".jar")) {
+        try(ZipInputStream inputStream = new ZipInputStream(resource.getInputStream())) {
+          addZipInputStream(inputStream);
+        }
+      } else {
+        try(InputStream inputStream = resource.getInputStream()) {
+          addInputStream(resourceName,
+                         inputStream);
+        }
+      }
+    } catch (IOException e) {
+      throw new ActivitiException("Couldn't auto deploy resource '" + resource + "': " + e.getMessage(), e);
+    }
     return this;
   }
 
