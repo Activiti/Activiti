@@ -4,19 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.activiti</groupId>
-    <artifactId>activiti-parent</artifactId>
+    <artifactId>activiti-root</artifactId>
     <version>7.0.0-SNAPSHOT</version>
-    <relativePath/>
   </parent>
-  <artifactId>activiti-root</artifactId>
+  <artifactId>activiti-dependencies</artifactId>
   <packaging>pom</packaging>
-  <name>Activiti</name>
-  <description>BPM and workflow engine</description>
-  <url>http://activiti.org</url>
-  <properties>
-    <activiti.version>${project.version}</activiti.version>
-    <activiti-api.version>7.0.0-SNAPSHOT</activiti-api.version>
-  </properties>
+  <name>Activiti :: Dependencies BOM (Bill Of Materials)</name>
   <dependencyManagement>
     <dependencies>
       <!-- Activiti Modules for managed dependencies -->
@@ -129,40 +122,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <modules>
-    <module>activiti-dependencies</module>
-    <module>activiti-api-impl</module>
-    <module>activiti-bpmn-model</module>
-    <module>activiti-bpmn-layout</module>
-    <module>activiti-bpmn-converter</module>
-    <module>activiti-process-validation</module>
-    <module>activiti-image-generator</module>
-    <module>activiti-json-converter</module>
-    <module>activiti-engine</module>
-    <module>activiti-spring</module>
-    <module>activiti-spring-identity</module>
-    <module>activiti-spring-security</module>
-    <module>activiti-spring-security-policies</module>
-    <module>activiti-spring-boot-starter</module>
-  </modules>
-  <scm>
-    <url>https://github.com/Activiti/Activiti</url>
-    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
-    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
-  <ciManagement>
-    <system>Travis</system>
-    <url>https://travis-ci.org/Activiti/Activiti</url>
-  </ciManagement>
-  <repositories>
-    <repository>
-      <id>activiti-snapshots</id>
-      <name>Activiti Snapshots</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
 </project>
