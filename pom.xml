@@ -13,10 +13,6 @@
   <name>Activiti</name>
   <description>BPM and workflow engine</description>
   <url>http://activiti.org</url>
-  <properties>
-    <activiti.version>${project.version}</activiti.version>
-    <activiti-api.version>7.0.0-SNAPSHOT</activiti-api.version>
-  </properties>
   <dependencyManagement>
     <dependencies>
       <!-- Activiti Modules for managed dependencies -->
