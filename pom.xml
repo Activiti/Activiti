@@ -15,13 +15,16 @@
   <version>7.0.0-SNAPSHOT</version>
   <description>BPM and workflow engine</description>
   <url>http://activiti.org</url>
+  <properties>
+    <activiti.version>${project.version}</activiti.version>
+  </properties>
   <dependencyManagement>
     <dependencies>
       <!-- Activiti Modules for managed dependencies -->
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-dependencies</artifactId>
-        <version>${activiti-api.version}</version>
+        <version>7.0.6</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
