@@ -30,6 +30,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringCallerRunsRejectedJobsHandler;
+import org.activiti.spring.SpringJobManager;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.SpringRejectedJobsHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,13 +64,18 @@ public abstract class AbstractProcessEngineAutoConfiguration
     return new SpringAsyncExecutor(taskExecutor, springRejectedJobsHandler());
   }
   
+  @Bean
+  public SpringJobManager springJobManager() {
+    return new SpringJobManager();
+  }
+  
   @Bean 
   public SpringRejectedJobsHandler springRejectedJobsHandler() {
     return new SpringCallerRunsRejectedJobsHandler();
   }
 
   protected SpringProcessEngineConfiguration baseSpringProcessEngineConfiguration(DataSource dataSource, PlatformTransactionManager platformTransactionManager,
-                                                                                  SpringAsyncExecutor springAsyncExecutor) throws IOException {
+                                                                                  SpringAsyncExecutor springAsyncExecutor, SpringJobManager springJobManager) throws IOException {
 
     List<Resource> procDefResources = this.discoverProcessDefinitionResources(
         this.resourceLoader, this.activitiProperties.getProcessDefinitionLocationPrefix(),
@@ -78,7 +84,7 @@ public abstract class AbstractProcessEngineAutoConfiguration
 
     SpringProcessEngineConfiguration conf = super.processEngineConfigurationBean(
         procDefResources.toArray(new Resource[procDefResources.size()]), dataSource, 
-        platformTransactionManager, springAsyncExecutor);
+        platformTransactionManager, springAsyncExecutor, springJobManager);
 
     conf.setDeploymentName(defaultText(activitiProperties.getDeploymentName(), conf.getDeploymentName()));
     conf.setDatabaseSchema(defaultText(activitiProperties.getDatabaseSchema(), conf.getDatabaseSchema()));
