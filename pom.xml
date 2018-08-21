@@ -150,12 +150,12 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-parent</artifactId>
-      <version>7.0.0-SNAPSHOT</version>
+      <version>7.0.5</version>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-build</artifactId>
-      <version>7.0.0-SNAPSHOT</version>
+      <version>7.0.5</version>
     </dependency>
   </dependencies>
   <scm>
