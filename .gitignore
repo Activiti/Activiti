@@ -1,3 +1,5 @@
+target
+
 # Compiled class file
 *.class
 
@@ -13,7 +15,6 @@
 # Package Files #
 *.jar
 *.war
-*.nar
 *.ear
 *.zip
 *.tar.gz
@@ -21,3 +22,13 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+#IDE metadata
+**.idea/**
+.idea/
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings
