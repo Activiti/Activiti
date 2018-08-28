@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource(locations = "classpath:application-multiple-test.properties")
+@TestPropertySource(locations = "classpath:application-single-test.properties")
 public class ConnectorServiceIT {
 
     @Autowired

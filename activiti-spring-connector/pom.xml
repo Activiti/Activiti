@@ -15,7 +15,7 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-connector-model</artifactId>
-      <version>7.0.0-SNAPSHOT</version>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
