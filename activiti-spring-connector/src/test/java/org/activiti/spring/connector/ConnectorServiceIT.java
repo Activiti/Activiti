@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.util.List;
 
 import org.activiti.model.connector.Connector;
+import org.activiti.spring.connector.autoconfigure.ConnectorAutoConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.TestPropertySource;
@@ -30,7 +32,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = ConnectorAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:application-single-test.properties")
 public class ConnectorServiceIT {
 
@@ -50,9 +52,9 @@ public class ConnectorServiceIT {
         assertEquals("input-variable-name-1", connectors.get(0).getActions().get("actionName1").getInput().get(0).getName());
     }
 
-    @org.springframework.context.annotation.Configuration
-    @ComponentScan("org.activiti.spring.connector")
-    public static class Configuration {
-
-    }
+//    @org.springframework.context.annotation.Configuration
+//    @ComponentScan("org.activiti.spring.connector")
+//    public static class Configuration {
+//
+//    }
 }

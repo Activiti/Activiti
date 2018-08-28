@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 import org.activiti.model.connector.Connector;
+import org.activiti.spring.connector.autoconfigure.ConnectorAutoConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = ConnectorAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:application-empty-test.properties")
 public class EmptyConnectorServiceIT {
 
@@ -46,9 +47,9 @@ public class EmptyConnectorServiceIT {
         assertEquals(0, connectors.size());
     }
 
-    @org.springframework.context.annotation.Configuration
-    @ComponentScan("org.activiti.spring.connector")
-    public static class Configuration {
-
-    }
+//    @org.springframework.context.annotation.Configuration
+//    @ComponentScan("org.activiti.spring.connector")
+//    public static class Configuration {
+//
+//    }
 }
