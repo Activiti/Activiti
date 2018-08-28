@@ -1,0 +1,19 @@
+{
+	"name": "connector2",
+	"description": "Description of the connector",
+    "icon": "path to icon",
+	"actions": {
+		"actionName1": {
+			"input": [
+				{"name": "input-variable-name-1"},
+				{"name": "input-variable-name-2"},
+				{"name": "input-variable-name-3"}
+			],
+			"output": [
+				{"name": "output-variable-name-1"},
+				{"name": "output-variable-name-2"}
+			]			
+		},
+		"actionName2": {}
+	}
+} 

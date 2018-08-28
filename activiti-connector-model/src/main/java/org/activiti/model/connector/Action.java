@@ -4,15 +4,15 @@ import java.util.List;
 
 public class Action {
 
-    private List<Variable> inputs;
+    private List<Variable> input;
 
-    private List<Variable> outputs;
+    private List<Variable> output;
 
-    public List<Variable> getInputs() {
-        return inputs;
+    public List<Variable> getInput() {
+        return input;
     }
 
-    public List<Variable> getOutputs() {
-        return outputs;
+    public List<Variable> getOutput() {
+        return output;
     }
 }
