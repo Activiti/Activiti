@@ -16,16 +16,11 @@
 
 package org.activiti.spring.connector.autoconfigure;
 
-import org.activiti.spring.connector.ConnectorService;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ComponentScan(basePackages = "org.activiti.spring.connector")
 public class ConnectorAutoConfiguration {
-
-    @Bean
-    public ConnectorService connectorService(){
-        return new ConnectorService();
-    }
 
 }

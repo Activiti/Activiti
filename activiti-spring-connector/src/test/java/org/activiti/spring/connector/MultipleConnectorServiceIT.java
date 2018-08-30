@@ -25,11 +25,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ConnectorAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -40,20 +39,12 @@ public class MultipleConnectorServiceIT {
     private ConnectorService connectorService;
 
     /**
-     *Three files have json extensions, one does not.
-     *
+     * Three files have json extensions, one does not.
      **/
     @Test
     public void connectors() throws IOException {
 
         List<Connector> connectors = connectorService.get();
-        assertNotNull(connectors);
-        assertEquals(3, connectors.size());
+        assertThat(connectors).hasSize(3);
     }
-
-//    @org.springframework.context.annotation.Configuration
-//    @ComponentScan("org.activiti.spring.connector")
-//    public static class Configuration {
-//
-//    }
 }

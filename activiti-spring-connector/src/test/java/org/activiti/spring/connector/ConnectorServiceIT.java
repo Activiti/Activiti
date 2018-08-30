@@ -24,12 +24,11 @@ import org.activiti.spring.connector.autoconfigure.ConnectorAutoConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import static org.junit.Assert.*;
+
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ConnectorAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -43,18 +42,12 @@ public class ConnectorServiceIT {
     public void connector() throws IOException {
 
         List<Connector> connectors = connectorService.get();
-        assertNotNull(connectors);
-        assertEquals(1, connectors.size());
-        assertEquals("Name-of-the-connector", connectors.get(0).getName());
-        assertEquals("Description of the connector", connectors.get(0).getDescription());
-        assertEquals("path to icon", connectors.get(0).getIcon());
-        assertEquals(2, connectors.get(0).getActions().size());
-        assertEquals("input-variable-name-1", connectors.get(0).getActions().get("actionName1").getInput().get(0).getName());
+        assertThat(connectors).hasSize(1);
+        assertThat(connectors.get(0).getId()).isEqualTo("connector-uuid");
+        assertThat(connectors.get(0).getName()).isEqualTo("Name-of-the-connector");
+        assertThat(connectors.get(0).getActions().size()).isEqualTo(2);
+        assertThat(connectors.get(0).getActions().get("actionId1").getName()).isEqualTo("actionName1");
+        assertThat(connectors.get(0).getActions().get("actionId1").getInput().get(0).getName()).isEqualTo("input-variable-name-1");
+        assertThat(connectors.get(0).getActions().get("actionId1").getOutput().get(0).getName()).isEqualTo("output-variable-name-1");
     }
-
-//    @org.springframework.context.annotation.Configuration
-//    @ComponentScan("org.activiti.spring.connector")
-//    public static class Configuration {
-//
-//    }
 }

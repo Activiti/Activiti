@@ -4,6 +4,8 @@ import java.util.Map;
 
 public class Connector {
 
+    private String id;
+
     private String name;
 
     private String description;
@@ -11,6 +13,10 @@ public class Connector {
     private String icon;
 
     private Map<String, Action> actions;
+
+    public String getId() {
+        return id;
+    }
 
     public String getName() {
         return name;

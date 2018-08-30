@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ConnectorService {
 
-    @Value("${activiti.connectors.dir:connector}")
+    @Value("${activiti.connectors.dir:connectors}")
     private String connectorRoot;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
