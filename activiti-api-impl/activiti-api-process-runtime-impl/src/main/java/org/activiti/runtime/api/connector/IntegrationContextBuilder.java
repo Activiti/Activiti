@@ -71,17 +71,17 @@ public class IntegrationContextBuilder {
                                                       DelegateExecution execution) {
         Map<String, Object> inBoundVariables;
         if (connectors != null && !connectors.isEmpty()) {
-            String connectorName = StringUtils.substringBefore(implementation,
+            String connectorId = StringUtils.substringBefore(implementation,
                                                                ".");
-            String actionName = StringUtils.substringAfter(implementation,
+            String actionId = StringUtils.substringAfter(implementation,
                                                            ".");
 
-            List<Connector> resultingConnectors = connectors.stream().filter(connector -> connector.getName().equals(connectorName)).collect(Collectors.toList());
+            List<Connector> resultingConnectors = connectors.stream().filter(connector -> connector.getId().equals(connectorId)).collect(Collectors.toList());
             if (resultingConnectors.size() != 1) {
-                throw new RuntimeException("Mismatch connector name mapping");
+                throw new RuntimeException("Mismatch connector id mapping");
             }
             Connector connector = resultingConnectors.get(0);
-            Action action = connector.getActions().get(actionName);
+            Action action = connector.getActions().get(actionId);
             if (action == null) {
                 throw new RuntimeException("Mismatch action name mapping");
             }
