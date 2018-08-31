@@ -85,7 +85,7 @@ public class IntegrationContextBuilder {
             if (action == null) {
                 throw new RuntimeException("Mismatch action name mapping");
             }
-            inBoundVariables = action.getInput().stream().collect(Collectors.toMap(Variable::getName,
+            inBoundVariables = action.getInput().stream().filter(input -> execution.getVariables().containsKey(input.getName())).collect(Collectors.toMap(Variable::getName,
                                                                                    Function.identity()));
         } else {
             inBoundVariables = execution.getVariables();
