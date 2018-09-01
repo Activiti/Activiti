@@ -416,7 +416,7 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     return superExecutionId;
   }
 
-  public ExecutionEntityImpl getSuperExecution() {
+  public ExecutionEntity getSuperExecution() {
     ensureSuperExecutionInitialized();
     return superExecution;
   }
