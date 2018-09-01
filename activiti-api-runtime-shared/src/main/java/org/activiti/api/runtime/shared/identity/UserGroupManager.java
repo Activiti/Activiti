@@ -8,4 +8,7 @@ public interface UserGroupManager {
 
     List<String> getUserRoles(String username);
 
+    List<String> getGroups();
+
+    List<String> getUsers();
 }
