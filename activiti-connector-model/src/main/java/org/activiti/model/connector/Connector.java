@@ -33,4 +33,24 @@ public class Connector {
     public Map<String, Action> getActions() {
         return actions;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public void setActions(Map<String, Action> actions) {
+        this.actions = actions;
+    }
 }

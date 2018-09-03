@@ -33,4 +33,24 @@ public class Action {
     public List<Variable> getOutput() {
         return output;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setInput(List<Variable> input) {
+        this.input = input;
+    }
+
+    public void setOutput(List<Variable> output) {
+        this.output = output;
+    }
 }
