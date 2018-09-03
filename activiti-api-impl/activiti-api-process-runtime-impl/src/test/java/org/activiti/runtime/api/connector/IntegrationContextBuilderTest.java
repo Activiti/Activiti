@@ -26,21 +26,23 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.model.connector.Action;
 import org.activiti.model.connector.Connector;
+import org.activiti.model.connector.Variable;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class IntegrationContextBuilderTest{
+public class IntegrationContextBuilderTest {
 
     @InjectMocks
     private IntegrationContextBuilder integrationContextBuilder;
+
+    private static final String CONNECTOR_ID = "connector";
+    private static final String ACTION_ID = "action1";
 
     @Before
     public void setUp() {
@@ -48,30 +50,72 @@ public class IntegrationContextBuilderTest{
     }
 
     @Test
-    public void inBoundVariablesSetFromDelegateExecutionBecauseConnectorsAreNotSet(){
-        DelegateExecution delegateExecution = ConnectorRuntimeApiTestHelper.buildExecution("connector.action1");
+    public void inBoundVariablesSetFromDelegateExecutionBecauseConnectorsAreNotSet() {
+        DelegateExecution delegateExecution = ConnectorRuntimeApiTestHelper.buildExecution(CONNECTOR_ID + "." + ACTION_ID);
         Map<String, Object> vars = new HashMap<>();
-        vars.put("var1", "value");
+        vars.put("var1",
+                 "value");
         given(delegateExecution.getVariables()).willReturn(vars);
 
-        IntegrationContext integrationContext  = integrationContextBuilder.from(buildIntegrationContextEntity(), delegateExecution, null);
+        IntegrationContext integrationContext = integrationContextBuilder.from(buildIntegrationContextEntity(),
+                                                                               delegateExecution,
+                                                                               null);
         assertThat(integrationContext.getInBoundVariables()).isEqualTo(vars);
     }
 
+    /**
+     * 2 input variable coming from the connector definition for a given action,
+     * but one variable name matches the variables present in the delegate execution.
+     * So only the one matching is set.
+     *
+     **/
+    @Test
+    public void inBoundVariablesSetFromConnectorActionInputVarsThatMatchVariablesInDelegateExecution() {
+        String connectorId = CONNECTOR_ID;
+        String actionId = ACTION_ID;
+        DelegateExecution delegateExecution = ConnectorRuntimeApiTestHelper.buildExecution(connectorId + "." + actionId);
+        Map<String, Object> vars = new HashMap<>();
+        vars.put("value",
+                 "value");
+        given(delegateExecution.getVariables()).willReturn(vars);
 
+        List<Connector> connectors = buildConnectors(connectorId,
+                                                     actionId);
 
-    private IntegrationContextEntity buildIntegrationContextEntity(){
+        IntegrationContext integrationContext = integrationContextBuilder.from(buildIntegrationContextEntity(),
+                                                                               delegateExecution,
+                                                                               connectors);
+        assertThat(integrationContext.getInBoundVariables()).hasSize(1);
+        Variable resultingVariable = (Variable) integrationContext.getInBoundVariables().get("value");
+        assertThat(resultingVariable.getName()).isEqualTo("value");
+    }
+
+    private List<Connector> buildConnectors(String connectorId,
+                                            String actionId) {
+        List<Connector> connectors = new ArrayList<>();
+        Connector connector = new Connector();
+        connector.setId(connectorId);
+        Map<String, Action> actions = new HashMap<>();
+        Action action = new Action();
+        action.setId(actionId);
+        List<Variable> variables = new ArrayList<>();
+        Variable matchingVariable = new Variable();
+        matchingVariable.setName("value");
+        Variable notMatchingVariable = new Variable();
+        notMatchingVariable.setName("does_not_match");
+        variables.add(matchingVariable);
+        variables.add(notMatchingVariable);
+        action.setInput(variables);
+        actions.put(actionId,
+                    action);
+        connector.setActions(actions);
+        connectors.add(connector);
+        return connectors;
+    }
+
+    private IntegrationContextEntity buildIntegrationContextEntity() {
         IntegrationContextEntity integrationContextEntity = mock(IntegrationContextEntity.class);
         given(integrationContextEntity.getId()).willReturn("id");
         return integrationContextEntity;
     }
-
-
-
-
-
-
-
-
-
 }
