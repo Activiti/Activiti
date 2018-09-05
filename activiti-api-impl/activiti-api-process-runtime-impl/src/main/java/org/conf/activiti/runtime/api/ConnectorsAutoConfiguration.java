@@ -17,7 +17,7 @@
 package org.conf.activiti.runtime.api;
 
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
-import org.activiti.model.connector.Connector;
+import org.activiti.model.connector.ConnectorDefinition;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.spring.connector.ConnectorService;
@@ -37,7 +37,7 @@ public class ConnectorsAutoConfiguration {
     private ConnectorService connectorService;
 
     @Bean
-    public List<Connector> connectorDefinitions() throws IOException {
+    public List<ConnectorDefinition> connectorDefinitions() throws IOException {
         return connectorService.get();
     }
 

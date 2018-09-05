@@ -20,8 +20,8 @@ import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
-import org.activiti.model.connector.Action;
-import org.activiti.model.connector.Variable;
+import org.activiti.model.connector.ActionDefinition;
+import org.activiti.model.connector.VariableDefinition;
 import org.activiti.runtime.api.model.impl.IntegrationContextImpl;
 
 import java.util.Map;
@@ -31,20 +31,20 @@ import java.util.stream.Collectors;
 public class IntegrationContextBuilder {
 
     public IntegrationContext from(IntegrationContextEntity integrationContextEntity,
-                                   DelegateExecution execution, Action action) {
-        IntegrationContextImpl integrationContext = buildFromExecution(execution, action);
+                                   DelegateExecution execution, ActionDefinition actionDefinition) {
+        IntegrationContextImpl integrationContext = buildFromExecution(execution, actionDefinition);
         integrationContext.setId(integrationContextEntity.getId());
         return integrationContext;
     }
 
-    public IntegrationContext from(DelegateExecution execution, Action action) {
+    public IntegrationContext from(DelegateExecution execution, ActionDefinition actionDefinition) {
         IntegrationContextImpl integrationContext = buildFromExecution(execution,
-                action);
+                actionDefinition);
         return integrationContext;
     }
 
     private IntegrationContextImpl buildFromExecution(DelegateExecution execution,
-                                                      Action action) {
+                                                      ActionDefinition actionDefinition) {
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
         integrationContext.setProcessInstanceId(execution.getProcessInstanceId());
         integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
@@ -55,18 +55,18 @@ public class IntegrationContextBuilder {
         integrationContext.setConnectorType(implementation);
 
         integrationContext.setInBoundVariables(buildInBoundVariables(
-                action,
+                actionDefinition,
                 execution));
 
         return integrationContext;
     }
 
-    private Map<String, Object> buildInBoundVariables(Action action,
+    private Map<String, Object> buildInBoundVariables(ActionDefinition actionDefinition,
                                                       DelegateExecution execution) {
         Map<String, Object> inBoundVariables;
-        if (action != null) {
+        if (actionDefinition != null) {
 
-            inBoundVariables = action.getInput().stream().filter(input -> execution.getVariables().containsKey(input.getName())).collect(Collectors.toMap(Variable::getName,
+            inBoundVariables = actionDefinition.getInput().stream().filter(input -> execution.getVariables().containsKey(input.getName())).collect(Collectors.toMap(VariableDefinition::getName,
                     Function.identity()));
         } else {
             inBoundVariables = execution.getVariables();

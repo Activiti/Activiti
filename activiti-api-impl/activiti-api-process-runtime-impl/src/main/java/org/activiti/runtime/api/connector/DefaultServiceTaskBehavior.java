@@ -21,7 +21,8 @@ import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-import org.activiti.model.connector.Action;
+import org.activiti.model.connector.ActionDefinition;
+import org.activiti.model.connector.ConnectorDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
@@ -32,13 +33,13 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
     private final ApplicationContext applicationContext;
     private final IntegrationContextBuilder integrationContextBuilder;
-    private final List<org.activiti.model.connector.Connector> connectors;
+    private final List<ConnectorDefinition> connectorDefinitions;
 
     public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
-                                      IntegrationContextBuilder integrationContextBuilder, List<org.activiti.model.connector.Connector> connectors) {
+                                      IntegrationContextBuilder integrationContextBuilder, List<ConnectorDefinition> connectorDefinitions) {
         this.applicationContext = applicationContext;
         this.integrationContextBuilder = integrationContextBuilder;
-        this.connectors = connectors;
+        this.connectorDefinitions = connectorDefinitions;
     }
 
     @Override
@@ -49,29 +50,29 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
         String connectorId = StringUtils.substringBefore(implementation, ".");
         String actionId = StringUtils.substringAfter(implementation, ".");
 
-        List<org.activiti.model.connector.Connector> resultingConnectors = connectors.stream().filter(connector -> connector.getId().equals(connectorId)).collect(Collectors.toList());
+        List<ConnectorDefinition> resultingConnectors = connectorDefinitions.stream().filter(connector -> connector.getId().equals(connectorId)).collect(Collectors.toList());
         if (resultingConnectors.size() != 1) {
             throw new RuntimeException("Mismatch connector id mapping");
         }
         //this is the connector definition
-        org.activiti.model.connector.Connector connectorDefinition = resultingConnectors.get(0);
+        ConnectorDefinition connectorDefinition = resultingConnectors.get(0);
 
         // 2)  you get the action based on the actionId
-        Action action = connectorDefinition.getActions().get(actionId);
-        if (action == null) {
+        ActionDefinition actionDefinition = connectorDefinition.getActions().get(actionId);
+        if (actionDefinition == null) {
             throw new RuntimeException("Mismatch action name mapping");
         }
 
         // 3) Using the action Name:  Connector connector = applicationContext.getBean(actionName,
         //                                                         Connector.class);
-        Connector connector = applicationContext.getBean(action.getName(), Connector.class);
+        Connector connector = applicationContext.getBean(actionDefinition.getName(), Connector.class);
 
         // 4) IntegrationContext context = integrationContextBuilder.from(execution, connectorDef);
-        IntegrationContext context = integrationContextBuilder.from(execution, action);
+        IntegrationContext context = integrationContextBuilder.from(execution, actionDefinition);
         IntegrationContext results = connector.execute(context);
 
         // Check the output mappings same thing as input
-//        execution.setVariables(results.getOutBoundVariables());
+        execution.setVariables(results.getOutBoundVariables());
 
 
         leave(execution);
