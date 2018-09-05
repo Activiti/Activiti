@@ -19,7 +19,7 @@ package org.activiti.spring.connector;
 import java.io.IOException;
 import java.util.List;
 
-import org.activiti.model.connector.Connector;
+import org.activiti.model.connector.ConnectorDefinition;
 import org.activiti.spring.connector.autoconfigure.ConnectorAutoConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,19 +32,17 @@ import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ConnectorAutoConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@TestPropertySource(locations = "classpath:application-multiple-test.properties")
-public class MultipleConnectorServiceIT {
+@TestPropertySource(locations = "classpath:application-empty-test.properties")
+public class EmptyConnectorDefinitionServiceIT {
 
     @Autowired
     private ConnectorService connectorService;
 
-    /**
-     * Three files have json extensions, one does not.
-     **/
     @Test
-    public void connectors() throws IOException {
+    public void emptyConnectors() throws IOException {
 
-        List<Connector> connectors = connectorService.get();
-        assertThat(connectors).hasSize(3);
+        List<ConnectorDefinition> connectorDefinitions = connectorService.get();
+
+        assertThat(connectorDefinitions).isEmpty();
     }
 }

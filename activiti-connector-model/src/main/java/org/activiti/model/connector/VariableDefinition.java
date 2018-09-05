@@ -1,6 +1,6 @@
 package org.activiti.model.connector;
 
-public class Variable {
+public class VariableDefinition {
 
     private String id;
 

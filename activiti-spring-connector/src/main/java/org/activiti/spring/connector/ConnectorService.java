@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.model.connector.Connector;
+import org.activiti.model.connector.ConnectorDefinition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -61,21 +61,21 @@ public class ConnectorService {
         return connectorFiles;
     }
 
-    private Connector save(File file) throws IOException {
+    private ConnectorDefinition save(File file) throws IOException {
         return objectMapper.readValue(file,
-                                      Connector.class);
+                                      ConnectorDefinition.class);
     }
 
-    public List<Connector> get() throws IOException {
+    public List<ConnectorDefinition> get() throws IOException {
 
-        List<Connector> connectors = new ArrayList<>();
+        List<ConnectorDefinition> connectorDefinitions = new ArrayList<>();
         Optional<File[]> files = retrieveFiles();
         if (files.isPresent()) {
             for (File file : files.get()) {
-                connectors.add(save(file));
+                connectorDefinitions.add(save(file));
             }
         }
-        return connectors;
+        return connectorDefinitions;
     }
 }
 

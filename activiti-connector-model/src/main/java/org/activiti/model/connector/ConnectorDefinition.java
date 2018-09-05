@@ -1,8 +1,8 @@
 package org.activiti.model.connector;
 
-import java.util.List;
+import java.util.Map;
 
-public class Action {
+public class ConnectorDefinition {
 
     private String id;
 
@@ -10,9 +10,9 @@ public class Action {
 
     private String description;
 
-    private List<Variable> input;
+    private String icon;
 
-    private List<Variable> output;
+    private Map<String, ActionDefinition> actions;
 
     public String getId() {
         return id;
@@ -26,12 +26,12 @@ public class Action {
         return description;
     }
 
-    public List<Variable> getInput() {
-        return input;
+    public String getIcon() {
+        return icon;
     }
 
-    public List<Variable> getOutput() {
-        return output;
+    public Map<String, ActionDefinition> getActions() {
+        return actions;
     }
 
     public void setId(String id) {
@@ -46,11 +46,11 @@ public class Action {
         this.description = description;
     }
 
-    public void setInput(List<Variable> input) {
-        this.input = input;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
-    public void setOutput(List<Variable> output) {
-        this.output = output;
+    public void setActions(Map<String, ActionDefinition> actions) {
+        this.actions = actions;
     }
 }
