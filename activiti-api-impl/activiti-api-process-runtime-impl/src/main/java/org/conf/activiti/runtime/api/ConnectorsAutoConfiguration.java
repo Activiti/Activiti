@@ -17,15 +17,29 @@
 package org.conf.activiti.runtime.api;
 
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
+import org.activiti.model.connector.Connector;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
+import org.activiti.spring.connector.ConnectorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
+import java.util.List;
+
 @Configuration
 public class ConnectorsAutoConfiguration {
+
+    @Autowired
+    private ConnectorService connectorService;
+
+    @Bean
+    public List<Connector> connectorDefinitions() throws IOException {
+        return connectorService.get();
+    }
 
     @Bean
     public IntegrationContextBuilder integrationContextBuilder() {
@@ -35,9 +49,9 @@ public class ConnectorsAutoConfiguration {
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     @ConditionalOnMissingBean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     public DefaultServiceTaskBehavior defaultServiceTaskBehavior(ApplicationContext applicationContext,
-                                                                 IntegrationContextBuilder integrationContextBuilder) {
+                                                                 IntegrationContextBuilder integrationContextBuilder) throws IOException{
         return new DefaultServiceTaskBehavior(applicationContext,
-                                              integrationContextBuilder);
+                                              integrationContextBuilder, connectorDefinitions());
     }
 
 

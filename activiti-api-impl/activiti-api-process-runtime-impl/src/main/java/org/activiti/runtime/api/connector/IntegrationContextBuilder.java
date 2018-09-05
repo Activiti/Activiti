@@ -16,40 +16,35 @@
 
 package org.activiti.runtime.api.connector;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.model.connector.Action;
-import org.activiti.model.connector.Connector;
 import org.activiti.model.connector.Variable;
 import org.activiti.runtime.api.model.impl.IntegrationContextImpl;
-import org.apache.commons.lang3.StringUtils;
+
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class IntegrationContextBuilder {
 
     public IntegrationContext from(IntegrationContextEntity integrationContextEntity,
-                                   DelegateExecution execution,
-                                   List<Connector> connectors) {
-        IntegrationContextImpl integrationContext = buildFromExecution(execution,
-                                                                       connectors);
+                                   DelegateExecution execution, Action action) {
+        IntegrationContextImpl integrationContext = buildFromExecution(execution, action);
         integrationContext.setId(integrationContextEntity.getId());
         return integrationContext;
     }
 
-    public IntegrationContext from(DelegateExecution execution) {
+    public IntegrationContext from(DelegateExecution execution, Action action) {
         IntegrationContextImpl integrationContext = buildFromExecution(execution,
-                                                                       null);
+                action);
         return integrationContext;
     }
 
     private IntegrationContextImpl buildFromExecution(DelegateExecution execution,
-                                                      List<Connector> connectors) {
+                                                      Action action) {
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
         integrationContext.setProcessInstanceId(execution.getProcessInstanceId());
         integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
@@ -59,34 +54,20 @@ public class IntegrationContextBuilder {
 
         integrationContext.setConnectorType(implementation);
 
-        integrationContext.setInBoundVariables(buildInBoundVariables(implementation,
-                                                                     connectors,
-                                                                     execution));
+        integrationContext.setInBoundVariables(buildInBoundVariables(
+                action,
+                execution));
 
         return integrationContext;
     }
 
-    private Map<String, Object> buildInBoundVariables(String implementation,
-                                                      List<Connector> connectors,
+    private Map<String, Object> buildInBoundVariables(Action action,
                                                       DelegateExecution execution) {
         Map<String, Object> inBoundVariables;
-        if (connectors != null && !connectors.isEmpty()) {
-            String connectorId = StringUtils.substringBefore(implementation,
-                                                               ".");
-            String actionId = StringUtils.substringAfter(implementation,
-                                                           ".");
+        if (action != null) {
 
-            List<Connector> resultingConnectors = connectors.stream().filter(connector -> connector.getId().equals(connectorId)).collect(Collectors.toList());
-            if (resultingConnectors.size() != 1) {
-                throw new RuntimeException("Mismatch connector id mapping");
-            }
-            Connector connector = resultingConnectors.get(0);
-            Action action = connector.getActions().get(actionId);
-            if (action == null) {
-                throw new RuntimeException("Mismatch action name mapping");
-            }
             inBoundVariables = action.getInput().stream().filter(input -> execution.getVariables().containsKey(input.getName())).collect(Collectors.toMap(Variable::getName,
-                                                                                   Function.identity()));
+                    Function.identity()));
         } else {
             inBoundVariables = execution.getVariables();
         }
