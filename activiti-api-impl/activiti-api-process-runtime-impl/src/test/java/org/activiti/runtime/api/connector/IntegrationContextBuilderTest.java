@@ -24,9 +24,9 @@
 //import org.activiti.api.process.model.IntegrationContext;
 //import org.activiti.engine.delegate.DelegateExecution;
 //import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
-//import org.activiti.model.connector.Action;
-//import org.activiti.model.connector.Connector;
-//import org.activiti.model.connector.Variable;
+//import org.activiti.model.connector.ActionDefinition;
+//import org.activiti.model.connector.ConnectorDefinition;
+//import org.activiti.model.connector.VariableDefinition;
 //import org.junit.Before;
 //import org.junit.Test;
 //import org.mockito.InjectMocks;
@@ -41,7 +41,6 @@
 //    @InjectMocks
 //    private IntegrationContextBuilder integrationContextBuilder;
 //
-//    private static final String CONNECTOR_ID = "connector";
 //    private static final String ACTION_ID = "action1";
 //
 //    @Before
@@ -51,7 +50,6 @@
 //
 //    @Test
 //    public void inBoundVariablesSetFromDelegateExecutionBecauseConnectorsAreNotSet() {
-//        DelegateExecution delegateExecution = ConnectorRuntimeApiTestHelper.buildExecution(CONNECTOR_ID + "." + ACTION_ID);
 //        Map<String, Object> vars = new HashMap<>();
 //        vars.put("var1",
 //                 "value");
@@ -79,12 +77,12 @@
 //                 "value");
 //        given(delegateExecution.getVariables()).willReturn(vars);
 //
-//        List<Connector> connectors = buildConnectors(connectorId,
+//        List<ConnectorDefinition> connectors = buildConnectors(connectorId,
 //                                                     actionId);
 //
 //        IntegrationContext integrationContext = integrationContextBuilder.from(buildIntegrationContextEntity(),
 //                                                                               delegateExecution,
-//                                                                               connectors);
+//                                                                               actionDefinition);
 //        assertThat(integrationContext.getInBoundVariables()).hasSize(1);
 //        Variable resultingVariable = (Variable) integrationContext.getInBoundVariables().get("value");
 //        assertThat(resultingVariable.getName()).isEqualTo("value");

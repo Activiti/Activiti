@@ -11,6 +11,7 @@ import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
+import org.activiti.model.connector.VariableDefinition;
 import org.activiti.spring.identity.ExtendedInMemoryUserDetailsManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Configuration
 public class RuntimeTestConfiguration {
@@ -68,6 +71,23 @@ public class RuntimeTestConfiguration {
             integrationContext.addOutBoundVariable("approved",
                                                    expectedValue);
             processImageConnectorExecuted = true;
+            return integrationContext;
+        };
+    }
+
+    @Bean
+    public Connector actionName1() {
+        return integrationContext -> {
+            Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
+            System.out.println("My inbound variables keys: " + inBoundVariables.keySet());
+            System.out.println("My inbound variables values: " + inBoundVariables.values());
+            String expectedValue = ((VariableDefinition) inBoundVariables.get("input-variable-name-1")).getName();
+
+//            integrationContext.addOutBoundVariable("approved",
+//                    true);
+            RuntimeTestConfiguration.processImageConnectorExecuted = true;
+
+            assertThat(expectedValue).isEqualTo("input-variable-name-1");
             return integrationContext;
         };
     }

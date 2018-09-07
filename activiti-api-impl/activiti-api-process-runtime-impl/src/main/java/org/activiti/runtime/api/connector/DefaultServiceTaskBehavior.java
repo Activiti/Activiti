@@ -60,7 +60,7 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
         ActionDefinition actionDefinition = connectorDefinition.getActions().get(actionId);
         if (actionDefinition == null) {
-            throw new RuntimeException("Mismatch action name mapping");
+            throw new RuntimeException("Mismatch action id mapping");
         }
 
         Connector connector = applicationContext.getBean(actionDefinition.getName(), Connector.class);
