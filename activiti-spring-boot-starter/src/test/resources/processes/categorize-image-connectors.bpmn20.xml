@@ -29,11 +29,11 @@
       <bpmn:incoming>SequenceFlow_09xowo4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1jzbgkj</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_0snvh02" name="Tag categorized Image" implementation="tagImageConnectorId.tagImageImageId">
+    <bpmn:serviceTask id="Task_0snvh02" name="Tag categorized Image" implementation="tagImageConnectorId.tagImageActionId">
       <bpmn:incoming>SequenceFlow_0tsc63v</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1nn2llw</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_1asxw87" name="Discard and Notify user" implementation="discardImageConnectorId.discardImageImageId">
+    <bpmn:serviceTask id="Task_1asxw87" name="Discard and Notify user" implementation="discardImageConnectorId.discardImageActionId">
       <bpmn:incoming>SequenceFlow_049fuit</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0upfncf</bpmn:outgoing>
     </bpmn:serviceTask>

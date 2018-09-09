@@ -1,11 +1,5 @@
 package org.activiti.spring.boot;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
@@ -19,6 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -76,18 +72,31 @@ public class RuntimeTestConfiguration {
     }
 
     @Bean
-    public Connector actionName1() {
+    public Connector processImageActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
-            System.out.println("My inbound variables keys: " + inBoundVariables.keySet());
-            System.out.println("My inbound variables values: " + inBoundVariables.values());
-            String expectedValue = ((VariableDefinition) inBoundVariables.get("input-variable-name-1")).getName();
+            System.out.println("processImageActionName inbound variables keys: " + inBoundVariables.keySet());
+            System.out.println("processImageActionName inbound variables values: " + inBoundVariables.values());
 
-//            integrationContext.addOutBoundVariable("approved",
-//                    true);
-            RuntimeTestConfiguration.processImageConnectorExecuted = true;
+            boolean expectedValue = (Boolean) inBoundVariables.get("expectedKey");
+            integrationContext.addOutBoundVariable("approved",
+                    expectedValue);
+            assertThat(((String) inBoundVariables.get("input-variable-name-1"))).isEqualTo("input-variable-name-1");
+            return integrationContext;
+        };
+    }
 
-            assertThat(expectedValue).isEqualTo("input-variable-name-1");
+    @Bean
+    public Connector tagImageActionName() {
+        return integrationContext -> {
+            Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
+            System.out.println("tagImageActionName inbound variables keys: " + inBoundVariables.keySet());
+            System.out.println("tagImageActionName inbound variables values: " + inBoundVariables.values());
+
+            boolean expectedValue = (Boolean) inBoundVariables.get("expectedKey");
+            integrationContext.addOutBoundVariable("approved",
+                    expectedValue);
+            assertThat(((String) inBoundVariables.get("input-variable-name-2"))).isEqualTo("input-variable-name-2");
             return integrationContext;
         };
     }

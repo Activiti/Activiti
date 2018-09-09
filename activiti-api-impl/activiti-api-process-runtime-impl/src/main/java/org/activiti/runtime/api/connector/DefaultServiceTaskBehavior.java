@@ -27,9 +27,9 @@ import org.activiti.model.connector.VariableDefinition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
@@ -47,29 +47,50 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
     @Override
     public void execute(DelegateExecution execution) {
+        Connector connector;
+        IntegrationContext context;
 
         String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
         String connectorId = StringUtils.substringBefore(implementation, ".");
         String actionId = StringUtils.substringAfter(implementation, ".");
 
-        List<ConnectorDefinition> resultingConnectors = connectorDefinitions.stream().filter(connector -> connector.getId().equals(connectorId)).collect(Collectors.toList());
-        if (resultingConnectors.size() != 1) {
-            throw new RuntimeException("Mismatch connector id mapping");
+        boolean hasMatchingConnectorDefinitions = false;
+        ActionDefinition actionDefinition = null;
+
+        List<ConnectorDefinition> resultingConnectors = connectorDefinitions.stream().filter(c -> c.getId().equals(connectorId)).collect(Collectors.toList());
+        if (resultingConnectors == null || resultingConnectors.size() == 0) {
+            context = integrationContextBuilder.from(execution, null);
+            connector = applicationContext.getBean(implementation,
+                    Connector.class);
+        } else {
+            hasMatchingConnectorDefinitions = true;
+            if (resultingConnectors.size() != 1) {
+                throw new RuntimeException("Mismatch connector id mapping: " + connectorId);
+            }
+            ConnectorDefinition connectorDefinition = resultingConnectors.get(0);
+
+            actionDefinition = connectorDefinition.getActions().get(actionId);
+            if (actionDefinition == null) {
+                throw new RuntimeException("Mismatch action id mapping: " + actionId);
+            }
+            context = integrationContextBuilder.from(execution, actionDefinition);
+            connector = applicationContext.getBean(actionDefinition.getName(), Connector.class);
         }
-        ConnectorDefinition connectorDefinition = resultingConnectors.get(0);
 
-        ActionDefinition actionDefinition = connectorDefinition.getActions().get(actionId);
-        if (actionDefinition == null) {
-            throw new RuntimeException("Mismatch action id mapping");
-        }
-
-        Connector connector = applicationContext.getBean(actionDefinition.getName(), Connector.class);
-
-        IntegrationContext context = integrationContextBuilder.from(execution, actionDefinition);
         IntegrationContext results = connector.execute(context);
 
-        Map<String, Object> outBoundVariables = actionDefinition.getOutput().stream().filter(output -> results.getOutBoundVariables().containsKey(output.getName())).collect(Collectors.toMap(VariableDefinition::getName,
-                Function.identity()));
+        Map<String, Object> outBoundVariables = new HashMap<>();
+        if (!hasMatchingConnectorDefinitions) {
+            outBoundVariables = results.getOutBoundVariables();
+        } else {
+            for (VariableDefinition variableDefinition : actionDefinition.getOutput()) {
+                Object outBoundVariableValue = results.getOutBoundVariables().get(variableDefinition.getName());
+                if (outBoundVariableValue != null) {
+                    outBoundVariables.put(variableDefinition.getName(), outBoundVariableValue);
+                }
+            }
+        }
+
         execution.setVariables(outBoundVariables);
 
         leave(execution);

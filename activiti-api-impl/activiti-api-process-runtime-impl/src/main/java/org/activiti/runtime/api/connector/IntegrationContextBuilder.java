@@ -24,9 +24,8 @@ import org.activiti.model.connector.ActionDefinition;
 import org.activiti.model.connector.VariableDefinition;
 import org.activiti.runtime.api.model.impl.IntegrationContextImpl;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class IntegrationContextBuilder {
 
@@ -63,11 +62,15 @@ public class IntegrationContextBuilder {
 
     private Map<String, Object> buildInBoundVariables(ActionDefinition actionDefinition,
                                                       DelegateExecution execution) {
-        Map<String, Object> inBoundVariables;
+        Map<String, Object> inBoundVariables = new HashMap<>();
         if (actionDefinition != null) {
 
-            inBoundVariables = actionDefinition.getInput().stream().filter(input -> execution.getVariables().containsKey(input.getName())).collect(Collectors.toMap(VariableDefinition::getName,
-                    Function.identity()));
+            for (VariableDefinition variableDefinition : actionDefinition.getInput()) {
+                Object inBoundVariableValue = execution.getVariables().get(variableDefinition.getName());
+                if (inBoundVariableValue != null) {
+                    inBoundVariables.put(variableDefinition.getName(), inBoundVariableValue);
+                }
+            }
         } else {
             inBoundVariables = execution.getVariables();
         }
