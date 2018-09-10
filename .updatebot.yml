@@ -1,0 +1,8 @@
+github:
+  organisations:
+  - name: activiti 
+    repositories:
+    - name: activiti-api
+      branch: develop
+    - name: activiti
+      branch: develop
