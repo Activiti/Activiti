@@ -49,11 +49,7 @@ public class ConnectorService {
                                                      @Override
                                                      public boolean accept(File dir,
                                                                            String name) {
-                                                         if (name.toLowerCase().endsWith(".json")) {
-                                                             return true;
-                                                         } else {
-                                                             return false;
-                                                         }
+                                                         return (name.toLowerCase().endsWith(".json"));
                                                      }
                                                  })
             );
@@ -61,7 +57,7 @@ public class ConnectorService {
         return connectorFiles;
     }
 
-    private ConnectorDefinition save(File file) throws IOException {
+    private ConnectorDefinition read(File file) throws IOException {
         return objectMapper.readValue(file,
                                       ConnectorDefinition.class);
     }
@@ -72,7 +68,7 @@ public class ConnectorService {
         Optional<File[]> files = retrieveFiles();
         if (files.isPresent()) {
             for (File file : files.get()) {
-                connectorDefinitions.add(save(file));
+                connectorDefinitions.add(read(file));
             }
         }
         return connectorDefinitions;
