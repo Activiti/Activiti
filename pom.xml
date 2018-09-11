@@ -6,7 +6,7 @@
   <artifactId>activiti-dependencies</artifactId>
   <version>7.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>Activiti :: BOM :: Dependencies</name>
+  <name>Activiti :: BOM (Bill of Materials)</name>
   <description>${project.name}</description>
   <url>http://activiti.org</url>
   <inceptionYear>2010</inceptionYear>
