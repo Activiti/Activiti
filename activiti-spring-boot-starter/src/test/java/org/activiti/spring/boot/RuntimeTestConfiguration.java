@@ -11,13 +11,13 @@ import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
+import org.activiti.spring.identity.ExtendedInMemoryUserDetailsManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Configuration
 public class RuntimeTestConfiguration {
@@ -34,27 +34,27 @@ public class RuntimeTestConfiguration {
 
 
     @Bean
-    public UserDetailsService myUserDetailsService() {
-        InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
+    public UserDetails myUserDetailsService() {
+        ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
 
         List<GrantedAuthority> salaboyAuthorities = new ArrayList<>();
         salaboyAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         salaboyAuthorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
 
-        inMemoryUserDetailsManager.createUser(new User("salaboy", "password", salaboyAuthorities));
+        extendedInMemoryUserDetailsManager.createUser(new User("salaboy", "password", salaboyAuthorities));
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
 
-        inMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
+        extendedInMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
 
         List<GrantedAuthority> garthAuthorities = new ArrayList<>();
         garthAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         garthAuthorities.add(new SimpleGrantedAuthority("GROUP_doctor"));
 
-        inMemoryUserDetailsManager.createUser(new User("garth", "password", garthAuthorities));
+        extendedInMemoryUserDetailsManager.createUser(new User("garth", "password", garthAuthorities));
 
-        return inMemoryUserDetailsManager;
+        return (UserDetails) extendedInMemoryUserDetailsManager;
     }
 
     @Bean

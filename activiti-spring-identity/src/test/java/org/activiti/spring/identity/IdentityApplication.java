@@ -9,8 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @SpringBootApplication
 public class IdentityApplication {
@@ -20,20 +19,19 @@ public class IdentityApplication {
     }
 
     @Bean
-    public UserDetailsService myUserDetailsService() {
-        InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
+    public UserDetails myUserDetailsService() {
+        ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
 
         List<GrantedAuthority> userAuthorities = new ArrayList<>();
         userAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
 
-        inMemoryUserDetailsManager.createUser(new User("user", "password", userAuthorities));
+        extendedInMemoryUserDetailsManager.createUser(new User("user", "password", userAuthorities));
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
 
-        inMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
+        extendedInMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
 
-        return inMemoryUserDetailsManager;
+        return (UserDetails) extendedInMemoryUserDetailsManager;
     }
-
 }
