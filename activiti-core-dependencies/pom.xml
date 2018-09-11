@@ -3,26 +3,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.activiti.build</groupId>
-    <artifactId>activiti-parent</artifactId>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
     <version>7.0.0-SNAPSHOT</version>
-    <relativePath/>
   </parent>
-  <groupId>org.activiti</groupId>
-  <artifactId>activiti-root</artifactId>
+  <artifactId>activiti-core-dependencies</artifactId>
   <packaging>pom</packaging>
-  <name>Activiti</name>
-  <version>7.0.0-SNAPSHOT</version>
-  <description>BPM and workflow engine</description>
-  <url>http://activiti.org</url>
-  <properties>
-    <activiti.version>${project.version}</activiti.version>
-    <activiti-api.version>${project.version}</activiti-api.version>
-  </properties>
+  <name>Activiti :: Dependencies BOM (Bill Of Materials)</name>
   <dependencyManagement>
     <dependencies>
       <!-- Activiti Modules for managed dependencies -->
-      <!-- This duplicates activiti-dependencies module but we can't import that module here as this is its parent-->
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-dependencies</artifactId>
@@ -132,31 +122,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <modules>
-    <module>activiti-core-dependencies</module>
-    <module>activiti-api-impl</module>
-    <module>activiti-bpmn-model</module>
-    <module>activiti-bpmn-layout</module>
-    <module>activiti-bpmn-converter</module>
-    <module>activiti-process-validation</module>
-    <module>activiti-image-generator</module>
-    <module>activiti-json-converter</module>
-    <module>activiti-engine</module>
-    <module>activiti-spring</module>
-    <module>activiti-spring-identity</module>
-    <module>activiti-spring-security</module>
-    <module>activiti-spring-security-policies</module>
-    <module>activiti-spring-boot-starter</module>
-  </modules>
-
-  <scm>
-    <url>https://github.com/Activiti/Activiti</url>
-    <connection>scm:git:https://github.com/Activiti/Activiti.git</connection>
-    <developerConnection>scm:git:https://github.com/Activiti/Activiti.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
-  <ciManagement>
-    <system>Travis</system>
-    <url>https://travis-ci.org/Activiti/Activiti</url>
-  </ciManagement>
 </project>
