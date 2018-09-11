@@ -33,4 +33,14 @@ public class ActivitiUserGroupManagerImpl implements UserGroupManager {
                 .map((GrantedAuthority a) -> a.getAuthority().substring(5))
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<String> getGroups() {
+        return ((ExtendedInMemoryUserDetailsManager) userDetailsService).getGroups();
+    }
+
+    @Override
+    public List<String> getUsers() {
+        return ((ExtendedInMemoryUserDetailsManager) userDetailsService).getUsers();
+    }
 }
