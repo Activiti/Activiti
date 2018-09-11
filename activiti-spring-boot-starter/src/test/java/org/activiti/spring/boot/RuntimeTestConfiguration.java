@@ -48,7 +48,7 @@ public class RuntimeTestConfiguration {
 
         extendedInMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
 
-        List<GrantedAuthority> garthAuthorities = new ArrayList<>();c
+        List<GrantedAuthority> garthAuthorities = new ArrayList<>();
         garthAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         garthAuthorities.add(new SimpleGrantedAuthority("GROUP_doctor"));
 
