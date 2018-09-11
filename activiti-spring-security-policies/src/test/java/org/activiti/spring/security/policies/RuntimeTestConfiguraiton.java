@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.List;
 public class RuntimeTestConfiguraiton {
 
     @Bean
-    public ExtendedInMemoryUserDetailsManager myUserDetailsService() {
+    public UserDetails myUserDetailsService() {
         ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
 
         List<GrantedAuthority> salaboyAuthorities = new ArrayList<>();
@@ -37,6 +38,6 @@ public class RuntimeTestConfiguraiton {
 
         extendedInMemoryUserDetailsManager.createUser(new User("garth", "password", garthAuthorities));
 
-        return extendedInMemoryUserDetailsManager;
+        return (UserDetails) extendedInMemoryUserDetailsManager;
     }
 }

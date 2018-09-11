@@ -14,10 +14,10 @@ import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.spring.identity.ExtendedInMemoryUserDetailsManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Configuration
 public class RuntimeTestConfiguration {
@@ -34,7 +34,7 @@ public class RuntimeTestConfiguration {
 
 
     @Bean
-    public ExtendedInMemoryUserDetailsManager myUserDetailsService() {
+    public UserDetails myUserDetailsService() {
         ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
 
         List<GrantedAuthority> salaboyAuthorities = new ArrayList<>();
@@ -48,13 +48,13 @@ public class RuntimeTestConfiguration {
 
         extendedInMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
 
-        List<GrantedAuthority> garthAuthorities = new ArrayList<>();
+        List<GrantedAuthority> garthAuthorities = new ArrayList<>();c
         garthAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         garthAuthorities.add(new SimpleGrantedAuthority("GROUP_doctor"));
 
         extendedInMemoryUserDetailsManager.createUser(new User("garth", "password", garthAuthorities));
 
-        return extendedInMemoryUserDetailsManager;
+        return (UserDetails) extendedInMemoryUserDetailsManager;
     }
 
     @Bean

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @SpringBootApplication
 public class IdentityApplication {
@@ -18,7 +19,7 @@ public class IdentityApplication {
     }
 
     @Bean
-    public ExtendedInMemoryUserDetailsManager myUserDetailsService() {
+    public UserDetails myUserDetailsService() {
         ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
 
         List<GrantedAuthority> userAuthorities = new ArrayList<>();
@@ -31,6 +32,6 @@ public class IdentityApplication {
 
         extendedInMemoryUserDetailsManager.createUser(new User("admin", "password", adminAuthorities));
 
-        return extendedInMemoryUserDetailsManager;
+        return (UserDetails) extendedInMemoryUserDetailsManager;
     }
 }
