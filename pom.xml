@@ -121,7 +121,7 @@
     <javaGeom.version>0.11.1</javaGeom.version>
     <javax.enterprise.concurrent-api.version>1.0</javax.enterprise.concurrent-api.version>
     <jaxb-api.version>2.2.11</jaxb-api.version>
-    <jgraphx.version>v3.9.3</jgraphx.version>
+    <jgraphx.version>3.9.8.1</jgraphx.version>
     <json-unit.version>1.24.0</json-unit.version>
     <jsr250-api.version>1.0</jsr250-api.version>
     <juel.version>2.2.7</juel.version>
@@ -207,7 +207,7 @@
         <version>${java-uuid-generator.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.github.jgraph</groupId>
+        <groupId>com.github.vlsi.mxgraph</groupId>
         <artifactId>jgraphx</artifactId>
         <version>${jgraphx.version}</version>
       </dependency>
