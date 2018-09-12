@@ -519,17 +519,20 @@ alter table ACT_PROCDEF_INFO
     add constraint ACT_UNIQ_INFO_PROCDEF
     unique (PROC_DEF_ID_);
 
+create index ACT_IDX_RU_INTEGRATION_EXEC on ACT_RU_INTEGRATION(EXECUTION_ID_);
 alter table ACT_RU_INTEGRATION
     add constraint ACT_FK_INT_EXECUTION
     foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION (ID_)
     on delete cascade;
 
+create index ACT_IDX_RU_INTEGRATION_PROC on ACT_RU_INTEGRATION(PROCESS_INSTANCE_ID_)
 alter table ACT_RU_INTEGRATION
     add constraint ACT_FK_INT_PROC_INST
     foreign key (PROCESS_INSTANCE_ID_)
     references ACT_RU_EXECUTION (ID_);
 
+create index ACT_IDX_RU_INTEGRATION_PROC_DEF on ACT_RU_INTEGRATION(PROC_DEF_ID_)
 alter table ACT_RU_INTEGRATION
     add constraint ACT_FK_INT_PROC_DEF
     foreign key (PROC_DEF_ID_)
