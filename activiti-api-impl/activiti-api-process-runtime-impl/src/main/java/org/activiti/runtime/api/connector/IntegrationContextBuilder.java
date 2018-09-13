@@ -24,10 +24,16 @@ import org.activiti.model.connector.ActionDefinition;
 import org.activiti.model.connector.VariableDefinition;
 import org.activiti.runtime.api.model.impl.IntegrationContextImpl;
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class IntegrationContextBuilder {
+
+    private final VariablesMatchHelper variablesMatchHelper;
+
+    public IntegrationContextBuilder(VariablesMatchHelper variablesMatchHelper) {
+        this.variablesMatchHelper = variablesMatchHelper;
+    }
 
     public IntegrationContext from(IntegrationContextEntity integrationContextEntity,
                                    DelegateExecution execution, ActionDefinition actionDefinition) {
@@ -62,18 +68,9 @@ public class IntegrationContextBuilder {
 
     private Map<String, Object> buildInBoundVariables(ActionDefinition actionDefinition,
                                                       DelegateExecution execution) {
-        Map<String, Object> inBoundVariables = new HashMap<>();
-        if (actionDefinition != null) {
 
-            for (VariableDefinition variableDefinition : actionDefinition.getInput()) {
-                Object inBoundVariableValue = execution.getVariables().get(variableDefinition.getName());
-                if (inBoundVariableValue != null) {
-                    inBoundVariables.put(variableDefinition.getName(), inBoundVariableValue);
-                }
-            }
-        } else {
-            inBoundVariables = execution.getVariables();
-        }
-        return inBoundVariables;
+        List<VariableDefinition> inBoundVariableDefinitions = actionDefinition == null ? null : actionDefinition.getInput();
+
+        return variablesMatchHelper.match(execution.getVariables(), inBoundVariableDefinitions);
     }
 }

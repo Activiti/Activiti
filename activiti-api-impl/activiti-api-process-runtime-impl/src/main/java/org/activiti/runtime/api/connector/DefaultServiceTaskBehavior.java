@@ -30,6 +30,7 @@ import org.springframework.context.ApplicationContext;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
@@ -37,61 +38,48 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
     private final ApplicationContext applicationContext;
     private final IntegrationContextBuilder integrationContextBuilder;
     private final List<ConnectorDefinition> connectorDefinitions;
+    private final ConnectorActionDefinitionFinder connectorActionDefinitionFinder;
+    private final VariablesMatchHelper variablesMatchHelper;
 
     public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
-                                      IntegrationContextBuilder integrationContextBuilder, List<ConnectorDefinition> connectorDefinitions) {
+                                      IntegrationContextBuilder integrationContextBuilder, List<ConnectorDefinition> connectorDefinitions, ConnectorActionDefinitionFinder connectorActionDefinitionFinder, VariablesMatchHelper variablesMatchHelper) {
         this.applicationContext = applicationContext;
         this.integrationContextBuilder = integrationContextBuilder;
         this.connectorDefinitions = connectorDefinitions;
+        this.connectorActionDefinitionFinder = connectorActionDefinitionFinder;
+        this.variablesMatchHelper = variablesMatchHelper;
     }
 
+    /**
+     *
+     * We have two different implementation strategy that can be executed
+     * in according if we have a connector action definition match or not.
+     *
+     **/
     @Override
     public void execute(DelegateExecution execution) {
         Connector connector;
         IntegrationContext context;
 
         String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
-        String connectorId = StringUtils.substringBefore(implementation, ".");
-        String actionId = StringUtils.substringAfter(implementation, ".");
 
-        boolean hasMatchingConnectorDefinitions = false;
+        Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(implementation, connectorDefinitions);
         ActionDefinition actionDefinition = null;
-
-        List<ConnectorDefinition> resultingConnectors = connectorDefinitions.stream().filter(c -> c.getId().equals(connectorId)).collect(Collectors.toList());
-        if (resultingConnectors == null || resultingConnectors.size() == 0) {
+        if(actionDefinitionOptional.isPresent()){
+            actionDefinition = actionDefinitionOptional.get();
+            context = integrationContextBuilder.from(execution, actionDefinition);
+            connector = applicationContext.getBean(actionDefinition.getName(), Connector.class);
+        }else{
             context = integrationContextBuilder.from(execution, null);
             connector = applicationContext.getBean(implementation,
                     Connector.class);
-        } else {
-            hasMatchingConnectorDefinitions = true;
-            if (resultingConnectors.size() != 1) {
-                throw new RuntimeException("Mismatch connector id mapping: " + connectorId);
-            }
-            ConnectorDefinition connectorDefinition = resultingConnectors.get(0);
-
-            actionDefinition = connectorDefinition.getActions().get(actionId);
-            if (actionDefinition == null) {
-                throw new RuntimeException("Mismatch action id mapping: " + actionId);
-            }
-            context = integrationContextBuilder.from(execution, actionDefinition);
-            connector = applicationContext.getBean(actionDefinition.getName(), Connector.class);
         }
 
         IntegrationContext results = connector.execute(context);
 
-        Map<String, Object> outBoundVariables = new HashMap<>();
-        if (!hasMatchingConnectorDefinitions) {
-            outBoundVariables = results.getOutBoundVariables();
-        } else {
-            for (VariableDefinition variableDefinition : actionDefinition.getOutput()) {
-                Object outBoundVariableValue = results.getOutBoundVariables().get(variableDefinition.getName());
-                if (outBoundVariableValue != null) {
-                    outBoundVariables.put(variableDefinition.getName(), outBoundVariableValue);
-                }
-            }
-        }
+        List<VariableDefinition> outBoundVariableDefinitions = actionDefinition==null?null:actionDefinition.getOutput();
 
-        execution.setVariables(outBoundVariables);
+        execution.setVariables(variablesMatchHelper.match(results.getOutBoundVariables(), outBoundVariableDefinitions));
 
         leave(execution);
     }
