@@ -35,11 +35,11 @@
             <artifactId>activiti-bpmn-model</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.activiti.api</groupId>
+            <groupId>org.activiti</groupId>
             <artifactId>activiti-api-process-runtime-impl</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.activiti.api</groupId>
+            <groupId>org.activiti</groupId>
             <artifactId>activiti-api-task-runtime-impl</artifactId>
         </dependency>
         <dependency>
