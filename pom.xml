@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.0-SNAPSHOT</version> <!-- using fixed version for CI/CD -->
+    <version>7.0.1</version> <!-- using fixed version for CI/CD -->
     <relativePath/>
   </parent>
   <groupId>org.activiti.api</groupId>
@@ -59,6 +59,16 @@
     <module>activiti-api-task-runtime</module>
   </modules>
 
+  <repositories>
+    <repository>
+      <id>alfresco</id>
+      <name>Activiti Releases</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
 
   <properties>
     <!-- configuration properties -->
