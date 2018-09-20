@@ -53,7 +53,7 @@ pipeline {
           container('maven') {
             sh 'mvn clean deploy'
 
-            sh 'export VERSION=`cat VERSION`
+            sh 'export VERSION=`cat VERSION`'
 
             sh "git config --global credential.helper store"
 
