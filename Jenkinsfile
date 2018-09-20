@@ -60,7 +60,6 @@ pipeline {
           }
         }
       }
-    }
       stage('Build Release from Tag') {
         when {
           tag '*RELEASE'
@@ -97,6 +96,7 @@ pipeline {
           }
         }
       }
+    }
     post {
         always {
             cleanWs()
