@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.0.1</version>
     <relativePath/>
   </parent>
   <groupId>org.activiti</groupId>
@@ -321,6 +321,17 @@
     <module>activiti-spring-security-policies</module>
     <module>activiti-spring-boot-starter</module>
   </modules>
+
+  <repositories>
+    <repository>
+      <id>alfresco</id>
+      <name>Activiti Releases</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
 
   <scm>
     <url>https://github.com/Activiti/Activiti</url>
