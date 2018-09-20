@@ -45,11 +45,6 @@ pipeline {
             sh "git tag -fa v\$(cat VERSION) -m 'Release version \$(cat VERSION)'"
             sh "git push origin v\$(cat VERSION)"
           }
-          dir ('./charts/activiti') {
-            container('maven') {
-              sh "make tag"
-            }
-          }
           container('maven') {
             sh 'mvn clean deploy'
 
