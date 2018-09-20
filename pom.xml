@@ -3,18 +3,54 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.activiti</groupId>
+    <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
-    <!--<version>7.0.6</version>--> <!-- using fixed version for CI/CD -->
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.0.0-SNAPSHOT</version> <!-- using fixed version for CI/CD -->
+    <relativePath/>
   </parent>
   <groupId>org.activiti.api</groupId>
   <artifactId>activiti-api</artifactId>
   <version>7.0.0-SNAPSHOT</version>
 
-  <name>Activiti :: Runtime API Parent</name>
+  <name>Activiti API :: Parent</name>
   <packaging>pom</packaging>
+  <dependencyManagement>
+    <!-- This duplicates activiti-api-dependencies module but we can't import that module here as this is its parent-->
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-model-shared</artifactId>
+        <version>${activiti-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-runtime-shared</artifactId>
+        <version>${activiti-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-process-model</artifactId>
+        <version>${activiti-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-process-runtime</artifactId>
+        <version>${activiti-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-task-model</artifactId>
+        <version>${activiti-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-task-runtime</artifactId>
+        <version>${activiti-api.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <modules>
+    <module>activiti-api-dependencies</module>
     <module>activiti-api-model-shared</module>
     <module>activiti-api-runtime-shared</module>
     <module>activiti-api-process-model</module>
@@ -23,16 +59,6 @@
     <module>activiti-api-task-runtime</module>
   </modules>
 
-  <repositories>
-    <repository>
-      <id>activiti-snapshots</id>
-      <name>Activiti Snapshots</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
 
   <properties>
     <!-- configuration properties -->
@@ -40,6 +66,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+    <activiti-api.version>${project.version}</activiti-api.version>
   </properties>
   <build>
     <plugins>
