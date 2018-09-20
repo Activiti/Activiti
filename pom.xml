@@ -43,6 +43,18 @@
       <organizationUrl>http://alfresco.com</organizationUrl>
     </developer>
   </developers>
+
+  <repositories>
+    <repository>
+      <id>alfresco</id>
+      <name>Activiti Releases</name>
+      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+  </repositories>
+
   <scm>
     <url>http://github.com/Activiti/${project.artifactId}</url>
     <connection>scm:git:git://github.com/Activiti/${project.artifactId}.git</connection>
