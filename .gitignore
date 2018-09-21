@@ -26,4 +26,4 @@ target
 .updatebot-repos
 .updatebot-repos/**
 
-.versionsBackup
+*.versionsBackup
