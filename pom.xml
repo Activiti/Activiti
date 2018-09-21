@@ -59,18 +59,6 @@
     <system>Travis</system>
     <url>https://travis-ci.org/Activiti/${project.artifactId}</url>
   </ciManagement>
-<!--  <distributionManagement>
-    <repository>
-      <id>central-releases-staging</id>
-      <name>Central Releases - Staging</name>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-    <snapshotRepository>
-      <id>activiti-enterprise-snapshots</id>
-      <name>Activiti Snapshots</name>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-snapshots/</url>
-    </snapshotRepository>
-  </distributionManagement>-->
   <properties>
     <!-- plugins -->
     <asm.version>6.1.1</asm.version>
