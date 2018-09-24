@@ -3,3 +3,4 @@ github:
   - name: activiti
     repositories:
     - name: activiti-examples
+      branch: develop
