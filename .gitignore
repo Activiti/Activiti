@@ -37,3 +37,5 @@ hs_err_pid*
 # Updatebot
 .updatebot-repos
 .updatebot-repos/**
+
+*.versionsBackup
