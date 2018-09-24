@@ -81,7 +81,7 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-core-dependencies</artifactId>
-        <version>7.0.15</version>
+        <version>7.0.16</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
