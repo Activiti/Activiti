@@ -1,0 +1,5 @@
+github:
+  organisations:
+  - name: activiti
+    repositories:
+    - name: activiti-examples
