@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.activiti</groupId>
+  <groupId>org.activiti.examples</groupId>
   <artifactId>activiti-api-basic-task-examples</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
@@ -27,7 +27,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.activiti</groupId>
+        <groupId>org.activiti.dependencies</groupId>
         <artifactId>activiti-dependencies</artifactId>
         <version>${activiti.version}</version>
         <scope>import</scope>
