@@ -42,8 +42,8 @@ pipeline {
             sh "echo \$(jx-release-version) > VERSION"
             sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
             sh "git add --all"
-            sh "git commit -m 'release \$(cat VERSION)' --allow-empty"
-            sh "git tag -fa v\$(cat VERSION) -m 'Release version \$(cat VERSION)'"
+            sh "git commit -m \"Release \$(cat VERSION)\" --allow-empty"
+            sh "git tag -fa v\$(cat VERSION) -m \"Release version \$(cat VERSION)\""
             sh "git push origin v\$(cat VERSION)"
           }
           container('maven') {
