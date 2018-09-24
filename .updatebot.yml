@@ -6,3 +6,5 @@ github:
       branch: develop
     - name: activiti
       branch: develop
+    - name: activiti-cloud-build
+      branch: develop
