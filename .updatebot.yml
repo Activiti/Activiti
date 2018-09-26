@@ -4,3 +4,5 @@ github:
     repositories:
     - name: activiti-dependencies
       branch: develop
+    - name: activiti
+      branch: develop
