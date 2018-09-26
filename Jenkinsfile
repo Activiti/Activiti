@@ -53,7 +53,7 @@ pipeline {
             sh "git config --global credential.helper store"
 
             sh "jx step git credentials"
-            sh "updatebot push"
+            sh "updatebot push --ref develop"
             sh "updatebot update-loop"
 
           }

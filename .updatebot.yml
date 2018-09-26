@@ -4,5 +4,3 @@ github:
     repositories:
     - name: activiti-dependencies
       branch: develop
-    - name: activiti-cloud-build
-      branch: develop
