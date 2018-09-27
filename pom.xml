@@ -101,6 +101,7 @@
 
     <!-- dependency -->
     <spring-boot.version>2.0.4.RELEASE</spring-boot.version>
+    <activiti-build.version>${project.version}</activiti-build.version>
     <skipITs>true</skipITs>
 
   </properties>
@@ -112,6 +113,13 @@
         <version>${spring-boot.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.build</groupId>
+        <artifactId>activiti-dependency-check</artifactId>
+        <version>${activiti-build.version}</version>
+        <type>xml</type>
+        <classifier>suppression</classifier>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -628,9 +636,8 @@
       <id>dependency-check</id>
       <dependencies>
         <dependency>
-          <groupId>org.activiti</groupId>
+          <groupId>org.activiti.build</groupId>
           <artifactId>activiti-dependency-check</artifactId>
-          <version>${project.version}</version>
           <type>xml</type>
           <classifier>suppression</classifier>
         </dependency>
@@ -644,7 +651,7 @@
             <configuration>
               <failBuildOnCVSS>7</failBuildOnCVSS>
               <suppressionFiles>
-                <suppressionFile>${settings.localRepository}/org/activiti/build/activiti-dependency-check/${project.version}/activiti-dependency-check-${project.version}-suppression.xml</suppressionFile>
+                <suppressionFile>${settings.localRepository}/org/activiti/build/activiti-dependency-check/${activiti-build.version}/activiti-dependency-check-${activiti-build.version}-suppression.xml</suppressionFile>
               </suppressionFiles>
             </configuration>
             <executions>
