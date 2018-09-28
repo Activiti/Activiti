@@ -53,8 +53,8 @@ pipeline {
             sh "git config --global credential.helper store"
 
             sh "jx step git credentials"
-            sh "updatebot push --ref develop"
-            sh "updatebot update-loop"
+            sh "updatebot push-version --kind maven org.activiti:activiti-core-dependencies \$(cat VERSION) --merge false"
+            sh "updatebot update --merge false"
 
           }
         }
