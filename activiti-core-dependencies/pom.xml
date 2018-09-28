@@ -14,13 +14,6 @@
     <dependencies>
       <!-- Activiti Modules for managed dependencies -->
       <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-dependencies</artifactId>
-        <version>${activiti-api.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-api-impl</artifactId>
         <version>${activiti.version}</version>
