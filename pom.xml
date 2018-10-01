@@ -10,6 +10,12 @@
   <description>${project.name}</description>
   <url>http://activiti.org</url>
   <inceptionYear>2010</inceptionYear>
+
+  <properties>
+    <activiti-api-dependencies.version>7.0.20</activiti-api-dependencies.version>
+    <activiti-core-dependencies.version>7.0.27</activiti-core-dependencies.version>
+  </properties>
+
   <organization>
     <name>Alfresco</name>
     <url>http://www.alfresco.com</url>
@@ -74,14 +80,14 @@
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-dependencies</artifactId>
-        <version>7.0.20</version>
+        <version>${activiti-api-dependencies.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-core-dependencies</artifactId>
-        <version>7.0.27</version>
+        <version>${activiti-core-dependencies.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
