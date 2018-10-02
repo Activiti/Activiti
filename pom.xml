@@ -20,8 +20,8 @@
 
   <properties>
     <activiti-build.version>7.0.28</activiti-build.version>
-    <activiti-api-dependencies.version>7.0.27</activiti-api-dependencies.version>
-    <activiti-core-dependencies.version>7.0.37</activiti-core-dependencies.version>
+    <activiti-api.version>7.0.27</activiti-api.version>
+    <activiti.version>7.0.37</activiti.version>
   </properties>
 
   <organization>
@@ -95,14 +95,14 @@
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-dependencies</artifactId>
-        <version>${activiti-api-dependencies.version}</version>
+        <version>${activiti-api.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-core-dependencies</artifactId>
-        <version>${activiti-core-dependencies.version}</version>
+        <version>${activiti.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
