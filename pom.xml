@@ -20,7 +20,7 @@
 
   <properties>
     <activiti-parent-dependencies.version>7.0.28</activiti-parent-dependencies.version>
-    <activiti-api-dependencies.version>7.0.20</activiti-api-dependencies.version>
+    <activiti-api-dependencies.version>7.0.27</activiti-api-dependencies.version>
     <activiti-core-dependencies.version>7.0.37</activiti-core-dependencies.version>
   </properties>
 
