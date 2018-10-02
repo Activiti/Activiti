@@ -44,6 +44,7 @@
     </developer>
   </developers>
   <modules>
+    <module>activiti-dependencies-parent</module>
     <module>activiti-dependency-check</module>
   </modules>
   <scm>
@@ -100,20 +101,12 @@
     <argLine>-Duser.language=en</argLine>
 
     <!-- dependency -->
-    <spring-boot.version>2.0.4.RELEASE</spring-boot.version>
     <activiti-build.version>${project.version}</activiti-build.version>
     <skipITs>true</skipITs>
 
   </properties>
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${spring-boot.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <dependency>
         <groupId>org.activiti.build</groupId>
         <artifactId>activiti-dependency-check</artifactId>
