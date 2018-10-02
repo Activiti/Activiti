@@ -2,6 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti.build</groupId>
+    <artifactId>activiti-parent</artifactId>
+    <version>7.0.28</version>
+    <relativePath/>
+  </parent>
+
   <groupId>org.activiti.dependencies</groupId>
   <artifactId>activiti-dependencies</artifactId>
   <version>7.0.0-SNAPSHOT</version>
@@ -12,6 +19,7 @@
   <inceptionYear>2010</inceptionYear>
 
   <properties>
+    <activiti-parent-dependencies.version>7.0.28</activiti-parent-dependencies.version>
     <activiti-api-dependencies.version>7.0.20</activiti-api-dependencies.version>
     <activiti-core-dependencies.version>7.0.27</activiti-core-dependencies.version>
   </properties>
@@ -77,6 +85,13 @@
 
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.activiti.build</groupId>
+        <artifactId>activiti-parent-dependencies</artifactId>
+        <version>${activiti-parent-dependencies.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-dependencies</artifactId>

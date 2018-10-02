@@ -4,7 +4,7 @@ pipeline {
     }
     environment {
       ORG               = 'activiti'
-      APP_NAME          = 'activiti-bom'
+      APP_NAME          = 'activiti-dependencies'
       CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
     }
     stages {
@@ -21,18 +21,9 @@ pipeline {
           container('maven') {
             sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
             sh "mvn install"
-            sh 'export VERSION=$PREVIEW_VERSION' //&& skaffold build -f skaffold.yaml'
-
-
-           // sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
+            sh 'export VERSION=$PREVIEW_VERSION'
           }
 
-          // dir ('./charts/preview') {
-          //  container('maven') {
-          //    sh "make preview"
-          //    sh "jx preview --app $APP_NAME --dir ../.."
-          //  }
-          // }
         }
       }
       stage('Build Release') {
@@ -54,15 +45,11 @@ pipeline {
             sh "git tag -fa v\$(cat VERSION) -m \"Release version \$(cat VERSION)\""
             sh "git push origin v\$(cat VERSION)"
           }
-          // dir ('./charts/activiti-bom') {
-          //   container('maven') {
-          //     sh "make tag"
-          //   }
-          // }
+
           container('maven') {
             sh 'mvn clean deploy'
 
-            sh 'export VERSION=`cat VERSION`'// && skaffold build -f skaffold.yaml'
+            sh 'export VERSION=`cat VERSION`'
 
             sh "git config --global credential.helper store"
 
@@ -70,7 +57,6 @@ pipeline {
             sh "updatebot push-version --kind maven org.activiti.dependencies:activiti-dependencies \$(cat VERSION) --merge false"
             sh "updatebot update --merge false"
 
-        //    sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
           }
         }
       }
@@ -94,41 +80,20 @@ pipeline {
               mvn clean deploy -P !alfresco -P central
               '''
 
-            sh 'export VERSION=`cat VERSION`'// && skaffold build -f skaffold.yaml'
+            sh 'export VERSION=`cat VERSION`'
 
             sh "git config --global credential.helper store"
 
             sh "jx step git credentials"
-            //sh "updatebot push"
-            //sh "updatebot update"
 
             sh "echo pushing with update using version \$(cat VERSION)"
 
             sh "updatebot push-version --kind maven org.activiti.dependencies:activiti-dependencies \$(cat VERSION)"
             sh "updatebot update-loop"
-
-        //    sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
           }
         }
       }
-//      stage('Promote to Environments') {
-  //      when {
-    //      branch 'develop'
-    //    }
-    //    steps {
-    //      dir ('./charts/activiti-bom') {
-    //        container('maven') {
-    //          sh 'jx step changelog --version v\$(cat ../../VERSION)'
 
-              // release the helm chart
-             // sh 'jx step helm release'
-
-              // promote through all 'Auto' promotion Environments
-            //  sh 'jx promote -b --all-auto --timeout 1h --version \$(cat ../../VERSION)'
-    //        }
-    //      }
-    //    }
-    //  }
     }
     post {
         always {
