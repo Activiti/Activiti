@@ -16,6 +16,7 @@
   <description>Activiti Core :: Parent</description>
   <url>http://activiti.org</url>
   <properties>
+    <activiti-build.version>7.0.31</activiti-build.version>
     <activiti.version>${project.version}</activiti.version>
     <activiti-api.version>7.0.24</activiti-api.version>
     <batik.version>1.10</batik.version>
@@ -41,6 +42,13 @@
   </properties>
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>org.activiti.build</groupId>
+        <artifactId>activiti-dependencies-parent</artifactId>
+        <version>${activiti-build.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <!-- Activiti Modules for managed dependencies -->
       <!-- This duplicates activiti-dependencies module but we can't import that module here as this is its parent-->
       <dependency>
