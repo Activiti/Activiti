@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.28</version> <!-- using fixed version for CI/CD -->
+    <version>7.0.31</version> <!-- using fixed version for CI/CD -->
     <relativePath/>
   </parent>
   <groupId>org.activiti.api</groupId>
