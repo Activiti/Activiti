@@ -19,7 +19,7 @@
   <inceptionYear>2010</inceptionYear>
 
   <properties>
-    <activiti-parent-dependencies.version>7.0.28</activiti-parent-dependencies.version>
+    <activiti-build.version>7.0.28</activiti-build.version>
     <activiti-api-dependencies.version>7.0.27</activiti-api-dependencies.version>
     <activiti-core-dependencies.version>7.0.37</activiti-core-dependencies.version>
   </properties>
@@ -87,8 +87,8 @@
     <dependencies>
       <dependency>
         <groupId>org.activiti.build</groupId>
-        <artifactId>activiti-parent-dependencies</artifactId>
-        <version>${activiti-parent-dependencies.version}</version>
+        <artifactId>activiti-dependencies-parent</artifactId>
+        <version>${activiti-build.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
