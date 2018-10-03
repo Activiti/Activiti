@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -77,7 +78,15 @@ public class GetExecutionVariableInstancesCmd implements Command<Map<String, Var
         }
       }
     }
-    
+
+    if (variables != null) {
+        for (Entry<String, VariableInstance> entry : variables.entrySet()) {
+            if (entry.getValue() != null) {
+                entry.getValue().getValue();
+            }
+        }
+    }
+
     return variables;
   }
 }
