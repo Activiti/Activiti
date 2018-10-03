@@ -509,6 +509,23 @@
     </plugins>
   </build>
   <profiles>
+    <profile>
+      <id>central</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>central</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <distributionManagement>
+        <repository>
+          <id>central-releases-staging</id>
+          <name>Central Releases - Staging</name>
+          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+      </distributionManagement>
+    </profile>
     <!-- Activate integration tests -->
     <profile>
       <id>integration-test</id>
