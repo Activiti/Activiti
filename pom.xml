@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.activiti.examples</groupId>
-  <artifactId>activiti-examples-parent</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <packaging>pom</packaging>
+    <groupId>org.activiti.examples</groupId>
+    <artifactId>activiti-examples-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
 
-  <name>Activiti Examples :: Parent</name>
-  <description>Activiti Examples :: Parent</description>
+    <name>Activiti Examples :: Parent</name>
+    <description>Activiti Examples :: Parent</description>
 
-  <modules>
-    <module>activiti-api-basic-full-example</module>
-    <module>activiti-api-basic-process-example</module>
-    <module>activiti-api-basic-task-example</module>
-    <module>activiti-api-spring-integration-example</module>
-  </modules>
-
-
+    <modules>
+        <module>activiti-api-basic-full-example</module>
+        <module>activiti-api-basic-process-example</module>
+        <module>activiti-api-basic-task-example</module>
+        <module>activiti-api-spring-integration-example</module>
+    </modules>
 </project>
