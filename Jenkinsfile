@@ -46,7 +46,8 @@ pipeline {
             sh "git push origin v\$(cat VERSION)"
           }
           container('maven') {
-            sh 'mvn clean deploy'
+            sh 'mvn clean verify'
+            sh 'mvn deploy -DskipTests'
 
             sh 'export VERSION=`cat VERSION`'
 
