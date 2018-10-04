@@ -40,6 +40,8 @@ pipeline {
             // so we can retrieve the version in later steps
             sh "echo \$(jx-release-version) > VERSION"
             sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
+            
+            sh 'mvn clean verify'
             sh "git add --all"
             sh "git commit -m \"Release \$(cat VERSION)\" --allow-empty"
             sh "git tag -fa v\$(cat VERSION) -m \"Release version \$(cat VERSION)\""
@@ -47,8 +49,7 @@ pipeline {
           }
 
           container('maven') {
-            sh 'mvn clean verify'
-            sh 'mvn deploy -DskipTests'
+            sh 'mvn clean deploy -DskipTests'
 
             sh 'export VERSION=`cat VERSION`'
 
@@ -90,7 +91,6 @@ pipeline {
             sh "echo pushing with update using version \$(cat VERSION)"
 
             sh "updatebot push-version --kind maven org.activiti.dependencies:activiti-dependencies \$(cat VERSION)"
-            sh "updatebot update-loop"
           }
         }
       }
