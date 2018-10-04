@@ -43,14 +43,15 @@ pipeline {
             sh "echo \$(jx-release-version) > VERSION"
             sh "mvn versions:set -DnewVersion=\$(cat VERSION)"
 
+            sh 'mvn clean verify'
+
             sh "git add --all"
             sh "git commit -m \"Release \$(cat VERSION)\" --allow-empty"
             sh "git tag -fa v\$(cat VERSION) -m \"Release version \$(cat VERSION)\""
             sh "git push origin v\$(cat VERSION)"
           }
           container('maven') {
-            sh 'mvn clean verify'
-            sh 'mvn deploy -DskipTests'
+            sh 'mvn clean deploy -DskipTests'
 
             sh 'export VERSION=`cat VERSION`'
             
@@ -92,7 +93,6 @@ pipeline {
             sh "echo pushing with update using version \$(cat VERSION)"
 
             sh "updatebot push-version -r develop --kind maven org.activiti.build:activiti-parent \$(cat VERSION)"
-            sh "updatebot update-loop"
 
         //    sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
           }
