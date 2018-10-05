@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.38</version>
+    <version>7.0.39</version>
     <relativePath/>
   </parent>
 
@@ -19,7 +19,7 @@
   <inceptionYear>2010</inceptionYear>
 
   <properties>
-    <activiti-build.version>7.0.38</activiti-build.version>
+    <activiti-build.version>7.0.39</activiti-build.version>
     <activiti-api.version>7.0.31</activiti-api.version>
     <activiti.version>7.0.42</activiti.version>
   </properties>
