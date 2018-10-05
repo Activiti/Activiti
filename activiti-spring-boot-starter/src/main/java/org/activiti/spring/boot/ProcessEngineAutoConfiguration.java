@@ -21,6 +21,8 @@ import javax.sql.DataSource;
 
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.engine.cfg.ProcessEngineConfigurator;
+import org.activiti.engine.impl.persistence.StrongUuidGenerator;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
@@ -62,6 +64,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             @Autowired(required = false) ProcessEngineConfigurationConfigurer processEngineConfigurationConfigurer) throws IOException {
 
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration();
+        conf.setConfigurators(processEngineConfigurators);
         configureProcessDefinitionResources(processDefinitionResourceFinder,
                                             conf);
         conf.setDataSource(dataSource);
