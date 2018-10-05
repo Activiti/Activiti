@@ -43,6 +43,11 @@
             <artifactId>activiti-api-task-runtime-impl</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring-process-extensions</artifactId>
+            <version>7.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>

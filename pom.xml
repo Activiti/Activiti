@@ -328,6 +328,7 @@
     <module>activiti-spring-security</module>
     <module>activiti-spring-security-policies</module>
     <module>activiti-spring-boot-starter</module>
+    <module>activiti-spring-process-extensions</module>
   </modules>
 
   <repositories>

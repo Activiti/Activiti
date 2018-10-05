@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import javax.sql.DataSource;
 
+import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.spring.SpringAsyncExecutor;
@@ -52,9 +53,11 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             SpringAsyncExecutor springAsyncExecutor,
             ActivitiProperties activitiProperties,
             ProcessDefinitionResourceFinder processDefinitionResourceFinder,
-            @Autowired(required = false) ProcessEngineConfigurationConfigurer processEngineConfigurationConfigurer) throws IOException {
+            @Autowired(required = false) ProcessEngineConfigurationConfigurer processEngineConfigurationConfigurer,
+            @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators) throws IOException {
 
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration();
+        conf.setConfigurators(processEngineConfigurators);
         configureProcessDefinitionResources(processDefinitionResourceFinder,
                                             conf);
         conf.setDataSource(dataSource);
