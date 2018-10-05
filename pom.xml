@@ -18,7 +18,7 @@
   <properties>
     <activiti-build.version>7.0.38</activiti-build.version>
     <activiti.version>${project.version}</activiti.version>
-    <activiti-api.version>7.0.31</activiti-api.version>
+    <activiti-api.version>7.0.32</activiti-api.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
     <commons-fileupload.version>1.3.3</commons-fileupload.version>
