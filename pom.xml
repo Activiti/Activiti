@@ -328,6 +328,8 @@
     <module>activiti-spring-security</module>
     <module>activiti-spring-security-policies</module>
     <module>activiti-spring-boot-starter</module>
+    <module>activiti-spring-connector</module>
+    <module>activiti-connector-model</module>
   </modules>
 
   <repositories>
