@@ -16,31 +16,72 @@
 
 package org.activiti.runtime.api.connector;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.model.connector.ActionDefinition;
+import org.activiti.model.connector.ConnectorDefinition;
+import org.activiti.model.connector.VariableDefinition;
 import org.springframework.context.ApplicationContext;
 
 public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
     private final ApplicationContext applicationContext;
     private final IntegrationContextBuilder integrationContextBuilder;
+    private final List<ConnectorDefinition> connectorDefinitions;
+    private final ConnectorActionDefinitionFinder connectorActionDefinitionFinder;
+    private final VariablesMatchHelper variablesMatchHelper;
 
     public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
-                                      IntegrationContextBuilder integrationContextBuilder) {
+                                      IntegrationContextBuilder integrationContextBuilder,
+                                      List<ConnectorDefinition> connectorDefinitions,
+                                      ConnectorActionDefinitionFinder connectorActionDefinitionFinder,
+                                      VariablesMatchHelper variablesMatchHelper) {
         this.applicationContext = applicationContext;
         this.integrationContextBuilder = integrationContextBuilder;
+        this.connectorDefinitions = connectorDefinitions;
+        this.connectorActionDefinitionFinder = connectorActionDefinitionFinder;
+        this.variablesMatchHelper = variablesMatchHelper;
     }
 
+    /**
+     * We have two different implementation strategy that can be executed
+     * in according if we have a connector action definition match or not.
+     **/
     @Override
     public void execute(DelegateExecution execution) {
-        Connector connector = applicationContext.getBean(getServiceTaskImplementation(execution),
-                                                         Connector.class);
-        IntegrationContext context = integrationContextBuilder.from(execution);
-        connector.execute(context);
-        execution.setVariables(context.getOutBoundVariables());
+        Connector connector;
+        IntegrationContext context;
+
+        String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
+
+        Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(implementation,
+                                                                                                   connectorDefinitions);
+        ActionDefinition actionDefinition = null;
+        if (actionDefinitionOptional.isPresent()) {
+            actionDefinition = actionDefinitionOptional.get();
+            context = integrationContextBuilder.from(execution,
+                                                     actionDefinition);
+            connector = applicationContext.getBean(actionDefinition.getName(),
+                                                   Connector.class);
+        } else {
+            context = integrationContextBuilder.from(execution,
+                                                     null);
+            connector = applicationContext.getBean(implementation,
+                                                   Connector.class);
+        }
+
+        IntegrationContext results = connector.execute(context);
+
+        List<VariableDefinition> outBoundVariableDefinitions = actionDefinition == null ? null : actionDefinition.getOutput();
+
+        execution.setVariables(variablesMatchHelper.match(results.getOutBoundVariables(),
+                                                          outBoundVariableDefinitions));
 
         leave(execution);
     }
@@ -54,5 +95,4 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
         return applicationContext.containsBean(implementation)
                 && applicationContext.getBean(implementation) instanceof Connector;
     }
-
 }
