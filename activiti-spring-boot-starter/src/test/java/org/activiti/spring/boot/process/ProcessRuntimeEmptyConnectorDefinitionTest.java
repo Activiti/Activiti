@@ -27,11 +27,6 @@ public class ProcessRuntimeEmptyConnectorDefinitionTest {
     @Autowired
     private ProcessRuntime processRuntime;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-
-
     /**
      * This test points to a directory having no connectors definitions.
      * As resulting behaviour, we have the same when there is no match with connector definitions.
@@ -39,7 +34,7 @@ public class ProcessRuntimeEmptyConnectorDefinitionTest {
      **/
     @Test
     @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
-    public void connectorDefinitionEmptyDir() throws IOException {
+    public void connectorDefinitionEmptyDir() {
         processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(CATEGORIZE_PROCESS)
                 .withVariable("expectedKey",

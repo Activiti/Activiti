@@ -27,11 +27,6 @@ public class ProcessRuntimeConnectorTest {
     @Autowired
     private ProcessRuntime processRuntime;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-
-
     /**
      * It tests two connector actions inside the xml against two different connector json definitions:
      * the first input variable is defined in the first connector action,
@@ -40,7 +35,7 @@ public class ProcessRuntimeConnectorTest {
      **/
     @Test
     @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
-    public void shouldConnectorMatchWithConnectorDefinition() throws IOException {
+    public void shouldConnectorMatchWithConnectorDefinition() {
         processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(CATEGORIZE_IMAGE_CONNECTORS_PROCESS)
                 .withVariable("input-variable-name-1",
