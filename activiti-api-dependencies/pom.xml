@@ -58,6 +58,21 @@
         <artifactId>activiti-api-task-runtime</artifactId>
         <version>${activiti-api.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-model-shared-impl</artifactId>
+        <version>${activiti-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-process-model-impl</artifactId>
+        <version>${activiti-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.api</groupId>
+        <artifactId>activiti-api-task-model-impl</artifactId>
+        <version>${activiti-api.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
