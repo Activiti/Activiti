@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.activiti.model.connector.ActionDefinition;
-import org.activiti.model.connector.ConnectorDefinition;
+import org.activiti.core.common.model.connector.ActionDefinition;
+import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 public class ConnectorActionDefinitionFinder {

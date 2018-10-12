@@ -11,7 +11,7 @@ import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
-import org.activiti.spring.identity.ExtendedInMemoryUserDetailsManager;
+import org.activiti.core.common.spring.identity.ExtendedInMemoryUserDetailsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;

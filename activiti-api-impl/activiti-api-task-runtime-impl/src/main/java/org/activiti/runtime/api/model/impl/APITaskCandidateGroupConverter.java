@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.model.impl;
 
+import org.activiti.api.task.model.impl.TaskCandidateGroupImpl;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.api.task.model.TaskCandidateGroup;
 

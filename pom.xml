@@ -18,7 +18,8 @@
   <properties>
     <activiti-build.version>7.0.39</activiti-build.version>
     <activiti.version>${project.version}</activiti.version>
-    <activiti-api.version>7.0.32</activiti-api.version>
+    <activiti-api.version>${project.version}</activiti-api.version>
+    <activiti-core-common.version>${project.version}</activiti-core-common.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
     <commons-fileupload.version>1.3.3</commons-fileupload.version>
@@ -49,6 +50,13 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-core-common-dependencies</artifactId>
+        <version>${activiti-core-common.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <!-- Activiti Modules for managed dependencies -->
       <!-- This duplicates activiti-dependencies module but we can't import that module here as this is its parent-->
       <dependency>
@@ -65,22 +73,7 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-api-model-shared-impl</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
         <artifactId>activiti-api-runtime-shared-impl</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-identity-basic</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-api-process-model-impl</artifactId>
         <version>${activiti.version}</version>
       </dependency>
       <dependency>
@@ -90,17 +83,7 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-api-task-model-impl</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
         <artifactId>activiti-api-task-runtime-impl</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-connector-model</artifactId>
         <version>${activiti.version}</version>
       </dependency>
       <dependency>
@@ -116,26 +99,6 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot-starter</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-spring-connector</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-spring-identity</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-spring-security</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-spring-security-policies</artifactId>
         <version>${activiti.version}</version>
       </dependency>
       <dependency>
@@ -291,12 +254,7 @@
       </dependency>
 
       <!-- Test -->
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-services-test</artifactId>
-        <version>${project.version}</version>
-        <scope>test</scope>
-      </dependency>
+
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-fluent</artifactId>
@@ -334,12 +292,7 @@
     <module>activiti-json-converter</module>
     <module>activiti-engine</module>
     <module>activiti-spring</module>
-    <module>activiti-spring-identity</module>
-    <module>activiti-spring-security</module>
-    <module>activiti-spring-security-policies</module>
     <module>activiti-spring-boot-starter</module>
-    <module>activiti-spring-connector</module>
-    <module>activiti-connector-model</module>
   </modules>
 
   <repositories>

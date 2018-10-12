@@ -47,13 +47,13 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
-import org.activiti.runtime.api.model.impl.ProcessDefinitionMetaImpl;
-import org.activiti.runtime.api.model.impl.ProcessInstanceImpl;
-import org.activiti.runtime.api.model.impl.ProcessInstanceMetaImpl;
+import org.activiti.api.runtime.model.impl.ProcessDefinitionMetaImpl;
+import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.api.runtime.model.impl.ProcessInstanceMetaImpl;
 import org.activiti.runtime.api.query.impl.PageImpl;
-import org.activiti.spring.security.policies.ActivitiForbiddenException;
-import org.activiti.spring.security.policies.ProcessSecurityPoliciesManager;
-import org.activiti.spring.security.policies.SecurityPolicyAccess;
+import org.activiti.core.common.spring.security.policies.ActivitiForbiddenException;
+import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
+import org.activiti.core.common.spring.security.policies.SecurityPolicyAccess;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 @PreAuthorize("hasRole('ACTIVITI_USER')")

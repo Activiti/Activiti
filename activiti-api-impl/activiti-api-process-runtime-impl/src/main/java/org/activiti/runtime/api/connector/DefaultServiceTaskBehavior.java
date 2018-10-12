@@ -24,9 +24,9 @@ import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-import org.activiti.model.connector.ActionDefinition;
-import org.activiti.model.connector.ConnectorDefinition;
-import org.activiti.model.connector.VariableDefinition;
+import org.activiti.core.common.model.connector.ActionDefinition;
+import org.activiti.core.common.model.connector.ConnectorDefinition;
+import org.activiti.core.common.model.connector.VariableDefinition;
 import org.springframework.context.ApplicationContext;
 
 public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {

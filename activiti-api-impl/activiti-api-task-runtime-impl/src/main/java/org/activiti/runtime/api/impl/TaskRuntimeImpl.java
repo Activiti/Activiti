@@ -42,7 +42,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
-import org.activiti.runtime.api.model.impl.TaskImpl;
+import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 

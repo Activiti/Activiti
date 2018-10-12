@@ -19,8 +19,9 @@ package org.activiti.runtime.api.event.impl;
 import java.util.Optional;
 
 import org.activiti.api.process.model.events.SequenceFlowTakenEvent;
+import org.activiti.api.runtime.event.impl.SequenceFlowTakenImpl;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
-import org.activiti.runtime.api.model.impl.SequenceFlowImpl;
+import org.activiti.api.runtime.model.impl.SequenceFlowImpl;
 
 public class ToSequenceFlowTakenConverter implements EventConverter<SequenceFlowTakenEvent, ActivitiSequenceFlowTakenEvent>{
 

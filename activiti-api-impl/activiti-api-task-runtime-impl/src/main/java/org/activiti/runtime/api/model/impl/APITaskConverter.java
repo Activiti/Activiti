@@ -17,6 +17,7 @@
 package org.activiti.runtime.api.model.impl;
 
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 public class APITaskConverter extends ListConverter<org.activiti.engine.task.Task, Task> implements ModelConverter<org.activiti.engine.task.Task, Task> {

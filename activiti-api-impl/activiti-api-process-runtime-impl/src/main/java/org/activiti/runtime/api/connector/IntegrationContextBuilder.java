@@ -20,9 +20,9 @@ import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
-import org.activiti.model.connector.ActionDefinition;
-import org.activiti.model.connector.VariableDefinition;
-import org.activiti.runtime.api.model.impl.IntegrationContextImpl;
+import org.activiti.core.common.model.connector.ActionDefinition;
+import org.activiti.core.common.model.connector.VariableDefinition;
+import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 
 import java.util.List;
 import java.util.Map;

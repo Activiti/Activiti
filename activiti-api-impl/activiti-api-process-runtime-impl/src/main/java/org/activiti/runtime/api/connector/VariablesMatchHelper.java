@@ -1,6 +1,6 @@
 package org.activiti.runtime.api.connector;
 
-import org.activiti.model.connector.VariableDefinition;
+import org.activiti.core.common.model.connector.VariableDefinition;
 
 import java.util.HashMap;
 import java.util.List;
