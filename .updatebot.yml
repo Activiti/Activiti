@@ -8,3 +8,5 @@ github:
       branch: develop
     - name: activiti-cloud-api
       branch: develop
+    - name: activiti-core-common
+      branch: develop
