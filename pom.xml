@@ -19,7 +19,7 @@
     <activiti-build.version>7.0.39</activiti-build.version>
     <activiti.version>${project.version}</activiti.version>
     <activiti-api.version>${project.version}</activiti-api.version>
-    <activiti-core-common.version>${project.version}</activiti-core-common.version>
+    <activiti-core-common.version>7.0.0</activiti-core-common.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
     <commons-fileupload.version>1.3.3</commons-fileupload.version>
