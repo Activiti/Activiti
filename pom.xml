@@ -17,8 +17,8 @@
   <url>http://activiti.org</url>
   <properties>
     <activiti-build.version>7.0.39</activiti-build.version>
+    <activiti-api.version>7.0.33</activiti-api.version>
     <activiti-core-common.version>${project.version}</activiti-core-common.version>
-    <activiti-api.version>${project.version}</activiti-api.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -29,8 +29,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- Activiti Modules for managed dependencies -->
-      <!-- This duplicates activiti-dependencies module but we can't import that module here as this is its parent-->
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-dependencies</artifactId>
@@ -38,6 +36,8 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
+      <!-- Activiti Modules for managed dependencies -->
+      <!-- This duplicates activiti-core-common-dependencies module but we can't import that module here as this is its parent-->
       <dependency>
         <groupId>org.activiti.core.common</groupId>
         <artifactId>activiti-connector-model</artifactId>
