@@ -1,0 +1,28 @@
+language: java 
+sudo: required
+services:
+  - docker
+jdk:
+  - oraclejdk8
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/4eabeeadee998a77068b
+    on_success: change  # options: [always|never|change] default: always
+    on_failure: always  # options: [always|never|change] default: always
+    on_start: never     # options: [always|never|change] default: always
+
+before_script:
+  - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc
+
+# Enable integration tests
+script:
+  - mvn verify -B -DskipITs=false
+
+# Send coverage data
+after_success:
+  bash <(curl -s https://codecov.io/bash)
+
+after_failure:
+  - cat **/target/surefire-reports/*.xml | grep -B 1 -A 10 "<error"
+  - cat **/target/failsafe-reports/*.xml | grep -B 1 -A 10 "<error"

@@ -1,0 +1,10 @@
+github:
+  organisations:
+  - name: activiti
+    repositories:
+    - name: activiti-dependencies
+      branch: develop
+    - name: activiti
+      branch: develop
+    - name: activiti-cloud-service-common
+      branch: develop
