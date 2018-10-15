@@ -10,9 +10,9 @@ public class ActionDefinition {
 
     private String description;
 
-    private List<VariableDefinition> input;
+    private List<VariableDefinition> inputs;
 
-    private List<VariableDefinition> output;
+    private List<VariableDefinition> outputs;
 
     public String getId() {
         return id;
@@ -26,12 +26,12 @@ public class ActionDefinition {
         return description;
     }
 
-    public List<VariableDefinition> getInput() {
-        return input;
+    public List<VariableDefinition> getInputs() {
+        return inputs;
     }
 
-    public List<VariableDefinition> getOutput() {
-        return output;
+    public List<VariableDefinition> getOutputs() {
+        return outputs;
     }
 
     public void setId(String id) {
@@ -46,11 +46,11 @@ public class ActionDefinition {
         this.description = description;
     }
 
-    public void setInput(List<VariableDefinition> input) {
-        this.input = input;
+    public void setInputs(List<VariableDefinition> inputs) {
+        this.inputs = inputs;
     }
 
-    public void setOutput(List<VariableDefinition> output) {
-        this.output = output;
+    public void setOutputs(List<VariableDefinition> outputs) {
+        this.outputs = outputs;
     }
 }

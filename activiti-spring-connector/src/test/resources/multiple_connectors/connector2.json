@@ -8,7 +8,7 @@
       "id": "actionId1",
       "name": "actionName1",
       "description": "description",
-      "input": [
+      "inputs": [
         {
           "id": "input-variable-1",
           "name": "input-variable-name-1",
@@ -24,7 +24,7 @@
           "description": ""
         }
       ],
-      "output": [
+      "outputs": [
         {
           "id": "output-variable-1",
           "name": "output-variable-name-1",

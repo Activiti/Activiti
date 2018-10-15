@@ -16,11 +16,28 @@
 
 package org.activiti.core.common.spring.connector.autoconfigure;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.core.common.spring.connector.ConnectorDefinitionService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 @Configuration
-@ComponentScan(basePackages = "org.activiti.spring.connector")
+@ComponentScan(basePackages = "org.activiti.core.common.spring.connector")
 public class ConnectorAutoConfiguration {
 
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+
+    @Bean
+    public ConnectorDefinitionService connectorDefinitionService(@Value("${activiti.connectors.dir:classpath:/connectors/}") String connectorRoot, ObjectMapper objectMapper, ResourcePatternResolver resourceLoader) {
+        return new ConnectorDefinitionService(connectorRoot, objectMapper, resourceLoader);
+    }
 }
