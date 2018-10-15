@@ -36,11 +36,11 @@ import java.util.List;
 public class ConnectorsAutoConfiguration {
 
     @Autowired
-    private ConnectorService connectorService;
+    private ConnectorDefinitionService connectorDefinitionService;
 
     @Bean
     public List<ConnectorDefinition> connectorDefinitions() throws IOException {
-        return connectorService.get();
+        return connectorDefinitionService.get();
     }
 
     @Bean
@@ -53,12 +53,12 @@ public class ConnectorsAutoConfiguration {
     public DefaultServiceTaskBehavior defaultServiceTaskBehavior(ApplicationContext applicationContext,
                                                                  IntegrationContextBuilder integrationContextBuilder, ConnectorActionDefinitionFinder connectorActionDefinitionFinder, VariablesMatchHelper variablesMatchHelper) throws IOException {
         return new DefaultServiceTaskBehavior(applicationContext,
-                integrationContextBuilder, connectorDefinitions(), connectorActionDefinitionFinder, variablesMatchHelper);
+                integrationContextBuilder, connectorActionDefinitionFinder, variablesMatchHelper);
     }
 
     @Bean
     public ConnectorActionDefinitionFinder connectorActionDefinitionFinder() {
-        return new ConnectorActionDefinitionFinder();
+        return new ConnectorActionDefinitionFinder(connectorDefinitions());
     }
 
     @Bean

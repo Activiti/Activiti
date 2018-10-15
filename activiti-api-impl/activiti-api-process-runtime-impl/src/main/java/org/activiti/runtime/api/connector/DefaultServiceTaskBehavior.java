@@ -44,12 +44,10 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
     public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
                                       IntegrationContextBuilder integrationContextBuilder,
-                                      List<ConnectorDefinition> connectorDefinitions,
                                       ConnectorActionDefinitionFinder connectorActionDefinitionFinder,
                                       VariablesMatchHelper variablesMatchHelper) {
         this.applicationContext = applicationContext;
         this.integrationContextBuilder = integrationContextBuilder;
-        this.connectorDefinitions = connectorDefinitions;
         this.connectorActionDefinitionFinder = connectorActionDefinitionFinder;
         this.variablesMatchHelper = variablesMatchHelper;
     }
@@ -67,8 +65,7 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
         List<VariableDefinition> outBoundVariableDefinitions = null;
         if(connectorActionDefinitionFinder != null && connectorDefinitions != null) {
 
-            Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(implementation,
-                    connectorDefinitions);
+            Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(implementation);
             ActionDefinition actionDefinition = null;
             if (actionDefinitionOptional.isPresent()) {
                 actionDefinition = actionDefinitionOptional.get();
@@ -83,11 +80,11 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
                         Connector.class);
             }
             outBoundVariableDefinitions = actionDefinition == null ? null : actionDefinition.getOutput();
-        }else{
+        }else {
             context = integrationContextBuilder.from(execution,
-                    null);
+                            null);
             connector = applicationContext.getBean(implementation,
-                    Connector.class);
+                            Connector.class);
         }
 
         IntegrationContext results = connector.execute(context);

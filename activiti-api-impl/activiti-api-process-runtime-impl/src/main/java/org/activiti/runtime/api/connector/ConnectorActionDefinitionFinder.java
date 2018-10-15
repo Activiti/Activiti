@@ -10,8 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ConnectorActionDefinitionFinder {
 
-    public Optional<ActionDefinition> find(String implementation,
-                                           List<ConnectorDefinition> connectorDefinitions) {
+    private final List<ConnectorDefinition> connectorDefinitions;
+
+    public ConnectorActionDefinitionFinder(List<ConnectorDefinition> connectorDefinitions) {
+        this.connectorDefinitions = connectorDefinitions;
+    }
+
+    public Optional<ActionDefinition> find(String implementation){
 
         Optional<ActionDefinition> actionDefinitionOptional = Optional.empty();
 
