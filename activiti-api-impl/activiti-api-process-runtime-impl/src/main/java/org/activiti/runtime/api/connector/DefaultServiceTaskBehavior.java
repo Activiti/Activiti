@@ -33,9 +33,14 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
     private final ApplicationContext applicationContext;
     private final IntegrationContextBuilder integrationContextBuilder;
-    private final List<ConnectorDefinition> connectorDefinitions;
-    private final ConnectorActionDefinitionFinder connectorActionDefinitionFinder;
-    private final VariablesMatchHelper variablesMatchHelper;
+    private List<ConnectorDefinition> connectorDefinitions;
+    private ConnectorActionDefinitionFinder connectorActionDefinitionFinder;
+    private VariablesMatchHelper variablesMatchHelper;
+
+    public DefaultServiceTaskBehavior(ApplicationContext applicationContext, IntegrationContextBuilder integrationContextBuilder) {
+        this.applicationContext = applicationContext;
+        this.integrationContextBuilder = integrationContextBuilder;
+    }
 
     public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
                                       IntegrationContextBuilder integrationContextBuilder,
@@ -59,29 +64,40 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
         IntegrationContext context;
 
         String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
+        List<VariableDefinition> outBoundVariableDefinitions = null;
+        if(connectorActionDefinitionFinder != null && connectorDefinitions != null) {
 
-        Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(implementation,
-                                                                                                   connectorDefinitions);
-        ActionDefinition actionDefinition = null;
-        if (actionDefinitionOptional.isPresent()) {
-            actionDefinition = actionDefinitionOptional.get();
+            Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(implementation,
+                    connectorDefinitions);
+            ActionDefinition actionDefinition = null;
+            if (actionDefinitionOptional.isPresent()) {
+                actionDefinition = actionDefinitionOptional.get();
+                context = integrationContextBuilder.from(execution,
+                        actionDefinition);
+                connector = applicationContext.getBean(actionDefinition.getName(),
+                        Connector.class);
+            } else {
+                context = integrationContextBuilder.from(execution,
+                        null);
+                connector = applicationContext.getBean(implementation,
+                        Connector.class);
+            }
+            outBoundVariableDefinitions = actionDefinition == null ? null : actionDefinition.getOutput();
+        }else{
             context = integrationContextBuilder.from(execution,
-                                                     actionDefinition);
-            connector = applicationContext.getBean(actionDefinition.getName(),
-                                                   Connector.class);
-        } else {
-            context = integrationContextBuilder.from(execution,
-                                                     null);
+                    null);
             connector = applicationContext.getBean(implementation,
-                                                   Connector.class);
+                    Connector.class);
         }
 
         IntegrationContext results = connector.execute(context);
 
-        List<VariableDefinition> outBoundVariableDefinitions = actionDefinition == null ? null : actionDefinition.getOutput();
-
-        execution.setVariables(variablesMatchHelper.match(results.getOutBoundVariables(),
-                                                          outBoundVariableDefinitions));
+        if(variablesMatchHelper != null) {
+            execution.setVariables(variablesMatchHelper.match(results.getOutBoundVariables(),
+                    outBoundVariableDefinitions));
+        }else{
+            execution.setVariables(results.getOutBoundVariables());
+        }
 
         leave(execution);
     }

@@ -18,7 +18,7 @@
   <properties>
     <activiti-build.version>7.0.39</activiti-build.version>
     <activiti-api.version>7.0.33</activiti-api.version>
-    <activiti-core-common.version>7.0.0</activiti-core-common.version>
+    <activiti-core-common.version>7.0.1</activiti-core-common.version>
     <activiti.version>${project.version}</activiti.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
@@ -50,19 +50,19 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>org.activiti.core.common</groupId>
-        <artifactId>activiti-core-common-dependencies</artifactId>
-        <version>${activiti-core-common.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <!-- Activiti Modules for managed dependencies -->
       <!-- This duplicates activiti-dependencies module but we can't import that module here as this is its parent-->
       <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-dependencies</artifactId>
         <version>${activiti-api.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-core-common-dependencies</artifactId>
+        <version>${activiti-core-common.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

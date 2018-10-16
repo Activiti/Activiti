@@ -70,7 +70,10 @@ public class IntegrationContextBuilder {
                                                       DelegateExecution execution) {
 
         List<VariableDefinition> inBoundVariableDefinitions = actionDefinition == null ? null : actionDefinition.getInput();
-
-        return variablesMatchHelper.match(execution.getVariables(), inBoundVariableDefinitions);
+        if(variablesMatchHelper != null) {
+            return variablesMatchHelper.match(execution.getVariables(), inBoundVariableDefinitions);
+        }else{
+            return execution.getVariables();
+        }
     }
 }
