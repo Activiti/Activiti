@@ -2,7 +2,7 @@ github:
   organisations:
   - name: activiti
     repositories:
-    - name: activiti-cloud-build
-      branch: develop
     - name: activiti-examples
+      branch: develop
+    - name: activiti-cloud-runtime-bundle-service
       branch: develop
