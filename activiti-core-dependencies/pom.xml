@@ -35,6 +35,11 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-application</artifactId>
+        <version>${activiti.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-engine</artifactId>
         <version>${activiti.version}</version>
       </dependency>

@@ -11,6 +11,10 @@
     <name>Activiti :: Spring Boot Starter</name>
     <dependencies>
         <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-application</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.activiti.core.common</groupId>
             <artifactId>activiti-spring-identity</artifactId>
         </dependency>
