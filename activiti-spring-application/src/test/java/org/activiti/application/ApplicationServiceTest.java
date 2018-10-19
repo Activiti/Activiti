@@ -16,6 +16,7 @@
 
 package org.activiti.application;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -27,14 +28,15 @@ import org.mockito.Mock;
 import org.springframework.core.io.Resource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class ApplicationLoaderTest {
+public class ApplicationServiceTest {
 
     @InjectMocks
-    private ApplicationLoader loader;
+    private ApplicationService applicationService;
 
     @Mock
     private ApplicationDiscovery applicationDiscovery;
@@ -59,9 +61,27 @@ public class ApplicationLoaderTest {
         given(applicationReader.read(applicationResource.getInputStream())).willReturn(applicationContent);
 
         //when
-        List<ApplicationContent> applicationContents = loader.loadApplications();
+        List<ApplicationContent> applicationContents = applicationService.loadApplications();
 
         //then
         assertThat(applicationContents).containsExactly(applicationContent);
+    }
+
+    @Test
+    public void shouldThrowApplicationLoadExceptionWhenIOExceptionOccurs() throws Exception {
+        //given
+        Resource applicationResource = mock(Resource.class);
+        IOException ioException = new IOException();
+        given(applicationResource.getInputStream()).willThrow(ioException);
+
+        given(applicationDiscovery.discoverApplications()).willReturn(Collections.singletonList(applicationResource));
+
+        //when
+        Throwable thrown = catchThrowable(() ->
+                                                  applicationService.loadApplications());
+
+        //then
+        assertThat(thrown).isInstanceOf(AppliationLoadException.class)
+                .hasCause(ioException);
     }
 }

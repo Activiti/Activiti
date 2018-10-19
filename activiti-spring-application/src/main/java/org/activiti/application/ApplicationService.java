@@ -23,27 +23,28 @@ import java.util.List;
 
 import org.springframework.core.io.Resource;
 
-public class ApplicationLoader {
+public class ApplicationService {
 
     private ApplicationDiscovery applicationDiscovery;
     private ApplicationReader applicationReader;
 
-    public ApplicationLoader(ApplicationDiscovery applicationDiscovery,
-                             ApplicationReader applicationReader) {
+    public ApplicationService(ApplicationDiscovery applicationDiscovery,
+                              ApplicationReader applicationReader) {
         this.applicationDiscovery = applicationDiscovery;
         this.applicationReader = applicationReader;
     }
 
-    public List<ApplicationContent> loadApplications(){
+    public List<ApplicationContent> loadApplications() {
         List<ApplicationContent> applications = new ArrayList<>();
         List<Resource> applicationResources = applicationDiscovery.discoverApplications();
-        for (Resource applicationResource : applicationResources) {
-            try (InputStream inputStream = applicationResource.getInputStream()) {
-                applications.add(applicationReader.read(inputStream));
-            } catch (IOException e) {
-                //fixme
-                e.printStackTrace();
+        try {
+            for (Resource applicationResource : applicationResources) {
+                try (InputStream inputStream = applicationResource.getInputStream()) {
+                    applications.add(applicationReader.read(inputStream));
+                }
             }
+        } catch (IOException e) {
+            throw new AppliationLoadException("Unable to load application resource", e);
         }
         return applications;
     }

@@ -40,8 +40,7 @@ public class ApplicationDiscovery {
             try {
                 resources = Arrays.asList(resourceLoader.getResources(APPLICATIONS_LOCATION + "**.zip"));
             } catch (IOException e) {
-                //fixme
-                e.printStackTrace();
+                throw new AppliationLoadException("Unable to load application resources", e);
             }
         }
         return resources;

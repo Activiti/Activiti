@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import org.activiti.application.ApplicationDiscovery;
 import org.activiti.application.ApplicationEntryDiscovery;
-import org.activiti.application.ApplicationLoader;
+import org.activiti.application.ApplicationService;
 import org.activiti.application.ApplicationReader;
 import org.activiti.application.deployer.ApplicationDeployer;
 import org.activiti.application.deployer.ApplicationEntryDeployer;
@@ -39,8 +39,8 @@ public class ApplicationAutoConfiguration {
     public InitializingBean deployApplications(ResourcePatternResolver resourceLoader,
                                                @Autowired(required = false) List<ApplicationEntryDiscovery> applicationEntryDiscoveries,
                                                @Autowired(required = false) List<ApplicationEntryDeployer> applicationEntryDeployers) {
-        return () -> new ApplicationDeployer(new ApplicationLoader(new ApplicationDiscovery(resourceLoader),
-                                                                   new ApplicationReader(
+        return () -> new ApplicationDeployer(new ApplicationService(new ApplicationDiscovery(resourceLoader),
+                                                                    new ApplicationReader(
                                                                            Optional.ofNullable(applicationEntryDiscoveries)
                                                                                    .orElse(Collections.emptyList()))),
                                              Optional.ofNullable(applicationEntryDeployers)

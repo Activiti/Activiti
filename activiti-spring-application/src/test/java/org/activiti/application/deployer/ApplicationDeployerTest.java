@@ -19,7 +19,7 @@ package org.activiti.application.deployer;
 import java.util.Arrays;
 
 import org.activiti.application.ApplicationContent;
-import org.activiti.application.ApplicationLoader;
+import org.activiti.application.ApplicationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -34,7 +34,7 @@ public class ApplicationDeployerTest {
     private ApplicationDeployer deployer;
 
     @Mock
-    private ApplicationLoader applicationLoader;
+    private ApplicationService applicationLoader;
 
     @Mock
     private ApplicationEntryDeployer firstDeployer;
