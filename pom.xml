@@ -19,6 +19,7 @@
     <activiti-build.version>7.0.39</activiti-build.version>
     <activiti-api.version>7.0.34</activiti-api.version>
     <activiti-core-common.version>${project.version}</activiti-core-common.version>
+    <commons-io.version>2.6</commons-io.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -35,6 +36,11 @@
         <version>${activiti-api.version}</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
       </dependency>
       <!-- Activiti Modules for managed dependencies -->
       <!-- This duplicates activiti-core-common-dependencies module but we can't import that module here as this is its parent-->
@@ -73,6 +79,7 @@
     <module>activiti-spring-connector</module>
     <module>activiti-connector-model</module>
     <module>activiti-core-common-dependencies</module>
+    <module>activiti-spring-application</module>
   </modules>
 
   <repositories>
