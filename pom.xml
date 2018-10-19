@@ -88,17 +88,17 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-application</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
         <artifactId>activiti-engine</artifactId>
         <version>${activiti.version}</version>
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-spring</artifactId>
+        <version>${activiti.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-spring-app-process</artifactId>
         <version>${activiti.version}</version>
       </dependency>
       <dependency>
@@ -298,7 +298,7 @@
     <module>activiti-engine</module>
     <module>activiti-spring</module>
     <module>activiti-spring-boot-starter</module>
-    <module>activiti-application</module>
+    <module>activiti-spring-app-process</module>
   </modules>
 
   <repositories>

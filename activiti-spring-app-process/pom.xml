@@ -23,16 +23,20 @@
     <artifactId>activiti-root</artifactId>
     <version>7.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>activiti-application</artifactId>
+  <artifactId>activiti-spring-app-process</artifactId>
   <name>Activiti :: Application</name>
   <dependencies>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-spring</artifactId>
+      <artifactId>activiti-engine</artifactId>
     </dependency>
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
+      <groupId>org.activiti.core.common</groupId>
+      <artifactId>activiti-spring-application</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

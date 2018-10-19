@@ -14,12 +14,25 @@
  * limitations under the License.
  */
 
-package org.activiti.application.deployer;
+package org.activiti.application.discovery;
 
-import org.activiti.application.ApplicationContent;
+import java.util.function.Predicate;
+import java.util.zip.ZipEntry;
 
-public interface ApplicationEntryDeployer {
+import org.activiti.application.ApplicationEntryDiscovery;
 
-    void deployEntries(ApplicationContent application);
+public class ProcessEntryDiscovery implements ApplicationEntryDiscovery {
+
+    public static final String PROCESSES = "processes";
+
+    @Override
+    public Predicate<ZipEntry> filter(ZipEntry entry) {
+        return zipEntry -> !zipEntry.isDirectory() && zipEntry.getName().contains(PROCESSES);
+    }
+
+    @Override
+    public String getEntryType() {
+        return PROCESSES;
+    }
 
 }

@@ -16,24 +16,16 @@
 
 package org.activiti.application.conf;
 
-import java.util.List;
-
-import org.activiti.application.ApplicationDiscovery;
 import org.activiti.application.ApplicationEntryDiscovery;
-import org.activiti.application.ApplicationLoader;
-import org.activiti.application.ApplicationReader;
-import org.activiti.application.ProcessEntryDiscovery;
-import org.activiti.application.deployer.ApplicationDeployer;
 import org.activiti.application.deployer.ApplicationEntryDeployer;
 import org.activiti.application.deployer.ProcessEntryDeployer;
+import org.activiti.application.discovery.ProcessEntryDiscovery;
 import org.activiti.engine.RepositoryService;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.support.ResourcePatternResolver;
 
 @Configuration
-public class ApplicationAutoConfiguration {
+public class ApplicationProcessAutoConfiguration {
 
     @Bean
     public ApplicationEntryDiscovery processEntryDiscovery() {
@@ -43,14 +35,5 @@ public class ApplicationAutoConfiguration {
     @Bean
     public ApplicationEntryDeployer processEntryDeployer(RepositoryService repositoryService) {
         return new ProcessEntryDeployer(repositoryService);
-    }
-
-    @Bean
-    public InitializingBean deployApplications(ResourcePatternResolver resourceLoader,
-                                               List<ApplicationEntryDiscovery> applicationEntryDiscoveries,
-                                               List<ApplicationEntryDeployer> applicationEntryDeployers) {
-        return () -> new ApplicationDeployer(new ApplicationLoader(new ApplicationDiscovery(resourceLoader),
-                                                                   new ApplicationReader(applicationEntryDiscoveries)),
-                                             applicationEntryDeployers).deploy();
     }
 }
