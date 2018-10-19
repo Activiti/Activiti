@@ -14,30 +14,11 @@
  * limitations under the License.
  */
 
-package org.activiti.api.task.model.events;
+package org.activiti.api.task.runtime.events;
 
-import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
 
-
-public interface TaskRuntimeEvent<T extends Task> extends RuntimeEvent<T, TaskRuntimeEvent.TaskEvents> {
-
-    enum TaskEvents {
-
-        TASK_ASSIGNED,
-
-        TASK_COMPLETED,
-
-        TASK_CREATED,
-
-        TASK_UPDATED,
-
-        TASK_ACTIVATED,
-
-        TASK_SUSPENDED,
-
-        TASK_CANCELLED
-
-    }
+public interface TaskUpdatedEvent extends TaskRuntimeEvent<Task> {
 
 }
