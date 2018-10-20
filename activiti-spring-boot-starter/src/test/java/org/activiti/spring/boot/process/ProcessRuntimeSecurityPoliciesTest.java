@@ -53,9 +53,13 @@ public class ProcessRuntimeSecurityPoliciesTest {
         Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(Pageable.of(0,
                 50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent()).hasSize(5);
-
-
+        assertThat(processDefinitionPage.getContent())
+                .extracting(ProcessDefinition::getKey)
+                .contains("categorizeProcessConnectors",
+                          "categorizeHumanProcess",
+                          "categorizeProcess",
+                          "integrationGatewayProcess",
+                          "waiter");
 
     }
 

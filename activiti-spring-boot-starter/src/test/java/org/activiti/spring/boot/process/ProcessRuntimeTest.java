@@ -29,6 +29,7 @@ public class ProcessRuntimeTest {
 
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
     private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
+    private static final String ONE_STEP_PROCESS = "OneStepProcess";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -70,7 +71,8 @@ public class ProcessRuntimeTest {
         assertThat(processDefinitionPage.getContent())
                 .extracting(ProcessDefinition::getKey)
                 .contains(CATEGORIZE_PROCESS,
-                          CATEGORIZE_HUMAN_PROCESS);
+                          CATEGORIZE_HUMAN_PROCESS,
+                          ONE_STEP_PROCESS);
     }
 
     @Test
