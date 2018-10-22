@@ -340,6 +340,7 @@
       </activation>
       <properties>
         <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
+        <enforcer.skip>true</enforcer.skip>
         <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
         <mockito.version>2.23.0</mockito.version>
         <javax-jaxb.version>2.3.0</javax-jaxb.version>
