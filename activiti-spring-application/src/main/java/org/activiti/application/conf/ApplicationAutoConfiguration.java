@@ -28,6 +28,7 @@ import org.activiti.application.deployer.ApplicationDeployer;
 import org.activiti.application.deployer.ApplicationEntryDeployer;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -38,8 +39,10 @@ public class ApplicationAutoConfiguration {
     @Bean
     public InitializingBean deployApplications(ResourcePatternResolver resourceLoader,
                                                @Autowired(required = false) List<ApplicationEntryDiscovery> applicationEntryDiscoveries,
-                                               @Autowired(required = false) List<ApplicationEntryDeployer> applicationEntryDeployers) {
-        return () -> new ApplicationDeployer(new ApplicationService(new ApplicationDiscovery(resourceLoader),
+                                               @Autowired(required = false) List<ApplicationEntryDeployer> applicationEntryDeployers,
+                                               @Value("${spring.activiti.applicationsLocation:classpath:/applications/}") String applicationsLocation) {
+        return () -> new ApplicationDeployer(new ApplicationService(new ApplicationDiscovery(resourceLoader,
+                                                                                             applicationsLocation),
                                                                     new ApplicationReader(
                                                                            Optional.ofNullable(applicationEntryDiscoveries)
                                                                                    .orElse(Collections.emptyList()))),

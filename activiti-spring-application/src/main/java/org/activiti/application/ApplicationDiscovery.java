@@ -26,19 +26,21 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 public class ApplicationDiscovery {
 
-    private static final String APPLICATIONS_LOCATION = "classpath:/applications/";
     private ResourcePatternResolver resourceLoader;
+    private String applicationsLocation;
 
-    public ApplicationDiscovery(ResourcePatternResolver resourceLoader) {
+    public ApplicationDiscovery(ResourcePatternResolver resourceLoader,
+                                String applicationsLocation) {
         this.resourceLoader = resourceLoader;
+        this.applicationsLocation = applicationsLocation;
     }
 
     public List<Resource> discoverApplications() {
         List<Resource> resources = new ArrayList<>();
-        Resource resource = resourceLoader.getResource(APPLICATIONS_LOCATION);
+        Resource resource = resourceLoader.getResource(applicationsLocation);
         if (resource.exists()) {
             try {
-                resources = Arrays.asList(resourceLoader.getResources(APPLICATIONS_LOCATION + "**.zip"));
+                resources = Arrays.asList(resourceLoader.getResources(applicationsLocation + "**.zip"));
             } catch (IOException e) {
                 throw new AppliationLoadException("Unable to load application resources", e);
             }
