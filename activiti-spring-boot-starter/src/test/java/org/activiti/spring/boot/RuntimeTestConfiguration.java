@@ -10,6 +10,7 @@ import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
+import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.core.common.spring.identity.ExtendedInMemoryUserDetailsManager;
 import org.slf4j.Logger;
@@ -21,7 +22,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 @Configuration
 public class RuntimeTestConfiguration {
@@ -35,6 +36,8 @@ public class RuntimeTestConfiguration {
     public static boolean discardImageConnectorExecuted = false;
 
     public static Set<String> createdTasks = new HashSet<>();
+
+    public static Set<String> updatedTasks = new HashSet<>();
 
     public static Set<String> completedProcesses = new HashSet<>();
 
@@ -132,6 +135,11 @@ public class RuntimeTestConfiguration {
     @Bean
     public TaskRuntimeEventListener<TaskCreatedEvent> taskCreatedListener() {
         return taskCreated -> createdTasks.add(taskCreated.getEntity().getId());
+    }
+
+    @Bean
+    public TaskRuntimeEventListener<TaskUpdatedEvent> taskUpdatedListener() {
+        return taskUpdated -> updatedTasks.add(taskUpdated.getEntity().getId());
     }
 
     @Bean
