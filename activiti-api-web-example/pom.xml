@@ -43,7 +43,7 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.activiti</groupId>
+        <groupId>org.activiti.dependencies</groupId>
         <artifactId>activiti-dependencies</artifactId>
         <version>${activiti-dependencies.version}</version>
         <scope>import</scope>

@@ -16,5 +16,6 @@
         <module>activiti-api-basic-process-example</module>
         <module>activiti-api-basic-task-example</module>
         <module>activiti-api-spring-integration-example</module>
+        <module>activiti-api-web-example</module>
     </modules>
 </project>
