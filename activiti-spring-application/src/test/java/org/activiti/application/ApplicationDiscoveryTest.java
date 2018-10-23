@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -35,7 +34,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ApplicationDiscoveryTest {
 
-    @InjectMocks
     private ApplicationDiscovery applicationDiscovery;
 
     @Mock
@@ -44,6 +42,7 @@ public class ApplicationDiscoveryTest {
     @Before
     public void setUp() {
         initMocks(this);
+        applicationDiscovery = new ApplicationDiscovery(resourceLoader, "classpath:/applications/");
     }
 
     @Test
