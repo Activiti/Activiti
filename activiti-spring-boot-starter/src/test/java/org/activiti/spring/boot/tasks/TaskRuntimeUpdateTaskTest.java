@@ -85,8 +85,6 @@ public class TaskRuntimeUpdateTaskTest {
     @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
     public void bCreateClaimAndUpdateStandaloneTask() {
 
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
-
         // create
         Task standaloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("test task update")

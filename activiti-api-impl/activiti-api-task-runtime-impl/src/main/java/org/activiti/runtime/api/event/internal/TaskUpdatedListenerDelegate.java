@@ -18,13 +18,11 @@ package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
 
-import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.runtime.api.event.impl.ToAPITaskCreatedEventConverter;
 import org.activiti.runtime.api.event.impl.ToAPITaskUpdatedEventConverter;
 
 public class TaskUpdatedListenerDelegate implements ActivitiEventListener {
