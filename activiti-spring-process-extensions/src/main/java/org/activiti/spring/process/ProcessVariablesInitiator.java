@@ -68,7 +68,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                 return DATE_FORMAT.parse(String.valueOf(variableDefinition.getValue()));
             } catch (ParseException e) {
                 throw new ActivitiException("Error parsing date variable '" + variableDefinition.getName()
-                         + "' with value " + variableDefinition.getValue());
+                         + "' with value " + variableDefinition.getValue(), e);
             }
         }
         return variableDefinition.getValue();
