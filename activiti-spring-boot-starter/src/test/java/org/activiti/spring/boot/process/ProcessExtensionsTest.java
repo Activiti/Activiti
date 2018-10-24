@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 @ContextConfiguration
 public class ProcessExtensionsTest {
 
-    private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
+    private static final String INITIAL_VARS_PROCESS = "initialVarsProcess";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -52,8 +52,8 @@ public class ProcessExtensionsTest {
         assertThat(configuration).isNotNull();
 
         // start a process with vars then check default and specified vars exist
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
+        ProcessInstance initialVarsProcess = processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(INITIAL_VARS_PROCESS)
                 .withVariable("extraVar",
                         true)
                 .withVariable("age",
@@ -61,10 +61,10 @@ public class ProcessExtensionsTest {
                 .withBusinessKey("my business key")
                 .build());
 
-        assertThat(categorizeProcess).isNotNull();
-        assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+        assertThat(initialVarsProcess).isNotNull();
+        assertThat(initialVarsProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
-        List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(categorizeProcess).build());
+        List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build());
 
         assertThat(variableInstances).isNotNull();
         assertThat(variableInstances).hasSize(4);
@@ -72,6 +72,9 @@ public class ProcessExtensionsTest {
         assertThat(variableInstances).extracting("name")
                 .contains("extraVar", "name", "age", "birth")
                 .doesNotContain("subscribe");
+
+        // cleanup
+        processRuntime.delete(ProcessPayloadBuilder.delete(initialVarsProcess));
     }
 
     @Test
@@ -82,10 +85,10 @@ public class ProcessExtensionsTest {
 
         assertThatExceptionOfType(ActivitiException.class).isThrownBy(() -> {
             processRuntime.start(ProcessPayloadBuilder.start()
-                    .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
+                    .withProcessDefinitionKey(INITIAL_VARS_PROCESS)
                     .withVariable("extraVar",
                             true)
                     .build());
-        }).withMessage("Can't start process '" + CATEGORIZE_HUMAN_PROCESS + "' without required variables age");
+        }).withMessage("Can't start process '" + INITIAL_VARS_PROCESS + "' without required variables age");
     }
 }
