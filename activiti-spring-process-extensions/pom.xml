@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>activiti-spring-process-extensions</artifactId>
+    <name>Activiti :: Process Extensions</name>
     <dependencies>
         <dependency>
             <groupId>org.activiti</groupId>
