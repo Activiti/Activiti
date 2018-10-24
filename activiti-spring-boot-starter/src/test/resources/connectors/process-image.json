@@ -1,0 +1,39 @@
+{
+  "id": "processImageConnectorId",
+  "name": "Name of the connector",
+  "description": "Description of the connector",
+  "icon": "icon-name",
+  "actions": {
+    "processImageActionId": {
+      "id": "processImageActionId",
+      "name": "processImageActionName",
+      "description": "...",
+      "input": [
+        {
+          "id": "input-variable-1",
+          "name": "input-variable-name-1",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "id": "expectedKey",
+          "name": "expectedKey",
+          "type": "boolean",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "output": [
+        {
+          "id": "approved",
+          "name": "approved",
+          "type": "boolean",
+          "description": "",
+          "required": "false"
+        }
+      ]
+    },
+    "actionId2": {}
+  }
+}

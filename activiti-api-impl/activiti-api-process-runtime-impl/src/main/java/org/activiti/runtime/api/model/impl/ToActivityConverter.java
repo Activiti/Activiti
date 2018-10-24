@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.model.impl;
 
+import org.activiti.api.runtime.model.impl.BPMNActivityImpl;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.api.process.model.BPMNActivity;
 

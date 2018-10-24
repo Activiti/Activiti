@@ -15,6 +15,14 @@
       <artifactId>activiti-bpmn-model</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.activiti.core.common</groupId>
+      <artifactId>activiti-connector-model</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti.core.common</groupId>
+      <artifactId>activiti-spring-connector</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring</artifactId>
     </dependency>
@@ -23,7 +31,7 @@
       <artifactId>activiti-api-model-shared</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti</groupId>
+      <groupId>org.activiti.api</groupId>
       <artifactId>activiti-api-model-shared-impl</artifactId>
     </dependency>
     <dependency>
@@ -43,15 +51,15 @@
       <artifactId>activiti-api-process-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti</groupId>
+      <groupId>org.activiti.api</groupId>
       <artifactId>activiti-api-process-model-impl</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti</groupId>
+      <groupId>org.activiti.core.common</groupId>
       <artifactId>activiti-spring-identity</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.activiti</groupId>
+      <groupId>org.activiti.core.common</groupId>
       <artifactId>activiti-spring-security-policies</artifactId>
     </dependency>
     <dependency>
@@ -73,6 +81,10 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-engine</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

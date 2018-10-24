@@ -19,6 +19,7 @@ package org.activiti.runtime.api.event.impl;
 import java.util.Optional;
 
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
+import org.activiti.api.runtime.event.impl.BPMNActivityCompletedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 

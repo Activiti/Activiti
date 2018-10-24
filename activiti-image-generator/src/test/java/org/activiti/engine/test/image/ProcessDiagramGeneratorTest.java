@@ -1,6 +1,7 @@
 package org.activiti.engine.test.image;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -70,6 +71,27 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
         assertNotNull(diagram);
     }
 
+    @Deployment
+    public void testSmallBoxLabels() throws Exception {
+        ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();
+        String activityFontName = imageGenerator.getDefaultActivityFontName();
+        String labelFontName = imageGenerator.getDefaultLabelFontName();
+        String annotationFontName = imageGenerator.getDefaultAnnotationFontName();
+
+        String id = repositoryService.createProcessDefinitionQuery().processDefinitionKey("myProcess").singleResult()
+                .getId();
+
+        List<String> activityIds = new ArrayList<>();
+        List<String> highLightedFlows = new ArrayList<>();
+        InputStream diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
+                                                 activityIds, highLightedFlows);
+        assertNotNull(diagram);
+
+        diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
+                                                 activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
+        assertNotNull(diagram);
+    }
+    
     @Deployment
     public void testAllElements() throws Exception {
         ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();

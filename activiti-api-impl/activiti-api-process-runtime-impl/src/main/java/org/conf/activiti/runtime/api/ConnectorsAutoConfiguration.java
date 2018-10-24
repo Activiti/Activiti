@@ -17,28 +17,52 @@
 package org.conf.activiti.runtime.api;
 
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
+import org.activiti.core.common.model.connector.ConnectorDefinition;
+import org.activiti.runtime.api.connector.ConnectorActionDefinitionFinder;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
+import org.activiti.runtime.api.connector.VariablesMatchHelper;
+import org.activiti.core.common.spring.connector.ConnectorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
+import java.util.List;
+
 @Configuration
 public class ConnectorsAutoConfiguration {
 
+    @Autowired
+    private ConnectorService connectorService;
+
     @Bean
-    public IntegrationContextBuilder integrationContextBuilder() {
-        return new IntegrationContextBuilder();
+    public List<ConnectorDefinition> connectorDefinitions() throws IOException {
+        return connectorService.get();
+    }
+
+    @Bean
+    public IntegrationContextBuilder integrationContextBuilder(VariablesMatchHelper variablesMatchHelper) {
+        return new IntegrationContextBuilder(variablesMatchHelper);
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     @ConditionalOnMissingBean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     public DefaultServiceTaskBehavior defaultServiceTaskBehavior(ApplicationContext applicationContext,
-                                                                 IntegrationContextBuilder integrationContextBuilder) {
+                                                                 IntegrationContextBuilder integrationContextBuilder, ConnectorActionDefinitionFinder connectorActionDefinitionFinder, VariablesMatchHelper variablesMatchHelper) throws IOException {
         return new DefaultServiceTaskBehavior(applicationContext,
-                                              integrationContextBuilder);
+                integrationContextBuilder, connectorDefinitions(), connectorActionDefinitionFinder, variablesMatchHelper);
     }
 
+    @Bean
+    public ConnectorActionDefinitionFinder connectorActionDefinitionFinder() {
+        return new ConnectorActionDefinitionFinder();
+    }
 
+    @Bean
+    public VariablesMatchHelper variablesMatchHelper() {
+        return new VariablesMatchHelper();
+    }
 }

@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.event.impl;
 
+import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 import org.activiti.api.task.model.TaskCandidateGroup;
 import org.activiti.api.task.model.events.TaskCandidateGroupEvent;
 import org.activiti.api.task.runtime.events.TaskCandidateGroupAddedEvent;

@@ -17,6 +17,7 @@
 package org.activiti.runtime.api.model.impl;
 
 import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 
 public class APIVariableInstanceConverter
         extends ListConverter<org.activiti.engine.impl.persistence.entity.VariableInstance, VariableInstance>

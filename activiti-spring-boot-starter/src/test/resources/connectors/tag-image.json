@@ -1,0 +1,38 @@
+{
+  "id": "tagImageConnectorId",
+  "name": "Name of the connector",
+  "description": "Description of the connector",
+  "icon": "icon-name",
+  "actions": {
+    "tagImageActionId": {
+      "id": "tagImageActionId",
+      "name": "tagImageActionName",
+      "description": "...",
+      "input": [
+        {
+          "id": "input-variable-2",
+          "name": "input-variable-name-2",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "id": "expectedKey",
+          "name": "expectedKey",
+          "type": "boolean",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "output": [
+        {
+          "id": "approved",
+          "name": "approved",
+          "type": "boolean",
+          "description": "",
+          "required": "false"
+        }
+      ]
+    }
+  }
+}

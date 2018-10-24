@@ -1108,6 +1108,12 @@ public class DefaultProcessDiagramCanvas {
                     layouts.add(new TextLayout(lastLine,
                                                g.getFont(),
                                                g.getFontRenderContext()));
+                } else {
+                    // at least, draw one line
+                    // even if text does not fit
+                    // in order to avoid empty box
+                    layouts.add(layout);
+                    currentHeight += height;
                 }
                 break;
             } else {
