@@ -36,6 +36,7 @@ public class TaskImpl implements Task {
     private String processDefinitionId;
     private String processInstanceId;
     private String parentTaskId;
+    private String formKey;
 
     public TaskImpl() {
     }
@@ -150,6 +151,14 @@ public class TaskImpl implements Task {
         this.status = status;
     }
 
+    public String getFormKey() {
+        return formKey;
+    }
+
+    public void setFormKey(String formKey) {
+        this.formKey = formKey;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -182,6 +191,8 @@ public class TaskImpl implements Task {
                                task.processInstanceId) &&
                 Objects.equals(parentTaskId,
                                task.parentTaskId) &&
+                Objects.equals(formKey,
+                               task.formKey) &&
                 status == task.status;
     }
 
@@ -200,6 +211,7 @@ public class TaskImpl implements Task {
                             processDefinitionId,
                             processInstanceId,
                             parentTaskId,
+                            formKey,
                             status);
     }
 
@@ -218,6 +230,7 @@ public class TaskImpl implements Task {
                 ", processDefinitionId='" + processDefinitionId + '\'' +
                 ", processInstanceId='" + processInstanceId + '\'' +
                 ", parentTaskId='" + parentTaskId + '\'' +
+                ", formKey='" + formKey + '\'' +
                 ", status=" + status +
                 '}';
     }

@@ -27,6 +27,7 @@ public class ProcessDefinitionImpl implements ProcessDefinition {
     private String description;
     private int version;
     private String key;
+    private String formKey;
 
     @Override
     public String getId() {
@@ -72,6 +73,14 @@ public class ProcessDefinitionImpl implements ProcessDefinition {
         this.version = version;
     }
 
+    public String getFormKey() {
+        return formKey;
+    }
+
+    public void setFormKey(String formKey) {
+        this.formKey = formKey;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -89,7 +98,9 @@ public class ProcessDefinitionImpl implements ProcessDefinition {
                 Objects.equals(description,
                                that.description) &&
                 Objects.equals(key,
-                               that.key);
+                               that.key) &&
+                Objects.equals(formKey,
+                               that.formKey);
     }
 
     @Override
@@ -99,7 +110,8 @@ public class ProcessDefinitionImpl implements ProcessDefinition {
                             name,
                             description,
                             version,
-                            key);
+                            key,
+                            formKey);
     }
 
     @Override
@@ -109,6 +121,7 @@ public class ProcessDefinitionImpl implements ProcessDefinition {
                 ", name='" + name + '\'' +
                 ", key='" + key + '\'' +
                 ", description='" + description + '\'' +
+                ", formKey='" + formKey + '\'' +
                 ", version=" + version +
                 '}';
     }

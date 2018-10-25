@@ -54,4 +54,6 @@ public interface Task {
     String getParentTaskId();
 
     TaskStatus getStatus();
+
+    String getFormKey();
 }
