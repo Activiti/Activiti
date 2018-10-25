@@ -91,7 +91,27 @@ public class ProcessDiagramGeneratorTest extends PluggableActivitiTestCase {
                                                  activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
         assertNotNull(diagram);
     }
-    
+    @Deployment
+    public void testTransactionElements() throws Exception {
+        ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();
+        String activityFontName = imageGenerator.getDefaultActivityFontName();
+        String labelFontName = imageGenerator.getDefaultLabelFontName();
+        String annotationFontName = imageGenerator.getDefaultAnnotationFontName();
+
+        String id = repositoryService.createProcessDefinitionQuery().processDefinitionKey("transactionSubRequest").singleResult()
+                .getId();
+
+        List<String> activityIds = new ArrayList<>();
+        List<String> highLightedFlows = new ArrayList<>();
+        InputStream diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
+                                                 activityIds, highLightedFlows);
+        assertNotNull(diagram);
+
+        diagram = imageGenerator.generateDiagram(repositoryService.getBpmnModel(id),
+                                                 activityIds, highLightedFlows, activityFontName, labelFontName, annotationFontName);
+        assertNotNull(diagram);
+    }
+
     @Deployment
     public void testAllElements() throws Exception {
         ProcessDiagramGenerator imageGenerator = new DefaultProcessDiagramGenerator();
