@@ -50,13 +50,14 @@ public class ProcessDefinitionResourceFinderIT {
                 .contains("categorize-human.bpmn20.xml",
                           "categorize-image.bpmn20.xml",
                           "gw.bpmn20.xml",
-                          "waiter.bpmn20.xml");
+                          "waiter.bpmn20.xml",
+                          "categorize-human-long-path.bpmn20.xml");//coming from folder long/path/for/processes
     }
 
     @Test
     public void shouldReturnEmptyListWhenNoProcessDefIsFoundOnSpecifiedFolder() throws Exception {
         //given
-        given(activitiProperties.getProcessDefinitionLocationPrefix()).willReturn("classpath:/processes-empty/");
+        given(activitiProperties.getProcessDefinitionLocationPrefix()).willReturn("classpath:**/processes-empty/");
 
         //when
         List<Resource> resources = resourceFinder.discoverProcessDefinitionResources();
@@ -68,7 +69,7 @@ public class ProcessDefinitionResourceFinderIT {
     @Test
     public void shouldReturnEmptyListWhenProcessDefinitionsFolderIsNotFound() throws Exception {
         //given
-        given(activitiProperties.getProcessDefinitionLocationPrefix()).willReturn("classpath:/does-not-exist/");
+        given(activitiProperties.getProcessDefinitionLocationPrefix()).willReturn("classpath:**/does-not-exist/");
 
         //when
         List<Resource> resources = resourceFinder.discoverProcessDefinitionResources();

@@ -44,22 +44,15 @@ public class ProcessDefinitionResourceFinder {
     public List<Resource> discoverProcessDefinitionResources() throws IOException {
         List<Resource> resources = new ArrayList<>();
         if (activitiProperties.isCheckProcessDefinitions()) {
-
-            Resource processFolder = resourceLoader.getResource(activitiProperties.getProcessDefinitionLocationPrefix());
-            if (processFolder.exists()) {
-                for (String suffix : activitiProperties.getProcessDefinitionLocationSuffixes()) {
-                    String path = activitiProperties.getProcessDefinitionLocationPrefix() + suffix;
-                    resources.addAll(Arrays.asList(resourceLoader.getResources(path)));
-                }
-                if (resources.isEmpty()) {
-                    LOGGER.info("No process definitions were found for auto-deployment in the location `" + activitiProperties.getProcessDefinitionLocationPrefix() + "`");
-                } else {
-                    List<String> resourcesNames = resources.stream().map(Resource::getFilename).collect(Collectors.toList());
-                    LOGGER.info("The following process definition files will be deployed: " + resourcesNames);
-                }
+            for (String suffix : activitiProperties.getProcessDefinitionLocationSuffixes()) {
+                String path = activitiProperties.getProcessDefinitionLocationPrefix() + suffix;
+                resources.addAll(Arrays.asList(resourceLoader.getResources(path)));
+            }
+            if (resources.isEmpty()) {
+                LOGGER.info("No process definitions were found for auto-deployment in the location `" + activitiProperties.getProcessDefinitionLocationPrefix() + "`");
             } else {
-                LOGGER.warn("Unable to locate folder `" + activitiProperties.getProcessDefinitionLocationPrefix() +
-                                    "`. No process definitions will be auto-deployed");
+                List<String> resourcesNames = resources.stream().map(Resource::getFilename).collect(Collectors.toList());
+                LOGGER.info("The following process definition files will be deployed: " + resourcesNames);
             }
         }
         return resources;
