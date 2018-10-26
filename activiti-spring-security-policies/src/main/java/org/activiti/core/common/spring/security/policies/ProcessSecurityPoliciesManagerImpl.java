@@ -81,8 +81,7 @@ public class ProcessSecurityPoliciesManagerImpl extends BaseSecurityPoliciesMana
     }
 
     public boolean canWrite(String processDefinitionKey) {
-        return hasPermission(processDefinitionKey, SecurityPolicyAccess.WRITE, applicationName)
-                || hasPermission(processDefinitionKey, SecurityPolicyAccess.WRITE, applicationName);
+        return hasPermission(processDefinitionKey, SecurityPolicyAccess.WRITE, applicationName);
     }
 
     public boolean canRead(String processDefinitionKey) {
