@@ -25,7 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration
-public class ProcessRuntimeTest {
+public class ProcessRuntimeIT {
 
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
     private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
