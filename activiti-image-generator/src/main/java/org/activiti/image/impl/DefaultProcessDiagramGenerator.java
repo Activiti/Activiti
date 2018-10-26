@@ -67,6 +67,7 @@ import org.activiti.bpmn.model.TextAnnotation;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.bpmn.model.Transaction;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.image.exception.ActivitiInterchangeInfoNotFoundException;
 import org.activiti.image.exception.ActivitiImageException;
@@ -457,6 +458,28 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
         // subprocess
         activityDrawInstructions.put(SubProcess.class,
+                                     new ActivityDrawInstruction() {
+
+            @Override
+            public void draw(DefaultProcessDiagramCanvas processDiagramCanvas,
+                             BpmnModel bpmnModel,
+                             FlowNode flowNode) {
+                GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(flowNode.getId());
+                if (graphicInfo.getExpanded() != null && !graphicInfo.getExpanded()) {
+                    processDiagramCanvas.drawCollapsedSubProcess(flowNode.getId(),
+                                                                 flowNode.getName(),
+                                                                 graphicInfo,
+                                                                 false);
+                } else {
+                    processDiagramCanvas.drawExpandedSubProcess(flowNode.getId(),
+                                                                flowNode.getName(),
+                                                                graphicInfo,
+                                                                false);
+                }
+            }
+        });
+        // transaction
+        activityDrawInstructions.put(Transaction.class,
                                      new ActivityDrawInstruction() {
 
             @Override
