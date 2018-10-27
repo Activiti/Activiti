@@ -51,7 +51,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.bpmn.model.AssociationDirection;
+import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.model.Transaction;
 import org.activiti.image.exception.ActivitiImageException;
 import org.activiti.image.impl.icon.BusinessRuleTaskIconType;
 import org.activiti.image.impl.icon.CompensateIconType;
@@ -1225,7 +1227,7 @@ public class DefaultProcessDiagramCanvas {
     public void drawExpandedSubProcess(String id,
                                        String name,
                                        GraphicInfo graphicInfo,
-                                       Boolean isTriggeredByEvent) {
+                                       Class<?> type) {
         RoundRectangle2D rect = new RoundRectangle2D.Double(graphicInfo.getX(),
                                                             graphicInfo.getY(),
                                                             graphicInfo.getWidth(),
@@ -1233,12 +1235,29 @@ public class DefaultProcessDiagramCanvas {
                                                             8,
                                                             8);
 
-        // Use different stroke (dashed)
-        if (isTriggeredByEvent) {
+        if (type.equals(EventSubProcess.class)) {
             Stroke originalStroke = g.getStroke();
             g.setStroke(EVENT_SUBPROCESS_STROKE);
             g.draw(rect);
             g.setStroke(originalStroke);
+        } else if (type.equals(Transaction.class)) {
+            RoundRectangle2D outerRect = new RoundRectangle2D.Double(graphicInfo.getX()-3,
+                    graphicInfo.getY()-3,
+                    graphicInfo.getWidth()+6,
+                    graphicInfo.getHeight()+6,
+                    8,
+                    8);
+
+            Paint originalPaint = g.getPaint();
+            g.setPaint(SUBPROCESS_BOX_COLOR);
+            g.fill(outerRect);
+            g.setPaint(SUBPROCESS_BORDER_COLOR);
+            g.draw(outerRect);
+            g.setPaint(SUBPROCESS_BOX_COLOR);
+            g.fill(rect);
+            g.setPaint(SUBPROCESS_BORDER_COLOR);
+            g.draw(rect);
+            g.setPaint(originalPaint);
         } else {
             Paint originalPaint = g.getPaint();
             g.setPaint(SUBPROCESS_BOX_COLOR);

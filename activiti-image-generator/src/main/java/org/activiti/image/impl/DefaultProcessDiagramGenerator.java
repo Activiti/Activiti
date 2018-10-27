@@ -474,7 +474,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                     processDiagramCanvas.drawExpandedSubProcess(flowNode.getId(),
                                                                 flowNode.getName(),
                                                                 graphicInfo,
-                                                                false);
+                                                                SubProcess.class);
                 }
             }
         });
@@ -496,7 +496,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                     processDiagramCanvas.drawExpandedSubProcess(flowNode.getId(),
                                                                 flowNode.getName(),
                                                                 graphicInfo,
-                                                                false);
+                                                                Transaction.class);
                 }
             }
         });
@@ -519,7 +519,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                     processDiagramCanvas.drawExpandedSubProcess(flowNode.getId(),
                                                                 flowNode.getName(),
                                                                 graphicInfo,
-                                                                true);
+                                                                EventSubProcess.class);
                 }
             }
         });
