@@ -14,25 +14,30 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(
-        locations = {"classpath:application-connectors-empty.properties"}
+        locations = {"classpath:application.properties"}
 )
 @ContextConfiguration
-public class ProcessRuntimeEmptyConnectorDefinitionTest {
+public class ProcessRuntimeConnectorIT {
 
-    private static final String CATEGORIZE_PROCESS = "categorizeProcess";
+    private static final String CATEGORIZE_IMAGE_CONNECTORS_PROCESS = "categorizeProcessConnectors";
 
     @Autowired
     private ProcessRuntime processRuntime;
 
     /**
-     * This test points to a directory having no connectors definitions.
-     * As resulting behaviour, we have the same when there is no match with connector definitions.
+     * It tests two connector actions inside the xml against two different connector json definitions:
+     * the first input variable is defined in the first connector action,
+     * the second input variable in the second connector action.
      **/
     @Test
     @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
-    public void connectorDefinitionEmptyDir() {
+    public void shouldConnectorMatchWithConnectorDefinition() {
         processRuntime.start(ProcessPayloadBuilder.start()
-                                     .withProcessDefinitionKey(CATEGORIZE_PROCESS)
+                                     .withProcessDefinitionKey(CATEGORIZE_IMAGE_CONNECTORS_PROCESS)
+                                     .withVariable("input-variable-name-1",
+                                                   "input-variable-name-1")
+                                     .withVariable("input-variable-name-2",
+                                                   "input-variable-name-2")
                                      .withVariable("expectedKey",
                                                    true)
                                      .build());
