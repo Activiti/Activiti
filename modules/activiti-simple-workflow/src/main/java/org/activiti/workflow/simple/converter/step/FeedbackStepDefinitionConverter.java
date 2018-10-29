@@ -148,7 +148,7 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
       scriptField.setFieldName("script");
       
       StringBuilder script = new StringBuilder();
-      if (JvmUtil.isJDK8()) {
+      if (JvmUtil.hasNashorn()) {
       	script.append("load(\"nashorn:mozilla_compat.js\");");
       }
       script.append("importPackage (java.util); var feedbackProviders = new ArrayList();" + System.getProperty("line.separator"));

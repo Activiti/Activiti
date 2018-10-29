@@ -76,10 +76,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-	  <groupId>org.assertj</groupId>
-	  <artifactId>assertj-core</artifactId>
-	  <scope>provided</scope>
-	</dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
