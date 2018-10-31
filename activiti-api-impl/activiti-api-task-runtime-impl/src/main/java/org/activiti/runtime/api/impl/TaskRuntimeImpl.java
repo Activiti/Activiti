@@ -27,6 +27,7 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.CreateTaskPayload;
@@ -42,7 +43,6 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
-import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -116,7 +116,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
-            List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+            List<String> userGroups = (getTasksPayload.getGroups() == null) ?
+                    userGroupManager.getUserGroups(authenticatedUserId) : getTasksPayload.getGroups();
             getTasksPayload.setAssigneeId(authenticatedUserId);
             getTasksPayload.setGroups(userGroups);
         } else {
