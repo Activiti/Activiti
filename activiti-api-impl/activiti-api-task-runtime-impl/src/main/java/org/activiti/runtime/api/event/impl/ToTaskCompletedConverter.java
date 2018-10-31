@@ -33,6 +33,6 @@ public class ToTaskCompletedConverter implements EventConverter<TaskCompletedEve
 
     @Override
     public Optional<TaskCompletedEvent> from(ActivitiEntityEvent internalEvent) {
-        return Optional.of(new TaskCompletedImpl(converter.from((Task) internalEvent.getEntity())));
+        return Optional.of(new TaskCompletedImpl(converter.from((Task) internalEvent.getEntity(), org.activiti.api.task.model.Task.TaskStatus.COMPLETED)));
     }
 }
