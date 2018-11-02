@@ -28,4 +28,6 @@ public interface ProcessDefinition {
 
     int getVersion();
 
+    String getFormKey();
+
 }
