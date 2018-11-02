@@ -55,38 +55,53 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     assertEquals(expectedVariables, runtimeService.getVariablesLocal(processInstanceId));
     assertEquals(expectedVariables, taskService.getVariablesLocal(taskId));
 
+    //add a variable at the process instance scope.
     runtimeService.setVariable(processInstanceId, "instrument", "trumpet");
 
+    //check that we do not see a local variable at the task scope.
     expectedVariables = new HashMap<String, Object>();
     assertEquals(expectedVariables, taskService.getVariablesLocal(taskId));
+
+    //but we do see the variable at the process instance scope and also at the task scope (as it is a child scope)
     expectedVariables.put("instrument", "trumpet");
     assertEquals(expectedVariables, runtimeService.getVariables(processInstanceId));
     assertEquals(expectedVariables, taskService.getVariables(taskId));
+    //also see as a local variable at the process instance scope (since that is the top-level scope)
     assertEquals(expectedVariables, runtimeService.getVariablesLocal(processInstanceId));
 
+    //set a variable on a task
     taskService.setVariable(taskId, "player", "gonzo");
+    //we see the variable we just set
     assertTrue(taskService.hasVariable(taskId, "player"));
+    //we don't see a variable we didn't set
     assertFalse(taskService.hasVariableLocal(taskId, "budget"));
 
+    //there are no local variables for the task as we called setVariable not setVariableLocal
     expectedVariables = new HashMap<String, Object>();
     assertEquals(expectedVariables, taskService.getVariablesLocal(taskId));
+
+    //we see the variable at the parent scope too (along with the one created before) as it is not local
     expectedVariables.put("player", "gonzo");
     expectedVariables.put("instrument", "trumpet");
     assertEquals(expectedVariables, runtimeService.getVariables(processInstanceId));
     assertEquals(expectedVariables, taskService.getVariables(taskId));
     assertEquals(expectedVariables, runtimeService.getVariablesLocal(processInstanceId));
 
+    //set a local variable at the scope of the task
     taskService.setVariableLocal(taskId, "budget", "unlimited");
     assertTrue(taskService.hasVariableLocal(taskId, "budget"));
     assertTrue(taskService.hasVariable(taskId, "budget"));
 
+    //this is the only local variable for the task
     expectedVariables = new HashMap<String, Object>();
     expectedVariables.put("budget", "unlimited");
     assertEquals(expectedVariables, taskService.getVariablesLocal(taskId));
+    //but there are two more non-local variables visible from the task scope (the ones from above)
     expectedVariables.put("player", "gonzo");
     expectedVariables.put("instrument", "trumpet");
     assertEquals(expectedVariables, taskService.getVariables(taskId));
 
+    //the local variable set on the task is not visible from the parent scope but the other two are
     expectedVariables = new HashMap<String, Object>();
     expectedVariables.put("player", "gonzo");
     expectedVariables.put("instrument", "trumpet");
