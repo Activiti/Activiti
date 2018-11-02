@@ -59,6 +59,7 @@ public class APITaskConverterTest {
                         .withProcessDefinitionId("testProcessDefinitionId")
                         .withProcessInstanceId("testProcessInstanceId")
                         .withParentTaskId("testParentTaskId")
+                        .withFormKey("testFormKey")
                         .build()
         );
 
@@ -76,6 +77,7 @@ public class APITaskConverterTest {
                             Task::getProcessDefinitionId,
                             Task::getProcessInstanceId,
                             Task::getParentTaskId,
+                            Task::getFormKey,
                             Task::getStatus)
                 .containsExactly("testTaskId",
                                  "testUser",
@@ -88,6 +90,7 @@ public class APITaskConverterTest {
                                  "testProcessDefinitionId",
                                  "testProcessInstanceId",
                                  "testParentTaskId",
+                                 "testFormKey",
                                  ASSIGNED);
     }
 

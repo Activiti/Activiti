@@ -43,6 +43,7 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
         task.setOwner(internalTask.getOwner());
         task.setParentTaskId(internalTask.getParentTaskId());
         task.setPriority(internalTask.getPriority());
+        task.setFormKey(internalTask.getFormKey());
         return task;
     }
 
