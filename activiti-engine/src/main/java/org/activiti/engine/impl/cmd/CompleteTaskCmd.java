@@ -15,6 +15,7 @@ package org.activiti.engine.impl.cmd;
 import java.util.Map;
 
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.bpmn.helper.TaskVariableCopier;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.Activiti5Util;
@@ -70,6 +71,10 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
       } else {
         task.setTransientVariables(transientVariables);
       }
+    }
+
+    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
+      TaskVariableCopier.copyVariablesOutFromTaskLocal(task,commandContext);
     }
 
     executeTaskComplete(commandContext, task, variables, localScope);
