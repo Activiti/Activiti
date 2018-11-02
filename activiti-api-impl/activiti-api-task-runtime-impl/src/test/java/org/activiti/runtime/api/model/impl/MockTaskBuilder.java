@@ -122,6 +122,11 @@ public class MockTaskBuilder {
         return this;
     }
 
+    public MockTaskBuilder withFormKey(String formKey) {
+        when(task.getFormKey()).thenReturn(formKey);
+        return this;
+    }
+
     public Task build() {
         return task;
     }

@@ -564,4 +564,14 @@ public class BpmnModel {
   public void setEventSupport(Object eventSupport) {
     this.eventSupport = eventSupport;
   }
+
+  public String getStartFormKey(String processId) {
+    FlowElement initialFlowElement = getProcessById(processId)
+            .getInitialFlowElement();
+    if (initialFlowElement instanceof StartEvent) {
+      StartEvent startEvent = (StartEvent) initialFlowElement;
+      return startEvent.getFormKey();
+    }
+    return null;
+  }
 }

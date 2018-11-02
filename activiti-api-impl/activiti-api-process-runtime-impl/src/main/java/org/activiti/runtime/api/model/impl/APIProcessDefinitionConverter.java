@@ -18,9 +18,17 @@ package org.activiti.runtime.api.model.impl;
 
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.RepositoryService;
 
 public class APIProcessDefinitionConverter extends ListConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition>
         implements ModelConverter<org.activiti.engine.repository.ProcessDefinition, ProcessDefinition> {
+
+    private RepositoryService repositoryService;
+
+    public APIProcessDefinitionConverter(RepositoryService repositoryService) {
+        this.repositoryService = repositoryService;
+    }
 
     public ProcessDefinition from(org.activiti.engine.repository.ProcessDefinition internalProcessDefinition) {
         ProcessDefinitionImpl processDefinition = new ProcessDefinitionImpl();
@@ -29,6 +37,8 @@ public class APIProcessDefinitionConverter extends ListConverter<org.activiti.en
         processDefinition.setDescription(internalProcessDefinition.getDescription());
         processDefinition.setVersion(internalProcessDefinition.getVersion());
         processDefinition.setKey(internalProcessDefinition.getKey());
+        BpmnModel model = repositoryService.getBpmnModel(internalProcessDefinition.getId());
+        processDefinition.setFormKey(model.getStartFormKey(internalProcessDefinition.getKey()));
         return processDefinition;
     }
 }

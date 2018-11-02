@@ -106,8 +106,8 @@ public class ProcessRuntimeAutoConfiguration {
     }
 
     @Bean
-    public APIProcessDefinitionConverter apiProcessDefinitionConverter() {
-        return new APIProcessDefinitionConverter();
+    public APIProcessDefinitionConverter apiProcessDefinitionConverter(RepositoryService repositoryService) {
+        return new APIProcessDefinitionConverter(repositoryService);
     }
 
     @Bean
