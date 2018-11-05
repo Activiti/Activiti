@@ -892,7 +892,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
       for (VariableInstanceEntity variableInstance: queryVariables) {
-        if (variableInstance.getId() != null && variableInstance.getTaskId() != null) {
+        if (variableInstance.getId() != null && variableInstance.getTaskId() != null && variableInstance.getTaskId() == this.id) {
           variables.put(variableInstance.getName(), variableInstance.getValue());
         }
       }
