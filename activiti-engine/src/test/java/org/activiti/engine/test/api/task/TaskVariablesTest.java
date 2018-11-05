@@ -175,6 +175,7 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testGetVariablesCopiedIntoTasks(){
+    //variables not automatically copied into tasks at engine level unless we turn this on
     processEngineConfiguration.setCopyVariablesToLocalForTasks(true);
 
     Map<String,Object> startVariables = new HashMap<>();

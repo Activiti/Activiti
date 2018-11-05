@@ -100,13 +100,9 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
 
     @Override
     public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
-        if (setTaskVariablesPayload.isLocalOnly()) {
-            taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
+        taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
                                           setTaskVariablesPayload.getVariables());
-        } else {
-            taskService.setVariables(setTaskVariablesPayload.getTaskId(),
-                                     setTaskVariablesPayload.getVariables());
-        }
+
     }
 
     @Override
@@ -119,7 +115,7 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
                                                  task.getName(),
                                                  Task.TaskStatus.COMPLETED);
         taskService.complete(completeTaskPayload.getTaskId(),
-                             completeTaskPayload.getVariables());
+                             completeTaskPayload.getVariables(),true);
         return competedTaskData;
     }
 
