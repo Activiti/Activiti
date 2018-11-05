@@ -15,6 +15,7 @@ public class CreateTaskPayloadBuilder {
     private String assignee;
     private List<String> groups;
     private String parentTaskId;
+    private String formKey;
 
     public CreateTaskPayloadBuilder withName(String name) {
         this.name = name;
@@ -46,6 +47,11 @@ public class CreateTaskPayloadBuilder {
         return this;
     }
 
+    public CreateTaskPayloadBuilder withFormKey(String formKey) {
+        this.formKey = formKey;
+        return this;
+    }
+
     public CreateTaskPayloadBuilder withGroups(List<String> groups) {
         this.groups = groups;
         return this;
@@ -66,6 +72,7 @@ public class CreateTaskPayloadBuilder {
                                      priority,
                                      assignee,
                                      groups,
-                                     parentTaskId);
+                                     parentTaskId,
+                                     formKey);
     }
 }
