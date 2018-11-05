@@ -74,7 +74,7 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
     }
 
     if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
-      TaskVariableCopier.copyVariablesOutFromTaskLocal(task,commandContext);
+      TaskVariableCopier.copyVariablesOutFromTaskLocal(task);
     }
 
     executeTaskComplete(commandContext, task, variables, localScope);

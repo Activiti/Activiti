@@ -1,22 +1,25 @@
 package org.activiti.engine.impl.bpmn.helper;
 
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.task.Task;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 public class TaskVariableCopier {
 
-    public static void copyVariablesIntoTaskLocal(Task task, CommandContext commandContext){
+    public static void copyVariablesIntoTaskLocal(TaskEntity task){
 
         //TODO: would like to filter which variables copy much as with subProcesses
 
-        commandContext.getProcessEngineConfiguration().getTaskService().setVariablesLocal(task.getId(),commandContext.getProcessEngineConfiguration().getTaskService().getVariables(task.getId()));
+        task.setVariablesLocal(task.getVariables());
+
 
     }
 
-    public static void copyVariablesOutFromTaskLocal(Task task, CommandContext commandContext){
+    public static void copyVariablesOutFromTaskLocal(TaskEntity task){
 
         //TODO: would like to filter which variables copy much as with subProcesses
 
-        commandContext.getProcessEngineConfiguration().getRuntimeService().setVariables(task.getProcessInstanceId(),commandContext.getProcessEngineConfiguration().getTaskService().getVariablesLocal(task.getId()));
+        //provided not a standalone task
+        if(task.getProcessInstance()!=null) {
+            task.getProcessInstance().setVariables(task.getVariablesLocal());
+        }
     }
 }

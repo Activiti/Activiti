@@ -194,9 +194,14 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         }
       }
     }
-    
+
+
     taskEntityManager.insert(task, (ExecutionEntity) execution);
-    
+
+    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
+      TaskVariableCopier.copyVariablesIntoTaskLocal(task);
+    }
+
     boolean skipUserTask = false;
     if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
       Expression skipExpression = expressionManager.createExpression(activeTaskSkipExpression);
@@ -228,9 +233,6 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       leave(execution);
     }
 
-    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
-      TaskVariableCopier.copyVariablesIntoTaskLocal(task,commandContext);
-    }
   }
 
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
