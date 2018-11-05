@@ -1,5 +1,6 @@
 package org.activiti.api.task.model.payloads;
 
+import java.util.Collection;
 import java.util.UUID;
 
 import org.activiti.api.model.shared.Payload;
@@ -8,17 +9,17 @@ public class GetTaskVariablesPayload implements Payload {
 
     private String id;
     private String taskId;
-    private boolean localOnly;
+    private Collection<String> variableNames;
 
     public GetTaskVariablesPayload() {
         this.id = UUID.randomUUID().toString();
     }
 
     public GetTaskVariablesPayload(String taskId,
-                                   boolean localOnly) {
+                                   Collection<String> variableNames) {
         this();
         this.taskId = taskId;
-        this.localOnly = localOnly;
+        this.variableNames = variableNames;
     }
 
     @Override
@@ -34,11 +35,11 @@ public class GetTaskVariablesPayload implements Payload {
         this.taskId = taskId;
     }
 
-    public boolean isLocalOnly() {
-        return localOnly;
+    public Collection<String> getVariableNames() {
+        return variableNames;
     }
 
-    public void setLocalOnly(boolean localOnly) {
-        this.localOnly = localOnly;
+    public void setVariableNames(Collection<String> variableNames) {
+        this.variableNames = variableNames;
     }
 }

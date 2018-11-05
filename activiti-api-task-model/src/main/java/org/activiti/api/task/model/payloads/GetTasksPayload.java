@@ -12,6 +12,7 @@ public class GetTasksPayload implements Payload {
     private List<String> groups;
     private String processInstanceId;
     private String parentTaskId;
+    private String taskDefinitionKey;
 
     public GetTasksPayload() {
         this.id = UUID.randomUUID().toString();
@@ -20,12 +21,14 @@ public class GetTasksPayload implements Payload {
     public GetTasksPayload(String assigneeId,
                            List<String> groups,
                            String processInstanceId,
-                           String parentTaskId) {
+                           String parentTaskId,
+                           String taskDefinitionKey) {
         this();
         this.assigneeId = assigneeId;
         this.groups = groups;
         this.processInstanceId = processInstanceId;
         this.parentTaskId = parentTaskId;
+        this.taskDefinitionKey = taskDefinitionKey;
     }
 
     @Override
@@ -63,5 +66,13 @@ public class GetTasksPayload implements Payload {
 
     public void setParentTaskId(String parentTaskId) {
         this.parentTaskId = parentTaskId;
+    }
+
+    public String getTaskDefinitionKey() {
+        return taskDefinitionKey;
+    }
+
+    public void setTaskDefinitionKey(String taskDefinitionKey) {
+        this.taskDefinitionKey = taskDefinitionKey;
     }
 }

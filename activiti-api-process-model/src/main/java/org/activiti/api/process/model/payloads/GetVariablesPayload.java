@@ -8,7 +8,7 @@ public class GetVariablesPayload implements Payload {
 
     private String id;
     private String processInstanceId;
-    private boolean localOnly = false;
+    private String variableName;
 
     public GetVariablesPayload() {
         this.id = UUID.randomUUID().toString();
@@ -20,9 +20,9 @@ public class GetVariablesPayload implements Payload {
     }
 
     public GetVariablesPayload(String processInstanceId,
-                               boolean localOnly) {
+                               String variableName) {
         this(processInstanceId);
-        this.localOnly = localOnly;
+        this.variableName = variableName;
     }
 
     @Override
@@ -38,11 +38,11 @@ public class GetVariablesPayload implements Payload {
         this.processInstanceId = processInstanceId;
     }
 
-    public boolean isLocalOnly() {
-        return localOnly;
+    public String getVariableName() {
+        return variableName;
     }
 
-    public void setLocalOnly(boolean localOnly) {
-        this.localOnly = localOnly;
+    public void setVariableName(String variableName) {
+        this.variableName = variableName;
     }
 }

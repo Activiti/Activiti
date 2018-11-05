@@ -9,7 +9,6 @@ import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
 public class SetVariablesPayloadBuilder {
 
     private String processInstanceId;
-    private boolean localOnly = false;
     private Map<String, Object> variables = new HashMap<>();
 
     public SetVariablesPayloadBuilder withProcessInstanceId(String processInstanceId) {
@@ -37,14 +36,8 @@ public class SetVariablesPayloadBuilder {
         return this;
     }
 
-    public SetVariablesPayloadBuilder localOnly() {
-        this.localOnly = true;
-        return this;
-    }
-
     public SetProcessVariablesPayload build() {
         return new SetProcessVariablesPayload(processInstanceId,
-                                              variables,
-                                              localOnly);
+                                              variables);
     }
 }

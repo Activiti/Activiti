@@ -10,19 +10,16 @@ public class SetTaskVariablesPayload implements Payload {
     private String id;
     private String taskId;
     private Map<String, Object> variables;
-    private boolean localOnly;
 
     public SetTaskVariablesPayload() {
         this.id = UUID.randomUUID().toString();
     }
 
     public SetTaskVariablesPayload(String taskId,
-                                   Map<String, Object> variables,
-                                   boolean localOnly) {
+                                   Map<String, Object> variables) {
         this();
         this.taskId = taskId;
         this.variables = variables;
-        this.localOnly = localOnly;
     }
 
     @Override
@@ -46,11 +43,4 @@ public class SetTaskVariablesPayload implements Payload {
         this.variables = variables;
     }
 
-    public boolean isLocalOnly() {
-        return localOnly;
-    }
-
-    public void setLocalOnly(boolean localOnly) {
-        this.localOnly = localOnly;
-    }
 }

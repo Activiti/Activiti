@@ -8,12 +8,7 @@ public class SetTaskVariablesPayloadBuilder {
 
     private String taskId;
     private Map<String, Object> variables;
-    private boolean localOnly = false;
 
-    public SetTaskVariablesPayloadBuilder localOnly() {
-        this.localOnly = true;
-        return this;
-    }
 
     public SetTaskVariablesPayloadBuilder withTaskId(String taskId) {
         this.taskId = taskId;
@@ -27,7 +22,6 @@ public class SetTaskVariablesPayloadBuilder {
 
     public SetTaskVariablesPayload build() {
         return new SetTaskVariablesPayload(taskId,
-                                           variables,
-                                           localOnly);
+                                           variables);
     }
 }

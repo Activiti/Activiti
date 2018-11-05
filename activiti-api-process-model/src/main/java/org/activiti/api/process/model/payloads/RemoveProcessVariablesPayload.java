@@ -11,19 +11,16 @@ public class RemoveProcessVariablesPayload implements Payload {
     private String id;
     private String processInstanceId;
     private List<String> variableNames = new ArrayList<>();
-    private boolean localOnly;
 
     public RemoveProcessVariablesPayload() {
         this.id = UUID.randomUUID().toString();
     }
 
     public RemoveProcessVariablesPayload(String processInstanceId,
-                                         List<String> variableNames,
-                                         boolean localOnly) {
+                                         List<String> variableNames) {
         this();
         this.processInstanceId = processInstanceId;
         this.variableNames = variableNames;
-        this.localOnly = localOnly;
     }
 
     @Override
@@ -45,13 +42,5 @@ public class RemoveProcessVariablesPayload implements Payload {
 
     public void setVariableNames(List<String> variableNames) {
         this.variableNames = variableNames;
-    }
-
-    public boolean isLocalOnly() {
-        return localOnly;
-    }
-
-    public void setLocalOnly(boolean localOnly) {
-        this.localOnly = localOnly;
     }
 }
