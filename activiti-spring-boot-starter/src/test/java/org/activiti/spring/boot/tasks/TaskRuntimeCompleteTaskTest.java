@@ -3,54 +3,58 @@ package org.activiti.spring.boot.tasks;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
-import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
-import org.junit.FixMethodOrder;
+import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TaskRuntimeCompleteTaskTest {
 
-    private static String currentTaskId;
     @Autowired
     private TaskRuntime taskRuntime;
     @Autowired
     private TaskAdminRuntime taskAdminRuntime;
     @Autowired
-    private SecurityManager securityManager;
+    private SecurityUtil securityUtil;
+
+    @Autowired
+    private TaskCleanUpUtil taskCleanUpUtil;
+
+    @After
+    public void taskCleanUp(){
+        taskCleanUpUtil.cleanUpWithAdmin();
+    }
 
     @Test
-    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
-    public void aCreateStandaloneTaskAndComplete() {
+    public void createStandaloneTaskAndComplete() {
 
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        securityUtil.logInAs("garth");
+
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("simple task")
-                .withAssignee(authenticatedUserId)
+                .withAssignee("garth")
                 .build());
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         50));
+                50));
 
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
 
-        assertThat(task.getAssignee()).isEqualTo(authenticatedUserId);
+        assertThat(task.getAssignee()).isEqualTo("garth");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
@@ -60,15 +64,14 @@ public class TaskRuntimeCompleteTaskTest {
     }
 
 
-    @Test
-    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
-    public void bCreateStandaloneTask() {
+    @Test()
+    public void createStandaloneTaskandCompleteWithUnAuthorizedUser() {
 
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("simple task")
-                .withAssignee(authenticatedUserId)
+                .withAssignee("garth")
                 .build());
 
         // the owner should be able to see the created task
@@ -78,32 +81,20 @@ public class TaskRuntimeCompleteTaskTest {
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
 
-        assertThat(task.getAssignee()).isEqualTo(authenticatedUserId);
+        assertThat(task.getAssignee()).isEqualTo("garth");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-        currentTaskId = task.getId();
-    }
+        // Complete should fail with a different user
+        securityUtil.logInAs("salaboy");
 
-    @Test(expected = NotFoundException.class)
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
-    public void ctryCompletingWithUnauthorizedUser() {
-        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(currentTaskId).build());
-    }
+        //when
+        Throwable throwable = catchThrowable(() ->
+                taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build()));
 
-
-    @Test
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "myUserDetailsService")
-    public void dCleanUpWithAdmin() {
-        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
-        for (Task t : tasks.getContent()) {
-            taskAdminRuntime.delete(TaskPayloadBuilder
-                    .delete()
-                    .withTaskId(t.getId())
-                    .withReason("test clean up")
-                    .build());
-        }
+        //then
+        assertThat(throwable)
+                .isInstanceOf(NotFoundException.class);
 
     }
-
 
 }

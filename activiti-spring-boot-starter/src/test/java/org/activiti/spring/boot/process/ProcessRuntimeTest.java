@@ -9,6 +9,7 @@ import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
+import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,8 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration
-public class ProcessRuntimeIT {
+public class ProcessRuntimeTest {
 
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
     private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
@@ -38,7 +38,8 @@ public class ProcessRuntimeIT {
     private ProcessAdminRuntime processAdminRuntime;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private SecurityUtil securityUtil;
+
 
     @Before
     public void init() {
@@ -51,8 +52,8 @@ public class ProcessRuntimeIT {
     }
 
     @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldGetConfiguration() {
+        securityUtil.logInAs("salaboy");
         //when
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
 
@@ -61,8 +62,10 @@ public class ProcessRuntimeIT {
     }
 
     @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldGetAvailableProcessDefinitionForTheGivenUser() {
+
+        securityUtil.logInAs("salaboy");
+
         //when
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                                                                                                       50));
@@ -76,8 +79,10 @@ public class ProcessRuntimeIT {
     }
 
     @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void createProcessInstanceAndValidateHappyPath() {
+
+        securityUtil.logInAs("salaboy");
+
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(CATEGORIZE_PROCESS)
@@ -96,8 +101,10 @@ public class ProcessRuntimeIT {
     }
 
     @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void createProcessInstanceAndValidateDiscardPath() {
+
+        securityUtil.logInAs("salaboy");
+
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(CATEGORIZE_PROCESS)
@@ -117,8 +124,9 @@ public class ProcessRuntimeIT {
     }
 
     @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void shouldGetProcessDefinitionFromDefinitionKey() {
+        securityUtil.logInAs("salaboy");
+
         //when
         ProcessDefinition categorizeHumanProcess = processRuntime.processDefinition(CATEGORIZE_HUMAN_PROCESS);
 
@@ -129,8 +137,9 @@ public class ProcessRuntimeIT {
     }
 
     @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void getProcessInstances() {
+
+        securityUtil.logInAs("salaboy");
 
         //when
         Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
@@ -276,8 +285,9 @@ public class ProcessRuntimeIT {
 
 
     @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void deleteProcessInstance() {
+
+        securityUtil.logInAs("salaboy");
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
@@ -320,14 +330,14 @@ public class ProcessRuntimeIT {
     }
 
     @Test(expected = AccessDeniedException.class)
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void adminFailTest() {
+        securityUtil.logInAs("salaboy");
         ProcessInstance fakeId = processAdminRuntime.processInstance("fakeId");
     }
 
     @Test(expected = AccessDeniedException.class)
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "myUserDetailsService")
     public void userFailTest() {
+        securityUtil.logInAs("admin");
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                 50));
     }

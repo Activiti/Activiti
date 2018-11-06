@@ -11,6 +11,9 @@ import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
+import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,31 +28,33 @@ import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TaskRuntimeUpdateTaskTest {
 
     @Autowired
     private TaskRuntime taskRuntime;
 
     @Autowired
-    private TaskAdminRuntime taskAdminRuntime;
+    private SecurityUtil securityUtil;
 
     @Autowired
-    private SecurityManager securityManager;
+    private TaskCleanUpUtil taskCleanUpUtil;
+
+    @After
+    public void taskCleanUp(){
+        taskCleanUpUtil.cleanUpWithAdmin();
+    }
 
     @Test
-    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
-    public void aCreateAndUpdateStandaloneTaskForUser() {
+    public void createAndUpdateStandaloneTaskForUser() {
 
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        securityUtil.logInAs("garth");
 
         Task standaloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("test task update")
                                                          .withDescription("test task update description")
                                                          .withDueDate(new Date())
                                                          .withPriority(50)
-                                                         .withAssignee(authenticatedUserId)
+                                                         .withAssignee("garth")
                                                          .build());
 
         assertThat(RuntimeTestConfiguration.createdTasks).contains(standaloneTask.getId());
@@ -61,7 +66,7 @@ public class TaskRuntimeUpdateTaskTest {
                 .extracting("status",
                             "assignee")
                 .contains(tuple(Task.TaskStatus.ASSIGNED,
-                                authenticatedUserId));
+                                "garth"));
 
         final Task updatedTask = taskRuntime.update(TaskPayloadBuilder.update()
                                                             .withTaskId(standaloneTask.getId())
@@ -82,9 +87,9 @@ public class TaskRuntimeUpdateTaskTest {
     }
 
     @Test
-    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
-    public void bCreateClaimAndUpdateStandaloneTask() {
+    public void createClaimAndUpdateStandaloneTask() {
 
+        securityUtil.logInAs("garth");
         // create
         Task standaloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("test task update")
@@ -98,7 +103,7 @@ public class TaskRuntimeUpdateTaskTest {
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
                                                          50));
 
-        assertThat(tasks.getTotalItems()).isEqualTo(2);
+        assertThat(tasks.getTotalItems()).isEqualTo(1);
         assertThat(tasks.getContent())
                 .extracting("status",
                             "id")
@@ -133,17 +138,5 @@ public class TaskRuntimeUpdateTaskTest {
                                 standaloneTask.getId()));
     }
 
-    @Test
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "myUserDetailsService")
-    public void cCleanUpWithAdmin() {
-        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0,
-                                                              50));
-        for (Task t : tasks.getContent()) {
-            taskAdminRuntime.delete(TaskPayloadBuilder
-                                            .delete()
-                                            .withTaskId(t.getId())
-                                            .withReason("test clean up")
-                                            .build());
-        }
-    }
+
 }

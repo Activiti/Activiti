@@ -6,6 +6,7 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource("classpath:application-with-sec-policies.properties")
-@ContextConfiguration
-public class ProcessRuntimeSecurityPoliciesIT {
+public class ProcessRuntimeSecurityPoliciesTest {
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -29,10 +29,14 @@ public class ProcessRuntimeSecurityPoliciesIT {
     @Autowired
     private ProcessAdminRuntime processAdminRuntime;
 
+    @Autowired
+    private SecurityUtil securityUtil;
+
 
     @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void getRestrictedProcessDefs() {
+
+        securityUtil.logInAs("salaboy");
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration(); //@TODO: I should get the security policies defined here.
         assertThat(configuration).isNotNull();
@@ -46,9 +50,9 @@ public class ProcessRuntimeSecurityPoliciesIT {
     }
 
     @Test
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "myUserDetailsService")
     public void getAllProcessDefsForAdmin() {
 
+        securityUtil.logInAs("admin");
 
         Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(Pageable.of(0,
                 50));

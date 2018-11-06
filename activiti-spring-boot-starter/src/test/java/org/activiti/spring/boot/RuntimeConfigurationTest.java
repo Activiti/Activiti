@@ -2,6 +2,7 @@ package org.activiti.spring.boot;
 
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
+import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration
 public class RuntimeConfigurationTest {
 
 
@@ -33,43 +33,42 @@ public class RuntimeConfigurationTest {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
-    public void validatingConfigurationForUser() {
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        assertThat(authenticatedUserId).isNotBlank();
+    @Autowired
+    private SecurityUtil securityUtil;
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticatedUserId);
+    @Test
+    public void validatingConfigurationForUser() {
+        securityUtil.logInAs("salaboy");
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername("salaboy");
         assertThat(userDetails).isNotNull();
 
         assertThat(userDetails.getAuthorities()).hasSize(2);
 
-        List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
+        List<String> userRoles = userGroupManager.getUserRoles("salaboy");
         assertThat(userRoles).isNotNull();
         assertThat(userRoles).hasSize(1);
         assertThat(userRoles.get(0)).isEqualTo("ACTIVITI_USER");
-        List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+        List<String> userGroups = userGroupManager.getUserGroups("salaboy");
         assertThat(userGroups).isNotNull();
         assertThat(userGroups).hasSize(1);
         assertThat(userGroups.get(0)).isEqualTo("activitiTeam");
     }
 
     @Test
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "myUserDetailsService")
     public void validatingConfigurationForAdmin() {
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        assertThat(authenticatedUserId).isNotBlank();
+        securityUtil.logInAs("admin");
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticatedUserId);
+        UserDetails userDetails = userDetailsService.loadUserByUsername("admin");
         assertThat(userDetails).isNotNull();
 
         assertThat(userDetails.getAuthorities()).hasSize(1);
 
-        List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
+        List<String> userRoles = userGroupManager.getUserRoles("admin");
         assertThat(userRoles).isNotNull();
         assertThat(userRoles).hasSize(1);
         assertThat(userRoles.get(0)).isEqualTo("ACTIVITI_ADMIN");
-        List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+        List<String> userGroups = userGroupManager.getUserGroups("admin");
         assertThat(userGroups).isNotNull();
         assertThat(userGroups).hasSize(0);
 
