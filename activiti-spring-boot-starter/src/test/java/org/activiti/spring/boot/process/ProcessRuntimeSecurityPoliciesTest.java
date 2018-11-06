@@ -21,7 +21,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource("classpath:application-with-sec-policies.properties")
-@ContextConfiguration
 public class ProcessRuntimeSecurityPoliciesTest {
 
     @Autowired

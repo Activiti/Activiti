@@ -45,6 +45,6 @@ public class ProcessRuntimeConnectorTest {
                 .withVariable("expectedKey",
                         true)
                 .build());
-        
+
     }
 }
