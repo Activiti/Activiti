@@ -9,6 +9,7 @@ import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -35,18 +36,12 @@ public class TaskRuntimeDeleteTaskTest {
     private SecurityUtil securityUtil;
 
 
-    @After
-    public void cleanUpWithAdmin() {
-        securityUtil.logInAs("admin");
-        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
-        for (Task t : tasks.getContent()) {
-            taskAdminRuntime.delete(TaskPayloadBuilder
-                    .delete()
-                    .withTaskId(t.getId())
-                    .withReason("test clean up")
-                    .build());
-        }
+    @Autowired
+    private TaskCleanUpUtil taskCleanUpUtil;
 
+    @After
+    public void taskCleanUp(){
+        taskCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
