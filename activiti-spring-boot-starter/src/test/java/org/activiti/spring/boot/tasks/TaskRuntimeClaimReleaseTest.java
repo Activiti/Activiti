@@ -97,7 +97,7 @@ public class TaskRuntimeClaimReleaseTest {
     }
 
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void createStandaloneTaskAndClaimAndReleaseUnAuthorized() {
         securityUtil.logInAs("garth");
 
@@ -121,8 +121,12 @@ public class TaskRuntimeClaimReleaseTest {
         // UnAuthorized release, task is assigned not to you and hence not visible anymore
         securityUtil.logInAs("garth");
 
-        taskRuntime.release(TaskPayloadBuilder.release().withTaskId(standAloneTask.getId()).build());
+        Throwable throwable = catchThrowable(() ->
+                taskRuntime.release(TaskPayloadBuilder.release().withTaskId(standAloneTask.getId()).build()));
 
+        //then
+        assertThat(throwable)
+                .isInstanceOf(NotFoundException.class);
     }
 
 }

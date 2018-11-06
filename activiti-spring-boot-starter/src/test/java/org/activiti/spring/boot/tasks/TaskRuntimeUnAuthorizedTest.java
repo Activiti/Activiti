@@ -20,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -48,7 +49,7 @@ public class TaskRuntimeUnAuthorizedTest {
 
     }
 
-    @Test(expected = NotFoundException.class)
+
     public void aCreateStandaloneTaskForGroup() {
 
         securityUtil.logInAs("garth");
@@ -70,7 +71,14 @@ public class TaskRuntimeUnAuthorizedTest {
 
         // Claim should throw a NotFoundException due you are not a candidate
         securityUtil.logInAs("salaboy");
-        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
+
+        //when
+        Throwable throwable = catchThrowable(() ->
+                taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build()));
+
+        //then
+        assertThat(throwable)
+                .isInstanceOf(NotFoundException.class);
 
     }
 

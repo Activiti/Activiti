@@ -52,7 +52,6 @@ public class ProcessRuntimeTest {
     }
 
     @Test
-
     public void shouldGetConfiguration() {
         securityUtil.logInAs("salaboy");
         //when

@@ -16,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -68,7 +69,7 @@ public class TaskRuntimeCompleteTaskTest {
     }
 
 
-    @Test(expected = NotFoundException.class)
+    @Test()
     public void createStandaloneTaskandCompleteWithUnAuthorizedUser() {
 
         securityUtil.logInAs("garth");
@@ -90,7 +91,15 @@ public class TaskRuntimeCompleteTaskTest {
 
         // Complete should fail with a different user
         securityUtil.logInAs("salaboy");
-        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+
+        //when
+        Throwable throwable = catchThrowable(() ->
+                taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build()));
+
+        //then
+        assertThat(throwable)
+                .isInstanceOf(NotFoundException.class);
+
     }
 
 }

@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -70,7 +71,7 @@ public class TaskRuntimeDeleteTaskTest {
         assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.DELETED);
     }
 
-    @Test(expected = NotFoundException.class)
+    @Test
     public void createStandaloneGroupTaskClaimAndDeleteFail() {
 
         securityUtil.logInAs("garth");
@@ -100,7 +101,13 @@ public class TaskRuntimeDeleteTaskTest {
         //Try to delete a task that you cannot see because it was assigned
         securityUtil.logInAs("garth");
 
-        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build());
+        //when
+        Throwable throwable = catchThrowable(() ->
+                taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build()));
+
+        //then
+        assertThat(throwable)
+                .isInstanceOf(NotFoundException.class);
 
     }
 
