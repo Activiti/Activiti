@@ -8,6 +8,8 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,27 +24,37 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TaskRuntimeDeleteTaskTest {
 
-    private static String currentTaskId;
     @Autowired
     private TaskRuntime taskRuntime;
     @Autowired
     private TaskAdminRuntime taskAdminRuntime;
     @Autowired
-    private SecurityManager securityManager;
+    private SecurityUtil securityUtil;
 
+
+    @After
+    public void cleanUpWithAdmin() {
+        securityUtil.logInAs("admin");
+        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
+        for (Task t : tasks.getContent()) {
+            taskAdminRuntime.delete(TaskPayloadBuilder
+                    .delete()
+                    .withTaskId(t.getId())
+                    .withReason("test clean up")
+                    .build());
+        }
+
+    }
 
     @Test
-    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
-    public void aCreateStandaloneTaskAndDelete() {
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+    public void createStandaloneTaskAndDelete() {
+        securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("simple task")
-                .withAssignee(authenticatedUserId)
+                .withAssignee("garth")
                 .build());
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
@@ -51,17 +63,17 @@ public class TaskRuntimeDeleteTaskTest {
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
 
-        assertThat(task.getAssignee()).isEqualTo(authenticatedUserId);
+        assertThat(task.getAssignee()).isEqualTo("garth");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         Task deletedTask = taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build());
         assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.DELETED);
     }
 
-    @Test
-    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
-    public void cCreateStandaloneGroupTaskClaimAndDeleteFail() {
+    @Test(expected = NotFoundException.class)
+    public void createStandaloneGroupTaskClaimAndDeleteFail() {
 
+        securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("simple task")
@@ -77,43 +89,19 @@ public class TaskRuntimeDeleteTaskTest {
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-        currentTaskId = task.getId();
+        // Claim a task created for a group
+        securityUtil.logInAs("salaboy");
 
-
-    }
-
-    @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
-    public void dClaimTaskCreatedForGroup() {
-
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(currentTaskId).build());
-        assertThat(claimedTask.getAssignee()).isEqualTo(authenticatedUserId);
+        Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
+        assertThat(claimedTask.getAssignee()).isEqualTo("salaboy");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
 
-    }
+        //Try to delete a task that you cannot see because it was assigned
+        securityUtil.logInAs("garth");
 
-    @Test(expected = NotFoundException.class)
-    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
-    public void eClaimTaskCreatedForGroup() {
-        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(currentTaskId).build());
-    }
-
-    @Test
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "myUserDetailsService")
-    public void fCleanUpWithAdmin() {
-        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
-        for (Task t : tasks.getContent()) {
-            taskAdminRuntime.delete(TaskPayloadBuilder
-                    .delete()
-                    .withTaskId(t.getId())
-                    .withReason("test clean up")
-                    .build());
-        }
+        taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build());
 
     }
-
-
 
 }

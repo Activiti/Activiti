@@ -6,6 +6,8 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,8 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TaskRuntimeTaskForOtherTest {
 
     @Autowired
@@ -30,9 +30,27 @@ public class TaskRuntimeTaskForOtherTest {
     @Autowired
     private TaskAdminRuntime taskAdminRuntime;
 
+    @Autowired
+    private SecurityUtil securityUtil;
+
+    @After
+    public void cleanUpWithAdmin() {
+        securityUtil.logInAs("admin");
+        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
+        for (Task t : tasks.getContent()) {
+            taskAdminRuntime.delete(TaskPayloadBuilder
+                    .delete()
+                    .withTaskId(t.getId())
+                    .withReason("test clean up")
+                    .build());
+        }
+
+    }
+
     @Test
-    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
-    public void aCreateStandaloneTaskWithNoCandidates() {
+    public void createStandaloneTaskWithNoCandidates() {
+
+        securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("task with no candidates besides owner")
@@ -47,35 +65,14 @@ public class TaskRuntimeTaskForOtherTest {
 
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
-    }
 
-    @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
-    public void bCheckThatTaskIsNotVisibleForNonCandidateUsers() {
-
+        securityUtil.logInAs("salaboy");
         // Other users beside the owner shouldn't see the task
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+        tasks = taskRuntime.tasks(Pageable.of(0,
                 50));
 
         assertThat(tasks.getContent()).hasSize(0);
-
     }
-
-
-    @Test
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "myUserDetailsService")
-    public void cCleanUpWithAdmin() {
-        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
-        for (Task t : tasks.getContent()) {
-            taskAdminRuntime.delete(TaskPayloadBuilder
-                    .delete()
-                    .withTaskId(t.getId())
-                    .withReason("test clean up")
-                    .build());
-        }
-
-    }
-
 
 
 }

@@ -7,6 +7,8 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ContextConfiguration
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TaskRuntimeUnAuthorizedTest {
 
     @Autowired
@@ -31,11 +31,27 @@ public class TaskRuntimeUnAuthorizedTest {
     @Autowired
     private TaskAdminRuntime taskAdminRuntime;
 
-    private static String currentTaskId;
+    @Autowired
+    private SecurityUtil securityUtil;
 
-    @Test
-    @WithUserDetails(value = "garth", userDetailsServiceBeanName = "myUserDetailsService")
+    @After
+    public void cleanUpWithAdmin() {
+        securityUtil.logInAs("admin");
+        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
+        for (Task t : tasks.getContent()) {
+            taskAdminRuntime.delete(TaskPayloadBuilder
+                    .delete()
+                    .withTaskId(t.getId())
+                    .withReason("test clean up")
+                    .build());
+        }
+
+    }
+
+    @Test(expected = NotFoundException.class)
     public void aCreateStandaloneTaskForGroup() {
+
+        securityUtil.logInAs("garth");
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("group task")
@@ -52,28 +68,9 @@ public class TaskRuntimeUnAuthorizedTest {
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-        currentTaskId = task.getId();
-
-
-    }
-
-    @Test(expected = NotFoundException.class)
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
-    public void bClaimNotFoundBecauseYouAreNotACandidate(){
-        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(currentTaskId).build());
-    }
-
-    @Test
-    @WithUserDetails(value = "admin", userDetailsServiceBeanName = "myUserDetailsService")
-    public void cCleanUpWithAdmin() {
-        Page<Task> tasks = taskAdminRuntime.tasks(Pageable.of(0, 50));
-        for (Task t : tasks.getContent()) {
-            taskAdminRuntime.delete(TaskPayloadBuilder
-                    .delete()
-                    .withTaskId(t.getId())
-                    .withReason("test clean up")
-                    .build());
-        }
+        // Claim should throw a NotFoundException due you are not a candidate
+        securityUtil.logInAs("salaboy");
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
     }
 
