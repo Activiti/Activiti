@@ -1,16 +1,10 @@
 package org.activiti.spring.process;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
 
 public enum ExtensionVariableTypes {
 
@@ -18,19 +12,19 @@ public enum ExtensionVariableTypes {
     STRING("string",String.class),
     INTEGER("integer",Integer.class),
     JSON("json", ObjectNode.class),
-    DATE("date",new SimpleDateFormat("yyyy-MM-dd"),Date.class);
+    DATE("date",Date.class,new SimpleDateFormat("yyyy-MM-dd"));
 
     String name;
-    Set<Class> classes;
+    Class clazz;
     Format format;
 
-    private ExtensionVariableTypes(String name, Class... classes){
+    private ExtensionVariableTypes(String name, Class clazz){
         this.name = name;
-        this.classes = new HashSet(Arrays.asList(classes));
+        this.clazz = clazz;
     }
 
-    private ExtensionVariableTypes(String name, Format format, Class... classes){
-        this(name,classes);
+    private ExtensionVariableTypes(String name, Class clazz, Format format){
+        this(name,clazz);
         this.format=format;
     }
     public static ExtensionVariableTypes getEnumByString(String name){

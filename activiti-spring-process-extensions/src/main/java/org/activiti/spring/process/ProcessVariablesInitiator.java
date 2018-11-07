@@ -24,8 +24,6 @@ import org.activiti.spring.process.model.VariableDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -89,17 +87,14 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     private Set<String> checkVariablesMatchTypes(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
         Set<String> mismatchedVars = new HashSet<>();
         variableDefinitionMap.forEach((k,v) -> {
+
             if (variables.containsKey(v.getName()) ) {
                 ExtensionVariableTypes type = ExtensionVariableTypes.getEnumByString(v.getType());
-                boolean eligibleClass = false;
-                for (Class clazz:type.classes){
-                    if(variables.get(v.getName()).getClass().isAssignableFrom(clazz)){
-                        eligibleClass = true;
-                    }
-                }
-                if (!eligibleClass){
+
+                if(!variables.get(v.getName()).getClass().isAssignableFrom(type.clazz)){
                     mismatchedVars.add(v.getName());
                 }
+
             }
         });
         return mismatchedVars;
