@@ -7,7 +7,6 @@ import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.engine.ActivitiException;
-import org.activiti.spring.process.ExtensionVariableTypes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -56,8 +56,12 @@ public class ProcessExtensionsJsonVarsTest {
         assertThat(variableInstances).isNotNull();
         assertThat(variableInstances).hasSize(2);
 
-        assertThat(variableInstances).extracting("name")
-                .contains("var1", "var2");
+        //TODO: want the type to be json but currently is serializable
+        //see classes under org.activiti.engine.impl.variable
+        assertThat(variableInstances).extracting("name","type")
+                .contains(tuple("var1","json"),
+                        tuple("var2","json"));
+
 
         // cleanup
         processRuntime.delete(ProcessPayloadBuilder.delete(initialVarsProcess));
