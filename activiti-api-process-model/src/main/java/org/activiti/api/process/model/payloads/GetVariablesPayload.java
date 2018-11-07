@@ -8,7 +8,6 @@ public class GetVariablesPayload implements Payload {
 
     private String id;
     private String processInstanceId;
-    private String variableName;
 
     public GetVariablesPayload() {
         this.id = UUID.randomUUID().toString();
@@ -17,12 +16,6 @@ public class GetVariablesPayload implements Payload {
     public GetVariablesPayload(String processInstanceId) {
         this();
         this.processInstanceId = processInstanceId;
-    }
-
-    public GetVariablesPayload(String processInstanceId,
-                               String variableName) {
-        this(processInstanceId);
-        this.variableName = variableName;
     }
 
     @Override
@@ -36,13 +29,5 @@ public class GetVariablesPayload implements Payload {
 
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
-    }
-
-    public String getVariableName() {
-        return variableName;
-    }
-
-    public void setVariableName(String variableName) {
-        this.variableName = variableName;
     }
 }

@@ -6,7 +6,6 @@ import org.activiti.api.process.model.payloads.GetVariablesPayload;
 public class GetVariablesPayloadBuilder {
 
     private String processInstanceId;
-    private String variableName;
 
     public GetVariablesPayloadBuilder withProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
@@ -18,13 +17,7 @@ public class GetVariablesPayloadBuilder {
         return this;
     }
 
-
-    public GetVariablesPayloadBuilder withVariableName(String variableName) {
-        this.variableName = variableName;
-        return this;
-    }
-
     public GetVariablesPayload build() {
-        return new GetVariablesPayload(processInstanceId, variableName);
+        return new GetVariablesPayload(processInstanceId);
     }
 }

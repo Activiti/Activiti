@@ -64,5 +64,4 @@ public class GetTasksPayload implements Payload {
     public void setParentTaskId(String parentTaskId) {
         this.parentTaskId = parentTaskId;
     }
-
 }

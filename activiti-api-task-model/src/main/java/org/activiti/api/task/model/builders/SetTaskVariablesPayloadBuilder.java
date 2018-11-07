@@ -9,7 +9,6 @@ public class SetTaskVariablesPayloadBuilder {
     private String taskId;
     private Map<String, Object> variables;
 
-
     public SetTaskVariablesPayloadBuilder withTaskId(String taskId) {
         this.taskId = taskId;
         return this;
