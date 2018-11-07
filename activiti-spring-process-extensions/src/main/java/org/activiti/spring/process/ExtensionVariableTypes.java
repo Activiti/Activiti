@@ -2,26 +2,32 @@ package org.activiti.spring.process;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 public enum ExtensionVariableTypes {
 
     BOOLEAN("boolean",Boolean.class),
     STRING("string",String.class),
     INTEGER("integer",Integer.class),
-    DATE("date",Date.class,new SimpleDateFormat("yyyy-MM-dd"));
+    JSON("json",Map.class, LinkedHashMap.class),
+    DATE("date",new SimpleDateFormat("yyyy-MM-dd"),Date.class);
 
     String name;
-    Class clazz;
+    Set<Class> classes;
     Format format;
 
-    private ExtensionVariableTypes(String name, Class clazz){
+    private ExtensionVariableTypes(String name, Class... classes){
         this.name = name;
-        this.clazz = clazz;
+        this.classes = new HashSet(Arrays.asList(classes));
     }
 
-    private ExtensionVariableTypes(String name, Class clazz, Format format){
-        this(name,clazz);
+    private ExtensionVariableTypes(String name, Format format, Class... classes){
+        this(name,classes);
         this.format=format;
     }
     public static ExtensionVariableTypes getEnumByString(String name){

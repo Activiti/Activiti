@@ -91,7 +91,13 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         variableDefinitionMap.forEach((k,v) -> {
             if (variables.containsKey(v.getName()) ) {
                 ExtensionVariableTypes type = ExtensionVariableTypes.getEnumByString(v.getType());
-                if (!(variables.get(v.getName()).getClass().isAssignableFrom(type.clazz))){
+                boolean eligibleClass = false;
+                for (Class clazz:type.classes){
+                    if(variables.get(v.getName()).getClass().isAssignableFrom(clazz)){
+                        eligibleClass = true;
+                    }
+                }
+                if (!eligibleClass){
                     mismatchedVars.add(v.getName());
                 }
             }
