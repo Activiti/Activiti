@@ -252,6 +252,12 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (updateTaskPayload.getDueDate() != null) {
             internalTask.setDueDate(updateTaskPayload.getDueDate());
         }
+        if (updateTaskPayload.getParentTaskId() != null) {
+            internalTask.setParentTaskId(updateTaskPayload.getParentTaskId());
+        }
+        if (updateTaskPayload.getFormKey() != null) {
+            internalTask.setFormKey(updateTaskPayload.getFormKey());
+        }
         //@TODO: add check to see if something was changed before saving + add all other updateable values
         taskService.saveTask(internalTask);
         return task(updateTaskPayload.getTaskId());
@@ -296,6 +302,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
             task.setAssignee(createTaskPayload.getAssignee());
         }
         task.setParentTaskId(createTaskPayload.getParentTaskId());
+        task.setFormKey(createTaskPayload.getFormKey());
         task.setOwner(securityManager.getAuthenticatedUserId());
         taskService.saveTask(task);
         taskService.addCandidateUser(task.getId(),
