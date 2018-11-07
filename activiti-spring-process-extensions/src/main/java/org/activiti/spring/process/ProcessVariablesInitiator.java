@@ -25,15 +25,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class ProcessVariablesInitiator extends ProcessInstanceHelper {
-
-    private static final String DATE_VARIABLE_TYPE = "date";
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Autowired
     private Map<String, ProcessExtensionModel> processExtensionDefinitionMap;
@@ -47,6 +45,10 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
             Set<String> missingRequiredVars = checkRequiredVariables(variables, variableDefinitionMap);
             if (!missingRequiredVars.isEmpty()) {
                 throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' without required variables " + String.join(", ", missingRequiredVars));
+            }
+            Set<String> varsWithMismatchedTypes = checkVariablesMatchTypes(variables,variableDefinitionMap);
+            if(!varsWithMismatchedTypes.isEmpty()){
+                throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' as variables have unexpected types " + String.join(", ", varsWithMismatchedTypes));
             }
         }
         return super.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process, variables, transientVariables, startProcessInstance);
@@ -63,9 +65,9 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     }
 
     private Object createDefaultVaribleValue(VariableDefinition variableDefinition) {
-        if (DATE_VARIABLE_TYPE.equals(variableDefinition.getType())){
+        if (ExtensionVariableTypes.DATE.name.equals(variableDefinition.getType())){
             try {
-                return DATE_FORMAT.parse(String.valueOf(variableDefinition.getValue()));
+                return ExtensionVariableTypes.DATE.getDateFormat().parse(String.valueOf(variableDefinition.getValue()));
             } catch (ParseException e) {
                 throw new ActivitiException("Error parsing date variable '" + variableDefinition.getName()
                          + "' with value " + variableDefinition.getValue(), e);
@@ -82,6 +84,19 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
             }
         });
         return missingRequiredVars;
+    }
+
+    private Set<String> checkVariablesMatchTypes(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
+        Set<String> mismatchedVars = new HashSet<>();
+        variableDefinitionMap.forEach((k,v) -> {
+            if (variables.containsKey(v.getName()) ) {
+                ExtensionVariableTypes type = ExtensionVariableTypes.getEnumByString(v.getType());
+                if (!(variables.get(v.getName()).getClass().isAssignableFrom(type.clazz))){
+                    mismatchedVars.add(v.getName());
+                }
+            }
+        });
+        return mismatchedVars;
     }
 
 }
