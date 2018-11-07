@@ -134,9 +134,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (getTasksPayload.getParentTaskId() != null) {
             taskQuery = taskQuery.taskParentTaskId(getTasksPayload.getParentTaskId());
         }
-        if (getTasksPayload.getTaskDefinitionKey() != null){
-            taskQuery = taskQuery.taskDefinitionKey(getTasksPayload.getTaskDefinitionKey());
-        }
         List<Task> tasks = taskConverter.from(taskQuery.listPage(pageable.getStartIndex(),
                                                                  pageable.getMaxItems()));
         return new PageImpl<>(tasks,
