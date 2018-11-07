@@ -1,5 +1,6 @@
 package org.activiti.spring.boot.process;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
@@ -44,7 +45,7 @@ public class ProcessExtensionsJsonVarsTest {
         // start a process with vars then check default and specified vars exist
         ProcessInstance initialVarsProcess = processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(JSON_VARS_PROCESS)
-                .withVariable("var2",new ObjectMapper().readValue("{ \"testvar2element\":\"testvar2element\"}", HashMap.class))
+                .withVariable("var2",new ObjectMapper().readValue("{ \"testvar2element\":\"testvar2element\"}", JsonNode.class))
                 .withBusinessKey("my business key")
                 .build());
 
@@ -56,8 +57,6 @@ public class ProcessExtensionsJsonVarsTest {
         assertThat(variableInstances).isNotNull();
         assertThat(variableInstances).hasSize(2);
 
-        //TODO: want the type to be json but currently is serializable
-        //see classes under org.activiti.engine.impl.variable
         assertThat(variableInstances).extracting("name","type")
                 .contains(tuple("var1","json"),
                         tuple("var2","json"));

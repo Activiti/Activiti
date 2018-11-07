@@ -1,5 +1,8 @@
 package org.activiti.spring.process;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -14,7 +17,7 @@ public enum ExtensionVariableTypes {
     BOOLEAN("boolean",Boolean.class),
     STRING("string",String.class),
     INTEGER("integer",Integer.class),
-    JSON("json",Map.class, LinkedHashMap.class),
+    JSON("json", ObjectNode.class),
     DATE("date",new SimpleDateFormat("yyyy-MM-dd"),Date.class);
 
     String name;
