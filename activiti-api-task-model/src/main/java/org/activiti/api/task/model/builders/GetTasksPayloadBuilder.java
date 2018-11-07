@@ -11,7 +11,6 @@ public class GetTasksPayloadBuilder {
     private List<String> groups;
     private String processInstanceId;
     private String parentTaskId;
-    private String taskDefinitionKey;
 
     public GetTasksPayloadBuilder withAssignee(String assignee) {
         this.assignee = assignee;
@@ -25,11 +24,6 @@ public class GetTasksPayloadBuilder {
 
     public GetTasksPayloadBuilder withProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
-        return this;
-    }
-
-    public GetTasksPayloadBuilder withTaskDefinitionKey(String taskDefinitionKey) {
-        this.taskDefinitionKey = taskDefinitionKey;
         return this;
     }
 
@@ -50,7 +44,6 @@ public class GetTasksPayloadBuilder {
         return new GetTasksPayload(assignee,
                                    groups,
                                    processInstanceId,
-                                   parentTaskId,
-                                   taskDefinitionKey);
+                                   parentTaskId);
     }
 }
