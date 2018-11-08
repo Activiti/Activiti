@@ -10,7 +10,6 @@ public class RemoveVariablesPayloadBuilder {
 
     private String processInstanceId;
     private List<String> variableNames = new ArrayList<>();
-    private boolean localOnly = false;
 
     public RemoveVariablesPayloadBuilder withProcessInstanceId(String processDefinitionId) {
         this.processInstanceId = processDefinitionId;
@@ -30,11 +29,6 @@ public class RemoveVariablesPayloadBuilder {
         return this;
     }
 
-    public RemoveVariablesPayloadBuilder localOnly() {
-        this.localOnly = true;
-        return this;
-    }
-
     public RemoveVariablesPayloadBuilder withVariableNames(List<String> variableNames) {
         this.variableNames = variableNames;
         return this;
@@ -42,7 +36,6 @@ public class RemoveVariablesPayloadBuilder {
 
     public RemoveProcessVariablesPayload build() {
         return new RemoveProcessVariablesPayload(processInstanceId,
-                                                 variableNames,
-                                                 localOnly);
+                                                 variableNames);
     }
 }
