@@ -68,6 +68,13 @@ public class RuntimeTestConfiguration {
                                                                "password",
                                                                garthAuthorities));
 
+        //dean has role but no group
+        List<GrantedAuthority> deanAuthorities = new ArrayList<>();
+        deanAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
+        extendedInMemoryUserDetailsManager.createUser(new User("dean",
+                "password",
+                deanAuthorities));
+
         return extendedInMemoryUserDetailsManager;
     }
 

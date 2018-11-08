@@ -59,6 +59,9 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   private static final String FOZZIE = "fozzie";
   private static final List<String> FOZZIESGROUPS = Arrays.asList("management");
 
+  private static final String SCOOTER = "scooter";
+  private static final List<String> SCOOTERSGROUPS = null;
+
   private UserGroupManager userGroupManager = Mockito.mock(UserGroupManager.class);
 
 
@@ -910,6 +913,55 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     taskService.deleteTask(assigneeToKermit.getId());
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       historyService.deleteHistoricTaskInstance(assigneeToKermit.getId());
+    }
+  }
+
+
+  public void testQueryByCandidateOrAssignedWithNoGroups() {
+    //don't specify groups in query calls, instead get them through UserGroupLookupProxy (which could be remote service)
+
+    Mockito.when(userGroupManager.getUserGroups(SCOOTER)).thenReturn(SCOOTERSGROUPS);
+
+
+    // create a new task that no identity link and assignee to scooter
+    Task task = taskService.newTask();
+    task.setName("assigneeToScooter");
+    task.setDescription("testTask description");
+    task.setPriority(3);
+    task.setAssignee(SCOOTER);
+    taskService.saveTask(task);
+
+
+    //should see task as assignee
+    TaskQuery query = taskService.createTaskQuery().taskCandidateOrAssigned(SCOOTER);
+    assertEquals(1, query.count());
+    List<Task> tasks = query.list();
+    assertEquals(1, tasks.size());
+
+    //also if an or condition is used
+    query = taskService.createTaskQuery().or().taskId("dummyidforor").taskCandidateOrAssigned(SCOOTER);
+    assertEquals(1, query.count());
+    tasks = query.list();
+    assertEquals(1, tasks.size());
+
+    taskService.addCandidateUser(task.getId(),SCOOTER);
+
+    //should see task as both assignee and candidate
+    query = taskService.createTaskQuery().or().taskId("dummyidforor").taskCandidateOrAssigned(SCOOTER);
+    assertEquals(1, query.count());
+    tasks = query.list();
+    assertEquals(1, tasks.size());
+
+    //also if an or condition is used
+    query = taskService.createTaskQuery().or().taskId("dummyidforor").taskCandidateOrAssigned(SCOOTER);
+    assertEquals(1, query.count());
+    tasks = query.list();
+    assertEquals(1, tasks.size());
+
+    Task assigneeToScooter = taskService.createTaskQuery().taskName("assigneeToScooter").singleResult();
+    taskService.deleteTask(assigneeToScooter.getId());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      historyService.deleteHistoricTaskInstance(assigneeToScooter.getId());
     }
   }
 

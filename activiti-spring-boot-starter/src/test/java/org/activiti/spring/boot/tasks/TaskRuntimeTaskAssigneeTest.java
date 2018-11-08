@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -43,8 +44,8 @@ public class TaskRuntimeTaskAssigneeTest {
         securityUtil.logInAs("garth");
 
         taskRuntime.create(TaskPayloadBuilder.create()
-                .withName("task for salaboy")
-                .withAssignee("salaboy")
+                .withName("task for dean")
+                .withAssignee("dean") //but he should still be assigned the task
                 .build());
 
         // the owner should be able to see the created task
@@ -54,12 +55,12 @@ public class TaskRuntimeTaskAssigneeTest {
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
 
-        assertThat(task.getAssignee()).isEqualTo("salaboy");
+        assertThat(task.getAssignee()).isEqualTo("dean");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
 
-        // Now the task should be visible for salaboy
-        securityUtil.logInAs("salaboy");
+        // Now the task should be visible for dean
+        securityUtil.logInAs("dean");
 
         // the target user should be able to see the task as well
         tasks = taskRuntime.tasks(Pageable.of(0,
@@ -68,7 +69,7 @@ public class TaskRuntimeTaskAssigneeTest {
         assertThat(tasks.getContent()).hasSize(1);
         task = tasks.getContent().get(0);
 
-        assertThat(task.getAssignee()).isEqualTo("salaboy");
+        assertThat(task.getAssignee()).isEqualTo("dean");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         Task deletedTask = taskRuntime.delete(TaskPayloadBuilder
@@ -87,7 +88,7 @@ public class TaskRuntimeTaskAssigneeTest {
     }
 
 
-    @Test
+        @Test
     public void createStandaloneTaskForGroupAndClaim() {
 
         securityUtil.logInAs("garth");
