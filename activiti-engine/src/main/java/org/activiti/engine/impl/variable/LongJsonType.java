@@ -12,17 +12,22 @@
  */
 package org.activiti.engine.impl.variable;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.activiti.engine.ActivitiException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
 
  */
 public class LongJsonType extends SerializableType {
+
+  private static final Logger logger = LoggerFactory.getLogger(LongJsonType.class);
 
   protected final int minLength;
   protected ObjectMapper objectMapper;
@@ -44,9 +49,26 @@ public class LongJsonType extends SerializableType {
       JsonNode jsonValue = (JsonNode) value;
       return jsonValue.toString().length() >= minLength;
     }
+    if(includesTypeInfoForDeserliaizing(value)){
+      try {
+        String jsonValue = objectMapper.writeValueAsString(value);
+        return jsonValue.toString().length() >= minLength;
+      } catch (JsonProcessingException e) {
+        logger.error("Error reading object as json variable "+value, e);
+        return false;
+      }
+
+    }
     return false;
   }
-  
+
+  public boolean includesTypeInfoForDeserliaizing(Object value){
+    return value.getClass().isAnnotationPresent(JsonTypeInfo.class) &&
+            value.getClass().getAnnotation(JsonTypeInfo.class).property().equals("type") &&
+            value.getClass().getAnnotation(JsonTypeInfo.class).include().equals(JsonTypeInfo.As.PROPERTY) &&
+            value.getClass().getAnnotation(JsonTypeInfo.class).use().equals(JsonTypeInfo.Id.CLASS);
+  }
+
   public byte[] serialize(Object value, ValueFields valueFields) {
     if (value == null) {
       return null;
