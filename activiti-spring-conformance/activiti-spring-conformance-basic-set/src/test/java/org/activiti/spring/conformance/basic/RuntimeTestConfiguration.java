@@ -8,6 +8,7 @@ import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
+import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.*;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
@@ -32,6 +33,10 @@ public class RuntimeTestConfiguration {
     private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeTestConfiguration.class);
 
     public static List<RuntimeEvent> collectedEvents = new ArrayList<>();
+
+    public static boolean connector1Executed = false;
+
+    public static boolean connector2Executed = false;
 
     @Bean
     public UserDetailsService myUserDetailsService() {
@@ -159,6 +164,23 @@ public class RuntimeTestConfiguration {
     @Primary
     public VariableEventListener<VariableUpdatedEvent> variableUpdatedEventListener() {
         return variableUpdatedEvent -> collectedEvents.add(variableUpdatedEvent);
+    }
+
+    @Bean(name = "service-implementation")
+    public Connector serviceImplementation() {
+        return integrationContext -> {
+            connector1Executed = true;
+            return integrationContext;
+        };
+    }
+
+    @Bean(name = "service-implementation-modify-data")
+    public Connector serviceImplementationModifyData() {
+        return integrationContext -> {
+            connector2Executed = true;
+            integrationContext.getOutBoundVariables().put("var1", integrationContext.getInBoundVariables().get("var1") + "-modified");
+            return integrationContext;
+        };
     }
 
 }
