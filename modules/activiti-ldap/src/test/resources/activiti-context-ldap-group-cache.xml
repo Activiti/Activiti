@@ -6,7 +6,11 @@
                            http://www.springframework.org/schema/security   http://www.springframework.org/schema/security/spring-security.xsd">
 
   <!-- Embedded ldap test server -->
-  <security:ldap-server ldif="classpath:users.ldif" root="o=activiti" manager-dn="uid=admin, ou=users" manager-password="admin"/>
+  <bean id="org.springframework.security.unboundIdContainer"
+        class="org.springframework.security.ldap.server.UnboundIdContainer">
+    <constructor-arg name="ldif" value="classpath:users.ldif"/>
+    <constructor-arg name="defaultPartitionSuffix" value="o=activiti"/>
+  </bean>
 
   <bean id="dataSource"
         class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
@@ -32,9 +36,9 @@
 
           <!-- Server connection params -->
           <property name="server" value="ldap://localhost"/>
-          <property name="port" value="33389"/>
-          <property name="user" value="uid=admin, ou=users, o=activiti"/>
-          <property name="password" value="pass"/>
+          <property name="port" value="53389"/>
+          <property name="user" value="uid=admin, ou=system"/>
+          <property name="password" value="secret"/>
 
           <!-- Query params -->
           <property name="baseDn" value="o=activiti"/>
@@ -47,7 +51,7 @@
           <property name="userFirstNameAttribute" value="cn"/>
           <property name="userLastNameAttribute" value="sn"/>
 
-          <property name="groupIdAttribute" value="uid"/>
+          <property name="groupIdAttribute" value="ou"/>
           <property name="groupNameAttribute" value="cn"/>
 
           <!-- Group cache settings -->

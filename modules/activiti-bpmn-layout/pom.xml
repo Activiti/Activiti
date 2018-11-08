@@ -112,7 +112,7 @@
     <dependency>
       <groupId>com.github.jgraph</groupId>
       <artifactId>jgraphx</artifactId>
-      <version>v3.9.3</version>
+      <version>v3.9.10</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

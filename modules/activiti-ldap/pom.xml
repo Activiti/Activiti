@@ -10,9 +10,6 @@
   <artifactId>activiti-ldap</artifactId>
   <name>Activiti - LDAP</name>
   <properties>
-    <apache-directory.version>1.5.5</apache-directory.version>
-    <apache-directory-ldap.version>0.9.17</apache-directory-ldap.version>
-    <bouncycastle.version>1.59</bouncycastle.version>
     <activiti.artifact>
       org.activiti.ldap
     </activiti.artifact>
@@ -47,34 +44,10 @@
       <artifactId>spring-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Apache DS (LDAP Server) -->
+    <!-- UnboundID (LDAP Server) -->
     <dependency>
-      <groupId>org.apache.directory.server</groupId>
-      <artifactId>apacheds-core</artifactId>
-      <version>${apache-directory.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>bouncycastle</groupId>
-          <artifactId>bcprov-jdk15</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15on</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.directory.server</groupId>
-      <artifactId>apacheds-protocol-ldap</artifactId>
-      <version>${apache-directory.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.directory.shared</groupId>
-      <artifactId>shared-ldap</artifactId>
-      <version>${apache-directory-ldap.version}</version>
+      <groupId>com.unboundid</groupId>
+      <artifactId>unboundid-ldapsdk</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Logging -->
@@ -186,7 +159,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore></ignore>
+                    <ignore />
                   </action>
                 </pluginExecution>
               </pluginExecutions>

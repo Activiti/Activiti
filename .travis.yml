@@ -4,6 +4,7 @@ services:
   - docker
 jdk:
   - oraclejdk8
+  - openjdk11
 notifications:
   webhooks:
     urls:
@@ -14,11 +15,13 @@ notifications:
 
 before_script:
   - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc
-  - cd modules/activiti-dependency-check && mvn install
+  - cd modules/activiti-dependency-check && mvn install -B -V && cd ../..
+
+install: true
 
 # Enable integration tests
 script:
-  - mvn verify -B -Pdistro,dependency-check
+  - mvn verify -B -V -Pdistro,dependency-check -s settings.xml
 
 # Send coverage data
 after_success:

@@ -1,13 +1,5 @@
 # Based on the example LDIF file at http://krams915.blogspot.be/2011/01/spring-security-mvc-using-embedded-ldap.html
 
-# Root
-
-dn: o=activiti
-objectClass: organization
-objectClass: extensibleObject
-objectClass: top
-o: activiti
-
 # Users root
 
 dn: ou=users,o=activiti
@@ -30,28 +22,28 @@ dn: cn=User,ou=groups,o=activiti
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: User
-uid : user
-uniqueMember: uid=kermit, ou=users,o=activiti
-uniqueMember: uid=pepe, ou=users,o=activiti
-uniqueMember: uid=gonzo, ou=users,o=activiti
-uniqueMember: uid=fozzie, ou=users,o=activiti
+ou: user
+uniqueMember: uid=kermit,ou=users,o=activiti
+uniqueMember: uid=pepe,ou=users,o=activiti
+uniqueMember: uid=gonzo,ou=users,o=activiti
+uniqueMember: uid=fozzie,ou=users,o=activiti
 uniqueMember: cn=Dr\, Bunsen,ou=users,o=activiti
 
 dn: cn=Admin,ou=groups,o=activiti
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: Admin
-uid : admin
-uniqueMember: uid=kermit, ou=users,o=activiti
-uniqueMember: uid=fozzie, ou=users,o=activiti
+ou: admin
+uniqueMember: uid=kermit,ou=users,o=activiti
+uniqueMember: uid=fozzie,ou=users,o=activiti
 
 dn: cn=Sales,ou=groups,o=activiti
 objectClass: groupOfUniqueNames
 objectClass: top
 cn: Sales
-uid : sales
-uniqueMember: uid=pepe, ou=users,o=activiti
-uniqueMember: uid=gonzo, ou=users,o=activiti
+ou: sales
+uniqueMember: uid=pepe,ou=users,o=activiti
+uniqueMember: uid=gonzo,ou=users,o=activiti
 uniqueMember: cn=Dr\, Bunsen,ou=users,o=activiti
 
 # Actual users
@@ -66,7 +58,7 @@ sn: admin
 uid: admin
 userPassword:: cGFzcw==
 
-dn: uid=pepe, ou=users,o=activiti
+dn: uid=pepe,ou=users,o=activiti
 objectClass: organizationalPerson
 objectClass: person
 objectClass: inetOrgPerson
