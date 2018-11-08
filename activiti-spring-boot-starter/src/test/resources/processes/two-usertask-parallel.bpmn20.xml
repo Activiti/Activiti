@@ -15,7 +15,7 @@
     <parallelGateway id="parallelgateway1" name="Parallel Gateway"></parallelGateway>
     <endEvent id="endevent1" name="End"></endEvent>
     <userTask id="usertask1" name="User Task" activiti:candidateUsers="salaboy"></userTask>
-    <userTask id="usertask2" name="User Task" activiti:candidateUsers="garth"></userTask>
+    <userTask id="usertask2" name="User Task" activiti:candidateUsers="garth,dean"></userTask>
     <parallelGateway id="parallelgateway2" name="Parallel Gateway"></parallelGateway>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="parallelgateway1"></sequenceFlow>
     <sequenceFlow id="flow2" sourceRef="parallelgateway1" targetRef="usertask1"></sequenceFlow>
