@@ -134,7 +134,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (getTasksPayload.getParentTaskId() != null) {
             taskQuery = taskQuery.taskParentTaskId(getTasksPayload.getParentTaskId());
         }
-
         List<Task> tasks = taskConverter.from(taskQuery.listPage(pageable.getStartIndex(),
                                                                  pageable.getMaxItems()));
         return new PageImpl<>(tasks,
@@ -143,11 +142,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
-        if (getTaskVariablesPayload.isLocalOnly()) {
-            return variableInstanceConverter.from(taskService.getVariableInstancesLocal(getTaskVariablesPayload.getTaskId()).values());
-        } else {
-            return variableInstanceConverter.from(taskService.getVariableInstances(getTaskVariablesPayload.getTaskId()).values());
-        }
+        return variableInstanceConverter.from(taskService.getVariableInstancesLocal(getTaskVariablesPayload.getTaskId()).values());
     }
 
     @Override
@@ -172,7 +167,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
                                                  task.getName(),
                                                  Task.TaskStatus.COMPLETED);
         taskService.complete(completeTaskPayload.getTaskId(),
-                             completeTaskPayload.getVariables());
+                             completeTaskPayload.getVariables(),true);
         return competedTaskData;
     }
 
@@ -312,13 +307,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
-        if (setTaskVariablesPayload.isLocalOnly()) {
-            taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
+        taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
                                           setTaskVariablesPayload.getVariables());
-        } else {
-            taskService.setVariables(setTaskVariablesPayload.getTaskId(),
-                                     setTaskVariablesPayload.getVariables());
-        }
     }
 
     private org.activiti.engine.task.Task getInternalTask(String taskId) {

@@ -41,6 +41,7 @@ public class ActivitiProperties {
   private List<String> customMybatisMappers;
   private List<String> customMybatisXMLMappers;
   private boolean useStrongUuids = true;
+  private boolean copyVariablesToLocalForTasks = true;
 
   public boolean isAsyncExecutorActivate() {
     return asyncExecutorActivate;
@@ -195,5 +196,12 @@ public class ActivitiProperties {
   public void setUseStrongUuids(boolean useStrongUuids) {
 	this.useStrongUuids = useStrongUuids;
   }
-  
+
+    public boolean isCopyVariablesToLocalForTasks() {
+        return copyVariablesToLocalForTasks;
+    }
+
+    public void setCopyVariablesToLocalForTasks(boolean copyVariablesToLocalForTasks) {
+        this.copyVariablesToLocalForTasks = copyVariablesToLocalForTasks;
+    }
 }

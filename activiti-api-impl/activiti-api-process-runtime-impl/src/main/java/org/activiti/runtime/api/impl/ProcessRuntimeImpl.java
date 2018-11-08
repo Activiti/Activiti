@@ -263,11 +263,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         processInstance(getVariablesPayload.getProcessInstanceId());
 
         Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables;
-        if (getVariablesPayload.isLocalOnly()) {
-            variables = runtimeService.getVariableInstancesLocal(getVariablesPayload.getProcessInstanceId());
-        } else {
-            variables = runtimeService.getVariableInstances(getVariablesPayload.getProcessInstanceId());
-        }
+        variables = runtimeService.getVariableInstances(getVariablesPayload.getProcessInstanceId());
+
         return variableInstanceConverter.from(variables.values());
     }
 
@@ -277,13 +274,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (!securityPoliciesManager.canWrite(processInstance.getProcessDefinitionKey())) {
             throw new ActivitiForbiddenException("Operation not permitted for " + processInstance.getProcessDefinitionKey() + " due security policy violation");
         }
-        if (removeProcessVariablesPayload.isLocalOnly()) {
-            runtimeService.removeVariablesLocal(removeProcessVariablesPayload.getProcessInstanceId(),
-                                                removeProcessVariablesPayload.getVariableNames());
-        } else {
-            runtimeService.removeVariables(removeProcessVariablesPayload.getProcessInstanceId(),
+        runtimeService.removeVariables(removeProcessVariablesPayload.getProcessInstanceId(),
                                            removeProcessVariablesPayload.getVariableNames());
-        }
+
     }
 
     @Override
@@ -292,13 +285,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (!securityPoliciesManager.canWrite(processInstance.getProcessDefinitionKey())) {
             throw new ActivitiForbiddenException("Operation not permitted for " + processInstance.getProcessDefinitionKey() + " due security policy violation");
         }
-        if (setProcessVariablesPayload.isLocalOnly()) {
-            runtimeService.setVariablesLocal(setProcessVariablesPayload.getProcessInstanceId(),
-                                             setProcessVariablesPayload.getVariables());
-        } else {
-            runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
+        runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
                                         setProcessVariablesPayload.getVariables());
-        }
+        
     }
 
     @Override

@@ -29,6 +29,7 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
+import org.activiti.engine.impl.bpmn.helper.TaskVariableCopier;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -193,9 +194,14 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         }
       }
     }
-    
+
+
     taskEntityManager.insert(task, (ExecutionEntity) execution);
-    
+
+    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
+      TaskVariableCopier.copyVariablesIntoTaskLocal(task);
+    }
+
     boolean skipUserTask = false;
     if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
       Expression skipExpression = expressionManager.createExpression(activeTaskSkipExpression);
@@ -226,7 +232,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       taskEntityManager.deleteTask(task, null, false, false);
       leave(execution);
     }
-    
+
   }
 
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
@@ -238,7 +244,6 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         throw new ActivitiException("UserTask should not be signalled before complete");
       }
     }
-    
     leave(execution);
   }
 

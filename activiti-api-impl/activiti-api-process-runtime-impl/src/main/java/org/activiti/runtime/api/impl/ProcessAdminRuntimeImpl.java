@@ -207,23 +207,14 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     @Override
     public void setVariables(SetProcessVariablesPayload setProcessVariablesPayload) {
-        if (setProcessVariablesPayload.isLocalOnly()) {
-            runtimeService.setVariablesLocal(setProcessVariablesPayload.getProcessInstanceId(),
-                                             setProcessVariablesPayload.getVariables());
-        } else {
-            runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
+        runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
                                         setProcessVariablesPayload.getVariables());
-        }
+
     }
 
     @Override
     public void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload) {
-        if (removeProcessVariablesPayload.isLocalOnly()) {
-            runtimeService.removeVariablesLocal(removeProcessVariablesPayload.getProcessInstanceId(),
-                                                removeProcessVariablesPayload.getVariableNames());
-        } else {
-            runtimeService.removeVariables(removeProcessVariablesPayload.getProcessInstanceId(),
+        runtimeService.removeVariables(removeProcessVariablesPayload.getProcessInstanceId(),
                                            removeProcessVariablesPayload.getVariableNames());
-        }
     }
 }

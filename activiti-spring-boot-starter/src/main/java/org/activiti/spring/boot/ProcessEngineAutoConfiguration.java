@@ -81,6 +81,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         }
 
         conf.setHistoryLevel(activitiProperties.getHistoryLevel());
+        conf.setCopyVariablesToLocalForTasks(activitiProperties.isCopyVariablesToLocalForTasks());
 
         if (activitiProperties.getCustomMybatisMappers() != null) {
             conf.setCustomMybatisMappers(getCustomMybatisMapperClasses(activitiProperties.getCustomMybatisMappers()));

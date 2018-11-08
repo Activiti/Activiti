@@ -172,6 +172,38 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     checkVariable(taskList1.get(0).getId(), "taskVar1" , "sayHello1", variables);
     checkVariable(taskList2.get(1).getId(), "taskVar4" , "sayHello4", variables);
   }
+
+  @Deployment
+  public void testGetVariablesCopiedIntoTasks(){
+    //variables not automatically copied into tasks at engine level unless we turn this on
+    processEngineConfiguration.setCopyVariablesToLocalForTasks(true);
+
+    Map<String,Object> startVariables = new HashMap<>();
+    startVariables.put("start1","start1");
+    startVariables.put("start2","start2");
+
+    ProcessInstance processInstance1 = runtimeService.startProcessInstanceByKey("twoTaskProcess",startVariables);
+    Task userTask1 = taskService.createTaskQuery().taskDefinitionKey("usertask1").singleResult();
+    Task userTask2 = taskService.createTaskQuery().taskDefinitionKey("usertask2").singleResult();
+
+    //both should have the process variables copied into their local
+    assertEquals(startVariables,taskService.getVariablesLocal(userTask1.getId()));
+    assertEquals(startVariables,taskService.getVariablesLocal(userTask2.getId()));
+
+
+    //if one modifies, the other should not see the modification
+    taskService.setVariableLocal(userTask1.getId(),"start1","modifiedstart1");
+
+    assertEquals(taskService.getVariablesLocal(userTask2.getId()),startVariables);
+    taskService.complete(userTask1.getId());
+
+    //after completion the process variable should be updated but only that one and not task2's local variable
+    assertEquals("modifiedstart1",runtimeService.getVariable(processInstance1.getId(),"start1"));
+    assertEquals("start2", runtimeService.getVariable(processInstance1.getId(),"start2"));
+    assertEquals(startVariables,taskService.getVariablesLocal(userTask2.getId()));
+
+    processEngineConfiguration.setCopyVariablesToLocalForTasks(false);
+  }
   
   private void checkVariable(String taskId, String name, String value, List<VariableInstance> variables){
     for (VariableInstance variable : variables){

@@ -201,6 +201,8 @@ public abstract class ProcessEngineConfiguration {
   protected boolean enableProcessDefinitionInfoCache = false;
   protected ActivitiEngineAgendaFactory engineAgendaFactory;
 
+  protected boolean copyVariablesToLocalForTasks = false;
+
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
   }
@@ -740,6 +742,15 @@ public abstract class ProcessEngineConfiguration {
   public ProcessEngineConfiguration setEnableProcessDefinitionInfoCache(boolean enableProcessDefinitionInfoCache) {
     this.enableProcessDefinitionInfoCache = enableProcessDefinitionInfoCache;
     return this;
+  }
+
+  public ProcessEngineConfiguration setCopyVariablesToLocalForTasks(boolean copyVariablesToLocalForTasks) {
+    this.copyVariablesToLocalForTasks = copyVariablesToLocalForTasks;
+    return this;
+  }
+
+  public boolean isCopyVariablesToLocalForTasks(){
+    return copyVariablesToLocalForTasks;
   }
 
   public void setEngineAgendaFactory(ActivitiEngineAgendaFactory engineAgendaFactory) {
