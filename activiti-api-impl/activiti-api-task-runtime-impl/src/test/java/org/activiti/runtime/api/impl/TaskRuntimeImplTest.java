@@ -16,24 +16,28 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.Collections;
+
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
+import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
+import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.api.task.model.impl.TaskImpl;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Spy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -41,8 +45,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TaskRuntimeImplTest {
 
-    @Spy
-    @InjectMocks
     private TaskRuntimeImpl taskRuntime;
 
     @Mock
@@ -51,9 +53,19 @@ public class TaskRuntimeImplTest {
     @Mock
     private TaskService taskService;
 
+    @Mock
+    private TaskRuntimeEventListener<TaskUpdatedEvent> listener;
+
     @Before
     public void setUp() {
         initMocks(this);
+        taskRuntime = spy(new TaskRuntimeImpl(taskService,
+                            null,
+                            securityManager,
+                            null,
+                            null,
+                            null,
+                            Collections.singletonList(listener)));
         when(securityManager.getAuthenticatedUserId()).thenReturn("user");
     }
 
@@ -76,7 +88,6 @@ public class TaskRuntimeImplTest {
                 .hasMessage("You cannot update a task where you are not the assignee");
     }
 
-
     @Test
     public void updateShouldBeAbleToUpdateDescriptionOnly() {
         //given
@@ -97,11 +108,13 @@ public class TaskRuntimeImplTest {
         given(taskQuery.singleResult()).willReturn(internalTask);
 
         //when
-        taskRuntime.update(updateTaskPayload);
+        org.activiti.api.task.model.Task updatedTask = taskRuntime.update(updateTaskPayload);
 
         //then
         verify(internalTask).setDescription("new description");
         verifyNoMoreInteractions(internalTask);
+        ArgumentCaptor<TaskUpdatedEvent> captor = ArgumentCaptor.forClass(TaskUpdatedEvent.class);
+        verify(listener).onEvent(captor.capture());
+        assertThat(captor.getValue().getEntity()).isEqualTo(updatedTask);
     }
-
 }

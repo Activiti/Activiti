@@ -27,6 +27,7 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.CreateTaskPayload;
@@ -38,11 +39,13 @@ import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
+import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
+import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
+import org.activiti.runtime.api.event.impl.TaskUpdatedEventImpl;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
-import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -61,18 +64,22 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     private final SecurityManager securityManager;
 
+    private final List<TaskRuntimeEventListener<TaskUpdatedEvent>> taskUpdatedListeners;
+
     public TaskRuntimeImpl(TaskService taskService,
                            UserGroupManager userGroupManager,
                            SecurityManager securityManager,
                            APITaskConverter taskConverter,
                            APIVariableInstanceConverter variableInstanceConverter,
-                           TaskRuntimeConfiguration configuration) {
+                           TaskRuntimeConfiguration configuration,
+                           List<TaskRuntimeEventListener<TaskUpdatedEvent>> taskUpdatedListeners) {
         this.taskService = taskService;
         this.userGroupManager = userGroupManager;
         this.securityManager = securityManager;
         this.taskConverter = taskConverter;
         this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
+        this.taskUpdatedListeners = taskUpdatedListeners;
     }
 
     @Override
@@ -254,7 +261,15 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
         //@TODO: add check to see if something was changed before saving + add all other updateable values
         taskService.saveTask(internalTask);
-        return task(updateTaskPayload.getTaskId());
+        Task convertedTask = task(updateTaskPayload.getTaskId());
+        fireTaskUpdatedEvent(convertedTask);
+        return convertedTask;
+    }
+
+    private void fireTaskUpdatedEvent(Task convertedTask) {
+        for (TaskRuntimeEventListener<TaskUpdatedEvent> listener : taskUpdatedListeners) {
+            listener.onEvent(new TaskUpdatedEventImpl(convertedTask));
+        }
     }
 
     @Override
