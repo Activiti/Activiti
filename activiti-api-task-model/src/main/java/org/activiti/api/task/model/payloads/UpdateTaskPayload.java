@@ -14,6 +14,8 @@ public class UpdateTaskPayload implements Payload {
     private Date dueDate;
     private Integer priority;
     private String assignee;
+    private String parentTaskId;
+    private String formKey;
 
     public UpdateTaskPayload() {
         this.id = UUID.randomUUID().toString();
@@ -24,7 +26,9 @@ public class UpdateTaskPayload implements Payload {
                              String description,
                              Date dueDate,
                              Integer priority,
-                             String assignee) {
+                             String assignee,
+                             String parentTaskId,
+                             String formKey) {
         this();
         this.taskId = taskId;
         this.taskName = taskName;
@@ -32,6 +36,8 @@ public class UpdateTaskPayload implements Payload {
         this.dueDate = dueDate;
         this.priority = priority;
         this.assignee = assignee;
+        this.parentTaskId = parentTaskId;
+        this.formKey = formKey;
     }
 
     @Override
@@ -85,5 +91,21 @@ public class UpdateTaskPayload implements Payload {
 
     public void setAssignee(String assignee) {
         this.assignee = assignee;
+    }
+
+    public String getParentTaskId() {
+        return parentTaskId;
+    }
+
+    public void setParentTaskId(String parentTaskId) {
+        this.parentTaskId = parentTaskId;
+    }
+
+    public String getFormKey() {
+        return formKey;
+    }
+
+    public void setFormKey(String formKey) {
+        this.formKey = formKey;
     }
 }

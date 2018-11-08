@@ -12,6 +12,8 @@ public class UpdateTaskPayloadBuilder {
     private Date dueDate;
     private Integer priority;
     private String assignee;
+    private String parentTaskId;
+    private String formKey;
 
     public UpdateTaskPayloadBuilder withAssignee(String assignee) {
         this.assignee = assignee;
@@ -43,12 +45,24 @@ public class UpdateTaskPayloadBuilder {
         return this;
     }
 
+    public UpdateTaskPayloadBuilder parentTaskId(String parentTaskId) {
+        this.parentTaskId = parentTaskId;
+        return this;
+    }
+
+    public UpdateTaskPayloadBuilder withFormKey(String formKey) {
+        this.formKey = formKey;
+        return this;
+    }
+
     public UpdateTaskPayload build() {
         return new UpdateTaskPayload(taskId,
                                      name,
                                      description,
                                      dueDate,
                                      priority,
-                                     assignee);
+                                     assignee,
+                                     parentTaskId,
+                                     formKey);
     }
 }

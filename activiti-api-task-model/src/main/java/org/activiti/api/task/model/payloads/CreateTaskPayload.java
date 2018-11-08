@@ -16,6 +16,7 @@ public class CreateTaskPayload implements Payload {
     private String assignee;
     private List<String> groups;
     private String parentTaskId;
+    private String formKey;
 
     public CreateTaskPayload() {
         this.id = UUID.randomUUID().toString();
@@ -27,7 +28,8 @@ public class CreateTaskPayload implements Payload {
                              int priority,
                              String assignee,
                              List<String> groups,
-                             String parentTaskId) {
+                             String parentTaskId,
+                             String formKey) {
         this.name = name;
         this.description = description;
         this.dueDate = dueDate;
@@ -35,6 +37,7 @@ public class CreateTaskPayload implements Payload {
         this.assignee = assignee;
         this.groups = groups;
         this.parentTaskId = parentTaskId;
+        this.formKey = formKey;
     }
 
     @Override
@@ -88,6 +91,14 @@ public class CreateTaskPayload implements Payload {
 
     public void setParentTaskId(String parentTaskId) {
         this.parentTaskId = parentTaskId;
+    }
+
+    public String getFormKey() {
+        return formKey;
+    }
+
+    public void setFormKey(String formKey) {
+        this.formKey = formKey;
     }
 
     public List<String> getGroups() {
