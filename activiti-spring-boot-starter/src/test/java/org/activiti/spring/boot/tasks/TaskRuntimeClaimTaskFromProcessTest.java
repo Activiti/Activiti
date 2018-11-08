@@ -8,6 +8,8 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,14 @@ public class TaskRuntimeClaimTaskFromProcessTest {
     private static final String TWOTASK_PROCESS = "twoTaskProcess";
 
 
+    @Autowired
+    private ProcessCleanUpUtil processCleanUpUtil;
+
+    @After
+    public void cleanUp(){
+        processCleanUpUtil.cleanUpWithAdmin();
+    }
+
     @Test
     public void claimTaskWithoutGroup() {
 
@@ -52,6 +62,9 @@ public class TaskRuntimeClaimTaskFromProcessTest {
         task = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent().get(0);
 
         assertThat(task).isNotNull();
+
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+
     }
 
 
