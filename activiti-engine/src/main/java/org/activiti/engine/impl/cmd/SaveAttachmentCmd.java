@@ -15,14 +15,12 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.task.Attachment;
 
 /**
@@ -46,14 +44,9 @@ public class SaveAttachmentCmd implements Command<Object>, Serializable {
       ExecutionEntity process = commandContext.getExecutionEntityManager().findById(processInstanceId);
       if (process != null) {
         processDefinitionId = process.getProcessDefinitionId();
-        if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, process.getProcessDefinitionId())) {
-          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-          activiti5CompatibilityHandler.saveAttachment(attachment);
-          return null;
-        }
       }
     }
-    
+
     updateAttachment.setName(attachment.getName());
     updateAttachment.setDescription(attachment.getDescription());
 

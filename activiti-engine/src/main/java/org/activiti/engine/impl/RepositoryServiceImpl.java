@@ -38,7 +38,6 @@ import org.activiti.engine.impl.cmd.GetIdentityLinksForProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.GetModelCmd;
 import org.activiti.engine.impl.cmd.GetModelEditorSourceCmd;
 import org.activiti.engine.impl.cmd.GetModelEditorSourceExtraCmd;
-import org.activiti.engine.impl.cmd.IsActiviti5ProcessDefinitionCmd;
 import org.activiti.engine.impl.cmd.IsProcessDefinitionSuspendedCmd;
 import org.activiti.engine.impl.cmd.SaveModelCmd;
 import org.activiti.engine.impl.cmd.SetDeploymentCategoryCmd;
@@ -139,10 +138,6 @@ public class RepositoryServiceImpl extends ServiceImpl implements RepositoryServ
     return commandExecutor.execute(new GetDeploymentProcessDefinitionCmd(processDefinitionId));
   }
   
-  public Boolean isActiviti5ProcessDefinition(String processDefinitionId) {
-    return commandExecutor.execute(new IsActiviti5ProcessDefinitionCmd(processDefinitionId));
-  }
-
   public BpmnModel getBpmnModel(String processDefinitionId) {
     return commandExecutor.execute(new GetBpmnModelCmd(processDefinitionId));
   }

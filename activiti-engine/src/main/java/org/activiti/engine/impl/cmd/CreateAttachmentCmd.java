@@ -17,7 +17,6 @@ import java.io.InputStream;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.identity.Authentication;
@@ -27,7 +26,6 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Attachment;
@@ -61,19 +59,11 @@ public class CreateAttachmentCmd implements Command<Attachment> {
   public Attachment execute(CommandContext commandContext) {
 
     if (taskId != null) {
-      TaskEntity task = verifyTaskParameters(commandContext);
-      if (task.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
-        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-        return activiti5CompatibilityHandler.createAttachment(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content, url);
-      }
+      verifyTaskParameters(commandContext);
     }
-    
+
     if (processInstanceId != null) {
-      ExecutionEntity execution = verifyExecutionParameters(commandContext);
-      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
-        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-        return activiti5CompatibilityHandler.createAttachment(attachmentType, taskId, processInstanceId, attachmentName, attachmentDescription, content, url);
-      }
+      verifyExecutionParameters(commandContext);
     }
 
     AttachmentEntity attachment = commandContext.getAttachmentEntityManager().create();

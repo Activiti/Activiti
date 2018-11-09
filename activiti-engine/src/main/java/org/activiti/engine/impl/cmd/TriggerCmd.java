@@ -13,13 +13,11 @@
 
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.util.Activiti5Util;
 
 import java.util.Map;
 
@@ -45,12 +43,6 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
   }
 
   protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
-    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
-      activiti5CompatibilityHandler.trigger(executionId, processVariables);
-      return null;
-    }
-
     if (processVariables != null) {
       execution.setVariables(processVariables);
     }

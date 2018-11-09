@@ -15,14 +15,12 @@ package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CommentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
@@ -87,11 +85,6 @@ public class AddCommentCmd implements Command<Comment> {
       processDefinitionId = task.getProcessDefinitionId();
     }
     
-    if (processDefinitionId != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, processDefinitionId)) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-      return activiti5CompatibilityHandler.addComment(taskId, processInstanceId, type, message);
-    }
-
     String userId = Authentication.getAuthenticatedUserId();
     CommentEntity comment = commandContext.getCommentEntityManager().create(); 
     comment.setUserId(userId);

@@ -21,7 +21,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.interceptor.Command;
@@ -34,7 +33,6 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManage
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.impl.persistence.entity.SuspensionState.SuspensionStateUtil;
 import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
@@ -69,23 +67,6 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   public Void execute(CommandContext commandContext) {
 
     List<ProcessDefinitionEntity> processDefinitions = findProcessDefinition(commandContext);
-    boolean hasActiviti5ProcessDefinitions = false;
-    for (ProcessDefinitionEntity processDefinitionEntity : processDefinitions) {
-      if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinitionEntity)) {
-        hasActiviti5ProcessDefinitions = true;
-        break;
-      }
-    }
-    
-    if (hasActiviti5ProcessDefinitions) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-      if (getProcessDefinitionSuspensionState() == SuspensionState.ACTIVE) {
-        activiti5CompatibilityHandler.activateProcessDefinition(processDefinitionId, processDefinitionKey, includeProcessInstances, executionDate, tenantId);
-      } else if (getProcessDefinitionSuspensionState() == SuspensionState.SUSPENDED) {
-        activiti5CompatibilityHandler.suspendProcessDefinition(processDefinitionId, processDefinitionKey, includeProcessInstances, executionDate, tenantId);
-      }
-      return null;
-    }
 
     if (executionDate != null) { // Process definition state change is delayed
       createTimerForDelayedExecution(commandContext, processDefinitions);
@@ -146,8 +127,6 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   protected void createTimerForDelayedExecution(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       
-      if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) continue;
-      
       TimerJobEntity timer = commandContext.getTimerJobEntityManager().create();
       timer.setJobType(JobEntity.JOB_TYPE_TIMER);
       timer.setProcessDefinitionId(processDefinition.getId());
@@ -167,8 +146,6 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   protected void changeProcessDefinitionState(CommandContext commandContext, List<ProcessDefinitionEntity> processDefinitions) {
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
 
-      if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) continue;
-      
       SuspensionStateUtil.setSuspensionState(processDefinition, getProcessDefinitionSuspensionState());
 
       // Evict cache

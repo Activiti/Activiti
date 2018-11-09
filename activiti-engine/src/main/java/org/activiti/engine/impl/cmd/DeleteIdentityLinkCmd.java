@@ -14,10 +14,8 @@
 package org.activiti.engine.impl.cmd;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
@@ -70,12 +68,6 @@ public class DeleteIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
   }
 
   protected Void execute(CommandContext commandContext, TaskEntity task) {
-    if (task.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, task.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-      activiti5CompatibilityHandler.deleteIdentityLink(taskId, userId, groupId, type);
-      return null;
-    }
-
     if (IdentityLinkType.ASSIGNEE.equals(type)) {
       commandContext.getTaskEntityManager().changeTaskAssignee(task, null);
     } else if (IdentityLinkType.OWNER.equals(type)) {
