@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class ConformanceServiceTask2Test {
+public class ConformanceServiceTaskModifyVariableTest {
 
     private final String processKey = "serviceta2-820b2020-968d-4d34-bac4-5769192674f2";
     @Autowired
@@ -40,14 +40,16 @@ public class ConformanceServiceTask2Test {
     }
 
     /*
-     * This test covers the ServiceTask with Implementation.bpmn20.xml process
+     * This test covers the ServiceTask with Implementation2.bpmn20.xml process
      * This execution should generate 11 events:
      *   - PROCESS_CREATED
+     *   - VARIABLE_CREATED
      *   - PROCESS_STARTED,
      *   - ACTIVITY_STARTED,
      *   - ACTIVITY_COMPLETED,
      *   - SEQUENCE_FLOW_TAKEN,
      *   - ACTIVITY_STARTED,
+     *   - VARIABLE_UPDATED
      *   - ACTIVITY_COMPLETED,
      *   - SEQUENCE_FLOW_TAKEN,
      *   - ACTIVITY_STARTED,

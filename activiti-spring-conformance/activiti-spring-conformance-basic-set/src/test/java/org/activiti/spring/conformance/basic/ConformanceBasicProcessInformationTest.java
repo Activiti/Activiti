@@ -2,6 +2,7 @@ package org.activiti.spring.conformance.basic;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.event.VariableEvent;
+import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNActivityEvent;
@@ -9,7 +10,11 @@ import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
+import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.api.runtime.shared.events.VariableEventListener;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.spring.conformance.basic.security.util.SecurityUtil;
 import org.junit.After;
 import org.junit.Test;
@@ -17,6 +22,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 import static org.activiti.spring.conformance.basic.RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,16 +43,6 @@ public class ConformanceBasicProcessInformationTest {
     @After
     public void cleanUp() {
         collectedEvents.clear();
-    }
-
-    @Test
-    public void shouldGetConfiguration() {
-        securityUtil.logInAs("user1");
-        //when
-        ProcessRuntimeConfiguration configuration = processRuntime.configuration();
-
-        //then
-        assertThat(configuration).isNotNull();
     }
 
     /*
