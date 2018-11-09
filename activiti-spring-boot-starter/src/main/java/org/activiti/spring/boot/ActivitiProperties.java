@@ -17,7 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 @ConfigurationProperties("spring.activiti")
 public class ActivitiProperties {
@@ -36,7 +36,7 @@ public class ActivitiProperties {
   private String databaseSchema;
   private boolean isDbHistoryUsed = false;
   private HistoryLevel historyLevel = HistoryLevel.NONE;
-  private String processDefinitionLocationPrefix = "classpath:**/processes/";
+  private String processDefinitionLocationPrefix = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "**/processes/";
   private List<String> processDefinitionLocationSuffixes = Arrays.asList("**.bpmn20.xml", "**.bpmn");
   private List<String> customMybatisMappers;
   private List<String> customMybatisXMLMappers;
