@@ -20,6 +20,7 @@ import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.spring.conformance.basic.security.util.SecurityUtil;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,11 @@ public class ConformanceBasicTaskRuntimeTest {
 
     @Autowired
     private SecurityUtil securityUtil;
+
+    @After
+    public void cleanUp() {
+        collectedEvents.clear();
+    }
 
     @Test
     public void shouldGetConfiguration() {
