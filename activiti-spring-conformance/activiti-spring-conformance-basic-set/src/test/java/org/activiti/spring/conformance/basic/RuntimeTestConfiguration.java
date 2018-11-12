@@ -13,6 +13,8 @@ import org.activiti.api.process.runtime.events.*;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
+import org.activiti.api.task.runtime.events.*;
+import org.activiti.api.task.runtime.events.listener.TaskEventListener;
 import org.activiti.core.common.spring.identity.ExtendedInMemoryUserDetailsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -165,6 +167,37 @@ public class RuntimeTestConfiguration {
     public VariableEventListener<VariableUpdatedEvent> variableUpdatedEventListener() {
         return variableUpdatedEvent -> collectedEvents.add(variableUpdatedEvent);
     }
+
+    @Bean
+    @Primary
+    public TaskEventListener<TaskCreatedEvent> taskCreatedEventListener() {
+        return taskCreatedEvent -> collectedEvents.add(taskCreatedEvent);
+    }
+
+    @Bean
+    @Primary
+    public TaskEventListener<TaskUpdatedEvent> taskUpdatedEventListener() {
+        return taskUpdatedEvent -> collectedEvents.add(taskUpdatedEvent);
+    }
+
+    @Bean
+    @Primary
+    public TaskEventListener<TaskCompletedEvent> taskCompletedEventListener() {
+        return taskCompletedEvent -> collectedEvents.add(taskCompletedEvent);
+    }
+
+    @Bean
+    @Primary
+    public TaskEventListener<TaskSuspendedEvent> taskSuspendedEventListener() {
+        return taskSuspendedEvent -> collectedEvents.add(taskSuspendedEvent);
+    }
+
+    @Bean
+    @Primary
+    public TaskEventListener<TaskAssignedEvent> taskAssignedEventListener() {
+        return taskAssignedEvent -> collectedEvents.add(taskAssignedEvent);
+    }
+
 
     @Bean(name = "service-implementation")
     public Connector serviceImplementation() {

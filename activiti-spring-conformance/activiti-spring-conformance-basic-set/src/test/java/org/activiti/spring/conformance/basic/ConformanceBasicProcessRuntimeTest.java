@@ -52,13 +52,14 @@ public class ConformanceBasicProcessRuntimeTest {
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
 
-        assertThat(processDefinitionPage.getTotalItems()).isEqualTo(4);
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsExactly(
                 "Process with Generic  BPMN Task",
+                "UserTask with Assignee",
                 "ServiceTask with Implementation",
                 "ServiceTask with Implementation Modify Variable",
                 "Process Information"
+
         );
 
     }
@@ -69,10 +70,10 @@ public class ConformanceBasicProcessRuntimeTest {
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 50));
 
-        assertThat(processDefinitionPage.getTotalItems()).isEqualTo(4);
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsExactly(
                 "Process with Generic  BPMN Task",
+                "UserTask with Assignee",
                 "ServiceTask with Implementation",
                 "ServiceTask with Implementation Modify Variable",
                 "Process Information"
