@@ -20,7 +20,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -32,7 +31,6 @@ import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -120,12 +118,6 @@ public class DeploymentManager {
 
     if (cachedProcessDefinition == null) {
       CommandContext commandContext = Context.getCommandContext();
-      if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled() && 
-          Activiti5Util.isActiviti5ProcessDefinition(Context.getCommandContext(), processDefinition)) {
-        
-        return Activiti5Util.getActiviti5CompatibilityHandler().resolveProcessDefinition(processDefinition);
-      }
-      
       DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
       deployment.setNew(false);
       deploy(deployment, null);
@@ -143,13 +135,6 @@ public class DeploymentManager {
     DeploymentEntity deployment = deploymentEntityManager.findById(deploymentId);
     if (deployment == null) {
       throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", DeploymentEntity.class);
-    }
-
-    if (processEngineConfiguration.isActiviti5CompatibilityEnabled() && 
-        Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(deployment.getEngineVersion())) {
-      
-      processEngineConfiguration.getActiviti5CompatibilityHandler().deleteDeployment(deploymentId, cascade);
-      return;
     }
 
     // Remove any process definition from the cache

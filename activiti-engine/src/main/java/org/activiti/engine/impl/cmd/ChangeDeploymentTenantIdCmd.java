@@ -17,7 +17,6 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -50,13 +49,6 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
     DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findById(deploymentId);
     if (deployment == null) {
       throw new ActivitiObjectNotFoundException("Could not find deployment with id " + deploymentId, Deployment.class);
-    }
-    
-    if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled() && 
-        Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(deployment.getEngineVersion())) {
-      
-      commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().changeDeploymentTenantId(deploymentId, newTenantId);
-      return null;
     }
     
     String oldTenantId = deployment.getTenantId();

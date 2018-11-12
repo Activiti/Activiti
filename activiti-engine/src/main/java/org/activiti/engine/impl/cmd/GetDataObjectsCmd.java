@@ -24,14 +24,12 @@ import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.DynamicBpmnConstants;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.DataObjectImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.runtime.Execution;
@@ -76,28 +74,21 @@ public class GetDataObjectsCmd implements Command<Map<String, DataObject>>, Seri
     }
     
     Map<String, VariableInstance> variables = null;
-    
-    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-      variables = activiti5CompatibilityHandler.getExecutionVariableInstances(executionId, dataObjectNames, isLocal);
-    
-    } else {
 
-      if (dataObjectNames == null || dataObjectNames.isEmpty()) {
-        // Fetch all
-        if (isLocal) {
-          variables = execution.getVariableInstancesLocal();
-        } else {
-          variables = execution.getVariableInstances();
-        }
-  
+    if (dataObjectNames == null || dataObjectNames.isEmpty()) {
+      // Fetch all
+      if (isLocal) {
+        variables = execution.getVariableInstancesLocal();
       } else {
-        // Fetch specific collection of variables
-        if (isLocal) {
-          variables = execution.getVariableInstancesLocal(dataObjectNames, false);
-        } else {
-          variables = execution.getVariableInstances(dataObjectNames, false);
-        }
+        variables = execution.getVariableInstances();
+      }
+
+    } else {
+      // Fetch specific collection of variables
+      if (isLocal) {
+        variables = execution.getVariableInstancesLocal(dataObjectNames, false);
+      } else {
+        variables = execution.getVariableInstances(dataObjectNames, false);
       }
     }
 

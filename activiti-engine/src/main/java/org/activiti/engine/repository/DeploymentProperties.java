@@ -13,7 +13,6 @@
 package org.activiti.engine.repository;
 
 public interface DeploymentProperties {
-  
-  String DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION = "deployAsActiviti5ProcessDefinition";
+
 
 }

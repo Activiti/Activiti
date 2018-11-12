@@ -13,7 +13,6 @@
 package org.activiti.engine.impl.asyncexecutor;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -26,7 +25,6 @@ import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,10 +63,6 @@ public class ExecuteAsyncRunnable implements Runnable {
       });
     }
     
-    if (isHandledByActiviti5Engine()) {
-      return;
-    }
-    
     boolean lockNotNeededOrSuccess = lockJobIfNeeded();
 
     if (lockNotNeededOrSuccess) {
@@ -76,20 +70,6 @@ public class ExecuteAsyncRunnable implements Runnable {
       unlockJobIfNeeded();
     }
 
-  }
-
-  protected boolean isHandledByActiviti5Engine() {
-    boolean isActiviti5ProcessDefinition = Activiti5Util.isActiviti5ProcessDefinitionId(processEngineConfiguration, job.getProcessDefinitionId());
-    if (isActiviti5ProcessDefinition) {
-      return processEngineConfiguration.getCommandExecutor().execute(new Command<Boolean>() {
-        @Override
-        public Boolean execute(CommandContext commandContext) {
-          commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler().executeJobWithLockAndRetry(job);
-          return true;
-        }
-      });
-    }
-    return false;
   }
 
   protected void executeJob() {
@@ -178,12 +158,6 @@ public class ExecuteAsyncRunnable implements Runnable {
 
       @Override
       public Void execute(CommandContext commandContext) {
-        if (job.getProcessDefinitionId() != null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, job.getProcessDefinitionId())) {
-          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-          activiti5CompatibilityHandler.handleFailedJob(job, exception);
-          return null;
-        }
-        
         CommandConfig commandConfig = processEngineConfiguration.getCommandExecutor().getDefaultConfig().transactionRequiresNew();
         FailedJobCommandFactory failedJobCommandFactory = commandContext.getFailedJobCommandFactory();
         Command<Object> cmd = failedJobCommandFactory.getCommand(job.getId(), exception);

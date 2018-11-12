@@ -19,7 +19,6 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
@@ -28,7 +27,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.Execution;
 
 /**
@@ -83,12 +81,6 @@ public class SignalEventReceivedCmd implements Command<Void> {
         throw new ActivitiException("Cannot throw signal event '" + eventName + "' because execution '" + executionId + "' is suspended");
       }
       
-      if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
-        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-        activiti5CompatibilityHandler.signalEventReceived(eventName, executionId, payload, async, tenantId);
-        return null;
-      }
-
       signalEvents = eventSubscriptionEntityManager.findSignalEventSubscriptionsByNameAndExecution(eventName, executionId);
 
       if (signalEvents.isEmpty()) {
@@ -100,19 +92,14 @@ public class SignalEventReceivedCmd implements Command<Void> {
       // We only throw the event to globally scoped signals.
       // Process instance scoped signals must be thrown within the process itself
       if (signalEventSubscriptionEntity.isGlobalScoped()) {
+
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalEventSubscriptionEntity.getActivityId(), eventName,
+                        payload, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(),
+                        signalEventSubscriptionEntity.getProcessDefinitionId()));
+
+        eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, payload, async);
         
-        if (executionId == null && Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, signalEventSubscriptionEntity.getProcessDefinitionId())) {
-          Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-          activiti5CompatibilityHandler.signalEventReceived(signalEventSubscriptionEntity, payload, async);
-          
-        } else {
-          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-              ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalEventSubscriptionEntity.getActivityId(), eventName, 
-                  payload, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(), 
-                  signalEventSubscriptionEntity.getProcessDefinitionId()));
-          
-          eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, payload, async);
-        }
       }
     }
 

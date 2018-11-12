@@ -5,14 +5,12 @@ import java.io.Serializable;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.runtime.Job;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,15 +33,7 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
 
   public Object execute(CommandContext commandContext) {
     JobEntity jobToDelete = getJobToDelete(commandContext);
-    
-    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, jobToDelete.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-      activiti5CompatibilityHandler.deleteJob(jobToDelete.getId());
-      return null;
-    }
-
     sendCancelEvent(jobToDelete);
-
     commandContext.getJobEntityManager().delete(jobToDelete);
     return null;
   }

@@ -15,7 +15,6 @@ package org.activiti.engine.impl.util;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -56,11 +55,6 @@ public class ProcessInstanceHelper {
       Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
 
     CommandContext commandContext = Context.getCommandContext(); // Todo: ideally, context should be passed here
-    if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler();
-      return activiti5CompatibilityHandler.startProcessInstance(processDefinition.getKey(), processDefinition.getId(),
-          variables, businessKey, processDefinition.getTenantId(), processInstanceName);
-    }
 
     // Do not start process a process instance if the process definition is suspended
     if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
@@ -86,20 +80,6 @@ public class ProcessInstanceHelper {
       Map<String, Object> variables, Map<String, Object> transientVariables) {
 
     CommandContext commandContext = Context.getCommandContext();
-    if (processDefinition.getEngineVersion() != null) {
-      if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
-        Activiti5CompatibilityHandler activiti5CompatibilityHandler = commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler();
-
-        if (activiti5CompatibilityHandler == null) {
-          throw new ActivitiException("Found Activiti 5 process definition, but no compatibility handler on the classpath");
-        }
-
-        return activiti5CompatibilityHandler.startProcessInstanceByMessage(messageName, variables, null, processDefinition.getTenantId());
-
-      } else {
-        throw new ActivitiException("Invalid 'engine' for process definition " + processDefinition.getId() + " : " + processDefinition.getEngineVersion());
-      }
-    }
 
     // Do not start process a process instance if the process definition is suspended
     if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {

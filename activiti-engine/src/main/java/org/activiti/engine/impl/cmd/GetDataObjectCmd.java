@@ -20,14 +20,12 @@ import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.DynamicBpmnConstants;
-import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.DataObjectImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
-import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.DataObject;
 import org.activiti.engine.runtime.Execution;
@@ -75,16 +73,10 @@ public class GetDataObjectCmd implements Command<DataObject>, Serializable {
     DataObject dataObject = null;
     
     VariableInstance variableEntity = null;
-    if (Activiti5Util.isActiviti5ProcessDefinitionId(commandContext, execution.getProcessDefinitionId())) {
-      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(); 
-      variableEntity = activiti5CompatibilityHandler.getExecutionVariableInstance(executionId, dataObjectName, isLocal);
-      
-    } else {  
-      if (isLocal) {
-        variableEntity = execution.getVariableInstanceLocal(dataObjectName, false);
-      } else {
-        variableEntity = execution.getVariableInstance(dataObjectName, false);
-      }
+    if (isLocal) {
+      variableEntity = execution.getVariableInstanceLocal(dataObjectName, false);
+    } else {
+      variableEntity = execution.getVariableInstance(dataObjectName, false);
     }
 
     String localizedName = null;
