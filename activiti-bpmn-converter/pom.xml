@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
-    <version>7.0.65</version>
+    <version>7.0.0.Beta3</version>
   </parent>
 
   <artifactId>activiti-bpmn-converter</artifactId>
