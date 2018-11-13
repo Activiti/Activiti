@@ -31,10 +31,12 @@ public class LongJsonType extends SerializableType {
 
   protected final int minLength;
   protected ObjectMapper objectMapper;
+  protected boolean serializePOJOsInVariablesToJson;
 
-  public LongJsonType(int minLength, ObjectMapper objectMapper) {
+  public LongJsonType(int minLength, ObjectMapper objectMapper,boolean serializePOJOsInVariablesToJson) {
     this.minLength = minLength;
     this.objectMapper = objectMapper;
+    this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
   }
 
   public String getTypeName() {
@@ -45,49 +47,50 @@ public class LongJsonType extends SerializableType {
     if (value == null) {
       return true;
     }
-    if (JsonNode.class.isAssignableFrom(value.getClass())) {
-      JsonNode jsonValue = (JsonNode) value;
-      return jsonValue.toString().length() >= minLength;
-    }
-    if(includesTypeInfoForDeserliaizing(value)){
-      try {
-        String jsonValue = objectMapper.writeValueAsString(value);
-        return jsonValue.toString().length() >= minLength;
-      } catch (JsonProcessingException e) {
-        logger.error("Error reading object as json variable "+value, e);
-        return false;
-      }
 
+    if(JsonNode.class.isAssignableFrom(value.getClass()) || (objectMapper.canSerialize(value.getClass()) && serializePOJOsInVariablesToJson)){
+      try {
+        return objectMapper.writeValueAsString(value).length()>= minLength;
+      } catch (JsonProcessingException e) {
+        logger.error("Error writing json variable of type " +value.getClass(), e);
+      }
     }
+
     return false;
   }
 
-  public boolean includesTypeInfoForDeserliaizing(Object value){
-    return value.getClass().isAnnotationPresent(JsonTypeInfo.class) &&
-            value.getClass().getAnnotation(JsonTypeInfo.class).property().equals("type") &&
-            value.getClass().getAnnotation(JsonTypeInfo.class).include().equals(JsonTypeInfo.As.PROPERTY) &&
-            value.getClass().getAnnotation(JsonTypeInfo.class).use().equals(JsonTypeInfo.Id.CLASS);
-  }
 
   public byte[] serialize(Object value, ValueFields valueFields) {
     if (value == null) {
       return null;
     }
-    JsonNode valueNode = (JsonNode) value;
+    String json = null;
+    try{
+      json = objectMapper.writeValueAsString(value);
+    } catch (JsonProcessingException e) {
+      logger.error("Error writing long json variable " + valueFields.getName(), e);
+    }
     try {
-      return valueNode.toString().getBytes("utf-8");
+      return json.getBytes("utf-8");
     } catch (Exception e) {
       throw new ActivitiException("Error getting bytes from json variable", e);
     }
   }
-  
+
   public Object deserialize(byte[] bytes, ValueFields valueFields) {
-    JsonNode valueNode = null;
-    try {
-      valueNode = objectMapper.readTree(bytes);
+    Object jsonValue = null;
+    try{
+      jsonValue = objectMapper.readValue(bytes,Object.class);
     } catch (Exception e) {
-      throw new ActivitiException("Error reading json variable", e);
+      logger.error("Error reading json variable object " + valueFields.getName(), e);
     }
-    return valueNode;
+    if(jsonValue==null) {
+      try {
+        jsonValue = objectMapper.readTree(bytes);
+      } catch (Exception e) {
+        logger.error("Error reading json variable " + valueFields.getName(), e);
+      }
+    }
+    return jsonValue;
   }
 }

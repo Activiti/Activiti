@@ -10,6 +10,7 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.engine.ActivitiException;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,26 +48,21 @@ public class ProcessExtensionsJsonVarsTest {
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
-        CustomTypeAnnotated customTypeAnnotated = new CustomTypeAnnotated();
         CustomType customType = new CustomType();
+        customType.setCustomTypeField1("a");
+        CustomType bigObject = new CustomType();
+        bigObject.setCustomTypeField1(StringUtils.repeat("a", 4000));
 
         // start a process with vars then check default and specified vars exist
         ProcessInstance initialVarsProcess = processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(JSON_VARS_PROCESS)
                 .withVariable("var2",new ObjectMapper().readValue("{ \"testvar2element\":\"testvar2element\"}", JsonNode.class))
-                .withVariable("var3",customTypeAnnotated)
                 .withVariable("var4",customType)
+                .withVariable("var5",new ObjectMapper().readValue("{ \"verylongjson\":\""+ StringUtils.repeat("a", 4000)+"\"}", JsonNode.class))
+                .withVariable("var6",bigObject)
                 .withBusinessKey("my business key")
                 .build());
 
-        //TODO: need to test with a long json var - >4000 chars
-
-        //TODO: would like to be able to store without annotation
-        //first try adding the custom type as an extra field in the json
-        //then see if we can instead capture the type as the variable instance type
-        //so any type other than the primitive types falls back on json
-        //and support this both in the var instance and the modeler spec
-        //put flag this so that old engine behaviour can be retained
 
         assertThat(initialVarsProcess).isNotNull();
         assertThat(initialVarsProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
@@ -74,28 +70,16 @@ public class ProcessExtensionsJsonVarsTest {
         List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build());
 
         assertThat(variableInstances).isNotNull();
-        assertThat(variableInstances).hasSize(5);
+        assertThat(variableInstances).hasSize(6);
 
         assertThat(variableInstances).extracting("name","type")
                 .contains(tuple("var1","json"),
                         tuple("var2","json"),
                         tuple("var3","json"),
                         tuple("var4","json"),
-                        tuple("var5","json"));
+                        tuple("var5","longJson"),
+                        tuple("var6","longJson"));
 
-        assertThat(variableInstances)
-                .filteredOn("name","var3")
-                .extracting("value")
-                .hasSize(1)
-                .extracting("class","customTypeField1")
-                .containsOnly(tuple(CustomTypeAnnotated.class,null));
-
-        assertThat(variableInstances)
-                .filteredOn("name","var4")
-                .extracting("value")
-                .hasSize(1)
-                .extracting("class","customTypeField1")
-                .containsOnly(tuple(CustomType.class,null));
 
         assertThat(variableInstances)
                 .filteredOn("name","var2")
@@ -105,11 +89,26 @@ public class ProcessExtensionsJsonVarsTest {
                 .containsOnly(ObjectNode.class);
 
         assertThat(variableInstances)
-                .filteredOn("name","var5")
+                .filteredOn("name","var3")
                 .extracting("value")
                 .hasSize(1)
                 .extracting("class")
                 .containsOnly(ObjectNode.class);
+
+
+        assertThat(variableInstances)
+                .filteredOn("name","var4")
+                .extracting("value")
+                .hasSize(1)
+                .extracting("class","customTypeField1")
+                .containsOnly(tuple(CustomType.class,"a"));
+
+        assertThat(variableInstances)
+                .filteredOn("name","var6")
+                .extracting("value")
+                .hasSize(1)
+                .extracting("class","customTypeField1")
+                .containsOnly(tuple(CustomType.class,StringUtils.repeat("a", 4000)));
 
         // cleanup
         processRuntime.delete(ProcessPayloadBuilder.delete(initialVarsProcess));
@@ -126,7 +125,7 @@ public class ProcessExtensionsJsonVarsTest {
             processRuntime.start(ProcessPayloadBuilder.start()
                     .withProcessDefinitionKey(JSON_VARS_PROCESS)
                     .withVariable("var2", "thisisn'tjson")
-                    .withVariable("var3","this one is ok as doesn't have to be json")
+                    .withVariable("var5","this one is ok as doesn't have to be json")
                     .build());
         }).withMessage("Can't start process '" + JSON_VARS_PROCESS + "' as variables have unexpected types var2");
     }

@@ -30,10 +30,12 @@ public class JsonType implements VariableType {
   
   protected final int maxLength;
   protected ObjectMapper objectMapper;
+  protected boolean serializePOJOsInVariablesToJson;
 
-  public JsonType(int maxLength, ObjectMapper objectMapper) {
+  public JsonType(int maxLength, ObjectMapper objectMapper, boolean serializePOJOsInVariablesToJson) {
     this.maxLength = maxLength;
     this.objectMapper = objectMapper;
+    this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
   }
 
   public String getTypeName() {
@@ -50,7 +52,7 @@ public class JsonType implements VariableType {
       try{
         jsonValue = objectMapper.readValue(valueFields.getTextValue(),Object.class);
       } catch (Exception e) {
-        logger.error("Error reading json variable " + valueFields.getName(), e);
+        logger.error("Error reading json variable object " + valueFields.getName(), e);
       }
       if(jsonValue==null) {
         try {
@@ -78,12 +80,7 @@ public class JsonType implements VariableType {
       return true;
     }
 
-    if (JsonNode.class.isAssignableFrom(value.getClass())) {
-      JsonNode jsonValue = (JsonNode) value;
-      return jsonValue.toString().length() <= maxLength;
-    }
-
-    if(objectMapper.canSerialize(value.getClass())){
+    if(JsonNode.class.isAssignableFrom(value.getClass()) || (objectMapper.canSerialize(value.getClass()) && serializePOJOsInVariablesToJson)){
       try {
         return objectMapper.writeValueAsString(value).length()<= maxLength;
       } catch (JsonProcessingException e) {

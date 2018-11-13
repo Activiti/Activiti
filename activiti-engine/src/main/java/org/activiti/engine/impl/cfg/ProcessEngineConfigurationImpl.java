@@ -2001,9 +2001,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         objectMapper.configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE,false);
       }
 
-      variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper));
-      //TODO: need to configure serializePOJOsInVariablesToJson for LongJsonType
-      variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper));
+      variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson));
+      variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper,serializePOJOsInVariablesToJson));
       variableTypes.addType(new ByteArrayType());
       variableTypes.addType(new SerializableType(serializableVariableTypeTrackDeserializedObjects));
       variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
