@@ -25,5 +25,13 @@ public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> {
     Long getTimestamp();
 
     EVENT_TYPE getEventType();
+    
+    String getProcessDefinitionId();
+    
+    String getProcessDefinitionKey();
+
+    Integer getProcessDefinitionVersion();
+    
+    String getBusinessKey();
 
 }

@@ -24,6 +24,10 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> 
 
     private String id;
     private Long timestamp;
+    private String processDefinitionId;
+    private String processDefinitionKey;
+    private Integer processDefinitionVersion;
+    private String businessKey;
 
     private ENTITY_TYPE entity;
 
@@ -58,5 +62,41 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> 
     @Override
     public Long getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
+
+    @Override
+    public String getProcessDefinitionKey() {
+        return processDefinitionKey;
+    }
+
+    @Override
+    public Integer getProcessDefinitionVersion() {
+        return processDefinitionVersion;
+    }
+
+    @Override
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
+
+    public void setProcessDefinitionKey(String processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
+    }
+
+    public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
+        this.processDefinitionVersion = processDefinitionVersion;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
     }
 }

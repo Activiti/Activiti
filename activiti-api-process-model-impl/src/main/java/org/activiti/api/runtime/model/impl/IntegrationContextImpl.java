@@ -29,6 +29,9 @@ public class IntegrationContextImpl implements IntegrationContext {
     private Map<String, Object> outBoundVariables = new HashMap<>();
     private String processInstanceId;
     private String processDefinitionId;
+    private String processDefinitionKey;
+    private Integer processDefinitionVersion;
+    private String businessKey;
     private String activityElementId;
     private String connectorType;
 
@@ -100,10 +103,36 @@ public class IntegrationContextImpl implements IntegrationContext {
                                     Object value) {
         outBoundVariables.put(name, value);
     }
-
     @Override
     public void addOutBoundVariables(Map<String, Object> variables) {
         outBoundVariables.putAll(variables);
+    }
+    
+    @Override
+    public String getProcessDefinitionKey() {
+        return processDefinitionKey;
+    }
+    
+    public void setProcessDefinitionKey(String processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
+    }
+    
+    @Override
+    public Integer getProcessDefinitionVersion() {
+        return processDefinitionVersion;
+    }
+
+    public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
+        this.processDefinitionVersion = processDefinitionVersion;
+    }
+    
+    @Override
+    public String getBusinessKey() { 
+        return businessKey;
+    }
+    
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
     }
 
 }
