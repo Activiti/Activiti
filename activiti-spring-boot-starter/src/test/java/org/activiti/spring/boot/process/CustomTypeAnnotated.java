@@ -1,9 +1,8 @@
 package org.activiti.spring.boot.process;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import org.activiti.engine.impl.variable.JsonType;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = JsonType.JAVA_TYPE_FIELD)
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, include = JsonTypeInfo.As.PROPERTY, property = "@class")
 public class CustomTypeAnnotated {
 
     String customTypeField1;

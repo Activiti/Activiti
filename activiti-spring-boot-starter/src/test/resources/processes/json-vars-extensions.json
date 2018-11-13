@@ -18,6 +18,16 @@
         "name":"var2",
         "type":"json",
         "required":true
+      },
+      "379dc1a1-481d-4617-a027-ef39fdadf226":{
+        "id":"379dc1a1-481d-4617-a027-ef39fdadf225",
+        "name":"var5",
+        "type":"json",
+        "required":false,
+        "value":{
+          "testvalueelement1":"testvalueelement1",
+          "@class": "ClassNotOnClassPath"
+        }
       }
     }
   }

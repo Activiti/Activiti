@@ -74,13 +74,14 @@ public class ProcessExtensionsJsonVarsTest {
         List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build());
 
         assertThat(variableInstances).isNotNull();
-        assertThat(variableInstances).hasSize(4);
+        assertThat(variableInstances).hasSize(5);
 
         assertThat(variableInstances).extracting("name","type")
                 .contains(tuple("var1","json"),
                         tuple("var2","json"),
                         tuple("var3","json"),
-                        tuple("var4","json"));
+                        tuple("var4","json"),
+                        tuple("var5","json"));
 
         assertThat(variableInstances)
                 .filteredOn("name","var3")
@@ -98,6 +99,13 @@ public class ProcessExtensionsJsonVarsTest {
 
         assertThat(variableInstances)
                 .filteredOn("name","var2")
+                .extracting("value")
+                .hasSize(1)
+                .extracting("class")
+                .containsOnly(ObjectNode.class);
+
+        assertThat(variableInstances)
+                .filteredOn("name","var5")
                 .extracting("value")
                 .hasSize(1)
                 .extracting("class")
