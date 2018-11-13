@@ -26,6 +26,12 @@ public interface IntegrationContext {
 
     String getProcessDefinitionId();
 
+    String getProcessDefinitionKey();
+
+    Integer getProcessDefinitionVersion();
+    
+    String getBusinessKey();
+    
     String getConnectorType();
 
     String getActivityElementId();
