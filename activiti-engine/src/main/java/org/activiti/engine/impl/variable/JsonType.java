@@ -14,12 +14,14 @@ package org.activiti.engine.impl.variable;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 
 
 /**
@@ -31,10 +33,14 @@ public class JsonType implements VariableType {
   
   protected final int maxLength;
   protected ObjectMapper objectMapper;
+  protected boolean serializePOJOsInVariablesToJson;
+  //same as JsonTypeInfo.Id.CLASS.toString(), which is the default https://stackoverflow.com/a/21963893/9705485
+  public static final String JAVA_TYPE_FIELD = "@class";
 
-  public JsonType(int maxLength, ObjectMapper objectMapper) {
+  public JsonType(int maxLength, ObjectMapper objectMapper,boolean serializePOJOsInVariablesToJson) {
     this.maxLength = maxLength;
     this.objectMapper = objectMapper;
+    this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
   }
 
   public String getTypeName() {
@@ -76,19 +82,39 @@ public class JsonType implements VariableType {
   }
 
   public String getObjectTypeFromJson(JsonNode jsonNode) {
-    return jsonNode.get("type") != null ? jsonNode.get("type").asText() : null;
+    return jsonNode.get(JAVA_TYPE_FIELD) != null ? jsonNode.get(JAVA_TYPE_FIELD).asText() : null;
   }
 
   public void setValue(Object value, ValueFields valueFields) {
-    if(includesTypeInfoForDeserliaizing(value)){
-      try {
-        valueFields.setTextValue(value != null ? objectMapper.writeValueAsString(value) : null);
-      } catch (JsonProcessingException e) {
-        logger.error("Error writing json variable " + valueFields.getName(), e);
-      }
-    } else {
-      valueFields.setTextValue(value != null ? value.toString() : null);
+    try {
+      valueFields.setTextValue(determineSerializedValue(value));
+    } catch (JsonProcessingException e) {
+    logger.error("Error writing json variable " + valueFields.getName(), e);
+    } catch (IOException e) {
+      logger.error("Error writing json variable " + valueFields.getName(), e);
     }
+  }
+
+  public String determineSerializedValue(Object value) throws JsonProcessingException, IOException{
+    if(value==null){
+      return null;
+    }
+
+    if(includesTypeInfoForDeserliaizing(value)){
+        return objectMapper.writeValueAsString(value);
+    } else if(serializePOJOsInVariablesToJson){
+
+        final String json = objectMapper.writeValueAsString(value);
+
+        ObjectNode jsonNode = (ObjectNode) objectMapper.readTree(json);
+
+        jsonNode.put(JAVA_TYPE_FIELD,value.getClass().getTypeName());
+        return objectMapper.writeValueAsString(jsonNode);
+
+
+    }
+
+    return value.toString();
   }
 
   public boolean isAbleToStore(Object value) {
@@ -100,11 +126,13 @@ public class JsonType implements VariableType {
       return jsonValue.toString().length() <= maxLength;
     }
 
-    if(includesTypeInfoForDeserliaizing(value)){
+    if(includesTypeInfoForDeserliaizing(value) || serializePOJOsInVariablesToJson){
       try {
-        String jsonValue = objectMapper.writeValueAsString(value);
-        return jsonValue.toString().length() <= maxLength;
+        return determineSerializedValue(value).length() <= maxLength;
       } catch (JsonProcessingException e) {
+        logger.error("Error reading object as json variable "+value, e);
+        return false;
+      }  catch (IOException e) {
         logger.error("Error reading object as json variable "+value, e);
         return false;
       }
@@ -116,7 +144,7 @@ public class JsonType implements VariableType {
 
   public boolean includesTypeInfoForDeserliaizing(Object value){
     return value.getClass().isAnnotationPresent(JsonTypeInfo.class) &&
-            value.getClass().getAnnotation(JsonTypeInfo.class).property().equals("type") &&
+            value.getClass().getAnnotation(JsonTypeInfo.class).property().equals(JAVA_TYPE_FIELD) &&
             value.getClass().getAnnotation(JsonTypeInfo.class).include().equals(JsonTypeInfo.As.PROPERTY) &&
             value.getClass().getAnnotation(JsonTypeInfo.class).use().equals(JsonTypeInfo.Id.CLASS);
   }

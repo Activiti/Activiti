@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.activiti.engine.impl.variable.JsonType;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class DynamicCustomTypeSerializeDeserializeTest {
     private CustomType customType = new CustomType();
 
     @Test
-    public void serializeAndDeserializeCustomTypeWithAnnotation() throws IOException {
+    public void serializeAndDeserializeCustomPOJOWithAnnotation() throws IOException {
 
         assertThat(objectMapper.canSerialize(CustomTypeAnnotated.class)).isTrue();
 
@@ -31,7 +32,7 @@ public class DynamicCustomTypeSerializeDeserializeTest {
 
         //need to find the type of the class in order to deserialize it
         //can do this so long as JsonTypeInfo annotation on the class - see https://stackoverflow.com/a/28384407/9705485
-        final String type = jsonNode.get("type").asText();
+        final String type = jsonNode.get(JsonType.JAVA_TYPE_FIELD).asText();
         Class<?> cls = null;
         try {
             cls = Class.forName(type,false,this.getClass().getClassLoader());
@@ -46,7 +47,7 @@ public class DynamicCustomTypeSerializeDeserializeTest {
 
 
     @Test
-    public void serializeAndDeserializeCustomTypeWithoutAnnotation() throws IOException {
+    public void serializeAndDeserializeCustomPOJOWithoutAnnotation() throws IOException {
 
         assertThat(objectMapper.canSerialize(CustomType.class)).isTrue();
 
@@ -54,9 +55,9 @@ public class DynamicCustomTypeSerializeDeserializeTest {
 
         ObjectNode jsonNode = (ObjectNode) objectMapper.readTree(json);
 
-        jsonNode.put("type",customType.getClass().getTypeName());
+        jsonNode.put(JsonType.JAVA_TYPE_FIELD,customType.getClass().getTypeName());
 
-        final String type = jsonNode.get("type").asText();
+        final String type = jsonNode.get(JsonType.JAVA_TYPE_FIELD).asText();
         Class<?> cls = null;
         try {
             cls = Class.forName(type,false,this.getClass().getClassLoader());
@@ -77,7 +78,7 @@ public class DynamicCustomTypeSerializeDeserializeTest {
         //JsonTypeInfo annotation is needed for us to deserialize
 
         assertThat(CustomTypeAnnotated.class.isAnnotationPresent(JsonTypeInfo.class));
-        assertThat(CustomTypeAnnotated.class.getAnnotation(JsonTypeInfo.class).property()).isEqualTo("type");
+        assertThat(CustomTypeAnnotated.class.getAnnotation(JsonTypeInfo.class).property()).isEqualTo(JsonType.JAVA_TYPE_FIELD);
         assertThat(CustomTypeAnnotated.class.getAnnotation(JsonTypeInfo.class).include()).isEqualTo(JsonTypeInfo.As.PROPERTY);
         assertThat(CustomTypeAnnotated.class.getAnnotation(JsonTypeInfo.class).use()).isEqualTo(JsonTypeInfo.Id.CLASS);
     }

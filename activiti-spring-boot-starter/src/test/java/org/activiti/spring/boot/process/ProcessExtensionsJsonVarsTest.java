@@ -9,11 +9,11 @@ import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.engine.ActivitiException;
+import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -35,20 +35,27 @@ public class ProcessExtensionsJsonVarsTest {
     @Autowired
     private ProcessRuntime processRuntime;
 
+    @Autowired
+    private SecurityUtil securityUtil;
+
+
     @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void processInstanceHasValidInitialVariables() throws ParseException, IOException {
+
+        securityUtil.logInAs("salaboy");
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
-        CustomTypeAnnotated customObj = new CustomTypeAnnotated();
+        CustomTypeAnnotated customTypeAnnotated = new CustomTypeAnnotated();
+        CustomType customType = new CustomType();
 
         // start a process with vars then check default and specified vars exist
         ProcessInstance initialVarsProcess = processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(JSON_VARS_PROCESS)
                 .withVariable("var2",new ObjectMapper().readValue("{ \"testvar2element\":\"testvar2element\"}", JsonNode.class))
-                .withVariable("var3",customObj)
+                .withVariable("var3",customTypeAnnotated)
+                .withVariable("var4",customType)
                 .withBusinessKey("my business key")
                 .build());
 
@@ -67,12 +74,13 @@ public class ProcessExtensionsJsonVarsTest {
         List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build());
 
         assertThat(variableInstances).isNotNull();
-        assertThat(variableInstances).hasSize(3);
+        assertThat(variableInstances).hasSize(4);
 
         assertThat(variableInstances).extracting("name","type")
                 .contains(tuple("var1","json"),
                         tuple("var2","json"),
-                        tuple("var3","json"));
+                        tuple("var3","json"),
+                        tuple("var4","json"));
 
         assertThat(variableInstances)
                 .filteredOn("name","var3")
@@ -80,6 +88,13 @@ public class ProcessExtensionsJsonVarsTest {
                 .hasSize(1)
                 .extracting("class","customTypeField1")
                 .containsOnly(tuple(CustomTypeAnnotated.class,null));
+
+        assertThat(variableInstances)
+                .filteredOn("name","var4")
+                .extracting("value")
+                .hasSize(1)
+                .extracting("class","customTypeField1")
+                .containsOnly(tuple(CustomType.class,null));
 
         assertThat(variableInstances)
                 .filteredOn("name","var2")
@@ -94,8 +109,8 @@ public class ProcessExtensionsJsonVarsTest {
 
 
     @Test
-    @WithUserDetails(value = "salaboy", userDetailsServiceBeanName = "myUserDetailsService")
     public void processInstanceFailsIfVariableTypeIncorrect() {
+        securityUtil.logInAs("salaboy");
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
