@@ -14,7 +14,8 @@ public class CreateTaskPayload implements Payload {
     private Date dueDate;
     private int priority;
     private String assignee;
-    private List<String> groups;
+    private List<String> candidateGroups;
+    private List<String> candidateUsers;
     private String parentTaskId;
     private String formKey;
 
@@ -27,7 +28,8 @@ public class CreateTaskPayload implements Payload {
                              Date dueDate,
                              int priority,
                              String assignee,
-                             List<String> groups,
+                             List<String> candidateGroups,
+                             List<String> candidateUsers,
                              String parentTaskId,
                              String formKey) {
         this.name = name;
@@ -35,7 +37,8 @@ public class CreateTaskPayload implements Payload {
         this.dueDate = dueDate;
         this.priority = priority;
         this.assignee = assignee;
-        this.groups = groups;
+        this.candidateGroups = candidateGroups;
+        this.candidateUsers = candidateUsers;
         this.parentTaskId = parentTaskId;
         this.formKey = formKey;
     }
@@ -101,11 +104,19 @@ public class CreateTaskPayload implements Payload {
         this.formKey = formKey;
     }
 
-    public List<String> getGroups() {
-        return groups;
+    public List<String> getCandidateGroups() {
+        return candidateGroups;
     }
 
-    public void setGroups(List<String> groups) {
-        this.groups = groups;
+    public void setCandidateGroups(List<String> candidateGroups) {
+        this.candidateGroups = candidateGroups;
+    }
+
+    public List<String> getCandidateUsers() {
+        return candidateUsers;
+    }
+
+    public void setCandidateUsers(List<String> candidateUsers) {
+        this.candidateUsers = candidateUsers;
     }
 }
