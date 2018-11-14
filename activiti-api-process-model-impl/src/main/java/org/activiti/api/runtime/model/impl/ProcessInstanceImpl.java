@@ -32,6 +32,7 @@ public class ProcessInstanceImpl implements ProcessInstance {
     private Date startDate;
     private String businessKey;
     private ProcessInstanceStatus status;
+    private String parentId;
 
     @Override
     public String getId() {
@@ -76,6 +77,9 @@ public class ProcessInstanceImpl implements ProcessInstance {
     @Override
     public String getProcessDefinitionKey() { return processDefinitionKey; }
 
+    @Override
+    public String getParentId() { return parentId; }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -112,6 +116,11 @@ public class ProcessInstanceImpl implements ProcessInstance {
         this.status = status;
     }
 
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -129,8 +138,8 @@ public class ProcessInstanceImpl implements ProcessInstance {
                                that.description) &&
                 Objects.equals(processDefinitionId,
                                that.processDefinitionId) &&
-                Objects.equals(processDefinitionKey,
-                               that.processDefinitionKey) &&
+                Objects.equals(parentId,
+                               that.parentId) &&
                 Objects.equals(initiator,
                                that.initiator) &&
                 Objects.equals(startDate,
@@ -149,6 +158,7 @@ public class ProcessInstanceImpl implements ProcessInstance {
                             processDefinitionId,
                             processDefinitionKey,
                             initiator,
+                            parentId,
                             startDate,
                             businessKey,
                             status);
@@ -162,6 +172,8 @@ public class ProcessInstanceImpl implements ProcessInstance {
                 ", description='" + description + '\'' +
                 ", processDefinitionId='" + processDefinitionId + '\'' +
                 ", processDefinitionKey='" + processDefinitionKey + '\'' +
+                ", processDefinitionId='" + processDefinitionId + '\'' +
+                ", parentId='" + parentId + '\'' +
                 ", initiator='" + initiator + '\'' +
                 ", startDate=" + startDate +
                 ", businessKey='" + businessKey + '\'' +
