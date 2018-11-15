@@ -28,6 +28,7 @@ public class IntegrationContextImpl implements IntegrationContext {
     private Map<String, Object> inboundVariables = new HashMap<>();
     private Map<String, Object> outBoundVariables = new HashMap<>();
     private String processInstanceId;
+    private String parentProcessInstanceId;
     private String processDefinitionId;
     private String processDefinitionKey;
     private Integer processDefinitionVersion;
@@ -133,6 +134,15 @@ public class IntegrationContextImpl implements IntegrationContext {
     
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
+    }
+
+    @Override
+    public String getParentProcessInstanceId() {
+        return parentProcessInstanceId;
+    }
+    
+    public void setParentProcessInstanceId(String parentProcessInstanceId) {
+        this.parentProcessInstanceId = parentProcessInstanceId;
     }
 
 }
