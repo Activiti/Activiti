@@ -68,7 +68,7 @@ public class JsonType implements VariableType {
           try {
             cls = Class.forName(type, false, this.getClass().getClassLoader());
           } catch (ClassNotFoundException e) {
-            logger.warn("Error obtaining type for json variable object " + valueFields.getName(), e);
+            logger.warn("Unable to obtain type for json variable object " + valueFields.getName(), e);
           }
           if(cls!=null) {
             jsonValue = objectMapper.convertValue(jsonValue, cls);

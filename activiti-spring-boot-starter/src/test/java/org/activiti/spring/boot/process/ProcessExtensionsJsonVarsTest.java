@@ -40,6 +40,8 @@ public class ProcessExtensionsJsonVarsTest {
     @Autowired
     private SecurityUtil securityUtil;
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Test
     public void processInstanceHasValidInitialVariables() throws ParseException, IOException {
@@ -88,20 +90,28 @@ public class ProcessExtensionsJsonVarsTest {
                 .filteredOn("name","var2")
                 .extracting("value")
                 .hasSize(1)
-                .hasOnlyElementsOfType(ObjectNode.class);
+                .hasOnlyElementsOfType(ObjectNode.class)
+                .first()
+                .toString()
+                .equalsIgnoreCase("{ \"testvar2element\":\"testvar2element\"}");
 
         assertThat(variableInstances)
                 .filteredOn("name","var3")
                 .extracting("value")
                 .hasSize(1)
-                .hasOnlyElementsOfType(ObjectNode.class);
+                .hasOnlyElementsOfType(ObjectNode.class)
+                .first()
+                .toString()
+                .contains("testvalueelement1");
 
 
         assertThat(variableInstances)
                 .filteredOn("name","var4")
                 .extracting("value")
                 .hasSize(1)
-                .hasOnlyElementsOfType(ObjectNode.class);
+                .hasOnlyElementsOfType(ObjectNode.class)
+                .toString()
+                .contains(customType.getCustomTypeField1());
 
         assertThat(variableInstances)
                 .filteredOn("name","var6")
