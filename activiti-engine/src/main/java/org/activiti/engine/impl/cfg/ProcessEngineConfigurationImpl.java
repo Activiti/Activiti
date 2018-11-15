@@ -727,6 +727,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected boolean serializableVariableTypeTrackDeserializedObjects = true;
 
   protected boolean serializePOJOsInVariablesToJson = false;
+  protected String javaClassFieldForJackson = JsonTypeInfo.Id.CLASS.getDefaultPropertyName();
 
   protected ExpressionManager expressionManager;
   protected List<String> customScriptingEngineClasses;
@@ -1995,14 +1996,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new JodaDateTimeType());
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
-      if(serializePOJOsInVariablesToJson){
-        objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_INVALID_SUBTYPE,false);
-      }
 
-      variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson));
-      variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper,serializePOJOsInVariablesToJson));
+      variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson,javaClassFieldForJackson));
+      variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper,serializePOJOsInVariablesToJson,javaClassFieldForJackson));
       variableTypes.addType(new ByteArrayType());
       variableTypes.addType(new SerializableType(serializableVariableTypeTrackDeserializedObjects));
       variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
@@ -2524,6 +2520,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public void setSerializePOJOsInVariablesToJson(boolean serializePOJOsInVariablesToJson) {
     this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
+  }
+
+  public String getJavaClassFieldForJackson() {
+    return javaClassFieldForJackson;
+  }
+
+  public void setJavaClassFieldForJackson(String javaClassFieldForJackson) {
+    this.javaClassFieldForJackson = javaClassFieldForJackson;
   }
 
   public ExpressionManager getExpressionManager() {

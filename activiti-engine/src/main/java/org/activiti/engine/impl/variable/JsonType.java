@@ -31,11 +31,13 @@ public class JsonType implements VariableType {
   protected final int maxLength;
   protected ObjectMapper objectMapper;
   protected boolean serializePOJOsInVariablesToJson;
+  protected String javaClassFieldForJackson;
 
-  public JsonType(int maxLength, ObjectMapper objectMapper, boolean serializePOJOsInVariablesToJson) {
+  public JsonType(int maxLength, ObjectMapper objectMapper, boolean serializePOJOsInVariablesToJson, String javaClassFieldForJackson) {
     this.maxLength = maxLength;
     this.objectMapper = objectMapper;
     this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
+    this.javaClassFieldForJackson = javaClassFieldForJackson;
   }
 
   public String getTypeName() {
@@ -49,17 +51,28 @@ public class JsonType implements VariableType {
   public Object getValue(ValueFields valueFields) {
     Object jsonValue = null;
     if (valueFields.getTextValue() != null && valueFields.getTextValue().length() > 0) {
-      try{
-        jsonValue = objectMapper.readValue(valueFields.getTextValue(),Object.class);
-      } catch (Exception e) {
-        logger.error("Error reading json variable object " + valueFields.getName(), e);
-      }
       if(jsonValue==null) {
         try {
           jsonValue = objectMapper.readTree(valueFields.getTextValue());
 
         } catch (Exception e) {
           logger.error("Error reading json variable " + valueFields.getName(), e);
+        }
+      }
+      if(jsonValue!=null && javaClassFieldForJackson!=null ) {
+        //can find type so long as JsonTypeInfo annotation on the class - see https://stackoverflow.com/a/28384407/9705485
+        JsonNode classNode = ((JsonNode)jsonValue).get(javaClassFieldForJackson);
+        if(classNode != null) {
+          final String type = classNode.asText();
+          Class<?> cls = null;
+          try {
+            cls = Class.forName(type, false, this.getClass().getClassLoader());
+          } catch (ClassNotFoundException e) {
+            logger.warn("Error obtaining type for json variable object " + valueFields.getName(), e);
+          }
+          if(cls!=null) {
+            jsonValue = objectMapper.convertValue(jsonValue, cls);
+          }
         }
       }
     }

@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,7 +51,9 @@ public class ProcessExtensionsJsonVarsTest {
 
         CustomType customType = new CustomType();
         customType.setCustomTypeField1("a");
-        CustomType bigObject = new CustomType();
+
+        //because this annotated with type info it should automatically be deserialized to object
+        CustomTypeAnnotated bigObject = new CustomTypeAnnotated();
         bigObject.setCustomTypeField1(StringUtils.repeat("a", 4000));
 
         // start a process with vars then check default and specified vars exist
@@ -85,30 +88,28 @@ public class ProcessExtensionsJsonVarsTest {
                 .filteredOn("name","var2")
                 .extracting("value")
                 .hasSize(1)
-                .extracting("class")
-                .containsOnly(ObjectNode.class);
+                .hasOnlyElementsOfType(ObjectNode.class);
 
         assertThat(variableInstances)
                 .filteredOn("name","var3")
                 .extracting("value")
                 .hasSize(1)
-                .extracting("class")
-                .containsOnly(ObjectNode.class);
+                .hasOnlyElementsOfType(ObjectNode.class);
 
 
         assertThat(variableInstances)
                 .filteredOn("name","var4")
                 .extracting("value")
                 .hasSize(1)
-                .extracting("class","customTypeField1")
-                .containsOnly(tuple(CustomType.class,"a"));
+                .hasOnlyElementsOfType(ObjectNode.class);
 
         assertThat(variableInstances)
                 .filteredOn("name","var6")
                 .extracting("value")
                 .hasSize(1)
-                .extracting("class","customTypeField1")
-                .containsOnly(tuple(CustomType.class,StringUtils.repeat("a", 4000)));
+                .hasOnlyElementsOfType(CustomTypeAnnotated.class)
+                .extracting("customTypeField1")
+                .containsOnly(StringUtils.repeat("a", 4000));
 
         // cleanup
         processRuntime.delete(ProcessPayloadBuilder.delete(initialVarsProcess));
