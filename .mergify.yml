@@ -9,5 +9,5 @@ pull_request_rules:
     actions:
       delete_head_branch: {}
       merge:
-        method: merge
+        method: squash
         strict: true
