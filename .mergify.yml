@@ -1,4 +1,4 @@
-pull_request_rules:
+pull_request_rules: 
   - name: automatic merge with strict
     conditions:
       - author=jx-activiti-cloud
