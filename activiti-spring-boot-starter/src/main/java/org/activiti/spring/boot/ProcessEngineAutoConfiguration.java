@@ -86,6 +86,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         conf.setHistoryLevel(activitiProperties.getHistoryLevel());
         conf.setCopyVariablesToLocalForTasks(activitiProperties.isCopyVariablesToLocalForTasks());
         conf.setSerializePOJOsInVariablesToJson(activitiProperties.isSerializePOJOsInVariablesToJson());
+        conf.setJavaClassFieldForJackson(activitiProperties.getJavaClassFieldForJackson());
 
         if (activitiProperties.getCustomMybatisMappers() != null) {
             conf.setCustomMybatisMappers(getCustomMybatisMapperClasses(activitiProperties.getCustomMybatisMappers()));

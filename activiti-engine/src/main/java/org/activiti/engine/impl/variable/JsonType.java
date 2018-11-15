@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.variable;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +60,7 @@ public class JsonType implements VariableType {
           logger.error("Error reading json variable " + valueFields.getName(), e);
         }
       }
-      if(jsonValue!=null && javaClassFieldForJackson!=null ) {
+      if(jsonValue!=null && StringUtils.isNotBlank(javaClassFieldForJackson) ) {
         //can find type so long as JsonTypeInfo annotation on the class - see https://stackoverflow.com/a/28384407/9705485
         JsonNode classNode = ((JsonNode)jsonValue).get(javaClassFieldForJackson);
         if(classNode != null) {
