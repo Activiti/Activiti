@@ -16,7 +16,7 @@
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
 
-  <!-- Declare depencencies without dependenicesManagement to be able enforce version convergence -->
+  <!-- Declare depencencies without dependencyManagement to be able enforce effective version convergence -->
   <dependencies>
     <!-- org.activiti.api -->
     <dependency>
@@ -113,12 +113,6 @@
     <!-- org.activiti -->
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-engine</artifactId>
-      <version>${activiti.version}</version>
-      <type>pom</type>
-    </dependency>
-    <dependency>
-      <groupId>org.activiti</groupId>
       <artifactId>activiti-api-impl</artifactId>
       <version>${activiti.version}</version>
       <type>pom</type>
@@ -176,6 +170,12 @@
       <artifactId>activiti-image-generator</artifactId>
       <version>${activiti.version}</version>
       <type>pom</type>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
