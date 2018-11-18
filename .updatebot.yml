@@ -4,7 +4,7 @@ github:
     repositories:
     - name: activiti-api
       branch: develop
-    - name: activiti-core-commond
+    - name: activiti-core-common
       branch: develop      
     - name: activiti
       branch: develop
