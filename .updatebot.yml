@@ -8,5 +8,6 @@ github:
       branch: develop
     - name: activiti-dependencies
       branch: develop
+      useSinglePullRequest: true
     - name: activiti-cloud-build
       branch: develop
