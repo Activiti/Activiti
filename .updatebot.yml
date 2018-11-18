@@ -4,6 +4,7 @@ github:
     repositories:
     - name: activiti-dependencies
       branch: develop
+      useSinglePullRequest: true
     - name: activiti
       branch: develop
     - name: activiti-cloud-api
