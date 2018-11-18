@@ -4,6 +4,8 @@ github:
     repositories:
     - name: activiti-api
       branch: develop
+    - name: activiti-core-commond
+      branch: develop      
     - name: activiti
       branch: develop
     - name: activiti-cloud-build
