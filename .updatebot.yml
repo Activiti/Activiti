@@ -5,7 +5,5 @@ github:
     - name: activiti-dependencies
       branch: develop
       useSinglePullRequest: true
-    - name: activiti
-      branch: develop
     - name: activiti-core-common
       branch: develop
