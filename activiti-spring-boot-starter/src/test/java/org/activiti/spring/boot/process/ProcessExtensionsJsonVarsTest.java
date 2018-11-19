@@ -20,7 +20,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +32,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 public class ProcessExtensionsJsonVarsTest {
 
     private static final String JSON_VARS_PROCESS = "jsonVarsProcess";
-
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -139,5 +137,10 @@ public class ProcessExtensionsJsonVarsTest {
                     .withVariable("var5","this one is ok as doesn't have to be json")
                     .build());
         }).withMessage("Can't start process '" + JSON_VARS_PROCESS + "' as variables have unexpected types var2");
+
+        //we test for bad json in the params but not in extension file itself
+        //that's because the context doesn't load for that scenario as failure is during parsing
     }
+
+
 }

@@ -6,6 +6,9 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/***
+ * Only used when reading extension json containing defaults, not runtime variables.
+ */
 public enum ExtensionVariableTypes {
 
     BOOLEAN("boolean",Boolean.class),
