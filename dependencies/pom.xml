@@ -16,6 +16,11 @@
     <dependencies>
       <dependency>
         <groupId>org.activiti.build</groupId>
+        <artifactId>activiti-parent</artifactId>
+        <version>${activiti-build.version}</version>      
+      </dependency>
+      <dependency>
+        <groupId>org.activiti.build</groupId>
         <artifactId>activiti-dependencies-parent</artifactId>
         <version>${activiti-build.version}</version>
         <type>pom</type>
