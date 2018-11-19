@@ -22,6 +22,7 @@ import org.activiti.api.process.model.BPMNElement;
 
 public class BPMNElementImpl implements BPMNElement {
 
+    private String id;
     private String processInstanceId;
     private String processDefinitionId;
 
@@ -42,6 +43,15 @@ public class BPMNElementImpl implements BPMNElement {
     public void setProcessDefinitionId(String processDefinitionId) {
         this.processDefinitionId = processDefinitionId;
     }
+    
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -55,13 +65,16 @@ public class BPMNElementImpl implements BPMNElement {
         return Objects.equals(processInstanceId,
                                that.processInstanceId) &&
                 Objects.equals(processDefinitionId,
-                               that.processDefinitionId);
+                               that.processDefinitionId) &&
+                Objects.equals(id,
+                               that.id);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(processInstanceId,
+        return Objects.hash(id,
+                            processInstanceId,
                             processDefinitionId);
     }
 
