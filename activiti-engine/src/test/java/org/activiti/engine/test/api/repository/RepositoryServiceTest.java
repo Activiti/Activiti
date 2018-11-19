@@ -324,7 +324,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   public void testGetBpmnModel() {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
 
-    // Some basic assertions
+    // Some set0 assertions
     BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
     assertNotNull(bpmnModel);
     assertEquals(1, bpmnModel.getProcesses().size());
