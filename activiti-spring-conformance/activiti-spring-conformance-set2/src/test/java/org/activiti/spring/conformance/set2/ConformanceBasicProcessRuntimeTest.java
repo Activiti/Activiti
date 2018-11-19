@@ -54,7 +54,9 @@ public class ConformanceBasicProcessRuntimeTest {
 
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsExactly(
-                "UserTask with Assignee"
+                "UserTask with CandidateUser",
+                "UserTask with Assignee",
+                "UserTask with CandidateGroup"
 
         );
 
@@ -68,7 +70,10 @@ public class ConformanceBasicProcessRuntimeTest {
 
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsExactly(
-                "UserTask with Assignee"
+                "UserTask with CandidateUser",
+                "UserTask with Assignee",
+                "UserTask with CandidateGroup"
+
         );
 
         for(ProcessDefinition pd: processDefinitions) {

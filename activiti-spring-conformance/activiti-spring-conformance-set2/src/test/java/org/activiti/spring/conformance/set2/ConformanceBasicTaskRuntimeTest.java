@@ -7,11 +7,13 @@ import org.activiti.api.process.model.events.BPMNActivityEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
@@ -58,17 +60,19 @@ public class ConformanceBasicTaskRuntimeTest {
         //then
         assertThat(configuration).isNotNull();
         //when
-        List<TaskRuntimeEventListener<?>> processRuntimeEventListeners = configuration.taskRuntimeEventListeners();
+        List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners = configuration.taskRuntimeEventListeners();
         List<VariableEventListener<?>> variableEventListeners = configuration.variableEventListeners();
+        List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners = processRuntime.configuration().processEventListeners();
         //then
-        assertThat(processRuntimeEventListeners).hasSize(5);
+        assertThat(taskRuntimeEventListeners).hasSize(5);
         assertThat(variableEventListeners).hasSize(3);
+        assertThat(processRuntimeEventListeners).hasSize(10);
 
     }
 
 
     @Test
-    public void shouldStartAProcessAndCreateATask() {
+    public void shouldStartAProcessCreateAndCompleteTask() {
 
         securityUtil.logInAs("user1");
 
@@ -99,6 +103,9 @@ public class ConformanceBasicTaskRuntimeTest {
 
         Task taskById = taskRuntime.task(task.getId());
 
+        assertThat(taskById.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+
         assertThat(task).isEqualTo(taskById);
 
         assertThat(task.getAssignee()).isEqualTo("user1");
@@ -128,6 +135,25 @@ public class ConformanceBasicTaskRuntimeTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED,
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
+
+        collectedEvents.clear();
+
+        // Check with user2
+        securityUtil.logInAs("user1");
+
+        Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+
+        assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
+
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
 
 
     }
