@@ -56,7 +56,9 @@ pipeline {
             sh "git config --global credential.helper store"
 
             sh "jx step git credentials"
-            sh "updatebot push-version --kind maven org.activiti.dependencies:activiti-dependencies \$(cat VERSION) --merge false"
+            //sh "updatebot push-version --kind maven org.activiti.dependencies:activiti-dependencies \$(cat VERSION) --merge false"
+            sh "make updatebot/push-version"
+              
             sh "updatebot update --merge false"
 
           }
@@ -90,7 +92,8 @@ pipeline {
 
             sh "echo pushing with update using version \$(cat VERSION)"
 
-            sh "updatebot push-version --kind maven org.activiti.dependencies:activiti-dependencies \$(cat VERSION)"
+            //sh "updatebot push-version --kind maven org.activiti.dependencies:activiti-dependencies \$(cat VERSION)"
+            sh "make updatebot/push-version"
           }
         }
       }
