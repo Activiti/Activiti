@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.util.List;
 
@@ -144,7 +145,7 @@ public class ProcessExtensionsJsonVarsTest {
     }
 
     @Test
-    public void processInstanceFailsIfVariableCannotBeSerialized(){
+    public void processInstanceFailsIfVariableCannotBeSerializedAsJson(){
 
         securityUtil.logInAs("salaboy");
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
@@ -163,7 +164,8 @@ public class ProcessExtensionsJsonVarsTest {
 
     }
 
-    static class EmptyBean { }
+    //is serializable but not as json by default and java ser disabled at spring level by default
+    static class EmptyBean implements Serializable { }
 
 
 }
