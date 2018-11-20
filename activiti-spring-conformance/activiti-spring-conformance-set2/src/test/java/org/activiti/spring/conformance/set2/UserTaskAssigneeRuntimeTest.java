@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class ConformanceBasicTaskRuntimeTest {
+public class UserTaskAssigneeRuntimeTest {
 
     private final String processKey = "usertask-6a854551-861f-4cc5-a1a1-73b8a14ccdc4";
 
@@ -72,7 +72,7 @@ public class ConformanceBasicTaskRuntimeTest {
 
 
     @Test
-    public void shouldStartAProcessCreateAndCompleteTask() {
+    public void shouldStartAProcessCreateAndCompleteAssignedTask() {
 
         securityUtil.logInAs("user1");
 
@@ -138,7 +138,7 @@ public class ConformanceBasicTaskRuntimeTest {
 
         collectedEvents.clear();
 
-        // Check with user2
+        // complete with user1
         securityUtil.logInAs("user1");
 
         Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
@@ -157,6 +157,5 @@ public class ConformanceBasicTaskRuntimeTest {
 
 
     }
-
 
 }
