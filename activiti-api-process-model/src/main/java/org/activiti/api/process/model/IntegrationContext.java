@@ -24,6 +24,8 @@ public interface IntegrationContext {
 
     String getProcessInstanceId();
 
+    String getParentProcessInstanceId();
+    
     String getProcessDefinitionId();
 
     String getProcessDefinitionKey();

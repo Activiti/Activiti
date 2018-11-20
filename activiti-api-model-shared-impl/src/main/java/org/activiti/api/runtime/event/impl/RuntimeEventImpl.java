@@ -29,6 +29,7 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> 
     private String processDefinitionKey;
     private Integer processDefinitionVersion;
     private String businessKey;
+    private String parentProcessInstanceId;
 
     private ENTITY_TYPE entity;
 
@@ -88,6 +89,15 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> 
     @Override
     public String getBusinessKey() {
         return businessKey;
+    }
+
+    @Override
+    public String getParentProcessInstanceId() {
+        return parentProcessInstanceId;
+    }
+    
+    public void setParentProcessInstanceId(String parentProcessInstanceId) {
+        this.parentProcessInstanceId = parentProcessInstanceId;
     }
 
     public void setProcessDefinitionId(String processDefinitionId) {

@@ -27,6 +27,8 @@ public interface RuntimeEvent<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> {
     EVENT_TYPE getEventType();
 
     String getProcessInstanceId();
+
+    String getParentProcessInstanceId();
     
     String getProcessDefinitionId();
     
