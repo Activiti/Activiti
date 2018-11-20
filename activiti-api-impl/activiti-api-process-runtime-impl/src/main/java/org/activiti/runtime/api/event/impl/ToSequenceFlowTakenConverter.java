@@ -25,7 +25,7 @@ import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 
 public class ToSequenceFlowTakenConverter implements EventConverter<SequenceFlowTakenEvent, ActivitiSequenceFlowTakenEvent>{
 
-       
+    @Override
     public Optional<SequenceFlowTakenEvent> from(ActivitiSequenceFlowTakenEvent internalEvent) {
         BPMNSequenceFlowImpl sequenceFlow = new BPMNSequenceFlowImpl(internalEvent.getId(),
                                                                      internalEvent.getSourceActivityId(),
@@ -39,12 +39,10 @@ public class ToSequenceFlowTakenConverter implements EventConverter<SequenceFlow
         sequenceFlow.setTargetActivityName(internalEvent.getTargetActivityName());
         sequenceFlow.setTargetActivityType(internalEvent.getTargetActivityType());
 
-
         SequenceFlowTakenImpl sequenceFlowTaken = new SequenceFlowTakenImpl(sequenceFlow);
         sequenceFlowTaken.setProcessInstanceId(internalEvent.getProcessInstanceId());
         sequenceFlowTaken.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
 
         return Optional.of(sequenceFlowTaken);
-}
-
+    }
 }
