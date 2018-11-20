@@ -16,10 +16,10 @@
 
 package org.activiti.api.process.model.events;
 
-import org.activiti.api.process.model.SequenceFlow;
+import org.activiti.api.process.model.BPMNSequenceFlow;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 
-public interface SequenceFlowEvent extends RuntimeEvent<SequenceFlow, SequenceFlowEvent.SequenceFlowEvents> {
+public interface SequenceFlowEvent extends RuntimeEvent<BPMNSequenceFlow, SequenceFlowEvent.SequenceFlowEvents> {
 
     enum SequenceFlowEvents {
         SEQUENCE_FLOW_TAKEN

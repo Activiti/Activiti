@@ -22,7 +22,7 @@ import org.activiti.api.process.model.BPMNElement;
 
 public class BPMNElementImpl implements BPMNElement {
 
-    private String id;
+    private String elementId;
     private String processInstanceId;
     private String processDefinitionId;
 
@@ -44,13 +44,14 @@ public class BPMNElementImpl implements BPMNElement {
         this.processDefinitionId = processDefinitionId;
     }
     
+ 
     @Override
-    public String getId() {
-        return id;
+    public String getElementId() {
+        return elementId;
     }
-
-    public void setId(String id) {
-        this.id = id;
+    
+    public void setElementId(String elementId) {
+        this.elementId = elementId;
     }
 
     @Override
@@ -66,14 +67,14 @@ public class BPMNElementImpl implements BPMNElement {
                                that.processInstanceId) &&
                 Objects.equals(processDefinitionId,
                                that.processDefinitionId) &&
-                Objects.equals(id,
-                               that.id);
+                Objects.equals(elementId,
+                               that.elementId);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id,
+        return Objects.hash(elementId,
                             processInstanceId,
                             processDefinitionId);
     }

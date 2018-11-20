@@ -16,9 +16,11 @@
 
 package org.activiti.api.runtime.model.impl;
 
-import org.activiti.api.process.model.SequenceFlow;
+import java.util.Objects;
 
-public class SequenceFlowImpl extends BPMNElementImpl implements SequenceFlow {
+import org.activiti.api.process.model.BPMNSequenceFlow;
+
+public class BPMNSequenceFlowImpl extends BPMNElementImpl implements BPMNSequenceFlow {
 
     private String sourceActivityElementId;
     private String sourceActivityName;
@@ -27,11 +29,13 @@ public class SequenceFlowImpl extends BPMNElementImpl implements SequenceFlow {
     private String targetActivityName;
     private String targetActivityType;
 
-    public SequenceFlowImpl() {
+    public BPMNSequenceFlowImpl() {
     }
 
-    public SequenceFlowImpl(String sourceActivityElementId,
+    public BPMNSequenceFlowImpl(String elementId,
+                            String sourceActivityElementId,
                             String targetActivityElementId) {
+        this.setElementId(elementId);
         this.sourceActivityElementId = sourceActivityElementId;
         this.targetActivityElementId = targetActivityElementId;
     }
@@ -80,6 +84,39 @@ public class SequenceFlowImpl extends BPMNElementImpl implements SequenceFlow {
 
     public void setTargetActivityType(String targetActivityType) {
         this.targetActivityType = targetActivityType;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BPMNSequenceFlowImpl that = (BPMNSequenceFlowImpl) o;
+        return Objects.equals(getElementId(),
+                              that.getElementId()) &&
+                Objects.equals(sourceActivityElementId,
+                               that.getSourceActivityElementId()) &&
+                Objects.equals(sourceActivityType,
+                               that.getSourceActivityType()) &&
+                Objects.equals(sourceActivityName,
+                               that.getSourceActivityName()) &&
+                Objects.equals(targetActivityElementId,
+                               that.getTargetActivityElementId()) &&
+                Objects.equals(targetActivityType,
+                                  that.getTargetActivityType()) &&
+                Objects.equals(targetActivityName,
+                                  that.getTargetActivityName());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getElementId(),
+                            sourceActivityElementId,
+                            targetActivityElementId);
     }
 
 }

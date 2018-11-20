@@ -8,7 +8,7 @@ public class BPMNActivityImpl extends BPMNElementImpl implements BPMNActivity {
 
     private String activityName;
     private String activityType;
-    private String elementId;
+    
 
     public BPMNActivityImpl() {
     }
@@ -16,7 +16,8 @@ public class BPMNActivityImpl extends BPMNElementImpl implements BPMNActivity {
     public BPMNActivityImpl(String elementId,
                             String activityName,
                             String activityType) {
-        this.elementId = elementId;
+       
+        this.setElementId(elementId);
         this.activityName = activityName;
         this.activityType = activityType;
     }
@@ -37,10 +38,7 @@ public class BPMNActivityImpl extends BPMNElementImpl implements BPMNActivity {
         this.activityType = activityType;
     }
 
-    public String getElementId() {
-        return elementId;
-    }
-
+ 
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -50,8 +48,8 @@ public class BPMNActivityImpl extends BPMNElementImpl implements BPMNActivity {
             return false;
         }
         BPMNActivityImpl that = (BPMNActivityImpl) o;
-        return Objects.equals(elementId,
-                              that.elementId) &&
+        return Objects.equals(getElementId(),
+                              that.getElementId()) &&
                 Objects.equals(activityName,
                                that.activityName) &&
                 Objects.equals(activityType,
@@ -61,7 +59,7 @@ public class BPMNActivityImpl extends BPMNElementImpl implements BPMNActivity {
     @Override
     public int hashCode() {
 
-        return Objects.hash(elementId,
+        return Objects.hash(getElementId(),
                             activityName,
                             activityType);
     }
