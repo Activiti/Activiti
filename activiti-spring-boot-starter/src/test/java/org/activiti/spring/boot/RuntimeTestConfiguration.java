@@ -35,6 +35,8 @@ public class RuntimeTestConfiguration {
 
     public static boolean discardImageConnectorExecuted = false;
 
+    public static boolean recordEvalExprSuccessConnectorExecuted = false;
+
     public static Set<String> createdTasks = new HashSet<>();
 
     public static Set<String> updatedTasks = new HashSet<>();
@@ -135,6 +137,15 @@ public class RuntimeTestConfiguration {
     public Connector discardImageConnector() {
         return integrationContext -> {
             discardImageConnectorExecuted = true;
+            return integrationContext;
+        };
+    }
+
+
+    @Bean
+    public Connector recordEvalExprSuccess() {
+        return integrationContext -> {
+            recordEvalExprSuccessConnectorExecuted = true;
             return integrationContext;
         };
     }
