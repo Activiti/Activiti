@@ -1999,7 +1999,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
       variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson,javaClassFieldForJackson));
       variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper,serializePOJOsInVariablesToJson,javaClassFieldForJackson));
-      
+
       //java serialization only supported OOTB if not defaulting to json
       //if java serliazation needed together with json defaulting then add to customPostVariableTypes
       if(!serializePOJOsInVariablesToJson) {

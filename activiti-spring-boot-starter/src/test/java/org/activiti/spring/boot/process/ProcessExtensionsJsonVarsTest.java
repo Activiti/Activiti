@@ -18,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
@@ -141,6 +142,28 @@ public class ProcessExtensionsJsonVarsTest {
         //we test for bad json in the params but not in extension file itself
         //that's because the context doesn't load for that scenario as failure is during parsing
     }
+
+    @Test
+    public void processInstanceFailsIfVariableCannotBeSerialized(){
+
+        securityUtil.logInAs("salaboy");
+        ProcessRuntimeConfiguration configuration = processRuntime.configuration();
+        assertThat(configuration).isNotNull();
+
+        //by default jackson won't ser empty bean
+        assertThat(objectMapper.canSerialize(EmptyBean.class)).isFalse();
+
+        assertThatExceptionOfType(ActivitiException.class).isThrownBy(() -> {
+            processRuntime.start(ProcessPayloadBuilder.start()
+                    .withProcessDefinitionKey(JSON_VARS_PROCESS)
+                    .withVariable("var2",new ObjectMapper().readValue("{ \"testvar2element\":\"testvar2element\"}", JsonNode.class))
+                    .withVariable("var5",new EmptyBean())
+                    .build());
+        }).withMessageStartingWith("couldn't find a variable type that is able to serialize");
+
+    }
+
+    static class EmptyBean { }
 
 
 }
