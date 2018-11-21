@@ -26,8 +26,8 @@
       ],
       "output": [
         {
-          "id": "",
-          "name": "",
+          "id": "approved",
+          "name": "approved",
           "type": "boolean",
           "description": "",
           "required": "false"
