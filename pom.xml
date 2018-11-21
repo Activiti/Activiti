@@ -39,6 +39,7 @@
     <xmlgraphics-commons.version>2.2</xmlgraphics-commons.version>
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.2</xmlgraphics-commons.version>
+    <groovy-all.version>2.5.4</groovy-all.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -127,6 +128,12 @@
         <groupId>org.activiti</groupId>
         <artifactId>activiti-process-validation</artifactId>
         <version>${activiti.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <version>${groovy-all.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>javax.el</groupId>
@@ -251,7 +258,6 @@
       </dependency>
 
       <!-- Test -->
-
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-fluent</artifactId>
