@@ -13,12 +13,19 @@
 package org.activiti.spring.boot;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
 
-import org.activiti.engine.impl.persistence.StrongUuidGenerator;
+import org.activiti.api.process.model.events.ProcessDeployedEvent;
+import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.persistence.StrongUuidGenerator;
+import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
+import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.bpmn.parser.CloudActivityBehaviorFactory;
@@ -124,5 +131,15 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                                                    resourcePatternResolver);
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessDeployedEventProducer processDeployedEventProducer(RepositoryService repositoryService,
+                                                                     APIProcessDefinitionConverter converter,
+                                                                     @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners) {
+        return new ProcessDeployedEventProducer(repositoryService,
+                                                converter,
+                                                Optional.ofNullable(listeners)
+                                                        .orElse(Collections.emptyList()));
+    }
 }
 
