@@ -6,6 +6,7 @@ import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNActivityEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
+import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.NotFoundException;
@@ -18,6 +19,7 @@ import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
+import org.activiti.engine.ActivitiException;
 import org.activiti.spring.conformance.set2.security.util.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -35,7 +37,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class UserTaskAssigneeRuntimeTest {
+public class UserTaskAssigneeDeleteRuntimeTest {
 
     private final String processKey = "usertask-6a854551-861f-4cc5-a1a1-73b8a14ccdc4";
 
@@ -46,6 +48,9 @@ public class UserTaskAssigneeRuntimeTest {
     private TaskRuntime taskRuntime;
 
     @Autowired
+    private ProcessAdminRuntime processAdminRuntime;
+
+    @Autowired
     private SecurityUtil securityUtil;
 
     @Before
@@ -53,27 +58,9 @@ public class UserTaskAssigneeRuntimeTest {
         collectedEvents.clear();
     }
 
-    @Test
-    public void shouldGetConfiguration() {
-        securityUtil.logInAs("user1");
-        //when
-        TaskRuntimeConfiguration configuration = taskRuntime.configuration();
-        //then
-        assertThat(configuration).isNotNull();
-        //when
-        List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners = configuration.taskRuntimeEventListeners();
-        List<VariableEventListener<?>> variableEventListeners = configuration.variableEventListeners();
-        List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners = processRuntime.configuration().processEventListeners();
-        //then
-        assertThat(taskRuntimeEventListeners).hasSize(5);
-        assertThat(variableEventListeners).hasSize(3);
-        assertThat(processRuntimeEventListeners).hasSize(10);
-
-    }
-
 
     @Test
-    public void shouldStartAProcessCreateAndCompleteAssignedTask() {
+    public void shouldFailOnDeleteTask() {
 
         securityUtil.logInAs("user1");
 
@@ -106,24 +93,9 @@ public class UserTaskAssigneeRuntimeTest {
 
         assertThat(taskById.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
-
         assertThat(task).isEqualTo(taskById);
 
         assertThat(task.getAssignee()).isEqualTo("user1");
-
-
-        // Check with user2
-        securityUtil.logInAs("user2");
-
-        tasks = taskRuntime.tasks(Pageable.of(0, 50));
-
-        assertThat(tasks.getTotalItems()).isEqualTo(0);
-
-        Throwable throwable = catchThrowable(() ->  taskRuntime.task(task.getId()));
-
-        assertThat(throwable)
-                .isInstanceOf(NotFoundException.class);
-
 
         assertThat(collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
@@ -139,24 +111,24 @@ public class UserTaskAssigneeRuntimeTest {
 
         collectedEvents.clear();
 
-        // complete with user1
-        securityUtil.logInAs("user1");
+        Throwable throwable = catchThrowable(() ->  taskRuntime.delete(TaskPayloadBuilder.delete()
+                .withTaskId(task.getId())
+                .withReason("I don't want this task anymore").build()));
 
-        Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+        assertThat(throwable)
+                .isInstanceOf(ActivitiException.class)
+                .hasMessage("The task cannot be deleted because is part of a running process");
 
-        assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
-
-        assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                        ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
+    }
 
 
+    @After
+    public void cleanup(){
+        securityUtil.logInAs("admin");
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
+        for(ProcessInstance pi : processInstancePage.getContent()){
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
+        }
     }
 
 }
