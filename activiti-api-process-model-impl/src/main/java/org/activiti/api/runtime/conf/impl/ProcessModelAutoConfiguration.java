@@ -39,6 +39,7 @@ import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.SuspendProcessPayload;
+import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.model.results.ProcessInstanceResult;
 import org.activiti.api.runtime.model.impl.BPMNActivityImpl;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
@@ -104,7 +105,8 @@ public class ProcessModelAutoConfiguration {
                                               SuspendProcessPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(ResumeProcessPayload.class,
                                               ResumeProcessPayload.class.getSimpleName()));
-
+        module.registerSubtypes(new NamedType(UpdateProcessPayload.class,
+                                              UpdateProcessPayload.class.getSimpleName()));
         module.setAbstractTypes(resolver);
         return module;
     }

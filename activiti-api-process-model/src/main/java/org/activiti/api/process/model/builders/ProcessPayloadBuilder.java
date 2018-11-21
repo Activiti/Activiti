@@ -23,6 +23,10 @@ public class ProcessPayloadBuilder {
     public static ResumeProcessPayloadBuilder resume() {
         return new ResumeProcessPayloadBuilder();
     }
+    
+    public static UpdateProcessPayloadBuilder update() {
+        return new UpdateProcessPayloadBuilder();
+    }
 
     public static GetVariablesPayloadBuilder variables() {
         return new GetVariablesPayloadBuilder();

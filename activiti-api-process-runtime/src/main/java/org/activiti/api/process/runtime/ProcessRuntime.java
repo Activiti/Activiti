@@ -33,6 +33,7 @@ import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.SuspendProcessPayload;
+import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -105,6 +106,11 @@ public interface ProcessRuntime {
      * Delete a Process Instance
      */
     ProcessInstance delete(DeleteProcessPayload deleteProcessPayload);
+    
+    /**
+     * Update a Process Instance
+     */
+    ProcessInstance update(UpdateProcessPayload updateProcessPayload);
 
     void signal(SignalPayload signalPayload);
 
