@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.40</version> <!-- using fixed version for CI/CD -->
+    <version>7.0.41</version>  <!-- using fixed version for CI/CD -->
     <relativePath/>
   </parent>
   <groupId>org.activiti.api</groupId>
@@ -102,7 +102,7 @@
     <java.version>1.8</java.version>
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     <activiti-api.version>${project.version}</activiti-api.version>
-    <activiti-build.version>7.0.40</activiti-build.version> 
+    <activiti-build.version>7.0.41</activiti-build.version> 
   </properties>
   <build>
     <plugins>
