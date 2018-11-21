@@ -55,8 +55,7 @@ public class ConformanceBasicProcessRuntimeTest {
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsExactly(
                 "ServiceTask with Implementation",
-                "ServiceTask with Implementation Modify Variable",
-                "UserTask with Assignee"
+                "ServiceTask with Implementation Modify Variable"
 
         );
 
@@ -71,8 +70,7 @@ public class ConformanceBasicProcessRuntimeTest {
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsExactly(
                 "ServiceTask with Implementation",
-                "ServiceTask with Implementation Modify Variable",
-                "UserTask with Assignee"
+                "ServiceTask with Implementation Modify Variable"
         );
 
         for(ProcessDefinition pd: processDefinitions) {

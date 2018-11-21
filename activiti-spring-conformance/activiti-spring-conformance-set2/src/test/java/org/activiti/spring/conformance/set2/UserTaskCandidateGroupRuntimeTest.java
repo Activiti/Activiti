@@ -8,17 +8,13 @@ import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.NotFoundException;
-import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
-import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
-import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.spring.conformance.set2.security.util.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -28,29 +24,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
 import static org.activiti.spring.conformance.set2.RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class UserTaskCandidateUserRuntimeTest {
+public class UserTaskCandidateGroupRuntimeTest {
 
-    private final String processKey = "usertaskwi-09c219d1-61fa-4b10-bacd-22af08a9ce81";
+    private final String processKey = "usertaskwi-75883efa-38c6-4c17-9da4-161234523fbf";
 
     @Autowired
     private ProcessRuntime processRuntime;
-
-    @Autowired
-    private ProcessAdminRuntime processAdminRuntime;
 
     @Autowired
     private TaskRuntime taskRuntime;
 
     @Autowired
     private SecurityUtil securityUtil;
+
+    @Autowired
+    private ProcessAdminRuntime processAdminRuntime;
 
     @Before
     public void cleanUp() {
@@ -122,6 +116,14 @@ public class UserTaskCandidateUserRuntimeTest {
 
         assertThat(throwable)
                 .isInstanceOf(NotFoundException.class);
+
+
+        // Check with user3
+        securityUtil.logInAs("user3");
+
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
+
+        assertThat(tasks.getTotalItems()).isEqualTo(1);
 
 
         // Try to complete without claim should error
@@ -203,6 +205,17 @@ public class UserTaskCandidateUserRuntimeTest {
 
         collectedEvents.clear();
 
+        // Check with user3
+        securityUtil.logInAs("user3");
+
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
+
+        assertThat(tasks.getTotalItems()).isEqualTo(1);
+
+
+        //Claim with User 1
+        securityUtil.logInAs("user1");
+
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
@@ -214,6 +227,17 @@ public class UserTaskCandidateUserRuntimeTest {
 
         collectedEvents.clear();
 
+        // Check with user3, he/she shouldn't see any task now that the task was assigned
+        securityUtil.logInAs("user3");
+
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
+
+        assertThat(tasks.getTotalItems()).isEqualTo(0);
+
+
+        //Release with User 1
+        securityUtil.logInAs("user1");
+
         Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(task.getId()).build());
 
         assertThat(releasedTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
@@ -224,6 +248,20 @@ public class UserTaskCandidateUserRuntimeTest {
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
         collectedEvents.clear();
+
+        // User 1 should be able to see the task to claim now
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
+
+        assertThat(tasks.getTotalItems()).isEqualTo(1);
+
+        // User 3 also should be able to see the task now
+
+        // Check with user3
+        securityUtil.logInAs("user3");
+
+        tasks = taskRuntime.tasks(Pageable.of(0, 50));
+
+        assertThat(tasks.getTotalItems()).isEqualTo(1);
 
     }
 
