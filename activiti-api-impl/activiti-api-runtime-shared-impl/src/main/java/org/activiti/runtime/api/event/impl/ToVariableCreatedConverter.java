@@ -32,6 +32,10 @@ public class ToVariableCreatedConverter implements EventConverter<VariableCreate
                                                                                    internalEvent.getVariableValue(),
                                                                                    internalEvent.getProcessInstanceId());
         variableInstance.setTaskId(internalEvent.getTaskId());
-        return Optional.of(new VariableCreatedEventImpl(variableInstance));
+
+        VariableCreatedEventImpl variableCreatedEvent = new VariableCreatedEventImpl(variableInstance);
+        variableCreatedEvent.setProcessInstanceId(internalEvent.getProcessInstanceId());
+
+        return Optional.of(variableCreatedEvent);
     }
 }
