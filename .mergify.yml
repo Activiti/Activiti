@@ -10,7 +10,7 @@ pull_request_rules:
     actions:
       delete_head_branch: {}
       merge:
-        method: squash
+        method: merge
         strict: true
   - name: automatic merge when CI passes and 1 approving reviews and label ready-to-merge
     conditions:
