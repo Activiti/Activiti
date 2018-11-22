@@ -124,8 +124,6 @@ public class ProcessInstanceOperationsTest {
         assertThat(resumedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
         assertThat(collectedEvents).extracting(RuntimeEvent::getEventType).containsExactly(ProcessRuntimeEvent.ProcessEvents.PROCESS_RESUMED);
-
-
-
+        
     }
 }
