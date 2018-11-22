@@ -21,20 +21,29 @@ import java.util.Optional;
 import org.activiti.api.process.model.events.SequenceFlowTakenEvent;
 import org.activiti.api.runtime.event.impl.SequenceFlowTakenImpl;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
-import org.activiti.api.runtime.model.impl.SequenceFlowImpl;
 
 public class ToSequenceFlowTakenConverter implements EventConverter<SequenceFlowTakenEvent, ActivitiSequenceFlowTakenEvent>{
 
-    @Override
+       
     public Optional<SequenceFlowTakenEvent> from(ActivitiSequenceFlowTakenEvent internalEvent) {
-        SequenceFlowImpl sequenceFlow = new SequenceFlowImpl(internalEvent.getSourceActivityId(),
-                                                             internalEvent.getTargetActivityId());
+        BPMNSequenceFlowImpl sequenceFlow = new BPMNSequenceFlowImpl(internalEvent.getId(),
+                                                                     internalEvent.getSourceActivityId(),
+                internalEvent.getTargetActivityId());
+
+
         sequenceFlow.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         sequenceFlow.setProcessInstanceId(internalEvent.getProcessInstanceId());
         sequenceFlow.setSourceActivityName(internalEvent.getSourceActivityName());
         sequenceFlow.setSourceActivityType(internalEvent.getSourceActivityType());
         sequenceFlow.setTargetActivityName(internalEvent.getTargetActivityName());
         sequenceFlow.setTargetActivityType(internalEvent.getTargetActivityType());
-        return Optional.of(new SequenceFlowTakenImpl(sequenceFlow));
-    }
+
+
+        SequenceFlowTakenImpl sequenceFlowTaken = new SequenceFlowTakenImpl(sequenceFlow);
+        sequenceFlowTaken.setProcessInstanceId(internalEvent.getProcessInstanceId());
+        sequenceFlowTaken.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+
+        return Optional.of(sequenceFlowTaken);
+}
+
 }
