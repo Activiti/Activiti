@@ -6,9 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.api.model.shared.event.VariableCreatedEvent;
+import org.activiti.api.process.model.events.SequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
@@ -40,6 +43,10 @@ public class RuntimeTestConfiguration {
     public static Set<String> updatedTasks = new HashSet<>();
 
     public static Set<String> completedProcesses = new HashSet<>();
+
+    public static Set<SequenceFlowTakenEvent> sequenceFlowTakenEvents = new HashSet<>();
+
+    public static Set<VariableCreatedEvent> variableCreatedEventsFromProcessInstance = new HashSet<>();
 
     @Bean
     public UserDetailsService myUserDetailsService() {
@@ -152,5 +159,20 @@ public class RuntimeTestConfiguration {
     @Bean
     public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
         return processCompleted -> completedProcesses.add(processCompleted.getEntity().getId());
+    }
+
+    @Bean
+    public ProcessRuntimeEventListener<SequenceFlowTakenEvent> sequenceFlowTakenEventListener() {
+        return sequenceFlowTakenEvent -> sequenceFlowTakenEvents.add(sequenceFlowTakenEvent);
+    }
+
+    @Bean
+    public VariableEventListener<VariableCreatedEvent> variableCreatedEventFromProcessInstanceListener() {
+        return variableCreatedEvent -> {
+            //we filter out the events from tasks
+            if (variableCreatedEvent.getEntity().getTaskId() == null){
+                variableCreatedEventsFromProcessInstance.add(variableCreatedEvent);
+            }
+        };
     }
 }
