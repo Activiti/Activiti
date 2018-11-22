@@ -55,7 +55,8 @@ public class ConformanceBasicProcessRuntimeTest {
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsExactly(
                 "Process with Generic  BPMN Task",
-                "Process Information"
+                "Process Information",
+                "UserTask with no User or Group Assignment"
         );
 
     }
@@ -69,7 +70,8 @@ public class ConformanceBasicProcessRuntimeTest {
         List<ProcessDefinition> processDefinitions = processDefinitionPage.getContent();
         assertThat(processDefinitions).extracting(ProcessDefinition::getName).containsExactly(
                 "Process with Generic  BPMN Task",
-                "Process Information"
+                "Process Information",
+                "UserTask with no User or Group Assignment"
         );
 
         for(ProcessDefinition pd: processDefinitions) {
