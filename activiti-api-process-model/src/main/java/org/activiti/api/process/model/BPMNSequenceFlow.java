@@ -16,7 +16,7 @@
 
 package org.activiti.api.process.model;
 
-public interface SequenceFlow extends BPMNElement {
+public interface BPMNSequenceFlow extends BPMNElement {
 
     String getSourceActivityElementId();
 

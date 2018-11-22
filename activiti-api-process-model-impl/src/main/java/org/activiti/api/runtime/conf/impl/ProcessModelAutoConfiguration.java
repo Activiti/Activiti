@@ -28,7 +28,7 @@ import org.activiti.api.process.model.BPMNActivity;
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
-import org.activiti.api.process.model.SequenceFlow;
+import org.activiti.api.process.model.BPMNSequenceFlow;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
@@ -44,7 +44,7 @@ import org.activiti.api.runtime.model.impl.BPMNActivityImpl;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
-import org.activiti.api.runtime.model.impl.SequenceFlowImpl;
+import org.activiti.api.runtime.model.impl.BPMNSequenceFlowImpl;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -76,8 +76,8 @@ public class ProcessModelAutoConfiguration {
                             ProcessInstanceImpl.class);
         resolver.addMapping(ProcessDefinition.class,
                             ProcessDefinitionImpl.class);
-        resolver.addMapping(SequenceFlow.class,
-                            SequenceFlowImpl.class);
+        resolver.addMapping(BPMNSequenceFlow.class,
+                            BPMNSequenceFlowImpl.class);
         resolver.addMapping(IntegrationContext.class,
                             IntegrationContextImpl.class);
 
