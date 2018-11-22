@@ -29,7 +29,7 @@ public class ToSequenceFlowTakenConverter implements EventConverter<SequenceFlow
     public Optional<SequenceFlowTakenEvent> from(ActivitiSequenceFlowTakenEvent internalEvent) {
         BPMNSequenceFlowImpl sequenceFlow = new BPMNSequenceFlowImpl(internalEvent.getId(),
                                                                      internalEvent.getSourceActivityId(),
-                internalEvent.getTargetActivityId());
+                                                                     internalEvent.getTargetActivityId());
 
 
         sequenceFlow.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
