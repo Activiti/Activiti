@@ -16,6 +16,20 @@
     <maven.deploy.skip>true</maven.deploy.skip>
   </properties>
 
+  <!-- Import managed dependencies from activiti-build with SB dependency management -->
+  <!-- as we only need to enforce dependencies between Activiti modules without SB, SS, SF conflicts-->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.build</groupId>
+        <artifactId>activiti-dependencies-parent</artifactId>
+        <version>${activiti-build.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  
   <!-- Declare dependencies without dependencyManagement to be able enforce effective version convergence -->
   <dependencies>
     <!-- org.activiti.api -->

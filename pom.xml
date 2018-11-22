@@ -3,6 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.activiti.build</groupId>
+    <artifactId>activiti-parent</artifactId>
+    <version>7.0.41</version>
+    <relativePath/>
+  </parent>
   
   <groupId>org.activiti.dependencies</groupId>
   <artifactId>activiti-dependencies-parent</artifactId>
@@ -14,10 +20,10 @@
   <inceptionYear>2018</inceptionYear>
 
   <properties>
-    <activiti-build.version>7.0.39</activiti-build.version>
-    <activiti-api.version>7.0.49</activiti-api.version>
-    <activiti-core-common.version>7.0.15</activiti-core-common.version>
-    <activiti.version>7.0.70</activiti.version>
+    <activiti-build.version>7.0.41</activiti-build.version>
+    <activiti-api.version>7.0.50</activiti-api.version>
+    <activiti-core-common.version>7.0.19</activiti-core-common.version>
+    <activiti.version>7.0.75</activiti.version>
   </properties>
 
   <organization>
