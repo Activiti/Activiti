@@ -155,8 +155,6 @@ public class ProcessRuntimeTest {
                 .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
                 .withVariable("expectedKey",
                         true)
-                .withVariable("name","garth")
-                .withVariable("age",45)
                 .withBusinessKey("my business key")
                 .build());
 
@@ -305,8 +303,6 @@ public class ProcessRuntimeTest {
                 .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
                 .withVariable("expectedKey",
                         true)
-                .withVariable("name","garth")
-                .withVariable("age",45)
                 .withBusinessKey("my business key")
                 .build());
 
