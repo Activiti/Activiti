@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import org.activiti.api.process.model.events.SequenceFlowTakenEvent;
 import org.activiti.api.runtime.event.impl.SequenceFlowTakenImpl;
+import org.activiti.api.runtime.model.impl.BPMNSequenceFlowImpl;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 
 public class ToSequenceFlowTakenConverter implements EventConverter<SequenceFlowTakenEvent, ActivitiSequenceFlowTakenEvent>{
