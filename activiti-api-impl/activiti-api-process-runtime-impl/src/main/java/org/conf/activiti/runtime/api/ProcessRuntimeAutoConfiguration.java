@@ -32,8 +32,10 @@ import org.activiti.api.process.runtime.events.ProcessCreatedEvent;
 import org.activiti.api.process.runtime.events.ProcessResumedEvent;
 import org.activiti.api.process.runtime.events.ProcessStartedEvent;
 import org.activiti.api.process.runtime.events.ProcessSuspendedEvent;
+import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
+import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -47,6 +49,7 @@ import org.activiti.runtime.api.event.impl.ToProcessCancelledConverter;
 import org.activiti.runtime.api.event.impl.ToProcessCompletedConverter;
 import org.activiti.runtime.api.event.impl.ToProcessResumedConverter;
 import org.activiti.runtime.api.event.impl.ToProcessSuspendedConverter;
+import org.activiti.runtime.api.event.impl.ToProcessUpdatedConverter;
 import org.activiti.runtime.api.event.impl.ToSequenceFlowTakenConverter;
 import org.activiti.runtime.api.event.internal.ActivityCancelledListenerDelegate;
 import org.activiti.runtime.api.event.internal.ActivityCompletedListenerDelegate;
@@ -57,6 +60,7 @@ import org.activiti.runtime.api.event.internal.ProcessCreatedListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessResumedEventListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessStartedListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessSuspendedListenerDelegate;
+import org.activiti.runtime.api.event.internal.ProcessUpdatedListenerDelegate;
 import org.activiti.runtime.api.event.internal.SequenceFlowTakenListenerDelegate;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
@@ -64,7 +68,6 @@ import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
-import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -139,6 +142,11 @@ public class ProcessRuntimeAutoConfiguration {
     }
 
     @Bean
+    public ToProcessUpdatedConverter processUpdatedConverter(APIProcessInstanceConverter processInstanceConverter) {
+        return new ToProcessUpdatedConverter(processInstanceConverter);
+    }
+    
+    @Bean
     public ToProcessResumedConverter processResumedConverter(APIProcessInstanceConverter processInstanceConverter) {
         return new ToProcessResumedConverter(processInstanceConverter);
     }
@@ -168,6 +176,15 @@ public class ProcessRuntimeAutoConfiguration {
         return () -> runtimeService.addEventListener(new ProcessCreatedListenerDelegate(getInitializedListeners(eventListeners),
                         converter),
                 ActivitiEventType.ENTITY_CREATED);
+    }
+    
+    @Bean
+    public InitializingBean registerProcessUpdatedEventListenerDelegate(RuntimeService runtimeService,
+                                                                          @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> eventListeners,
+                                                                          ToProcessUpdatedConverter converter) {
+        return () -> runtimeService.addEventListener(new ProcessUpdatedListenerDelegate(getInitializedListeners(eventListeners),
+                        converter),
+                ActivitiEventType.ENTITY_UPDATED);
     }
 
     @Bean
