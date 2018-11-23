@@ -7,3 +7,4 @@ github:
       useSinglePullRequest: true
     - name: activiti
       branch: develop
+      useSinglePullRequest: true
