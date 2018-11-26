@@ -7,6 +7,7 @@ import org.activiti.api.model.shared.Payload;
 public class UpdateProcessPayload implements Payload {
 
     private String id;
+    private String processInstanceId;
     private String processInstanceName;
     private String processInstanceDescription;
     private String businessKey;
@@ -15,10 +16,12 @@ public class UpdateProcessPayload implements Payload {
         this.id = UUID.randomUUID().toString();
     }
 
-    public UpdateProcessPayload(String processInstanceName,
+    public UpdateProcessPayload(String processInstanceId,
+                               String processInstanceName,
                                String processInstanceDescription,
                                String businessKey) {
         this();
+        this.processInstanceId = processInstanceId;
         this.processInstanceName = processInstanceName;
         this.processInstanceDescription = processInstanceDescription;
         this.businessKey = businessKey;
@@ -28,25 +31,33 @@ public class UpdateProcessPayload implements Payload {
     public String getId() {
         return id;
     }
+    
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+  
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public String getProcessInstanceDescription() {
+        return processInstanceDescription;
+    }
+    
+    public void setProcessInstanceDescription(String processInstanceDescription) {
+        this.processInstanceDescription = processInstanceDescription;
+    }
 
     public String getProcessInstanceName() {
         return processInstanceName;
     }
     
-    public String getProcessInstanceDescription() {
-        return processInstanceDescription;
-    }
-    
-    public String getBusinessKey() {
-        return businessKey;
-    }
-
     public void setProcessInstanceName(String processInstanceName) {
         this.processInstanceName = processInstanceName;
     }
     
-    public void setProcessInstanceDescription(String processInstanceDescription) {
-        this.processInstanceDescription = processInstanceDescription;
+    public String getBusinessKey() {
+        return businessKey;
     }
     
     public void setBusinessKey(String businessKey) {
