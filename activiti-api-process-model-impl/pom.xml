@@ -20,8 +20,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.activiti.api</groupId>
-    <artifactId>activiti-api</artifactId>
+    <artifactId>activiti-api-dependencies</artifactId>
     <version>7.0.0-SNAPSHOT</version>
+    <relativePath>../activiti-api-dependencies</relativePath>
   </parent>
   <artifactId>activiti-api-process-model-impl</artifactId>
   <name>Activiti API :: Process Model Implementation</name>

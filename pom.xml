@@ -14,64 +14,9 @@
 
   <name>Activiti API :: Parent</name>
   <packaging>pom</packaging>
-  <dependencyManagement>
-    <!-- This duplicates activiti-api-dependencies module but we can't import that module here as this is its parent-->
-    <dependencies>
-      <dependency>
-        <groupId>org.activiti.build</groupId>
-        <artifactId>activiti-dependencies-parent</artifactId>
-        <version>${activiti-build.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-model-shared</artifactId>
-        <version>${activiti-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-model-shared-impl</artifactId>
-        <version>${activiti-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-runtime-shared</artifactId>
-        <version>${activiti-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-process-model</artifactId>
-        <version>${activiti-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-process-model-impl</artifactId>
-        <version>${activiti-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-process-runtime</artifactId>
-        <version>${activiti-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-task-model</artifactId>
-        <version>${activiti-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-task-model-impl</artifactId>
-        <version>${activiti-api.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-task-runtime</artifactId>
-        <version>${activiti-api.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+  
   <modules>
+    <module>activiti-api-dependencies-tests</module>
     <module>activiti-api-dependencies</module>
     <module>activiti-api-model-shared</module>
     <module>activiti-api-runtime-shared</module>
@@ -104,6 +49,17 @@
     <activiti-api.version>${project.version}</activiti-api.version>
     <activiti-build.version>7.0.41</activiti-build.version> 
   </properties>
+
+  <!-- Activiti build parent marker dependency for dependency convergence tests -->
+  <dependencies>
+    <dependency>
+      <groupId>org.activiti.build</groupId>
+      <artifactId>activiti-parent</artifactId>
+      <version>${activiti-build.version}</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+  
   <build>
     <plugins>
       <plugin>
@@ -127,7 +83,7 @@
           <deployAtEnd>true</deployAtEnd>
         </configuration>
       </plugin>
-    
+      
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
