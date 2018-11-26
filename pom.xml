@@ -43,14 +43,14 @@
   </dependencies>
     
   <modules>
+    <module>activiti-core-common-dependencies-tests</module>
+    <module>activiti-core-common-dependencies</module>
     <module>activiti-spring-identity</module>
     <module>activiti-spring-security</module>
     <module>activiti-spring-security-policies</module>
     <module>activiti-spring-connector</module>
     <module>activiti-connector-model</module>
-    <module>activiti-core-common-dependencies</module>
     <module>activiti-spring-application</module>
-    <module>activiti-core-common-dependencies-tests</module>
   </modules>
 
   <repositories>
