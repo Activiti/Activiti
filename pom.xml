@@ -199,6 +199,17 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  
+  <!-- Activiti Build Parent Marker Dependency for Dependency Convergence Tests -->
+  <dependencies>
+    <dependency>
+      <groupId>org.activiti.build</groupId>
+      <artifactId>activiti-parent</artifactId>
+      <version>${activiti-build.version}</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+  
   <modules>
     <module>activiti-core-dependencies-tests</module>
     <module>activiti-core-dependencies</module>
