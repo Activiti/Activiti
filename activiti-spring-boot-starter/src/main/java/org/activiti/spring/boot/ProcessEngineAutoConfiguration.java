@@ -56,7 +56,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
             DataSource dataSource,
             PlatformTransactionManager transactionManager,
-            SpringAsyncExecutor springAsyncExecutor,
+            @Autowired(required = false) SpringAsyncExecutor springAsyncExecutor,
             ActivitiProperties activitiProperties,
             ProcessDefinitionResourceFinder processDefinitionResourceFinder,
             @Autowired(required = false) ProcessEngineConfigurationConfigurer processEngineConfigurationConfigurer) throws IOException {

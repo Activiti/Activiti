@@ -29,8 +29,10 @@ import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringCallerRunsRejectedJobsHandler;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.SpringRejectedJobsHandler;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
 import org.springframework.core.task.TaskExecutor;
 
@@ -42,7 +44,7 @@ public abstract class AbstractProcessEngineAutoConfiguration
         extends AbstractProcessEngineConfiguration {
 
   @Bean
-  public SpringAsyncExecutor springAsyncExecutor(TaskExecutor applicationTaskExecutor) {
+  public SpringAsyncExecutor springAsyncExecutor(@Qualifier("taskExecutor") TaskExecutor applicationTaskExecutor) {
     return new SpringAsyncExecutor(applicationTaskExecutor, springRejectedJobsHandler());
   }
   
