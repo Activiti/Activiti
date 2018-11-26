@@ -21,8 +21,18 @@ import java.util.List;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
-import org.activiti.api.process.model.payloads.*;
+import org.activiti.api.process.model.payloads.DeleteProcessPayload;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
+import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
+import org.activiti.api.process.model.payloads.RemoveProcessVariablesPayload;
+import org.activiti.api.process.model.payloads.ResumeProcessPayload;
+import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
+import org.activiti.api.process.model.payloads.SignalPayload;
+import org.activiti.api.process.model.payloads.StartProcessPayload;
+import org.activiti.api.process.model.payloads.SuspendProcessPayload;
+import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
+import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -31,7 +41,6 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
-import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -199,7 +208,13 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     @Override
     public ProcessInstance update(UpdateProcessPayload updateProcessPayload) {
-        return null;
+        if (updateProcessPayload.getBusinessKey()!=null)
+            runtimeService.updateBusinessKey(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getBusinessKey());
+        if (updateProcessPayload.getProcessInstanceName()!=null)
+            runtimeService.setProcessInstanceName(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getProcessInstanceName());
+        
+        return processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
+                                             .processInstanceId(updateProcessPayload.getProcessInstanceId()).singleResult());
     }
 
     @Override

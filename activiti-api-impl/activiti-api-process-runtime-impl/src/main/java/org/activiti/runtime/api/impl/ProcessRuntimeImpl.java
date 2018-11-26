@@ -25,12 +25,28 @@ import org.activiti.api.process.model.ProcessDefinitionMeta;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.ProcessInstanceMeta;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
-import org.activiti.api.process.model.payloads.*;
+import org.activiti.api.process.model.payloads.DeleteProcessPayload;
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
+import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
+import org.activiti.api.process.model.payloads.GetVariablesPayload;
+import org.activiti.api.process.model.payloads.RemoveProcessVariablesPayload;
+import org.activiti.api.process.model.payloads.ResumeProcessPayload;
+import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
+import org.activiti.api.process.model.payloads.SignalPayload;
+import org.activiti.api.process.model.payloads.StartProcessPayload;
+import org.activiti.api.process.model.payloads.SuspendProcessPayload;
+import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
+import org.activiti.api.runtime.model.impl.ProcessDefinitionMetaImpl;
+import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.api.runtime.model.impl.ProcessInstanceMetaImpl;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.core.common.spring.security.policies.ActivitiForbiddenException;
+import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
+import org.activiti.core.common.spring.security.policies.SecurityPolicyAccess;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -38,13 +54,7 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
-import org.activiti.api.runtime.model.impl.ProcessDefinitionMetaImpl;
-import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
-import org.activiti.api.runtime.model.impl.ProcessInstanceMetaImpl;
 import org.activiti.runtime.api.query.impl.PageImpl;
-import org.activiti.core.common.spring.security.policies.ActivitiForbiddenException;
-import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
-import org.activiti.core.common.spring.security.policies.SecurityPolicyAccess;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 @PreAuthorize("hasRole('ACTIVITI_USER')")
@@ -306,6 +316,17 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     @Override
     public ProcessInstance update(UpdateProcessPayload updateProcessPayload) {
-        return null;
+        ProcessInstance processInstance = processInstance(updateProcessPayload.getProcessInstanceId());
+        if (!securityPoliciesManager.canWrite(processInstance.getProcessDefinitionKey())) {
+            throw new ActivitiForbiddenException("Operation not permitted for " + processInstance.getProcessDefinitionKey() + " due security policy violation");
+        }
+        
+        if (updateProcessPayload.getBusinessKey()!=null)
+            runtimeService.updateBusinessKey(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getBusinessKey());
+        if (updateProcessPayload.getProcessInstanceName()!=null)
+            runtimeService.setProcessInstanceName(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getProcessInstanceName());
+        
+        return processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
+                                             .processInstanceId(updateProcessPayload.getProcessInstanceId()).singleResult());
     }
 }
