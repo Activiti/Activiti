@@ -21,57 +21,27 @@
     <activiti-core-common.version>${project.version}</activiti-core-common.version>
     <commons-io.version>2.6</commons-io.version>
   </properties>
+  
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.activiti.build</groupId>
-        <artifactId>activiti-dependencies-parent</artifactId>
-        <version>${activiti-build.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.api</groupId>
-        <artifactId>activiti-api-dependencies</artifactId>
-        <version>${activiti-api.version}</version>       
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons-io.version}</version>
       </dependency>
-      <!-- Activiti Modules for managed dependencies -->
-      <!-- This duplicates activiti-core-common-dependencies module but we can't import that module here as this is its parent-->
-      <dependency>
-        <groupId>org.activiti.core.common</groupId>
-        <artifactId>activiti-connector-model</artifactId>
-        <version>${activiti-core-common.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.core.common</groupId>
-        <artifactId>activiti-spring-connector</artifactId>
-        <version>${activiti-core-common.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.core.common</groupId>
-        <artifactId>activiti-spring-identity</artifactId>
-        <version>${activiti-core-common.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.core.common</groupId>
-        <artifactId>activiti-spring-security</artifactId>
-        <version>${activiti-core-common.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti.core.common</groupId>
-        <artifactId>activiti-spring-security-policies</artifactId>
-        <version>${activiti-core-common.version}</version>
-      </dependency>
-
     </dependencies>
   </dependencyManagement>
+
+  <!-- Activiti Build Parent Marker Dependency for Dependency Convergence Tests -->
+  <dependencies>
+    <dependency>
+      <groupId>org.activiti.build</groupId>
+      <artifactId>activiti-parent</artifactId>
+      <version>${activiti-build.version}</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+    
   <modules>
     <module>activiti-spring-identity</module>
     <module>activiti-spring-security</module>
@@ -80,6 +50,7 @@
     <module>activiti-connector-model</module>
     <module>activiti-core-common-dependencies</module>
     <module>activiti-spring-application</module>
+    <module>activiti-core-common-dependencies-tests</module>
   </modules>
 
   <repositories>
