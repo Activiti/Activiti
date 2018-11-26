@@ -9,6 +9,11 @@
   <packaging>pom</packaging>
   
   <name>Activiti Core Common :: Dependencies BOM (Bill Of Materials) Tests</name>
+
+  <properties>
+    <maven.deploy.skip>true</maven.deploy.skip>
+    <enforceFail>true</enforceFail>    
+  </properties>
  
   <!-- Import managed dependencies from activiti-build with SB dependency management -->
   <dependencyManagement>
@@ -131,7 +136,7 @@
               <goal>enforce</goal>
             </goals>
             <configuration>
-              <fail>true</fail>
+              <fail>${enforceFail}</fail>
               <rules>
                 <reactorModuleConvergence>
                   <message>The reactor is not valid</message>
