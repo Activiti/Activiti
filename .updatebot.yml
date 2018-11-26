@@ -4,10 +4,13 @@ github:
     repositories:
     - name: activiti-api
       branch: develop
+      useSinglePullRequest: true
     - name: activiti-core-common
       branch: develop      
+      useSinglePullRequest: true
     - name: activiti
       branch: develop
+      useSinglePullRequest: true
     - name: activiti-dependencies
       branch: develop
       useSinglePullRequest: true
