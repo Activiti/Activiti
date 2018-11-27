@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.41</version>
+    <version>7.0.42</version>
     <relativePath/>
   </parent> 
   <groupId>org.activiti</groupId>
@@ -16,8 +16,9 @@
   <description>Activiti Core :: Parent</description>
   <url>http://activiti.org</url>
   <properties>
-    <activiti-build.version>7.0.41</activiti-build.version>
-    <activiti-core-common.version>7.0.21</activiti-core-common.version>
+    <activiti-build.version>7.0.42</activiti-build.version>
+    <activiti-api.version>7.0.55</activiti-api.version>
+    <activiti-core-common.version>7.0.25</activiti-core-common.version>
     <activiti.version>${project.version}</activiti.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
@@ -43,92 +44,6 @@
   </properties>
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.activiti.build</groupId>
-        <artifactId>activiti-dependencies-parent</artifactId>
-        <version>${activiti-build.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Activiti Modules for managed dependencies -->
-      <!-- This duplicates activiti-dependencies module but we can't import that module here as this is its parent-->
-      <dependency>
-        <groupId>org.activiti.core.common</groupId>
-        <artifactId>activiti-core-common-dependencies</artifactId>
-        <version>${activiti-core-common.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-api-impl</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-api-runtime-shared-impl</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-api-process-runtime-impl</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-api-task-runtime-impl</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-engine</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-spring</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-spring-app-process</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-spring-boot-starter</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-bpmn-model</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-image-generator</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-bpmn-converter</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-json-converter</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-bpmn-layout</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-process-validation</artifactId>
-        <version>${activiti.version}</version>
-      </dependency>
       <dependency>
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy-all</artifactId>
@@ -284,7 +199,19 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  
+  <!-- Activiti Build Parent Marker Dependency for Dependency Convergence Tests -->
+  <dependencies>
+    <dependency>
+      <groupId>org.activiti.build</groupId>
+      <artifactId>activiti-parent</artifactId>
+      <version>${activiti-build.version}</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+  
   <modules>
+    <module>activiti-core-dependencies-tests</module>
     <module>activiti-core-dependencies</module>
     <module>activiti-api-impl</module>
     <module>activiti-bpmn-model</module>
@@ -326,7 +253,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.8.2</version></plugin>
+        <version>2.8.2</version>
+        <configuration>
+          <deployAtEnd>true</deployAtEnd>
+        </configuration>
+      </plugin>
     
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

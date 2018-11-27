@@ -42,8 +42,8 @@ public abstract class AbstractProcessEngineAutoConfiguration
         extends AbstractProcessEngineConfiguration {
 
   @Bean
-  public SpringAsyncExecutor springAsyncExecutor(TaskExecutor taskExecutor) {
-    return new SpringAsyncExecutor(taskExecutor, springRejectedJobsHandler());
+  public SpringAsyncExecutor springAsyncExecutor(TaskExecutor applicationTaskExecutor) {
+    return new SpringAsyncExecutor(applicationTaskExecutor, springRejectedJobsHandler());
   }
   
   @Bean 
