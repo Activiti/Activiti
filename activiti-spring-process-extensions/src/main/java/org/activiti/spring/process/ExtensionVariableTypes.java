@@ -1,14 +1,20 @@
 package org.activiti.spring.process;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/***
+ * Only used when reading extension json containing defaults, not runtime variables.
+ */
 public enum ExtensionVariableTypes {
 
     BOOLEAN("boolean",Boolean.class),
     STRING("string",String.class),
     INTEGER("integer",Integer.class),
+    JSON("json", ObjectNode.class),
     DATE("date",Date.class,new SimpleDateFormat("yyyy-MM-dd"));
 
     String name;

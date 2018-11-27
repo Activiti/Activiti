@@ -13,8 +13,11 @@
 
 package org.activiti.spring.process;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
+import org.activiti.spring.process.model.VariableDefinition;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
@@ -52,8 +55,25 @@ public class ProcessExtensionService {
     }
 
     private ProcessExtensionModel read(InputStream inputStream) throws IOException {
-        return objectMapper.readValue(inputStream,
+        ProcessExtensionModel mappedModel = objectMapper.readValue(inputStream,
                 ProcessExtensionModel.class);
+        return convertJsonVariables(mappedModel);
+    }
+
+    /**
+     * Json variables need to be represented as JsonNode for engine to handle as Json
+     */
+    private ProcessExtensionModel convertJsonVariables(ProcessExtensionModel processExtensionModel){
+        if( processExtensionModel!=null && processExtensionModel.getExtensions()!=null
+                && processExtensionModel.getExtensions().getProperties()!=null ){
+
+            for(VariableDefinition variableDefinition:processExtensionModel.getExtensions().getProperties().values()){
+                if(variableDefinition.getType().equals(ExtensionVariableTypes.JSON.name)){
+                    variableDefinition.setValue(objectMapper.convertValue(variableDefinition.getValue(), JsonNode.class));
+                }
+            }
+        }
+        return processExtensionModel;
     }
 
     public Map<String, ProcessExtensionModel> get() throws IOException {

@@ -38,6 +38,8 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.xml.namespace.QName;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
@@ -720,6 +722,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * By default true for backwards compatibility.
    */
   protected boolean serializableVariableTypeTrackDeserializedObjects = true;
+
+  protected boolean serializePOJOsInVariablesToJson = false;
+  protected String javaClassFieldForJackson = JsonTypeInfo.Id.CLASS.getDefaultPropertyName();
 
   protected ExpressionManager expressionManager;
   protected List<String> customScriptingEngineClasses;
@@ -1966,12 +1971,18 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       variableTypes.addType(new JodaDateTimeType());
       variableTypes.addType(new DoubleType());
       variableTypes.addType(new UUIDType());
-      variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper));
-      variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper));
-      variableTypes.addType(new ByteArrayType());
-      variableTypes.addType(new SerializableType(serializableVariableTypeTrackDeserializedObjects));
-      variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
-      variableTypes.addType(new CustomObjectType("message", MessageInstance.class));
+
+      variableTypes.addType(new JsonType(getMaxLengthString(), objectMapper,serializePOJOsInVariablesToJson,javaClassFieldForJackson));
+      variableTypes.addType(new LongJsonType(getMaxLengthString() + 1, objectMapper,serializePOJOsInVariablesToJson,javaClassFieldForJackson));
+
+      //java serialization only supported OOTB if not defaulting to json
+      //if java serliazation needed together with json defaulting then add to customPostVariableTypes
+      if(!serializePOJOsInVariablesToJson) {
+        variableTypes.addType(new ByteArrayType());
+        variableTypes.addType(new SerializableType(serializableVariableTypeTrackDeserializedObjects));
+        variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
+        variableTypes.addType(new CustomObjectType("message", MessageInstance.class));
+      }
       if (customPostVariableTypes != null) {
         for (VariableType customVariableType : customPostVariableTypes) {
           variableTypes.addType(customVariableType);
@@ -2460,6 +2471,22 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public void setSerializableVariableTypeTrackDeserializedObjects(boolean serializableVariableTypeTrackDeserializedObjects) {
     this.serializableVariableTypeTrackDeserializedObjects = serializableVariableTypeTrackDeserializedObjects;
+  }
+
+  public boolean isSerializePOJOsInVariablesToJson() {
+    return serializePOJOsInVariablesToJson;
+  }
+
+  public void setSerializePOJOsInVariablesToJson(boolean serializePOJOsInVariablesToJson) {
+    this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
+  }
+
+  public String getJavaClassFieldForJackson() {
+    return javaClassFieldForJackson;
+  }
+
+  public void setJavaClassFieldForJackson(String javaClassFieldForJackson) {
+    this.javaClassFieldForJackson = javaClassFieldForJackson;
   }
 
   public ExpressionManager getExpressionManager() {

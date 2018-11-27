@@ -39,16 +39,15 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         if (processExtensionDefinitionMap.containsKey(processDefinition.getKey())) {
             ProcessExtensionModel processExtensionModel = processExtensionDefinitionMap.get(processDefinition.getKey());
             Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions().getProperties();
-            Map<String, Object> processedVariables = processVariables(variables, variableDefinitionMap);
-            Set<String> missingRequiredVars = checkRequiredVariables(processedVariables, variableDefinitionMap);
+            variables = processVariables(variables, variableDefinitionMap);
+            Set<String> missingRequiredVars = checkRequiredVariables(variables, variableDefinitionMap);
             if (!missingRequiredVars.isEmpty()) {
                 throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' without required variables " + String.join(", ", missingRequiredVars));
             }
-            Set<String> varsWithMismatchedTypes = checkVariablesMatchTypes(processedVariables,variableDefinitionMap);
+            Set<String> varsWithMismatchedTypes = checkVariablesMatchTypes(variables,variableDefinitionMap);
             if(!varsWithMismatchedTypes.isEmpty()){
                 throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' as variables have unexpected types " + String.join(", ", varsWithMismatchedTypes));
             }
-            return super.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process, processedVariables, transientVariables, startProcessInstance);
         }
         return super.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process, variables, transientVariables, startProcessInstance);
     }
@@ -88,11 +87,14 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     private Set<String> checkVariablesMatchTypes(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
         Set<String> mismatchedVars = new HashSet<>();
         variableDefinitionMap.forEach((k,v) -> {
+
             if (variables.containsKey(v.getName()) ) {
                 ExtensionVariableTypes type = ExtensionVariableTypes.getEnumByString(v.getType());
-                if (!(variables.get(v.getName()).getClass().isAssignableFrom(type.clazz))){
+
+                if(!variables.get(v.getName()).getClass().isAssignableFrom(type.clazz)){
                     mismatchedVars.add(v.getName());
                 }
+
             }
         });
         return mismatchedVars;
