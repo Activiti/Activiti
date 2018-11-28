@@ -6,11 +6,12 @@ github:
       branch: develop
     - name: activiti-cloud-runtime-bundle-service
       branch: develop
+      useSinglePullRequest: true
     - name: activiti-cloud-service-common
       branch: develop
+      useSinglePullRequest: true
     - name: activiti-cloud-api
       branch: develop
-    - name: activiti-cloud-build
-      branch: develop
+      useSinglePullRequest: true
       
       
