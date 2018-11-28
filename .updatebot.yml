@@ -14,3 +14,4 @@ github:
     - name: activiti-dependencies
       branch: develop
       useSinglePullRequest: true
+      
