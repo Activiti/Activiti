@@ -29,13 +29,6 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.activiti.build</groupId>
-        <artifactId>activiti-dependencies-parent</artifactId>
-        <version>${activiti-build.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
         <groupId>org.activiti.api</groupId>
         <artifactId>activiti-api-model-shared</artifactId>
         <version>${activiti-api.version}</version>
