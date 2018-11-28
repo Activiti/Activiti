@@ -45,6 +45,13 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
+        <groupId>org.activiti.build</groupId>
+        <artifactId>activiti-dependencies-parent</artifactId>
+        <version>${activiti-build.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
         <groupId>org.codehaus.groovy</groupId>
         <artifactId>groovy-all</artifactId>
         <version>${groovy-all.version}</version>
