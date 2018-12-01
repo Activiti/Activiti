@@ -13,14 +13,25 @@
 
 package org.activiti.spring.process.model;
 
-public class VariableDefinition extends org.activiti.core.common.model.connector.VariableDefinition {
+import java.util.HashMap;
+import java.util.Map;
 
-    private Object value;
+public class VariableMapping {
 
-    public Object getValue() {
-        return value;
+    private Map<String, String> input = new HashMap<>();
+    private Map<String, String> output = new HashMap<>();
+
+    public Map<String, String> getInput() {
+        return input;
     }
-    public void setValue(Object value) {
-        this.value = value;
+    public void setInput(Map<String, String> input) {
+        this.input = input;
+    }
+
+    public Map<String, String> getOutput() {
+        return output;
+    }
+    public void setOutput(Map<String, String> output) {
+        this.output = output;
     }
 }

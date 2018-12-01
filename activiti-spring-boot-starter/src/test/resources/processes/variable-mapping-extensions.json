@@ -1,0 +1,47 @@
+{
+  "id":"connectorVarMapping",
+  "name":"myProcess.bpmn",
+  "extensions": {
+    "properties": {
+      "age-id": {
+        "id": "age-id",
+        "name": "age",
+        "type": "integer",
+        "value": 20
+      },
+      "name-id": {
+        "id": "name-id",
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "value": "inName"
+      },
+      "nick-name-id": {
+        "id": "nick-name-id",
+        "name": "nickName",
+        "type": "string",
+        "required": false,
+        "value": "testName"
+      },
+      "input-unmapped-variable-name-id": {
+        "id": "input-unmapped-variable-name-id",
+        "name": "input-unmapped-variable-name",
+        "type": "string",
+        "required": false,
+        "value": "inTest"
+      }
+    },
+    "variablesMappings": {
+      "serviceTask": {
+        "input": {
+          "input-variable-1": "name-id",
+          "input-variable-2": "age-id"
+        },
+        "output": {
+          "out-variable-1": "name-id",
+          "out-variable-2": "age-id"
+        }
+      }
+    }
+  }
+}

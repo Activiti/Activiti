@@ -1,0 +1,59 @@
+{
+  "id": "variableMappingConnectorId",
+  "name": "Name of the connector",
+  "description": "Description of the connector",
+  "icon": "icon-name",
+  "actions": {
+    "variableMappingActionId": {
+      "id": "variableMappingActionId",
+      "name": "variableMappingActionName",
+      "description": "...",
+      "input": [
+        {
+          "id": "input-variable-1",
+          "name": "input-variable-name-1",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "id": "input-variable-2",
+          "name": "input-variable-name-2",
+          "type": "integer",
+          "required": false,
+          "description": ""
+        },
+        {
+          "id": "input-unmapped-variable",
+          "name": "input-unmapped-variable-name",
+          "type": "string",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "output": [
+        {
+          "id": "out-variable-1",
+          "name": "out-variable-name-1",
+          "type": "string",
+          "description": "",
+          "required": "false"
+        },
+        {
+          "id": "out-variable-2",
+          "name": "out-variable-name-2",
+          "type": "integer",
+          "description": "",
+          "required": "false"
+        },
+        {
+          "id": "out-unmapped-variable",
+          "name": "out-unmapped-variable-name",
+          "type": "string",
+          "description": "",
+          "required": "false"
+        }
+      ]
+    }
+  }
+}

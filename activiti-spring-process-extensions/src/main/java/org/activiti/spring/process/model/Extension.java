@@ -19,11 +19,19 @@ import java.util.Map;
 public class Extension {
 
     private Map<String, VariableDefinition> properties = new HashMap<>();
+    private Map<String, VariableMapping> variablesMappings = new HashMap<>();
 
     public Map<String, VariableDefinition> getProperties() {
         return properties;
     }
     public void setProperties(Map<String, VariableDefinition> properties) {
         this.properties = properties;
+    }
+
+    public Map<String, VariableMapping> getVariablesMappings() {
+        return variablesMappings;
+    }
+    public void setVariablesMappings(Map<String, VariableMapping> variablesMappings) {
+        this.variablesMappings = variablesMappings;
     }
 }
