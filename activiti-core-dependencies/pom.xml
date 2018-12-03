@@ -103,6 +103,26 @@
         <artifactId>activiti-process-validation</artifactId>
         <version>${activiti.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-spring-conformance</artifactId>
+        <version>${activiti.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-spring-conformance-set0</artifactId>
+        <version>${activiti.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-spring-conformance-set1</artifactId>
+        <version>${activiti.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-spring-conformance-set2</artifactId>
+        <version>${activiti.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
