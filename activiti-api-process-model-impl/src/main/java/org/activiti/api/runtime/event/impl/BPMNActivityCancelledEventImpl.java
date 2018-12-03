@@ -16,4 +16,9 @@ public class BPMNActivityCancelledEventImpl extends BPMNActivityEventImpl implem
     public ActivityEvents getEventType() {
         return ActivityEvents.ACTIVITY_CANCELLED;
     }
+
+    @Override
+    public String toString() {
+        return "BPMNActivityCancelledEventImpl{" + super.toString() + "}";
+    }
 }

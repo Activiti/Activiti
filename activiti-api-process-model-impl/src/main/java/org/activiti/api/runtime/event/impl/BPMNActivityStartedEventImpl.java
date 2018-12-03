@@ -17,4 +17,9 @@ public class BPMNActivityStartedEventImpl extends BPMNActivityEventImpl implemen
     public BPMNActivityEvent.ActivityEvents getEventType() {
         return BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED;
     }
+
+    @Override
+    public String toString() {
+        return "BPMNActivityStartedEventImpl{" + super.toString() + "}";
+    }
 }

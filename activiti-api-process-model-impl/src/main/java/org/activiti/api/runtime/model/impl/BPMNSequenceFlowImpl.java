@@ -119,4 +119,15 @@ public class BPMNSequenceFlowImpl extends BPMNElementImpl implements BPMNSequenc
                             targetActivityElementId);
     }
 
+    @Override
+    public String toString() {
+        return "SequenceFlowImpl{" +
+                "sourceActivityElementId='" + sourceActivityElementId + '\'' +
+                ", sourceActivityName='" + sourceActivityName + '\'' +
+                ", sourceActivityType='" + sourceActivityType + '\'' +
+                ", targetActivityElementId='" + targetActivityElementId + '\'' +
+                ", targetActivityName='" + targetActivityName + '\'' +
+                ", targetActivityType='" + targetActivityType + '\'' +
+                '}';
+    }
 }

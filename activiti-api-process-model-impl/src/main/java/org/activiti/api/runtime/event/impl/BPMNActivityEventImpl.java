@@ -13,4 +13,6 @@ public abstract class BPMNActivityEventImpl extends RuntimeEventImpl<BPMNActivit
     public BPMNActivityEventImpl(BPMNActivity entity) {
         super(entity);
     }
+
+
 }

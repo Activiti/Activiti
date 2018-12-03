@@ -70,7 +70,7 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> 
     public String getProcessInstanceId() {
         return processInstanceId;
     }
-    
+
     @Override
     public String getProcessDefinitionId() {
         return processDefinitionId;
@@ -95,7 +95,7 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> 
     public String getParentProcessInstanceId() {
         return parentProcessInstanceId;
     }
-    
+
     public void setParentProcessInstanceId(String parentProcessInstanceId) {
         this.parentProcessInstanceId = parentProcessInstanceId;
     }
@@ -119,4 +119,12 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> 
     public void setProcessInstanceId(String processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
+
+    @Override
+    public String toString() {
+        return "id='" + id + '\'' +
+                ", timestamp=" + timestamp +
+                ", entity=" + entity;
+    }
+
 }

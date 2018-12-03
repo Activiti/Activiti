@@ -16,4 +16,9 @@ public class BPMNActivityCompletedEventImpl extends BPMNActivityEventImpl implem
     public ActivityEvents getEventType() {
         return ActivityEvents.ACTIVITY_COMPLETED;
     }
+
+    @Override
+    public String toString() {
+        return "BPMNActivityCompletedEventImpl{" + super.toString() + "}";
+    }
 }
