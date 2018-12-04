@@ -86,14 +86,16 @@ public class ProcessRuntimeAutoConfiguration {
                                          ProcessSecurityPoliciesManager securityPoliciesManager,
                                          APIProcessInstanceConverter processInstanceConverter,
                                          APIVariableInstanceConverter variableInstanceConverter,
-                                         ProcessRuntimeConfiguration processRuntimeConfiguration) {
+                                         ProcessRuntimeConfiguration processRuntimeConfiguration,
+                                         @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> listeners) {
         return new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
-                                      securityPoliciesManager,
+                securityPoliciesManager,
                 processInstanceConverter,
                 variableInstanceConverter,
-                processRuntimeConfiguration);
+                processRuntimeConfiguration,
+                listeners);
     }
 
     @Bean
