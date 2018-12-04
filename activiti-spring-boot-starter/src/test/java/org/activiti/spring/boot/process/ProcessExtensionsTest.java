@@ -22,7 +22,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -111,12 +110,8 @@ public class ProcessExtensionsTest {
         assertThat(variableInstances).isNotNull();
         assertThat(variableInstances).hasSize(5);
 
-        assertThat(variableInstances).extracting("name","type")
-                .contains(tuple("extraVar","boolean"),
-                        tuple("name","string"),
-                        tuple("age","integer"),
-                        tuple("birth","date"),
-                        tuple("subscribe","boolean"));
+        assertThat(variableInstances).extracting("name")
+                .contains("extraVar", "name", "age", "birth","subscribe");
 
         // cleanup
         processRuntime.delete(ProcessPayloadBuilder.delete(initialVarsProcess));

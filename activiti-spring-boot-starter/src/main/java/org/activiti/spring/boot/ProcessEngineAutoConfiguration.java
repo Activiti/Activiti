@@ -34,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +43,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
-@AutoConfigureAfter(DataSourceAutoConfiguration.class)
+@AutoConfigureAfter({DataSourceAutoConfiguration.class, TaskExecutionAutoConfiguration.class})
 @EnableConfigurationProperties(ActivitiProperties.class)
 public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoConfiguration {
 
@@ -57,7 +58,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
             DataSource dataSource,
             PlatformTransactionManager transactionManager,
-            @Autowired(required = false) SpringAsyncExecutor springAsyncExecutor,
+            SpringAsyncExecutor springAsyncExecutor,
             ActivitiProperties activitiProperties,
             ProcessDefinitionResourceFinder processDefinitionResourceFinder,
             @Autowired(required = false) ProcessEngineConfigurationConfigurer processEngineConfigurationConfigurer,
