@@ -105,7 +105,7 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
-        <artifactId>activiti-spring-conformance</artifactId>
+        <artifactId>activiti-spring-conformance-tests</artifactId>
         <version>${activiti.version}</version>
       </dependency>
       <dependency>

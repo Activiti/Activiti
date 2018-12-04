@@ -18,7 +18,7 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 
 /**
- * Describes set0 methods for querying.
+ * Describes basic methods for querying.
  * 
 
  */
