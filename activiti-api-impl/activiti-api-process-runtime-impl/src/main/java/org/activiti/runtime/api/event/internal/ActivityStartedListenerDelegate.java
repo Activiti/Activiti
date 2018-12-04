@@ -19,7 +19,7 @@ package org.activiti.runtime.api.event.internal;
 import java.util.List;
 
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
-import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
@@ -27,11 +27,11 @@ import org.activiti.runtime.api.event.impl.ToActivityStartedConverter;
 
 public class ActivityStartedListenerDelegate implements ActivitiEventListener {
 
-    private List<ProcessRuntimeEventListener<BPMNActivityStartedEvent>> processRuntimeEventListeners;
+    private List<BPMNElementEventListener<BPMNActivityStartedEvent>> processRuntimeEventListeners;
 
     private ToActivityStartedConverter converter;
 
-    public ActivityStartedListenerDelegate(List<ProcessRuntimeEventListener<BPMNActivityStartedEvent>> processRuntimeEventListeners,
+    public ActivityStartedListenerDelegate(List<BPMNElementEventListener<BPMNActivityStartedEvent>> processRuntimeEventListeners,
                                            ToActivityStartedConverter converter) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
@@ -42,7 +42,7 @@ public class ActivityStartedListenerDelegate implements ActivitiEventListener {
         if (event instanceof ActivitiActivityEvent) {
             converter.from((ActivitiActivityEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (ProcessRuntimeEventListener<BPMNActivityStartedEvent> listener : processRuntimeEventListeners) {
+                        for (BPMNElementEventListener<BPMNActivityStartedEvent> listener : processRuntimeEventListeners) {
                             listener.onEvent(convertedEvent);
                         }
                     });

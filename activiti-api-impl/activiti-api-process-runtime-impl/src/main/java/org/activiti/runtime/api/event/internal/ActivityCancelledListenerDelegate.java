@@ -19,7 +19,7 @@ package org.activiti.runtime.api.event.internal;
 import java.util.List;
 
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
-import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
@@ -27,11 +27,11 @@ import org.activiti.runtime.api.event.impl.ToActivityCancelledConverter;
 
 public class ActivityCancelledListenerDelegate implements ActivitiEventListener {
 
-    private List<ProcessRuntimeEventListener<BPMNActivityCancelledEvent>> processRuntimeEventListeners;
+    private List<BPMNElementEventListener<BPMNActivityCancelledEvent>> processRuntimeEventListeners;
 
     private ToActivityCancelledConverter converter;
 
-    public ActivityCancelledListenerDelegate(List<ProcessRuntimeEventListener<BPMNActivityCancelledEvent>> processRuntimeEventListeners,
+    public ActivityCancelledListenerDelegate(List<BPMNElementEventListener<BPMNActivityCancelledEvent>> processRuntimeEventListeners,
                                              ToActivityCancelledConverter converter) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
@@ -42,7 +42,7 @@ public class ActivityCancelledListenerDelegate implements ActivitiEventListener 
         if (event instanceof ActivitiActivityEvent) {
             converter.from((ActivitiActivityEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (ProcessRuntimeEventListener<BPMNActivityCancelledEvent> listener : processRuntimeEventListeners) {
+                        for (BPMNElementEventListener<BPMNActivityCancelledEvent> listener : processRuntimeEventListeners) {
                             listener.onEvent(convertedEvent);
                         }
                     });
