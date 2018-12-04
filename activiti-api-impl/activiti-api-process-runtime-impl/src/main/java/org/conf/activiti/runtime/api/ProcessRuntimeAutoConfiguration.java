@@ -71,6 +71,7 @@ import org.activiti.runtime.api.model.impl.ToActivityConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -85,14 +86,16 @@ public class ProcessRuntimeAutoConfiguration {
                                          ProcessSecurityPoliciesManager securityPoliciesManager,
                                          APIProcessInstanceConverter processInstanceConverter,
                                          APIVariableInstanceConverter variableInstanceConverter,
-                                         ProcessRuntimeConfiguration processRuntimeConfiguration) {
+                                         ProcessRuntimeConfiguration processRuntimeConfiguration,
+                                         ApplicationEventPublisher eventPublisher) {
         return new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
                                       securityPoliciesManager,
                 processInstanceConverter,
                 variableInstanceConverter,
-                processRuntimeConfiguration);
+                processRuntimeConfiguration,
+                eventPublisher);
     }
 
     @Bean
@@ -100,11 +103,13 @@ public class ProcessRuntimeAutoConfiguration {
     public ProcessAdminRuntime processAdminRuntime(RepositoryService repositoryService,
                                                    APIProcessDefinitionConverter processDefinitionConverter,
                                                    RuntimeService runtimeService,
-                                                   APIProcessInstanceConverter processInstanceConverter) {
+                                                   APIProcessInstanceConverter processInstanceConverter,
+                                                   ApplicationEventPublisher eventPublisher) {
         return new ProcessAdminRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
-                processInstanceConverter
+                processInstanceConverter,
+                eventPublisher
         );
     }
 
