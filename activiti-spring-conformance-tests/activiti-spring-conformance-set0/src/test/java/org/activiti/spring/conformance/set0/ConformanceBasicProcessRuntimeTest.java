@@ -76,12 +76,6 @@ public class ConformanceBasicProcessRuntimeTest {
                 "UserTask with no User or Group Assignment"
         );
 
-        for(ProcessDefinition pd: processDefinitions) {
-            ProcessDefinitionMeta processDefinitionMeta = processRuntime.processDefinitionMeta(pd.getKey());
-
-
-        }
-
     }
 
     @After

@@ -73,12 +73,6 @@ public class ConformanceBasicProcessRuntimeTest {
                 "ServiceTask with Implementation Modify Variable"
         );
 
-        for(ProcessDefinition pd: processDefinitions) {
-            ProcessDefinitionMeta processDefinitionMeta = processRuntime.processDefinitionMeta(pd.getKey());
-
-
-        }
-
     }
 
 

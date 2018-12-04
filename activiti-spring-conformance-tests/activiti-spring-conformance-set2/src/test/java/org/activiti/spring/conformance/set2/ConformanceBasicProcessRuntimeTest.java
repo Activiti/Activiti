@@ -76,11 +76,6 @@ public class ConformanceBasicProcessRuntimeTest {
                 "UserTask with CandidateUser"
         );
 
-        for(ProcessDefinition pd: processDefinitions) {
-            ProcessDefinitionMeta processDefinitionMeta = processRuntime.processDefinitionMeta(pd.getKey());
-
-
-        }
 
     }
 
