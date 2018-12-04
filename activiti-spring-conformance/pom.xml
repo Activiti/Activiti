@@ -16,6 +16,7 @@
     <description>Activiti Spring :: Conformance Parent</description>
 
     <modules>
+        <module>activiti-spring-conformance-util</module>
         <module>activiti-spring-conformance-set0</module>
         <module>activiti-spring-conformance-set1</module>
         <module>activiti-spring-conformance-set2</module>

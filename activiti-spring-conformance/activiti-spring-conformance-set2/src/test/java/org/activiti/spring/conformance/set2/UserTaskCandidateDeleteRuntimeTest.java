@@ -8,14 +8,13 @@ import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
-import org.activiti.spring.conformance.set2.security.util.SecurityUtil;
+import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.spring.conformance.set2.RuntimeTestConfiguration.collectedEvents;
+import static org.activiti.spring.conformance.set2.Set2RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -114,12 +113,12 @@ public class UserTaskCandidateDeleteRuntimeTest {
     }
 
     @After
-    public void cleanup(){
+    public void cleanup() {
         securityUtil.logInAs("admin");
         Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0, 50));
-        for(ProcessInstance pi : processInstancePage.getContent()){
+        for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
     }
-    
+
 }

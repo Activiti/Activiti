@@ -1,4 +1,4 @@
-package org.activiti.spring.conformance.set2.security.util;
+package org.activiti.spring.conformance.util.security;
 
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.slf4j.Logger;

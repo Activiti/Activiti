@@ -16,6 +16,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring-conformance-util</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.activiti.api</groupId>
       <artifactId>activiti-api-process-runtime</artifactId>
     </dependency>

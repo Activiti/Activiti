@@ -18,8 +18,7 @@ import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
-import org.activiti.spring.conformance.set2.security.util.SecurityUtil;
-import org.junit.After;
+import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +28,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import static org.activiti.spring.conformance.set2.RuntimeTestConfiguration.collectedEvents;
+import static org.activiti.spring.conformance.set2.Set2RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -119,7 +118,7 @@ public class UserTaskAssigneeRuntimeTest {
 
         assertThat(tasks.getTotalItems()).isEqualTo(0);
 
-        Throwable throwable = catchThrowable(() ->  taskRuntime.task(task.getId()));
+        Throwable throwable = catchThrowable(() -> taskRuntime.task(task.getId()));
 
         assertThat(throwable)
                 .isInstanceOf(NotFoundException.class);

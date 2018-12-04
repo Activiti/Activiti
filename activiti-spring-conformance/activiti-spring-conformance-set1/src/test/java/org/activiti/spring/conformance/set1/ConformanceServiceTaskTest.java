@@ -8,16 +8,16 @@ import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.NotFoundException;
-import org.activiti.spring.conformance.set1.security.util.SecurityUtil;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.activiti.spring.conformance.util.security.SecurityUtil;
 
-import static org.activiti.spring.conformance.set1.RuntimeTestConfiguration.collectedEvents;
-import static org.activiti.spring.conformance.set1.RuntimeTestConfiguration.connector1Executed;
+import static org.activiti.spring.conformance.set1.Set1RuntimeTestConfiguration.collectedEvents;
+import static org.activiti.spring.conformance.set1.Set1RuntimeTestConfiguration.connector1Executed;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
