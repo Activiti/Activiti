@@ -95,7 +95,7 @@ public class ProcessRuntimeAutoConfiguration {
                 processInstanceConverter,
                 variableInstanceConverter,
                 processRuntimeConfiguration,
-                listeners);
+                getInitializedProcessRuntimeEventListeners(listeners));
     }
 
     @Bean
@@ -268,5 +268,9 @@ public class ProcessRuntimeAutoConfiguration {
         return () -> runtimeService.addEventListener(new SequenceFlowTakenListenerDelegate(getInitializedListeners(eventListeners),
                         new ToSequenceFlowTakenConverter()),
                 ActivitiEventType.SEQUENCEFLOW_TAKEN);
+    }
+    
+    private <T> List<T> getInitializedProcessRuntimeEventListeners(List<T> processRuntimeEventListeners) {
+        return processRuntimeEventListeners != null ? processRuntimeEventListeners : Collections.emptyList();
     }
 }
