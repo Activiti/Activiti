@@ -317,8 +317,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         taskService.saveTask(task);
         taskService.addCandidateUser(task.getId(),
                                      securityManager.getAuthenticatedUserId());
-        if (createTaskPayload.getGroups() != null && !createTaskPayload.getGroups().isEmpty()) {
-            for (String g : createTaskPayload.getGroups()) {
+        if (createTaskPayload.getCandidateGroups() != null && !createTaskPayload.getCandidateGroups().isEmpty()) {
+            for (String g : createTaskPayload.getCandidateGroups()) {
                 taskService.addCandidateGroup(task.getId(),
                                               g);
             }
