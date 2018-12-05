@@ -51,7 +51,7 @@ public class TaskRuntimeUnAuthorizedTest {
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("group task")
-                .withGroup("doctor")
+                .withCandidateGroup("doctor")
                 .build());
 
         // the owner should be able to see the created task

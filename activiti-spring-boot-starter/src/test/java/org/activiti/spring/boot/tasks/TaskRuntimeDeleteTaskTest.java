@@ -73,7 +73,7 @@ public class TaskRuntimeDeleteTaskTest {
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("simple task")
-                .withGroup("activitiTeam")
+                .withCandidateGroup("activitiTeam")
                 .build());
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
