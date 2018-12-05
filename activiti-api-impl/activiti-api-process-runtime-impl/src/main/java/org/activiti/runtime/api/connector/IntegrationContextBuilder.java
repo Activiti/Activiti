@@ -16,16 +16,16 @@
 
 package org.activiti.runtime.api.connector;
 
-import org.activiti.api.process.model.IntegrationContext;
-import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
-import org.activiti.core.common.model.connector.ActionDefinition;
-import org.activiti.core.common.model.connector.VariableDefinition;
-import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
-
 import java.util.List;
 import java.util.Map;
+
+import org.activiti.api.process.model.IntegrationContext;
+import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
+import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.core.common.model.connector.ActionDefinition;
+import org.activiti.core.common.model.connector.VariableDefinition;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
 public class IntegrationContextBuilder {
 
@@ -53,6 +53,12 @@ public class IntegrationContextBuilder {
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
         integrationContext.setProcessInstanceId(execution.getProcessInstanceId());
         integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
+        integrationContext.setActivityElementId(execution.getCurrentActivityId());
+        integrationContext.setBusinessKey(execution.getProcessInstanceBusinessKey());
+        // TODO How to get these attributes?
+        //integrationContext.setParentProcessInstanceId(?);
+        //integrationContext.setProcessDefinitionKey(?);
+        //integrationContext.setProcessDefinitionVersion(?);        
         integrationContext.setActivityElementId(execution.getCurrentActivityId());
 
         String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
