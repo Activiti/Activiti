@@ -13,7 +13,8 @@ public class CreateTaskPayloadBuilder {
     private Date dueDate;
     private int priority;
     private String assignee;
-    private List<String> groups;
+    private List<String> candidateGroups = new ArrayList<>();
+    private List<String> candidateUsers = new ArrayList<>();
     private String parentTaskId;
     private String formKey;
 
@@ -52,27 +53,41 @@ public class CreateTaskPayloadBuilder {
         return this;
     }
 
-    public CreateTaskPayloadBuilder withGroups(List<String> groups) {
-        this.groups = groups;
+    public CreateTaskPayloadBuilder withCandidateGroups(List<String> candidateGroups) {
+        if (candidateGroups == null) {
+            candidateGroups = new ArrayList<>();
+        }
+        this.candidateGroups = candidateGroups;
         return this;
     }
 
-    public CreateTaskPayloadBuilder withGroup(String group) {
-        if (this.groups == null) {
-            this.groups = new ArrayList<>();
+    public CreateTaskPayloadBuilder withCandidateGroup(String candidateGroups) {
+        this.candidateGroups.add(candidateGroups);
+        return this;
+    }
+
+    public CreateTaskPayloadBuilder withCandidateUsers(List<String> candidateUsers) {
+        if (candidateUsers == null) {
+            candidateUsers = new ArrayList<>();
         }
-        this.groups.add(group);
+        this.candidateUsers = candidateUsers;
+        return this;
+    }
+
+    public CreateTaskPayloadBuilder withCandidateUsers(String candidateUsers) {
+        this.candidateGroups.add(candidateUsers);
         return this;
     }
 
     public CreateTaskPayload build() {
         return new CreateTaskPayload(name,
-                                     description,
-                                     dueDate,
-                                     priority,
-                                     assignee,
-                                     groups,
-                                     parentTaskId,
-                                     formKey);
+                description,
+                dueDate,
+                priority,
+                assignee,
+                candidateGroups,
+                candidateUsers,
+                parentTaskId,
+                formKey);
     }
 }
