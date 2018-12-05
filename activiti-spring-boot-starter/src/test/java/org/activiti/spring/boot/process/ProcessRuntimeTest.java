@@ -34,6 +34,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeTest {
@@ -120,14 +123,14 @@ public class ProcessRuntimeTest {
 
         //when
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                                                                                                      50));
+                50));
         //then
         assertThat(processDefinitionPage.getContent()).isNotNull();
         assertThat(processDefinitionPage.getContent())
                 .extracting(ProcessDefinition::getKey)
                 .contains(CATEGORIZE_PROCESS,
-                          CATEGORIZE_HUMAN_PROCESS,
-                          ONE_STEP_PROCESS);
+                        CATEGORIZE_HUMAN_PROCESS,
+                        ONE_STEP_PROCESS);
     }
 
     @Test
@@ -381,19 +384,27 @@ public class ProcessRuntimeTest {
 
     }
 
-    @Test(expected = AccessDeniedException.class)
+    @Test()
     public void adminFailTest() {
         securityUtil.logInAs("salaboy");
-        ProcessInstance fakeId = processAdminRuntime.processInstance("fakeId");
+        //when
+        Throwable throwable = catchThrowable(() -> processAdminRuntime.processInstance("fakeId"));
+        //then
+        assertThat(throwable)
+                .isInstanceOf(AccessDeniedException.class);
     }
 
-    @Test(expected = AccessDeniedException.class)
+    @Test()
     public void userFailTest() {
         securityUtil.logInAs("admin");
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
-                50));
+        //when
+        Throwable throwable = catchThrowable(() -> processRuntime.processDefinitions(Pageable.of(0,
+                50)));
+        //then
+        assertThat(throwable)
+                .isInstanceOf(AccessDeniedException.class);
     }
-    
+
     @Test
     public void updateProcessInstance() {
 
@@ -422,15 +433,15 @@ public class ProcessRuntimeTest {
         assertThat(categorizeProcess.getName()).isEqualTo("my process name");
         //assertThat(categorizeProcess.getDescription()).isNull();
 
-        
+
         //
-        //To do: currently Description is not possible to update 
+        //To do: currently Description is not possible to update
         //
-       
+
        // update a process
         Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
                 50));
-        
+
         ProcessInstance processInstance = processInstancePage.getContent().get(0);
 
         UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
@@ -438,24 +449,24 @@ public class ProcessRuntimeTest {
                 .withBusinessKey(processInstance.getBusinessKey() + " UPDATED")
                 .withProcessInstanceName(processInstance.getName() + " UPDATED")
                 .build();
-        
+
         ProcessInstance updatedProcessInstance = processRuntime.update(updateProcessPayload);
 
         assertThat(updatedProcessInstance).isNotNull();
-       
+
         processInstancePage = processRuntime.processInstances(Pageable.of(0,
                                                                           50));
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
-        
+
         processInstance = processInstancePage.getContent().get(0);
-        
-             
+
+
         assertThat(processInstance.getName()).isEqualTo("my process name UPDATED");
         assertThat(processInstance.getBusinessKey()).isEqualTo("my business key UPDATED");
-        
-        
+
+
         // delete a process to avoid possible problems with other tests
 
         ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(categorizeProcess));
@@ -464,7 +475,7 @@ public class ProcessRuntimeTest {
         assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.DELETED);
 
     }
-    
+
     @Test
     public void updateProcessInstanceAdmin() {
 
@@ -490,11 +501,11 @@ public class ProcessRuntimeTest {
         assertThat(categorizeProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
         assertThat(categorizeProcess.getName()).isEqualTo("my process name");
 
-        
+
         // update a process
         Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0,
                 50));
-        
+
         ProcessInstance processInstance = processInstancePage.getContent().get(0);
 
         UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
@@ -502,24 +513,24 @@ public class ProcessRuntimeTest {
                 .withBusinessKey(processInstance.getBusinessKey() + " UPDATED")
                 .withProcessInstanceName(processInstance.getName() + " UPDATED")
                 .build();
-        
+
         ProcessInstance updatedProcessInstance = processAdminRuntime.update(updateProcessPayload);
 
         assertThat(updatedProcessInstance).isNotNull();
-        
+
         processInstancePage = processAdminRuntime.processInstances(Pageable.of(0,
                                                                           50));
 
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
-        
+
         processInstance = processInstancePage.getContent().get(0);
-        
-             
+
+
         assertThat(processInstance.getName()).isEqualTo("my process name UPDATED");
         assertThat(processInstance.getBusinessKey()).isEqualTo("my business key UPDATED");
-        
-          
+
+
         // delete a process to avoid possible problems with other tests
 
         ProcessInstance deletedProcessInstance = processAdminRuntime.delete(ProcessPayloadBuilder.delete(categorizeProcess));

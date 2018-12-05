@@ -18,8 +18,8 @@ package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
 
-import org.activiti.api.process.model.events.SequenceFlowTakenEvent;
-import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
+import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
@@ -27,11 +27,11 @@ import org.activiti.runtime.api.event.impl.ToSequenceFlowTakenConverter;
 
 public class SequenceFlowTakenListenerDelegate implements ActivitiEventListener {
 
-    private List<ProcessRuntimeEventListener<SequenceFlowTakenEvent>> listeners;
+    private List<BPMNElementEventListener<BPMNSequenceFlowTakenEvent>> listeners;
 
     private ToSequenceFlowTakenConverter converter;
 
-    public SequenceFlowTakenListenerDelegate(List<ProcessRuntimeEventListener<SequenceFlowTakenEvent>> listeners,
+    public SequenceFlowTakenListenerDelegate(List<BPMNElementEventListener<BPMNSequenceFlowTakenEvent>> listeners,
                                              ToSequenceFlowTakenConverter converter) {
         this.listeners = listeners;
         this.converter = converter;
@@ -42,7 +42,7 @@ public class SequenceFlowTakenListenerDelegate implements ActivitiEventListener 
         if (event instanceof ActivitiSequenceFlowTakenEvent) {
             converter.from((ActivitiSequenceFlowTakenEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (ProcessRuntimeEventListener<SequenceFlowTakenEvent> listener : listeners) {
+                        for (BPMNElementEventListener<BPMNSequenceFlowTakenEvent> listener : listeners) {
                             listener.onEvent(convertedEvent);
                         }
                     });

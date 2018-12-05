@@ -32,4 +32,9 @@ public class ProcessCompletedImpl extends RuntimeEventImpl<ProcessInstance, Proc
     public ProcessEvents getEventType() {
         return ProcessEvents.PROCESS_COMPLETED;
     }
+
+    @Override
+    public String toString() {
+        return "ProcessCompletedEventImpl{" + super.toString() + '}';
+    }
 }
