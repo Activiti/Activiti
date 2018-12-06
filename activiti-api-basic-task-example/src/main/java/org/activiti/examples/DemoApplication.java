@@ -45,7 +45,7 @@ public class DemoApplication implements CommandLineRunner {
         taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("First Team Task")
                 .withDescription("This is something really important")
-                .withGroup("activitiTeam")
+                .withCandidateGroup("activitiTeam")
                 .withPriority(10)
                 .build());
 
