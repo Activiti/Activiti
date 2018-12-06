@@ -3,7 +3,7 @@ github:
   - name: activiti
     repositories:
     - name: activiti-examples
-      branch: develop
+      branch: master
     - name: activiti-cloud-runtime-bundle-service
       branch: develop
       useSinglePullRequest: true
