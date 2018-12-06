@@ -22,7 +22,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <java.version>1.8</java.version>
-    <activiti-dependencies.version>7.0.67</activiti-dependencies.version>
+    <activiti-dependencies.version>7.0.69</activiti-dependencies.version>
   </properties>
   <dependencyManagement>
     <dependencies>
