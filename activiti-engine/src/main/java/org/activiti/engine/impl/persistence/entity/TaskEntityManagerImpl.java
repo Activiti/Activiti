@@ -79,6 +79,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       execution.getTasks().add(taskEntity);
       taskEntity.setExecutionId(execution.getId());
       taskEntity.setProcessInstanceId(execution.getProcessInstanceId());
+      taskEntity.setProcessInstanceBusinessKey(execution.getProcessInstanceBusinessKey());
       taskEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
       
       getHistoryManager().recordTaskExecutionIdChange(taskEntity.getId(), taskEntity.getExecutionId());

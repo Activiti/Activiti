@@ -74,6 +74,8 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
   protected String processInstanceId;
   protected ExecutionEntity processInstance;
 
+  protected String processInstanceBusinessKey;
+  
   protected String processDefinitionId;
 
   protected String taskDefinitionKey;
@@ -239,6 +241,7 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     Context.getCommandContext().getIdentityLinkEntityManager().addGroupIdentityLink(this, groupId, identityLinkType);
   }
   
+  @Override
   public Set<IdentityLink> getCandidates() {
     Set<IdentityLink> potentialOwners = new HashSet<IdentityLink>();
     for (IdentityLinkEntity identityLinkEntity : getIdentityLinks()) {
@@ -249,26 +252,31 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     return potentialOwners;
   }
 
+  @Override
   public void deleteCandidateGroup(String groupId) {
     deleteGroupIdentityLink(groupId, IdentityLinkType.CANDIDATE);
   }
 
+  @Override
   public void deleteCandidateUser(String userId) {
     deleteUserIdentityLink(userId, IdentityLinkType.CANDIDATE);
   }
 
+  @Override
   public void deleteGroupIdentityLink(String groupId, String identityLinkType) {
     if (groupId != null) {
       Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(this, null, groupId, identityLinkType);
     }
   }
 
+  @Override
   public void deleteUserIdentityLink(String userId, String identityLinkType) {
     if (userId != null) {
       Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(this, userId, null, identityLinkType);
     }
   }
 
+  @Override
   public List<IdentityLinkEntity> getIdentityLinks() {
     if (!isIdentityLinksInitialized) {
       taskIdentityLinkEntities = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinksByTaskId(id);
@@ -278,50 +286,61 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     return taskIdentityLinkEntities;
   }
 
+  @Override
   public void setExecutionVariables(Map<String, Object> parameters) {
     if (getExecution() != null) {
       execution.setVariables(parameters);
     }
   }
 
+  @Override
   public void setName(String taskName) {
     this.name = taskName;
   }
 
+  @Override
   public void setDescription(String description) {
     this.description = description;
   }
 
+  @Override
   public void setAssignee(String assignee) {
     this.originalAssignee = this.assignee;
     this.assignee = assignee;
     assigneeUpdatedCount++;
   }
   
+  @Override
   public void setOwner(String owner) {
     this.owner = owner;
   }
 
+  @Override
   public void setDueDate(Date dueDate) {
     this.dueDate = dueDate;
   }
 
+  @Override
   public void setPriority(int priority) {
     this.priority = priority;
   }
 
+  @Override
   public void setCategory(String category) {
     this.category = category;
   }
 
-  public void setParentTaskId(String parentTaskId) {
+  @Override
+public void setParentTaskId(String parentTaskId) {
     this.parentTaskId = parentTaskId;
   }
 
+  @Override
   public String getFormKey() {
     return formKey;
   }
 
+  @Override
   public void setFormKey(String formKey) {
     this.formKey = formKey;
   }
@@ -356,14 +375,17 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   // regular getters and setters ////////////////////////////////////////////////////////
 
+  @Override
   public int getRevision() {
     return revision;
   }
 
+  @Override
   public void setRevision(int revision) {
     this.revision = revision;
   }
 
+  @Override
   public String getName() {
     if (localizedName != null && localizedName.length() > 0) {
       return localizedName;
@@ -376,10 +398,12 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     return localizedName;
   }
 
+  @Override
   public void setLocalizedName(String localizedName) {
     this.localizedName = localizedName;
   }
 
+  @Override
   public String getDescription() {
     if (localizedDescription != null && localizedDescription.length() > 0) {
       return localizedDescription;
@@ -392,42 +416,52 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     return localizedDescription;
   }
 
+  @Override
   public void setLocalizedDescription(String localizedDescription) {
     this.localizedDescription = localizedDescription;
   }
 
+  @Override
   public Date getDueDate() {
     return dueDate;
   }
 
+  @Override
   public int getPriority() {
     return priority;
   }
 
+  @Override
   public Date getCreateTime() {
     return createTime;
   }
 
+  @Override
   public void setCreateTime(Date createTime) {
     this.createTime = createTime;
   }
 
+  @Override
   public String getExecutionId() {
     return executionId;
   }
 
+  @Override
   public String getProcessInstanceId() {
     return processInstanceId;
   }
 
-  public String getProcessDefinitionId() {
+  @Override
+public String getProcessDefinitionId() {
     return processDefinitionId;
   }
 
+  @Override
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
   }
 
+  @Override
   public String getAssignee() {
     return assignee;
   }
@@ -441,34 +475,42 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     }
   }
   
+  @Override
   public String getTaskDefinitionKey() {
     return taskDefinitionKey;
   }
 
+  @Override
   public void setTaskDefinitionKey(String taskDefinitionKey) {
     this.taskDefinitionKey = taskDefinitionKey;
   }
 
+  @Override
   public String getEventName() {
     return eventName;
   }
 
+  @Override
   public void setEventName(String eventName) {
     this.eventName = eventName;
   }
   
+  @Override
   public ActivitiListener getCurrentActivitiListener() {
     return currentActivitiListener;
   }
 
+  @Override
   public void setCurrentActivitiListener(ActivitiListener currentActivitiListener) {
     this.currentActivitiListener = currentActivitiListener;
   }
 
+  @Override
   public void setExecutionId(String executionId) {
     this.executionId = executionId;
   }
 
+  @Override
   public ExecutionEntity getProcessInstance() {
     if (processInstance == null && processInstanceId != null) {
       processInstance = Context.getCommandContext().getExecutionEntityManager().findById(processInstanceId);
@@ -480,22 +522,27 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     this.processInstance = processInstance;
   }
 
+  @Override
   public void setExecution(ExecutionEntity execution) {
     this.execution = execution;
   }
 
+  @Override
   public void setProcessInstanceId(String processInstanceId) {
     this.processInstanceId = processInstanceId;
   }
 
+  @Override
   public String getOwner() {
     return owner;
   }
 
+  @Override
   public DelegationState getDelegationState() {
     return delegationState;
   }
 
+  @Override
   public void setDelegationState(DelegationState delegationState) {
     this.delegationState = delegationState;
   }
@@ -508,47 +555,58 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
     this.delegationState = (delegationStateString != null ? DelegationState.valueOf(DelegationState.class, delegationStateString) : null);
   }
 
+  @Override
   public boolean isDeleted() {
     return isDeleted;
   }
 
+  @Override
   public void setDeleted(boolean isDeleted) {
     this.isDeleted = isDeleted;
   }
 
+  @Override
   public boolean isCanceled() {
 	  return isCanceled;
   }
 
+  @Override
   public void setCanceled(boolean isCanceled) {
 	  this.isCanceled = isCanceled;
   }
   
+  @Override
   public String getParentTaskId() {
     return parentTaskId;
   }
 
+  @Override
   public Map<String, VariableInstanceEntity> getVariableInstanceEntities() {
     ensureVariableInstancesInitialized();
     return variableInstances;
   }
 
+  @Override
   public int getSuspensionState() {
     return suspensionState;
   }
 
+  @Override
   public void setSuspensionState(int suspensionState) {
     this.suspensionState = suspensionState;
   }
 
+  @Override
   public String getCategory() {
     return category;
   }
 
+  @Override
   public boolean isSuspended() {
     return suspensionState == SuspensionState.SUSPENDED.getStateCode();
   }
 
+  @Override
   public Map<String, Object> getTaskLocalVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
@@ -602,6 +660,14 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public String toString() {
     return "Task[id=" + id + ", name=" + name + "]";
+  }
+
+  public String getProcessInstanceBusinessKey() {
+    return processInstanceBusinessKey;
+  }
+
+  public void setProcessInstanceBusinessKey(String processInstanceBusinessKey) {
+    this.processInstanceBusinessKey = processInstanceBusinessKey;
   }
 
 }

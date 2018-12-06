@@ -35,6 +35,7 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
                                      status);
         task.setProcessDefinitionId(internalTask.getProcessDefinitionId());
         task.setProcessInstanceId(internalTask.getProcessInstanceId());
+        task.setProcessInstanceBusinessKey(internalTask.getProcessInstanceBusinessKey());
         task.setAssignee(internalTask.getAssignee());
         task.setClaimedDate(internalTask.getClaimTime());
         task.setCreatedDate(internalTask.getCreateTime());

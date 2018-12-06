@@ -275,5 +275,5 @@ public class HistoricTaskInstanceEntityImpl extends HistoricScopeInstanceEntityI
   public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
     this.queryVariables = queryVariables;
   }
-  
+
 }

@@ -54,6 +54,11 @@ public interface TaskInfo {
   String getProcessInstanceId();
 
   /**
+   * Reference to the process instance business key or null if it is not related to a process instance or not provided.
+   */
+  String getProcessInstanceBusinessKey();
+  
+  /**
    * Reference to the path of execution or null if it is not related to a process instance.
    */
   String getExecutionId();

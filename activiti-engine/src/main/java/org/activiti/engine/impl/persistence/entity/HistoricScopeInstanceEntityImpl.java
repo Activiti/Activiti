@@ -28,6 +28,7 @@ public abstract class HistoricScopeInstanceEntityImpl extends AbstractEntityNoRe
 
   protected String processInstanceId;
   protected String processDefinitionId;
+  protected String processInstanceBusinessKey;
   protected Date startTime;
   protected Date endTime;
   protected Long durationInMillis;
@@ -90,4 +91,13 @@ public abstract class HistoricScopeInstanceEntityImpl extends AbstractEntityNoRe
   public void setDeleteReason(String deleteReason) {
     this.deleteReason = deleteReason;
   }
+  
+  public String getProcessInstanceBusinessKey() {
+      return processInstanceBusinessKey;
+  }
+  
+  public void setProcessInstanceBusinessKey(String processInstanceBusinessKey) {
+      this.processInstanceBusinessKey = processInstanceBusinessKey;
+  }
+  
 }
