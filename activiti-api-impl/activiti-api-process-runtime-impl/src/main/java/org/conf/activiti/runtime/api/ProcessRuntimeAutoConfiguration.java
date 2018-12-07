@@ -88,15 +88,17 @@ public class ProcessRuntimeAutoConfiguration {
                                          APIProcessInstanceConverter processInstanceConverter,
                                          APIVariableInstanceConverter variableInstanceConverter,
                                          ProcessRuntimeConfiguration processRuntimeConfiguration,
-                                         ApplicationEventPublisher eventPublisher) {
+                                         ApplicationEventPublisher eventPublisher,
+                                         @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> listeners) {
         return new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
-                                      securityPoliciesManager,
+                securityPoliciesManager,
                 processInstanceConverter,
                 variableInstanceConverter,
                 processRuntimeConfiguration,
-                eventPublisher);
+                eventPublisher;
+                getInitializedProcessRuntimeEventListeners(listeners));
     }
 
     @Bean
@@ -271,5 +273,9 @@ public class ProcessRuntimeAutoConfiguration {
         return () -> runtimeService.addEventListener(new SequenceFlowTakenListenerDelegate(getInitializedListeners(eventListeners),
                         new ToSequenceFlowTakenConverter()),
                 ActivitiEventType.SEQUENCEFLOW_TAKEN);
+    }
+    
+    private <T> List<T> getInitializedProcessRuntimeEventListeners(List<T> processRuntimeEventListeners) {
+        return processRuntimeEventListeners != null ? processRuntimeEventListeners : Collections.emptyList();
     }
 }
