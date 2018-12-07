@@ -97,7 +97,7 @@ public class ProcessRuntimeAutoConfiguration {
                 processInstanceConverter,
                 variableInstanceConverter,
                 processRuntimeConfiguration,
-                eventPublisher;
+                eventPublisher,
                 getInitializedProcessRuntimeEventListeners(listeners));
     }
 
