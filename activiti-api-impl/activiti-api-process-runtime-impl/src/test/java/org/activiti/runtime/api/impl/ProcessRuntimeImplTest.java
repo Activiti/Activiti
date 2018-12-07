@@ -72,6 +72,7 @@ public class ProcessRuntimeImplTest {
                                                     processInstanceConverter,
                                                     null,
                                                     null,
+                                                    null,
                                                     Collections.singletonList(listener)));
        doReturn(true).when(securityPoliciesManager).canWrite("processDefinitionKey");
   
