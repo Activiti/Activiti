@@ -16,7 +16,8 @@
 
 package org.activiti.runtime.api.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -24,13 +25,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Collections;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
-import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
-import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.RepositoryService;
@@ -39,7 +36,6 @@ import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 
 public class ProcessRuntimeImplTest {
@@ -58,10 +54,6 @@ public class ProcessRuntimeImplTest {
     @Mock
     private  APIProcessInstanceConverter processInstanceConverter;
     
-    @Mock
-    private ProcessRuntimeEventListener<ProcessUpdatedEvent> listener;
-    
-    
     @Before
     public void setUp() {
         initMocks(this);
@@ -71,8 +63,9 @@ public class ProcessRuntimeImplTest {
                                                     securityPoliciesManager,
                                                     processInstanceConverter,
                                                     null,
-                                                    null,
-                                                    Collections.singletonList(listener)));
+                                                    null)
+                             );
+        
        doReturn(true).when(securityPoliciesManager).canWrite("processDefinitionKey");
   
     }
@@ -107,13 +100,23 @@ public class ProcessRuntimeImplTest {
         //then
         verify(runtimeService).updateBusinessKey("processId", "businessKey");
         verifyNoMoreInteractions(internalProcess);
-        
-        ArgumentCaptor<ProcessUpdatedEvent> captor = ArgumentCaptor.forClass(ProcessUpdatedEvent.class);
-        verify(listener).onEvent(captor.capture());
-        assertThat(captor.getValue().getEntity()).isEqualTo(updatedProcess);
     }
     
- 
+    @Test
+    public void shouldFailInRuntimeBundleService() {
+        assumeTrue(isClassnameAvailable("org.activiti.cloud.services.events.listeners.CloudProcessUpdatedProducer"));
+        
+        fail("Should implement and update tests in activiti-cloud-runtime-bundle-service ");
+    }
+    
+    private boolean isClassnameAvailable(String clazzName) {
+        try {
+            Class.forName(clazzName, false, this.getClass().getClassLoader());
+        } catch (LinkageError | ClassNotFoundException e) {
+            return false;
+        }
+        return true;
+    }    
  
 
 }

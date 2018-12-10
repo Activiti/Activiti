@@ -38,8 +38,6 @@ import org.activiti.api.process.model.payloads.SuspendProcessPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
-import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
-import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionMetaImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceMetaImpl;
@@ -53,7 +51,6 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
-import org.activiti.runtime.api.event.impl.ProcessUpdatedEventImpl;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
@@ -77,16 +74,14 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final ProcessSecurityPoliciesManager securityPoliciesManager;
     
-    private final List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> processUpdatedListeners;
-
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
                               ProcessSecurityPoliciesManager securityPoliciesManager,
                               APIProcessInstanceConverter processInstanceConverter,
                               APIVariableInstanceConverter variableInstanceConverter,
-                              ProcessRuntimeConfiguration configuration,
-                              List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> processUpdatedListeners) {
+                              ProcessRuntimeConfiguration configuration
+                              ) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
@@ -94,7 +89,6 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         this.processInstanceConverter = processInstanceConverter;
         this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
-        this.processUpdatedListeners=processUpdatedListeners;
     }
 
     @Override
@@ -337,14 +331,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                                                                              .processInstanceId(updateProcessPayload.getProcessInstanceId())
                                                                              .singleResult());
         
-        fireProcessUpdatedEvent(updatedProcessInstance);
         return updatedProcessInstance;
  
-    }
-    
-    private void fireProcessUpdatedEvent(ProcessInstance updatedProcessInstance) {
-        for (ProcessRuntimeEventListener<ProcessUpdatedEvent> listener : processUpdatedListeners) {
-            listener.onEvent(new ProcessUpdatedEventImpl(updatedProcessInstance));
-        }
     }
 }
