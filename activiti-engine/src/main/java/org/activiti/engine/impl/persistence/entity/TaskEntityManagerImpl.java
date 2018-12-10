@@ -122,7 +122,7 @@ public class TaskEntityManagerImpl extends AbstractEntityManager<TaskEntity> imp
       if (taskEntity.getId() != null) {
         getHistoryManager().recordTaskAssigneeChange(taskEntity.getId(), taskEntity.getAssignee());
         addAssigneeIdentityLinks(taskEntity);
-        update(taskEntity);
+        update(taskEntity, fireEvents);
       }
     }
   }
