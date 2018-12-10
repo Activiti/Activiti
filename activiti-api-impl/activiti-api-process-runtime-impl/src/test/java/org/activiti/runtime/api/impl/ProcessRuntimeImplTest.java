@@ -16,8 +16,6 @@
 
 package org.activiti.runtime.api.impl;
 
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
@@ -102,21 +100,4 @@ public class ProcessRuntimeImplTest {
         verifyNoMoreInteractions(internalProcess);
     }
     
-    @Test
-    public void shouldFailInRuntimeBundleService() {
-        assumeTrue(isClassnameAvailable("org.activiti.cloud.services.events.listeners.CloudProcessUpdatedProducer"));
-        
-        fail("Should implement and update tests in activiti-cloud-runtime-bundle-service ");
-    }
-    
-    private boolean isClassnameAvailable(String clazzName) {
-        try {
-            Class.forName(clazzName, false, this.getClass().getClassLoader());
-        } catch (LinkageError | ClassNotFoundException e) {
-            return false;
-        }
-        return true;
-    }    
- 
-
 }
