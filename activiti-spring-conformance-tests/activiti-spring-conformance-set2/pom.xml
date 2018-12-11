@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-spring-conformance-tests</artifactId>
-    <version>7.0.87</version>
+    <version>7.0.0.Beta4</version>
   </parent>
 
   <artifactId>activiti-spring-conformance-set2</artifactId>
