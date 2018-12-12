@@ -18,6 +18,7 @@ package org.activiti.runtime.api.connector;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
@@ -63,7 +64,13 @@ public class IntegrationContextBuilder {
             if(processInstance != null) {
                 integrationContext.setProcessDefinitionKey(processInstance.getProcessDefinitionKey());
                 integrationContext.setProcessDefinitionVersion(processInstance.getProcessDefinitionVersion());
-                integrationContext.setParentProcessInstanceId(processInstance.getSuperExecutionId());
+                
+                // Let's try extract parent process instance from super execution  
+                if(processInstance.getSuperExecutionId() != null) {
+                    Optional.ofNullable(processInstance.getSuperExecution())
+                            .ifPresent(superExecution -> integrationContext
+                                           .setParentProcessInstanceId(superExecution.getProcessInstanceId()));
+                }
             }
         }
         
