@@ -67,9 +67,14 @@ public class IntegrationContextBuilder {
                 
                 // Let's try extract parent process instance from super execution  
                 if(processInstance.getSuperExecutionId() != null) {
-                    Optional.ofNullable(processInstance.getSuperExecution())
-                            .ifPresent(superExecution -> integrationContext
-                                           .setParentProcessInstanceId(superExecution.getProcessInstanceId()));
+                    try {
+                        Optional.ofNullable(processInstance.getSuperExecution())
+                                .ifPresent(superExecution -> integrationContext
+                                .setParentProcessInstanceId(superExecution.getProcessInstanceId()));
+                    } catch (NullPointerException e) {
+                        // Ignore the exception in case getSuperExecution method call
+                        // cannot resolve entity because CommandContext is not available
+                    }
                 }
             }
         }
