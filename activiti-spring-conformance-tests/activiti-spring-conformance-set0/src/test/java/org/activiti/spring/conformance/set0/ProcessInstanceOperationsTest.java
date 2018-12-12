@@ -147,8 +147,8 @@ public class ProcessInstanceOperationsTest {
         assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
 
-        Page<ProcessInstance> subprocesses = processRuntime.subprocesses(Pageable.of(0, 50), 
-                                                                         ProcessPayloadBuilder.subprocesses(processInstance.getId()));
+        Page<ProcessInstance> subprocesses = processRuntime.subprocesses(ProcessPayloadBuilder.subprocesses(processInstance.getId()),
+                                                                         Pageable.of(0, 50));
         
         List<ProcessInstance> subprocessesList = subprocesses.getContent();
         assertThat(subprocessesList.size()).isEqualTo(0);
