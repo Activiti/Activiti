@@ -25,11 +25,8 @@ import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.core.common.model.connector.VariableDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
-import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
 
 public class IntegrationContextBuilder {
 
@@ -61,14 +58,13 @@ public class IntegrationContextBuilder {
         integrationContext.setBusinessKey(execution.getProcessInstanceBusinessKey());
 
         if(ExecutionEntity.class.isInstance(execution)) {
-            ExecutionContext executionContext = new ExecutionContext(ExecutionEntity.class.cast(execution));
-            
-            ProcessInstance processInstance = executionContext.getProcessInstance();
-            ProcessDefinition processDefinition = executionContext.getProcessDefinition();
-            
-            integrationContext.setProcessDefinitionKey(processDefinition.getKey());
-            integrationContext.setProcessDefinitionVersion(processDefinition.getVersion());
-            integrationContext.setParentProcessInstanceId(processInstance.getSuperExecutionId());
+            ExecutionEntity processInstance = ExecutionEntity.class.cast(execution)
+                                                                   .getProcessInstance();
+            if(processInstance != null) {
+                integrationContext.setProcessDefinitionKey(processInstance.getProcessDefinitionKey());
+                integrationContext.setProcessDefinitionVersion(processInstance.getProcessDefinitionVersion());
+                integrationContext.setParentProcessInstanceId(processInstance.getSuperExecutionId());
+            }
         }
         
         String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
@@ -81,7 +77,7 @@ public class IntegrationContextBuilder {
 
         return integrationContext;
     }
-
+    
     private Map<String, Object> buildInBoundVariables(ActionDefinition actionDefinition,
                                                       DelegateExecution execution) {
 
