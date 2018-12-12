@@ -232,8 +232,8 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     }
     
     @Override
-    public Page<ProcessInstance> subprocesses(Pageable pageable,
-                                              GetSubprocessesPayload getSubprocessesPayload) {
+    public Page<ProcessInstance> subprocesses(GetSubprocessesPayload getSubprocessesPayload,
+                                              Pageable pageable) {
         
         //Process Instance will check security policies on read
         ProcessInstance processInstance = processInstance(getSubprocessesPayload.getProcessInstanceId());
