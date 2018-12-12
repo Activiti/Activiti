@@ -25,7 +25,11 @@ import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.core.common.model.connector.VariableDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.context.ExecutionContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.runtime.ProcessInstance;
 
 public class IntegrationContextBuilder {
 
@@ -55,12 +59,18 @@ public class IntegrationContextBuilder {
         integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
         integrationContext.setActivityElementId(execution.getCurrentActivityId());
         integrationContext.setBusinessKey(execution.getProcessInstanceBusinessKey());
-        // TODO How to get these attributes?
-        //integrationContext.setParentProcessInstanceId(?);
-        //integrationContext.setProcessDefinitionKey(?);
-        //integrationContext.setProcessDefinitionVersion(?);        
-        integrationContext.setActivityElementId(execution.getCurrentActivityId());
 
+        if(ExecutionEntity.class.isInstance(execution)) {
+            ExecutionContext executionContext = new ExecutionContext(ExecutionEntity.class.cast(execution));
+            
+            ProcessInstance processInstance = executionContext.getProcessInstance();
+            ProcessDefinition processDefinition = executionContext.getProcessDefinition();
+            
+            integrationContext.setProcessDefinitionKey(processDefinition.getKey());
+            integrationContext.setProcessDefinitionVersion(processDefinition.getVersion());
+            integrationContext.setParentProcessInstanceId(processInstance.getSuperExecutionId());
+        }
+        
         String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
 
         integrationContext.setConnectorType(implementation);
