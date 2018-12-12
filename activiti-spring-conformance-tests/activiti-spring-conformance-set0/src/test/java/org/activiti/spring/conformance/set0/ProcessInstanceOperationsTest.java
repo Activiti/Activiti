@@ -4,8 +4,6 @@ import static org.activiti.spring.conformance.set0.Set0RuntimeTestConfiguration.
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
-import java.util.List;
-
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -14,8 +12,6 @@ import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.NotFoundException;
-import org.activiti.api.runtime.shared.query.Page;
-import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -127,31 +123,5 @@ public class ProcessInstanceOperationsTest {
 
         assertThat(collectedEvents).extracting(RuntimeEvent::getEventType).containsExactly(ProcessRuntimeEvent.ProcessEvents.PROCESS_RESUMED);
         
-    }
-    
-    @Test
-    public void shouldBeAbleToRequestSubprocesses() {
-        securityUtil.logInAs("user1");
-        
-        //To do: define a process with subprocesses and use it for testing
-        //when
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(processKey)
-                .withBusinessKey("my-business-key")
-                .withProcessInstanceName("my-process-instance-name")
-                .build());
-
-        //then
-        assertThat(processInstance).isNotNull();
-        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
-
-
-        Page<ProcessInstance> subprocesses = processRuntime.subprocesses(ProcessPayloadBuilder.subprocesses(processInstance.getId()),
-                                                                         Pageable.of(0, 50));
-        
-        List<ProcessInstance> subprocessesList = subprocesses.getContent();
-        assertThat(subprocessesList.size()).isEqualTo(0);
-
     }
 }
