@@ -91,8 +91,7 @@ public class ProcessRuntimeTest {
                                                      processInstanceConverter,
                                                      variableInstanceConverter,
                                                      configuration,
-                                                     eventPublisher,
-                                                     null));
+                                                     eventPublisher));
 
         processAdminRuntimeMock = spy(new ProcessAdminRuntimeImpl(repositoryService,
                                                               processDefinitionConverter,
