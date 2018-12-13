@@ -24,7 +24,6 @@ import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
-import org.activiti.api.process.model.payloads.GetSubprocessesPayload;
 import org.activiti.api.process.model.payloads.RemoveProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.ResumeProcessPayload;
 import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
@@ -169,6 +168,9 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             if (getProcessInstancesPayload.isActiveOnly()) {
                 internalQuery.active();
             }
+            if (getProcessInstancesPayload.getParentProcessInstanceId()!=null) {
+                internalQuery.superProcessInstanceId(getProcessInstancesPayload.getParentProcessInstanceId());
+            }
         }
         return new PageImpl<>(processInstanceConverter.from(internalQuery.listPage(pageable.getStartIndex(),
                                                                                    pageable.getMaxItems())),
@@ -231,20 +233,4 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
                                            removeProcessVariablesPayload.getVariableNames());
     }
     
-    @Override
-    public Page<ProcessInstance> subprocesses(GetSubprocessesPayload getSubprocessesPayload,
-                                              Pageable pageable) {
-        
-        //Process Instance will check security policies on read
-        ProcessInstance processInstance = processInstance(getSubprocessesPayload.getProcessInstanceId());
-        
-        org.activiti.engine.runtime.ProcessInstanceQuery internalQuery = runtimeService.createProcessInstanceQuery();
-        
-        internalQuery.superProcessInstanceId(processInstance.getId());
-        
-        return new PageImpl<>(processInstanceConverter.from(internalQuery.listPage(pageable.getStartIndex(),
-                                                                                   pageable.getMaxItems())),
-                              Math.toIntExact(internalQuery.count()));
-        
-    }
 }

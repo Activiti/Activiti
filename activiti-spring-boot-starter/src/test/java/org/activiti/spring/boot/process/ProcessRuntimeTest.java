@@ -30,8 +30,8 @@ public class ProcessRuntimeTest {
     private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
     private static final String ONE_STEP_PROCESS = "OneStepProcess";
     
-    private static final String SIMPLE_SUB_PROCESS = "simpleSubProcess";
-    private static final String SUBPROCESS_QUERY_TEST = "subProcessQueryTest";
+    private static final String SUB_PROCESS = "subProcess";
+    private static final String SUPER_PROCESS = "superProcess";
     
 
     @Autowired
@@ -499,7 +499,7 @@ public class ProcessRuntimeTest {
         //given
         // start a process with a business key to check filters
         parentProcess=processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(SUBPROCESS_QUERY_TEST)
+                .withProcessDefinitionKey(SUPER_PROCESS)
                 .withBusinessKey("my superprocess key")
                 .build());
 
@@ -514,21 +514,23 @@ public class ProcessRuntimeTest {
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(2);
 
-        assertThat( processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo(SUBPROCESS_QUERY_TEST);
-        assertThat( processInstancePage.getContent().get(1).getProcessDefinitionKey()).isEqualTo(SIMPLE_SUB_PROCESS);
+        assertThat( processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo(SUPER_PROCESS);
+        assertThat( processInstancePage.getContent().get(1).getProcessDefinitionKey()).isEqualTo(SUB_PROCESS);
         
         
         //Check that parentProcess has 1 subprocess
-        processInstancePage = processRuntime.subprocesses(ProcessPayloadBuilder.subprocesses(parentProcess.getId()),
-                                                          Pageable.of(0,
-                                                                      50));
+        processInstancePage = processRuntime.processInstances(Pageable.of(0,
+                                                                          50),
+                                                                          ProcessPayloadBuilder
+                                                                                  .subprocesses(parentProcess.getId()));
+        
         
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
         
         subProcess=processInstancePage.getContent().get(0);
         
-        assertThat(subProcess.getProcessDefinitionKey()).isEqualTo(SIMPLE_SUB_PROCESS);
+        assertThat(subProcess.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS);
         assertThat(subProcess.getParentId()).isEqualTo(parentProcess.getId());
         assertThat(subProcess.getProcessDefinitionVersion()).isEqualTo(1);
 

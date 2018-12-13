@@ -4,7 +4,7 @@
   xmlns:activiti="http://activiti.org/bpmn"
   targetNamespace="org.activiti.enginge.test.api.runtime">
   
-  <process id="simpleSubProcess">
+  <process id="subProcess">
   
     <startEvent id="theStart" />
     
