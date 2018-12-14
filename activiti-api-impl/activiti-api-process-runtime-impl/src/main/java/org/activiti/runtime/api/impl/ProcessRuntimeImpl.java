@@ -57,6 +57,7 @@ import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 @PreAuthorize("hasRole('ACTIVITI_USER')")
 public class ProcessRuntimeImpl implements ProcessRuntime {
@@ -297,6 +298,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     @Override
+    @Transactional
     public void signal(SignalPayload signalPayload) {
         //@TODO: define security policies for signalling
         runtimeService.signalEventReceived(signalPayload.getName(),
