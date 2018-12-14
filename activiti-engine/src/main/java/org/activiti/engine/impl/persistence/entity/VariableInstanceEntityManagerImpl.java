@@ -146,7 +146,7 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
     
     return ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, 
         variableInstance.getName(), 
-        null, 
+        variableInstance.getValue(), 
         variableInstance.getType(), 
         variableInstance.getTaskId(),
         variableInstance.getExecutionId(),
