@@ -105,8 +105,8 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
         assertNull(event.getTaskId());
         assertEquals("testVariable",
                      event.getVariableName());
-        // deleted variable value is always null
-        assertEquals(null,
+        // deleted variable value should be present now
+        assertEquals("Updated value",
                      event.getVariableValue());
         listener.clearEventsReceived();
 
@@ -396,8 +396,8 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
                      event.getTaskId());
         assertEquals("testVariable",
                      event.getVariableName());
-        // deleted values are always null
-        assertEquals(null,
+        // deleted values is returned
+        assertEquals("Updated value",
                      event.getVariableValue());
         listener.clearEventsReceived();
     }
@@ -459,8 +459,8 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
                      event.getTaskId());
         assertEquals("variable",
                      event.getVariableName());
-        // deleted variable value is always null
-        assertEquals(null,
+        // deleted variable value is returned
+        assertEquals(456,
                      event.getVariableValue());
     }
 
@@ -519,8 +519,8 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
                          event.getTaskId());
             assertEquals("testVariable",
                          event.getVariableName());
-            // deleted variable value is always null
-            assertEquals(null,
+            // deleted variable value is returned now
+            assertEquals(456,
                          event.getVariableValue());
         } finally {
 

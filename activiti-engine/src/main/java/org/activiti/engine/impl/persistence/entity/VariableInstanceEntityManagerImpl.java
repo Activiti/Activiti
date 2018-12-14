@@ -144,9 +144,18 @@ public class VariableInstanceEntityManagerImpl extends AbstractEntityManager<Var
       }
     }
     
+    Object variableValue=null;
+    boolean getValue=true;
+    
+    if (variableInstance.getType().getTypeName().equals("jpa-entity")) {
+        getValue=false;
+    }
+
+    if (getValue) variableValue=variableInstance.getValue();
+    
     return ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, 
         variableInstance.getName(), 
-        null, 
+        variableValue, 
         variableInstance.getType(), 
         variableInstance.getTaskId(),
         variableInstance.getExecutionId(),
