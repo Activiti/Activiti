@@ -28,6 +28,8 @@ import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
+import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
+import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.CreateTaskPayload;
@@ -82,18 +84,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Task task(String taskId) {
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
-            List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
-            List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
-            org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskCandidateOrAssigned(authenticatedUserId,
-                                                                                                               userGroups).taskId(taskId).singleResult();
-            if (internalTask == null) {
-                throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
-            }
-            return taskConverter.from(internalTask);
-        }
-        throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
+        return taskConverter.from(getInternalTaskWithChecks(taskId));
     }
 
     @Override
@@ -215,48 +206,76 @@ public class TaskRuntimeImpl implements TaskRuntime {
         taskService.unclaim(releaseTaskPayload.getTaskId());
         return task(releaseTaskPayload.getTaskId());
     }
-
+    
+ 
     @Override
     public Task update(UpdateTaskPayload updateTaskPayload) {
         // Validate that the task is visible by the authenticated user
-        Task task;
+        org.activiti.engine.task.Task internalTask;
+        int updates=0;
         try {
-            task = task(updateTaskPayload.getTaskId());
+            internalTask = getInternalTaskWithChecks(updateTaskPayload.getTaskId());
+            
         } catch (IllegalStateException ex) {
             throw new IllegalStateException("The authenticated user cannot update the task" + updateTaskPayload.getTaskId() + " due it is not the current assignee");
         }
+               
+        
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
+          
         // validate that you are trying to update task where you are the assignee
-        if (!Objects.equals(task.getAssignee(), authenticatedUserId)) {
+        if (!Objects.equals(internalTask.getAssignee(), authenticatedUserId)) {
             throw new IllegalStateException("You cannot update a task where you are not the assignee");
         }
-        org.activiti.engine.task.Task internalTask = getInternalTask(updateTaskPayload.getTaskId());
-
-        if (updateTaskPayload.getTaskName() != null) {
-            internalTask.setName(updateTaskPayload.getTaskName());
-        }
-        if (updateTaskPayload.getDescription() != null) {
-            internalTask.setDescription(updateTaskPayload.getDescription());
-        }
-        if (updateTaskPayload.getPriority() != null) {
-            internalTask.setPriority(updateTaskPayload.getPriority());
-        }
-        if (updateTaskPayload.getAssignee() != null) {
-            internalTask.setAssignee(updateTaskPayload.getAssignee());
-        }
-        if (updateTaskPayload.getDueDate() != null) {
-            internalTask.setDueDate(updateTaskPayload.getDueDate());
-        }
-        if (updateTaskPayload.getParentTaskId() != null) {
-            internalTask.setParentTaskId(updateTaskPayload.getParentTaskId());
-        }
-        if (updateTaskPayload.getFormKey() != null) {
-            internalTask.setFormKey(updateTaskPayload.getFormKey());
-        }
-        //@TODO: add check to see if something was changed before saving + add all other updateable values
-        org.activiti.engine.task.Task updatedTask = taskService.saveTask(internalTask);
         
-        return taskConverter.from(updatedTask);
+      
+        if (updateTaskPayload.getTaskName() != null) {
+            if (!Objects.equals(internalTask.getName(),updateTaskPayload.getTaskName())) {
+                updates++;
+                internalTask.setName(updateTaskPayload.getTaskName());
+            }
+        }
+        
+        if (updateTaskPayload.getDescription() != null) {
+            if (!Objects.equals(internalTask.getDescription(),updateTaskPayload.getDescription())) {
+                updates++;
+                internalTask.setDescription(updateTaskPayload.getDescription());
+            }
+        }
+            
+        if (updateTaskPayload.getPriority() != null) {
+            if (internalTask.getPriority()!=updateTaskPayload.getPriority()) {
+                updates++;
+                internalTask.setPriority(updateTaskPayload.getPriority());
+            }
+        }
+        
+        if (updateTaskPayload.getDueDate() != null) {
+            if (!Objects.equals(internalTask.getDueDate(),updateTaskPayload.getDueDate())) {
+                updates++;
+                internalTask.setDueDate(updateTaskPayload.getDueDate());
+            }
+        }
+        
+        //@TODO: check if this value can be updated
+        if (updateTaskPayload.getParentTaskId() != null) {
+            if (internalTask.getParentTaskId()!=updateTaskPayload.getParentTaskId()) {
+                updates++;
+                internalTask.setParentTaskId(updateTaskPayload.getParentTaskId());
+            }
+        }
+        
+        if (updateTaskPayload.getFormKey() != null) {
+            if (!Objects.equals(internalTask.getFormKey(),updateTaskPayload.getFormKey())) {
+                updates++;
+                internalTask.setFormKey(updateTaskPayload.getFormKey());
+            }
+        }
+        
+        if (updates>0)
+            taskService.saveTask(internalTask);
+        
+        return taskConverter.from(getInternalTask(updateTaskPayload.getTaskId()));
     }
 
     @Override
@@ -309,8 +328,117 @@ public class TaskRuntimeImpl implements TaskRuntime {
                                               g);
             }
         }
+        
+        if (createTaskPayload.getCandidateUsers() != null && !createTaskPayload.getCandidateUsers().isEmpty()) {
+            for (String u : createTaskPayload.getCandidateUsers()) {
+                taskService.addCandidateUser(task.getId(),
+                                              u);
+            }
+        }
 
         return taskConverter.from(task);
+    }
+    
+    @Override
+    public void addCandidateUsers(CandidateUsersPayload candidateUsersPayload) {      
+        org.activiti.engine.task.Task internalTask;
+        try {
+            internalTask = getInternalTaskWithChecks(candidateUsersPayload.getTaskId());
+            
+        } catch (IllegalStateException ex) {
+            throw new IllegalStateException("The authenticated user cannot update the task" + candidateUsersPayload.getTaskId() + " due it is not the current assignee");
+        }
+                   
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        
+        // validate that you are trying to add CandidateUsers to the task where you are the assignee
+        if (!Objects.equals(internalTask.getAssignee(), authenticatedUserId)) {
+            throw new IllegalStateException("You cannot update a task where you are not the assignee");
+        }
+
+       
+        if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
+            for (String u : candidateUsersPayload.getCandidateUsers()) {
+                taskService.addCandidateUser(internalTask.getId(),
+                                             u);
+            }
+        }
+    }
+    
+    @Override
+    public void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload) {           
+        org.activiti.engine.task.Task internalTask;
+        try {
+            internalTask = getInternalTaskWithChecks(candidateUsersPayload.getTaskId());
+            
+        } catch (IllegalStateException ex) {
+            throw new IllegalStateException("The authenticated user cannot update the task" + candidateUsersPayload.getTaskId() + " due it is not the current assignee");
+        }
+                   
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        
+        // validate that you are trying to add CandidateUsers to the task where you are the assignee
+        if (!Objects.equals(internalTask.getAssignee(), authenticatedUserId)) {
+            throw new IllegalStateException("You cannot update a task where you are not the assignee");
+        }
+
+       
+        if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
+            for (String u : candidateUsersPayload.getCandidateUsers()) {
+                taskService.deleteCandidateUser(internalTask.getId(),
+                                                u);
+            }
+        }
+    }
+    
+    @Override
+    public void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {          
+        org.activiti.engine.task.Task internalTask;
+        try {
+            internalTask = getInternalTaskWithChecks(candidateGroupsPayload.getTaskId());
+            
+        } catch (IllegalStateException ex) {
+            throw new IllegalStateException("The authenticated user cannot update the task" + candidateGroupsPayload.getTaskId() + " due it is not the current assignee");
+        }
+              
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        // validate that you are trying to add CandidateGroups to the task where you are the assignee
+        if (!Objects.equals(internalTask.getAssignee(), authenticatedUserId)) {
+            throw new IllegalStateException("You cannot update a task where you are not the assignee");
+        }
+
+       
+        if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
+            for (String g : candidateGroupsPayload.getCandidateGroups()) {
+                taskService.addCandidateGroup(internalTask.getId(),
+                                              g);
+            }
+        }
+    }
+    
+    @Override
+    public void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {    
+        org.activiti.engine.task.Task internalTask;
+        try {
+            internalTask = getInternalTaskWithChecks(candidateGroupsPayload.getTaskId());
+            
+        } catch (IllegalStateException ex) {
+            throw new IllegalStateException("The authenticated user cannot update the task" + candidateGroupsPayload.getTaskId() + " due it is not the current assignee");
+        }
+              
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        // validate that you are trying to add CandidateGroups to the task where you are the assignee
+        if (!Objects.equals(internalTask.getAssignee(), authenticatedUserId)) {
+            throw new IllegalStateException("You cannot update a task where you are not the assignee");
+        }
+
+       
+        if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
+            for (String g : candidateGroupsPayload.getCandidateGroups()) {
+                taskService.deleteCandidateGroup(internalTask.getId(),
+                                                 g);
+            }
+        }
     }
 
     @Override
@@ -326,4 +454,20 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
         return internalTask;
     }
+    
+    private org.activiti.engine.task.Task getInternalTaskWithChecks(String taskId) {
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
+            List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
+            List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+            org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskCandidateOrAssigned(authenticatedUserId,
+                                                                                                               userGroups).taskId(taskId).singleResult();
+            if (internalTask == null) {
+                throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
+            }
+            return internalTask;
+        }
+        throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
+    }
+    
 }

@@ -23,6 +23,10 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.model.impl.TaskImpl;
+import org.activiti.api.task.model.payloads.AssignTaskPayload;
+import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
+import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.DeleteTaskPayload;
@@ -33,7 +37,6 @@ import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -132,4 +135,99 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         taskService.unclaim(releaseTaskPayload.getTaskId());
         return task(releaseTaskPayload.getTaskId());
     }
+    
+    @Override
+    public Task assign(AssignTaskPayload assignTaskPayload) {
+        // Validate that the task is visible by the currently authorized user
+        Task task;
+        try {
+            task = task(assignTaskPayload.getTaskId());
+        } catch (IllegalStateException ex) {
+            throw new IllegalStateException("The authenticated user cannot assign task" + assignTaskPayload.getTaskId() + " due it is not a candidate for it");
+        }
+        
+        // check that the task doesn't have an assignee
+        // If task is assigned, release it
+        if (task.getAssignee() != null && !task.getAssignee().isEmpty()) {
+            taskService.unclaim(assignTaskPayload.getTaskId());
+        }
+
+        taskService.claim(assignTaskPayload.getTaskId(),
+                          assignTaskPayload.getAssignee());
+        
+        return task(assignTaskPayload.getTaskId());
+    }
+    
+    @Override
+    public void addCandidateUsers(CandidateUsersPayload candidateUsersPayload) {      
+        Task task;
+        try {
+           task = task(candidateUsersPayload.getTaskId()); 
+        } catch (IllegalStateException ex) {
+            throw new IllegalStateException("The authenticated user cannot update the task" + candidateUsersPayload.getTaskId() + " due it is not the current assignee");
+        }
+                   
+        if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
+            for (String u : candidateUsersPayload.getCandidateUsers()) {
+                taskService.addCandidateUser(task.getId(),
+                                             u);
+            }
+        }
+    }
+    
+    @Override
+    public void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload) {           
+        Task task;
+        try {
+           task = task(candidateUsersPayload.getTaskId()); 
+        } catch (IllegalStateException ex) {
+            throw new IllegalStateException("The authenticated user cannot update the task" + candidateUsersPayload.getTaskId() + " due it is not the current assignee");
+        }
+                   
+        if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
+            for (String u : candidateUsersPayload.getCandidateUsers()) {
+                taskService.deleteCandidateUser(task.getId(),
+                                                u);
+            }
+        }
+    }
+    
+    @Override
+    public void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {          
+        Task task;
+        try {
+            task = task(candidateGroupsPayload.getTaskId()); 
+            
+        } catch (IllegalStateException ex) {
+            throw new IllegalStateException("The authenticated user cannot update the task" + candidateGroupsPayload.getTaskId() + " due it is not the current assignee");
+        }
+              
+        if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
+            for (String g : candidateGroupsPayload.getCandidateGroups()) {
+                taskService.addCandidateGroup(task.getId(),
+                                              g);
+            }
+        }
+    }
+    
+    @Override
+    public void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {    
+        Task task;
+        try {
+            task = task(candidateGroupsPayload.getTaskId()); 
+            
+        } catch (IllegalStateException ex) {
+            throw new IllegalStateException("The authenticated user cannot update the task" + candidateGroupsPayload.getTaskId() + " due it is not the current assignee");
+        }
+
+       
+        if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
+            for (String g : candidateGroupsPayload.getCandidateGroups()) {
+                taskService.deleteCandidateGroup(task.getId(),
+                                                 g);
+            }
+        }
+    }
+    
+    
 }
