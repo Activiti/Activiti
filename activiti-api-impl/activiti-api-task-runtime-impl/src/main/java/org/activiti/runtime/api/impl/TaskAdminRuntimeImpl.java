@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.api.runtime.shared.NotFoundException;
@@ -35,6 +36,8 @@ import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
@@ -229,5 +232,42 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         }
     }
     
+    @Override
+    public List<String> userCandidates(String taskId) {
+        List<IdentityLink> identityLinks= getIdentityLinks(taskId);
+        List<String> userCandidates = new ArrayList<String>();
+        if (identityLinks!=null) {
+            for (IdentityLink i : identityLinks) {
+                if (i.getUserId()!=null) {
+                    if (i.getType().equals(IdentityLinkType.CANDIDATE) ) {
+                        userCandidates.add(i.getUserId());
+                    } 
+                }
+            }
+            
+        }
+        return userCandidates;
+    }
+    
+    @Override
+    public List<String> groupCandidates(String taskId) {
+        List<IdentityLink> identityLinks= getIdentityLinks(taskId);
+        List<String> groupCandidates = new ArrayList<String>();
+        if (identityLinks!=null) {
+            for (IdentityLink i : identityLinks) {
+                if (i.getGroupId()!=null) {
+                    if (i.getType().equals(IdentityLinkType.CANDIDATE) ) {
+                        groupCandidates.add(i.getGroupId());
+                    } 
+                }
+            }
+
+        }
+        return groupCandidates;
+    }
+    
+    private List<IdentityLink> getIdentityLinks(String taskId) {
+        return taskService.getIdentityLinksForTask(taskId);
+    }
     
 }

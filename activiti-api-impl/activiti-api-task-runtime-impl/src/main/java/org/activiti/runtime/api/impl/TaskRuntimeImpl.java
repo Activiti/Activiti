@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,6 +43,8 @@ import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
@@ -135,7 +138,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
         return variableInstanceConverter.from(taskService.getVariableInstancesLocal(getTaskVariablesPayload.getTaskId()).values());
     }
-
+    
     @Override
     public Task complete(CompleteTaskPayload completeTaskPayload) {
         //@TODO: not the most efficient way to return the just completed task, improve
@@ -442,6 +445,42 @@ public class TaskRuntimeImpl implements TaskRuntime {
     }
 
     @Override
+    public List<String> userCandidates(String taskId) {
+        List<IdentityLink> identityLinks= getIdentityLinks(taskId);
+        List<String> userCandidates = new ArrayList<String>();
+        if (identityLinks!=null) {
+            for (IdentityLink i : identityLinks) {
+                if (i.getUserId()!=null) {
+                    if (i.getType().equals(IdentityLinkType.CANDIDATE) ) {
+                        userCandidates.add(i.getUserId());
+                    } 
+                }
+            }
+            
+        }
+        return userCandidates;
+    }
+    
+    @Override
+    public List<String> groupCandidates(String taskId) {
+        List<IdentityLink> identityLinks= getIdentityLinks(taskId);
+        List<String> groupCandidates = new ArrayList<String>();
+        if (identityLinks!=null) {
+            for (IdentityLink i : identityLinks) {
+                if (i.getGroupId()!=null) {
+                    if (i.getType().equals(IdentityLinkType.CANDIDATE) ) {
+                        groupCandidates.add(i.getGroupId());
+                    } 
+                }
+            }
+
+        }
+        return groupCandidates;
+    }
+
+    
+    
+    @Override
     public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
         taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
                                           setTaskVariablesPayload.getVariables());
@@ -466,6 +505,21 @@ public class TaskRuntimeImpl implements TaskRuntime {
                 throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
             }
             return internalTask;
+        }
+        throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
+    }
+    
+    private List<IdentityLink> getIdentityLinks(String taskId) {
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+        if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
+            List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
+            List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+            org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskCandidateOrAssigned(authenticatedUserId,
+                                                                                                               userGroups).taskId(taskId).singleResult();
+            if (internalTask == null) {
+                throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
+            }   
+            return taskService.getIdentityLinksForTask(taskId);
         }
         throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
     }
