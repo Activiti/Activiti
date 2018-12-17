@@ -37,4 +37,24 @@ public class TaskPayloadBuilder {
     public static CreateTaskPayloadBuilder create() {
         return new CreateTaskPayloadBuilder();
     }
+    
+    public static AssignTaskPayloadBuilder assign() {
+        return new AssignTaskPayloadBuilder();
+    }
+    
+    public static CandidateUsersPayloadBuilder addCandidateUsers() {
+        return new CandidateUsersPayloadBuilder();
+    }
+    
+    public static CandidateUsersPayloadBuilder deleteCandidateUsers() {
+        return new CandidateUsersPayloadBuilder();
+    }
+    
+    public static CandidateGroupsPayloadBuilder addCandidateGroups() {
+        return new CandidateGroupsPayloadBuilder();
+    }
+    
+    public static CandidateGroupsPayloadBuilder deleteCandidateGroups() {
+        return new CandidateGroupsPayloadBuilder();
+    }
 }
