@@ -214,35 +214,37 @@ public class TaskRuntimeImpl implements TaskRuntime {
     @Override
     public Task update(UpdateTaskPayload updateTaskPayload) {
         // Validate that the task is visible by the authenticated user
-        org.activiti.engine.task.Task internalTask;
+        Task task;
         int updates=0;
+        String oldValue,newValue;
         try {
-            internalTask = getInternalTaskWithChecks(updateTaskPayload.getTaskId());
-            
+            task = task(updateTaskPayload.getTaskId());
         } catch (IllegalStateException ex) {
             throw new IllegalStateException("The authenticated user cannot update the task" + updateTaskPayload.getTaskId() + " due it is not the current assignee");
         }
-               
         
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
           
         // validate that you are trying to update task where you are the assignee
-        if (!Objects.equals(internalTask.getAssignee(), authenticatedUserId)) {
+        if (!Objects.equals(task.getAssignee(), authenticatedUserId)) {
             throw new IllegalStateException("You cannot update a task where you are not the assignee");
         }
         
-      
-        if (updateTaskPayload.getTaskName() != null) {
-            if (!Objects.equals(internalTask.getName(),updateTaskPayload.getTaskName())) {
+        org.activiti.engine.task.Task internalTask = getInternalTask(updateTaskPayload.getTaskId());
+           
+        if ((newValue=updateTaskPayload.getTaskName()) != null) {
+            oldValue=internalTask.getName();
+            if (!Objects.equals(oldValue,newValue)) {
                 updates++;
-                internalTask.setName(updateTaskPayload.getTaskName());
+                internalTask.setName(newValue);
             }
         }
         
-        if (updateTaskPayload.getDescription() != null) {
-            if (!Objects.equals(internalTask.getDescription(),updateTaskPayload.getDescription())) {
+        if ((newValue=updateTaskPayload.getDescription()) != null) {
+            oldValue=internalTask.getDescription();
+            if (!Objects.equals(oldValue,newValue)) {
                 updates++;
-                internalTask.setDescription(updateTaskPayload.getDescription());
+                internalTask.setDescription(newValue);
             }
         }
             
@@ -261,17 +263,19 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
         
         //@TODO: check if this value can be updated
-        if (updateTaskPayload.getParentTaskId() != null) {
-            if (internalTask.getParentTaskId()!=updateTaskPayload.getParentTaskId()) {
+        if ((newValue=updateTaskPayload.getParentTaskId()) != null) {
+            oldValue=internalTask.getParentTaskId();
+            if (!Objects.equals(oldValue,newValue)) {
                 updates++;
-                internalTask.setParentTaskId(updateTaskPayload.getParentTaskId());
+                internalTask.setParentTaskId(newValue);
             }
         }
         
-        if (updateTaskPayload.getFormKey() != null) {
-            if (!Objects.equals(internalTask.getFormKey(),updateTaskPayload.getFormKey())) {
+        if ((newValue=updateTaskPayload.getFormKey()) != null) {
+            oldValue=internalTask.getFormKey();
+            if (!Objects.equals(oldValue,newValue)) {
                 updates++;
-                internalTask.setFormKey(updateTaskPayload.getFormKey());
+                internalTask.setFormKey(newValue);
             }
         }
         
