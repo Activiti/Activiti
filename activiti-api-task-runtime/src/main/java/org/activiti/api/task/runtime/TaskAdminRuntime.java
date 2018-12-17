@@ -19,7 +19,15 @@ package org.activiti.api.task.runtime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.payloads.*;
+import org.activiti.api.task.model.payloads.AssignTaskPayload;
+import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
+import org.activiti.api.task.model.payloads.CandidateUsersPayload;
+import org.activiti.api.task.model.payloads.ClaimTaskPayload;
+import org.activiti.api.task.model.payloads.CompleteTaskPayload;
+import org.activiti.api.task.model.payloads.DeleteTaskPayload;
+import org.activiti.api.task.model.payloads.GetTasksPayload;
+import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
+import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 
 /**
  * All the methods require an authenticated Admin user
@@ -74,5 +82,18 @@ public interface TaskAdminRuntime {
 
     void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);
 
-
+    /**
+     * Assign a task with a new user
+     *  - If the currently authenticated user is not a candidate throw an IllegalStateException
+     *  - If there is a user assigned, reassign it to the new user
+     *  - after the claim the task should be in assigned status
+     */
+    Task assign(AssignTaskPayload assignTaskPayload);
+    
+    void addCandidateUsers(CandidateUsersPayload candidateUsersPayload);
+    void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload);
+    
+    void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
+    void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
+    
 }
