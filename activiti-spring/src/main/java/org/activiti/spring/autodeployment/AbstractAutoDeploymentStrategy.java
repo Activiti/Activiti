@@ -13,12 +13,21 @@
 
 package org.activiti.spring.autodeployment;
 
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.impl.util.io.InputStreamSource;
+import org.activiti.validation.ValidationError;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Abstract base class for implementations of {@link AutoDeploymentStrategy}.
@@ -26,6 +35,8 @@ import java.io.IOException;
 
  */
 public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentStrategy {
+
+  protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractAutoDeploymentStrategy.class);
 
   /**
    * Gets the deployment mode this strategy handles.
@@ -65,4 +76,43 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
     return resourceName;
   }
 
+  protected boolean validateModel(Resource resource, final RepositoryService repositoryService) {
+   try {
+        BpmnXMLConverter converter = new BpmnXMLConverter();
+        BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(resource.getInputStream()) , true, false);
+        List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
+        if (validationErrors == null || validationErrors.isEmpty() ) {
+            return true;
+        } else {
+            StringBuilder warningBuilder = new StringBuilder();
+            StringBuilder errorBuilder = new StringBuilder();
+
+            for (ValidationError error : validationErrors) {
+              if (error.isWarning()) {
+                warningBuilder.append(error.toString());
+                warningBuilder.append("\n");
+              } else {
+                errorBuilder.append(error.toString());
+                errorBuilder.append("\n");
+              }
+  
+                // Write out warnings (if any)
+                if (warningBuilder.length() > 0) {
+                LOGGER.warn("Following warnings encountered during process validation: " + warningBuilder.toString());
+                }
+
+              if (errorBuilder.length() > 0) {
+                  LOGGER.warn("Errors while parsing:\n" + errorBuilder.toString());
+                  return false;
+              } else {
+            	  return true;
+              }
+            }
+        }
+    } catch (Exception e) {
+        LOGGER.warn("Error parsing XML", e);
+        return false;
+    }
+    return false;
+  }
 }

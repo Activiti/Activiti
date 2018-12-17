@@ -42,6 +42,7 @@ public class ActivitiProperties {
   private List<String> customMybatisXMLMappers;
   private boolean useStrongUuids = true;
   private boolean copyVariablesToLocalForTasks = true;
+  private String deploymentMode = "default";
 
   public boolean isAsyncExecutorActivate() {
     return asyncExecutorActivate;
@@ -203,5 +204,13 @@ public class ActivitiProperties {
 
     public void setCopyVariablesToLocalForTasks(boolean copyVariablesToLocalForTasks) {
         this.copyVariablesToLocalForTasks = copyVariablesToLocalForTasks;
+    }
+
+    public String getDeploymentMode() {
+        return deploymentMode;
+    }
+
+    public void setDeploymentMode(String deploymentMode) {
+        this.deploymentMode = deploymentMode;
     }
 }
