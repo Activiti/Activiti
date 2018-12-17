@@ -123,4 +123,7 @@ public interface TaskRuntime {
     
     void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
     void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
+    
+    List<String> userCandidates(String taskId);
+    List<String> groupCandidates(String taskId);
 }

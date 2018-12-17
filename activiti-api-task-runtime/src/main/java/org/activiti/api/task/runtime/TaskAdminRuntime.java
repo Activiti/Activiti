@@ -16,6 +16,8 @@
 
 package org.activiti.api.task.runtime;
 
+import java.util.List;
+
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -95,5 +97,8 @@ public interface TaskAdminRuntime {
     
     void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
     void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
+    
+    List<String> userCandidates(String taskId);
+    List<String> groupCandidates(String taskId);
     
 }
