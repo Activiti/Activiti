@@ -469,10 +469,25 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml", "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml" })
-  public void testQueryParentProcessInstanceId() {
+  public void testQueryParentProcessInstanceIdResultMapping() {
     ProcessInstance superProcessInstance = runtimeService.startProcessInstanceByKey("subProcessQueryTest");
 
     ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().superProcessInstanceId(superProcessInstance.getId());
+    ProcessInstance subProcessInstance = query.singleResult();
+    assertNotNull(subProcessInstance);
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+    assertEquals(superProcessInstance.getId(), subProcessInstance.getParentProcessInstanceId());
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml", "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml" })
+  public void testQueryWithVariablesParentProcessInstanceIdResultMapping() {
+    ProcessInstance superProcessInstance = runtimeService.startProcessInstanceByKey("subProcessQueryTest");
+
+    ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery()
+                                               .superProcessInstanceId(superProcessInstance.getId())
+                                               .includeProcessVariables();
+    
     ProcessInstance subProcessInstance = query.singleResult();
     assertNotNull(subProcessInstance);
     assertEquals(1, query.list().size());

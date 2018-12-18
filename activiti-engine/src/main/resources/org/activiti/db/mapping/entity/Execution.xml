@@ -495,7 +495,8 @@
   <sql id="selectProcessInstanceWithVariablesByQueryCriteriaColumns">
    ${limitBefore}
    <if test="_databaseId != 'db2' and _databaseId != 'mssql'">  
-    select distinct RES.*, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId, P.NAME_ as ProcessDefinitionName, P.VERSION_ as ProcessDefinitionVersion, P.DEPLOYMENT_ID_ as DeploymentId, S.PROC_INST_ID_ AS PARENT_PROC_INST_ID_, 
+    select distinct RES.*, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId, P.NAME_ as ProcessDefinitionName, P.VERSION_ as ProcessDefinitionVersion, P.DEPLOYMENT_ID_ as DeploymentId,
+    S.PROC_INST_ID_ AS PARENT_PROC_INST_ID_, 
     VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
     VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, VAR.TASK_ID_ as VAR_TASK_ID_,
     VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_, 
@@ -503,7 +504,8 @@
     ${limitBetween}
    </if>
    <if test="_databaseId == 'db2' || _databaseId == 'mssql'">
-    select distinct TEMPRES_ID_ as ID_, TEMPP_KEY_ as ProcessDefinitionKey, TEMPP_ID_ as ProcessDefinitionId, TEMPP_NAME_ as ProcessDefinitionName, TEMPP_VERSION_ as ProcessDefinitionVersion, TEMPP_DEPLOYMENT_ID_ as DeploymentId, 
+    select distinct TEMPRES_ID_ as ID_, TEMPP_KEY_ as ProcessDefinitionKey, TEMPP_ID_ as ProcessDefinitionId, TEMPP_NAME_ as ProcessDefinitionName, TEMPP_VERSION_ as ProcessDefinitionVersion, TEMPP_DEPLOYMENT_ID_ as DeploymentId,
+    TEMPS_PARENT_PROC_INST_ID_ AS PARENT_PROC_INST_ID_, 
     TEMPRES_REV_ as REV_, TEMPRES_ACT_ID_ as ACT_ID_,
     TEMPRES_BUSINESS_KEY_ as BUSINESS_KEY_, TEMPRES_IS_ACTIVE_ as IS_ACTIVE_,
     TEMPRES_IS_CONCURRENT_ as IS_CONCURRENT_, TEMPRES_IS_SCOPE_ as IS_SCOPE_,
@@ -528,6 +530,7 @@
     TEMPVAR_TEXT_ as VAR_TEXT_, TEMPVAR_TEXT2_ as VAR_TEXT2_, TEMPVAR_LONG_ as VAR_LONG_
      ${limitOuterJoinBetween}
     RES.ID_ as TEMPRES_ID_, RES.REV_ as TEMPRES_REV_, P.KEY_ as TEMPP_KEY_, P.ID_ as TEMPP_ID_, P.NAME_ as TEMPP_NAME_, P.VERSION_ as TEMPP_VERSION_, P.DEPLOYMENT_ID_ as TEMPP_DEPLOYMENT_ID_,
+    S.PROC_INST_ID_ AS TEMPS_PARENT_PROC_INST_ID_, 
     
     RES.ACT_ID_ as TEMPRES_ACT_ID_, 
     RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 

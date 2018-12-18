@@ -1649,7 +1649,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
   
     @Deployment(resources = {"org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml", 
                              "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"})
-    public void testOnlyExecutionsWithParentProcessInstanceId() throws Exception {
+    public void testExecutionQueryParentProcessInstanceIdResultMapping() throws Exception {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("subProcessQueryTest");
 
         List<Execution> executions = runtimeService.createExecutionQuery().onlySubProcessExecutions().list();
