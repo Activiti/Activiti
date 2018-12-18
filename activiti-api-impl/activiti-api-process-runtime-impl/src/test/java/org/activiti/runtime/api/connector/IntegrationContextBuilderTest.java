@@ -84,7 +84,7 @@ public class IntegrationContextBuilderTest {
         subject.from(execution, new ActionDefinition());
 
         //then
-        fail("Excepted ActivitiException!");
+        fail("Expected ActivitiException!");
     }
     
 }
