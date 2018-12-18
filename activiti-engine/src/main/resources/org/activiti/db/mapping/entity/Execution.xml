@@ -240,6 +240,7 @@
     <result property="deadLetterJobCount" column="DEADLETTER_JOB_COUNT_" jdbcType="INTEGER" />
     <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
+    <association property="superExecution" column="SUPER_EXEC_" select="selectSuperExecution"/>
   </resultMap>
   
   <resultMap id="processInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
@@ -279,6 +280,7 @@
     <result property="deadLetterJobCount" column="DEADLETTER_JOB_COUNT_" jdbcType="INTEGER" />
     <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
+    <association property="superExecution" column="SUPER_EXEC_" select="selectSuperExecution"/>
   </resultMap>
   
   <resultMap id="executionAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
@@ -384,6 +386,10 @@
   </select>
   
   <select id="selectExecution" parameterType="string" resultMap="executionResultMap">
+    select * from ${prefix}ACT_RU_EXECUTION where ID_ = #{id, jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectSuperExecution" parameterType="string" resultMap="executionResultMap">
     select * from ${prefix}ACT_RU_EXECUTION where ID_ = #{id, jdbcType=VARCHAR}
   </select>
   
