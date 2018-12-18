@@ -16,16 +16,18 @@
 
 package org.activiti.runtime.api.connector;
 
-import org.activiti.api.process.model.IntegrationContext;
-import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
-import org.activiti.core.common.model.connector.ActionDefinition;
-import org.activiti.core.common.model.connector.VariableDefinition;
-import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
-
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import org.activiti.api.process.model.IntegrationContext;
+import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
+import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.core.common.model.connector.ActionDefinition;
+import org.activiti.core.common.model.connector.VariableDefinition;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
 public class IntegrationContextBuilder {
 
@@ -54,7 +56,29 @@ public class IntegrationContextBuilder {
         integrationContext.setProcessInstanceId(execution.getProcessInstanceId());
         integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
         integrationContext.setActivityElementId(execution.getCurrentActivityId());
+        integrationContext.setBusinessKey(execution.getProcessInstanceBusinessKey());
 
+        if(ExecutionEntity.class.isInstance(execution)) {
+            ExecutionEntity processInstance = ExecutionEntity.class.cast(execution)
+                                                                   .getProcessInstance();
+            if(processInstance != null) {
+                integrationContext.setProcessDefinitionKey(processInstance.getProcessDefinitionKey());
+                integrationContext.setProcessDefinitionVersion(processInstance.getProcessDefinitionVersion());
+                
+                // Let's try extract parent process instance from super execution  
+                if(processInstance.getSuperExecutionId() != null) {
+                    try {
+                        Optional.ofNullable(processInstance.getSuperExecution())
+                                .ifPresent(superExecution -> integrationContext
+                                .setParentProcessInstanceId(superExecution.getProcessInstanceId()));
+                    } catch (NullPointerException e) {
+                        // Ignore the exception in case getSuperExecution method call
+                        // cannot resolve entity because CommandContext is not available
+                    }
+                }
+            }
+        }
+        
         String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
 
         integrationContext.setConnectorType(implementation);
@@ -65,7 +89,7 @@ public class IntegrationContextBuilder {
 
         return integrationContext;
     }
-
+    
     private Map<String, Object> buildInBoundVariables(ActionDefinition actionDefinition,
                                                       DelegateExecution execution) {
 
