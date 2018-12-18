@@ -25,6 +25,7 @@ import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.core.common.model.connector.VariableDefinition;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
@@ -67,14 +68,9 @@ public class IntegrationContextBuilder {
                 
                 // Let's try extract parent process instance from super execution  
                 if(processInstance.getSuperExecutionId() != null) {
-                    try {
-                        Optional.ofNullable(processInstance.getSuperExecution())
-                                .ifPresent(superExecution -> integrationContext
-                                .setParentProcessInstanceId(superExecution.getProcessInstanceId()));
-                    } catch (NullPointerException e) {
-                        // Ignore the exception in case getSuperExecution method call
-                        // cannot resolve entity because CommandContext is not available
-                    }
+                    ExecutionEntity superExecution = extractSuperExecutionFromCommandContext(processInstance);
+                    
+                    integrationContext.setParentProcessInstanceId(superExecution.getProcessInstanceId());
                 }
             }
         }
@@ -88,6 +84,15 @@ public class IntegrationContextBuilder {
                 execution));
 
         return integrationContext;
+    }
+    
+    protected ExecutionEntity extractSuperExecutionFromCommandContext(ExecutionEntity processInstance) {
+        try {
+            return Optional.of(processInstance.getSuperExecution()).get();
+        } catch(NullPointerException cause) {
+            throw new ActivitiException("Activiti CommandContext is required.");
+        }
+        
     }
     
     private Map<String, Object> buildInBoundVariables(ActionDefinition actionDefinition,
