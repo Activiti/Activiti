@@ -1,5 +1,9 @@
 package org.activiti.spring.conformance.set2;
 
+import static org.activiti.spring.conformance.set2.Set2RuntimeTestConfiguration.collectedEvents;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -15,6 +19,7 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,11 +27,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.activiti.spring.conformance.util.security.SecurityUtil;
-
-import static org.activiti.spring.conformance.set2.Set2RuntimeTestConfiguration.collectedEvents;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -143,7 +143,8 @@ public class UserTaskCandidateGroupRuntimeTest {
 
         assertThat(collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
-                .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
+                .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                                 TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
         collectedEvents.clear();
 
@@ -223,8 +224,8 @@ public class UserTaskCandidateGroupRuntimeTest {
 
         assertThat(collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
-                .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
-
+                .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                                 TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
         collectedEvents.clear();
 
         // Check with user3, he/she shouldn't see any task now that the task was assigned
@@ -245,7 +246,8 @@ public class UserTaskCandidateGroupRuntimeTest {
 
         assertThat(collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
-                .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
+                .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                                 TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
         collectedEvents.clear();
 

@@ -57,7 +57,7 @@ public interface TaskService {
    * @param task
    *          the task, cannot be null.
    */
-  void saveTask(Task task);
+  Task saveTask(Task task);
 
   /**
    * Deletes the given task, not deleting historic information that is related to this task.

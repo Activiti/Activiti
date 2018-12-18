@@ -16,22 +16,6 @@
 
 package org.activiti.runtime.api.impl;
 
-import java.util.Collections;
-
-import org.activiti.api.runtime.shared.security.SecurityManager;
-import org.activiti.api.task.model.builders.TaskPayloadBuilder;
-import org.activiti.api.task.model.impl.TaskImpl;
-import org.activiti.api.task.model.payloads.UpdateTaskPayload;
-import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
-import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskQuery;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
@@ -43,6 +27,19 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import org.activiti.api.runtime.shared.security.SecurityManager;
+import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.model.impl.TaskImpl;
+import org.activiti.api.task.model.payloads.UpdateTaskPayload;
+import org.activiti.engine.TaskService;
+import org.activiti.engine.task.Task;
+import org.activiti.engine.task.TaskQuery;
+import org.activiti.runtime.api.model.impl.APITaskConverter;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+
 public class TaskRuntimeImplTest {
 
     private TaskRuntimeImpl taskRuntime;
@@ -52,20 +49,19 @@ public class TaskRuntimeImplTest {
 
     @Mock
     private TaskService taskService;
-
-    @Mock
-    private TaskRuntimeEventListener<TaskUpdatedEvent> listener;
-
+    
+    @Mock 
+    private APITaskConverter taskConverter;
+    
     @Before
     public void setUp() {
         initMocks(this);
         taskRuntime = spy(new TaskRuntimeImpl(taskService,
                             null,
                             securityManager,
+                            taskConverter,
                             null,
-                            null,
-                            null,
-                            Collections.singletonList(listener)));
+                            null));
         when(securityManager.getAuthenticatedUserId()).thenReturn("user");
     }
 
@@ -106,15 +102,16 @@ public class TaskRuntimeImplTest {
 
         Task internalTask = mock(Task.class);
         given(taskQuery.singleResult()).willReturn(internalTask);
-
+        
+        Mockito.when(taskConverter.from(Mockito.any(Task.class))).thenReturn(task);
+        
         //when
         org.activiti.api.task.model.Task updatedTask = taskRuntime.update(updateTaskPayload);
 
         //then
         verify(internalTask).setDescription("new description");
         verifyNoMoreInteractions(internalTask);
-        ArgumentCaptor<TaskUpdatedEvent> captor = ArgumentCaptor.forClass(TaskUpdatedEvent.class);
-        verify(listener).onEvent(captor.capture());
-        assertThat(captor.getValue().getEntity()).isEqualTo(updatedTask);
+
+        verify(taskService).saveTask(internalTask);
     }
 }
