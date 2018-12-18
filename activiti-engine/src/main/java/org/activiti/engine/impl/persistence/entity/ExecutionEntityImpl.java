@@ -198,6 +198,8 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
   
   protected boolean isDeleted; // TODO: should be in entity superclass probably
 
+  protected String parentProcessInstanceId;
+
   public ExecutionEntityImpl() {
     
   }
@@ -410,6 +412,16 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
     }
   }
 
+  // parent process instance id      /////////////////////////////////////////
+
+  public String getParentProcessInstanceId() {
+    return parentProcessInstanceId;
+  }
+
+  public void setParentProcessInstanceId(String parentProcessInstanceId) {
+      this.parentProcessInstanceId = parentProcessInstanceId;
+    }
+  
   // super- and subprocess executions /////////////////////////////////////////
 
   public String getSuperExecutionId() {
@@ -429,8 +441,10 @@ public class ExecutionEntityImpl extends VariableScopeImpl implements ExecutionE
 
     if (superExecution != null) {
       this.superExecutionId = ((ExecutionEntityImpl) superExecution).getId();
+      this.parentProcessInstanceId = superExecution.getProcessInstanceId(); 
     } else {
       this.superExecutionId = null;
+      this.parentProcessInstanceId = null;
     }
   }
 
