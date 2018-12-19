@@ -1,7 +1,6 @@
 package org.activiti.runtime.api.connector;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -10,8 +9,6 @@ import java.util.Map;
 
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.core.common.model.connector.ActionDefinition;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.junit.Test;
 
@@ -35,7 +32,6 @@ public class IntegrationContextBuilderTest {
         //given
         ExecutionEntity execution = mock(ExecutionEntity.class);
         ExecutionEntity processInstance = mock(ExecutionEntity.class);
-        ExecutionEntity superExecution = mock(ExecutionEntity.class);
         ServiceTask serviceTask = mock(ServiceTask.class);
         Map<String, Object> variables = Collections.singletonMap("key", "value");
 
@@ -50,9 +46,7 @@ public class IntegrationContextBuilderTest {
         given(execution.getProcessInstance()).willReturn(processInstance);
         given(processInstance.getProcessDefinitionKey()).willReturn(PROCESS_DEFINITION_KEY);
         given(processInstance.getProcessDefinitionVersion()).willReturn(PROCESS_DEFINITION_VERSION);
-        given(processInstance.getSuperExecutionId()).willReturn(SUPER_EXECUTION_ID);
-        given(processInstance.getSuperExecution()).willReturn(superExecution);
-        given(superExecution.getProcessInstanceId()).willReturn(PARENT_PROCESS_INSTANCE_ID);
+        given(processInstance.getParentProcessInstanceId()).willReturn(PARENT_PROCESS_INSTANCE_ID);
         
         //when
         IntegrationContext integrationContext = subject.from(execution, null);
@@ -69,22 +63,4 @@ public class IntegrationContextBuilderTest {
         assertThat(integrationContext.getParentProcessInstanceId()).isEqualTo(PARENT_PROCESS_INSTANCE_ID);
         assertThat(integrationContext.getInBoundVariables()).containsAllEntriesOf(variables);
     }    
-    
-    @Test(expected=ActivitiException.class)
-    public void shouldThrowActivitiExceptionIfUsedOutsideCommandContext() {
-        //given
-        ExecutionEntity execution = mock(ExecutionEntity.class);
-        ExecutionEntity processInstance = mock(ExecutionEntity.class);
-        
-        given(execution.getProcessInstance()).willReturn(processInstance);
-        given(processInstance.getSuperExecutionId()).willReturn(SUPER_EXECUTION_ID);
-        given(processInstance.getSuperExecution()).willThrow(NullPointerException.class);
-        
-        //when
-        subject.from(execution, new ActionDefinition());
-
-        //then
-        fail("Expected ActivitiException!");
-    }
-    
 }
