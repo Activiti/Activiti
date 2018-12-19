@@ -54,6 +54,7 @@ public class APIProcessInstanceConverterTest {
         ProcessInstance result = subject.from(internalProcessInstance);
 
         //then
+        assertValidProcessInstanceResult(result);
         assertThat(result.getStatus()).isEqualTo(ProcessInstanceStatus.RUNNING);
     }
 
@@ -83,7 +84,7 @@ public class APIProcessInstanceConverterTest {
         ProcessInstance result = subject.from(internalProcessInstance);
 
         //then
-        assertThat(result).isNotNull();
+        assertValidProcessInstanceResult(result);
         assertThat(result.getStatus()).isEqualTo(ProcessInstanceStatus.COMPLETED);
     }
 
