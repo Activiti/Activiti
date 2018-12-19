@@ -62,7 +62,7 @@ public interface Execution {
   public String getRootProcessInstanceId();
   
   /**
-   * Id of the root of the execution tree representing the process instance that has no super execution.
+   * Returns Id of the process instance related to the super execution of this execution.
    */
   public String getParentProcessInstanceId();
   
