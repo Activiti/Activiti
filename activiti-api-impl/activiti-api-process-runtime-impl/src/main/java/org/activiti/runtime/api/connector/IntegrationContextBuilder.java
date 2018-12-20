@@ -65,13 +65,7 @@ public class IntegrationContextBuilder {
             if(processInstance != null) {
                 integrationContext.setProcessDefinitionKey(processInstance.getProcessDefinitionKey());
                 integrationContext.setProcessDefinitionVersion(processInstance.getProcessDefinitionVersion());
-                
-                // Let's try extract parent process instance from super execution  
-                if(processInstance.getSuperExecutionId() != null) {
-                    ExecutionEntity superExecution = extractSuperExecutionFromCommandContext(processInstance);
-                    
-                    integrationContext.setParentProcessInstanceId(superExecution.getProcessInstanceId());
-                }
+                integrationContext.setParentProcessInstanceId(processInstance.getParentProcessInstanceId());
             }
         }
         
@@ -84,15 +78,6 @@ public class IntegrationContextBuilder {
                 execution));
 
         return integrationContext;
-    }
-    
-    protected ExecutionEntity extractSuperExecutionFromCommandContext(ExecutionEntity processInstance) {
-        try {
-            return Optional.of(processInstance.getSuperExecution()).get();
-        } catch(NullPointerException cause) {
-            throw new ActivitiException("Activiti CommandContext is required.");
-        }
-        
     }
     
     private Map<String, Object> buildInBoundVariables(ActionDefinition actionDefinition,
