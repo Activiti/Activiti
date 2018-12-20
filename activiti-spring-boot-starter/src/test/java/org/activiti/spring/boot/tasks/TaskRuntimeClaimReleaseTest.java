@@ -44,7 +44,7 @@ public class TaskRuntimeClaimReleaseTest {
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("group task")
-                .withGroup("activitiTeam")
+                .withCandidateGroup("activitiTeam")
                 .build());
 
         // the owner should be able to see the created task
@@ -76,7 +76,7 @@ public class TaskRuntimeClaimReleaseTest {
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("group task")
-                .withGroup("activitiTeam")
+                .withCandidateGroup("activitiTeam")
                 .build());
 
 
@@ -98,7 +98,7 @@ public class TaskRuntimeClaimReleaseTest {
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("group task")
-                .withGroup("activitiTeam")
+                .withCandidateGroup("activitiTeam")
                 .build());
 
 

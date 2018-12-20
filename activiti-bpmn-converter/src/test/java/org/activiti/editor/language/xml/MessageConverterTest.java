@@ -34,6 +34,13 @@ public class MessageConverterTest extends AbstractConverterTest {
     assertEquals("http://foo.bar.com/Examples:writeReportItem2", message2.getItemRef());
     assertEquals("newWriteReport2", message2.getName());
     assertEquals("writeReport2", message2.getId());
+    
+    Message message3 = model.getMessage("writeReport3");
+    assertNotNull(message3);
+    assertEquals("Examples:writeReportItem3", message3.getItemRef());
+    assertEquals("newWriteReport3", message3.getName());
+    assertEquals("writeReport3", message3.getId());
+
   }
   
   protected String getResource() {

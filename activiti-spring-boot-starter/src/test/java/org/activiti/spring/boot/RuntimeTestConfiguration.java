@@ -7,9 +7,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
-import org.activiti.api.process.model.events.SequenceFlowTakenEvent;
+import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
+import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
@@ -44,7 +45,7 @@ public class RuntimeTestConfiguration {
 
     public static Set<String> completedProcesses = new HashSet<>();
 
-    public static Set<SequenceFlowTakenEvent> sequenceFlowTakenEvents = new HashSet<>();
+    public static Set<BPMNSequenceFlowTakenEvent> sequenceFlowTakenEvents = new HashSet<>();
 
     public static Set<VariableCreatedEvent> variableCreatedEventsFromProcessInstance = new HashSet<>();
 
@@ -162,7 +163,7 @@ public class RuntimeTestConfiguration {
     }
 
     @Bean
-    public ProcessRuntimeEventListener<SequenceFlowTakenEvent> sequenceFlowTakenEventListener() {
+    public BPMNElementEventListener<BPMNSequenceFlowTakenEvent> sequenceFlowTakenEventListener() {
         return sequenceFlowTakenEvent -> sequenceFlowTakenEvents.add(sequenceFlowTakenEvent);
     }
 

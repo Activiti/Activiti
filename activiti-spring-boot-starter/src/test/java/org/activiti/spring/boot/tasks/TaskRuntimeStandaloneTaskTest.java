@@ -83,7 +83,7 @@ public class TaskRuntimeStandaloneTaskTest {
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("find Lucien Sanchez")
-                .withGroup("doctor")
+                .withCandidateGroup("doctor")
                 .build());
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,

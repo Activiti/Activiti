@@ -22,7 +22,7 @@ import java.util.List;
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
-import org.activiti.api.process.model.events.SequenceFlowTakenEvent;
+import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
@@ -33,6 +33,7 @@ import org.activiti.api.process.runtime.events.ProcessResumedEvent;
 import org.activiti.api.process.runtime.events.ProcessStartedEvent;
 import org.activiti.api.process.runtime.events.ProcessSuspendedEvent;
 import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
+import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
@@ -85,14 +86,16 @@ public class ProcessRuntimeAutoConfiguration {
                                          ProcessSecurityPoliciesManager securityPoliciesManager,
                                          APIProcessInstanceConverter processInstanceConverter,
                                          APIVariableInstanceConverter variableInstanceConverter,
-                                         ProcessRuntimeConfiguration processRuntimeConfiguration) {
+                                         ProcessRuntimeConfiguration processRuntimeConfiguration
+                                         ) {
         return new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
-                                      securityPoliciesManager,
+                securityPoliciesManager,
                 processInstanceConverter,
                 variableInstanceConverter,
-                processRuntimeConfiguration);
+                processRuntimeConfiguration
+                );
     }
 
     @Bean
@@ -145,7 +148,7 @@ public class ProcessRuntimeAutoConfiguration {
     public ToProcessUpdatedConverter processUpdatedConverter(APIProcessInstanceConverter processInstanceConverter) {
         return new ToProcessUpdatedConverter(processInstanceConverter);
     }
-    
+
     @Bean
     public ToProcessResumedConverter processResumedConverter(APIProcessInstanceConverter processInstanceConverter) {
         return new ToProcessResumedConverter(processInstanceConverter);
@@ -177,7 +180,7 @@ public class ProcessRuntimeAutoConfiguration {
                         converter),
                 ActivitiEventType.ENTITY_CREATED);
     }
-    
+
     @Bean
     public InitializingBean registerProcessUpdatedEventListenerDelegate(RuntimeService runtimeService,
                                                                           @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> eventListeners,
@@ -234,7 +237,7 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerActivityStartedListenerDelegate(RuntimeService runtimeService,
-                                                                    @Autowired(required = false) List<ProcessRuntimeEventListener<BPMNActivityStartedEvent>> eventListeners,
+                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNActivityStartedEvent>> eventListeners,
                                                                     ToActivityConverter activityConverter) {
         return () -> runtimeService.addEventListener(new ActivityStartedListenerDelegate(getInitializedListeners(eventListeners),
                         new ToActivityStartedConverter(activityConverter)),
@@ -243,7 +246,7 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerActivityCompletedListenerDelegate(RuntimeService runtimeService,
-                                                                      @Autowired(required = false) List<ProcessRuntimeEventListener<BPMNActivityCompletedEvent>> eventListeners,
+                                                                      @Autowired(required = false) List<BPMNElementEventListener<BPMNActivityCompletedEvent>> eventListeners,
                                                                       ToActivityConverter activityConverter) {
         return () -> runtimeService.addEventListener(new ActivityCompletedListenerDelegate(getInitializedListeners(eventListeners),
                         new ToActivityCompletedConverter(activityConverter)),
@@ -252,7 +255,7 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerActivityCancelledListenerDelegate(RuntimeService runtimeService,
-                                                                      @Autowired(required = false) List<ProcessRuntimeEventListener<BPMNActivityCancelledEvent>> eventListeners,
+                                                                      @Autowired(required = false) List<BPMNElementEventListener<BPMNActivityCancelledEvent>> eventListeners,
                                                                       ToActivityConverter activityConverter) {
         return () -> runtimeService.addEventListener(new ActivityCancelledListenerDelegate(getInitializedListeners(eventListeners),
                         new ToActivityCancelledConverter(activityConverter)),
@@ -261,9 +264,13 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerSequenceFlowTakenListenerDelegate(RuntimeService runtimeService,
-                                                                      @Autowired(required = false) List<ProcessRuntimeEventListener<SequenceFlowTakenEvent>> eventListeners) {
+                                                                      @Autowired(required = false) List<BPMNElementEventListener<BPMNSequenceFlowTakenEvent>> eventListeners) {
         return () -> runtimeService.addEventListener(new SequenceFlowTakenListenerDelegate(getInitializedListeners(eventListeners),
                         new ToSequenceFlowTakenConverter()),
                 ActivitiEventType.SEQUENCEFLOW_TAKEN);
+    }
+    
+    private <T> List<T> getInitializedProcessRuntimeEventListeners(List<T> processRuntimeEventListeners) {
+        return processRuntimeEventListeners != null ? processRuntimeEventListeners : Collections.emptyList();
     }
 }
