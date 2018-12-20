@@ -33,6 +33,7 @@ public class ProcessInstanceImpl implements ProcessInstance {
     private String businessKey;
     private ProcessInstanceStatus status;
     private String parentId;
+    private Integer processDefinitionVersion;
 
     @Override
     public String getId() {
@@ -80,6 +81,9 @@ public class ProcessInstanceImpl implements ProcessInstance {
     @Override
     public String getParentId() { return parentId; }
 
+    @Override
+    public Integer getProcessDefinitionVersion() { return processDefinitionVersion; }
+    
     public void setId(String id) {
         this.id = id;
     }
@@ -119,6 +123,10 @@ public class ProcessInstanceImpl implements ProcessInstance {
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
+    
+    public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
+        this.processDefinitionVersion = processDefinitionVersion;
+    }
 
 
     @Override
@@ -146,6 +154,8 @@ public class ProcessInstanceImpl implements ProcessInstance {
                                that.startDate) &&
                 Objects.equals(businessKey,
                                that.businessKey) &&
+                Objects.equals(processDefinitionVersion,
+                               that.processDefinitionVersion) &&
                 status == that.status;
     }
 
@@ -161,7 +171,8 @@ public class ProcessInstanceImpl implements ProcessInstance {
                             parentId,
                             startDate,
                             businessKey,
-                            status);
+                            status,
+                            processDefinitionVersion);
     }
 
     @Override
@@ -172,12 +183,12 @@ public class ProcessInstanceImpl implements ProcessInstance {
                 ", description='" + description + '\'' +
                 ", processDefinitionId='" + processDefinitionId + '\'' +
                 ", processDefinitionKey='" + processDefinitionKey + '\'' +
-                ", processDefinitionId='" + processDefinitionId + '\'' +
                 ", parentId='" + parentId + '\'' +
                 ", initiator='" + initiator + '\'' +
                 ", startDate=" + startDate +
                 ", businessKey='" + businessKey + '\'' +
                 ", status=" + status +
+                ", processDefinitionVersion='" + processDefinitionVersion + '\'' +
                 '}';
     }
 }

@@ -48,5 +48,7 @@ public interface ProcessInstance {
     String getProcessDefinitionKey();
 
     String getParentId();
+    
+    Integer getProcessDefinitionVersion();
 
 }

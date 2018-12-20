@@ -108,4 +108,5 @@ public interface ProcessAdminRuntime {
     void setVariables(SetProcessVariablesPayload setProcessVariablesPayload);
 
     void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload);
+    
 }

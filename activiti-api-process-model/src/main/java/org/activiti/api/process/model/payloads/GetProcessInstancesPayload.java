@@ -13,6 +13,7 @@ public class GetProcessInstancesPayload implements Payload {
     private String businessKey;
     private boolean suspendedOnly;
     private boolean activeOnly;
+    private String parentProcessInstanceId;
 
     public GetProcessInstancesPayload() {
         this.id = UUID.randomUUID().toString();
@@ -54,4 +55,14 @@ public class GetProcessInstancesPayload implements Payload {
     public void setActiveOnly(boolean activeOnly) {
         this.activeOnly = activeOnly;
     }
+    
+    public String getParentProcessInstanceId() {
+        return parentProcessInstanceId;
+    }
+    
+    public void setParentProcessInstanceId(String parentProcessInstanceId) {
+        this.parentProcessInstanceId=parentProcessInstanceId;
+    }
+
+    
 }
