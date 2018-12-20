@@ -7,13 +7,13 @@ import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JsonObjectExtensionVariableType extends ExtensionVariableType {
+public class JsonObjectVariableType extends VariableType {
 
-    private static final Logger logger = LoggerFactory.getLogger(JsonObjectExtensionVariableType.class);
+    private static final Logger logger = LoggerFactory.getLogger(JsonObjectVariableType.class);
 
     private ObjectMapper objectMapper;
 
-    public JsonObjectExtensionVariableType(ObjectMapper objectMapper) {
+    public JsonObjectVariableType(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

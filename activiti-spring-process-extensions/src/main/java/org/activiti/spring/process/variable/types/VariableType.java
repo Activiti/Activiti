@@ -4,7 +4,11 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 
-public abstract class ExtensionVariableType {
+/**
+ * Base variable type for types as defined in extension json files.
+ * Used to validate variables against definition.
+ */
+public abstract class VariableType {
 
     private String name;
 

@@ -15,10 +15,9 @@ package org.activiti.spring.process;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
-import org.activiti.spring.process.variable.types.ExtensionVariableType;
+import org.activiti.spring.process.variable.types.VariableType;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
@@ -37,11 +36,11 @@ public class ProcessExtensionService {
     private String processExtensionsSuffix;
     private final ObjectMapper objectMapper;
     private ResourcePatternResolver resourceLoader;
-    private Map<String, ExtensionVariableType> variableTypeMap;
+    private Map<String, VariableType> variableTypeMap;
 
     public ProcessExtensionService(String processExtensionsRoot, String processExtensionsSuffix,
                                    ObjectMapper objectMapper, ResourcePatternResolver resourceLoader,
-                                   Map<String, ExtensionVariableType> variableTypeMap) {
+                                   Map<String, VariableType> variableTypeMap) {
         this.processExtensionsRoot = processExtensionsRoot;
         this.processExtensionsSuffix = processExtensionsSuffix;
         this.objectMapper = objectMapper;

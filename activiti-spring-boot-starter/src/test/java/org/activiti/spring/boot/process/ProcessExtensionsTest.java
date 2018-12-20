@@ -8,7 +8,7 @@ import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.engine.ActivitiException;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
-import org.activiti.spring.process.variable.types.DateExtensionVariableType;
+import org.activiti.spring.process.variable.types.DateVariableType;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -99,7 +99,7 @@ public class ProcessExtensionsTest {
                         "bob")
                 .withVariable("subscribe",
                         true)
-                .withVariable("birth", new SimpleDateFormat(DateExtensionVariableType.defaultFormat).parse("2009-11-30"))
+                .withVariable("birth", new SimpleDateFormat(DateVariableType.defaultFormat).parse("2009-11-30"))
                 .withBusinessKey("my business key")
                 .build());
 
