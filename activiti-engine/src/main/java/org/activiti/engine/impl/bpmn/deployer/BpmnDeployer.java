@@ -216,7 +216,7 @@ public class BpmnDeployer implements Deployer {
         CommandContext commandContext = Context.getCommandContext();
         for (ProcessDefinitionEntity processDefinitionEntity : parsedDeployment.getAllProcessDefinitions()) {
             log.info("Process deployed: {id: " + processDefinitionEntity.getId() +
-                ", key: " + processDefinitionEntity.getKey() + "}");
+                ", key: " + processDefinitionEntity.getKey() + ", name: " + processDefinitionEntity.getName() +" }");
             if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
                 commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
                         ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED,

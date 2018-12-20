@@ -19,6 +19,7 @@ package org.activiti.runtime.api.event.internal;
 import java.util.List;
 
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
+import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -27,11 +28,11 @@ import org.activiti.runtime.api.event.impl.ToActivityCompletedConverter;
 
 public class ActivityCompletedListenerDelegate implements ActivitiEventListener {
 
-    private List<ProcessRuntimeEventListener<BPMNActivityCompletedEvent>> processRuntimeEventListeners;
+    private List<BPMNElementEventListener<BPMNActivityCompletedEvent>> processRuntimeEventListeners;
 
     private ToActivityCompletedConverter converter;
 
-    public ActivityCompletedListenerDelegate(List<ProcessRuntimeEventListener<BPMNActivityCompletedEvent>> processRuntimeEventListeners,
+    public ActivityCompletedListenerDelegate(List<BPMNElementEventListener<BPMNActivityCompletedEvent>> processRuntimeEventListeners,
                                              ToActivityCompletedConverter converter) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
@@ -42,7 +43,7 @@ public class ActivityCompletedListenerDelegate implements ActivitiEventListener 
         if (event instanceof ActivitiActivityEvent) {
             converter.from((ActivitiActivityEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (ProcessRuntimeEventListener<BPMNActivityCompletedEvent> listener : processRuntimeEventListeners) {
+                        for (BPMNElementEventListener<BPMNActivityCompletedEvent> listener : processRuntimeEventListeners) {
                             listener.onEvent(convertedEvent);
                         }
                     });
