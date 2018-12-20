@@ -16,11 +16,8 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import java.util.Optional;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 public class APIProcessInstanceConverter extends ListConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance>
         implements ModelConverter<org.activiti.engine.runtime.ProcessInstance, ProcessInstance> {
@@ -41,16 +38,6 @@ public class APIProcessInstanceConverter extends ListConverter<org.activiti.engi
         processInstance.setBusinessKey(internalProcessInstance.getBusinessKey());
         processInstance.setStatus(calculateStatus(internalProcessInstance));
         processInstance.setProcessDefinitionVersion(internalProcessInstance.getProcessDefinitionVersion());
-        
-        //To do: it is not the best way to search parentProcessId by this method, it will require extra queries!
-        
-        //Set parent ProcessInstance Id
-        if(internalProcessInstance.getSuperExecutionId()!=null) {
-            ExecutionEntity executionEntity = ExecutionEntity.class.cast(internalProcessInstance);
-           
-            Optional.ofNullable(executionEntity.getSuperExecution())
-                  .ifPresent(superExecution -> processInstance.setParentId(superExecution.getProcessInstanceId()));
-        }
         return processInstance;
     }
 
