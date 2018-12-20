@@ -86,7 +86,6 @@ public interface TaskAdminRuntime {
 
     /**
      * Assign a task with a new user
-     *  - If the currently authenticated user is not a candidate throw an IllegalStateException
      *  - If there is a user assigned, reassign it to the new user
      *  - after the assign the task should be in assigned status
      */
