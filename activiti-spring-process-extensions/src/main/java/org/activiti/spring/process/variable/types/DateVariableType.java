@@ -8,14 +8,17 @@ import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DateExtensionVariableType extends JavaObjectExtensionVariableType {
+/**
+ * Basic date type for setting default date values for vars in extension json
+ */
+public class DateVariableType extends JavaObjectVariableType {
 
     public static String defaultFormat = "yyyy-MM-dd";
     public DateFormat format;
-    private static final Logger logger = LoggerFactory.getLogger(DateExtensionVariableType.class);
+    private static final Logger logger = LoggerFactory.getLogger(DateVariableType.class);
 
 
-    public DateExtensionVariableType(Class clazz,DateFormat format) {
+    public DateVariableType(Class clazz, DateFormat format) {
         super(clazz);
         this.format = format;
     }

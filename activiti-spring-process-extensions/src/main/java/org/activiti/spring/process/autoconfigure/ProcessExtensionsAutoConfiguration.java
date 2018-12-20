@@ -21,9 +21,9 @@ import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
-import org.activiti.spring.process.variable.types.DateExtensionVariableType;
-import org.activiti.spring.process.variable.types.ExtensionVariableType;
-import org.activiti.spring.process.variable.types.JavaObjectExtensionVariableType;
+import org.activiti.spring.process.variable.types.DateVariableType;
+import org.activiti.spring.process.variable.types.VariableType;
+import org.activiti.spring.process.variable.types.JavaObjectVariableType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -62,22 +62,22 @@ public class ProcessExtensionsAutoConfiguration extends AbstractProcessEngineCon
     }
 
     @Bean
-    public Map<String, ExtensionVariableType> variableTypeMap(){
-        Map<String, ExtensionVariableType> variableTypeMap = new HashMap<>();
-        variableTypeMap.put("boolean", new JavaObjectExtensionVariableType(Boolean.class));
-        variableTypeMap.put("string", new JavaObjectExtensionVariableType(String.class));
-        variableTypeMap.put("integer", new JavaObjectExtensionVariableType(Integer.class));
-        variableTypeMap.put("date", new DateExtensionVariableType(Date.class,new SimpleDateFormat(DateExtensionVariableType.defaultFormat)));
+    public Map<String, VariableType> variableTypeMap(){
+        Map<String, VariableType> variableTypeMap = new HashMap<>();
+        variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
+        variableTypeMap.put("string", new JavaObjectVariableType(String.class));
+        variableTypeMap.put("integer", new JavaObjectVariableType(Integer.class));
+        variableTypeMap.put("date", new DateVariableType(Date.class, new SimpleDateFormat(DateVariableType.defaultFormat)));
         return variableTypeMap;
     }
 
     @Bean
-    public VariableValidationService variableValidationService(Map<String, ExtensionVariableType> variableTypeMap){
+    public VariableValidationService variableValidationService(Map<String, VariableType> variableTypeMap){
         return new VariableValidationService(variableTypeMap);
     }
 
     @Bean
-    public VariableParsingService variableParsingService(Map<String, ExtensionVariableType> variableTypeMap){
+    public VariableParsingService variableParsingService(Map<String, VariableType> variableTypeMap){
         return new VariableParsingService(variableTypeMap);
     }
 }

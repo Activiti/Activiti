@@ -6,13 +6,16 @@ import org.activiti.engine.ActivitiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class JavaObjectExtensionVariableType extends ExtensionVariableType {
+/**
+ * For defining types to match json extension files where types correspond to java classes
+ */
+public class JavaObjectVariableType extends VariableType {
 
-    private static final Logger logger = LoggerFactory.getLogger(JavaObjectExtensionVariableType.class);
+    private static final Logger logger = LoggerFactory.getLogger(JavaObjectVariableType.class);
 
     public Class clazz;
 
-    public JavaObjectExtensionVariableType(Class clazz) {
+    public JavaObjectVariableType(Class clazz) {
         this.clazz = clazz;
     }
 
