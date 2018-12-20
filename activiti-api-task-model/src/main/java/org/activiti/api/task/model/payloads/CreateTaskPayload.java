@@ -32,6 +32,7 @@ public class CreateTaskPayload implements Payload {
                              List<String> candidateUsers,
                              String parentTaskId,
                              String formKey) {
+        this();
         this.name = name;
         this.description = description;
         this.dueDate = dueDate;

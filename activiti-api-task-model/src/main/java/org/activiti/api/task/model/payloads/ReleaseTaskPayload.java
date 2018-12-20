@@ -19,6 +19,7 @@ public class ReleaseTaskPayload implements Payload {
     }
 
     public ReleaseTaskPayload(String taskId) {
+        this();
         this.taskId = taskId;
     }
 

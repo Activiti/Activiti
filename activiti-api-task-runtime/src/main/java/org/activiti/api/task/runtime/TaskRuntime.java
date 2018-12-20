@@ -22,6 +22,8 @@ import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
+import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.CreateTaskPayload;
@@ -115,4 +117,13 @@ public interface TaskRuntime {
     List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
 
     void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);
+    
+    void addCandidateUsers(CandidateUsersPayload candidateUsersPayload);
+    void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload);
+    
+    void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
+    void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload);
+    
+    List<String> userCandidates(String taskId);
+    List<String> groupCandidates(String taskId);
 }
