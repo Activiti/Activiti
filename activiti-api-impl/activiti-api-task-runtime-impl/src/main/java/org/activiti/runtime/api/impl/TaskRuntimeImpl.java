@@ -226,22 +226,22 @@ public class TaskRuntimeImpl implements TaskRuntime {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
           
         // validate that you are trying to update task where you are the assignee
-        if (!Objects.equals(task.getAssignee(), authenticatedUserId)) {
+        if (!Objects.equals(task.getAssignee(),authenticatedUserId)) {
             throw new IllegalStateException("You cannot update a task where you are not the assignee");
         }
         
         org.activiti.engine.task.Task internalTask = getInternalTask(updateTaskPayload.getTaskId());
            
-        if ((newValue=updateTaskPayload.getTaskName()) != null) {
-            oldValue=internalTask.getName();
+        if ((newValue = updateTaskPayload.getTaskName()) != null) {
+            oldValue = internalTask.getName();
             if (!Objects.equals(oldValue,newValue)) {
                 updates++;
                 internalTask.setName(newValue);
             }
         }
         
-        if ((newValue=updateTaskPayload.getDescription()) != null) {
-            oldValue=internalTask.getDescription();
+        if ((newValue = updateTaskPayload.getDescription()) != null) {
+            oldValue = internalTask.getDescription();
             if (!Objects.equals(oldValue,newValue)) {
                 updates++;
                 internalTask.setDescription(newValue);
@@ -264,7 +264,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         
         //@TODO: check if this value can be updated
         if ((newValue=updateTaskPayload.getParentTaskId()) != null) {
-            oldValue=internalTask.getParentTaskId();
+            oldValue = internalTask.getParentTaskId();
             if (!Objects.equals(oldValue,newValue)) {
                 updates++;
                 internalTask.setParentTaskId(newValue);
@@ -272,15 +272,16 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
         
         if ((newValue=updateTaskPayload.getFormKey()) != null) {
-            oldValue=internalTask.getFormKey();
+            oldValue = internalTask.getFormKey();
             if (!Objects.equals(oldValue,newValue)) {
                 updates++;
                 internalTask.setFormKey(newValue);
             }
         }
         
-        if (updates>0)
+        if (updates > 0) {
             taskService.saveTask(internalTask);
+        }
         
         return taskConverter.from(getInternalTask(updateTaskPayload.getTaskId()));
     }
