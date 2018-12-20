@@ -65,6 +65,11 @@
       </dependency>
       <dependency>
         <groupId>org.activiti</groupId>
+        <artifactId>activiti-spring-process-extensions</artifactId>
+        <version>${activiti.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
         <artifactId>activiti-spring-boot-starter</artifactId>
         <version>${activiti.version}</version>
       </dependency>
