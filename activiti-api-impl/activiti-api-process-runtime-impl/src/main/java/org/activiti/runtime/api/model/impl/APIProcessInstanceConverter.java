@@ -31,8 +31,7 @@ public class APIProcessInstanceConverter extends ListConverter<org.activiti.engi
         processInstance.setDescription(internalProcessInstance.getDescription());
         processInstance.setProcessDefinitionId(internalProcessInstance.getProcessDefinitionId());
         processInstance.setProcessDefinitionKey(internalProcessInstance.getProcessDefinitionKey());
-        // @TODO Depends on PR in activiti-api: https://github.com/Activiti/activiti-api/pull/62
-        //processInstance.setProcessDefinitionVersion(internalProcessInstance.getProcessDefinitionVersion());
+        processInstance.setProcessDefinitionVersion(internalProcessInstance.getProcessDefinitionVersion());
         processInstance.setInitiator(internalProcessInstance.getStartUserId());
         processInstance.setStartDate(internalProcessInstance.getStartTime());
         processInstance.setProcessDefinitionKey(internalProcessInstance.getProcessDefinitionKey());

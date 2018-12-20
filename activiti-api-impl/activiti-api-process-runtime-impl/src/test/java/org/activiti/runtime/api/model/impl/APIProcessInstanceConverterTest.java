@@ -16,8 +16,6 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Date;
 
 import org.activiti.api.process.model.ProcessInstance;
@@ -26,6 +24,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.junit.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class APIProcessInstanceConverterTest {
@@ -94,8 +94,7 @@ public class APIProcessInstanceConverterTest {
         assertThat(result.getBusinessKey()).isEqualTo(BUSINESS_KEY);
         assertThat(result.getProcessDefinitionId()).isEqualTo(PROCESS_DEFINITION_ID);
         assertThat(result.getProcessDefinitionKey()).isEqualTo(PROCESS_DEFINITION_KEY);
-        // @TODO Depends on PR in activiti-api: https://github.com/Activiti/activiti-api/pull/62
-        //assertThat(result.getProcessDefinitionVersion()).isEqualTo(PROCESS_DEFINITION_VERSION);
+        assertThat(result.getProcessDefinitionVersion()).isEqualTo(PROCESS_DEFINITION_VERSION);
         assertThat(result.getParentId()).isEqualTo(PARENT_PROCESS_INSTANCE_ID);
         assertThat(result.getName()).isEqualTo(NAME);
         assertThat(result.getDescription()).isEqualTo(DESCRIPTION);
