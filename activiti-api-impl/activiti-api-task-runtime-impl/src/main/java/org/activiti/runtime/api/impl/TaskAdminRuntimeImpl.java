@@ -141,20 +141,6 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     
     @Override
     public Task assign(AssignTaskPayload assignTaskPayload) {
-        // Validate that the task is visible by the currently authorized user
-        Task task;
-        try {
-            task = task(assignTaskPayload.getTaskId());
-        } catch (IllegalStateException ex) {
-            throw new IllegalStateException("The authenticated user cannot assign task" + assignTaskPayload.getTaskId() + " due it is not a candidate for it");
-        }
-        
-        // check that the task doesn't have an assignee
-        // If task is assigned, release it
-        if (task.getAssignee() != null && !task.getAssignee().isEmpty()) {
-            taskService.unclaim(assignTaskPayload.getTaskId());
-        }
-
         taskService.claim(assignTaskPayload.getTaskId(),
                           assignTaskPayload.getAssignee());
         
@@ -163,33 +149,19 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     
     @Override
     public void addCandidateUsers(CandidateUsersPayload candidateUsersPayload) {      
-        Task task;
-        try {
-           task = task(candidateUsersPayload.getTaskId()); 
-        } catch (IllegalStateException ex) {
-            throw new IllegalStateException("The authenticated user cannot update the task" + candidateUsersPayload.getTaskId() + " due it is not the current assignee");
-        }
-                   
-        if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
+       if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
             for (String u : candidateUsersPayload.getCandidateUsers()) {
-                taskService.addCandidateUser(task.getId(),
+                taskService.addCandidateUser(candidateUsersPayload.getTaskId(),
                                              u);
             }
-        }
+       }
     }
     
     @Override
     public void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload) {           
-        Task task;
-        try {
-           task = task(candidateUsersPayload.getTaskId()); 
-        } catch (IllegalStateException ex) {
-            throw new IllegalStateException("The authenticated user cannot update the task" + candidateUsersPayload.getTaskId() + " due it is not the current assignee");
-        }
-                   
         if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
             for (String u : candidateUsersPayload.getCandidateUsers()) {
-                taskService.deleteCandidateUser(task.getId(),
+                taskService.deleteCandidateUser(candidateUsersPayload.getTaskId(),
                                                 u);
             }
         }
@@ -197,36 +169,19 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     
     @Override
     public void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {          
-        Task task;
-        try {
-            task = task(candidateGroupsPayload.getTaskId()); 
-            
-        } catch (IllegalStateException ex) {
-            throw new IllegalStateException("The authenticated user cannot update the task" + candidateGroupsPayload.getTaskId() + " due it is not the current assignee");
-        }
-              
-        if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
+       if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
             for (String g : candidateGroupsPayload.getCandidateGroups()) {
-                taskService.addCandidateGroup(task.getId(),
+                taskService.addCandidateGroup(candidateGroupsPayload.getTaskId(),
                                               g);
             }
-        }
+       }
     }
     
     @Override
     public void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {    
-        Task task;
-        try {
-            task = task(candidateGroupsPayload.getTaskId()); 
-            
-        } catch (IllegalStateException ex) {
-            throw new IllegalStateException("The authenticated user cannot update the task" + candidateGroupsPayload.getTaskId() + " due it is not the current assignee");
-        }
-
-       
         if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
             for (String g : candidateGroupsPayload.getCandidateGroups()) {
-                taskService.deleteCandidateGroup(task.getId(),
+                taskService.deleteCandidateGroup(candidateGroupsPayload.getTaskId(),
                                                  g);
             }
         }
