@@ -31,7 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
 
  */
-public class SaveTaskCmd implements Command<Void>, Serializable {
+public class SaveTaskCmd implements Command<Task>, Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -41,7 +41,7 @@ public class SaveTaskCmd implements Command<Void>, Serializable {
     this.task = (TaskEntity) task;
   }
 
-  public Void execute(CommandContext commandContext) {
+  public Task execute(CommandContext commandContext) {
     if (task == null) {
       throw new ActivitiIllegalArgumentException("task is null");
     }
@@ -131,8 +131,8 @@ public class SaveTaskCmd implements Command<Void>, Serializable {
 
       }
       
-      commandContext.getTaskEntityManager().update(task);
-
+      return commandContext.getTaskEntityManager().update(task);
+      
     }
 
 

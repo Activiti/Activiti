@@ -7,7 +7,7 @@
     <artifactId>activiti-parent</artifactId>
     <version>7.0.45</version>
     <relativePath/>
-  </parent> 
+  </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-root</artifactId>
   <packaging>pom</packaging>
@@ -17,8 +17,8 @@
   <url>http://activiti.org</url>
   <properties>
     <activiti-build.version>7.0.45</activiti-build.version>
-    <activiti-api.version>7.0.58</activiti-api.version>
-    <activiti-core-common.version>7.0.27</activiti-core-common.version>
+    <activiti-api.version>7.0.61</activiti-api.version>
+    <activiti-core-common.version>7.0.30</activiti-core-common.version>
     <activiti.version>${project.version}</activiti.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
@@ -180,6 +180,7 @@
       </dependency>
 
       <!-- Test -->
+
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-fluent</artifactId>
@@ -206,7 +207,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
+
   <!-- Activiti Build Parent Marker Dependency for Dependency Convergence Tests -->
   <dependencies>
     <dependency>
@@ -228,7 +229,7 @@
       <type>pom</type>
     </dependency>
   </dependencies>
-  
+
   <modules>
     <module>activiti-core-dependencies-tests</module>
     <module>activiti-core-dependencies</module>
@@ -244,6 +245,7 @@
     <module>activiti-spring-boot-starter</module>
     <module>activiti-spring-app-process</module>
     <module>activiti-spring-process-extensions</module>
+    <module>activiti-spring-conformance-tests</module>
   </modules>
 
   <repositories>
@@ -278,7 +280,7 @@
           <deployAtEnd>true</deployAtEnd>
         </configuration>
       </plugin>
-    
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>

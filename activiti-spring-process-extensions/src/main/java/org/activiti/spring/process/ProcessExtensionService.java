@@ -41,6 +41,7 @@ public class ProcessExtensionService {
     public ProcessExtensionService(String processExtensionsRoot, String processExtensionsSuffix,
                                    ObjectMapper objectMapper, ResourcePatternResolver resourceLoader,
                                    Map<String, VariableType> variableTypeMap) {
+
         this.processExtensionsRoot = processExtensionsRoot;
         this.processExtensionsSuffix = processExtensionsSuffix;
         this.objectMapper = objectMapper;

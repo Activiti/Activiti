@@ -240,6 +240,7 @@
     <result property="deadLetterJobCount" column="DEADLETTER_JOB_COUNT_" jdbcType="INTEGER" />
     <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
+    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="VARCHAR"/>
   </resultMap>
   
   <resultMap id="processInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
@@ -279,8 +280,10 @@
     <result property="deadLetterJobCount" column="DEADLETTER_JOB_COUNT_" jdbcType="INTEGER" />
     <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
+    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="VARCHAR"/>
   </resultMap>
   
+  <!-- TODO Review because not used anywhere -->
   <resultMap id="executionAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
@@ -310,6 +313,7 @@
     <result property="deadLetterJobCount" column="DEADLETTER_JOB_COUNT_" jdbcType="INTEGER" />
     <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
+    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="VARCHAR"/>
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -360,6 +364,7 @@
     <result property="deadLetterJobCount" column="DEADLETTER_JOB_COUNT_" jdbcType="INTEGER" />
     <result property="variableCount" column="VAR_COUNT_" jdbcType="INTEGER" />
     <result property="identityLinkCount" column="ID_LINK_COUNT_" jdbcType="INTEGER" />
+    <result property="parentProcessInstanceId" column="PARENT_PROC_INST_ID_" jdbcType="VARCHAR"/>
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -378,33 +383,44 @@
   
   <!-- EXECUTION SELECT -->
   
+  <sql id="selectExecutionsFromSql">  
+    select E.*, S.PROC_INST_ID_ AS PARENT_PROC_INST_ID_ 
+    from ${prefix}ACT_RU_EXECUTION E LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION S ON E.SUPER_EXEC_ = S.ID_  
+  </sql>
+  
   <select id="selectExecutionsWithSameRootProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
-    select * from ${prefix}ACT_RU_EXECUTION
-    where ROOT_PROC_INST_ID_ = (select ROOT_PROC_INST_ID_ from ${prefix}ACT_RU_EXECUTION where ID_ = #{parameter})
+    <include refid="selectExecutionsFromSql"/>
+    where E.ROOT_PROC_INST_ID_ = (select ROOT_PROC_INST_ID_ from ${prefix}ACT_RU_EXECUTION where ID_ = #{parameter})
   </select>
   
   <select id="selectExecution" parameterType="string" resultMap="executionResultMap">
-    select * from ${prefix}ACT_RU_EXECUTION where ID_ = #{id, jdbcType=VARCHAR}
+    <include refid="selectExecutionsFromSql"/>
+    where E.ID_ = #{id, jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectSuperExecution" parameterType="string" resultMap="executionResultMap">
+    <include refid="selectExecutionsFromSql"/>
+    where E.ID_ = #{id, jdbcType=VARCHAR}
   </select>
   
   <select id="selectExecutionsByParentExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
-    select * from ${prefix}ACT_RU_EXECUTION
-    where PARENT_ID_ = #{parameter}
+    <include refid="selectExecutionsFromSql"/>
+    where E.PARENT_ID_ = #{parameter}
   </select>
   
   <select id="selectExecutionsByRootProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
-    select * from ${prefix}ACT_RU_EXECUTION
-    where ROOT_PROC_INST_ID_ = #{parameter}
+    <include refid="selectExecutionsFromSql"/>
+    where E.ROOT_PROC_INST_ID_ = #{parameter}
   </select>
   
   <select id="selectChildExecutionsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
-    select * from ${prefix}ACT_RU_EXECUTION
-    where PROC_INST_ID_ = #{parameter} and PARENT_ID_ is not null
+    <include refid="selectExecutionsFromSql"/>
+    where E.PROC_INST_ID_ = #{parameter} and E.PARENT_ID_ is not null
   </select>
   
   <select id="selectExecutionsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
-    select * from ${prefix}ACT_RU_EXECUTION
-    where PROC_INST_ID_ = #{parameter}
+    <include refid="selectExecutionsFromSql"/>
+    where E.PROC_INST_ID_ = #{parameter}
   </select>
   
   <select id="selectProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
@@ -414,25 +430,22 @@
   </select>
   
   <select id="selectInactiveExecutionsForProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
-  	select *
-  	from ${prefix}ACT_RU_EXECUTION
-  	where PROC_INST_ID_ = #{parameter.processInstanceId}	
-  	and IS_ACTIVE_ = #{parameter.isActive}
+    <include refid="selectExecutionsFromSql"/>
+  	where E.PROC_INST_ID_ = #{parameter.processInstanceId}	
+  	and E.IS_ACTIVE_ = #{parameter.isActive}
   </select>
   
   <select id="selectInactiveExecutionsInActivityAndProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
-  	select *
-  	from ${prefix}ACT_RU_EXECUTION
-  	where ACT_ID_ = #{parameter.activityId}
-  	and PROC_INST_ID_ = #{parameter.processInstanceId}
-  	and IS_ACTIVE_ = #{parameter.isActive}
+    <include refid="selectExecutionsFromSql"/>
+  	where E.ACT_ID_ = #{parameter.activityId}
+  	and E.PROC_INST_ID_ = #{parameter.processInstanceId}
+  	and E.IS_ACTIVE_ = #{parameter.isActive}
   </select>
   
   <select id="selectExecutionsByParentExecutionAndActivityIds" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
-    select *
-    from ${prefix}ACT_RU_EXECUTION
-    where PARENT_ID_ = #{parameter.parentExecutionId}
-    and ACT_ID_ in 
+    <include refid="selectExecutionsFromSql"/>
+    where E.PARENT_ID_ = #{parameter.parentExecutionId}
+    and E.ACT_ID_ in 
     <foreach item="activityId" collection="parameter.activityIds" open="(" separator="," close=")">
           #{activityId}
     </foreach>
@@ -440,7 +453,7 @@
   
   <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
   	${limitBefore}
-    select distinct RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId
+    select distinct RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId, S.PROC_INST_ID_ AS PARENT_PROC_INST_ID_ 
     <include refid="selectExecutionsByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
@@ -454,7 +467,7 @@
   <!--  same as selectExecutionsByQueryCriteria, but with different parameterType -->
   <select id="selectProcessInstanceByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="processInstanceResultMap">
   	${limitBefore}
-    select distinct RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId, P.NAME_ as ProcessDefinitionName, P.VERSION_ as ProcessDefinitionVersion, P.DEPLOYMENT_ID_ as DeploymentId
+    select distinct RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId, P.NAME_ as ProcessDefinitionName, P.VERSION_ as ProcessDefinitionVersion, P.DEPLOYMENT_ID_ as DeploymentId, S.PROC_INST_ID_ AS PARENT_PROC_INST_ID_
     <include refid="selectExecutionsByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
@@ -468,6 +481,7 @@
   <sql id="selectExecutionsByQueryCriteriaSql">  
     from ${prefix}ACT_RU_EXECUTION RES
     inner join ${prefix}ACT_RE_PROCDEF P on RES.PROC_DEF_ID_ = P.ID_
+    left outer join ${prefix}ACT_RU_EXECUTION S on RES.SUPER_EXEC_ = S.ID_
     <include refid="commonSelectExecutionsByQueryCriteriaSql"/>
   </sql>
   
@@ -481,7 +495,8 @@
   <sql id="selectProcessInstanceWithVariablesByQueryCriteriaColumns">
    ${limitBefore}
    <if test="_databaseId != 'db2' and _databaseId != 'mssql'">  
-    select distinct RES.*, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId, P.NAME_ as ProcessDefinitionName, P.VERSION_ as ProcessDefinitionVersion, P.DEPLOYMENT_ID_ as DeploymentId, 
+    select distinct RES.*, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId, P.NAME_ as ProcessDefinitionName, P.VERSION_ as ProcessDefinitionVersion, P.DEPLOYMENT_ID_ as DeploymentId,
+    S.PROC_INST_ID_ AS PARENT_PROC_INST_ID_, 
     VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
     VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, VAR.TASK_ID_ as VAR_TASK_ID_,
     VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_, 
@@ -489,7 +504,8 @@
     ${limitBetween}
    </if>
    <if test="_databaseId == 'db2' || _databaseId == 'mssql'">
-    select distinct TEMPRES_ID_ as ID_, TEMPP_KEY_ as ProcessDefinitionKey, TEMPP_ID_ as ProcessDefinitionId, TEMPP_NAME_ as ProcessDefinitionName, TEMPP_VERSION_ as ProcessDefinitionVersion, TEMPP_DEPLOYMENT_ID_ as DeploymentId, 
+    select distinct TEMPRES_ID_ as ID_, TEMPP_KEY_ as ProcessDefinitionKey, TEMPP_ID_ as ProcessDefinitionId, TEMPP_NAME_ as ProcessDefinitionName, TEMPP_VERSION_ as ProcessDefinitionVersion, TEMPP_DEPLOYMENT_ID_ as DeploymentId,
+    TEMPS_PARENT_PROC_INST_ID_ AS PARENT_PROC_INST_ID_, 
     TEMPRES_REV_ as REV_, TEMPRES_ACT_ID_ as ACT_ID_,
     TEMPRES_BUSINESS_KEY_ as BUSINESS_KEY_, TEMPRES_IS_ACTIVE_ as IS_ACTIVE_,
     TEMPRES_IS_CONCURRENT_ as IS_CONCURRENT_, TEMPRES_IS_SCOPE_ as IS_SCOPE_,
@@ -514,6 +530,7 @@
     TEMPVAR_TEXT_ as VAR_TEXT_, TEMPVAR_TEXT2_ as VAR_TEXT2_, TEMPVAR_LONG_ as VAR_LONG_
      ${limitOuterJoinBetween}
     RES.ID_ as TEMPRES_ID_, RES.REV_ as TEMPRES_REV_, P.KEY_ as TEMPP_KEY_, P.ID_ as TEMPP_ID_, P.NAME_ as TEMPP_NAME_, P.VERSION_ as TEMPP_VERSION_, P.DEPLOYMENT_ID_ as TEMPP_DEPLOYMENT_ID_,
+    S.PROC_INST_ID_ AS TEMPS_PARENT_PROC_INST_ID_, 
     
     RES.ACT_ID_ as TEMPRES_ACT_ID_, 
     RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 
@@ -552,6 +569,7 @@
   <sql id="selectProcessInstanceWithVariablesByQueryCriteriaSql">  
     from ${prefix}ACT_RU_EXECUTION RES
     inner join ${prefix}ACT_RE_PROCDEF P on RES.PROC_DEF_ID_ = P.ID_
+    left outer join ${prefix}ACT_RU_EXECUTION S on RES.SUPER_EXEC_ = S.ID_
     <if test="includeProcessVariables">
       left outer join ${prefix}ACT_RU_VARIABLE VAR ON RES.PROC_INST_ID_ = VAR.EXECUTION_ID_ and VAR.TASK_ID_ is null
     </if>

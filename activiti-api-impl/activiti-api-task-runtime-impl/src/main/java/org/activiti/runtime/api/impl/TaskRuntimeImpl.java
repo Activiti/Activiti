@@ -39,11 +39,8 @@ import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
-import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
-import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.runtime.api.event.impl.TaskUpdatedEventImpl;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
@@ -64,22 +61,18 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     private final SecurityManager securityManager;
 
-    private final List<TaskRuntimeEventListener<TaskUpdatedEvent>> taskUpdatedListeners;
-
     public TaskRuntimeImpl(TaskService taskService,
                            UserGroupManager userGroupManager,
                            SecurityManager securityManager,
                            APITaskConverter taskConverter,
                            APIVariableInstanceConverter variableInstanceConverter,
-                           TaskRuntimeConfiguration configuration,
-                           List<TaskRuntimeEventListener<TaskUpdatedEvent>> taskUpdatedListeners) {
+                           TaskRuntimeConfiguration configuration) {
         this.taskService = taskService;
         this.userGroupManager = userGroupManager;
         this.securityManager = securityManager;
         this.taskConverter = taskConverter;
         this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
-        this.taskUpdatedListeners = taskUpdatedListeners;
     }
 
     @Override
@@ -261,16 +254,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
             internalTask.setFormKey(updateTaskPayload.getFormKey());
         }
         //@TODO: add check to see if something was changed before saving + add all other updateable values
-        taskService.saveTask(internalTask);
-        Task convertedTask = task(updateTaskPayload.getTaskId());
-        fireTaskUpdatedEvent(convertedTask);
-        return convertedTask;
-    }
-
-    private void fireTaskUpdatedEvent(Task convertedTask) {
-        for (TaskRuntimeEventListener<TaskUpdatedEvent> listener : taskUpdatedListeners) {
-            listener.onEvent(new TaskUpdatedEventImpl(convertedTask));
-        }
+        org.activiti.engine.task.Task updatedTask = taskService.saveTask(internalTask);
+        
+        return taskConverter.from(updatedTask);
     }
 
     @Override
@@ -317,8 +303,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         taskService.saveTask(task);
         taskService.addCandidateUser(task.getId(),
                                      securityManager.getAuthenticatedUserId());
-        if (createTaskPayload.getGroups() != null && !createTaskPayload.getGroups().isEmpty()) {
-            for (String g : createTaskPayload.getGroups()) {
+        if (createTaskPayload.getCandidateGroups() != null && !createTaskPayload.getCandidateGroups().isEmpty()) {
+            for (String g : createTaskPayload.getCandidateGroups()) {
                 taskService.addCandidateGroup(task.getId(),
                                               g);
             }

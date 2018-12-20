@@ -73,14 +73,15 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     private final ProcessRuntimeConfiguration configuration;
 
     private final ProcessSecurityPoliciesManager securityPoliciesManager;
-
+    
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
                               ProcessSecurityPoliciesManager securityPoliciesManager,
                               APIProcessInstanceConverter processInstanceConverter,
                               APIVariableInstanceConverter variableInstanceConverter,
-                              ProcessRuntimeConfiguration configuration) {
+                              ProcessRuntimeConfiguration configuration
+                              ) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
@@ -326,7 +327,11 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (updateProcessPayload.getProcessInstanceName()!=null)
             runtimeService.setProcessInstanceName(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getProcessInstanceName());
         
-        return processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
-                                             .processInstanceId(updateProcessPayload.getProcessInstanceId()).singleResult());
+        ProcessInstance updatedProcessInstance=processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
+                                                                             .processInstanceId(updateProcessPayload.getProcessInstanceId())
+                                                                             .singleResult());
+        
+        return updatedProcessInstance;
+ 
     }
 }

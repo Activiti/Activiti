@@ -65,13 +65,14 @@ public class ProcessExtensionsAutoConfiguration extends AbstractProcessEngineCon
 
     @Bean
     public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper){
+
         Map<String, VariableType> variableTypeMap = new HashMap<>();
         variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
         variableTypeMap.put("string", new JavaObjectVariableType(String.class));
         variableTypeMap.put("integer", new JavaObjectVariableType(Integer.class));
         variableTypeMap.put("json", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("date", new DateVariableType(Date.class, new SimpleDateFormat(DateVariableType.defaultFormat)));
-return variableTypeMap;
+        return variableTypeMap;
     }
 
     @Bean

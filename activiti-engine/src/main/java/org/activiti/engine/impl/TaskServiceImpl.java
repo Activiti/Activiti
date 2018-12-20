@@ -96,8 +96,8 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return commandExecutor.execute(new NewTaskCmd(taskId));
   }
 
-  public void saveTask(Task task) {
-    commandExecutor.execute(new SaveTaskCmd(task));
+  public Task saveTask(Task task) {
+    return commandExecutor.execute(new SaveTaskCmd(task));
   }
 
   public void deleteTask(String taskId) {
