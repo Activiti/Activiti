@@ -31,6 +31,11 @@ public class VariableValidationService {
         if(variableDefinition.getType()!=null) {
             ExtensionVariableType type = variableTypeMap.get(variableDefinition.getType());
 
+            //if type is not in the map then assume to be json
+            if(type==null){
+                type = variableTypeMap.get("json");
+            }
+
             type.validate(var,
                           errors);
         } else{

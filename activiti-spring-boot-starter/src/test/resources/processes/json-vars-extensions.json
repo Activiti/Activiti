@@ -16,7 +16,7 @@
       "379dc1a1-481d-4617-a027-ef39fdadf225":{
         "id":"379dc1a1-481d-4617-a027-ef39fdadf225",
         "name":"var2",
-        "type":"json",
+        "type":"customtypeiseffectivelyjson",
         "required":true
       },
       "379dc1a1-481d-4617-a027-ef39fdadf226":{
