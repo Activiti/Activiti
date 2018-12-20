@@ -142,16 +142,18 @@ public class ProcessExtensionsJsonVarsTest {
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
+        //by default jackson won't ser empty bean so it can't be handled as json
+        assertThat(objectMapper.canSerialize(EmptyBean.class)).isFalse();
+
         assertThatExceptionOfType(ActivitiException.class).isThrownBy(() -> {
             processRuntime.start(ProcessPayloadBuilder.start()
                     .withProcessDefinitionKey(JSON_VARS_PROCESS)
-                    .withVariable("var2", "thisisn'tjson")
+                    .withVariable("var2", new EmptyBean())
                     .withVariable("var5","this one is ok as doesn't have to be json")
                     .build());
-        }).withMessage("Can't start process '" + JSON_VARS_PROCESS + "' as variables have unexpected types var2");
+        }).withMessage("Can't start process '" + JSON_VARS_PROCESS + "' as variables fail type validation - var2");
 
-        //we test for bad json in the params but not in extension file itself
-        //that's because the context doesn't load for that scenario as failure is during parsing
+        //we don't test for bad json in the extension file because the context doesn't load for that scenario as failure is during parsing
     }
 
     @Test
@@ -161,7 +163,10 @@ public class ProcessExtensionsJsonVarsTest {
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
-        //by default jackson won't ser empty bean
+        //var5 doesn't ave any defined type as not in the file
+        //but it still needs to be serlializable as json because serializePOJOsInVariablesToJson is true, meaning java ser is not available
+
+        //by default jackson won't ser empty bean so it can't be handled as json
         assertThat(objectMapper.canSerialize(EmptyBean.class)).isFalse();
 
         assertThatExceptionOfType(ActivitiException.class).isThrownBy(() -> {

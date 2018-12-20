@@ -8,8 +8,8 @@ import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.engine.ActivitiException;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.activiti.spring.process.variable.types.DateExtensionVariableType;
 import org.junit.After;
-import org.activiti.spring.process.ExtensionVariableTypes;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -98,7 +99,7 @@ public class ProcessExtensionsTest {
                         "bob")
                 .withVariable("subscribe",
                         true)
-                .withVariable("birth", ExtensionVariableTypes.DATE.getDateFormat().parse("2009-11-30"))
+                .withVariable("birth", new SimpleDateFormat(DateExtensionVariableType.defaultFormat).parse("2009-11-30"))
                 .withBusinessKey("my business key")
                 .build());
 
@@ -130,7 +131,7 @@ public class ProcessExtensionsTest {
                     .withVariable("extraVar",
                             true)
                     .build());
-        }).withMessage("Can't start process '" + INITIAL_VARS_PROCESS + "' without required variables age");
+        }).withMessage("Can't start process '" + INITIAL_VARS_PROCESS + "' without required variables - age");
     }
 
     @Test
@@ -148,6 +149,6 @@ public class ProcessExtensionsTest {
                     .withVariable("subscribe","ok")
                     .withVariable("birth","thisisnotadate")
                     .build());
-        }).withMessage("Can't start process '" + INITIAL_VARS_PROCESS + "' as variables have unexpected types subscribe, name, birth, age");
+        }).withMessage("Can't start process '" + INITIAL_VARS_PROCESS + "' as variables fail type validation - subscribe, name, birth, age");
     }
 }

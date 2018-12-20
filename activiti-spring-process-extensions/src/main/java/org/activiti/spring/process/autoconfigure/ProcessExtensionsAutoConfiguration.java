@@ -13,18 +13,27 @@
 
 package org.activiti.spring.process.autoconfigure;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.process.model.ProcessExtensionModel;
+import org.activiti.spring.process.variable.VariableParsingService;
+import org.activiti.spring.process.variable.VariableValidationService;
+import org.activiti.spring.process.variable.types.DateExtensionVariableType;
+import org.activiti.spring.process.variable.types.ExtensionVariableType;
+import org.activiti.spring.process.variable.types.JavaObjectExtensionVariableType;
+import org.activiti.spring.process.variable.types.JsonObjectExtensionVariableType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
-
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -48,9 +57,31 @@ public class ProcessExtensionsAutoConfiguration extends AbstractProcessEngineCon
                                                                    @Value("${activiti.process.extensions.suffix:**-extensions.json}")
                                                                              String processExtensionsSuffix,
                                                                    ObjectMapper objectMapper,
-                                                                   ResourcePatternResolver resourceLoader) throws IOException {
-        ProcessExtensionService processExtensionService = new ProcessExtensionService(processExtensionsRoot, processExtensionsSuffix, objectMapper, resourceLoader);
+                                                                   ResourcePatternResolver resourceLoader,
+                                                                   Map<String, ExtensionVariableType> variableTypeMap) throws IOException {
+        ProcessExtensionService processExtensionService = new ProcessExtensionService(processExtensionsRoot, processExtensionsSuffix, objectMapper, resourceLoader, variableTypeMap);
         return processExtensionService.get();
 
+    }
+
+    @Bean
+    public Map<String, ExtensionVariableType> variableTypeMap(ObjectMapper objectMapper){
+        Map<String, ExtensionVariableType> variableTypeMap = new HashMap<>();
+        variableTypeMap.put("boolean", new JavaObjectExtensionVariableType(Boolean.class));
+        variableTypeMap.put("string", new JavaObjectExtensionVariableType(String.class));
+        variableTypeMap.put("integer", new JavaObjectExtensionVariableType(Integer.class));
+        variableTypeMap.put("json", new JsonObjectExtensionVariableType(objectMapper));
+        variableTypeMap.put("date", new DateExtensionVariableType(Date.class,new SimpleDateFormat(DateExtensionVariableType.defaultFormat)));
+        return variableTypeMap;
+    }
+
+    @Bean
+    public VariableValidationService variableValidationService(Map<String, ExtensionVariableType> variableTypeMap){
+        return new VariableValidationService(variableTypeMap);
+    }
+
+    @Bean
+    public VariableParsingService variableParsingService(Map<String, ExtensionVariableType> variableTypeMap){
+        return new VariableParsingService(variableTypeMap);
     }
 }

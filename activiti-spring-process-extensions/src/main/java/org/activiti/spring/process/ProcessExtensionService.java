@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
+import org.activiti.spring.process.variable.types.ExtensionVariableType;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
@@ -36,13 +37,16 @@ public class ProcessExtensionService {
     private String processExtensionsSuffix;
     private final ObjectMapper objectMapper;
     private ResourcePatternResolver resourceLoader;
+    private Map<String, ExtensionVariableType> variableTypeMap;
 
     public ProcessExtensionService(String processExtensionsRoot, String processExtensionsSuffix,
-                                   ObjectMapper objectMapper, ResourcePatternResolver resourceLoader) {
+                                   ObjectMapper objectMapper, ResourcePatternResolver resourceLoader,
+                                   Map<String, ExtensionVariableType> variableTypeMap) {
         this.processExtensionsRoot = processExtensionsRoot;
         this.processExtensionsSuffix = processExtensionsSuffix;
         this.objectMapper = objectMapper;
         this.resourceLoader = resourceLoader;
+        this.variableTypeMap = variableTypeMap;
     }
 
     private Optional<Resource[]> retrieveResources() throws IOException {
@@ -62,13 +66,14 @@ public class ProcessExtensionService {
 
     /**
      * Json variables need to be represented as JsonNode for engine to handle as Json
+     * Do this for any var marked as json or whose type is not recognised from the extension file
      */
     private ProcessExtensionModel convertJsonVariables(ProcessExtensionModel processExtensionModel){
         if( processExtensionModel!=null && processExtensionModel.getExtensions()!=null
                 && processExtensionModel.getExtensions().getProperties()!=null ){
 
             for(VariableDefinition variableDefinition:processExtensionModel.getExtensions().getProperties().values()){
-                if(variableDefinition.getType().equals(ExtensionVariableTypes.JSON.name)){
+                if(!variableTypeMap.keySet().contains(variableDefinition.getType())||variableDefinition.getType().equals("json")){
                     variableDefinition.setValue(objectMapper.convertValue(variableDefinition.getValue(), JsonNode.class));
                 }
             }
