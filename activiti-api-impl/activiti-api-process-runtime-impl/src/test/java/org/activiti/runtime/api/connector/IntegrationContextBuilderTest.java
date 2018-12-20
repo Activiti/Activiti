@@ -1,7 +1,22 @@
+/*
+ * Copyright 2018 Alfresco, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.activiti.runtime.api.connector;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.fail;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -10,8 +25,6 @@ import java.util.Map;
 
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.core.common.model.connector.ActionDefinition;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.junit.Test;
 
@@ -20,7 +33,6 @@ public class IntegrationContextBuilderTest {
     
     private static final int PROCESS_DEFINITION_VERSION = 1;
     private static final String PARENT_PROCESS_INSTANCE_ID = "parentProcessInstanceId";
-    private static final String SUPER_EXECUTION_ID = "superExecutionId";
     private static final String PROCESS_DEFINITION_KEY = "processDefinitionKey";
     private static final String PROCESS_INSTANCE_BUSINESS_KEY = "processInstanceBusinessKey";
     private static final String CURRENT_ACTIVITY_ID = "currentActivityId";
@@ -35,7 +47,6 @@ public class IntegrationContextBuilderTest {
         //given
         ExecutionEntity execution = mock(ExecutionEntity.class);
         ExecutionEntity processInstance = mock(ExecutionEntity.class);
-        ExecutionEntity superExecution = mock(ExecutionEntity.class);
         ServiceTask serviceTask = mock(ServiceTask.class);
         Map<String, Object> variables = Collections.singletonMap("key", "value");
 
@@ -50,9 +61,7 @@ public class IntegrationContextBuilderTest {
         given(execution.getProcessInstance()).willReturn(processInstance);
         given(processInstance.getProcessDefinitionKey()).willReturn(PROCESS_DEFINITION_KEY);
         given(processInstance.getProcessDefinitionVersion()).willReturn(PROCESS_DEFINITION_VERSION);
-        given(processInstance.getSuperExecutionId()).willReturn(SUPER_EXECUTION_ID);
-        given(processInstance.getSuperExecution()).willReturn(superExecution);
-        given(superExecution.getProcessInstanceId()).willReturn(PARENT_PROCESS_INSTANCE_ID);
+        given(processInstance.getParentProcessInstanceId()).willReturn(PARENT_PROCESS_INSTANCE_ID);
         
         //when
         IntegrationContext integrationContext = subject.from(execution, null);
@@ -69,22 +78,4 @@ public class IntegrationContextBuilderTest {
         assertThat(integrationContext.getParentProcessInstanceId()).isEqualTo(PARENT_PROCESS_INSTANCE_ID);
         assertThat(integrationContext.getInBoundVariables()).containsAllEntriesOf(variables);
     }    
-    
-    @Test(expected=ActivitiException.class)
-    public void shouldThrowActivitiExceptionIfUsedOutsideCommandContext() {
-        //given
-        ExecutionEntity execution = mock(ExecutionEntity.class);
-        ExecutionEntity processInstance = mock(ExecutionEntity.class);
-        
-        given(execution.getProcessInstance()).willReturn(processInstance);
-        given(processInstance.getSuperExecutionId()).willReturn(SUPER_EXECUTION_ID);
-        given(processInstance.getSuperExecution()).willThrow(NullPointerException.class);
-        
-        //when
-        subject.from(execution, new ActionDefinition());
-
-        //then
-        fail("Expected ActivitiException!");
-    }
-    
 }
