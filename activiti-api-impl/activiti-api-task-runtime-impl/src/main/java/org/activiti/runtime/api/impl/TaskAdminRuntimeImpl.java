@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.api.runtime.shared.NotFoundException;
@@ -35,6 +36,8 @@ import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
@@ -135,46 +138,95 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         taskService.unclaim(releaseTaskPayload.getTaskId());
         return task(releaseTaskPayload.getTaskId());
     }
-
+    
     @Override
-    public void addCandidateGroups(CandidateGroupsPayload arg0) {
-        // TODO Auto-generated method stub
+    public Task assign(AssignTaskPayload assignTaskPayload) {
+        //We need to release, claim for assigned task is not working!
+        taskService.unclaim(assignTaskPayload.getTaskId());
         
-    }
-
-    @Override
-    public void addCandidateUsers(CandidateUsersPayload arg0) {
-        // TODO Auto-generated method stub
+        //Now assign a new user
+        taskService.claim(assignTaskPayload.getTaskId(),
+                          assignTaskPayload.getAssignee());
         
+        return task(assignTaskPayload.getTaskId());
     }
-
+    
     @Override
-    public Task assign(AssignTaskPayload arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public void addCandidateUsers(CandidateUsersPayload candidateUsersPayload) {      
+       if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
+            for (String u : candidateUsersPayload.getCandidateUsers()) {
+                taskService.addCandidateUser(candidateUsersPayload.getTaskId(),
+                                             u);
+            }
+       }
     }
-
+    
     @Override
-    public void deleteCandidateGroups(CandidateGroupsPayload arg0) {
-        // TODO Auto-generated method stub
-        
+    public void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload) {           
+        if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
+            for (String u : candidateUsersPayload.getCandidateUsers()) {
+                taskService.deleteCandidateUser(candidateUsersPayload.getTaskId(),
+                                                u);
+            }
+        }
     }
-
+    
     @Override
-    public void deleteCandidateUsers(CandidateUsersPayload arg0) {
-        // TODO Auto-generated method stub
-        
+    public void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {          
+       if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
+            for (String g : candidateGroupsPayload.getCandidateGroups()) {
+                taskService.addCandidateGroup(candidateGroupsPayload.getTaskId(),
+                                              g);
+            }
+       }
     }
-
+    
     @Override
-    public List<String> groupCandidates(String arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {    
+        if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
+            for (String g : candidateGroupsPayload.getCandidateGroups()) {
+                taskService.deleteCandidateGroup(candidateGroupsPayload.getTaskId(),
+                                                 g);
+            }
+        }
     }
-
+    
     @Override
-    public List<String> userCandidates(String arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public List<String> userCandidates(String taskId) {
+        List<IdentityLink> identityLinks= getIdentityLinks(taskId);
+        List<String> userCandidates = new ArrayList<String>();
+        if (identityLinks!=null) {
+            for (IdentityLink i : identityLinks) {
+                if (i.getUserId()!=null) {
+                    if (i.getType().equals(IdentityLinkType.CANDIDATE) ) {
+                        userCandidates.add(i.getUserId());
+                    } 
+                }
+            }
+            
+        }
+        return userCandidates;
     }
+    
+    @Override
+    public List<String> groupCandidates(String taskId) {
+        List<IdentityLink> identityLinks= getIdentityLinks(taskId);
+        List<String> groupCandidates = new ArrayList<String>();
+        if (identityLinks!=null) {
+            for (IdentityLink i : identityLinks) {
+                if (i.getGroupId()!=null) {
+                    if (i.getType().equals(IdentityLinkType.CANDIDATE) ) {
+                        groupCandidates.add(i.getGroupId());
+                    } 
+                }
+            }
+
+        }
+        return groupCandidates;
+    }
+    
+    private List<IdentityLink> getIdentityLinks(String taskId) {
+        return taskService.getIdentityLinksForTask(taskId);
+    }
+    
 }
