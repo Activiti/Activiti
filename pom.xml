@@ -12,7 +12,8 @@
     <description>Activiti Examples :: Parent</description>
 
     <modules>
-        <module>activiti-api-basic-full-example</module>
+        <module>activiti-api-basic-full-example-bean</module>
+        <module>activiti-api-basic-full-example-nobean</module>
         <module>activiti-api-basic-process-example</module>
         <module>activiti-api-basic-task-example</module>
         <module>activiti-api-spring-integration-example</module>

@@ -1,13 +1,13 @@
-/target
+target
 /local
 
-# Eclipse, Netbeans and IntelliJ files
-/.*
+# Netbeans and IntelliJ files
 !.gitignore
 /nbproject
 /*.ipr
 /*.iws
-/*.iml
+*.iml
+.idea
 
 # Repository wide ignore mac DS_Store files
 .DS_Store

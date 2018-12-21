@@ -67,7 +67,7 @@ public class DemoApplication implements CommandLineRunner {
 
         securityUtil.logInAs("system");
 
-        String content = pickRandomString();
+        Content content = pickRandomString();
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yy HH:mm:ss");
 
@@ -98,18 +98,18 @@ public class DemoApplication implements CommandLineRunner {
                 List<VariableInstance> variables = taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(t.getId()).build());
                 VariableInstance variableInstance = variables.get(0);
                 if (variableInstance.getName().equals("content")) {
-                    String contentToProcess = variableInstance.getValue();
+                    Content contentToProcess = variableInstance.getValue();
                     logger.info("> Content received inside the task to approve: " + contentToProcess);
 
-                    if (contentToProcess.contains("activiti")) {
+                    if (contentToProcess.getBody().contains("activiti")) {
                         logger.info("> User Approving content");
-                        taskRuntime.complete(TaskPayloadBuilder.complete()
-                                .withTaskId(t.getId()).withVariable("approved", true).build());
+                        contentToProcess.setApproved(true);
                     } else {
                         logger.info("> User Discarding content");
-                        taskRuntime.complete(TaskPayloadBuilder.complete()
-                                .withTaskId(t.getId()).withVariable("approved", false).build());
+                        contentToProcess.setApproved(false);
                     }
+                    taskRuntime.complete(TaskPayloadBuilder.complete()
+                            .withTaskId(t.getId()).withVariable("content", contentToProcess).build());
                 }
 
 
@@ -125,8 +125,8 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector tagTextConnector() {
         return integrationContext -> {
-            String contentToTag = (String) integrationContext.getInBoundVariables().get("content");
-            contentToTag += " :) ";
+            Content contentToTag = (Content) integrationContext.getInBoundVariables().get("content");
+            contentToTag.getTags().add(" :) ");
             integrationContext.addOutBoundVariable("content",
                     contentToTag);
             logger.info("Final Content: " + contentToTag);
@@ -137,8 +137,8 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public Connector discardTextConnector() {
         return integrationContext -> {
-            String contentToDiscard = (String) integrationContext.getInBoundVariables().get("content");
-            contentToDiscard += " :( ";
+            Content contentToDiscard = (Content) integrationContext.getInBoundVariables().get("content");
+            contentToDiscard.getTags().add(" :( ");
             integrationContext.addOutBoundVariable("content",
                     contentToDiscard);
             logger.info("Final Content: " + contentToDiscard);
@@ -147,10 +147,10 @@ public class DemoApplication implements CommandLineRunner {
     }
 
 
-    private String pickRandomString() {
+    private Content pickRandomString() {
         String[] texts = {"hello from london", "Hi there from activiti!", "all good news over here.", "I've tweeted about activiti today.",
                 "other boring projects.", "activiti cloud - Cloud Native Java BPM"};
-        return texts[new Random().nextInt(texts.length)];
+        return new Content(texts[new Random().nextInt(texts.length)],false,null);
     }
 
 }
