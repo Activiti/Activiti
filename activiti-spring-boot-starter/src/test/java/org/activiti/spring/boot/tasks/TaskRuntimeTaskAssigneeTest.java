@@ -159,7 +159,7 @@ public class TaskRuntimeTaskAssigneeTest {
     }
 
     @Test
-    public void createStandaloneTaskForGroupAndAdminReassignUser() {
+    public void createStandaloneTaskForUsersAndAdminReassignUser() {
 
         securityUtil.logInAs("garth");
         
