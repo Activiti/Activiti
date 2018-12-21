@@ -141,6 +141,10 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     
     @Override
     public Task assign(AssignTaskPayload assignTaskPayload) {
+        //We need to release, claim for assigned task is not working!
+        taskService.unclaim(assignTaskPayload.getTaskId());
+        
+        //Now assign a new user
         taskService.claim(assignTaskPayload.getTaskId(),
                           assignTaskPayload.getAssignee());
         

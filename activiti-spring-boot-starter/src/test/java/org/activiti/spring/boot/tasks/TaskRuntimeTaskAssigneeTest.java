@@ -117,7 +117,7 @@ public class TaskRuntimeTaskAssigneeTest {
 
         securityUtil.logInAs("garth");
 
-        Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
+        taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("group task")
                 .withCandidateGroup("doctor")
                 .build());
@@ -151,7 +151,65 @@ public class TaskRuntimeTaskAssigneeTest {
     
         assertThat(task.getAssignee()).isEqualTo("garth");
         
-        Task deletedTask = taskRuntime.delete(TaskPayloadBuilder
+        taskRuntime.delete(TaskPayloadBuilder
+                                              .delete()
+                                              .withTaskId(task.getId())
+                                              .withReason("test clean up")
+                                              .build());
+    }
+
+    @Test
+    public void createStandaloneTaskForGroupAndAdminReassignUser() {
+
+        securityUtil.logInAs("garth");
+        
+        taskRuntime.create(TaskPayloadBuilder.create()
+                .withName("group task")
+                .withCandidateUsers("dean")
+                .withCandidateUsers("garth")
+                .build());
+
+        // the owner should be able to see the created task
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        
+        Task task = tasks.getContent().get(0);
+        assertThat(task.getAssignee()).isNull();
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+        
+        
+        //Check that admin may assign a user to the task without assignee
+        securityUtil.logInAs("admin");
+        Task assignedTask = taskAdminRuntime.assign(TaskPayloadBuilder
+                                                  .assign()
+                                                  .withTaskId(task.getId())
+                                                  .withAssignee("garth")
+                                                  .build());
+        assertThat(assignedTask.getAssignee()).isEqualTo("garth");
+        assertThat(assignedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+        
+        //Check that admin may reassign a user to the task when assignee is present
+        assignedTask = taskAdminRuntime.assign(TaskPayloadBuilder
+                                               .assign()
+                                               .withTaskId(task.getId())
+                                               .withAssignee("dean")
+                                               .build());
+        assertThat(assignedTask.getAssignee()).isEqualTo("dean");
+        assertThat(assignedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+     
+        
+        securityUtil.logInAs("dean");
+        tasks = taskRuntime.tasks(Pageable.of(0,
+                                              50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        task = tasks.getContent().get(0);
+    
+        assertThat(task.getAssignee()).isEqualTo("dean");
+        
+        taskRuntime.delete(TaskPayloadBuilder
                                               .delete()
                                               .withTaskId(task.getId())
                                               .withReason("test clean up")
