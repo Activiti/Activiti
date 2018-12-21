@@ -7,6 +7,8 @@ import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,13 @@ public class ProcessRuntimeSecurityPoliciesTest {
     @Autowired
     private SecurityUtil securityUtil;
 
+    @Autowired
+    private ProcessCleanUpUtil processCleanUpUtil;
+
+    @After
+    public void cleanUp(){
+        processCleanUpUtil.cleanUpWithAdmin();
+    }
 
     @Test
     public void getRestrictedProcessDefs() {
