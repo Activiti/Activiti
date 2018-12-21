@@ -28,6 +28,8 @@ import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
+import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
+import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.CreateTaskPayload;
@@ -325,5 +327,41 @@ public class TaskRuntimeImpl implements TaskRuntime {
             throw new NotFoundException("Unable to find task for the given id: " + taskId);
         }
         return internalTask;
+    }
+
+    @Override
+    public void addCandidateGroups(CandidateGroupsPayload arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void addCandidateUsers(CandidateUsersPayload arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void deleteCandidateGroups(CandidateGroupsPayload arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void deleteCandidateUsers(CandidateUsersPayload arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<String> groupCandidates(String arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> userCandidates(String arg0) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

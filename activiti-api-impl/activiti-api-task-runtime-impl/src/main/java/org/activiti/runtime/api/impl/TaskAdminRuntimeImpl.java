@@ -23,6 +23,10 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.model.impl.TaskImpl;
+import org.activiti.api.task.model.payloads.AssignTaskPayload;
+import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
+import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.DeleteTaskPayload;
@@ -33,7 +37,6 @@ import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -131,5 +134,47 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     public Task release(ReleaseTaskPayload releaseTaskPayload) {
         taskService.unclaim(releaseTaskPayload.getTaskId());
         return task(releaseTaskPayload.getTaskId());
+    }
+
+    @Override
+    public void addCandidateGroups(CandidateGroupsPayload arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void addCandidateUsers(CandidateUsersPayload arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public Task assign(AssignTaskPayload arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void deleteCandidateGroups(CandidateGroupsPayload arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void deleteCandidateUsers(CandidateUsersPayload arg0) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public List<String> groupCandidates(String arg0) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<String> userCandidates(String arg0) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }
