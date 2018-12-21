@@ -21,6 +21,7 @@ import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
+import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.DateVariableType;
 import org.activiti.spring.process.variable.types.VariableType;
 import org.activiti.spring.process.variable.types.JavaObjectVariableType;
@@ -55,18 +56,21 @@ public class ProcessExtensionsAutoConfiguration extends AbstractProcessEngineCon
                                                                    @Value("${activiti.process.extensions.suffix:**-extensions.json}")
                                                                              String processExtensionsSuffix,
                                                                    ObjectMapper objectMapper,
-                                                                   ResourcePatternResolver resourceLoader) throws IOException {
-        ProcessExtensionService processExtensionService = new ProcessExtensionService(processExtensionsRoot, processExtensionsSuffix, objectMapper, resourceLoader);
+                                                                   ResourcePatternResolver resourceLoader,
+                                                                   Map<String, VariableType> variableTypeMap) throws IOException {
+        ProcessExtensionService processExtensionService = new ProcessExtensionService(processExtensionsRoot, processExtensionsSuffix, objectMapper, resourceLoader, variableTypeMap);
         return processExtensionService.get();
 
     }
 
     @Bean
-    public Map<String, VariableType> variableTypeMap(){
+    public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper){
+
         Map<String, VariableType> variableTypeMap = new HashMap<>();
         variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
         variableTypeMap.put("string", new JavaObjectVariableType(String.class));
         variableTypeMap.put("integer", new JavaObjectVariableType(Integer.class));
+        variableTypeMap.put("json", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("date", new DateVariableType(Date.class, new SimpleDateFormat(DateVariableType.defaultFormat)));
         return variableTypeMap;
     }

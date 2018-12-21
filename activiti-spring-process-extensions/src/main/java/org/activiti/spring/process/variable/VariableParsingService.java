@@ -27,7 +27,7 @@ public class VariableParsingService {
         if(variableDefinition.getType()!=null) {
             VariableType type = variableTypeMap.get(variableDefinition.getType());
 
-            return type.parseFromString(String.valueOf(variableDefinition.getValue()));
+            return type.parseFromValue(variableDefinition.getValue());
         }
 
         return variableDefinition.getValue();

@@ -37,12 +37,12 @@ public class DateVariableType extends JavaObjectVariableType {
     }
 
     @Override
-    public Object parseFromString(String stringValue) throws ActivitiException {
+    public Object parseFromValue(Object value) throws ActivitiException {
 
         try {
-            return format.parse(String.valueOf(stringValue));
+            return format.parse(String.valueOf(value));
         } catch (ParseException e) {
-            throw new ActivitiException("Error parsing date value " + stringValue, e);
+            throw new ActivitiException("Error parsing date value " + value, e);
         }
     }
 }

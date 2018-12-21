@@ -15,6 +15,7 @@ package org.activiti.spring.boot;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -42,6 +43,8 @@ public class ActivitiProperties {
   private List<String> customMybatisXMLMappers;
   private boolean useStrongUuids = true;
   private boolean copyVariablesToLocalForTasks = true;
+  private boolean serializePOJOsInVariablesToJson = true;
+  private String javaClassFieldForJackson = JsonTypeInfo.Id.CLASS.getDefaultPropertyName();
 
   public boolean isAsyncExecutorActivate() {
     return asyncExecutorActivate;
@@ -203,5 +206,21 @@ public class ActivitiProperties {
 
     public void setCopyVariablesToLocalForTasks(boolean copyVariablesToLocalForTasks) {
         this.copyVariablesToLocalForTasks = copyVariablesToLocalForTasks;
+    }
+
+    public boolean isSerializePOJOsInVariablesToJson() {
+        return serializePOJOsInVariablesToJson;
+    }
+
+    public void setSerializePOJOsInVariablesToJson(boolean serializePOJOsInVariablesToJson) {
+        this.serializePOJOsInVariablesToJson = serializePOJOsInVariablesToJson;
+    }
+
+    public String getJavaClassFieldForJackson() {
+        return javaClassFieldForJackson;
+    }
+
+    public void setJavaClassFieldForJackson(String javaClassFieldForJackson) {
+        this.javaClassFieldForJackson = javaClassFieldForJackson;
     }
 }
