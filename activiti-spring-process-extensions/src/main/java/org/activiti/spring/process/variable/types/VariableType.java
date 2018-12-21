@@ -22,7 +22,7 @@ public abstract class VariableType {
 
     abstract public void validate(Object var, List<ActivitiException> errors);
 
-    public Object parseFromString(String stringValue) throws ActivitiException {
-        return stringValue;
+    public Object parseFromValue(Object value) throws ActivitiException {
+        return value;
     }
 }

@@ -1,8 +1,8 @@
 package org.activiti.spring.process;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.spring.process.autoconfigure.ProcessExtensionsAutoConfiguration;
@@ -34,7 +34,7 @@ public class ProcessExtensionServiceIT {
 
         @Bean
         ProcessExtensionService processExtensionService(ResourcePatternResolver resourcePatternResolver, ObjectMapper objectMapper){
-            return new ProcessExtensionService("classpath:/processes/", "**-extensions.json", objectMapper,resourcePatternResolver);
+            return new ProcessExtensionService("classpath:/processes/", "**-extensions.json", objectMapper,resourcePatternResolver,new HashMap<>());
         }
     }
 
