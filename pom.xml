@@ -244,6 +244,7 @@
     <module>activiti-spring</module>
     <module>activiti-spring-boot-starter</module>
     <module>activiti-spring-app-process</module>
+    <module>activiti-spring-process-extensions</module>
     <module>activiti-spring-conformance-tests</module>
   </modules>
 
