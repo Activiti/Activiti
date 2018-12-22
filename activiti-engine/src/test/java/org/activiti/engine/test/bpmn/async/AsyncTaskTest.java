@@ -201,11 +201,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testAsyncTask() throws InterruptedException {
-    // Pre-start async job executor before the test   
     AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-    asyncExecutor.start();
-    
-    int counter = 0, sleep = 200, timeout = 5000;
     
     try {
         // start process
@@ -213,16 +209,12 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
 
         // now there should be one job in the database:
         assertEquals(1, managementService.createJobQuery().count());
-    
+       
+        // Let's start async executor 
+        asyncExecutor.start();
+        
         // Let's wait for all executions to complete 
-        while(runtimeService.createExecutionQuery().count() > 0) {
-            Thread.sleep(sleep);
-            counter += sleep;
-            
-            // timeout 
-            if(counter > timeout) 
-                fail("Should have finished all process execution in time.");
-        }
+        waitForAllExecutionsToComplete(5000L, 200L);
 
         // the job is done
         assertEquals(0, managementService.createJobQuery().count());        
@@ -511,4 +503,18 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     }
   }
 
+  private void waitForAllExecutionsToComplete(long timeout, long sleep) throws InterruptedException {
+      int counter = 0;
+      
+      while(runtimeService.createExecutionQuery().count() > 0) {
+          Thread.sleep(sleep);
+          counter += sleep;
+          
+          // timeout 
+          if(counter > timeout) 
+              fail("Should have finished all process executions within " + timeout + " ms");
+      }
+  }
+  
 }
+
