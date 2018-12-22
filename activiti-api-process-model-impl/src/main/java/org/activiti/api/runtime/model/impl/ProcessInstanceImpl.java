@@ -35,6 +35,9 @@ public class ProcessInstanceImpl implements ProcessInstance {
     private String parentId;
     private Integer processDefinitionVersion;
 
+    public ProcessInstanceImpl() {
+    }
+
     @Override
     public String getId() {
         return id;
