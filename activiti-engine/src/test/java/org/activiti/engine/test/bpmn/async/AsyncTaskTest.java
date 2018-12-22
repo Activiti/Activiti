@@ -219,7 +219,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
             Thread.sleep(sleep);
             counter += sleep;
             
-            // timeout
+            // timeout 
             if(counter > timeout)
                 break;
         }
