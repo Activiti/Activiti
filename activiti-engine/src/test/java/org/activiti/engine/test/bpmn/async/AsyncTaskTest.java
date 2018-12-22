@@ -215,13 +215,13 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
         assertEquals(1, managementService.createJobQuery().count());
     
         // Let's wait for all executions to complete 
-        while(runtimeService.createExecutionQuery().list().size() > 0) {
+        while(runtimeService.createExecutionQuery().count() > 0) {
             Thread.sleep(sleep);
             counter += sleep;
             
             // timeout 
             if(counter > timeout) 
-                break;
+                fail("Should have finished all process execution in time.");
         }
 
         // the job is done
