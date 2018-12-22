@@ -49,7 +49,9 @@ public class TaskImpl implements Task {
         this.status = status;
     }
 
-
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getId() {
         return id;
