@@ -174,6 +174,9 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
             if (getProcessInstancesPayload.isActiveOnly()) {
                 internalQuery.active();
             }
+            if (getProcessInstancesPayload.getParentProcessInstanceId()!=null) {
+                internalQuery.superProcessInstanceId(getProcessInstancesPayload.getParentProcessInstanceId());
+            }
         }
         return new PageImpl<>(processInstanceConverter.from(internalQuery.listPage(pageable.getStartIndex(),
                                                                                    pageable.getMaxItems())),
@@ -237,4 +240,5 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         runtimeService.removeVariables(removeProcessVariablesPayload.getProcessInstanceId(),
                                            removeProcessVariablesPayload.getVariableNames());
     }
+    
 }

@@ -1,5 +1,9 @@
 package org.activiti.spring.conformance.set1;
 
+import static org.activiti.spring.conformance.set1.Set1RuntimeTestConfiguration.collectedEvents;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.event.VariableEvent;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
@@ -18,10 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.spring.conformance.set1.Set1RuntimeTestConfiguration.*;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ConformanceServiceTaskModifyVariableTest {
@@ -35,8 +35,7 @@ public class ConformanceServiceTaskModifyVariableTest {
 
     @After
     public void cleanUp() {
-        collectedEvents.clear();
-        connector2Executed = false;
+        Set1RuntimeTestConfiguration.reset();
     }
 
     /*
@@ -92,7 +91,7 @@ public class ConformanceServiceTaskModifyVariableTest {
         assertThat(throwable)
                 .isInstanceOf(NotFoundException.class);
 
-        assertThat(connector2Executed).isTrue();
+        assertThat(Set1RuntimeTestConfiguration.isConnector2Executed()).isTrue();
 
         assertThat(collectedEvents)
                 .extracting(RuntimeEvent::getEventType)

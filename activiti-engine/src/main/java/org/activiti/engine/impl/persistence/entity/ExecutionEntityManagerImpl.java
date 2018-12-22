@@ -264,6 +264,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
     childExecution.setProcessDefinitionKey(parentExecutionEntity.getProcessDefinitionKey());
     childExecution.setProcessInstanceId(parentExecutionEntity.getProcessInstanceId() != null 
         ? parentExecutionEntity.getProcessInstanceId() : parentExecutionEntity.getId());
+    childExecution.setParentProcessInstanceId(parentExecutionEntity.getParentProcessInstanceId());
     childExecution.setScope(false);
 
     // manage the bidirectional parent-child relation

@@ -196,6 +196,10 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             internalQuery.active();
         }
 
+        if (getProcessInstancesPayload.getParentProcessInstanceId()!=null) {
+            internalQuery.superProcessInstanceId(getProcessInstancesPayload.getParentProcessInstanceId());
+        }
+        
         return new PageImpl<>(processInstanceConverter.from(internalQuery.listPage(pageable.getStartIndex(),
                                                                                    pageable.getMaxItems())),
                               Math.toIntExact(internalQuery.count()));
@@ -341,4 +345,5 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         return updatedProcessInstance;
  
     }
+    
 }
