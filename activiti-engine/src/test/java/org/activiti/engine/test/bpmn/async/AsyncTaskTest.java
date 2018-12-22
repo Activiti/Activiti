@@ -220,7 +220,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
             counter += sleep;
             
             // timeout 
-            if(counter > timeout)
+            if(counter > timeout) 
                 break;
         }
 
