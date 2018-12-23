@@ -1,5 +1,8 @@
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -11,6 +14,8 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,9 +24,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeTest {
@@ -29,6 +31,10 @@ public class ProcessRuntimeTest {
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
     private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
     private static final String ONE_STEP_PROCESS = "OneStepProcess";
+    
+    private static final String SUB_PROCESS = "subProcess";
+    private static final String SUPER_PROCESS = "superProcess";
+    
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -39,6 +45,13 @@ public class ProcessRuntimeTest {
     @Autowired
     private SecurityUtil securityUtil;
 
+    @Autowired
+    private ProcessCleanUpUtil processCleanUpUtil;
+
+    @After
+    public void cleanUp(){
+        processCleanUpUtil.cleanUpWithAdmin();
+    }
 
     @Before
     public void init() {
@@ -154,6 +167,8 @@ public class ProcessRuntimeTest {
                 .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
                 .withVariable("expectedKey",
                         true)
+                .withVariable("name","garth")
+                .withVariable("age",45)
                 .withBusinessKey("my business key")
                 .build());
 
@@ -302,6 +317,8 @@ public class ProcessRuntimeTest {
                 .withProcessDefinitionKey(CATEGORIZE_HUMAN_PROCESS)
                 .withVariable("expectedKey",
                         true)
+                .withVariable("name","garth")
+                .withVariable("age",45)
                 .withBusinessKey("my business key")
                 .build());
 
@@ -483,5 +500,60 @@ public class ProcessRuntimeTest {
         assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.DELETED);
 
     }
+    
+    @Test
+    public void getSubprocesses() {
+
+        securityUtil.logInAs("salaboy");
+
+        Page<ProcessInstance> processInstancePage;
+        ProcessInstance parentProcess,subProcess;
+      
+        //given
+        // start a process with a business key to check filters
+        parentProcess=processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(SUPER_PROCESS)
+                .withBusinessKey("my superprocess key")
+                .build());
+
+        //when
+        processInstancePage = processRuntime.processInstances(Pageable.of(0,
+                50),
+                ProcessPayloadBuilder
+                        .processInstances()
+                        .build());
+
+        //Check that we have parent process and subprocess
+        assertThat(processInstancePage).isNotNull();
+        assertThat(processInstancePage.getContent()).hasSize(2);
+
+        assertThat( processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo(SUPER_PROCESS);
+        assertThat( processInstancePage.getContent().get(1).getProcessDefinitionKey()).isEqualTo(SUB_PROCESS);
+        
+        
+        //Check that parentProcess has 1 subprocess
+        processInstancePage = processRuntime.processInstances(Pageable.of(0,
+                                                                          50),
+                                                                          ProcessPayloadBuilder
+                                                                                  .subprocesses(parentProcess.getId()));
+        
+        
+        assertThat(processInstancePage).isNotNull();
+        assertThat(processInstancePage.getContent()).hasSize(1);
+        
+        subProcess=processInstancePage.getContent().get(0);
+        
+        assertThat(subProcess.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS);
+        assertThat(subProcess.getParentId()).isEqualTo(parentProcess.getId());
+        assertThat(subProcess.getProcessDefinitionVersion()).isEqualTo(1);
+
+        
+        processRuntime.delete(ProcessPayloadBuilder.delete(subProcess));
+        processRuntime.delete(ProcessPayloadBuilder.delete(parentProcess));
+        
+        
+
+    }
+
 
 }

@@ -27,6 +27,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
@@ -46,6 +47,9 @@ public class TaskRuntimeImplTest {
 
     @Mock
     private SecurityManager securityManager;
+    
+    @Mock
+    private UserGroupManager userGroupManager;
 
     @Mock
     private TaskService taskService;
@@ -57,7 +61,7 @@ public class TaskRuntimeImplTest {
     public void setUp() {
         initMocks(this);
         taskRuntime = spy(new TaskRuntimeImpl(taskService,
-                            null,
+                            userGroupManager,
                             securityManager,
                             taskConverter,
                             null,
@@ -74,7 +78,7 @@ public class TaskRuntimeImplTest {
                 .withDescription("new description")
                 .build();
         doReturn(new TaskImpl()).when(taskRuntime).task("taskId");
-
+        
         //when
         Throwable throwable = catchThrowable(() -> taskRuntime.update(updateTaskPayload));
 
@@ -109,6 +113,7 @@ public class TaskRuntimeImplTest {
         org.activiti.api.task.model.Task updatedTask = taskRuntime.update(updateTaskPayload);
 
         //then
+        verify(internalTask).getDescription();
         verify(internalTask).setDescription("new description");
         verifyNoMoreInteractions(internalTask);
 
