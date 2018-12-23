@@ -59,25 +59,25 @@ public class ProcessRuntimeTest {
     private SecurityUtil securityUtil;
 
     @Autowired
-    RepositoryService repositoryService;
+    private RepositoryService repositoryService;
 
     @Autowired
-    APIProcessDefinitionConverter processDefinitionConverter;
+    private APIProcessDefinitionConverter processDefinitionConverter;
 
     @Autowired
-    RuntimeService runtimeService;
+    private RuntimeService runtimeService;
 
     @Autowired
-    ProcessSecurityPoliciesManager securityPoliciesManager;
+    private ProcessSecurityPoliciesManager securityPoliciesManager;
 
     @Autowired
-    APIProcessInstanceConverter processInstanceConverter;
+    private APIProcessInstanceConverter processInstanceConverter;
 
     @Autowired
-    APIVariableInstanceConverter variableInstanceConverter;
+    private APIVariableInstanceConverter variableInstanceConverter;
 
     @Autowired
-    ProcessRuntimeConfiguration configuration;
+    private ProcessRuntimeConfiguration configuration;
     
     @Mock
     private ApplicationEventPublisher eventPublisher;
