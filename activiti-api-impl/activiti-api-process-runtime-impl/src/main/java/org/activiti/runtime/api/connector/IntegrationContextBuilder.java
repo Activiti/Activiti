@@ -16,16 +16,19 @@
 
 package org.activiti.runtime.api.connector;
 
-import org.activiti.api.process.model.IntegrationContext;
-import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
-import org.activiti.core.common.model.connector.ActionDefinition;
-import org.activiti.core.common.model.connector.VariableDefinition;
-import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
-
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import org.activiti.api.process.model.IntegrationContext;
+import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
+import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.core.common.model.connector.ActionDefinition;
+import org.activiti.core.common.model.connector.VariableDefinition;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
 public class IntegrationContextBuilder {
 
@@ -54,7 +57,18 @@ public class IntegrationContextBuilder {
         integrationContext.setProcessInstanceId(execution.getProcessInstanceId());
         integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
         integrationContext.setActivityElementId(execution.getCurrentActivityId());
+        integrationContext.setBusinessKey(execution.getProcessInstanceBusinessKey());
 
+        if(ExecutionEntity.class.isInstance(execution)) {
+            ExecutionEntity processInstance = ExecutionEntity.class.cast(execution)
+                                                                   .getProcessInstance();
+            if(processInstance != null) {
+                integrationContext.setProcessDefinitionKey(processInstance.getProcessDefinitionKey());
+                integrationContext.setProcessDefinitionVersion(processInstance.getProcessDefinitionVersion());
+                integrationContext.setParentProcessInstanceId(processInstance.getParentProcessInstanceId());
+            }
+        }
+        
         String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
 
         integrationContext.setConnectorType(implementation);
@@ -65,7 +79,7 @@ public class IntegrationContextBuilder {
 
         return integrationContext;
     }
-
+    
     private Map<String, Object> buildInBoundVariables(ActionDefinition actionDefinition,
                                                       DelegateExecution execution) {
 

@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.identity.Authentication;
@@ -47,8 +48,6 @@ import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
 
@@ -1647,4 +1646,17 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
       }
     }
   }
+  
+    @Deployment(resources = {"org/activiti/engine/test/api/runtime/superProcess.bpmn20.xml", 
+                             "org/activiti/engine/test/api/runtime/subProcess.bpmn20.xml"})
+    public void testExecutionQueryParentProcessInstanceIdResultMapping() throws Exception {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("subProcessQueryTest");
+
+        List<Execution> executions = runtimeService.createExecutionQuery().onlySubProcessExecutions().list();
+        assertEquals(1, executions.size());
+        for (Execution execution : executions) {
+            assertTrue(null != execution.getParentProcessInstanceId());
+            assertEquals(processInstance.getId(), execution.getParentProcessInstanceId());
+        }
+    }
 }
