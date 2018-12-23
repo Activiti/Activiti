@@ -100,13 +100,13 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
                     }
 
                     if ( errorBuilder.length() > 0 ) {
-                        LOGGER.warn("Errors while parsing:\n" + errorBuilder.toString());
+                        LOGGER.error("Errors while parsing:\n" + errorBuilder.toString());
                         return false;
                     }
                 }
             }
         } catch ( Exception e ) {
-            LOGGER.warn("Error parsing XML", e);
+            LOGGER.error("Error parsing XML", e);
             return false;
         }
         return true;

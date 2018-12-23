@@ -30,7 +30,7 @@ public class NeverFailAutoDeploymentStrategy extends AbstractAutoDeploymentStrat
                 validProcessCount++;
                 deploymentBuilder.addInputStream(resourceName, resource);
             } else {
-                LOGGER.warn("The following resource wasn't included in the deployment since it is invalid: ",
+                LOGGER.error("The following resource wasn't included in the deployment since it is invalid: ",
                         resourceName);
             }
         }
