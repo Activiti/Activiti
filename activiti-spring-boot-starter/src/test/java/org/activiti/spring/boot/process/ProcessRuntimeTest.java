@@ -86,6 +86,7 @@ public class ProcessRuntimeTest {
     
     private ProcessAdminRuntime processAdminRuntimeMock;
 
+    @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
     @After
