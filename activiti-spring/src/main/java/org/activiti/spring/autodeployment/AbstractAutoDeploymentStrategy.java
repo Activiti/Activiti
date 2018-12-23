@@ -80,14 +80,12 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
             BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(resource.getInputStream()), true,
                     false);
             List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
-            if (validationErrors == null || validationErrors.isEmpty()) {
-                return true;
-            } else {
+            if ( validationErrors != null && !validationErrors.isEmpty() ) {
                 StringBuilder warningBuilder = new StringBuilder();
                 StringBuilder errorBuilder = new StringBuilder();
 
                 for (ValidationError error : validationErrors) {
-                    if (error.isWarning()) {
+                    if ( error.isWarning() ) {
                         warningBuilder.append(error.toString());
                         warningBuilder.append("\n");
                     } else {
@@ -96,23 +94,21 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
                     }
 
                     // Write out warnings (if any)
-                    if (warningBuilder.length() > 0) {
+                    if ( warningBuilder.length() > 0 ) {
                         LOGGER.warn("Following warnings encountered during process validation: "
                                 + warningBuilder.toString());
                     }
 
-                    if (errorBuilder.length() > 0) {
+                    if ( errorBuilder.length() > 0 ) {
                         LOGGER.warn("Errors while parsing:\n" + errorBuilder.toString());
                         return false;
-                    } else {
-                        return true;
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch ( Exception e ) {
             LOGGER.warn("Error parsing XML", e);
             return false;
         }
-        return false;
+        return true;
     }
 }
