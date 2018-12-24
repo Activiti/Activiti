@@ -1,9 +1,9 @@
 package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.spy;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
@@ -30,7 +30,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
@@ -79,7 +78,9 @@ public class ProcessRuntimeTest {
     @Autowired
     private ProcessRuntimeConfiguration configuration;
     
-    @Mock
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
+
     private ApplicationEventPublisher eventPublisher;
     
     private ProcessRuntime processRuntimeMock;
@@ -96,6 +97,8 @@ public class ProcessRuntimeTest {
 
     @Before
     public void init() {
+        eventPublisher = spy(applicationEventPublisher);
+        
         processRuntimeMock = spy(new ProcessRuntimeImpl(repositoryService,
                                                      processDefinitionConverter,
                                                      runtimeService,
