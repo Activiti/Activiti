@@ -26,49 +26,50 @@ public class FailOnNoProcessAutoDeploymentStrategyTest extends SpringActivitiTes
         }
     }
 
+    @Override
+    public void setUp(){
+        cleanUp();
+    }
+
+    @Override
+    public void tearDown(){
+        cleanUp();
+    }
+
     @Test
     public void testValidResources() {
-        cleanUp();
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1)};
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy();
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
         assertEquals(1, repositoryService.createDeploymentQuery().count());
-        cleanUp();
     }
 
     @Test
     public void testInvalidResources() {
-        cleanUp();
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName1), new ClassPathResource(invalidName2)};
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy();
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
         assertEquals(1, repositoryService.createDeploymentQuery().count());
-        cleanUp();
     }
 
     @Test
     public void testWithParsingErrorResources() {
-        cleanUp();
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName1)};
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy();
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
         assertEquals(1, repositoryService.createDeploymentQuery().count());
-        cleanUp();
     }
 
     @Test
     public void testWithValidationErrorResources() {
-        cleanUp();
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName2)};
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy();
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
         assertEquals(1, repositoryService.createDeploymentQuery().count());
-        cleanUp();
     }
 
     @Test
     public void testOnlyInvalidResources() {
-        cleanUp();
         final Resource[] resources = new Resource[]{new ClassPathResource(invalidName1)};
         FailOnNoProcessAutoDeploymentStrategy deploymentStrategy = new FailOnNoProcessAutoDeploymentStrategy();
         try {
@@ -76,7 +77,6 @@ public class FailOnNoProcessAutoDeploymentStrategyTest extends SpringActivitiTes
         } catch (ActivitiException e) {
             assertEquals("No process definition was deployed.", e.getMessage());
             assertEquals(0, repositoryService.createDeploymentQuery().count());
-            cleanUp();
             return;
         }
         fail();

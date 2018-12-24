@@ -25,53 +25,53 @@ public class NeverFailAutoDeploymentStrategyTest extends SpringActivitiTestCase 
         }
     }
 
+    @Override
+    public void setUp(){
+        cleanUp();
+    }
+
+    @Override
+    public void tearDown(){
+        cleanUp();
+    }
+
     @Test
     public void testValidResources() {
-        cleanUp();
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy();
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
         assertEquals(1, repositoryService.createDeploymentQuery().count());
-        cleanUp();
     }
 
     @Test
     public void testInvalidResources() {
-        cleanUp();
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName1), new ClassPathResource(invalidName2)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy();
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
         assertEquals(1, repositoryService.createDeploymentQuery().count());
-        cleanUp();
     }
 
     @Test
     public void testWithParsingErrorResources() {
-        cleanUp();
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName1)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy();
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
         assertEquals(1, repositoryService.createDeploymentQuery().count());
-        cleanUp();
     }
 
     @Test
     public void testWithValidationErrorResources() {
-        cleanUp();
         final Resource[] resources = new Resource[]{new ClassPathResource(validName1), new ClassPathResource(invalidName2)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy();
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
         assertEquals(1, repositoryService.createDeploymentQuery().count());
-        cleanUp();
     }
 
     @Test
     public void testOnlyInvalidResources() {
-        cleanUp();
         final Resource[] resources = new Resource[]{new ClassPathResource(invalidName1)};
         NeverFailAutoDeploymentStrategy deploymentStrategy = new NeverFailAutoDeploymentStrategy();
         deploymentStrategy.deployResources(nameHint, resources, repositoryService);
         assertEquals(0, repositoryService.createDeploymentQuery().count());
-        cleanUp();
     }
 }
