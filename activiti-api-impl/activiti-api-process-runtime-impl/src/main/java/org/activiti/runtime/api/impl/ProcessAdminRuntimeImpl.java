@@ -198,9 +198,6 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     @Transactional
     public void signal(SignalPayload signalPayload) {
-        //@TODO: define security policies for signalling
-        runtimeService.signalEventReceived(signalPayload.getName(),
-                                           signalPayload.getVariables());
         eventPublisher.publishEvent(signalPayload);
     }
 
