@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -199,16 +200,28 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   }
 
   @Deployment
-  public void testAsyncTask() {
-    // start process
-    runtimeService.startProcessInstanceByKey("asyncTask");
-    // now there should be one job in the database:
-    assertEquals(1, managementService.createJobQuery().count());
+  public void testAsyncTask() throws InterruptedException {
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    
+    try {
+        // start process
+        runtimeService.startProcessInstanceByKey("asyncTask");
 
-    waitForJobExecutorToProcessAllJobs(5000L, 200L);
+        // now there should be one job in the database:
+        assertEquals(1, managementService.createJobQuery().count());
+       
+        // Let's start async executor 
+        asyncExecutor.start();
+        
+        // Let's wait for all executions to complete 
+        waitForAllExecutionsToComplete(5000L, 200L);
 
-    // the job is done
-    assertEquals(0, managementService.createJobQuery().count());
+        // the job is done
+        assertEquals(0, managementService.createJobQuery().count());        
+        
+    } finally {
+        asyncExecutor.shutdown();
+    }
   }
   
   @Deployment
@@ -490,4 +503,18 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     }
   }
 
+  private void waitForAllExecutionsToComplete(long timeout, long sleep) throws InterruptedException {
+      int counter = 0;
+      
+      while(runtimeService.createExecutionQuery().count() > 0) {
+          Thread.sleep(sleep);
+          counter += sleep;
+          
+          // timeout 
+          if(counter > timeout) 
+              fail("Should have finished all process executions within " + timeout + " ms");
+      }
+  }
+  
 }
+
