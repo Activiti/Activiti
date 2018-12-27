@@ -20,13 +20,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
-import org.activiti.api.model.shared.event.VariableDeletedEvent;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.runtime.api.event.impl.ToVariableCreatedConverter;
-import org.activiti.runtime.api.event.impl.ToVariableDeletedConverter;
 import org.activiti.runtime.api.event.impl.ToVariableUpdatedConverter;
 import org.activiti.runtime.api.event.internal.VariableCreatedListenerDelegate;
 import org.activiti.runtime.api.event.internal.VariableUpdatedListenerDelegate;

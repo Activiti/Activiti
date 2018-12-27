@@ -40,6 +40,7 @@ import org.activiti.core.common.spring.security.policies.ProcessSecurityPolicies
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.runtime.api.conf.CommonRuntimeAutoConfiguration;
 import org.activiti.runtime.api.conf.impl.ProcessRuntimeConfigurationImpl;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCreatedEventConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessStartedEventConverter;
@@ -71,11 +72,13 @@ import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
 public class ProcessRuntimeAutoConfiguration {
 
     @Bean
@@ -121,11 +124,6 @@ public class ProcessRuntimeAutoConfiguration {
         return new APIProcessInstanceConverter();
     }
 
-    @Bean
-    @ConditionalOnMissingBean
-    public APIVariableInstanceConverter apiVariableInstanceConverter() {
-        return new APIVariableInstanceConverter();
-    }
 
     @Bean
     public ProcessRuntimeConfiguration processRuntimeConfiguration(@Autowired(required = false) List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners,

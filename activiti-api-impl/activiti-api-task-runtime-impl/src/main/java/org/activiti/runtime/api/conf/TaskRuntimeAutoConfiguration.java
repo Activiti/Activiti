@@ -71,11 +71,14 @@ import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
 @Configuration
+@AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
 public class TaskRuntimeAutoConfiguration {
 
     @Bean
@@ -105,12 +108,6 @@ public class TaskRuntimeAutoConfiguration {
     public APITaskConverter apiTaskConverter() {
         return new APITaskConverter(
         );
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public APIVariableInstanceConverter apiVariableInstanceConverter(APIVariableInstanceConverter variableInstanceConverter) {
-        return new APIVariableInstanceConverter();
     }
 
     @Bean
