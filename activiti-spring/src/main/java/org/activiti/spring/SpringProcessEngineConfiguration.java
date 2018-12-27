@@ -25,6 +25,8 @@ import org.activiti.engine.impl.variable.EntityManagerSession;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.spring.autodeployment.AutoDeploymentStrategy;
 import org.activiti.spring.autodeployment.DefaultAutoDeploymentStrategy;
+import org.activiti.spring.autodeployment.FailOnNoProcessAutoDeploymentStrategy;
+import org.activiti.spring.autodeployment.NeverFailAutoDeploymentStrategy;
 import org.activiti.spring.autodeployment.ResourceParentFolderAutoDeploymentStrategy;
 import org.activiti.spring.autodeployment.SingleResourceAutoDeploymentStrategy;
 import org.springframework.beans.BeansException;
@@ -59,6 +61,8 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     deploymentStrategies.add(new DefaultAutoDeploymentStrategy());
     deploymentStrategies.add(new SingleResourceAutoDeploymentStrategy());
     deploymentStrategies.add(new ResourceParentFolderAutoDeploymentStrategy());
+    deploymentStrategies.add(new FailOnNoProcessAutoDeploymentStrategy());
+    deploymentStrategies.add(new NeverFailAutoDeploymentStrategy());
   }
 
   @Override

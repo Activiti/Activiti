@@ -43,6 +43,7 @@ public class ActivitiProperties {
   private List<String> customMybatisXMLMappers;
   private boolean useStrongUuids = true;
   private boolean copyVariablesToLocalForTasks = true;
+  private String deploymentMode = "default";
   private boolean serializePOJOsInVariablesToJson = true;
   private String javaClassFieldForJackson = JsonTypeInfo.Id.CLASS.getDefaultPropertyName();
 
@@ -206,6 +207,14 @@ public class ActivitiProperties {
 
     public void setCopyVariablesToLocalForTasks(boolean copyVariablesToLocalForTasks) {
         this.copyVariablesToLocalForTasks = copyVariablesToLocalForTasks;
+    }
+
+    public String getDeploymentMode() {
+        return deploymentMode;
+    }
+
+    public void setDeploymentMode(String deploymentMode) {
+        this.deploymentMode = deploymentMode;
     }
 
     public boolean isSerializePOJOsInVariablesToJson() {

@@ -112,6 +112,10 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             conf.setIdGenerator(new StrongUuidGenerator());
         }
 
+        if (activitiProperties.getDeploymentMode() != null) {
+            conf.setDeploymentMode(activitiProperties.getDeploymentMode());
+        }
+
         conf.setActivityBehaviorFactory(new CloudActivityBehaviorFactory());
 
         if (processEngineConfigurationConfigurer != null) {
