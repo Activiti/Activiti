@@ -65,10 +65,12 @@ import org.activiti.runtime.api.event.internal.ProcessUpdatedListenerDelegate;
 import org.activiti.runtime.api.event.internal.SequenceFlowTakenListenerDelegate;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
+import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
+import org.activiti.runtime.api.signal.SignalPayloadEventListener;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -78,6 +80,16 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ProcessRuntimeAutoConfiguration {
+    
+    /**
+     * Creates default SignalPayloadEventListener bean if no existing bean found in ApplicationContext
+     */
+    @Bean
+    @ConditionalOnMissingBean(SignalPayloadEventListener.class)
+    public SignalPayloadEventListener signalPayloadEventListener(RuntimeService runtimeService) {
+        return new RuntimeSignalPayloadEventListener(runtimeService);
+    }
+    
 
     @Bean
     @ConditionalOnMissingBean

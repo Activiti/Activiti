@@ -305,8 +305,6 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     @Transactional
     public void signal(SignalPayload signalPayload) {
         //@TODO: define security policies for signalling
-        runtimeService.signalEventReceived(signalPayload.getName(),
-                                           signalPayload.getVariables());
         eventPublisher.publishEvent(signalPayload);
     }
 
