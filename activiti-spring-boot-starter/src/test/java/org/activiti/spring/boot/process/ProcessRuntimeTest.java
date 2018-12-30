@@ -2,16 +2,27 @@ package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
+import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
+import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
+import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
+import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
@@ -21,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -46,6 +58,36 @@ public class ProcessRuntimeTest {
     private SecurityUtil securityUtil;
 
     @Autowired
+    private RepositoryService repositoryService;
+
+    @Autowired
+    private APIProcessDefinitionConverter processDefinitionConverter;
+
+    @Autowired
+    private RuntimeService runtimeService;
+
+    @Autowired
+    private ProcessSecurityPoliciesManager securityPoliciesManager;
+
+    @Autowired
+    private APIProcessInstanceConverter processInstanceConverter;
+
+    @Autowired
+    private APIVariableInstanceConverter variableInstanceConverter;
+
+    @Autowired
+    private ProcessRuntimeConfiguration configuration;
+    
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
+
+    private ApplicationEventPublisher eventPublisher;
+    
+    private ProcessRuntime processRuntimeMock;
+    
+    private ProcessAdminRuntime processAdminRuntimeMock;
+
+    @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
     @After
@@ -55,6 +97,22 @@ public class ProcessRuntimeTest {
 
     @Before
     public void init() {
+        eventPublisher = spy(applicationEventPublisher);
+        
+        processRuntimeMock = spy(new ProcessRuntimeImpl(repositoryService,
+                                                     processDefinitionConverter,
+                                                     runtimeService,
+                                                     securityPoliciesManager,
+                                                     processInstanceConverter,
+                                                     variableInstanceConverter,
+                                                     configuration,
+                                                     eventPublisher));
+
+        processAdminRuntimeMock = spy(new ProcessAdminRuntimeImpl(repositoryService,
+                                                              processDefinitionConverter,
+                                                              runtimeService,
+                                                              processInstanceConverter,
+                                                              eventPublisher));
 
         //Reset test variables
         RuntimeTestConfiguration.processImageConnectorExecuted = false;
@@ -556,4 +614,44 @@ public class ProcessRuntimeTest {
     }
 
 
+    @Test
+    public void signal() {
+        securityUtil.logInAs("salaboy");
+
+        // when
+        SignalPayload signalPayload = new SignalPayload("The Signal", null);
+        processRuntimeMock.signal(signalPayload);
+
+        Page<ProcessInstance> processInstancePage = processRuntimeMock.processInstances(Pageable.of(0,
+                50));
+
+        // then
+        assertThat(processInstancePage).isNotNull();
+        assertThat(processInstancePage.getContent()).hasSize(1);
+        assertThat(processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo("processWithSignalStart1");
+        
+        verify(eventPublisher).publishEvent(signalPayload);
+        
+        processRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().get(0).getId()));
+    }
+
+    @Test
+    public void signalAdmin() {
+        securityUtil.logInAs("admin");
+
+        // when
+        SignalPayload signalPayload = new SignalPayload("The Signal", null);
+        processAdminRuntimeMock.signal(signalPayload);
+        verify(eventPublisher).publishEvent(signalPayload);
+
+        Page<ProcessInstance> processInstancePage = processAdminRuntimeMock.processInstances(Pageable.of(0,
+                50));
+
+        // then
+        assertThat(processInstancePage).isNotNull();
+        assertThat(processInstancePage.getContent()).hasSize(1);
+        assertThat(processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo("processWithSignalStart1");
+
+        processAdminRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().get(0).getId()));
+    }
 }

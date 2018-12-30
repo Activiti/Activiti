@@ -55,7 +55,9 @@ import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 @PreAuthorize("hasRole('ACTIVITI_USER')")
 public class ProcessRuntimeImpl implements ProcessRuntime {
@@ -73,15 +75,17 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     private final ProcessRuntimeConfiguration configuration;
 
     private final ProcessSecurityPoliciesManager securityPoliciesManager;
-    
+
+    private final ApplicationEventPublisher eventPublisher;
+
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
                               ProcessSecurityPoliciesManager securityPoliciesManager,
                               APIProcessInstanceConverter processInstanceConverter,
                               APIVariableInstanceConverter variableInstanceConverter,
-                              ProcessRuntimeConfiguration configuration
-                              ) {
+                              ProcessRuntimeConfiguration configuration,
+                              ApplicationEventPublisher eventPublisher) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
@@ -89,6 +93,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         this.processInstanceConverter = processInstanceConverter;
         this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -297,10 +302,10 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     @Override
+    @Transactional
     public void signal(SignalPayload signalPayload) {
         //@TODO: define security policies for signalling
-        runtimeService.signalEventReceived(signalPayload.getName(),
-                                           signalPayload.getVariables());
+        eventPublisher.publishEvent(signalPayload);
     }
 
     @Override

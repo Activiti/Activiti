@@ -42,7 +42,9 @@ import org.activiti.engine.repository.ProcessDefinitionQuery;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 @PreAuthorize("hasRole('ACTIVITI_ADMIN')")
 public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
@@ -55,14 +57,18 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     private final APIProcessInstanceConverter processInstanceConverter;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     public ProcessAdminRuntimeImpl(RepositoryService repositoryService,
                                    APIProcessDefinitionConverter processDefinitionConverter,
                                    RuntimeService runtimeService,
-                                   APIProcessInstanceConverter processInstanceConverter) {
+                                   APIProcessInstanceConverter processInstanceConverter,
+                                   ApplicationEventPublisher eventPublisher) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
         this.processInstanceConverter = processInstanceConverter;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -190,10 +196,9 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     }
 
     @Override
+    @Transactional
     public void signal(SignalPayload signalPayload) {
-        //@TODO: define security policies for signalling
-        runtimeService.signalEventReceived(signalPayload.getName(),
-                                           signalPayload.getVariables());
+        eventPublisher.publishEvent(signalPayload);
     }
 
     @Override
