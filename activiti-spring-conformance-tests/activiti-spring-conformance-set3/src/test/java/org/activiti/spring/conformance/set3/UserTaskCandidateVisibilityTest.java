@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class UserTaskCandidateVisibilityTest {
 
-    private final String processKey = "usertaskas-b5300a4b-8950-4486-ba20-a8d775a3d75d";
+    private final String processKey = "usertaskca-1e577517-7404-4645-b650-4fbde528f612";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -140,8 +140,6 @@ public class UserTaskCandidateVisibilityTest {
         assertThat(throwable)
                 .isInstanceOf(IllegalStateException.class);
 
-
-
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
         // Now it should work
@@ -154,12 +152,15 @@ public class UserTaskCandidateVisibilityTest {
         candidateUsers = taskRuntime.userCandidates(task.getId());
         assertThat(candidateUsers).contains("user2");
 
+        // User 1 needs to release the task in order for User 2 see it as candidate
+
+        taskRuntime.release(TaskPayloadBuilder.release().withTaskId(task.getId()).build());
+
         // Check with user2
         securityUtil.logInAs("user2");
 
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
-        // @TODO: this is now failign because the Identity link for Candidate Group is not being considered in tasks()
         assertThat(tasks.getTotalItems()).isEqualTo(1);
 
     }
@@ -264,6 +265,10 @@ public class UserTaskCandidateVisibilityTest {
 
         candidateGroups = taskRuntime.groupCandidates(task.getId());
         assertThat(candidateGroups).contains("group1", "group2");
+
+        // User 1 needs to release the task in order for User 2 see it as candidate
+
+        taskRuntime.release(TaskPayloadBuilder.release().withTaskId(task.getId()).build());
 
         // Check with user2
         securityUtil.logInAs("user2");
