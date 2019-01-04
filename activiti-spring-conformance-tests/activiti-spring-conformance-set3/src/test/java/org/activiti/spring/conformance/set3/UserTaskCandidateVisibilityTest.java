@@ -256,6 +256,13 @@ public class UserTaskCandidateVisibilityTest {
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                        TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
+
+        collectedEvents.clear();
+
         // Now it should work
         taskRuntime.addCandidateGroups(TaskPayloadBuilder
                 .addCandidateGroups()
@@ -263,12 +270,27 @@ public class UserTaskCandidateVisibilityTest {
                 .withCandidateGroup("group2")
                 .build());
 
+        //@TODO: operations should cause events
+        // https://github.com/Activiti/Activiti/issues/2330
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly();
+
+        collectedEvents.clear();
+
         candidateGroups = taskRuntime.groupCandidates(task.getId());
         assertThat(candidateGroups).contains("group1", "group2");
 
         // User 1 needs to release the task in order for User 2 see it as candidate
 
         taskRuntime.release(TaskPayloadBuilder.release().withTaskId(task.getId()).build());
+
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
+                        TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
+
+        collectedEvents.clear();
 
         // Check with user2
         securityUtil.logInAs("user2");
