@@ -16,13 +16,13 @@
 
 package org.conf.activiti.runtime.api;
 
+import org.activiti.core.common.spring.connector.ConnectorDefinitionService;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.runtime.api.connector.ConnectorActionDefinitionFinder;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.connector.VariablesMatchHelper;
-import org.activiti.core.common.spring.connector.ConnectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
@@ -57,7 +57,7 @@ public class ConnectorsAutoConfiguration {
     }
 
     @Bean
-    public ConnectorActionDefinitionFinder connectorActionDefinitionFinder() {
+    public ConnectorActionDefinitionFinder connectorActionDefinitionFinder() throws IOException {
         return new ConnectorActionDefinitionFinder(connectorDefinitions());
     }
 

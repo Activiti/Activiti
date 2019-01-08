@@ -33,14 +33,8 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
     private final ApplicationContext applicationContext;
     private final IntegrationContextBuilder integrationContextBuilder;
-    private List<ConnectorDefinition> connectorDefinitions;
     private ConnectorActionDefinitionFinder connectorActionDefinitionFinder;
     private VariablesMatchHelper variablesMatchHelper;
-
-    public DefaultServiceTaskBehavior(ApplicationContext applicationContext, IntegrationContextBuilder integrationContextBuilder) {
-        this.applicationContext = applicationContext;
-        this.integrationContextBuilder = integrationContextBuilder;
-    }
 
     public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
                                       IntegrationContextBuilder integrationContextBuilder,
@@ -63,7 +57,7 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
         String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
         List<VariableDefinition> outBoundVariableDefinitions = null;
-        if(connectorActionDefinitionFinder != null && connectorDefinitions != null) {
+        if(connectorActionDefinitionFinder != null) {
 
             Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(implementation);
             ActionDefinition actionDefinition = null;
@@ -79,7 +73,7 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
                 connector = applicationContext.getBean(implementation,
                         Connector.class);
             }
-            outBoundVariableDefinitions = actionDefinition == null ? null : actionDefinition.getOutput();
+            outBoundVariableDefinitions = actionDefinition == null ? null : actionDefinition.getOutputs();
         }else {
             context = integrationContextBuilder.from(execution,
                             null);
