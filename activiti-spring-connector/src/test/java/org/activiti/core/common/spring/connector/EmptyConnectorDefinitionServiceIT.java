@@ -16,10 +16,6 @@
 
 package org.activiti.core.common.spring.connector;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.activiti.core.common.spring.connector.ConnectorService;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.core.common.spring.connector.autoconfigure.ConnectorAutoConfiguration;
 import org.junit.Test;
@@ -29,6 +25,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.IOException;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -37,12 +36,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EmptyConnectorDefinitionServiceIT {
 
     @Autowired
-    private ConnectorService connectorService;
+    private ConnectorDefinitionService connectorDefinitionService;
 
     @Test
-    public void emptyConnectors() throws IOException {
+    public void emptyConnectorDefinitions() throws IOException {
 
-        List<ConnectorDefinition> connectorDefinitions = connectorService.get();
+        List<ConnectorDefinition> connectorDefinitions = connectorDefinitionService.get();
 
         assertThat(connectorDefinitions).isEmpty();
     }
