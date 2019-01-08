@@ -8,6 +8,7 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.junit.After;
@@ -39,7 +40,7 @@ public class TaskRuntimeCandidatesTest {
     }
 
     @Test
-    public void createStandaloneTaskAndAddUserCandidates() {
+    public void createStandaloneTaskAndDeleteAndAddUserCandidates() {
         securityUtil.logInAs("garth");
 
         Task createTask = taskRuntime.create(TaskPayloadBuilder.create()
@@ -59,17 +60,41 @@ public class TaskRuntimeCandidatesTest {
         assertThat(userCandidates).isNotNull();
         assertThat(userCandidates.size()).isEqualTo(1);
         
+        taskRuntime.deleteCandidateUsers(TaskPayloadBuilder
+                                         .deleteCandidateUsers()
+                                         .withTaskId(task.getId())
+                                         .withCandidateUser("garth")
+                                         .build());
         
+        assertThat(RuntimeTestConfiguration.taskCandidateUserRemovedEvents.size()).isEqualTo(1);
+        assertThat(RuntimeTestConfiguration.taskCandidateUserRemovedEvents)
+        .extracting(event -> event.getEntity().getUserId())
+        .contains("garth");
+        
+              
+        userCandidates = taskRuntime.userCandidates(createTask.getId());
+        assertThat(userCandidates).isNotNull();
+        assertThat(userCandidates.size()).isEqualTo(0);
+           
+           
+                
         taskRuntime.addCandidateUsers(TaskPayloadBuilder
                                       .addCandidateUsers()
                                       .withTaskId(task.getId())
                                       .withCandidateUser("garth")
                                       .build());
         
+        assertThat(RuntimeTestConfiguration.taskCandidateUserAddedEvents.size()).isEqualTo(2);
+        assertThat(RuntimeTestConfiguration.taskCandidateUserAddedEvents)
+        .extracting(event -> event.getEntity().getUserId())
+        .contains("garth",
+                  "garth");
+        
         userCandidates = taskRuntime.userCandidates(createTask.getId());
         assertThat(userCandidates).isNotNull();
-        assertThat(userCandidates.size()).isEqualTo(2);
+        assertThat(userCandidates.size()).isEqualTo(1);
            
+
         
         taskRuntime.delete(TaskPayloadBuilder
                 .delete()

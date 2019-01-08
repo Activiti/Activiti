@@ -1,5 +1,7 @@
 package org.activiti.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,6 +15,8 @@ import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
+import org.activiti.api.task.runtime.events.TaskCandidateUserAddedEvent;
+import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
@@ -25,8 +29,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import static org.assertj.core.api.Assertions.*;
 
 @Configuration
 public class RuntimeTestConfiguration {
@@ -48,6 +50,10 @@ public class RuntimeTestConfiguration {
     public static Set<BPMNSequenceFlowTakenEvent> sequenceFlowTakenEvents = new HashSet<>();
 
     public static Set<VariableCreatedEvent> variableCreatedEventsFromProcessInstance = new HashSet<>();
+    
+    public static Set<TaskCandidateUserAddedEvent> taskCandidateUserAddedEvents = new HashSet<>();
+    
+    public static Set<TaskCandidateUserRemovedEvent> taskCandidateUserRemovedEvents = new HashSet<>();
 
     @Bean
     public UserDetailsService myUserDetailsService() {
@@ -176,4 +182,15 @@ public class RuntimeTestConfiguration {
             }
         };
     }
+    
+    @Bean
+    public TaskRuntimeEventListener<TaskCandidateUserAddedEvent> CandidateUserAddedListener() {
+        return candidateUserAddedEvent -> taskCandidateUserAddedEvents.add(candidateUserAddedEvent);
+    }
+    
+    @Bean
+    public TaskRuntimeEventListener<TaskCandidateUserRemovedEvent> CandidateUserRemovedListener() {
+        return candidateUserRemovedEvent -> taskCandidateUserRemovedEvents.add(candidateUserRemovedEvent);
+    }
+    
 }
