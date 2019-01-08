@@ -68,7 +68,7 @@ public class IntegrationContextBuilder {
                 integrationContext.setParentProcessInstanceId(processInstance.getParentProcessInstanceId());
             }
         }
-        
+
         String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
 
         integrationContext.setConnectorType(implementation);
@@ -79,11 +79,11 @@ public class IntegrationContextBuilder {
 
         return integrationContext;
     }
-    
+
     private Map<String, Object> buildInBoundVariables(ActionDefinition actionDefinition,
                                                       DelegateExecution execution) {
 
-        List<VariableDefinition> inBoundVariableDefinitions = actionDefinition == null ? null : actionDefinition.getInput();
+        List<VariableDefinition> inBoundVariableDefinitions = actionDefinition == null ? null : actionDefinition.getInputs();
         if(variablesMatchHelper != null) {
             return variablesMatchHelper.match(execution.getVariables(), inBoundVariableDefinitions);
         }else{

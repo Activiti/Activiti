@@ -8,7 +8,7 @@
       "id": "tagImageActionId",
       "name": "tagImageActionName",
       "description": "...",
-      "input": [
+      "inputs": [
         {
           "id": "input-variable-2",
           "name": "input-variable-name-2",
@@ -24,7 +24,7 @@
           "description": ""
         }
       ],
-      "output": [
+      "outputs": [
         {
           "id": "approved",
           "name": "approved",
