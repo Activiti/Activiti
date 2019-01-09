@@ -90,6 +90,8 @@
     <maven-surefire-plugin.argLine>-Xmx1024m -XX:MaxPermSize=256m</maven-surefire-plugin.argLine>
 
     <java.version>11</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <!-- configuration properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
