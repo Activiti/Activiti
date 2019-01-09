@@ -58,7 +58,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     <activiti-api.version>${project.version}</activiti-api.version>
-    <activiti-build.version>7.0.39</activiti-build.version>
+    <activiti-build.version>0.0.0-SNAPSHOT-PR-47-7</activiti-build.version>
   </properties>
 
   <!-- Activiti build parent marker dependency for dependency convergence tests -->
