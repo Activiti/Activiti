@@ -90,10 +90,11 @@
     <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
     <maven-surefire-plugin.argLine>-Xmx1024m -XX:MaxPermSize=256m</maven-surefire-plugin.argLine>
 
+    <java.version>11</java.version>
+
     <!-- configuration properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.release>11</java.release>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <!-- configuration properties for tests-->
     <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
@@ -318,7 +319,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
-          <release>${java.release}</release>
+          <release>${java.version}</release>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
           <optimize>true</optimize>
