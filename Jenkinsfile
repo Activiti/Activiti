@@ -21,8 +21,7 @@ pipeline {
           container('maven') {
             sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
             sh "mvn install"
-            sh 'export VERSION=$PREVIEW_VERSION'
-
+            sh 'mvn clean deploy -DskipTests'
           }
 
         }
