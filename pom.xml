@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>0.0.0-SNAPSHOT-PR-47-10</version> <!-- using fixed version for CI/CD -->
+    <version>0.0.0-SNAPSHOT-PR-47-11</version> <!-- using fixed version for CI/CD -->
     <relativePath/>
   </parent>
   <groupId>org.activiti.api</groupId>
@@ -58,7 +58,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     <activiti-api.version>${project.version}</activiti-api.version>
-    <activiti-build.version>0.0.0-SNAPSHOT-PR-47-10</activiti-build.version>
+    <activiti-build.version>0.0.0-SNAPSHOT-PR-47-11</activiti-build.version>
   </properties>
 
   <!-- Activiti build parent marker dependency for dependency convergence tests -->
@@ -75,10 +75,40 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven-clean-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>${maven-install-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>${maven-site-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco-maven-plugin.version}</version>
+      </plugin>
+      <plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+      	<artifactId>maven-jar-plugin</artifactId>
+      	<version>${maven-jar-plugin.version}</version>
+      </plugin>
+      <plugin>
+      	<groupId>org.apache.maven.plugins</groupId>
+      	<artifactId>maven-resources-plugin</artifactId>
+      	<version>${maven-resources-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
-          <release>${java.release}</release>
+          <release>${java.version}</release>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
           <optimize>true</optimize>
