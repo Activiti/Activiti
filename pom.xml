@@ -292,11 +292,11 @@
           <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
           <version>${assertj-assertions-generator-maven-plugin.version}</version>
         </plugin>
-        <plugin>
+<!--         <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${jacoco-maven-plugin.version}</version>
-        </plugin>
+        </plugin> -->
       </plugins>
     </pluginManagement>
     <plugins>
