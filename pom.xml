@@ -355,16 +355,6 @@
             </configuration>
           </execution>
           <execution>
-            <id>enforce-plugin-versions</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-              </rules>
-            </configuration>
-          </execution>
-          <execution>
             <id>ban-blacklisted-dependencies</id>
             <phase>validate</phase>
             <goals>
