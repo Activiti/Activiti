@@ -77,7 +77,7 @@
     <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
     <!-- had to downgrade failsafe plugin to avoid sun.reflect.annotation.TypeNotPresentExceptionProxy error in activiti-cloud-query
     workaround for https://github.com/spring-projects/spring-boot/issues/6254-->
-    <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
