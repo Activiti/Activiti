@@ -41,6 +41,10 @@ public class TaskRuntimeCandidatesTest {
 
     @Test
     public void createStandaloneTaskAndDeleteAndAddUserCandidates() {
+        
+        RuntimeTestConfiguration.taskCandidateUserRemovedEvents.clear();
+        RuntimeTestConfiguration.taskCandidateUserAddedEvents.clear();
+        
         securityUtil.logInAs("garth");
 
         Task createTask = taskRuntime.create(TaskPayloadBuilder.create()
@@ -94,16 +98,7 @@ public class TaskRuntimeCandidatesTest {
         assertThat(userCandidates).isNotNull();
         assertThat(userCandidates.size()).isEqualTo(1);
            
-
-        
-        taskRuntime.delete(TaskPayloadBuilder
-                .delete()
-                .withTaskId(task.getId())
-                .withReason("test clean up")
-                .build());
-
-
-    }
+     }
 
 
 
