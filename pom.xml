@@ -16,6 +16,7 @@
   <description>Activiti Core :: Parent</description>
   <url>http://activiti.org</url>
   <properties>
+    <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
     <activiti-build.version>0.0.0-SNAPSHOT-PR-47-19</activiti-build.version>
     <activiti-api.version>0.0.0-SNAPSHOT-PR-65-13</activiti-api.version>
     <activiti-core-common.version>0.0.0-SNAPSHOT-PR-41-4</activiti-core-common.version>
