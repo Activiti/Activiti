@@ -87,7 +87,6 @@
     <maven-site-plugin.version>3.6</maven-site-plugin.version>
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
-    <maven-surefire-plugin.argLine>-Xmx1024m -XX:MaxPermSize=256m</maven-surefire-plugin.argLine>
 
     <java.version>11</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -292,11 +291,11 @@
           <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
           <version>${assertj-assertions-generator-maven-plugin.version}</version>
         </plugin>
-<!--         <plugin>
+        <plugin>
           <groupId>org.jacoco</groupId>
           <artifactId>jacoco-maven-plugin</artifactId>
           <version>${jacoco-maven-plugin.version}</version>
-        </plugin> -->
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -423,7 +422,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
-          <argLine>${maven-surefire-plugin.argLine}</argLine>
+          <!-- use syntax for Jacoco late property evaluation -->
+          <argLine>@{argLine} -Xmx1024m -XX:MaxPermSize=256m</argLine>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <failIfNoTests>false</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>
