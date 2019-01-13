@@ -37,6 +37,8 @@ public class TaskImpl implements Task {
     private String processInstanceId;
     private String parentTaskId;
     private String formKey;
+    private Date completedDate;
+    private long duration;
 
     public TaskImpl() {
     }
@@ -159,6 +161,22 @@ public class TaskImpl implements Task {
 
     public void setFormKey(String formKey) {
         this.formKey = formKey;
+    }
+
+    public Date getCompletedDate() {
+        return completedDate;
+    }
+
+    public void setCompletedDate(Date completedDate) {
+        this.completedDate = completedDate;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 
     @Override

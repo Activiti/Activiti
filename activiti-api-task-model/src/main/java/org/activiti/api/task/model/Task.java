@@ -56,4 +56,8 @@ public interface Task {
     TaskStatus getStatus();
 
     String getFormKey();
+
+    Date getCompletedDate();
+
+    long getDuration();
 }
