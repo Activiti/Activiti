@@ -9,7 +9,7 @@ public class UpdateTaskPayload implements Payload {
 
     private String id;
     private String taskId;
-    private String taskName;
+    private String name;
     private String description;
     private Date dueDate;
     private Integer priority;
@@ -22,7 +22,7 @@ public class UpdateTaskPayload implements Payload {
     }
 
     public UpdateTaskPayload(String taskId,
-                             String taskName,
+                             String name,
                              String description,
                              Date dueDate,
                              Integer priority,
@@ -31,7 +31,7 @@ public class UpdateTaskPayload implements Payload {
                              String formKey) {
         this();
         this.taskId = taskId;
-        this.taskName = taskName;
+        this.name = name;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
@@ -53,12 +53,12 @@ public class UpdateTaskPayload implements Payload {
         this.taskId = taskId;
     }
 
-    public String getTaskName() {
-        return taskName;
+    public String getName() {
+        return name;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
