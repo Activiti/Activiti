@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti.build</groupId> 
     <artifactId>activiti-parent</artifactId>
-    <version>0.0.0-SNAPSHOT-PR-47-19</version>
+    <version>0.0.0-SNAPSHOT-PR-47-20</version>
     <relativePath/>
   </parent>
   <groupId>org.activiti</groupId>
@@ -16,8 +16,8 @@
   <description>Activiti Core :: Parent</description>
   <url>http://activiti.org</url>
   <properties>
-    <activiti-build.version>0.0.0-SNAPSHOT-PR-47-19</activiti-build.version>
-    <activiti-api.version>0.0.0-SNAPSHOT-PR-65-13</activiti-api.version>
+    <activiti-build.version>0.0.0-SNAPSHOT-PR-47-20</activiti-build.version>
+    <activiti-api.version>0.0.0-SNAPSHOT-PR-65-14</activiti-api.version>
     <activiti-core-common.version>0.0.0-SNAPSHOT-PR-41-6</activiti-core-common.version>
     <activiti.version>${project.version}</activiti.version>
     <batik.version>1.10</batik.version>
@@ -284,7 +284,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M1</version></plugin>
+        <version>${maven-surefire-plugin.version}</version></plugin>
     </plugins>
     </build>
   </project>
