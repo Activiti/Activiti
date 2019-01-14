@@ -18,7 +18,7 @@
   <properties>
     <activiti-build.version>0.0.0-SNAPSHOT-PR-47-19</activiti-build.version>
     <activiti-api.version>0.0.0-SNAPSHOT-PR-65-13</activiti-api.version>
-    <activiti-core-common.version>0.0.0-SNAPSHOT-PR-41-4</activiti-core-common.version>
+    <activiti-core-common.version>0.0.0-SNAPSHOT-PR-41-6</activiti-core-common.version>
     <activiti.version>${project.version}</activiti.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
