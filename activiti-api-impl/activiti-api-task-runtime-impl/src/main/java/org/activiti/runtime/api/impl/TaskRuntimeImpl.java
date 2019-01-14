@@ -232,7 +232,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         
         org.activiti.engine.task.Task internalTask = getInternalTask(updateTaskPayload.getTaskId());
            
-        if ((newValue = updateTaskPayload.getTaskName()) != null) {
+        if ((newValue = updateTaskPayload.getName()) != null) {
             oldValue = internalTask.getName();
             if (!Objects.equals(oldValue,newValue)) {
                 updates++;
