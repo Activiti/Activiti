@@ -38,7 +38,7 @@ public class TaskImpl implements Task {
     private String parentTaskId;
     private String formKey;
     private Date completedDate;
-    private long duration;
+    private Long duration;
 
     public TaskImpl() {
     }
@@ -171,11 +171,11 @@ public class TaskImpl implements Task {
         this.completedDate = completedDate;
     }
 
-    public long getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(long duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 
