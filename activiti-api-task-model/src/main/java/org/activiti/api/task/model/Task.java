@@ -59,5 +59,5 @@ public interface Task {
 
     Date getCompletedDate();
 
-    long getDuration();
+    Long getDuration();
 }
