@@ -14,14 +14,21 @@ package org.activiti.engine.impl.el;
 
 import java.beans.FeatureDescriptor;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.el.ELContext;
 import javax.el.ELResolver;
 
 import org.activiti.engine.delegate.VariableScope;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.VariableInstance;
+
+import com.fasterxml.jackson.databind.JsonNode;
+
+
 
 /**
  * Implementation of an {@link ELResolver} that resolves expressions with the process variables of a given {@link VariableScope} as context. <br>
@@ -59,7 +66,13 @@ public class VariableScopeElResolver extends ELResolver {
       } else {
         if (variableScope.hasVariable(variable)) {
           context.setPropertyResolved(true); // if not set, the next elResolver in the CompositeElResolver will be called
-          return variableScope.getVariable(variable);
+          VariableInstance variableInstance = variableScope.getVariableInstance(variable);
+          Object value = variableInstance.getValue();
+          if ( ("json".equals(variableInstance.getTypeName()) || "longJson".equals(variableInstance.getTypeName())) && (value instanceof JsonNode) && ((JsonNode)value).isArray() ) {
+            return Context.getProcessEngineConfiguration().getObjectMapper().convertValue(value, List.class);
+          } else {
+            return value;
+          }
         }
       }
     }

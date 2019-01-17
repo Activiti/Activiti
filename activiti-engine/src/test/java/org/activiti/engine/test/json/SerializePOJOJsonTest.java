@@ -57,8 +57,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testCollectionJsonVarInExpression", vars);
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
-        taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
-        taskService.complete(taskId);
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().forEach(task -> taskService.complete(task.getId()));
     }
 
     @Deployment
