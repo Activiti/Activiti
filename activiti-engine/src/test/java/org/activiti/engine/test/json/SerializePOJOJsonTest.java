@@ -59,4 +59,18 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
     }
+
+    @Deployment
+    public void testCollectionInJsonVarInExpression() throws Exception {
+        Map<String, Object> vars = new HashMap<String, Object>();
+        List<String> list = Arrays.asList("salaboy", "salaboy", "salaboy");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("userCollection", list);
+        vars.put("userMap", map);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testCollectionInJsonVarInExpression", vars);
+        String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
+        taskService.complete(taskId);
+        taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
+        taskService.complete(taskId);
+    }
 }
