@@ -11,6 +11,7 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.test.Deployment;
+import org.activiti.examples.variables.SomeSerializable;
 
 public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
 
@@ -70,7 +71,31 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testCollectionInJsonVarInExpression", vars);
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().forEach(task -> taskService.complete(task.getId()));
+
+        vars = new HashMap<String, Object>();
+        List<SomeSerializable> beanList = Arrays.asList(new SomeSerializable("salaboy"), new SomeSerializable("salaboy"), new SomeSerializable("salaboy"));
+        map = new HashMap<String, Object>();
+        map.put("userCollection", beanList);
+        vars.put("userMap", map);
+        processInstance = runtimeService.startProcessInstanceByKey("testCollectionInJsonVarInExpression", vars);
         taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().forEach(task -> taskService.complete(task.getId()));
+    }
+
+    @Deployment
+    public void testPOJOCollectionInJsonVarInExpression() throws Exception {
+        Map<String, Object> vars = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<String, Object>();
+        vars = new HashMap<String, Object>();
+        List<SomeSerializable> beanList = Arrays.asList(new SomeSerializable("salaboy"), new SomeSerializable("salaboy"), new SomeSerializable("salaboy"));
+        map = new HashMap<String, Object>();
+        map.put("userCollection", beanList);
+        vars.put("userMap", map);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testPOJOCollectionInJsonVarInExpression", vars);
+        String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
+        taskService.complete(taskId);
+        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().forEach(task -> taskService.complete(task.getId()));
     }
 }
