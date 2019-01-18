@@ -10,6 +10,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.examples.variables.SomeSerializable;
 
@@ -39,7 +40,7 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
             @Override
             public void accept(IdentityLink i) {
                 if ("candidate".equals(i.getType()) ) {
-                	assertEquals("salaboy", i.getUserId());
+                    assertEquals("salaboy", i.getUserId());
                 }
             }
         });
@@ -57,7 +58,10 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testCollectionJsonVarInExpression", vars);
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
-        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().forEach(task -> taskService.complete(task.getId()));
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+        assertEquals(3, tasks.size());
+        tasks.forEach(task -> taskService.complete(task.getId()));
+
     }
 
     @Deployment
@@ -80,7 +84,9 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         processInstance = runtimeService.startProcessInstanceByKey("testCollectionInJsonVarInExpression", vars);
         taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
-        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().forEach(task -> taskService.complete(task.getId()));
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+        assertEquals(3, tasks.size());
+        tasks.forEach(task -> taskService.complete(task.getId()));
     }
 
     @Deployment
@@ -95,6 +101,8 @@ public class SerializePOJOJsonTest extends ResourceActivitiTestCase {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testPOJOCollectionInJsonVarInExpression", vars);
         String taskId = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult().getId();
         taskService.complete(taskId);
-        taskService.createTaskQuery().processInstanceId(processInstance.getId()).list().forEach(task -> taskService.complete(task.getId()));
+        List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
+        assertEquals(3, tasks.size());
+        tasks.forEach(task -> taskService.complete(task.getId()));
     }
 }
