@@ -13,5 +13,7 @@ github:
     - name: activiti-cloud-api
       branch: develop
       useSinglePullRequest: true
-      
+    - name: activiti-cloud-process-model-service
+      branch: develop
+      useSinglePullRequest: true
       
