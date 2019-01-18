@@ -31,6 +31,8 @@ pipeline {
         }
         steps {
           container('maven') {
+            sh "java -version"
+            sh "javac -version"
             // ensure we're not on a detached head
             sh "git checkout develop"
             sh "git config --global credential.helper store"
