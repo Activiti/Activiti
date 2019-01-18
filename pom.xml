@@ -530,6 +530,7 @@
         </plugins>
       </build>
       <distributionManagement>
+       <!--TODO this doesn't work with new deployment plugin -->
         <repository>
           <id>central-releases-staging</id>
           <name>Central Releases - Staging</name>
