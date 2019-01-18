@@ -100,10 +100,5 @@ pipeline {
         always {
             cleanWs()
         }
-        failure {
-            input """Pipeline failed. 
-                  We will keep the build pod around to help you diagnose any failures. 
-                  Select Proceed or Abort to terminate the build pod"""
-        }
     }
   }
