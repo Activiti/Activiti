@@ -21,9 +21,7 @@ pipeline {
           container('maven') {
             sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
             sh "mvn install"
-            sh 'mvn clean deploy -DskipTests'
           }
-
         }
       }
       stage('Build Release') {
