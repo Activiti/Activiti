@@ -199,7 +199,7 @@
           <version>${maven-javadoc-plugin.version}</version>
           <configuration>
             <doclint>none</doclint>
-            <failOnError>false</failOnError> 
+            <failOnError>false</failOnError>        
           </configuration>
         </plugin>
         <plugin>
