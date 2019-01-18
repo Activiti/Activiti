@@ -328,7 +328,7 @@
           </dependency>
         </dependencies>
         <executions>
-          <execution>
+          <!-- <execution>
             <id>enforce-java</id>
             <goals>
               <goal>enforce</goal>
@@ -340,7 +340,7 @@
                 </requireJavaVersion>
               </rules>
             </configuration>
-          </execution>
+          </execution> -->
           <execution>
             <id>enforce-maven</id>
             <goals>
