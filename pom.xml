@@ -62,23 +62,22 @@
   </ciManagement>
   <properties>
     <!-- plugins -->
-    <asm.version>6.1.1</asm.version>
+    <asm.version>6.2</asm.version>
     <assertj-assertions-generator-maven-plugin.version>2.0.0</assertj-assertions-generator-maven-plugin.version>
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     <dependency-check-maven.version>3.1.2</dependency-check-maven.version>
     <exec-maven-plugin.version>1.5.0</exec-maven-plugin.version>
     <extra-enforcer-rules.version>1.0-beta-7</extra-enforcer-rules.version>
-    <illegal-transitive-dependency-check.version>1.7.4</illegal-transitive-dependency-check.version>
-    <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
+    <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
     <jgitflow-maven-plugin.version>1.0-m5.1</jgitflow-maven-plugin.version>
     <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
     <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
     <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-    <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
     <!-- had to downgrade failsafe plugin to avoid sun.reflect.annotation.TypeNotPresentExceptionProxy error in activiti-cloud-query
     workaround for https://github.com/spring-projects/spring-boot/issues/6254-->
-    <maven-failsafe-plugin.version>2.18.1</maven-failsafe-plugin.version>
+    <maven-failsafe-plugin.version>3.0.0-M3</maven-failsafe-plugin.version>
     <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
     <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
@@ -87,12 +86,15 @@
     <maven-resources-plugin.version>3.0.1</maven-resources-plugin.version>
     <maven-site-plugin.version>3.6</maven-site-plugin.version>
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
+
+    <java.version>11</java.version>
+    <maven.compiler.source>${java.version}</maven.compiler.source>
+    <maven.compiler.target>${java.version}</maven.compiler.target>
 
     <!-- configuration properties -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <java.version>1.8</java.version>
     <enforcer.failOnDuplicatedClasses>true</enforcer.failOnDuplicatedClasses>
     <!-- configuration properties for tests-->
     <generated-assertions-folder>${project.build.directory}/generated-test-sources/assertions</generated-assertions-folder>
@@ -289,6 +291,11 @@
           <artifactId>assertj-assertions-generator-maven-plugin</artifactId>
           <version>${assertj-assertions-generator-maven-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco-maven-plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -297,8 +304,7 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>${maven-compiler-plugin.version}</version>
         <configuration>
-          <source>${java.version}</source>
-          <target>${java.version}</target>
+          <release>${java.version}</release>
           <showDeprecation>true</showDeprecation>
           <showWarnings>true</showWarnings>
           <optimize>true</optimize>
@@ -313,11 +319,6 @@
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>extra-enforcer-rules</artifactId>
             <version>${extra-enforcer-rules.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>de.is24.maven.enforcer.rules</groupId>
-            <artifactId>illegal-transitive-dependency-check</artifactId>
-            <version>${illegal-transitive-dependency-check.version}</version>
           </dependency>
           <dependency>
             <groupId>org.ow2.asm</groupId>
@@ -349,45 +350,6 @@
                 <requireMavenVersion>
                   <version>3.2</version>
                 </requireMavenVersion>
-              </rules>
-            </configuration>
-          </execution>
-          <execution>
-            <id>enforce-plugin-versions</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requirePluginVersions>
-                </requirePluginVersions>
-              </rules>
-            </configuration>
-          </execution>
-          <execution>
-            <id>enforce-direct-dependencies</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <illegalTransitiveDependencyCheck implementation="de.is24.maven.enforcer.rules.IllegalTransitiveDependencyCheck">
-                  <regexIgnoredClasses combine.children="append">
-                    <!-- The marshalling classes are generated by Errai during GWT compilation. These classes
-                                               usually contain references to other dependencies which are not part of the project
-                                               (transitive dependencies), which then results in the dependency check failure.
-                                               From the maintenance point of view, ignoring these generated classes seems like the
-                                               best option. -->
-                    <!-- The enforcer is complaining about Predicate class after adding the dependency to Swagger.
-                    However this class is never referenced directly in the project: we are adding it to ignore list
-                    to avoid a dependency that's not necessary.-->
-                    <regexIgnoredClass>com\.google\.common\.base\.Predicate</regexIgnoredClass>
-                    <regexIgnoredClass>javax\.persistence.*</regexIgnoredClass>
-                    <regexIgnoredClass>org\.springframework.*</regexIgnoredClass>
-                  </regexIgnoredClasses>
-                  <suppressTypesFromJavaRuntime>true</suppressTypesFromJavaRuntime>
-                  <useClassesFromLastBuild>true</useClassesFromLastBuild>
-                </illegalTransitiveDependencyCheck>
               </rules>
             </configuration>
           </execution>
@@ -460,6 +422,8 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>${maven-surefire-plugin.version}</version>
         <configuration>
+          <!-- use syntax for Jacoco late property evaluation -->
+          <argLine>@{argLine} -Xmx1024m -XX:MaxPermSize=256m</argLine>
           <redirectTestOutputToFile>true</redirectTestOutputToFile>
           <failIfNoTests>false</failIfNoTests>
           <trimStackTrace>false</trimStackTrace>
