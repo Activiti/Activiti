@@ -20,10 +20,10 @@
   <inceptionYear>2018</inceptionYear>
 
   <properties>
-    <activiti-build.version>0.0.0-SNAPSHOT-PR-47-20</activiti-build.version>
-    <activiti-api.version>0.0.0-SNAPSHOT-PR-65-14</activiti-api.version>
-    <activiti-core-common.version>0.0.0-SNAPSHOT-PR-41-6</activiti-core-common.version> 
-    <activiti.version>0.0.0-SNAPSHOT-PR-2352-11</activiti.version>
+    <activiti-build.version>7.0.47</activiti-build.version>
+    <activiti-api.version>7.0.69</activiti-api.version>
+    <activiti-core-common.version>7.0.38</activiti-core-common.version> 
+    <activiti.version>7.0.111</activiti.version>
   </properties>
 
   <organization>
