@@ -4,7 +4,7 @@ pull_request_rules:
       - author=jx-activiti-cloud
       - status-success=continuous-integration/travis-ci/pr
       - status-success=continuous-integration/travis-ci/push
-      - status-success=license/cla
+      #- status-success=license/cla
     actions:
       delete_head_branch: {}
       merge:
