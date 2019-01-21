@@ -4,7 +4,7 @@ pipeline {
     }
     environment {
       ORG               = 'activiti'
-      APP_NAME          = 'activitiexamples'
+      APP_NAME          = 'activiti-examples'
       CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
     }
     stages {
