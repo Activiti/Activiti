@@ -18,6 +18,7 @@ package org.activiti.runtime.api.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
@@ -88,6 +89,70 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
                                                                  pageable.getMaxItems()));
         return new PageImpl<>(tasks,
                               Math.toIntExact(taskQuery.count()));
+    }
+    
+    @Override
+    public Task update(UpdateTaskPayload updateTaskPayload) {
+        org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskId(updateTaskPayload.getTaskId()).singleResult();
+        if (internalTask == null) {
+            throw new NotFoundException("Unable to find task for the given id: " + updateTaskPayload.getTaskId());
+        }
+        
+        int updates=0;
+        String oldValue,newValue;
+             
+        if ((newValue = updateTaskPayload.getName()) != null) {
+            oldValue = internalTask.getName();
+            if (!Objects.equals(oldValue,newValue)) {
+                updates++;
+                internalTask.setName(newValue);
+            }
+        }
+        
+        if ((newValue = updateTaskPayload.getDescription()) != null) {
+            oldValue = internalTask.getDescription();
+            if (!Objects.equals(oldValue,newValue)) {
+                updates++;
+                internalTask.setDescription(newValue);
+            }
+        }
+            
+        if (updateTaskPayload.getPriority() != null) {
+            if (internalTask.getPriority()!=updateTaskPayload.getPriority()) {
+                updates++;
+                internalTask.setPriority(updateTaskPayload.getPriority());
+            }
+        }
+        
+        if (updateTaskPayload.getDueDate() != null) {
+            if (!Objects.equals(internalTask.getDueDate(),updateTaskPayload.getDueDate())) {
+                updates++;
+                internalTask.setDueDate(updateTaskPayload.getDueDate());
+            }
+        }
+        
+        //@TODO: check if this value can be updated
+        if ((newValue=updateTaskPayload.getParentTaskId()) != null) {
+            oldValue = internalTask.getParentTaskId();
+            if (!Objects.equals(oldValue,newValue)) {
+                updates++;
+                internalTask.setParentTaskId(newValue);
+            }
+        }
+        
+        if ((newValue=updateTaskPayload.getFormKey()) != null) {
+            oldValue = internalTask.getFormKey();
+            if (!Objects.equals(oldValue,newValue)) {
+                updates++;
+                internalTask.setFormKey(newValue);
+            }
+        }
+        
+        if (updates > 0) {
+            taskService.saveTask(internalTask);
+        }
+   
+        return taskConverter.from(taskService.createTaskQuery().taskId(updateTaskPayload.getTaskId()).singleResult());
     }
 
     @Override
