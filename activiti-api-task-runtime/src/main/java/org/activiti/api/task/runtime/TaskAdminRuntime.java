@@ -30,6 +30,7 @@ import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
+import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 
 /**
  * All the methods require an authenticated Admin user
@@ -80,6 +81,11 @@ public interface TaskAdminRuntime {
      * - This method return a shallow Task object with the basic information needed to validate that the task was completed
      */
     Task complete(CompleteTaskPayload completeTaskPayload);
+    
+    /**
+     * Updates details of a task
+     */
+    Task update(UpdateTaskPayload updateTaskPayload);
 
 
     void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);
