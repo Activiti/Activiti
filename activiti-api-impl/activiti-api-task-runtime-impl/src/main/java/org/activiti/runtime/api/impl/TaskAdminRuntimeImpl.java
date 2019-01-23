@@ -234,8 +234,4 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         return taskService.getIdentityLinksForTask(taskId);
     }
 
-    @Override
-    public Task update(UpdateTaskPayload updateTaskPayload) {
-        throw new IllegalArgumentException("To be implemented");
-    }
 }
