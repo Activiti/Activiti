@@ -65,19 +65,23 @@ public class TaskRuntimeImpl implements TaskRuntime {
     private final UserGroupManager userGroupManager;
 
     private final SecurityManager securityManager;
+    
+    private final TaskRuntimeHelper taskRuntimeHelper;
 
     public TaskRuntimeImpl(TaskService taskService,
                            UserGroupManager userGroupManager,
                            SecurityManager securityManager,
                            APITaskConverter taskConverter,
                            APIVariableInstanceConverter variableInstanceConverter,
-                           TaskRuntimeConfiguration configuration) {
+                           TaskRuntimeConfiguration configuration,
+                           TaskRuntimeHelper taskRuntimeHelper) {
         this.taskService = taskService;
         this.userGroupManager = userGroupManager;
         this.securityManager = securityManager;
         this.taskConverter = taskConverter;
         this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
+        this.taskRuntimeHelper=taskRuntimeHelper;
     }
 
     @Override
@@ -87,7 +91,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Task task(String taskId) {
-        return taskConverter.from(getInternalTaskWithChecks(taskId));
+        return taskConverter.from(taskRuntimeHelper.getInternalTaskWithChecks(taskId));
     }
 
     @Override
@@ -212,8 +216,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     
     @Override
     public Task update(UpdateTaskPayload updateTaskPayload) {
-        TaskUpdater taskUpdater= new TaskUpdater(taskService,taskConverter,securityManager,userGroupManager);
-        return taskUpdater.applyUpdateTaskPayload(false, updateTaskPayload);
+        return taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload);
     }
 
     @Override
@@ -281,7 +284,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public void addCandidateUsers(CandidateUsersPayload candidateUsersPayload) {      
         org.activiti.engine.task.Task internalTask;
         try {
-            internalTask = getInternalTaskWithChecks(candidateUsersPayload.getTaskId());
+            internalTask = taskRuntimeHelper.getInternalTaskWithChecks(candidateUsersPayload.getTaskId());
             
         } catch (IllegalStateException ex) {
             throw new IllegalStateException("The authenticated user cannot update the task" + candidateUsersPayload.getTaskId() + " due it is not the current assignee");
@@ -307,7 +310,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload) {           
         org.activiti.engine.task.Task internalTask;
         try {
-            internalTask = getInternalTaskWithChecks(candidateUsersPayload.getTaskId());
+            internalTask = taskRuntimeHelper.getInternalTaskWithChecks(candidateUsersPayload.getTaskId());
             
         } catch (IllegalStateException ex) {
             throw new IllegalStateException("The authenticated user cannot update the task" + candidateUsersPayload.getTaskId() + " due it is not the current assignee");
@@ -333,7 +336,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {          
         org.activiti.engine.task.Task internalTask;
         try {
-            internalTask = getInternalTaskWithChecks(candidateGroupsPayload.getTaskId());
+            internalTask = taskRuntimeHelper.getInternalTaskWithChecks(candidateGroupsPayload.getTaskId());
             
         } catch (IllegalStateException ex) {
             throw new IllegalStateException("The authenticated user cannot update the task" + candidateGroupsPayload.getTaskId() + " due it is not the current assignee");
@@ -358,7 +361,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {    
         org.activiti.engine.task.Task internalTask;
         try {
-            internalTask = getInternalTaskWithChecks(candidateGroupsPayload.getTaskId());
+            internalTask = taskRuntimeHelper.getInternalTaskWithChecks(candidateGroupsPayload.getTaskId());
             
         } catch (IllegalStateException ex) {
             throw new IllegalStateException("The authenticated user cannot update the task" + candidateGroupsPayload.getTaskId() + " due it is not the current assignee");
@@ -421,29 +424,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
                                           setTaskVariablesPayload.getVariables());
     }
 
-    private org.activiti.engine.task.Task getInternalTask(String taskId) {
-        org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskId(taskId).singleResult();
-        if (internalTask == null) {
-            throw new NotFoundException("Unable to find task for the given id: " + taskId);
-        }
-        return internalTask;
-    }
-    
-    private org.activiti.engine.task.Task getInternalTaskWithChecks(String taskId) {
-        String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
-            List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
-            List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
-            org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskCandidateOrAssigned(authenticatedUserId,
-                                                                                                               userGroups).taskId(taskId).singleResult();
-            if (internalTask == null) {
-                throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
-            }
-            return internalTask;
-        }
-        throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
-    }
-    
     private List<IdentityLink> getIdentityLinks(String taskId) {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {

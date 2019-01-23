@@ -11,13 +11,13 @@ import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.engine.TaskService;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
-public class TaskUpdater {
+public class TaskRuntimeHelper {
     private final TaskService taskService;
     private final SecurityManager securityManager;
     private final UserGroupManager userGroupManager;
     private final APITaskConverter taskConverter;
     
-    public TaskUpdater(TaskService taskService,
+    public TaskRuntimeHelper(TaskService taskService,
                        APITaskConverter taskConverter,
                        SecurityManager securityManager,
                        UserGroupManager userGroupManager) {
@@ -94,7 +94,7 @@ public class TaskUpdater {
             taskService.saveTask(internalTask);
         }
         
-        return taskConverter.from(taskService.createTaskQuery().taskId(updateTaskPayload.getTaskId()).singleResult());
+        return taskConverter.from(getInternalTask(updateTaskPayload.getTaskId()));                   
     }
     
     public org.activiti.engine.task.Task getInternalTaskWithChecks(String taskId) {
@@ -117,6 +117,14 @@ public class TaskUpdater {
             return task;
         }
         throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
+    }
+    
+    public org.activiti.engine.task.Task getInternalTask(String taskId) {
+        org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskId(taskId).singleResult();
+        if (internalTask == null) {
+            throw new NotFoundException("Unable to find task for the given id: " + taskId);
+        }
+        return internalTask;
     }
 
 }

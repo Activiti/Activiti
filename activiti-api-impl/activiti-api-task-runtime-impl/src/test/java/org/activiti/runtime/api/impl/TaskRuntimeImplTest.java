@@ -56,6 +56,9 @@ public class TaskRuntimeImplTest {
     @Mock 
     private APITaskConverter taskConverter;
     
+    @Mock 
+    private TaskRuntimeHelper taskRuntimeHelper;
+    
     @Before
     public void setUp() {
         initMocks(this);
@@ -64,7 +67,8 @@ public class TaskRuntimeImplTest {
                             securityManager,
                             taskConverter,
                             null,
-                            null));
+                            null,
+                            taskRuntimeHelper));
         when(securityManager.getAuthenticatedUserId()).thenReturn("user");
     }
 
@@ -103,7 +107,7 @@ public class TaskRuntimeImplTest {
         given(taskQuery.taskId("taskId")).willReturn(taskQuery);
         given(taskService.createTaskQuery()).willReturn(taskQuery);
         
-        TaskUpdater taskUpdater=mock(TaskUpdater.class);      
+        TaskRuntimeHelper taskUpdater=mock(TaskRuntimeHelper.class);      
         Task internalTask = mock(Task.class);
         
         given(taskQuery.singleResult()).willReturn(internalTask);
