@@ -34,6 +34,7 @@ import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
+import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.IdentityLink;
@@ -228,5 +229,9 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     private List<IdentityLink> getIdentityLinks(String taskId) {
         return taskService.getIdentityLinksForTask(taskId);
     }
-    
+
+    @Override
+    public Task update(UpdateTaskPayload updateTaskPayload) {
+        throw new IllegalArgumentException("To be implemented");
+    }
 }
