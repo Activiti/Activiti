@@ -29,7 +29,7 @@ public class TaskRuntimeHelper {
     
     public Task applyUpdateTaskPayload(boolean isAdmin, UpdateTaskPayload updateTaskPayload) {
         
-        org.activiti.engine.task.Task internalTask=null;
+        org.activiti.engine.task.Task internalTask;
         int updates=0;
         String oldValue,newValue;
         
