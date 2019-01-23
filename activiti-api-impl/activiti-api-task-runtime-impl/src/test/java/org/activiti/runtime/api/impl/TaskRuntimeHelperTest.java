@@ -40,7 +40,6 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -71,7 +70,7 @@ public class TaskRuntimeHelperTest {
     }
 
     @Test
-    public void updateShouldSetAllFieldsAndSaveChanges() {
+    public void updateShouldSetAllFieldsAndSaveChangesWhenAssignee() {
         //given
         Date now = new Date();
         UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder
@@ -83,7 +82,8 @@ public class TaskRuntimeHelperTest {
                 .withDueDate(now)
                 .withFormKey("new form key")
                 .build();
-        Task internalTask = mock(Task.class);
+        String assignee = "user";
+        Task internalTask = buildInternalTask(assignee);
         doReturn(internalTask).when(taskRuntimeHelper).getInternalTaskWithChecks("taskId");
         doReturn(internalTask).when(taskRuntimeHelper).getInternalTask("taskId");
 
@@ -99,8 +99,14 @@ public class TaskRuntimeHelperTest {
         verify(taskService).saveTask(internalTask);
     }
 
+    private Task buildInternalTask(String assignee) {
+        Task internalTask = mock(Task.class);
+        given(internalTask.getAssignee()).willReturn(assignee);
+        return internalTask;
+    }
+
     @Test
-    public void getInternalTaskWithChecksShouldThrowExceptionWhenAssigneeIsNotSet() {
+    public void applyUpdateTaskPayloadShouldThrowExceptionWhenAssigneeIsNotSetAndIsNotAdmin() {
         //given
         TaskQuery taskQuery = mock(TaskQuery.class);
         given(taskService.createTaskQuery()).willReturn(taskQuery);
@@ -108,10 +114,16 @@ public class TaskRuntimeHelperTest {
         given(taskQuery.taskId("taskId")).willReturn(taskQuery);
 
         Task internalTask = mock(Task.class);
-        given(taskQuery.singleResult()).willReturn(internalTask);
+        doReturn(internalTask).when(taskRuntimeHelper).getInternalTaskWithChecks("taskId");
+
+        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder
+                .update()
+                .withTaskId("taskId")
+                .withDescription("new description")
+                .build();
 
         //when
-        Throwable throwable = catchThrowable(() -> taskRuntimeHelper.getInternalTaskWithChecks("taskId"));
+        Throwable throwable = catchThrowable(() -> taskRuntimeHelper.applyUpdateTaskPayload(false, updateTaskPayload));
 
         //then
         assertThat(throwable)
@@ -128,8 +140,10 @@ public class TaskRuntimeHelperTest {
                 .withDescription("new description")
                 .build();
         TaskImpl task = new TaskImpl();
-        task.setAssignee("user");
-        Task internalTask = mock(Task.class);
+        String assignee = "user";
+        task.setAssignee(assignee);
+        Task internalTask = buildInternalTask(assignee);
+
         doReturn(internalTask).when(taskRuntimeHelper).getInternalTaskWithChecks("taskId");
         doReturn(internalTask).when(taskRuntimeHelper).getInternalTask("taskId");
 
@@ -151,7 +165,6 @@ public class TaskRuntimeHelperTest {
         //then
         verify(internalTask).getDescription();
         verify(internalTask).setDescription("new description");
-        verifyNoMoreInteractions(internalTask);
 
         verify(taskService).saveTask(internalTask);
     }

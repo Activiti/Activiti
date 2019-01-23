@@ -36,7 +36,13 @@ public class TaskRuntimeHelper {
         if (isAdmin) {
             internalTask = taskService.createTaskQuery().taskId(updateTaskPayload.getTaskId()).singleResult();
         } else {
-            internalTask=getInternalTaskWithChecks(updateTaskPayload.getTaskId());
+            String authenticatedUserId = getAuthenticatedUser();
+
+            internalTask = getInternalTaskWithChecks(updateTaskPayload.getTaskId());
+            // validate that you are trying to update task where you are the assignee
+            if (!Objects.equals(internalTask.getAssignee(),authenticatedUserId)) {
+                throw new IllegalStateException("You cannot update a task where you are not the assignee");
+            }
         }
         
         if (internalTask == null) {
@@ -97,8 +103,8 @@ public class TaskRuntimeHelper {
     }
     
     public org.activiti.engine.task.Task getInternalTaskWithChecks(String taskId) {
-        String authenticatedUserId = securityManager!=null ? securityManager.getAuthenticatedUserId() : null;
-        
+        String authenticatedUserId = getAuthenticatedUser();
+
         if (authenticatedUserId != null && !authenticatedUserId.isEmpty() && userGroupManager!=null) {
             
             List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
@@ -109,15 +115,15 @@ public class TaskRuntimeHelper {
                 throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
             }
             
-            // validate that you are trying to update task where you are the assignee
-            if (!Objects.equals(task.getAssignee(),authenticatedUserId)) {
-                throw new IllegalStateException("You cannot update a task where you are not the assignee");
-            }
             return task;
         }
         throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
     }
-    
+
+    private String getAuthenticatedUser() {
+        return securityManager!=null ? securityManager.getAuthenticatedUserId() : null;
+    }
+
     public org.activiti.engine.task.Task getInternalTask(String taskId) {
         org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskId(taskId).singleResult();
         if (internalTask == null) {
