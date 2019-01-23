@@ -1,4 +1,4 @@
-\create table ACT_GE_PROPERTY (
+create table ACT_GE_PROPERTY (
     NAME_ varchar(64) not null,
     VALUE_ varchar(300),
     REV_ integer,
