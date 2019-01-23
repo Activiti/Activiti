@@ -73,7 +73,6 @@ public class TaskRuntimeHelper {
             }
         }
         
-        //@TODO: check if this value can be updated
         if ((newValue=updateTaskPayload.getParentTaskId()) != null) {
             oldValue = internalTask.getParentTaskId();
             if (!Objects.equals(oldValue,newValue)) {
