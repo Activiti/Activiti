@@ -61,7 +61,7 @@ public class UserTaskCandidateGroupsTest {
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
-                .withProcessInstanceName("my-process-instance-name")
+                .withName("my-process-instance-name")
                 .build());
 
         //then
