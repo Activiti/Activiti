@@ -8,8 +8,8 @@ public class UpdateProcessPayload implements Payload {
 
     private String id;
     private String processInstanceId;
-    private String processInstanceName;
-    private String processInstanceDescription;
+    private String name;
+    private String description;
     private String businessKey;
     
     public UpdateProcessPayload() {
@@ -17,13 +17,13 @@ public class UpdateProcessPayload implements Payload {
     }
 
     public UpdateProcessPayload(String processInstanceId,
-                               String processInstanceName,
-                               String processInstanceDescription,
+                               String name,
+                               String description,
                                String businessKey) {
         this();
         this.processInstanceId = processInstanceId;
-        this.processInstanceName = processInstanceName;
-        this.processInstanceDescription = processInstanceDescription;
+        this.name = name;
+        this.description = description;
         this.businessKey = businessKey;
     }
 
@@ -40,20 +40,20 @@ public class UpdateProcessPayload implements Payload {
         this.processInstanceId = processInstanceId;
     }
 
-    public String getProcessInstanceDescription() {
-        return processInstanceDescription;
+    public String getDescription() {
+        return description;
     }
     
-    public void setProcessInstanceDescription(String processInstanceDescription) {
-        this.processInstanceDescription = processInstanceDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getProcessInstanceName() {
-        return processInstanceName;
+    public String getName() {
+        return name;
     }
     
-    public void setProcessInstanceName(String processInstanceName) {
-        this.processInstanceName = processInstanceName;
+    public void setName(String name) {
+        this.name = name;
     }
     
     public String getBusinessKey() {
