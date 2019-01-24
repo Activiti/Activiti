@@ -19,7 +19,6 @@ package org.activiti.runtime.api.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -50,20 +49,20 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     private final TaskService taskService;
 
     private final APITaskConverter taskConverter;
+    
+    private final TaskRuntimeHelper taskRuntimeHelper;
 
     public TaskAdminRuntimeImpl(TaskService taskService,
-                                APITaskConverter taskConverter) {
+                                APITaskConverter taskConverter,
+                                TaskRuntimeHelper taskRuntimeHelper) {
         this.taskService = taskService;
         this.taskConverter = taskConverter;
+        this.taskRuntimeHelper=taskRuntimeHelper;
     }
 
     @Override
     public Task task(String taskId) {
-        org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskId(taskId).singleResult();
-        if (internalTask == null) {
-            throw new NotFoundException("Unable to find task for the given id: " + taskId);
-        }
-        return taskConverter.from(internalTask);
+        return taskConverter.from(taskRuntimeHelper.getInternalTask(taskId));
     }
 
     @Override
@@ -88,6 +87,11 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
                                                                  pageable.getMaxItems()));
         return new PageImpl<>(tasks,
                               Math.toIntExact(taskQuery.count()));
+    }
+    
+    @Override
+    public Task update(UpdateTaskPayload updateTaskPayload) {
+        return taskRuntimeHelper.applyUpdateTaskPayload(true, updateTaskPayload);
     }
 
     @Override
@@ -230,8 +234,4 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         return taskService.getIdentityLinksForTask(taskId);
     }
 
-    @Override
-    public Task update(UpdateTaskPayload updateTaskPayload) {
-        throw new IllegalArgumentException("To be implemented");
-    }
 }
