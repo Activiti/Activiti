@@ -18,8 +18,9 @@ package org.activiti.api.process.runtime.connector;
 
 import org.activiti.api.process.model.IntegrationContext;
 
-public interface Connector {
+import java.util.function.Function;
 
-    IntegrationContext execute(IntegrationContext executionContext);
+public interface Connector extends Function<IntegrationContext, IntegrationContext> {
+
 
 }
