@@ -33,7 +33,6 @@ import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -161,9 +160,9 @@ public class TaskRuntimeHelperTest {
         TaskRuntimeHelper taskUpdater = mock(TaskRuntimeHelper.class);
 
         given(taskQuery.singleResult()).willReturn(internalTask);
-        when(taskUpdater.getInternalTaskWithChecks(Mockito.any())).thenReturn(internalTask);
+        when(taskUpdater.getInternalTaskWithChecks(any())).thenReturn(internalTask);
 
-        Mockito.when(taskConverter.from(Mockito.any(Task.class))).thenReturn(task);
+        when(taskConverter.from(any(Task.class))).thenReturn(task);
 
         //when
         taskRuntimeHelper.applyUpdateTaskPayload(false,

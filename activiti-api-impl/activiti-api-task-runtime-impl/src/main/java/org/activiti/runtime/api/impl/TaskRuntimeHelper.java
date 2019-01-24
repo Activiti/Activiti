@@ -30,70 +30,32 @@ public class TaskRuntimeHelper {
     public Task applyUpdateTaskPayload(boolean isAdmin, UpdateTaskPayload updateTaskPayload) {
         
         org.activiti.engine.task.Task internalTask;
-        int updates=0;
-        String oldValue,newValue;
-        
-        if (isAdmin) {
-            internalTask = taskService.createTaskQuery().taskId(updateTaskPayload.getTaskId()).singleResult();
-        } else {
-            String authenticatedUserId = getAuthenticatedUser();
 
-            internalTask = getInternalTaskWithChecks(updateTaskPayload.getTaskId());
-            // validate that you are trying to update task where you are the assignee
-            if (!Objects.equals(internalTask.getAssignee(),authenticatedUserId)) {
-                throw new IllegalStateException("You cannot update a task where you are not the assignee");
-            }
+        if (isAdmin) {
+            internalTask = getInternalTask(updateTaskPayload.getTaskId());
+        } else {
+            internalTask = getTaskToUpdate(updateTaskPayload.getTaskId());
         }
-        
-        if (internalTask == null) {
-            throw new NotFoundException("Unable to find task for the given id: " + updateTaskPayload.getTaskId());
-        }
-          
-        if ((newValue = updateTaskPayload.getName()) != null) {
-            oldValue = internalTask.getName();
-            if (!Objects.equals(oldValue,newValue)) {
-                updates++;
-                internalTask.setName(newValue);
-            }
-        }
-        
-        if ((newValue = updateTaskPayload.getDescription()) != null) {
-            oldValue = internalTask.getDescription();
-            if (!Objects.equals(oldValue,newValue)) {
-                updates++;
-                internalTask.setDescription(newValue);
-            }
-        }
-            
-        if (updateTaskPayload.getPriority() != null) {
-            if (internalTask.getPriority()!=updateTaskPayload.getPriority()) {
-                updates++;
-                internalTask.setPriority(updateTaskPayload.getPriority());
-            }
-        }
-        
-        if (updateTaskPayload.getDueDate() != null) {
-            if (!Objects.equals(internalTask.getDueDate(),updateTaskPayload.getDueDate())) {
-                updates++;
-                internalTask.setDueDate(updateTaskPayload.getDueDate());
-            }
-        }
-        
-        if ((newValue=updateTaskPayload.getParentTaskId()) != null) {
-            oldValue = internalTask.getParentTaskId();
-            if (!Objects.equals(oldValue,newValue)) {
-                updates++;
-                internalTask.setParentTaskId(newValue);
-            }
-        }
-        
-        if ((newValue=updateTaskPayload.getFormKey()) != null) {
-            oldValue = internalTask.getFormKey();
-            if (!Objects.equals(oldValue,newValue)) {
-                updates++;
-                internalTask.setFormKey(newValue);
-            }
-        }
+
+        int updates = updateName(updateTaskPayload,
+                                 internalTask,
+                                 0);
+        updates = updateDescription(updateTaskPayload,
+                                    internalTask,
+                                    updates);
+        updates = updatePriority(updateTaskPayload,
+                                 internalTask,
+                                 updates);
+
+        updates = updateDueDate(updateTaskPayload,
+                                internalTask,
+                                updates);
+        updates = updateParentTaskId(updateTaskPayload,
+                                     internalTask,
+                                     updates);
+        updates = updateFormKey(updateTaskPayload,
+                                internalTask,
+                                updates);
         
         if (updates > 0) {
             taskService.saveTask(internalTask);
@@ -101,7 +63,98 @@ public class TaskRuntimeHelper {
         
         return taskConverter.from(getInternalTask(updateTaskPayload.getTaskId()));                   
     }
-    
+
+    private org.activiti.engine.task.Task getTaskToUpdate(String taskId) {
+        String authenticatedUserId = getAuthenticatedUser();
+
+        org.activiti.engine.task.Task internalTask = getInternalTaskWithChecks(taskId);
+        // validate that you are trying to update task where you are the assignee
+        if (!Objects.equals(internalTask.getAssignee(), authenticatedUserId)) {
+            throw new IllegalStateException("You cannot update a task where you are not the assignee");
+        }
+        return internalTask;
+    }
+
+    private int updateFormKey(UpdateTaskPayload updateTaskPayload,
+                              org.activiti.engine.task.Task internalTask,
+                              int updates) {
+        String newValue;
+
+        if ((newValue=updateTaskPayload.getFormKey()) != null) {
+            String oldValue = internalTask.getFormKey();
+            if (!Objects.equals(oldValue, newValue)) {
+                updates++;
+                internalTask.setFormKey(newValue);
+            }
+        }
+        return updates;
+    }
+
+    private int updateParentTaskId(UpdateTaskPayload updateTaskPayload,
+                                   org.activiti.engine.task.Task internalTask,
+                                   int updates) {
+        String newValue;
+
+        if ((newValue=updateTaskPayload.getParentTaskId()) != null) {
+            String oldValue = internalTask.getParentTaskId();
+            if (!Objects.equals(oldValue, newValue)) {
+                updates++;
+                internalTask.setParentTaskId(newValue);
+            }
+        }
+        return updates;
+    }
+
+    private int updateDueDate(UpdateTaskPayload updateTaskPayload,
+                              org.activiti.engine.task.Task internalTask,
+                              int updates) {
+        if (updateTaskPayload.getDueDate() != null && !Objects.equals(internalTask.getDueDate(),
+                                                                      updateTaskPayload.getDueDate())) {
+            updates++;
+            internalTask.setDueDate(updateTaskPayload.getDueDate());
+        }
+        return updates;
+    }
+
+    private int updatePriority(UpdateTaskPayload updateTaskPayload,
+                               org.activiti.engine.task.Task internalTask,
+                               int updates) {
+        if (updateTaskPayload.getPriority() != null && internalTask.getPriority() != updateTaskPayload.getPriority()) {
+            updates++;
+            internalTask.setPriority(updateTaskPayload.getPriority());
+        }
+        return updates;
+    }
+
+    private int updateDescription(UpdateTaskPayload updateTaskPayload,
+                                  org.activiti.engine.task.Task internalTask,
+                                  int updates) {
+        String newValue;
+
+        if ((newValue = updateTaskPayload.getDescription()) != null) {
+            String oldValue = internalTask.getDescription();
+            if (!Objects.equals(oldValue, newValue)) {
+                updates++;
+                internalTask.setDescription(newValue);
+            }
+        }
+        return updates;
+    }
+
+    private int updateName(UpdateTaskPayload updateTaskPayload,
+                           org.activiti.engine.task.Task internalTask,
+                           int updates) {
+        String newValue;
+        if ((newValue = updateTaskPayload.getName()) != null) {
+            String oldValue = internalTask.getName();
+            if (!Objects.equals(oldValue, newValue)) {
+                updates++;
+                internalTask.setName(newValue);
+            }
+        }
+        return updates;
+    }
+
     public org.activiti.engine.task.Task getInternalTaskWithChecks(String taskId) {
         String authenticatedUserId = getAuthenticatedUser();
 
