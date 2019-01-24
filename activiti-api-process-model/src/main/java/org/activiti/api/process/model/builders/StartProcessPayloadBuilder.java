@@ -1,15 +1,15 @@
 package org.activiti.api.process.model.builders;
 
-import org.activiti.api.process.model.payloads.StartProcessPayload;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.activiti.api.process.model.payloads.StartProcessPayload;
 
 public class StartProcessPayloadBuilder {
 
     private String processDefinitionId;
     private String processDefinitionKey;
-    private String processInstanceName;
+    private String name;
     private String businessKey;
     private Map<String, Object> variables = new HashMap<>();
 
@@ -38,8 +38,8 @@ public class StartProcessPayloadBuilder {
         return this;
     }
 
-    public StartProcessPayloadBuilder withProcessInstanceName(String processInstanceName) {
-        this.processInstanceName = processInstanceName;
+    public StartProcessPayloadBuilder withName(String name) {
+        this.name = name;
         return this;
     }
 
@@ -51,7 +51,7 @@ public class StartProcessPayloadBuilder {
     public StartProcessPayload build() {
         return new StartProcessPayload(processDefinitionId,
                 processDefinitionKey,
-                processInstanceName,
+                name,
                 businessKey,
                 variables);
     }
