@@ -81,7 +81,7 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
                             Connector.class);
         }
 
-        IntegrationContext results = connector.execute(context);
+        IntegrationContext results = connector.apply(context);
 
         if(variablesMatchHelper != null) {
             execution.setVariables(variablesMatchHelper.match(results.getOutBoundVariables(),
