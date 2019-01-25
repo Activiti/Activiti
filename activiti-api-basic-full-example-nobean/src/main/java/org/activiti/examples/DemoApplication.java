@@ -87,7 +87,7 @@ public class DemoApplication implements CommandLineRunner {
         ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey("categorizeHumanProcess")
-                .withProcessInstanceName("Processing Content: " + content)
+                .withName("Processing Content: " + content)
                 .withVariable("content", objectMapper.convertValue(content, JsonNode.class))
                 .build());
         logger.info(">>> Created Process Instance: " + processInstance);
