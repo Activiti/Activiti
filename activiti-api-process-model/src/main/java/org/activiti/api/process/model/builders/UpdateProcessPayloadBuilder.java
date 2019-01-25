@@ -6,17 +6,17 @@ import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 public class UpdateProcessPayloadBuilder {
 
     private String processInstanceId;
-    private String processInstanceName;
-    private String processInstanceDescription;
+    private String name;
+    private String description;
     private String businessKey;
 
-    public UpdateProcessPayloadBuilder withProcessInstanceName(String processInstanceName) {
-        this.processInstanceName = processInstanceName;
+    public UpdateProcessPayloadBuilder withName(String name) {
+        this.name = name;
         return this;
     }
     
-    public UpdateProcessPayloadBuilder withProcessInstanceDescription(String withProcessInstanceDescription) {
-        this.processInstanceDescription = withProcessInstanceDescription;
+    public UpdateProcessPayloadBuilder withDescription(String description) {
+        this.description = description;
         return this;
     } 
     
@@ -33,15 +33,15 @@ public class UpdateProcessPayloadBuilder {
     public UpdateProcessPayloadBuilder withProcessInstance(ProcessInstance processInstance) {
         this.processInstanceId = processInstance.getId();
         this.businessKey = processInstance.getBusinessKey();
-        this.processInstanceName = processInstance.getName();
+        this.name = processInstance.getName();
         return this;
     } 
 
 
     public UpdateProcessPayload build() {
         return new UpdateProcessPayload(processInstanceId,
-                processInstanceName,
-                processInstanceDescription,
+                name,
+                description,
                 businessKey);
     }
 }
