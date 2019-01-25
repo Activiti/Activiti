@@ -444,7 +444,7 @@ public class ProcessRuntimeTest {
                 .withVariable("expectedKey",
                         true)
                 .withBusinessKey("my business key")
-                .withProcessInstanceName("my process name")
+                .withName("my process name")
                 .build());
 
         assertThat(categorizeProcess).isNotNull();
@@ -466,7 +466,7 @@ public class ProcessRuntimeTest {
         UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
                 .withProcessInstanceId(processInstance.getId())
                 .withBusinessKey(processInstance.getBusinessKey() + " UPDATED")
-                .withProcessInstanceName(processInstance.getName() + " UPDATED")
+                .withName(processInstance.getName() + " UPDATED")
                 .build();
 
         ProcessInstance updatedProcessInstance = processRuntime.update(updateProcessPayload);
@@ -513,7 +513,7 @@ public class ProcessRuntimeTest {
                 .withVariable("expectedKey",
                         true)
                 .withBusinessKey("my business key")
-                .withProcessInstanceName("my process name")
+                .withName("my process name")
                 .build());
 
         assertThat(categorizeProcess).isNotNull();
@@ -530,7 +530,7 @@ public class ProcessRuntimeTest {
         UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
                 .withProcessInstanceId(processInstance.getId())
                 .withBusinessKey(processInstance.getBusinessKey() + " UPDATED")
-                .withProcessInstanceName(processInstance.getName() + " UPDATED")
+                .withName(processInstance.getName() + " UPDATED")
                 .build();
 
         ProcessInstance updatedProcessInstance = processAdminRuntime.update(updateProcessPayload);

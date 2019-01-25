@@ -65,7 +65,7 @@ public class ConformanceServiceTaskTest {
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey(MY_BUSINESS_KEY)
-                .withProcessInstanceName("my-process-instance-name")
+                .withName("my-process-instance-name")
                 .build());
 
         //then

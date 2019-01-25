@@ -73,7 +73,7 @@ public class ProcessRuntimeImplTest {
         UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
                 .withProcessInstanceId("processId")
                 .withBusinessKey("businessKey")
-                .withProcessInstanceName("name")
+                .withName("name")
                 .build();
         
         ProcessInstanceImpl process = new ProcessInstanceImpl();

@@ -231,7 +231,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                                                      .processDefinitionKey(startProcessPayload.getProcessDefinitionKey())
                                                      .businessKey(startProcessPayload.getBusinessKey())
                                                      .variables(startProcessPayload.getVariables())
-                                                     .name(startProcessPayload.getProcessInstanceName())
+                                                     .name(startProcessPayload.getName())
                                                      .start());
     }
 
@@ -333,8 +333,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         
         if (updateProcessPayload.getBusinessKey()!=null)
             runtimeService.updateBusinessKey(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getBusinessKey());
-        if (updateProcessPayload.getProcessInstanceName()!=null)
-            runtimeService.setProcessInstanceName(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getProcessInstanceName());
+        if (updateProcessPayload.getName()!=null)
+            runtimeService.setProcessInstanceName(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getName());
         
         ProcessInstance updatedProcessInstance=processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
                                                                              .processInstanceId(updateProcessPayload.getProcessInstanceId())

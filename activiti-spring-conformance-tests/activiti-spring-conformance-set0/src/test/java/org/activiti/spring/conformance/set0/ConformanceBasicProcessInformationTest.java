@@ -1,5 +1,9 @@
 package org.activiti.spring.conformance.set0;
 
+import static org.activiti.spring.conformance.set0.Set0RuntimeTestConfiguration.collectedEvents;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.event.VariableEvent;
 import org.activiti.api.process.model.ProcessInstance;
@@ -16,10 +20,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.activiti.spring.conformance.set0.Set0RuntimeTestConfiguration.collectedEvents;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -59,7 +59,7 @@ public class ConformanceBasicProcessInformationTest {
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
-                .withProcessInstanceName("my-process-instance-name")
+                .withName("my-process-instance-name")
                 .build());
 
         //then
@@ -111,7 +111,7 @@ public class ConformanceBasicProcessInformationTest {
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
-                .withProcessInstanceName("my-process-instance-name")
+                .withName("my-process-instance-name")
                 .withVariable("var1", "value1")
                 .build());
 

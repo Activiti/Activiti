@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2018 Alfresco, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -128,7 +128,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
                                                      .processDefinitionKey(startProcessPayload.getProcessDefinitionKey())
                                                      .businessKey(startProcessPayload.getBusinessKey())
                                                      .variables(startProcessPayload.getVariables())
-                                                     .name(startProcessPayload.getProcessInstanceName())
+                                                     .name(startProcessPayload.getName())
                                                      .start());
     }
 
@@ -218,8 +218,8 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     public ProcessInstance update(UpdateProcessPayload updateProcessPayload) {
         if (updateProcessPayload.getBusinessKey()!=null)
             runtimeService.updateBusinessKey(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getBusinessKey());
-        if (updateProcessPayload.getProcessInstanceName()!=null)
-            runtimeService.setProcessInstanceName(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getProcessInstanceName());
+        if (updateProcessPayload.getName()!=null)
+            runtimeService.setProcessInstanceName(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getName());
         
         return processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
                                              .processInstanceId(updateProcessPayload.getProcessInstanceId()).singleResult());
