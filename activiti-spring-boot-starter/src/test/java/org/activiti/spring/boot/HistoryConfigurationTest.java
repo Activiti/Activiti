@@ -68,8 +68,6 @@ public class HistoryConfigurationTest {
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
-    private ApplicationEventPublisher eventPublisher;
-    
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
@@ -80,7 +78,7 @@ public class HistoryConfigurationTest {
 
     @Before
     public void init() {
-        eventPublisher = spy(applicationEventPublisher);
+        ApplicationEventPublisher eventPublisher = spy(applicationEventPublisher);
         
         spy(new ProcessRuntimeImpl(repositoryService,
                                                      processDefinitionConverter,
