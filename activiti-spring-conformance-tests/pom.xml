@@ -23,5 +23,6 @@
         <module>activiti-spring-conformance-set3</module>
         <module>activiti-spring-conformance-set4</module>
         <module>activiti-spring-conformance-set5</module>
+        <module>activiti-spring-conformance-variables</module>
     </modules>
 </project>
