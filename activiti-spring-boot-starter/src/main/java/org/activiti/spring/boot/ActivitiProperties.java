@@ -35,7 +35,7 @@ public class ActivitiProperties {
   private boolean mailServerUseTls;
   private String databaseSchemaUpdate = "true";
   private String databaseSchema;
-  private boolean isDbHistoryUsed = false;
+  private boolean dbHistoryUsed = false;
   private HistoryLevel historyLevel = HistoryLevel.NONE;
   private String processDefinitionLocationPrefix = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX + "**/processes/";
   private List<String> processDefinitionLocationSuffixes = Arrays.asList("**.bpmn20.xml", "**.bpmn");
@@ -88,11 +88,11 @@ public class ActivitiProperties {
   }
 
   public boolean isDbHistoryUsed() {
-    return isDbHistoryUsed;
+    return dbHistoryUsed;
   }
 
   public void setDbHistoryUsed(boolean isDbHistoryUsed) {
-    this.isDbHistoryUsed = isDbHistoryUsed;
+    this.dbHistoryUsed = isDbHistoryUsed;
   }
 
   public HistoryLevel getHistoryLevel() {
