@@ -123,10 +123,9 @@ public class TaskRuntimeStandaloneTaskTest {
         securityUtil.logInAs("salaboy");
 
         //when
-        Throwable throwable = catchThrowable(() ->
-        taskRuntime.create(TaskPayloadBuilder.create()
-                           .withAssignee("salaboy")
-                           .build()));
+        Throwable throwable = catchThrowable(() -> taskRuntime.create(TaskPayloadBuilder.create()
+                                                                      .withAssignee("salaboy")
+                                                                      .build()));
 
         //then
         assertThat(throwable)
