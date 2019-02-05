@@ -1,5 +1,7 @@
 package org.activiti.spring.conformance.variables;
 
+import org.activiti.api.model.shared.event.RuntimeEvent;
+import org.activiti.api.model.shared.event.VariableEvent;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
@@ -55,12 +57,14 @@ public class TaskVariablesTest {
 
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        processRuntime.start(ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
                 .build());
+
+        collectedEvents.clear();
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
         Task task = tasks.getContent().get(0);
@@ -69,6 +73,7 @@ public class TaskVariablesTest {
         Map<String, Object> variablesMap = new HashMap<>();
         variablesMap.put("one", "variableOne");
         variablesMap.put("two", 2);
+
         taskRuntime.setVariables(new SetTaskVariablesPayloadBuilder().withVariables(variablesMap).withTaskId(task.getId()).build());
 
         List<VariableInstance> variableInstanceList = taskRuntime.variables(new GetTaskVariablesPayloadBuilder().withTaskId(task.getId()).build());
@@ -77,6 +82,13 @@ public class TaskVariablesTest {
         assertThat(valueOne).isEqualTo("variableOne");
         String nameOne = variableOne.getName();
         assertThat(nameOne).isEqualTo("one");
+
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @Test
@@ -90,6 +102,8 @@ public class TaskVariablesTest {
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
                 .build());
+
+        collectedEvents.clear();
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
         Task task = tasks.getContent().get(0);
@@ -105,18 +119,27 @@ public class TaskVariablesTest {
 
         assertThat(variableOne.getTaskId()).isEqualTo(task.getId());
         assertThat(variableOne.getProcessInstanceId()).isEqualTo(processInstance.getId());
+
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @Test
     public void shouldBeTaskVariable() {
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        processRuntime.start(ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
                 .build());
+
+        collectedEvents.clear();
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
         Task task = tasks.getContent().get(0);
@@ -131,18 +154,27 @@ public class TaskVariablesTest {
         VariableInstance variableOne = variableInstanceList.get(0);
 
         assertThat(variableOne.isTaskVariable()).isTrue();
+
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @Test
     public void shouldGetRightVariableType(){
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
+        processRuntime.start(ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey(processKey)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
                 .build());
+
+        collectedEvents.clear();
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
         Task task = tasks.getContent().get(0);
@@ -158,6 +190,13 @@ public class TaskVariablesTest {
         VariableInstance variableTwo = variableInstanceList.get(1);
         assertThat(variableOne.getType()).isEqualTo("string");
         assertThat(variableTwo.getType()).isEqualTo("integer");
+
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @After
