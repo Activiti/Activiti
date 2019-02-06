@@ -36,7 +36,9 @@ public interface IntegrationContext {
     
     String getConnectorType();
 
-    String getActivityElementId();
+    String getClientId();
+    String getClientName();
+    String getClientType();
 
     Map<String, Object> getInBoundVariables();
 
