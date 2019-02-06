@@ -17,14 +17,14 @@ import java.util.Date;
 import java.util.Set;
 
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 
 /**
  * Allows programmatic querying of {@link Execution}s.
- * 
-
-
+ *
  */
+@Internal
 public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
 
   /** Only select executions which have the given process definition key. **/

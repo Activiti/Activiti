@@ -13,14 +13,14 @@
 
 package org.activiti.engine.repository;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 
 /**
  * Allows programmatic querying of {@link Model}s.
- * 
-
-
+ *
  */
+@Internal
 public interface ModelQuery extends Query<ModelQuery, Model> {
 
   /** Only select model with the given id. */

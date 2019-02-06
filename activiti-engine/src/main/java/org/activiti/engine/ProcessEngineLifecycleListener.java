@@ -13,11 +13,13 @@
 
 package org.activiti.engine;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * Interface describing a listener that gets notified when certain event occurs, related to the process-engine lifecycle it is attached to.
- * 
-
+ *
  */
+@Internal
 public interface ProcessEngineLifecycleListener {
 
   /**

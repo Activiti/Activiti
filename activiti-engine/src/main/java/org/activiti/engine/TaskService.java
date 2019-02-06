@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.query.NativeQuery;
 import org.activiti.engine.runtime.DataObject;
@@ -35,9 +36,8 @@ import org.activiti.engine.task.TaskQuery;
 /**
  * Service which provides access to {@link Task} and form related operations.
  * 
-
-
  */
+@Internal
 public interface TaskService {
 
   /**

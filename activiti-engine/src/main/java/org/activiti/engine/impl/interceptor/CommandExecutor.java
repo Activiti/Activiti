@@ -12,11 +12,14 @@
  */
 package org.activiti.engine.impl.interceptor;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * The command executor for internal usage.
  * 
 
  */
+@Internal
 public interface CommandExecutor {
 
   /**

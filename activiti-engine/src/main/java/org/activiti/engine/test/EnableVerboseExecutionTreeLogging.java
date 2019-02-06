@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.test;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -19,6 +21,7 @@ import java.lang.annotation.RetentionPolicy;
 
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Internal
 public @interface EnableVerboseExecutionTreeLogging {
 
 }

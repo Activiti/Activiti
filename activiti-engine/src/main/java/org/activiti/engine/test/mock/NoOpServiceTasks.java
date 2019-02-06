@@ -13,6 +13,8 @@
 
 package org.activiti.engine.test.mock;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -20,6 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Internal
 public @interface NoOpServiceTasks {
 
   public String value() default "";

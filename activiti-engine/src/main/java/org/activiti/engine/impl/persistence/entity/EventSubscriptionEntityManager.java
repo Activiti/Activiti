@@ -15,12 +15,14 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 
 import org.activiti.bpmn.model.Signal;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
 
 /**
 
  */
+@Internal
 public interface EventSubscriptionEntityManager extends EntityManager<EventSubscriptionEntity> {
   
   /* Create entity */

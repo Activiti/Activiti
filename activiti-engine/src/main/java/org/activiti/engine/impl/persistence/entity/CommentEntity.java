@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
@@ -22,6 +23,8 @@ import org.activiti.engine.task.Event;
 
 
  */
+@Internal
+@Deprecated
 public interface CommentEntity extends Comment, Event, Entity {
   
   String TYPE_EVENT = "event";

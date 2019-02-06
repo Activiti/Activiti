@@ -12,9 +12,13 @@
  */
 package org.activiti.engine.impl.calendar;
 
-/**
+import org.activiti.engine.api.internal.Internal;
 
+/**
+ * @deprecated Calendar Functionally will be provided as a separate service/library
  */
+@Deprecated
+@Internal
 public interface BusinessCalendarManager {
 
   BusinessCalendar getBusinessCalendar(String businessCalendarRef);

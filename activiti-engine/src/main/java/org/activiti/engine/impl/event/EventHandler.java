@@ -13,12 +13,13 @@
 
 package org.activiti.engine.impl.event;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 /**
-
  */
+@Internal
 public interface EventHandler {
 
   public String getEventHandlerType();

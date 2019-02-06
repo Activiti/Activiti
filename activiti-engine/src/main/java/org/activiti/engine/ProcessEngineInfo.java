@@ -12,12 +12,15 @@
  */
 package org.activiti.engine;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * Represents information about the initialization of the process engine.
  * 
  * @see ProcessEngines
 
  */
+@Internal
 public interface ProcessEngineInfo {
 
   /**

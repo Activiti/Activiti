@@ -17,17 +17,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.ActivitiListener;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.task.Task;
 
 /**
-
-
-
-
  */
+@Internal
 public interface TaskEntity extends VariableScope, Task, DelegateTask, Entity, HasRevision {
 
   ExecutionEntity getExecution();

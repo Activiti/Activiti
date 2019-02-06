@@ -16,10 +16,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.api.internal.Internal;
 
 /**
-
+ * @deprecated Calendar Functionally will be provided as a separate service/library
  */
+@Deprecated
+@Internal
 public class MapBusinessCalendarManager implements BusinessCalendarManager {
 
   private final Map<String, BusinessCalendar> businessCalendars;

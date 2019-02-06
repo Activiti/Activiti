@@ -12,12 +12,14 @@
  */
 package org.activiti.engine.impl.cfg;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 
 /**
 
  */
+@Internal
 public interface BpmnParseFactory {
 
   BpmnParse createBpmnParse(BpmnParser bpmnParser);

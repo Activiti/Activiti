@@ -15,16 +15,14 @@ package org.activiti.engine.runtime;
 import java.util.Date;
 import java.util.Map;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
  * Represents one execution of a {@link ProcessDefinition}.
- * 
-
-
-
-
+ *
  */
+@Internal
 public interface ProcessInstance extends Execution {
 
   /**

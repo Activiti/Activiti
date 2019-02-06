@@ -12,14 +12,15 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.Date;
 
 /**
  * Stub of the common parts of a Job. You will normally work with a subclass of JobEntity, such as {@link TimerEntity} or {@link MessageEntity}.
  *
-
-
  */
+@Internal
 public interface TimerJobEntity extends AbstractJobEntity {
 
   String getLockOwner();

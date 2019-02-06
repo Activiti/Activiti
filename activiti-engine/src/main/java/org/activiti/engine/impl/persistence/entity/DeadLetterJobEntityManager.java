@@ -14,6 +14,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.DeadLetterJobQueryImpl;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -22,6 +23,7 @@ import org.activiti.engine.runtime.Job;
 /**
 
  */
+@Internal
 public interface DeadLetterJobEntityManager extends EntityManager<DeadLetterJobEntity> {
   
   /**

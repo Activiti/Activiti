@@ -13,6 +13,7 @@
 
 package org.activiti.engine.history;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.runtime.Execution;
 
@@ -20,6 +21,7 @@ import org.activiti.engine.runtime.Execution;
  * Programmatic querying for {@link HistoricDetail}s.
  * 
  */
+@Internal
 public interface HistoricDetailQuery extends Query<HistoricDetailQuery, HistoricDetail> {
 
   /** Only select historic info with the given id. */

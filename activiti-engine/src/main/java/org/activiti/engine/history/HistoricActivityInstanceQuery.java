@@ -13,14 +13,14 @@
 
 package org.activiti.engine.history;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 
 /**
  * Programmatic querying for {@link HistoricActivityInstance}s.
- * 
-
-
+ *
  */
+@Internal
 public interface HistoricActivityInstanceQuery extends Query<HistoricActivityInstanceQuery, HistoricActivityInstance> {
 
   /**

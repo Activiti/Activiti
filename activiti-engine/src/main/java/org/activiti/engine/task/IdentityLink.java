@@ -14,13 +14,15 @@
 package org.activiti.engine.task;
 
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * An identity link is used to associate a task with a certain identity.
  * 
  * For example: - a user can be an assignee (= identity link type) for a task - a group can be a candidate-group (= identity link type) for a task
- * 
-
+ *
  */
+@Internal
 public interface IdentityLink {
 
   /**

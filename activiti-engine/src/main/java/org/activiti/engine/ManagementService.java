@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.cmd.CustomSqlExecution;
 import org.activiti.engine.impl.interceptor.Command;
@@ -36,11 +37,9 @@ import org.activiti.engine.runtime.TimerJobQuery;
  * Service for admin and maintenance operations on the process engine.
  * 
  * These operations will typically not be used in a workflow driven application, but are used in for example the operational console.
- * 
-
-
-
+ *
  */
+@Internal
 public interface ManagementService {
 
   /**

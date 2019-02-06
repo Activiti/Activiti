@@ -1,5 +1,6 @@
 package org.activiti.engine.impl.interceptor;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.cfg.TransactionContext;
 
 /**
@@ -7,6 +8,7 @@ import org.activiti.engine.impl.cfg.TransactionContext;
  * 
 
  */
+@Internal
 public interface CommandContextCloseListener {
 
   /**

@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
@@ -36,12 +37,7 @@ import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
-/**
- * 
-
-
-
- */
+@Internal
 public interface RuntimeService {
   
   /** 

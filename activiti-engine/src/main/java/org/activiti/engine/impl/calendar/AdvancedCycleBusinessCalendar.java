@@ -6,6 +6,7 @@ import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ClockReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +42,10 @@ import org.slf4j.LoggerFactory;
  * 
  * By default (if no VER key is included in the string), it assumes version 2. This can be changed by modifying the defaultScheduleVersion property.
  * <p>
- * 
-
+ * @deprecated Calendar Functionally will be provided as a separate service/library
  */
+@Deprecated
+@Internal
 public class AdvancedCycleBusinessCalendar extends CycleBusinessCalendar {
 
   private Integer defaultScheduleVersion;

@@ -14,11 +14,14 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.Date;
 
 /**
 
  */
+@Internal
 public interface HistoricScopeInstanceEntity extends Entity {
 
   void markEnded(String deleteReason);

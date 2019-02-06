@@ -12,15 +12,15 @@
  */
 package org.activiti.engine.task;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.List;
 
 /**
  * Allows programmatic querying of {@link Task}s;
- * 
-
-
-
+ *
  */
+@Internal
 public interface TaskQuery extends TaskInfoQuery<TaskQuery, Task> {
 
   /** Only select tasks which don't have an assignee. */

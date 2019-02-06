@@ -25,6 +25,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
  * 
 
  */
+@Deprecated
 public class WSService implements BpmnInterfaceImplementation {
 
   protected String name;

@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Helper for starting new ProcessInstance.
@@ -24,10 +25,9 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
  * 
  * processDefinitionId or processDefinitionKey should be set before calling {@link #start()} to start a process instance.
  * 
- * 
-
-
+ *
  */
+@Internal
 public interface ProcessInstanceBuilder {
 
   /** 

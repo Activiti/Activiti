@@ -12,11 +12,13 @@
  */
 package org.activiti.engine;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * This class extends {@link Agenda} with activiti specific operations
  */
+@Internal
 public interface ActivitiEngineAgenda extends Agenda {
 
     void planContinueProcessOperation(ExecutionEntity execution);

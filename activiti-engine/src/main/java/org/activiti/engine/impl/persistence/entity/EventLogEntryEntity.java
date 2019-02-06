@@ -14,6 +14,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Date;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.event.EventLogEntry;
 
 /**
@@ -21,6 +22,7 @@ import org.activiti.engine.event.EventLogEntry;
  * 
 
  */
+@Internal
 public interface EventLogEntryEntity extends Entity, EventLogEntry {
 
   void setLogNumber(long logNumber);

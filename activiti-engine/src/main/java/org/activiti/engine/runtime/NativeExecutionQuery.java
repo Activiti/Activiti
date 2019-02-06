@@ -1,5 +1,6 @@
 package org.activiti.engine.runtime;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.NativeQuery;
 
 /**
@@ -7,6 +8,7 @@ import org.activiti.engine.query.NativeQuery;
  * 
 
  */
+@Internal
 public interface NativeExecutionQuery extends NativeQuery<NativeExecutionQuery, Execution> {
 
 }

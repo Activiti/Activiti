@@ -15,9 +15,10 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.task.Task;
-
+@Internal
 public interface TaskEntityManager extends EntityManager<TaskEntity> {
 
   void insert(TaskEntity taskEntity, ExecutionEntity execution);

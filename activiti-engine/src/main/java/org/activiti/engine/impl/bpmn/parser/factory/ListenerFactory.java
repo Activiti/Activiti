@@ -14,6 +14,7 @@ package org.activiti.engine.impl.bpmn.parser.factory;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.EventListener;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.CustomPropertiesResolver;
 import org.activiti.engine.delegate.TaskListener;
@@ -32,10 +33,9 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
  * The easiest and advisable way to implement your own {@link ListenerFactory} is to extend the {@link DefaultListenerFactory}.
  * 
  * An instance of this interface can be injected in the {@link ProcessEngineConfigurationImpl} and its subclasses.
- * 
-
-
+ *
  */
+@Internal
 public interface ListenerFactory {
 
   public abstract TaskListener createClassDelegateTaskListener(ActivitiListener activitiListener);

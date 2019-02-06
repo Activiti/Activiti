@@ -54,9 +54,10 @@ import org.slf4j.LoggerFactory;
  *   The {@link AsyncExecutor} needs to be injected using the {@link #setAsyncExecutor(AsyncExecutor)} method on this class.    
  * 
  * databasetype
- * 
-
+ *
+ *  @deprecated multi-tenant code will be removed in future version of Activiti and Activiti Cloud
  */
+@Deprecated
 public class MultiSchemaMultiTenantProcessEngineConfiguration extends ProcessEngineConfigurationImpl {
   
   private static final Logger logger = LoggerFactory.getLogger(MultiSchemaMultiTenantProcessEngineConfiguration.class);

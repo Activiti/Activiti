@@ -13,10 +13,15 @@
 package org.activiti.engine.impl.calendar;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ClockReader;
 
 import java.util.Date;
-
+/*
+ * @deprecated Calendar Functionally will be provided as a separate service/library
+ */
+@Deprecated
+@Internal
 public class CycleBusinessCalendar extends BusinessCalendarImpl {
 
   public static String NAME = "cycle";

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
 import org.activiti.engine.impl.interceptor.Command;
@@ -27,6 +28,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  *
  * During a {@link Command} execution, the agenda can always be fetched using {@link Context#getAgenda()}.
  */
+@Internal
 public interface Agenda {
 
   boolean isEmpty();
