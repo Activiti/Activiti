@@ -4,6 +4,9 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.event.VariableEvent;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.events.BPMNActivityEvent;
+import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
+import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
@@ -11,6 +14,7 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.GetTaskVariablesPayloadBuilder;
 import org.activiti.api.task.model.builders.SetTaskVariablesPayloadBuilder;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
@@ -131,6 +135,19 @@ public class TaskVariablesTest {
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
                 .build()).getId();
+
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                        BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        TaskRuntimeEvent.TaskEvents.TASK_CREATED,
+                        TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED
+                );
 
         collectedEvents.clear();
 
