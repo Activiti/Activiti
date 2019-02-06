@@ -55,6 +55,8 @@ public class TaskVariablesTest {
 
     private String processInstanceId;
 
+    private List<VariableInstance> variableInstanceList;
+
     @Before
     public void cleanUp() {
         collectedEvents.clear();
@@ -65,7 +67,9 @@ public class TaskVariablesTest {
 
         securityUtil.logInAs("user1");
 
-        List<VariableInstance> variableInstanceList = setVariables();
+        startProcess();
+
+        setVariables();
 
         VariableInstance variableOne = variableInstanceList.get(0);
         String valueOne = variableOne.getValue();
@@ -81,10 +85,11 @@ public class TaskVariablesTest {
 
         securityUtil.logInAs("user1");
 
-        List<VariableInstance> variableInstanceList = setVariables();
+        startProcess();
+
+        setVariables();
 
         VariableInstance variableOne = variableInstanceList.get(0);
-
         assertThat(variableOne.getTaskId()).isEqualTo(taskId);
         assertThat(variableOne.getProcessInstanceId()).isEqualTo(processInstanceId);
 
@@ -93,12 +98,14 @@ public class TaskVariablesTest {
 
     @Test
     public void shouldBeTaskVariable() {
+
         securityUtil.logInAs("user1");
 
-        List<VariableInstance> variableInstanceList = setVariables();
+        startProcess();
+
+        setVariables();
 
         VariableInstance variableOne = variableInstanceList.get(0);
-
         assertThat(variableOne.isTaskVariable()).isTrue();
 
         checkVariableEvents();
@@ -108,7 +115,9 @@ public class TaskVariablesTest {
     public void shouldGetRightVariableType(){
         securityUtil.logInAs("user1");
 
-        List<VariableInstance> variableInstanceList = setVariables();
+        startProcess();
+
+        setVariables();
 
         VariableInstance variableOne = variableInstanceList.get(0);
         VariableInstance variableTwo = variableInstanceList.get(1);
@@ -156,8 +165,7 @@ public class TaskVariablesTest {
         assertThat(tasks.getTotalItems()).isEqualTo(1);
     }
 
-    private List<VariableInstance> setVariables(){
-        startProcess();
+    private void setVariables(){
 
         Map<String, Object> variablesMap = new HashMap<>();
         variablesMap.put("one", "variableOne");
@@ -165,7 +173,7 @@ public class TaskVariablesTest {
 
         taskRuntime.setVariables(new SetTaskVariablesPayloadBuilder().withVariables(variablesMap).withTaskId(taskId).build());
 
-        return taskRuntime.variables(new GetTaskVariablesPayloadBuilder().withTaskId(taskId).build());
+        variableInstanceList = taskRuntime.variables(new GetTaskVariablesPayloadBuilder().withTaskId(taskId).build());
     }
 
     private void checkVariableEvents(){
