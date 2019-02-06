@@ -36,11 +36,6 @@ public class VariablesRuntimeTestConfiguration {
     }
 
     @Bean
-    public BPMNElementEventListener<BPMNActivityCancelledEvent> bpmnActivityCancelledListener() {
-        return bpmnActivityCancelledEvent -> collectedEvents.add(bpmnActivityCancelledEvent);
-    }
-
-    @Bean
     public BPMNElementEventListener<BPMNSequenceFlowTakenEvent> bpmnSequenceFlowTakenListener() {
         return bpmnSequenceFlowTakenEvent -> collectedEvents.add(bpmnSequenceFlowTakenEvent);
     }
@@ -53,26 +48,6 @@ public class VariablesRuntimeTestConfiguration {
     @Bean
     public ProcessRuntimeEventListener<ProcessStartedEvent> processStartedListener() {
         return processStartedEvent -> collectedEvents.add(processStartedEvent);
-    }
-
-    @Bean
-    public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
-        return processCompletedEvent -> collectedEvents.add(processCompletedEvent);
-    }
-
-    @Bean
-    public ProcessRuntimeEventListener<ProcessResumedEvent> processResumedListener() {
-        return processResumedEvent -> collectedEvents.add(processResumedEvent);
-    }
-
-    @Bean
-    public ProcessRuntimeEventListener<ProcessSuspendedEvent> processSuspendedListener() {
-        return processSuspendedEvent -> collectedEvents.add(processSuspendedEvent);
-    }
-
-    @Bean
-    public ProcessRuntimeEventListener<ProcessCancelledEvent> processCancelledListener() {
-        return processCancelledEvent -> collectedEvents.add(processCancelledEvent);
     }
 
     @Bean
@@ -93,21 +68,6 @@ public class VariablesRuntimeTestConfiguration {
     @Bean
     public TaskEventListener<TaskCreatedEvent> taskCreatedEventListener() {
         return taskCreatedEvent -> collectedEvents.add(taskCreatedEvent);
-    }
-
-    @Bean
-    public TaskEventListener<TaskUpdatedEvent> taskUpdatedEventListener() {
-        return taskUpdatedEvent -> collectedEvents.add(taskUpdatedEvent);
-    }
-
-    @Bean
-    public TaskEventListener<TaskCompletedEvent> taskCompletedEventListener() {
-        return taskCompletedEvent -> collectedEvents.add(taskCompletedEvent);
-    }
-
-    @Bean
-    public TaskEventListener<TaskSuspendedEvent> taskSuspendedEventListener() {
-        return taskSuspendedEvent -> collectedEvents.add(taskSuspendedEvent);
     }
 
     @Bean
