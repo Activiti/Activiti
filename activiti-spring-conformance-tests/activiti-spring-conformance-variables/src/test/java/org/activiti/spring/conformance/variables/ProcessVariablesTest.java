@@ -74,7 +74,12 @@ public class ProcessVariablesTest {
         String nameOne = variableOne.getName();
         assertThat(nameOne).isEqualTo("one");
 
-        checkVariableEvents();
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @Test
@@ -90,7 +95,12 @@ public class ProcessVariablesTest {
         assertThat(variableOne.getTaskId()).isNull();
         assertThat(variableOne.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-        checkVariableEvents();
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @Test
@@ -104,7 +114,12 @@ public class ProcessVariablesTest {
         VariableInstance variableOne = variableInstanceList.get(0);
         assertThat(variableOne.isTaskVariable()).isFalse();
 
-        checkVariableEvents();
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @Test
@@ -120,7 +135,12 @@ public class ProcessVariablesTest {
         assertThat(variableOne.getType()).isEqualTo("string");
         assertThat(variableTwo.getType()).isEqualTo("integer");
 
-        checkVariableEvents();
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @After
@@ -165,15 +185,6 @@ public class ProcessVariablesTest {
         processRuntime.setVariables(new SetVariablesPayloadBuilder().withVariables(variablesMap).withProcessInstanceId(processInstanceId).build());
 
         variableInstanceList = processRuntime.variables(new GetVariablesPayloadBuilder().withProcessInstanceId(processInstanceId).build());
-    }
-
-    private void checkVariableEvents(){
-        assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED
-                );
     }
 
 }

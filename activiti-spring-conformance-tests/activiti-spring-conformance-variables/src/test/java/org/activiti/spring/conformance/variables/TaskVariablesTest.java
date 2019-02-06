@@ -77,7 +77,12 @@ public class TaskVariablesTest {
         String nameOne = variableOne.getName();
         assertThat(nameOne).isEqualTo("one");
 
-        checkVariableEvents();
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @Test
@@ -93,7 +98,12 @@ public class TaskVariablesTest {
         assertThat(variableOne.getTaskId()).isEqualTo(taskId);
         assertThat(variableOne.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-        checkVariableEvents();
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @Test
@@ -108,7 +118,12 @@ public class TaskVariablesTest {
         VariableInstance variableOne = variableInstanceList.get(0);
         assertThat(variableOne.isTaskVariable()).isTrue();
 
-        checkVariableEvents();
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @Test
@@ -124,7 +139,12 @@ public class TaskVariablesTest {
         assertThat(variableOne.getType()).isEqualTo("string");
         assertThat(variableTwo.getType()).isEqualTo("integer");
 
-        checkVariableEvents();
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
     @After
@@ -174,15 +194,6 @@ public class TaskVariablesTest {
         taskRuntime.setVariables(new SetTaskVariablesPayloadBuilder().withVariables(variablesMap).withTaskId(taskId).build());
 
         variableInstanceList = taskRuntime.variables(new GetTaskVariablesPayloadBuilder().withTaskId(taskId).build());
-    }
-
-    private void checkVariableEvents(){
-        assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED
-                );
     }
 
 }
