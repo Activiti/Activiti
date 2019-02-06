@@ -33,7 +33,10 @@ public class IntegrationContextImpl implements IntegrationContext {
     private String processDefinitionKey;
     private Integer processDefinitionVersion;
     private String businessKey;
-    private String activityElementId;
+    private String clientId;
+    private String clientName;
+    private String clientType;
+    
     private String connectorType;
 
     public IntegrationContextImpl() {
@@ -68,12 +71,12 @@ public class IntegrationContextImpl implements IntegrationContext {
     }
 
     @Override
-    public String getActivityElementId() {
-        return activityElementId;
+    public String getClientId() {
+        return clientId;
     }
 
-    public void setActivityElementId(String activityElementId) {
-        this.activityElementId = activityElementId;
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     @Override
@@ -126,6 +129,27 @@ public class IntegrationContextImpl implements IntegrationContext {
     public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
         this.processDefinitionVersion = processDefinitionVersion;
     }
+    
+    @Override
+    public String getClientName() {
+        return clientName;
+    }
+
+    
+    public void setClientName(String clientName) {
+        this.clientName = clientName;
+    }
+
+    @Override
+    public String getClientType() {
+        return clientType;
+    }
+
+    
+    public void setClientType(String clientType) {
+        this.clientType = clientType;
+    }
+
     
     @Override
     public String getBusinessKey() { 
