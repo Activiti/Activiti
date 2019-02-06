@@ -49,6 +49,8 @@ public class ProcessVariablesTest {
     @Autowired
     private ProcessAdminRuntime processAdminRuntime;
 
+    private String processInstanceId;
+
     @Before
     public void cleanUp() {
         collectedEvents.clear();
@@ -59,34 +61,15 @@ public class ProcessVariablesTest {
 
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(processKey)
-                .withBusinessKey("my-business-key")
-                .withName("my-process-instance-name")
-                .build());
+        List<VariableInstance> variableInstanceList = setVariables();
 
-        collectedEvents.clear();
-
-        Map<String, Object> variablesMap = new HashMap<>();
-        variablesMap.put("one", "variableOne");
-        variablesMap.put("two", 2);
-
-        processRuntime.setVariables(new SetVariablesPayloadBuilder().withVariables(variablesMap).withProcessInstanceId(processInstance.getId()).build());
-
-        List<VariableInstance> variableInstanceList = processRuntime.variables(new GetVariablesPayloadBuilder().withProcessInstanceId(processInstance.getId()).build());
         VariableInstance variableOne = variableInstanceList.get(0);
         String valueOne = variableOne.getValue();
         assertThat(valueOne).isEqualTo("variableOne");
         String nameOne = variableOne.getName();
         assertThat(nameOne).isEqualTo("one");
 
-        assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED
-                );
+        checkVariableEvents();
     }
 
     @Test
@@ -94,97 +77,39 @@ public class ProcessVariablesTest {
 
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(processKey)
-                .withBusinessKey("my-business-key")
-                .withName("my-process-instance-name")
-                .build());
-
-        collectedEvents.clear();
-
-        Map<String, Object> variablesMap = new HashMap<>();
-        variablesMap.put("one", "variableOne");
-        variablesMap.put("two", 2);
-
-        processRuntime.setVariables(new SetVariablesPayloadBuilder().withVariables(variablesMap).withProcessInstanceId(processInstance.getId()).build());
-
-        List<VariableInstance> variableInstanceList = processRuntime.variables(new GetVariablesPayloadBuilder().withProcessInstanceId(processInstance.getId()).build());
+        List<VariableInstance> variableInstanceList = setVariables();
         VariableInstance variableOne = variableInstanceList.get(0);
 
         assertThat(variableOne.getTaskId()).isNull();
-        assertThat(variableOne.getProcessInstanceId()).isEqualTo(processInstance.getId());
+        assertThat(variableOne.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-        assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED
-                );
+        checkVariableEvents();
     }
 
     @Test
     public void shouldNotBeTaskVariable() {
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(processKey)
-                .withBusinessKey("my-business-key")
-                .withName("my-process-instance-name")
-                .build());
-
-        collectedEvents.clear();
-
-        Map<String, Object> variablesMap = new HashMap<>();
-        variablesMap.put("one", "variableOne");
-        variablesMap.put("two", 2);
-
-        processRuntime.setVariables(new SetVariablesPayloadBuilder().withVariables(variablesMap).withProcessInstanceId(processInstance.getId()).build());
-
-        List<VariableInstance> variableInstanceList = processRuntime.variables(new GetVariablesPayloadBuilder().withProcessInstanceId(processInstance.getId()).build());
+        List<VariableInstance> variableInstanceList = setVariables();
         VariableInstance variableOne = variableInstanceList.get(0);
 
         assertThat(variableOne.isTaskVariable()).isFalse();
 
-        assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED
-                );
+        checkVariableEvents();
     }
 
     @Test
     public void shouldGetRightVariableType(){
         securityUtil.logInAs("user1");
 
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey(processKey)
-                .withBusinessKey("my-business-key")
-                .withName("my-process-instance-name")
-                .build());
+        List<VariableInstance> variableInstanceList = setVariables();
 
-        collectedEvents.clear();
-
-        Map<String, Object> variablesMap = new HashMap<>();
-        variablesMap.put("one", "variableOne");
-        variablesMap.put("two", 2);
-        processRuntime.setVariables(new SetVariablesPayloadBuilder().withVariables(variablesMap).withProcessInstanceId(processInstance.getId()).build());
-
-        List<VariableInstance> variableInstanceList = processRuntime.variables(new GetVariablesPayloadBuilder().withProcessInstanceId(processInstance.getId()).build());
         VariableInstance variableOne = variableInstanceList.get(0);
         VariableInstance variableTwo = variableInstanceList.get(1);
         assertThat(variableOne.getType()).isEqualTo("string");
         assertThat(variableTwo.getType()).isEqualTo("integer");
 
-        assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED
-                );
+        checkVariableEvents();
     }
 
     @After
@@ -194,6 +119,38 @@ public class ProcessVariablesTest {
         for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
+    }
+
+    private void startProcess(){
+        processInstanceId = processRuntime.start(ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(processKey)
+                .withBusinessKey("my-business-key")
+                .withName("my-process-instance-name")
+                .build()).getId();
+
+        collectedEvents.clear();
+    }
+
+    private List<VariableInstance> setVariables(){
+        startProcess();
+
+        Map<String, Object> variablesMap = new HashMap<>();
+        variablesMap.put("one", "variableOne");
+        variablesMap.put("two", 2);
+
+        processRuntime.setVariables(new SetVariablesPayloadBuilder().withVariables(variablesMap).withProcessInstanceId(processInstanceId).build());
+
+        return processRuntime.variables(new GetVariablesPayloadBuilder().withProcessInstanceId(processInstanceId).build());
+    }
+
+    private void checkVariableEvents(){
+        assertThat(collectedEvents)
+                .extracting(RuntimeEvent::getEventType)
+                .containsExactly(
+                        VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                );
     }
 
 }
