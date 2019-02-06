@@ -14,11 +14,7 @@ import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
-import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.builders.GetTaskVariablesPayloadBuilder;
-import org.activiti.api.task.model.builders.SetTaskVariablesPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
-import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -68,11 +64,11 @@ public class ProcessVariablesTest {
 
         setVariables();
 
-        VariableInstance variableOne = variableInstanceList.get(0);
-        String valueOne = variableOne.getValue();
-        assertThat(valueOne).isEqualTo("variableOne");
-        String nameOne = variableOne.getName();
-        assertThat(nameOne).isEqualTo("one");
+        VariableInstance variableOneRuntime = variableInstanceList.get(0);
+        VariableInstance variableOneEvent = ((VariableInstance)collectedEvents.get(0).getEntity());
+
+        assertThat(variableOneRuntime.getName()).isEqualTo(variableOneEvent.getName());
+        assertThat((String)variableOneRuntime.getValue()).isEqualTo(variableOneEvent.getValue());
 
         assertThat(collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
@@ -91,9 +87,14 @@ public class ProcessVariablesTest {
 
         setVariables();
 
-        VariableInstance variableOne = variableInstanceList.get(0);
-        assertThat(variableOne.getTaskId()).isNull();
-        assertThat(variableOne.getProcessInstanceId()).isEqualTo(processInstanceId);
+        VariableInstance variableOneRuntime = variableInstanceList.get(0);
+        VariableInstance variableOneEvent = ((VariableInstance)collectedEvents.get(0).getEntity());
+
+        assertThat(variableOneRuntime.getTaskId()).isNull();
+        assertThat(variableOneRuntime.getProcessInstanceId()).isEqualTo(processInstanceId);
+
+        assertThat(variableOneRuntime.getName()).isEqualTo(variableOneEvent.getName());
+        assertThat((String)variableOneRuntime.getValue()).isEqualTo(variableOneEvent.getValue());
 
         assertThat(collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
@@ -111,8 +112,13 @@ public class ProcessVariablesTest {
 
         setVariables();
 
-        VariableInstance variableOne = variableInstanceList.get(0);
-        assertThat(variableOne.isTaskVariable()).isFalse();
+        VariableInstance variableOneRuntime = variableInstanceList.get(0);
+        VariableInstance variableOneEvent = ((VariableInstance)collectedEvents.get(0).getEntity());
+
+        assertThat(variableOneRuntime.isTaskVariable()).isFalse();
+
+        assertThat(variableOneRuntime.getName()).isEqualTo(variableOneEvent.getName());
+        assertThat((String)variableOneRuntime.getValue()).isEqualTo(variableOneEvent.getValue());
 
         assertThat(collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
@@ -130,10 +136,18 @@ public class ProcessVariablesTest {
 
         setVariables();
 
-        VariableInstance variableOne = variableInstanceList.get(0);
-        VariableInstance variableTwo = variableInstanceList.get(1);
-        assertThat(variableOne.getType()).isEqualTo("string");
-        assertThat(variableTwo.getType()).isEqualTo("integer");
+        VariableInstance variableOneRuntime = variableInstanceList.get(0);
+        VariableInstance variableTwoRuntime = variableInstanceList.get(1);
+        VariableInstance variableOneEvent = ((VariableInstance)collectedEvents.get(0).getEntity());
+        VariableInstance variableTwoEvent = ((VariableInstance)collectedEvents.get(1).getEntity());
+
+        assertThat(variableOneRuntime.getType()).isEqualTo("string");
+        assertThat(variableTwoRuntime.getType()).isEqualTo("integer");
+
+        assertThat(variableOneRuntime.getName()).isEqualTo(variableOneEvent.getName());
+        assertThat((String)variableOneRuntime.getValue()).isEqualTo(variableOneEvent.getValue());
+        assertThat(variableTwoRuntime.getName()).isEqualTo(variableTwoEvent.getName());
+        assertThat((int)variableTwoRuntime.getValue()).isEqualTo(variableTwoEvent.getValue());
 
         assertThat(collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
