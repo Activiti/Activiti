@@ -30,6 +30,7 @@ import java.util.Map;
 
 import static org.activiti.spring.conformance.variables.VariablesRuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -64,22 +65,20 @@ public class ProcessVariablesTest {
 
         setVariables();
 
-        VariableInstance variableOneRuntime = variableInstanceList.get(0);
-        VariableInstance variableOneEvent = ((VariableInstance)collectedEvents.get(0).getEntity());
-
-        assertThat(variableOneRuntime.getName()).isEqualTo(variableOneEvent.getName());
-        assertThat((String)variableOneRuntime.getValue()).isEqualTo(variableOneEvent.getValue());
-
         assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
+                .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                        tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
+                                variableInstanceList.get(0).getName(),
+                                variableInstanceList.get(0).getValue()),
+                        tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
+                                variableInstanceList.get(1).getName(),
+                                variableInstanceList.get(1).getValue())
                 );
     }
 
     @Test
-    public void shouldGetProcessIdAndProcessInstanceId() {
+    public void shouldGetProcessIdAndNotTaskId() {
 
         securityUtil.logInAs("user1");
 
@@ -88,19 +87,18 @@ public class ProcessVariablesTest {
         setVariables();
 
         VariableInstance variableOneRuntime = variableInstanceList.get(0);
-        VariableInstance variableOneEvent = ((VariableInstance)collectedEvents.get(0).getEntity());
-
-        assertThat(variableOneRuntime.getTaskId()).isNull();
         assertThat(variableOneRuntime.getProcessInstanceId()).isEqualTo(processInstanceId);
-
-        assertThat(variableOneRuntime.getName()).isEqualTo(variableOneEvent.getName());
-        assertThat((String)variableOneRuntime.getValue()).isEqualTo(variableOneEvent.getValue());
+        assertThat(variableOneRuntime.getTaskId()).isNull();
 
         assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
+                .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                        tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
+                                variableInstanceList.get(0).getName(),
+                                variableInstanceList.get(0).getValue()),
+                        tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
+                                variableInstanceList.get(1).getName(),
+                                variableInstanceList.get(1).getValue())
                 );
     }
 
@@ -113,18 +111,17 @@ public class ProcessVariablesTest {
         setVariables();
 
         VariableInstance variableOneRuntime = variableInstanceList.get(0);
-        VariableInstance variableOneEvent = ((VariableInstance)collectedEvents.get(0).getEntity());
-
         assertThat(variableOneRuntime.isTaskVariable()).isFalse();
 
-        assertThat(variableOneRuntime.getName()).isEqualTo(variableOneEvent.getName());
-        assertThat((String)variableOneRuntime.getValue()).isEqualTo(variableOneEvent.getValue());
-
         assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
+                .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                        tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
+                                variableInstanceList.get(0).getName(),
+                                variableInstanceList.get(0).getValue()),
+                        tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
+                                variableInstanceList.get(1).getName(),
+                                variableInstanceList.get(1).getValue())
                 );
     }
 
@@ -138,22 +135,18 @@ public class ProcessVariablesTest {
 
         VariableInstance variableOneRuntime = variableInstanceList.get(0);
         VariableInstance variableTwoRuntime = variableInstanceList.get(1);
-        VariableInstance variableOneEvent = ((VariableInstance)collectedEvents.get(0).getEntity());
-        VariableInstance variableTwoEvent = ((VariableInstance)collectedEvents.get(1).getEntity());
-
         assertThat(variableOneRuntime.getType()).isEqualTo("string");
         assertThat(variableTwoRuntime.getType()).isEqualTo("integer");
 
-        assertThat(variableOneRuntime.getName()).isEqualTo(variableOneEvent.getName());
-        assertThat((String)variableOneRuntime.getValue()).isEqualTo(variableOneEvent.getValue());
-        assertThat(variableTwoRuntime.getName()).isEqualTo(variableTwoEvent.getName());
-        assertThat((int)variableTwoRuntime.getValue()).isEqualTo(variableTwoEvent.getValue());
-
         assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
+                .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
-                        VariableEvent.VariableEvents.VARIABLE_CREATED,
-                        VariableEvent.VariableEvents.VARIABLE_CREATED
+                        tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
+                                variableInstanceList.get(0).getName(),
+                                variableInstanceList.get(0).getValue()),
+                        tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
+                                variableInstanceList.get(1).getName(),
+                                variableInstanceList.get(1).getValue())
                 );
     }
 
