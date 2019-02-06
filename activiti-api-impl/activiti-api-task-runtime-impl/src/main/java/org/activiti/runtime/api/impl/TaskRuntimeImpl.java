@@ -249,6 +249,10 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public Task create(CreateTaskPayload createTaskPayload) {
+        if (createTaskPayload.getName() == null || createTaskPayload.getName().isEmpty()) {
+            throw new IllegalStateException("You cannot create a task without name");
+        }
+        
         org.activiti.engine.task.Task task = taskService.newTask();
         task.setName(createTaskPayload.getName());
         task.setDescription(createTaskPayload.getDescription());

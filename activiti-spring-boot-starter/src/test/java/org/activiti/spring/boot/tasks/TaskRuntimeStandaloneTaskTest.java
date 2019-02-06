@@ -1,5 +1,8 @@
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -15,8 +18,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -114,6 +115,27 @@ public class TaskRuntimeStandaloneTaskTest {
         assertThat(tasks.getContent()).hasSize(0);
 
 
+    }
+    
+    @Test
+    public void createStandaloneTaskFailWithEmptyName() {
+
+        securityUtil.logInAs("salaboy");
+
+        //when
+        Throwable throwable = catchThrowable(() -> taskRuntime.create(TaskPayloadBuilder.create()
+                                                                      .withAssignee("salaboy")
+                                                                      .build()));
+
+        //then
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class);
+        
+        
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                50));
+
+        assertThat(tasks.getContent()).hasSize(0);
     }
 
 }
