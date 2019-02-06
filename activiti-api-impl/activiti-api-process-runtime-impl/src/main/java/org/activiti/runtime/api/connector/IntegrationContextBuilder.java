@@ -18,14 +18,12 @@ package org.activiti.runtime.api.connector;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.core.common.model.connector.VariableDefinition;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
@@ -56,9 +54,9 @@ public class IntegrationContextBuilder {
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
         integrationContext.setProcessInstanceId(execution.getProcessInstanceId());
         integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
-        integrationContext.setActivityElementId(execution.getCurrentActivityId());
         integrationContext.setBusinessKey(execution.getProcessInstanceBusinessKey());
-
+        integrationContext.setClientId(execution.getCurrentActivityId());
+        
         if(ExecutionEntity.class.isInstance(execution)) {
             ExecutionEntity processInstance = ExecutionEntity.class.cast(execution)
                                                                    .getProcessInstance();
@@ -69,9 +67,13 @@ public class IntegrationContextBuilder {
             }
         }
 
-        String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
-
-        integrationContext.setConnectorType(implementation);
+        ServiceTask serviceTask = (ServiceTask)execution.getCurrentFlowElement();
+        if (serviceTask != null ) {
+            integrationContext.setConnectorType(serviceTask.getImplementation());
+            integrationContext.setClientName(serviceTask.getName());
+            integrationContext.setClientType(ServiceTask.class.getSimpleName());
+        }
+       
 
         integrationContext.setInBoundVariables(buildInBoundVariables(
                 actionDefinition,
