@@ -30,6 +30,8 @@ import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.bpmn.parser.CloudActivityBehaviorFactory;
+import org.activiti.validation.validator.ValidatorSet;
+import org.activiti.validation.validator.impl.AsyncPropertyValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -79,6 +81,11 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         conf.setDatabaseSchemaUpdate(activitiProperties.getDatabaseSchemaUpdate());
         conf.setDbHistoryUsed(activitiProperties.isDbHistoryUsed());
         conf.setAsyncExecutorActivate(activitiProperties.isAsyncExecutorActivate());
+        if (!activitiProperties.isAsyncExecutorActivate()) {
+            ValidatorSet springBootStarterValidatorSet = new ValidatorSet("activiti-spring-boot-starter");
+            springBootStarterValidatorSet.addValidator(new AsyncPropertyValidator(activitiProperties.isAsyncExecutorActivate()));
+            conf.getProcessValidator().getValidatorSets().add(springBootStarterValidatorSet);
+        }
         conf.setMailServerHost(activitiProperties.getMailServerHost());
         conf.setMailServerPort(activitiProperties.getMailServerPort());
         conf.setMailServerUsername(activitiProperties.getMailServerUserName());
