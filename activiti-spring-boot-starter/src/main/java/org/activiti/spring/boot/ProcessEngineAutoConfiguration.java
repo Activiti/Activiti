@@ -29,9 +29,10 @@ import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
+import org.activiti.spring.boot.validation.AsyncPropertyValidator;
 import org.activiti.spring.bpmn.parser.CloudActivityBehaviorFactory;
+import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
-import org.activiti.validation.validator.impl.AsyncPropertyValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -83,8 +84,14 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         conf.setAsyncExecutorActivate(activitiProperties.isAsyncExecutorActivate());
         if (!activitiProperties.isAsyncExecutorActivate()) {
             ValidatorSet springBootStarterValidatorSet = new ValidatorSet("activiti-spring-boot-starter");
-            springBootStarterValidatorSet.addValidator(new AsyncPropertyValidator(activitiProperties.isAsyncExecutorActivate()));
-            conf.getProcessValidator().getValidatorSets().add(springBootStarterValidatorSet);
+            springBootStarterValidatorSet.addValidator(new AsyncPropertyValidator());
+            if (conf.getProcessValidator() == null) {
+                ProcessValidatorImpl processValidator = new ProcessValidatorImpl();
+                processValidator.addValidatorSet(springBootStarterValidatorSet);
+                conf.setProcessValidator(processValidator);
+            } else {
+                conf.getProcessValidator().getValidatorSets().add(springBootStarterValidatorSet);
+            }
         }
         conf.setMailServerHost(activitiProperties.getMailServerHost());
         conf.setMailServerPort(activitiProperties.getMailServerPort());

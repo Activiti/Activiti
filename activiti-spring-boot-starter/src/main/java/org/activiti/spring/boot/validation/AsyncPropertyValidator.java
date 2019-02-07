@@ -1,4 +1,4 @@
-package org.activiti.validation.validator.impl;
+package org.activiti.spring.boot.validation;
 
 import java.util.List;
 
@@ -16,17 +16,9 @@ import org.activiti.validation.validator.ProcessLevelValidator;
 
 public class AsyncPropertyValidator extends ProcessLevelValidator {
 
-    private boolean asyncExecutorActivate;
-
-    public AsyncPropertyValidator(boolean asyncExecutorActivate) {
-        this.asyncExecutorActivate = asyncExecutorActivate;
-    }
-
     @Override
     protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-        if (!asyncExecutorActivate) {
-            validateFlowElementsInContainer(process, errors, process);
-        }
+        validateFlowElementsInContainer(process, errors, process);
     }
 
     protected void validateFlowElementsInContainer(FlowElementsContainer container, List<ValidationError> errors, Process process) {
