@@ -13,6 +13,7 @@ import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Test;
@@ -101,6 +102,10 @@ public class ConformanceServiceTaskTest {
         assertThat(integrationContext.getProcessDefinitionKey()).isEqualTo(processInstance.getProcessDefinitionKey());
         assertThat(integrationContext.getProcessDefinitionVersion()).isEqualTo(1);
         assertThat(integrationContext.getParentProcessInstanceId()).isNull();
+        
+        assertThat(integrationContext.getClientId()).isNotNull();
+        assertThat(integrationContext.getClientName()).isEqualTo("My Service Task");
+        assertThat(integrationContext.getClientType()).isEqualTo(ServiceTask.class.getSimpleName());
         
         // and then
         assertThat(collectedEvents)

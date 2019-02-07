@@ -39,6 +39,7 @@ public class IntegrationContextBuilderTest {
     private static final String PROCESS_DEFINITION_ID = "processDefinitionId";
     private static final String PROCESS_INSTANCE_ID = "processInstanceId";
     private static final String IMPLEMENTATION = "implementation";
+    private static final String SERVICE_TASK_NAME = "serviceTaskName";
     
     private IntegrationContextBuilder subject = new IntegrationContextBuilder(new VariablesMatchHelper());
     
@@ -51,6 +52,7 @@ public class IntegrationContextBuilderTest {
         Map<String, Object> variables = Collections.singletonMap("key", "value");
 
         given(serviceTask.getImplementation()).willReturn(IMPLEMENTATION);
+        given(serviceTask.getName()).willReturn(SERVICE_TASK_NAME);
         given(execution.getVariables()).willReturn(variables);
         given(execution.getCurrentActivityId()).willReturn(CURRENT_ACTIVITY_ID);
         given(execution.getCurrentFlowElement()).willReturn(serviceTask);
@@ -62,14 +64,16 @@ public class IntegrationContextBuilderTest {
         given(processInstance.getProcessDefinitionKey()).willReturn(PROCESS_DEFINITION_KEY);
         given(processInstance.getProcessDefinitionVersion()).willReturn(PROCESS_DEFINITION_VERSION);
         given(processInstance.getParentProcessInstanceId()).willReturn(PARENT_PROCESS_INSTANCE_ID);
-        
+             
         //when
         IntegrationContext integrationContext = subject.from(execution, null);
 
         //then
         assertThat(integrationContext).isNotNull();
         assertThat(integrationContext.getConnectorType()).isEqualTo(IMPLEMENTATION);
-        assertThat(integrationContext.getActivityElementId()).isEqualTo(CURRENT_ACTIVITY_ID);
+        assertThat(integrationContext.getClientId()).isEqualTo(CURRENT_ACTIVITY_ID);
+        assertThat(integrationContext.getClientName()).isEqualTo(SERVICE_TASK_NAME);
+        assertThat(integrationContext.getClientType()).isEqualTo(ServiceTask.class.getSimpleName());
         assertThat(integrationContext.getBusinessKey()).isEqualTo(PROCESS_INSTANCE_BUSINESS_KEY);
         assertThat(integrationContext.getProcessDefinitionId()).isEqualTo(PROCESS_DEFINITION_ID);
         assertThat(integrationContext.getProcessInstanceId()).isEqualTo(PROCESS_INSTANCE_ID);
