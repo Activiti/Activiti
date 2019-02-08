@@ -23,7 +23,7 @@ public class AsyncPropertyValidatorTest {
     private RepositoryService repositoryService;
 
     @Test
-    public void shouldGetConfiguration() {
+    public void shouldCheckAsyncPropertyWhenIsAsyncExecutorInActivate() {
         BpmnXMLConverter converter = new BpmnXMLConverter();
         BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(ClassLoader
                 .getSystemResourceAsStream("processes-validation/async-property-process.bpmn")), true,
