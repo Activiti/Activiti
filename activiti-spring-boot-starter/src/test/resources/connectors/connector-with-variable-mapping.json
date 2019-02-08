@@ -8,7 +8,7 @@
       "id": "variableMappingActionId",
       "name": "variableMappingActionName",
       "description": "...",
-      "input": [
+      "inputs": [
         {
           "id": "input-variable-1",
           "name": "input-variable-name-1",
@@ -24,14 +24,28 @@
           "description": ""
         },
         {
-          "id": "input-unmapped-variable",
-          "name": "input-unmapped-variable-name",
+          "id": "input-variable-3",
+          "name": "input-variable-name-3",
+          "type": "integer",
+          "required": false,
+          "description": ""
+        },
+        {
+          "id": "input-unmapped-variable-id",
+          "name": "input-unmapped-variable-with-matching-name",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "id": "input-unmapped-variable-with-non-matching-process-variable-id",
+          "name": "input-unmapped-variable-with-non-matching-process-name",
           "type": "string",
           "required": false,
           "description": ""
         }
       ],
-      "output": [
+      "outputs": [
         {
           "id": "out-variable-1",
           "name": "out-variable-name-1",
@@ -47,8 +61,15 @@
           "required": "false"
         },
         {
-          "id": "out-unmapped-variable",
-          "name": "out-unmapped-variable-name",
+          "id": "out-unmapped-variable-matching",
+          "name": "out-unmapped-variable-matching-name",
+          "type": "string",
+          "description": "",
+          "required": "false"
+        },
+        {
+          "id": "out-unmapped-variable-non-matching",
+          "name": "out-unmapped-variable-non-matching-name",
           "type": "string",
           "description": "",
           "required": "false"

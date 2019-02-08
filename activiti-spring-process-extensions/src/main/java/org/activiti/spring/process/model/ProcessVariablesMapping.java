@@ -16,22 +16,26 @@ package org.activiti.spring.process.model;
 import java.util.HashMap;
 import java.util.Map;
 
-public class VariableMapping {
+public class ProcessVariablesMapping {
 
-    private Map<String, String> input = new HashMap<>();
-    private Map<String, String> output = new HashMap<>();
+    private Map<String, Mapping> inputs = new HashMap<>();
+    private Map<String, Mapping> outputs = new HashMap<>();
 
-    public Map<String, String> getInput() {
-        return input;
+    public Map<String, Mapping> getInputs() {
+        return inputs;
     }
-    public void setInput(Map<String, String> input) {
-        this.input = input;
+    public void setInputs(Map<String, Mapping> inputs) {
+        this.inputs = inputs;
     }
 
-    public Map<String, String> getOutput() {
-        return output;
+    public Mapping getInputMapping(String inputUUID) {
+        return inputs.get(inputUUID);
     }
-    public void setOutput(Map<String, String> output) {
-        this.output = output;
+
+    public Map<String, Mapping> getOutputs() {
+        return outputs;
+    }
+    public void setOutputs(Map<String, Mapping> outputs) {
+        this.outputs = outputs;
     }
 }

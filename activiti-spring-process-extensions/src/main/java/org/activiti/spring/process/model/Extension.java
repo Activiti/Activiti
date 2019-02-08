@@ -19,7 +19,9 @@ import java.util.Map;
 public class Extension {
 
     private Map<String, VariableDefinition> properties = new HashMap<>();
-    private Map<String, VariableMapping> variablesMappings = new HashMap<>();
+    private Map<String, ProcessVariablesMapping> mappings = new HashMap<>();
+
+    private final ProcessVariablesMapping EMPTY_PROCESS_VARIABLES_MAPPING = new ProcessVariablesMapping();
 
     public Map<String, VariableDefinition> getProperties() {
         return properties;
@@ -28,10 +30,20 @@ public class Extension {
         this.properties = properties;
     }
 
-    public Map<String, VariableMapping> getVariablesMappings() {
-        return variablesMappings;
+    public Map<String, ProcessVariablesMapping> getMappings() {
+        return mappings;
     }
-    public void setVariablesMappings(Map<String, VariableMapping> variablesMappings) {
-        this.variablesMappings = variablesMappings;
+
+    public ProcessVariablesMapping getMappingForFlowElement(String flowElementUUID) {
+        ProcessVariablesMapping processVariablesMapping = mappings.get(flowElementUUID);
+        return processVariablesMapping != null? processVariablesMapping : EMPTY_PROCESS_VARIABLES_MAPPING;
+    }
+
+    public void setMappings(Map<String, ProcessVariablesMapping> mappings) {
+        this.mappings = mappings;
+    }
+
+    public VariableDefinition getProperty(String propertyUUID){
+        return properties != null? properties.get(propertyUUID) : null;
     }
 }

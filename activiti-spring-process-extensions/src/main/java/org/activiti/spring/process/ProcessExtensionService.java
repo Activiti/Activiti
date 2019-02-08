@@ -13,22 +13,25 @@
 
 package org.activiti.spring.process;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.spring.process.model.ProcessExtensionModel;
-import org.activiti.spring.process.model.VariableDefinition;
-import org.activiti.spring.process.variable.types.VariableType;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.ResourcePatternResolver;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.spring.process.model.ProcessExtensionModel;
+import org.activiti.spring.process.model.VariableDefinition;
+import org.activiti.spring.process.variable.types.VariableType;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 public class ProcessExtensionService {
 
@@ -37,6 +40,9 @@ public class ProcessExtensionService {
     private final ObjectMapper objectMapper;
     private ResourcePatternResolver resourceLoader;
     private Map<String, VariableType> variableTypeMap;
+    private Map<String, ProcessExtensionModel> processExtensionModelMap;
+    private Map<String, String> procDefIdToKey = new HashMap<>();
+    private static final ProcessExtensionModel EMPTY_EXTENSIONS = new ProcessExtensionModel();
 
     public ProcessExtensionService(String processExtensionsRoot, String processExtensionsSuffix,
                                    ObjectMapper objectMapper, ResourcePatternResolver resourceLoader,
@@ -59,6 +65,7 @@ public class ProcessExtensionService {
     }
 
     private ProcessExtensionModel read(InputStream inputStream) throws IOException {
+        objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
         ProcessExtensionModel mappedModel = objectMapper.readValue(inputStream,
                 ProcessExtensionModel.class);
         return convertJsonVariables(mappedModel);
@@ -81,7 +88,7 @@ public class ProcessExtensionService {
         return processExtensionModel;
     }
 
-    public Map<String, ProcessExtensionModel> get() throws IOException {
+    public Map<String, ProcessExtensionModel> readProcessExtensions() throws IOException {
         List<ProcessExtensionModel> processExtensionModels = new ArrayList<>();
         Optional<Resource[]> resourcesOptional = retrieveResources();
         if (resourcesOptional.isPresent()) {
@@ -89,7 +96,33 @@ public class ProcessExtensionService {
                 processExtensionModels.add(read(resource.getInputStream()));
             }
         }
-        return convertToMap(processExtensionModels);
+        processExtensionModelMap = convertToMap(processExtensionModels);
+        return processExtensionModelMap;
+    }
+
+    public void cache(ProcessDefinition processDefinition) {
+        procDefIdToKey.put(processDefinition.getId(), processDefinition.getKey());
+    }
+
+    public boolean hasExtensionsFor(ProcessDefinition processDefinition) {
+        return hasExtensionsFor(processDefinition.getKey());
+    }
+
+    public boolean hasExtensionsFor(String processDefinitionKey) {
+        return processExtensionModelMap.containsKey(processDefinitionKey);
+    }
+
+    public ProcessExtensionModel getExtensionsFor(ProcessDefinition processDefinition) {
+        return getProcessExtensionModelForKey(processDefinition.getKey());
+    }
+
+    private ProcessExtensionModel getProcessExtensionModelForKey(String processDefinitionKey) {
+        ProcessExtensionModel processExtensionModel = processExtensionModelMap.get(processDefinitionKey);
+        return processExtensionModel != null? processExtensionModel : EMPTY_EXTENSIONS;
+    }
+
+    public ProcessExtensionModel getExtensionsForId(String processDefinitionId) {
+        return getProcessExtensionModelForKey(procDefIdToKey.get(processDefinitionId));
     }
 
     private Map<String, ProcessExtensionModel> convertToMap(List<ProcessExtensionModel> processExtensionModelList){

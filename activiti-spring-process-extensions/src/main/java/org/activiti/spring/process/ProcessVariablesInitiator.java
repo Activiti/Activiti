@@ -13,6 +13,11 @@
 
 package org.activiti.spring.process;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
@@ -23,28 +28,28 @@ import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 
 public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
-    @Autowired
-    private Map<String, ProcessExtensionModel> processExtensionDefinitionMap;
+    private final ProcessExtensionService processExtensionService;
 
-    @Autowired
-    private VariableParsingService variableParsingService;
+    private final VariableParsingService variableParsingService;
 
-    @Autowired
-    private VariableValidationService variableValidationService;
+    private final VariableValidationService variableValidationService;
+
+    public ProcessVariablesInitiator(ProcessExtensionService processExtensionService,
+                                     VariableParsingService variableParsingService,
+                                     VariableValidationService variableValidationService) {
+        this.processExtensionService = processExtensionService;
+        this.variableParsingService = variableParsingService;
+        this.variableValidationService = variableValidationService;
+    }
 
     @Override
     public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition, String businessKey, String processInstanceName, FlowElement initialFlowElement, Process process, Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
-        if (processExtensionDefinitionMap.containsKey(processDefinition.getKey())) {
-            ProcessExtensionModel processExtensionModel = processExtensionDefinitionMap.get(processDefinition.getKey());
+        if (processExtensionService.hasExtensionsFor(processDefinition)) {
+            ProcessExtensionModel processExtensionModel = processExtensionService.getExtensionsFor(processDefinition);
+            processExtensionService.cache(processDefinition);
             Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions().getProperties();
             Map<String, Object> processedVariables = processVariables(variables, variableDefinitionMap);
             Set<String> missingRequiredVars = checkRequiredVariables(processedVariables, variableDefinitionMap);

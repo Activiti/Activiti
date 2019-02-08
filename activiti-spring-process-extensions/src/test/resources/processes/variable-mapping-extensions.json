@@ -23,33 +23,12 @@
         "required": false,
         "value": "testName"
       },
-      "input-unmapped-variable-with-matching-name-id": {
-        "id": "input-unmapped-variable-with-matching-name-id",
-        "name": "input-unmapped-variable-with-matching-name",
+      "input-unmapped-variable-name-id": {
+        "id": "input-unmapped-variable-name-id",
+        "name": "input-unmapped-variable-name",
         "type": "string",
         "required": false,
         "value": "inTest"
-      },
-      "input-unmapped-variable-with-non-matching-name-id": {
-        "id": "input-unmapped-variable-with-non-matching-connector-input-name-id",
-        "name": "input-unmapped-variable-with-non-matching-connector-input-name",
-        "type": "string",
-        "required": false,
-        "value": "inTest"
-      },
-      "out-unmapped-variable-matching-name-id": {
-        "id": "out-unmapped-variable-matching-name-id",
-        "name": "out-unmapped-variable-matching-name",
-        "type": "string",
-        "required": false,
-        "value": "default"
-      },
-      "output-unmapped-variable-with-non-matching-name-id": {
-        "id": "output-unmapped-variable-with-non-matching-name-id",
-        "name": "output-unmapped-variable-with-non-matching-connector-output-name",
-        "type": "string",
-        "required": false,
-        "value": "default"
       }
     },
     "mappings": {
