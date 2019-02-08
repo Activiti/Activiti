@@ -1,4 +1,4 @@
-package org.activiti.spring.boot.validation;
+package org.activiti.spring.boot.process.validation;
 
 import java.util.List;
 
@@ -35,9 +35,9 @@ public class AsyncPropertyValidator extends ProcessLevelValidator {
             if ((flowElement instanceof Event)) {
                 ((Event) flowElement).getEventDefinitions().stream().forEach(event -> {
                     if (event instanceof TimerEventDefinition) {
-                        addWarning(errors, Problems.EVENT_TIMER_ASYNC_NOT_AVAILABLE, null, event, "");
+                        addWarning(errors, Problems.EVENT_TIMER_ASYNC_NOT_AVAILABLE, process, flowElement, "");
                     } else if ((event instanceof SignalEventDefinition) && ((SignalEventDefinition) event).isAsync() ) {
-                        addWarning(errors, Problems.SIGNAL_ASYNC_NOT_AVAILABLE, process, event, "");
+                        addWarning(errors, Problems.SIGNAL_ASYNC_NOT_AVAILABLE, process, flowElement, "");
                     }
                 });
             }

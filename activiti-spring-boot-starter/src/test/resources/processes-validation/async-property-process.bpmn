@@ -4,7 +4,7 @@
     <participant id="pool1" name="Pool" processRef="process_pool1"></participant>
   </collaboration>
   <signal id="test" name="Test" activiti:scope="global"></signal>
-  <process id="myProcess" name="My process" isExecutable="true">
+  <process id="async-property-root-process" name="My process" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <userTask id="usertask1" name="User Task" activiti:async="true"></userTask>
     <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
@@ -49,7 +49,7 @@
     <endEvent id="endevent4" name="End"></endEvent>
     <sequenceFlow id="flow11" sourceRef="timerintermediatecatchevent1" targetRef="endevent4"></sequenceFlow>
   </process>
-  <process id="process_pool1" name="process_pool1" isExecutable="true">
+  <process id="async-property-pool-process" name="process_pool1" isExecutable="true">
     <laneSet id="laneSet_process_pool1">
       <lane id="lane1">
         <flowNodeRef>timerstartevent1</flowNodeRef>

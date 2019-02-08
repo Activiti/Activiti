@@ -29,7 +29,7 @@ import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
-import org.activiti.spring.boot.validation.AsyncPropertyValidator;
+import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
 import org.activiti.spring.bpmn.parser.CloudActivityBehaviorFactory;
 import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
