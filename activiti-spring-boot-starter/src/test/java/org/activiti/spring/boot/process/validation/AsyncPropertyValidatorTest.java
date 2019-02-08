@@ -25,58 +25,45 @@ public class AsyncPropertyValidatorTest {
     @Test
     public void shouldCheckAsyncPropertyWhenIsAsyncExecutorInActivate() {
         BpmnXMLConverter converter = new BpmnXMLConverter();
-        BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(ClassLoader
-                .getSystemResourceAsStream("processes-validation/async-property-process.bpmn")), true,
-                false);
+        BpmnModel bpmnModel = converter.convertToBpmnModel(
+                new InputStreamSource(
+                        ClassLoader.getSystemResourceAsStream("processes-validation/async-property-process.bpmn")),
+                true, false);
         List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
         assertThat(validationErrors.get(0))
-                 .extracting(ValidationError::getValidatorSetName,
-                 ValidationError::getProblem,
-                 ValidationError::getProcessDefinitionId,
-                 ValidationError::getActivityId)
-                 .contains("activiti-spring-boot-starter", 
-                 "activiti-flow-element-async-not-available", "async-property-root-process", "usertask1");
+                .extracting(ValidationError::getValidatorSetName, ValidationError::getProblem,
+                        ValidationError::getProcessDefinitionId, ValidationError::getActivityId)
+                .contains("activiti-spring-boot-starter", "activiti-flow-element-async-not-available",
+                        "async-property-root-process", "usertask1");
         assertThat(validationErrors.get(1))
-            .extracting(ValidationError::getValidatorSetName,
-            ValidationError::getProblem,
-            ValidationError::getProcessDefinitionId,
-            ValidationError::getActivityId)
-            .contains("activiti-spring-boot-starter", 
-            "activiti-flow-element-async-not-available", "async-property-root-process", "usertask2");
+                .extracting(ValidationError::getValidatorSetName, ValidationError::getProblem,
+                        ValidationError::getProcessDefinitionId, ValidationError::getActivityId)
+                .contains("activiti-spring-boot-starter", "activiti-flow-element-async-not-available",
+                        "async-property-root-process", "usertask2");
         assertThat(validationErrors.get(2))
-            .extracting(ValidationError::getValidatorSetName,
-            ValidationError::getProblem,
-            ValidationError::getProcessDefinitionId,
-            ValidationError::getActivityId)
-            .contains("activiti-spring-boot-starter", 
-            "activiti-flow-element-async-not-available", "async-property-root-process", "usertask3");
+                .extracting(ValidationError::getValidatorSetName, ValidationError::getProblem,
+                        ValidationError::getProcessDefinitionId, ValidationError::getActivityId)
+                .contains("activiti-spring-boot-starter", "activiti-flow-element-async-not-available",
+                        "async-property-root-process", "usertask3");
         assertThat(validationErrors.get(3))
-            .extracting(ValidationError::getValidatorSetName,
-            ValidationError::getProblem,
-            ValidationError::getProcessDefinitionId,
-            ValidationError::getActivityId)
-            .contains("activiti-spring-boot-starter", 
-            "activiti-signal-async-not-available", "async-property-root-process", "signalintermediatethrowevent1");
+                .extracting(ValidationError::getValidatorSetName, ValidationError::getProblem,
+                        ValidationError::getProcessDefinitionId, ValidationError::getActivityId)
+                .contains("activiti-spring-boot-starter", "activiti-signal-async-not-available",
+                        "async-property-root-process", "signalintermediatethrowevent1");
         assertThat(validationErrors.get(4))
-            .extracting(ValidationError::getValidatorSetName,
-            ValidationError::getProblem,
-            ValidationError::getProcessDefinitionId,
-            ValidationError::getActivityId)
-            .contains("activiti-spring-boot-starter", 
-            "activiti-event-timer-async-not-available", "async-property-root-process", "boundarytimer1");
+                .extracting(ValidationError::getValidatorSetName, ValidationError::getProblem,
+                        ValidationError::getProcessDefinitionId, ValidationError::getActivityId)
+                .contains("activiti-spring-boot-starter", "activiti-event-timer-async-not-available",
+                        "async-property-root-process", "boundarytimer1");
         assertThat(validationErrors.get(5))
-            .extracting(ValidationError::getValidatorSetName,
-            ValidationError::getProblem,
-            ValidationError::getProcessDefinitionId,
-            ValidationError::getActivityId)
-            .contains("activiti-spring-boot-starter", 
-            "activiti-event-timer-async-not-available", "async-property-root-process", "timerintermediatecatchevent1");
+                .extracting(ValidationError::getValidatorSetName, ValidationError::getProblem,
+                        ValidationError::getProcessDefinitionId, ValidationError::getActivityId)
+                .contains("activiti-spring-boot-starter", "activiti-event-timer-async-not-available",
+                        "async-property-root-process", "timerintermediatecatchevent1");
         assertThat(validationErrors.get(6))
-            .extracting(ValidationError::getValidatorSetName,
-            ValidationError::getProblem,
-            ValidationError::getProcessDefinitionId,
-            ValidationError::getActivityId)
-            .contains("activiti-spring-boot-starter", 
-            "activiti-event-timer-async-not-available", "async-property-pool-process", "timerstartevent1");
+                .extracting(ValidationError::getValidatorSetName, ValidationError::getProblem,
+                        ValidationError::getProcessDefinitionId, ValidationError::getActivityId)
+                .contains("activiti-spring-boot-starter", "activiti-event-timer-async-not-available",
+                        "async-property-pool-process", "timerstartevent1");
     }
 }
