@@ -13,6 +13,9 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
+
+@Internal
 public interface HistoricFormPropertyEntity extends HistoricDetailEntity {
 
   String getPropertyId();

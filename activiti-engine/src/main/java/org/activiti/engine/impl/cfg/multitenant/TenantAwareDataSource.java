@@ -33,9 +33,10 @@ import org.activiti.engine.ActivitiException;
  * for the current tenant will be determined and used.
  * 
  * Heavily influenced and inspired by Spring's AbstractRoutingDataSource.
- * 
-
+ *
+ * @deprecated multi-tenant code will be removed in future version of Activiti and Activiti Cloud
  */
+@Deprecated
 public class TenantAwareDataSource implements DataSource {
   
   protected TenantInfoHolder tenantInfoHolder;

@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,6 +24,8 @@ import java.util.regex.Pattern;
 /**
 
  */
+@Internal
+@Deprecated
 public class CommentEntityImpl extends AbstractEntityNoRevision implements CommentEntity, Serializable {
 
   private static final long serialVersionUID = 1L;

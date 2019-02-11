@@ -14,6 +14,7 @@
 package org.activiti.engine.repository;
 
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 
 /**
@@ -23,10 +24,9 @@ import org.activiti.engine.query.Query;
  * 
  * To retrieve the actual bytes of a deployment resource use the operations on the {@link RepositoryService#getDeploymentResourceNames(String)} and
  * {@link RepositoryService#getResourceAsStream(String, String)}
- * 
-
-
+ *
  */
+@Internal
 public interface DeploymentQuery extends Query<DeploymentQuery, Deployment> {
 
   /**

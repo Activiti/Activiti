@@ -12,16 +12,17 @@
  */
 package org.activiti.engine.repository;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.Date;
 
 /**
  * Represents a model that is stored in the model repository. In addition, a model can be deployed to the Activiti Engine in a separate deployment step.
  * 
  * A model is a container for the meta data and sources of a process model that typically can be edited in a modeling environment.
- * 
-
-
+ *
  */
+@Internal
 public interface Model {
 
   String getId();

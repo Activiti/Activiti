@@ -12,11 +12,14 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.List;
 
 /**
 
  */
+@Internal
 public interface PropertyEntityManager extends EntityManager<PropertyEntity> {
   
   List<PropertyEntity> findAll();

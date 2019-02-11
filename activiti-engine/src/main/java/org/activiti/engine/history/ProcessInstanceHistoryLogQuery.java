@@ -1,5 +1,6 @@
 package org.activiti.engine.history;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.task.Comment;
 
 /**
@@ -9,9 +10,9 @@ import org.activiti.engine.task.Comment;
  * 
  * This class is actually a convenience on top of the other specific queries such as {@link HistoricTaskInstanceQuery}, {@link HistoricActivityInstanceQuery}, ... It will execute separate queries for
  * each included type, order the data according to the date (ascending) and wrap the results in the {@link ProcessInstanceHistoryLog}.
- * 
-
+ *
  */
+@Internal
 public interface ProcessInstanceHistoryLogQuery {
 
   /**

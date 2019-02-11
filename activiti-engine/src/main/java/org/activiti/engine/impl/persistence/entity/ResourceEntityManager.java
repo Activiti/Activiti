@@ -12,11 +12,14 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.List;
 
 /**
 
  */
+@Internal
 public interface ResourceEntityManager extends EntityManager<ResourceEntity> {
 
   List<ResourceEntity> findResourcesByDeploymentId(String deploymentId);

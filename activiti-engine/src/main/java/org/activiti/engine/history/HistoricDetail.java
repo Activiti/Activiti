@@ -13,13 +13,15 @@
 
 package org.activiti.engine.history;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.Date;
 
 /**
  * Base class for all kinds of information that is related to either a {@link HistoricProcessInstance} or a {@link HistoricActivityInstance}.
- * 
-
+ *
  */
+@Internal
 public interface HistoricDetail extends HistoricData {
 
   /** The unique DB id for this historic detail */

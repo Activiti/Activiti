@@ -12,11 +12,14 @@
  */
 package org.activiti.engine.impl.bpmn.data;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * Represents a definition of a structure used to exchange information
  * 
 
  */
+@Internal
 public interface StructureDefinition {
 
   /**

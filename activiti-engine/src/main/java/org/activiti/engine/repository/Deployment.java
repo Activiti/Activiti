@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.repository;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.Date;
 
 /**
@@ -24,10 +26,10 @@ import java.util.Date;
  * 
  * To create a Deployment, use the {@link org.activiti.engine.repository.DeploymentBuilder}. A Deployment on itself is a <b>read-only</b> object and its content cannot be changed after deployment
  * (hence the builder that needs to be used).
- * 
-
-
+ *
  */
+
+@Internal
 public interface Deployment {
 
   String getId();

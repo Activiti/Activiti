@@ -14,6 +14,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.List;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -21,6 +22,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 
 
  */
+@Internal
 public interface ProcessDefinitionEntity extends ProcessDefinition, Entity, HasRevision {
 
   List<IdentityLinkEntity> getIdentityLinks();

@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.bpmn.webservice;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.net.URL;
 import java.util.concurrent.ConcurrentMap;
 
@@ -19,9 +21,9 @@ import javax.xml.namespace.QName;
 
 /**
  * Represents an implementation of a {@link Operation}
- * 
-
+ *
  */
+@Internal
 public interface OperationImplementation {
 
   /**

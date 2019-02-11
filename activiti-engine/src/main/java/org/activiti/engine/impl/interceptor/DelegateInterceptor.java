@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.interceptor;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
 
 /**
@@ -28,6 +29,7 @@ import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
  * 
 
  */
+@Internal
 public interface DelegateInterceptor {
 
   public void handleInvocation(DelegateInvocation invocation);

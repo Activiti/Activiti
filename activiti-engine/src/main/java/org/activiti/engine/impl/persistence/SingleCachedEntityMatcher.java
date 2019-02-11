@@ -1,5 +1,6 @@
 package org.activiti.engine.impl.persistence;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.persistence.entity.Entity;
 
 /**
@@ -7,6 +8,7 @@ import org.activiti.engine.impl.persistence.entity.Entity;
  * 
 
  */
+@Internal
 public interface SingleCachedEntityMatcher<EntityImpl extends Entity> {
 
   boolean isRetained(EntityImpl entity, Object param);

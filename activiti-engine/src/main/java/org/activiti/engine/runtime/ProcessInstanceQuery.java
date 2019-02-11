@@ -18,16 +18,14 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 
 /**
  * Allows programmatic querying of {@link ProcessInstance}s.
- * 
-
-
-
-
+ *
  */
+@Internal
 public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, ProcessInstance> {
 
   /** Select the process instance with the given id */

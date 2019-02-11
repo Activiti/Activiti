@@ -15,14 +15,14 @@ package org.activiti.engine.history;
 
 import java.util.Date;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.task.TaskInfoQuery;
 
 /**
  * Allows programmatic querying for {@link HistoricTaskInstance}s.
- * 
-
-
+ *
  */
+@Internal
 public interface HistoricTaskInstanceQuery extends TaskInfoQuery<HistoricTaskInstanceQuery, HistoricTaskInstance> {
 
   /** Only select historic task instances with the given task delete reason. */

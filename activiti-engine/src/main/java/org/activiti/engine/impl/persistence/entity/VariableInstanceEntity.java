@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.variable.VariableType;
 
 /**
@@ -19,6 +20,7 @@ import org.activiti.engine.impl.variable.VariableType;
 
 
  */
+@Internal
 public interface VariableInstanceEntity extends VariableInstance {
   
   void setDeleted(boolean isDeleted);

@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
@@ -26,6 +27,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 /**
 
  */
+@Internal
 public interface ExecutionEntityManager extends EntityManager<ExecutionEntity> {
   
   ExecutionEntity createProcessInstanceExecution(ProcessDefinition processDefinition, String businessKey, String tenantId, String initiatorVariableName);

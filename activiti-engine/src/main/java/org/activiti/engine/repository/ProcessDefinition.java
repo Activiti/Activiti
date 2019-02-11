@@ -13,6 +13,7 @@
 package org.activiti.engine.repository;
 
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
@@ -24,6 +25,7 @@ import org.activiti.engine.runtime.ProcessInstance;
  * At deploy time, the engine will then parse the process definition files to an executable instance of this class, that can be used to start a {@link ProcessInstance}.
  * 
  */
+@Internal
 public interface ProcessDefinition {
 
   /** unique identifier */

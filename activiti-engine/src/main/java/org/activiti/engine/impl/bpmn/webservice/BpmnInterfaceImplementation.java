@@ -12,11 +12,13 @@
  */
 package org.activiti.engine.impl.bpmn.webservice;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * Represents an implementation of a {@link BpmnInterface}
- * 
-
+ *
  */
+@Internal
 public interface BpmnInterfaceImplementation {
 
   /**

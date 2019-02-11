@@ -17,14 +17,15 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricTaskInstanceQuery;
 import org.activiti.engine.query.Query;
 
 /**
  * Interface containing shared methods between the {@link TaskQuery} and the {@link HistoricTaskInstanceQuery}.
- * 
-
+ *
  */
+@Internal
 public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo> extends Query<T, V> {
 
   /**

@@ -16,8 +16,10 @@
 
 package org.activiti.engine.integration;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 
+@Internal
 public interface IntegrationContextService {
 
     IntegrationContextEntity findById(String id);

@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -22,6 +23,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 /**
 
  */
+@Internal
 public interface ProcessDefinitionEntityManager extends EntityManager<ProcessDefinitionEntity> {
 
   ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey);

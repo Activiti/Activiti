@@ -15,15 +15,16 @@ package org.activiti.engine.impl.bpmn.parser;
 import java.util.Map;
 
 import org.activiti.bpmn.model.Import;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 import org.activiti.engine.impl.webservice.WSOperation;
 import org.activiti.engine.impl.webservice.WSService;
 
 /**
  * A XML importer
- * 
-
+ *
  */
+@Internal
 public interface XMLImporter {
 
   /**

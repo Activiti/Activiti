@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.webservice;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.net.URL;
 import java.util.concurrent.ConcurrentMap;
 
@@ -20,8 +22,10 @@ import javax.xml.namespace.QName;
 /**
  * A dynamic web service client that allows to perform synchronous calls to a specific web service.
  * 
-
+ * @deprecated due integrations will be delegated to extenal components and the use of the Connector interface
  */
+@Deprecated
+@Internal
 public interface SyncWebServiceClient {
 
   /**

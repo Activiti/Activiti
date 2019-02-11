@@ -16,14 +16,18 @@ package org.activiti.engine.task;
 import java.util.Date;
 
 import org.activiti.engine.TaskService;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricData;
 
 /** User comments that form discussions around tasks.
  * 
  * @see {@link TaskService#getTaskComments(String)
-
-
+ *
+ * @deprecated this interface and its implementations are going to be removed in future iterations
+ * Comments doesn't belong to the Process/Task Runtime
  */
+@Internal
+@Deprecated
 public interface Comment extends HistoricData {
 
   /** unique identifier for this comment */

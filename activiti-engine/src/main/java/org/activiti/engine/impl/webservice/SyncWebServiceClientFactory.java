@@ -17,6 +17,7 @@ package org.activiti.engine.impl.webservice;
  * 
 
  */
+@Deprecated
 public interface SyncWebServiceClientFactory {
 
   /**

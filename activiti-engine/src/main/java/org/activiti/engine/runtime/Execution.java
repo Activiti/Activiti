@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.runtime;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * Represent a 'path of execution' in a process instance.
  * 
@@ -19,6 +21,7 @@ package org.activiti.engine.runtime;
  * 
 
  */
+@Internal
 public interface Execution {
 
   /**

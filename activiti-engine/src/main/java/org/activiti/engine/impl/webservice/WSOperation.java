@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Represents a WS implementation of a {@link Operation}
  */
+@Deprecated
 public class WSOperation implements OperationImplementation {
 
     protected String id;

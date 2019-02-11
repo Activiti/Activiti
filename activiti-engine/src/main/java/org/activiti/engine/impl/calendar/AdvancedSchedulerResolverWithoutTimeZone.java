@@ -3,13 +3,16 @@ package org.activiti.engine.impl.calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ClockReader;
 
 /**
  * Resolves a due date using the original Activiti due date resolver. This does not take into account the passed time zone.
- * 
-
+ *
+ * @deprecated Calendar Functionally will be provided as a separate service/library
  */
+@Deprecated
+@Internal
 public class AdvancedSchedulerResolverWithoutTimeZone implements AdvancedSchedulerResolver {
 
   @Override

@@ -13,14 +13,15 @@
 
 package org.activiti.engine.history;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
 /**
  * Historic counterpart of {@link IdentityLink} that represents the current state if any runtime link. Will be preserved when the runtime process instance or task is finished.
- * 
-
+ *
  */
+@Internal
 public interface HistoricIdentityLink {
 
   /**
