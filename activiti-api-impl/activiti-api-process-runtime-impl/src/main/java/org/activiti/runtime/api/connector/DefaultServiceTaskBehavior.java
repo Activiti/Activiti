@@ -50,9 +50,8 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
     @Override
     public void execute(DelegateExecution execution) {
         ActionDefinition actionDefinition = findRelatedActionDefinition(execution);
-        Connector connector = getConnector(getImplementation(execution),
-                                           actionDefinition);
 
+        Connector connector = getConnector(getImplementation(execution));
         IntegrationContext integrationContext = connector.apply(integrationContextBuilder.from(execution,
                                                                                     actionDefinition));
 
@@ -72,10 +71,8 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
         return ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
     }
 
-    private Connector getConnector(String implementation,
-                                   ActionDefinition actionDefinition) {
-        String beanName = actionDefinition == null ? implementation : actionDefinition.getName();
-        return applicationContext.getBean(beanName,
+    private Connector getConnector(String implementation) {
+        return applicationContext.getBean(implementation,
                                           Connector.class);
     }
 

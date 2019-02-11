@@ -108,7 +108,7 @@ public class RuntimeTestConfiguration {
         };
     }
 
-    @Bean
+    @Bean(name = "processImageConnectorId.processImageActionId")
     public Connector processImageActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
@@ -123,7 +123,7 @@ public class RuntimeTestConfiguration {
         };
     }
 
-    @Bean
+    @Bean(name = "tagImageConnectorId.tagImageActionId")
     public Connector tagImageActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
@@ -194,7 +194,7 @@ public class RuntimeTestConfiguration {
         return candidateUserRemovedEvent -> taskCandidateUserRemovedEvents.add(candidateUserRemovedEvent);
     }
 
-    @Bean
+    @Bean(name = "variableMappingConnectorId.variableMappingActionId")
     public Connector variableMappingActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
@@ -206,10 +206,6 @@ public class RuntimeTestConfiguration {
             //this variable is not mapped, but its name matches with a process variable
             //so value will be provided from process variable
             String unmappedMatchingVariable = "input-unmapped-variable-with-matching-name";
-
-            //this variable is not mapped and has no matching variable in process variables
-            //so an entry will be available as is declared as input variable, but value will be null
-            String unmappedNonMatchingVariable = "input-unmapped-variable-with-non-matching-process-name";
 
             Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
             Integer offSet = (Integer) inBoundVariables.get(variableThree);
