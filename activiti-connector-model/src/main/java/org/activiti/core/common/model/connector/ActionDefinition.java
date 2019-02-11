@@ -1,5 +1,6 @@
 package org.activiti.core.common.model.connector;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ActionDefinition {
@@ -27,11 +28,11 @@ public class ActionDefinition {
     }
 
     public List<VariableDefinition> getInputs() {
-        return inputs;
+        return inputs != null ? inputs : Collections.emptyList();
     }
 
     public List<VariableDefinition> getOutputs() {
-        return outputs;
+        return outputs != null ? outputs : Collections.emptyList();
     }
 
     public void setId(String id) {
