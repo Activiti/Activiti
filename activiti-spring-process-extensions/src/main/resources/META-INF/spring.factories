@@ -1,2 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.activiti.spring.process.autoconfigure.ProcessExtensionsAutoConfiguration
+org.activiti.spring.process.autoconfigure.ProcessExtensionsAutoConfiguration,\
+  org.activiti.spring.process.autoconfigure.ProcessExtensionsConfiguratorAutoConfiguration

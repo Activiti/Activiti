@@ -37,30 +37,30 @@ import java.util.Map;
 
 
 @Configuration
-public class ProcessExtensionsAutoConfiguration extends AbstractProcessEngineConfigurator {
+public class ProcessExtensionsAutoConfiguration {
 
-    @Override
-    public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
-        super.configure(processEngineConfiguration);
-        processEngineConfiguration.setProcessInstanceHelper(processVariablesInitiator());
+    @Bean
+    public ProcessVariablesInitiator processVariablesInitiator(ProcessExtensionService processExtensionService,
+                                                               VariableParsingService variableParsingService,
+                                                               VariableValidationService variableValidationService) {
+        return new ProcessVariablesInitiator(processExtensionService,
+                                             variableParsingService,
+                                             variableValidationService);
     }
 
     @Bean
-    public ProcessVariablesInitiator processVariablesInitiator() {
-        return new ProcessVariablesInitiator();
+    public Map<String, ProcessExtensionModel> processExtensionsMap(ProcessExtensionService processExtensionService) throws IOException {
+        return processExtensionService.readProcessExtensions();
+
     }
 
     @Bean
-    public Map<String, ProcessExtensionModel> processExtensionsMap(@Value("${activiti.process.extensions.dir:classpath:/processes/}")
-                                                                             String processExtensionsRoot,
-                                                                   @Value("${activiti.process.extensions.suffix:**-extensions.json}")
-                                                                             String processExtensionsSuffix,
-                                                                   ObjectMapper objectMapper,
-                                                                   ResourcePatternResolver resourceLoader,
-                                                                   Map<String, VariableType> variableTypeMap) throws IOException {
-        ProcessExtensionService processExtensionService = new ProcessExtensionService(processExtensionsRoot, processExtensionsSuffix, objectMapper, resourceLoader, variableTypeMap);
-        return processExtensionService.get();
-
+    public ProcessExtensionService processExtensionService(@Value("${activiti.process.extensions.dir:classpath:/processes/}") String processExtensionsRoot,
+                                                            @Value("${activiti.process.extensions.suffix:**-extensions.json}") String processExtensionsSuffix,
+                                                            ObjectMapper objectMapper,
+                                                            ResourcePatternResolver resourceLoader,
+                                                            Map<String, VariableType> variableTypeMap) {
+        return new ProcessExtensionService(processExtensionsRoot, processExtensionsSuffix, objectMapper, resourceLoader, variableTypeMap);
     }
 
     @Bean

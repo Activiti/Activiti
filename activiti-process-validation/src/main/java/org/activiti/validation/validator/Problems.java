@@ -124,4 +124,7 @@ public interface Problems {
   String DI_DOES_NOT_REFERENCE_FLOWNODE = "activiti-di-does-not-reference-flownode";
   String DI_DOES_NOT_REFERENCE_SEQ_FLOW = "activiti-di-does-not-reference-seq-flow";
 
+  String FLOW_ELEMENT_ASYNC_NOT_AVAILABLE = "activiti-flow-element-async-not-available";
+  String EVENT_TIMER_ASYNC_NOT_AVAILABLE = "activiti-event-timer-async-not-available";
+  String SIGNAL_ASYNC_NOT_AVAILABLE= "activiti-signal-async-not-available";
 }
