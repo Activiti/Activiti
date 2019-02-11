@@ -18,7 +18,6 @@ package org.conf.activiti.runtime.api;
 
 import org.activiti.core.common.spring.connector.ConnectorDefinitionService;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
-import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.runtime.api.connector.ConnectorActionDefinitionFinder;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
@@ -30,18 +29,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
-import java.util.List;
 
 @Configuration
 public class ConnectorsAutoConfiguration {
 
     @Autowired
     private ConnectorDefinitionService connectorDefinitionService;
-
-    @Bean
-    public List<ConnectorDefinition> connectorDefinitions() throws IOException {
-        return connectorDefinitionService.get();
-    }
 
     @Bean
     public IntegrationContextBuilder integrationContextBuilder(VariablesMatchHelper variablesMatchHelper) {
