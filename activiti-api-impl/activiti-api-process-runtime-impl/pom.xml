@@ -59,6 +59,10 @@
       <artifactId>activiti-spring-identity</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-spring-process-extensions</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.activiti.core.common</groupId>
       <artifactId>activiti-spring-security-policies</artifactId>
     </dependency>
