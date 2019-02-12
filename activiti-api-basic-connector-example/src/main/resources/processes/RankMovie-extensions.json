@@ -10,15 +10,15 @@
         "mappings": {
             "Task_1spvopd": {
                 "inputs": {
-                    "movieName": {
+                  "movieName": {
+                    "type": "variable",
+                    "value": "movieToRank"
+                  }
+                },
+                "outputs": {
+                    "movieDesc": {
                         "type": "variable",
-                        "value": "movieToRank"
-                    },
-                    "outputs": {
-                        "movieDesc": {
-                            "type": "variable",
-                            "value": "movieDescription"
-                        }
+                        "value": "movieDescription"
                     }
                 }
             }

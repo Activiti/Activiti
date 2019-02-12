@@ -79,7 +79,7 @@ public class DemoApplication implements CommandLineRunner {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
             logger.info(">>inbound: " + inBoundVariables);
-            integrationContext.addOutBoundVariable("movieDesc",
+            integrationContext.addOutBoundVariable("movieDescription",
                                                    "The Lord of the Rings is an epic high fantasy novel written by English author and scholar J. R. R. Tolkien");
             return integrationContext;
         };
