@@ -15,6 +15,9 @@ import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListe
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.runtime.TaskRuntime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +37,9 @@ public class DemoApplication implements CommandLineRunner {
     private ProcessRuntime processRuntime;
 
     @Autowired
+    private TaskRuntime taskRuntime;
+
+    @Autowired
     private SecurityUtil securityUtil;
 
     private List<VariableCreatedEvent> variableCreatedEvents = new ArrayList<>();
@@ -47,7 +53,7 @@ public class DemoApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        securityUtil.logInAs("system");
+        securityUtil.logInAs("reviewer");
 
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                                                                                                       10));
@@ -66,9 +72,19 @@ public class DemoApplication implements CommandLineRunner {
         logger.info(">>> Created Process Instance: " + processInstance);
 
         logger.info(">>> Created variables:");
-        variableCreatedEvents.forEach(variableCreatedEvent -> logger.info("\t> `" + variableCreatedEvent.getEntity().getName()
-                                                                                  + " -> `" + variableCreatedEvent.getEntity().getValue()
-                                                                                  + "`"));
+        variableCreatedEvents.forEach(variableCreatedEvent -> logger.info("\t> name:`" + variableCreatedEvent.getEntity().getName()
+                                                                                  + "`, value: `" + variableCreatedEvent.getEntity().getValue()
+                                                                                  + "`, processInstanceId: `" + variableCreatedEvent.getEntity().getProcessInstanceId()
+                                                                                  + "`, taskId: `" + variableCreatedEvent.getEntity().getTaskId() + "`"));
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                                                         20));
+        tasks.getContent().forEach(task -> {
+            logger.info(">>> Performing task -> " + task);
+            taskRuntime.complete(TaskPayloadBuilder
+                                         .complete()
+                                         .withTaskId(task.getId())
+                                         .build());
+        });
 
         logger.info(">>> Completed process Instances: ");
         processCompletedEvents.forEach(processCompletedEvent -> logger.info("\t> Process instance : " + processCompletedEvent.getEntity()));
