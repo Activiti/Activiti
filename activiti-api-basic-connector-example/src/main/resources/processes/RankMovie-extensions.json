@@ -1,0 +1,31 @@
+{
+    "createdBy": "modeler",
+    "creationDate": "2019-02-11T18:07:28.599+0000",
+    "lastModifiedBy": "modeler",
+    "lastModifiedDate": "2019-02-11T18:33:50.328+0000",
+    "id": "8abc837168dd7f940168ddbe15590001",
+    "type": "PROCESS",
+    "name": "RankMovie",
+    "extensions": {
+        "variablesMappings": {
+            "Task_1spvopd": {
+                "inputs": {
+                    "movieName": "b"
+                },
+                "outputs": {
+                    "a": "b"
+                }
+            }
+        },
+        "properties": {
+            "33cd32d4-6427-4953-818d-462b54140cdc": {
+                "id": "33cd32d4-6427-4953-818d-462b54140cdc",
+                "name": "movieToRank",
+                "type": "string",
+                "required": true
+            }
+        }
+    },
+    "version": "0.0.16",
+    "projectId": "8abc837168dd7f940168ddbdecc70000"
+}

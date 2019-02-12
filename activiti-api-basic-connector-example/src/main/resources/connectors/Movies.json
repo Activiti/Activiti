@@ -1,0 +1,25 @@
+{
+    "id": "connector-8abc837168dd7f940168ddc2c6700002",
+    "name": "Movies",
+    "description": "",
+    "actions": {
+        "getMovieDesc": {
+            "id": "getMovieDesc",
+            "name": "getMovieDesc",
+            "inputs": [
+                {
+                    "id": "movieName",
+                    "name": "movieName",
+                    "type": "string"
+                }
+            ],
+            "outputs": [
+                {
+                    "id": "movieDesc",
+                    "name": "movieDesc",
+                    "type": "string"
+                }
+            ]
+        }
+    }
+}
