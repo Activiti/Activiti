@@ -41,35 +41,36 @@ public class DemoApplication implements CommandLineRunner {
     private List<ProcessCompletedEvent> processCompletedEvents = new ArrayList<>();
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
-
+        SpringApplication.run(DemoApplication.class,
+                              args);
     }
 
     @Override
     public void run(String... args) {
         securityUtil.logInAs("system");
 
-        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0, 10));
+        Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
+                                                                                                      10));
         logger.info("> Available Process definitions: " + processDefinitionPage.getTotalItems());
         for (ProcessDefinition pd : processDefinitionPage.getContent()) {
             logger.info("\t > Process definition: " + pd);
         }
 
         ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
-                .start()
-                .withProcessDefinitionKey("RankMovie")
-                .withName("myProcess")
-                .withVariable("movieToRank", "Lord of the rings")
-                .build());
+                                                                       .start()
+                                                                       .withProcessDefinitionKey("RankMovie")
+                                                                       .withName("myProcess")
+                                                                       .withVariable("movieToRank",
+                                                                                     "Lord of the rings")
+                                                                       .build());
         logger.info(">>> Created Process Instance: " + processInstance);
 
         logger.info(">>> Created variables:");
         variableCreatedEvents.forEach(variableCreatedEvent -> logger.info("> Variable: {name=`" + variableCreatedEvent.getEntity().getName()
-        + "`, value=`" + variableCreatedEvent.getEntity().getValue()));
+                                                                                  + "`, value=`" + variableCreatedEvent.getEntity().getValue()));
 
-        logger.info(">>> Completed process Instances: " );
+        logger.info(">>> Completed process Instances: ");
         processCompletedEvents.forEach(processCompletedEvent -> logger.info("> Process instance : " + processCompletedEvent.getEntity()));
-
     }
 
     @Bean("Movies.getMovieDesc")
@@ -77,6 +78,8 @@ public class DemoApplication implements CommandLineRunner {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
             logger.info(">>inbound: " + inBoundVariables);
+            integrationContext.addOutBoundVariable("movieDesc",
+                                                   "The Lord of the Rings is an epic high fantasy novel written by English author and scholar J. R. R. Tolkien");
             return integrationContext;
         };
     }
@@ -90,6 +93,4 @@ public class DemoApplication implements CommandLineRunner {
     public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedEventListener() {
         return processCompletedEvent -> processCompletedEvents.add(processCompletedEvent);
     }
-
-
 }
