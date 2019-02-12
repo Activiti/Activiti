@@ -58,7 +58,7 @@ public class DemoApplication implements CommandLineRunner {
 
         ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder
                                                                        .start()
-                                                                       .withProcessDefinitionKey("RankMovie")
+                                                                       .withProcessDefinitionKey("RankMovieId")
                                                                        .withName("myProcess")
                                                                        .withVariable("movieToRank",
                                                                                      "Lord of the rings")
@@ -74,7 +74,7 @@ public class DemoApplication implements CommandLineRunner {
         processCompletedEvents.forEach(processCompletedEvent -> logger.info("\t> Process instance : " + processCompletedEvent.getEntity()));
     }
 
-    @Bean("Movies.getMovieDesc")
+    @Bean("MoviesId.getMovieDescId")
     public Connector getMovieDesc() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();

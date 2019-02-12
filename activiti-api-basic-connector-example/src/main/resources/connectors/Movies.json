@@ -1,21 +1,21 @@
 {
-    "id": "Movies",
+    "id": "MoviesId",
     "name": "Movies",
     "description": "",
     "actions": {
-        "getMovieDesc": {
-            "id": "getMovieDesc",
+        "getMovieDescId": {
+            "id": "getMovieDescId",
             "name": "getMovieDesc",
             "inputs": [
                 {
-                    "id": "movieName",
+                    "id": "movieNameId",
                     "name": "movieName",
                     "type": "string"
                 }
             ],
             "outputs": [
                 {
-                    "id": "movieDescription",
+                    "id": "movieDescriptionId",
                     "name": "movieDescription",
                     "type": "string"
                 }

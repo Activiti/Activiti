@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
-  <bpmn2:process id="RankMovie" name="RankMovie" isExecutable="true">
+  <bpmn2:process id="RankMovieId" name="RankMovie" isExecutable="true">
     <bpmn2:documentation />
     <bpmn2:startEvent id="StartEvent_1">
       <bpmn2:outgoing>SequenceFlow_02b718w</bpmn2:outgoing>
@@ -10,13 +10,13 @@
       <bpmn2:incoming>SequenceFlow_1yeykw5</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_1yeykw5" sourceRef="Task_1spvopd" targetRef="EndEvent_1jxr6fu" />
-    <bpmn2:serviceTask id="Task_1spvopd" name="Get Movie Description" implementation="Movies.getMovieDesc">
+    <bpmn2:serviceTask id="Task_1spvopd" name="Get Movie Description" implementation="MoviesId.getMovieDescId">
       <bpmn2:incoming>SequenceFlow_02b718w</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1yeykw5</bpmn2:outgoing>
     </bpmn2:serviceTask>
   </bpmn2:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="RankMovie">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="RankMovieId">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="206" y="143" width="36" height="36" />
       </bpmndi:BPMNShape>

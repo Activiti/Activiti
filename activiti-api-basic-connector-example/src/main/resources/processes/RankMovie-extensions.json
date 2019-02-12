@@ -3,35 +3,35 @@
     "creationDate": "2019-02-11T18:07:28.599+0000",
     "lastModifiedBy": "modeler",
     "lastModifiedDate": "2019-02-11T18:33:50.328+0000",
-    "id": "RankMovie",
+    "id": "RankMovieId",
     "type": "PROCESS",
     "name": "RankMovie",
     "extensions": {
         "mappings": {
             "Task_1spvopd": {
                 "inputs": {
-                  "movieName": {
+                  "movieNameId": {
                     "type": "variable",
-                    "value": "movieToRank"
+                    "value": "movieToRankId"
                   }
                 },
                 "outputs": {
-                    "movieDesc": {
+                    "movieDescId": {
                         "type": "variable",
-                        "value": "movieDescription"
+                        "value": "movieDescriptionId"
                     }
                 }
             }
         },
         "properties": {
-            "movieToRank": {
-                "id": "movieToRank",
+            "movieToRankId": {
+                "id": "movieToRankId",
                 "name": "movieToRank",
                 "type": "string",
                 "required": true
             },
-            "movieDesc": {
-                "id": "movieDesc",
+            "movieDescId": {
+                "id": "movieDescId",
                 "name": "movieDesc",
                 "type": "string",
                 "required": false
