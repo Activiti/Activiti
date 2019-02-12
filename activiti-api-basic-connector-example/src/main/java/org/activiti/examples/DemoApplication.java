@@ -10,6 +10,8 @@ import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.connector.Connector;
+import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
+import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -36,6 +38,8 @@ public class DemoApplication implements CommandLineRunner {
 
     private List<VariableCreatedEvent> variableCreatedEvents = new ArrayList<>();
 
+    private List<ProcessCompletedEvent> processCompletedEvents = new ArrayList<>();
+
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
 
@@ -59,13 +63,20 @@ public class DemoApplication implements CommandLineRunner {
                 .build());
         logger.info(">>> Created Process Instance: " + processInstance);
 
+        logger.info(">>> Created variables:");
+        variableCreatedEvents.forEach(variableCreatedEvent -> logger.info("> Variable: {name=`" + variableCreatedEvent.getEntity().getName()
+        + "`, value=`" + variableCreatedEvent.getEntity().getValue()));
+
+        logger.info(">>> Completed process Instances: " );
+        processCompletedEvents.forEach(processCompletedEvent -> logger.info("> Process instance : " + processCompletedEvent.getEntity()));
+
     }
 
     @Bean("Movies.getMovieDesc")
     public Connector getMovieDesc() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
-            System.out.println(">>inbound: " + inBoundVariables);
+            logger.info(">>inbound: " + inBoundVariables);
             return integrationContext;
         };
     }
@@ -73,6 +84,11 @@ public class DemoApplication implements CommandLineRunner {
     @Bean
     public VariableEventListener<VariableCreatedEvent> variableCreatedEventListener() {
         return variableCreatedEvent -> variableCreatedEvents.add(variableCreatedEvent);
+    }
+
+    @Bean
+    public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedEventListener() {
+        return processCompletedEvent -> processCompletedEvents.add(processCompletedEvent);
     }
 
 
