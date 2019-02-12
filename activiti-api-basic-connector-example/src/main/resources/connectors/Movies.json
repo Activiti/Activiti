@@ -15,8 +15,8 @@
             ],
             "outputs": [
                 {
-                    "id": "movieDesc",
-                    "name": "movieDesc",
+                    "id": "movieDescription",
+                    "name": "movieDescription",
                     "type": "string"
                 }
             ]

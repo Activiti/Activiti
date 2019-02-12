@@ -66,11 +66,12 @@ public class DemoApplication implements CommandLineRunner {
         logger.info(">>> Created Process Instance: " + processInstance);
 
         logger.info(">>> Created variables:");
-        variableCreatedEvents.forEach(variableCreatedEvent -> logger.info("> Variable: {name=`" + variableCreatedEvent.getEntity().getName()
-                                                                                  + "`, value=`" + variableCreatedEvent.getEntity().getValue()));
+        variableCreatedEvents.forEach(variableCreatedEvent -> logger.info("\t> `" + variableCreatedEvent.getEntity().getName()
+                                                                                  + " -> `" + variableCreatedEvent.getEntity().getValue()
+                                                                                  + "`"));
 
         logger.info(">>> Completed process Instances: ");
-        processCompletedEvents.forEach(processCompletedEvent -> logger.info("> Process instance : " + processCompletedEvent.getEntity()));
+        processCompletedEvents.forEach(processCompletedEvent -> logger.info("\t> Process instance : " + processCompletedEvent.getEntity()));
     }
 
     @Bean("Movies.getMovieDesc")

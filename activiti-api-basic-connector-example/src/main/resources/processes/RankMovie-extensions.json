@@ -17,7 +17,7 @@
                     "outputs": {
                         "movieDesc": {
                             "type": "variable",
-                            "value": "movieDesc"
+                            "value": "movieDescription"
                         }
                     }
                 }
@@ -29,6 +29,12 @@
                 "name": "movieToRank",
                 "type": "string",
                 "required": true
+            },
+            "movieDesc": {
+                "id": "movieDesc",
+                "name": "movieDesc",
+                "type": "string",
+                "required": false
             }
         }
     },
