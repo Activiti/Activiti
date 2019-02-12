@@ -2,7 +2,6 @@
   "id": "processImageConnectorId",
   "name": "Name of the connector",
   "description": "Description of the connector",
-  "icon": "icon-name",
   "actions": {
     "processImageActionId": {
       "id": "processImageActionId",
