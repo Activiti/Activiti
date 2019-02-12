@@ -3,23 +3,29 @@
     "creationDate": "2019-02-11T18:07:28.599+0000",
     "lastModifiedBy": "modeler",
     "lastModifiedDate": "2019-02-11T18:33:50.328+0000",
-    "id": "8abc837168dd7f940168ddbe15590001",
+    "id": "RankMovie",
     "type": "PROCESS",
     "name": "RankMovie",
     "extensions": {
-        "variablesMappings": {
+        "mappings": {
             "Task_1spvopd": {
                 "inputs": {
-                    "movieName": "b"
-                },
-                "outputs": {
-                    "a": "b"
+                    "movieName": {
+                        "type": "variable",
+                        "value": "movieToRank"
+                    },
+                    "outputs": {
+                        "movieDesc": {
+                            "type": "variable",
+                            "value": "movieDesc"
+                        }
+                    }
                 }
             }
         },
         "properties": {
-            "33cd32d4-6427-4953-818d-462b54140cdc": {
-                "id": "33cd32d4-6427-4953-818d-462b54140cdc",
+            "movieToRank": {
+                "id": "movieToRank",
                 "name": "movieToRank",
                 "type": "string",
                 "required": true

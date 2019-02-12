@@ -1,10 +1,16 @@
 package org.activiti.examples;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.connector.Connector;
+import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.slf4j.Logger;
@@ -15,10 +21,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
 
 @SpringBootApplication
 @EnableScheduling
@@ -31,6 +33,8 @@ public class DemoApplication implements CommandLineRunner {
 
     @Autowired
     private SecurityUtil securityUtil;
+
+    private List<VariableCreatedEvent> variableCreatedEvents = new ArrayList<>();
 
     public static void main(String[] args) {
         SpringApplication.run(DemoApplication.class, args);
@@ -51,6 +55,7 @@ public class DemoApplication implements CommandLineRunner {
                 .start()
                 .withProcessDefinitionKey("RankMovie")
                 .withName("myProcess")
+                .withVariable("movieToRank", "Lord of the rings")
                 .build());
         logger.info(">>> Created Process Instance: " + processInstance);
 
@@ -63,6 +68,11 @@ public class DemoApplication implements CommandLineRunner {
             System.out.println(">>inbound: " + inBoundVariables);
             return integrationContext;
         };
+    }
+
+    @Bean
+    public VariableEventListener<VariableCreatedEvent> variableCreatedEventListener() {
+        return variableCreatedEvent -> variableCreatedEvents.add(variableCreatedEvent);
     }
 
 
