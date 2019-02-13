@@ -92,6 +92,15 @@ public class DemoApplication implements CommandLineRunner {
 
     @Bean("MoviesId.getMovieDescId")
     public Connector getMovieDesc() {
+        return getConnector();
+    }
+
+    @Bean("connector-8abc839468e609ca0168e61babb60005.getMovieDescId")
+    public Connector getMovieDescUUIDs() {
+        return getConnector();
+    }
+
+    private Connector getConnector() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
             logger.info(">>inbound: " + inBoundVariables);
