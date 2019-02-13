@@ -23,7 +23,7 @@ public class DemoApplicationTests {
     @Test
     public void contextLoads() {
         securityUtil.logInAs("system");
-        ProcessDefinition processDefinition = processRuntime.processDefinition("categorizeProcess");
+        ProcessDefinition processDefinition = processRuntime.processDefinition("RankMovieId");
         assertThat(processDefinition).isNotNull();
     }
 
