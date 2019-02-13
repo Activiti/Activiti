@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.api.model.shared.event.VariableCreatedEvent;
+import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -12,7 +12,6 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
-import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -42,8 +41,6 @@ public class DemoApplication implements CommandLineRunner {
     @Autowired
     private SecurityUtil securityUtil;
 
-    private List<VariableCreatedEvent> variableCreatedEvents = new ArrayList<>();
-
     private List<ProcessCompletedEvent> processCompletedEvents = new ArrayList<>();
 
     public static void main(String[] args) {
@@ -71,11 +68,14 @@ public class DemoApplication implements CommandLineRunner {
                                                                        .build());
         logger.info(">>> Created Process Instance: " + processInstance);
 
-        logger.info(">>> Created variables:");
-        variableCreatedEvents.forEach(variableCreatedEvent -> logger.info("\t> name:`" + variableCreatedEvent.getEntity().getName()
-                                                                                  + "`, value: `" + variableCreatedEvent.getEntity().getValue()
-                                                                                  + "`, processInstanceId: `" + variableCreatedEvent.getEntity().getProcessInstanceId()
-                                                                                  + "`, taskId: `" + variableCreatedEvent.getEntity().getTaskId() + "`"));
+        logger.info(">>> Process variables:");
+        List<VariableInstance> variables = processRuntime.variables(
+                ProcessPayloadBuilder
+                        .variables()
+                        .withProcessInstance(processInstance)
+                        .build());
+        variables.forEach(variableInstance -> logger.info("\t> " + variableInstance.getName() + " -> " + variableInstance.getValue()));
+
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
                                                          20));
         tasks.getContent().forEach(task -> {
@@ -99,11 +99,6 @@ public class DemoApplication implements CommandLineRunner {
                                                    "The Lord of the Rings is an epic high fantasy novel written by English author and scholar J. R. R. Tolkien");
             return integrationContext;
         };
-    }
-
-    @Bean
-    public VariableEventListener<VariableCreatedEvent> variableCreatedEventListener() {
-        return variableCreatedEvent -> variableCreatedEvents.add(variableCreatedEvent);
     }
 
     @Bean
