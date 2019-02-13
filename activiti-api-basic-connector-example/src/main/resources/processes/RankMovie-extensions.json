@@ -35,7 +35,14 @@
                 "name": "movieDesc",
                 "type": "string",
                 "required": false
+            },
+            "ratingId": {
+                "id": "ratingId",
+                "name": "rating",
+                "type": "integer",
+                "required": false
             }
+
         }
     },
     "version": "0.0.16",
