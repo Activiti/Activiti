@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
+import org.activiti.api.process.model.events.BPMNActivitySignaledEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
@@ -46,6 +47,7 @@ import org.activiti.runtime.api.event.impl.ToAPIProcessCreatedEventConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessStartedEventConverter;
 import org.activiti.runtime.api.event.impl.ToActivityCancelledConverter;
 import org.activiti.runtime.api.event.impl.ToActivityCompletedConverter;
+import org.activiti.runtime.api.event.impl.ToActivitySignaledConverter;
 import org.activiti.runtime.api.event.impl.ToActivityStartedConverter;
 import org.activiti.runtime.api.event.impl.ToProcessCancelledConverter;
 import org.activiti.runtime.api.event.impl.ToProcessCompletedConverter;
@@ -55,6 +57,7 @@ import org.activiti.runtime.api.event.impl.ToProcessUpdatedConverter;
 import org.activiti.runtime.api.event.impl.ToSequenceFlowTakenConverter;
 import org.activiti.runtime.api.event.internal.ActivityCancelledListenerDelegate;
 import org.activiti.runtime.api.event.internal.ActivityCompletedListenerDelegate;
+import org.activiti.runtime.api.event.internal.ActivitySignaledListenerDelegate;
 import org.activiti.runtime.api.event.internal.ActivityStartedListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessCancelledListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessCompletedListenerDelegate;
@@ -273,6 +276,15 @@ public class ProcessRuntimeAutoConfiguration {
         return () -> runtimeService.addEventListener(new ActivityCancelledListenerDelegate(getInitializedListeners(eventListeners),
                         new ToActivityCancelledConverter(activityConverter)),
                 ActivitiEventType.ACTIVITY_CANCELLED);
+    }
+    
+    @Bean
+    public InitializingBean registerActivitySignaledListenerDelegate(RuntimeService runtimeService,
+                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNActivitySignaledEvent>> eventListeners,
+                                                                    ToActivityConverter activityConverter) {
+        return () -> runtimeService.addEventListener(new ActivitySignaledListenerDelegate(getInitializedListeners(eventListeners),
+                        new ToActivitySignaledConverter(activityConverter)),
+                ActivitiEventType.ACTIVITY_SIGNALED);
     }
 
     @Bean
