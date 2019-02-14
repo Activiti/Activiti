@@ -58,7 +58,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
     <activiti-api.version>${project.version}</activiti-api.version>
-    <activiti-build.version>7.0.59</activiti-build.version>
+    <activiti-build.version>7.1.0</activiti-build.version>
 
   </properties>
 
