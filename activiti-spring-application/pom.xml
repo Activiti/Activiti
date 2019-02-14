@@ -21,7 +21,7 @@
   <parent>
     <groupId>org.activiti.core.common</groupId>
     <artifactId>activiti-core-common-dependencies</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.1.0-SNAPSHOT</version>
     <relativePath>../activiti-core-common-dependencies</relativePath>
   </parent>
   <artifactId>activiti-spring-application</artifactId>

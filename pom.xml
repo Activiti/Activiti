@@ -5,19 +5,19 @@
   <parent>
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.59</version>
+    <version>7.1.0</version>
     <relativePath/>
   </parent>
   <groupId>org.activiti.core.common</groupId>
   <artifactId>activiti-core-common-parent</artifactId>
   <packaging>pom</packaging>
   <name>Activiti Core :: Common</name>
-  <version>7.0.0-SNAPSHOT</version>
+  <version>7.1.0-SNAPSHOT</version>
   <description>Activiti Core :: Common</description>
   <url>http://activiti.org</url>
   <properties>
-    <activiti-build.version>7.0.59</activiti-build.version>
-    <activiti-api.version>7.0.86</activiti-api.version> 
+    <activiti-build.version>7.1.0</activiti-build.version>
+    <activiti-api.version>7.1.1</activiti-api.version>
     <activiti-core-common.version>${project.version}</activiti-core-common.version>
     <commons-io.version>2.6</commons-io.version>
   </properties>
