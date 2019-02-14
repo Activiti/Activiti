@@ -20,12 +20,12 @@ pipeline {
       }
       stage('Build Release') {
         when {
-          branch 'develop'
+          branch 'master'
         }
         steps {
           container('maven') {
             // ensure we're not on a detached head
-            sh "git checkout develop" 
+            sh "git checkout master" 
             sh "git config --global credential.helper store"
 
             sh "jx step git credentials"
