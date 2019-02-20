@@ -2,7 +2,11 @@ package org.activiti.spring.boot.process;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.events.BPMNSignalEvent;
+import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
+import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.runtime.event.impl.BPMNSignalReceivedEventImpl;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.junit.Before;
@@ -112,6 +116,35 @@ public class ProcessRuntimeEvents {
         assertThat(RuntimeTestConfiguration.variableCreatedEventsFromProcessInstance)
                 .isNotEmpty()
                 .hasSize(3);
+    }
+    
+    @Test
+    public void shouldGetSameProcessInstanceIfForAllSignalReceivedEvents(){
+
+        //given
+        securityUtil.logInAs("salaboy");
+
+        //when
+        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey("processWithSignalStart1")
+                .build());
+        
+        SignalPayload signalPayload = new SignalPayload("The Signal", null);
+        processRuntime.signal(signalPayload);
+        
+        
+        //then
+        assertThat(RuntimeTestConfiguration.signalReceivedEvents)
+        .isNotEmpty()
+        .hasSize(1);
+        
+        BPMNSignalReceivedEvent event = RuntimeTestConfiguration.signalReceivedEvents.iterator().next();
+        
+        assertThat(event.getEventType()).isEqualTo(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED);
+        assertThat(event.getEntity()).isNotNull();
+        assertThat(event.getEntity().getSignalPayload()).isNotNull();
+        assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo("The Signal");     
+        
     }
     
 }

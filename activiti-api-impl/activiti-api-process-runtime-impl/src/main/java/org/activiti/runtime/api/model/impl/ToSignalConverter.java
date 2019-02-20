@@ -47,6 +47,7 @@ public class ToSignalConverter {
 			Map <String,Object> sourceVariables = (Map <String,Object>) internalEvent.getSignalData();		
         	signalPayload.setVariables(new HashMap<String, Object>(sourceVariables));	
         }
+        signal.setSignalPayload(signalPayload);
         
         return signal;
     }
