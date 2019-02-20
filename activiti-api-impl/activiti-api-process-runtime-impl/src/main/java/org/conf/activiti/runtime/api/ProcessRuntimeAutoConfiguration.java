@@ -24,6 +24,7 @@ import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivitySignaledEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
+import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
@@ -47,7 +48,7 @@ import org.activiti.runtime.api.event.impl.ToAPIProcessCreatedEventConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessStartedEventConverter;
 import org.activiti.runtime.api.event.impl.ToActivityCancelledConverter;
 import org.activiti.runtime.api.event.impl.ToActivityCompletedConverter;
-import org.activiti.runtime.api.event.impl.ToActivitySignaledConverter;
+import org.activiti.runtime.api.event.impl.ToSignalReceivedConverter;
 import org.activiti.runtime.api.event.impl.ToActivityStartedConverter;
 import org.activiti.runtime.api.event.impl.ToProcessCancelledConverter;
 import org.activiti.runtime.api.event.impl.ToProcessCompletedConverter;
@@ -57,7 +58,7 @@ import org.activiti.runtime.api.event.impl.ToProcessUpdatedConverter;
 import org.activiti.runtime.api.event.impl.ToSequenceFlowTakenConverter;
 import org.activiti.runtime.api.event.internal.ActivityCancelledListenerDelegate;
 import org.activiti.runtime.api.event.internal.ActivityCompletedListenerDelegate;
-import org.activiti.runtime.api.event.internal.ActivitySignaledListenerDelegate;
+import org.activiti.runtime.api.event.internal.SignalReceivedListenerDelegate;
 import org.activiti.runtime.api.event.internal.ActivityStartedListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessCancelledListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessCompletedListenerDelegate;
@@ -74,6 +75,7 @@ import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
+import org.activiti.runtime.api.model.impl.ToSignalConverter;
 import org.activiti.runtime.api.signal.SignalPayloadEventListener;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -280,10 +282,10 @@ public class ProcessRuntimeAutoConfiguration {
     
     @Bean
     public InitializingBean registerActivitySignaledListenerDelegate(RuntimeService runtimeService,
-                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNActivitySignaledEvent>> eventListeners,
-                                                                    ToActivityConverter activityConverter) {
-        return () -> runtimeService.addEventListener(new ActivitySignaledListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToActivitySignaledConverter(activityConverter)),
+                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNSignalReceivedEvent>> eventListeners,
+                                                                    ToSignalConverter signalConverter) {
+        return () -> runtimeService.addEventListener(new SignalReceivedListenerDelegate(getInitializedListeners(eventListeners),
+                        new ToSignalReceivedConverter(signalConverter)),
                 ActivitiEventType.ACTIVITY_SIGNALED);
     }
 

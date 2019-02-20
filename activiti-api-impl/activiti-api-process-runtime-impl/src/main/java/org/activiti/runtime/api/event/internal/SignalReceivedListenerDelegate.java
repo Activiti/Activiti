@@ -19,30 +19,32 @@ package org.activiti.runtime.api.event.internal;
 import java.util.List;
 
 import org.activiti.api.process.model.events.BPMNActivitySignaledEvent;
+import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.runtime.api.event.impl.ToActivitySignaledConverter;
+import org.activiti.engine.delegate.event.ActivitiSignalEvent;
+import org.activiti.runtime.api.event.impl.ToSignalReceivedConverter;
 
-public class ActivitySignaledListenerDelegate implements ActivitiEventListener {
+public class SignalReceivedListenerDelegate implements ActivitiEventListener {
 
-    private List<BPMNElementEventListener<BPMNActivitySignaledEvent>> processRuntimeEventListeners;
+    private List<BPMNElementEventListener<BPMNSignalReceivedEvent>> processRuntimeEventListeners;
 
-    private ToActivitySignaledConverter converter;
+    private ToSignalReceivedConverter converter;
 
-    public ActivitySignaledListenerDelegate(List<BPMNElementEventListener<BPMNActivitySignaledEvent>> processRuntimeEventListeners,
-                                            ToActivitySignaledConverter converter) {
+    public SignalReceivedListenerDelegate(List<BPMNElementEventListener<BPMNSignalReceivedEvent>> processRuntimeEventListeners,
+                                            ToSignalReceivedConverter converter) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
     }
 
     @Override
     public void onEvent(ActivitiEvent event) {
-        if (event instanceof ActivitiActivityEvent) {
-            converter.from((ActivitiActivityEvent) event)
+        if (event instanceof ActivitiSignalEvent) {
+            converter.from((ActivitiSignalEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (BPMNElementEventListener<BPMNActivitySignaledEvent> listener : processRuntimeEventListeners) {
+                        for (BPMNElementEventListener<BPMNSignalReceivedEvent> listener : processRuntimeEventListeners) {
                             listener.onEvent(convertedEvent);
                         }
                     });
