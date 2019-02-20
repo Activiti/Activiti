@@ -207,7 +207,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <!-- Activiti Build Parent Marker Dependency for Dependency Convergence Tests -->
   <dependencies>
     <dependency>
