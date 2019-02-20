@@ -88,7 +88,7 @@
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
 
-    <java.version>1.8</java.version>
+    <java.version>8</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
 
