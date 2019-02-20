@@ -18,21 +18,36 @@ package org.activiti.runtime.api.model.impl;
 
 import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.api.process.model.BPMNSignal;
+import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.builders.SignalPayloadBuilder;
 import org.activiti.api.process.model.payloads.SignalPayload;
 
 public class ToSignalConverter {
 
+	@SuppressWarnings("unchecked")
     public BPMNSignal from(ActivitiSignalEvent internalEvent) {
         BPMNSignalImpl signal = new BPMNSignalImpl(internalEvent.getActivityId(),
                 								   internalEvent.getActivityName(),
                 								   internalEvent.getActivityType());
         
         
-
         signal.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         signal.setProcessInstanceId(internalEvent.getProcessInstanceId());
-        signal.setSignalPayload((SignalPayload)internalEvent.getSignalData());
+        
+        SignalPayload signalPayload = ProcessPayloadBuilder.signal()
+										.withName(internalEvent.getSignalName())
+										.build();
+        
+        if (internalEvent.getSignalData() != null) {	
+			Map <String,Object> sourceVariables = (Map <String,Object>) internalEvent.getSignalData();		
+        	signalPayload.setVariables(new HashMap<String, Object>(sourceVariables));	
+        }
+        
         return signal;
     }
 

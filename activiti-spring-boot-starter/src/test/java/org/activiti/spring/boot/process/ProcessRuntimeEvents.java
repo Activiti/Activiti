@@ -16,18 +16,18 @@ import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeEvents {
 
     private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
-
+    
     @Autowired
     private ProcessRuntime processRuntime;
 
     @Autowired
     private SecurityUtil securityUtil;
-
 
     @Before
     public void init() {
@@ -38,6 +38,7 @@ public class ProcessRuntimeEvents {
         //Reset event collections
         RuntimeTestConfiguration.variableCreatedEventsFromProcessInstance.clear();
         RuntimeTestConfiguration.sequenceFlowTakenEvents.clear();
+        RuntimeTestConfiguration.signalReceivedEvents.clear();
     }
 
     @Test
@@ -112,4 +113,5 @@ public class ProcessRuntimeEvents {
                 .isNotEmpty()
                 .hasSize(3);
     }
+    
 }

@@ -18,18 +18,9 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
-import org.activiti.api.process.model.events.BPMNActivitySignaledEvent;
-import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
-import org.activiti.api.runtime.event.impl.BPMNActivitySignaledEventImpl;
-import org.activiti.api.runtime.event.impl.BPMNSequenceFlowTakenImpl;
 import org.activiti.api.runtime.event.impl.BPMNSignalReceivedEventImpl;
-import org.activiti.api.runtime.model.impl.BPMNSequenceFlowImpl;
-import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
-import org.activiti.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
-import org.activiti.runtime.api.model.impl.ToActivityConverter;
 import org.activiti.runtime.api.model.impl.ToSignalConverter;
 
 public class ToSignalReceivedConverter implements EventConverter<BPMNSignalReceivedEvent, ActivitiSignalEvent> {

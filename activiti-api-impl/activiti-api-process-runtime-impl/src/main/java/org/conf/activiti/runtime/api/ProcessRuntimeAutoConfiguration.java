@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
-import org.activiti.api.process.model.events.BPMNActivitySignaledEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
@@ -251,6 +250,11 @@ public class ProcessRuntimeAutoConfiguration {
     @Bean
     public ToActivityConverter activityConverter() {
         return new ToActivityConverter();
+    }
+    
+    @Bean
+    public ToSignalConverter signalConverter() {
+        return new ToSignalConverter();
     }
 
     @Bean
