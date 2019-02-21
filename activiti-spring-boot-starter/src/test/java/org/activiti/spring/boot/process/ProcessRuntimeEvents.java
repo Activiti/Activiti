@@ -6,7 +6,6 @@ import org.activiti.api.process.model.events.BPMNSignalEvent;
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.api.runtime.event.impl.BPMNSignalReceivedEventImpl;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.junit.Before;
@@ -19,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.tuple;
 
 
 @RunWith(SpringRunner.class)
@@ -119,8 +119,9 @@ public class ProcessRuntimeEvents {
     }
     
     @Test
-    public void shouldGetSameProcessInstanceIfForAllSignalReceivedEvents(){
+    public void shouldGetSignalReceivedEventsForProcessWithSignalStart(){
 
+    	//In this test processInstanceId is null
         //given
         securityUtil.logInAs("salaboy");
 
@@ -145,6 +146,76 @@ public class ProcessRuntimeEvents {
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
         assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo("The Signal");     
         
+    }
+    
+    @Test
+    public void shouldGetTwoSignalReceivedEventsWithProcessInstanceId(){
+
+        //given
+        securityUtil.logInAs("salaboy");
+
+        //when
+        ProcessInstance process1 = processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey("ProcessWithBoundarySignal")
+                .build());
+        
+        ProcessInstance process2 = processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey("ProcessWithBoundarySignal")
+                .build());
+        
+        SignalPayload signalPayload = ProcessPayloadBuilder.signal().withName("go").build();
+        processRuntime.signal(signalPayload);
+        
+        
+        //then
+        assertThat(RuntimeTestConfiguration.signalReceivedEvents)
+        .isNotEmpty()
+        .hasSize(2);
+        
+        assertThat(RuntimeTestConfiguration.signalReceivedEvents)
+        .extracting("eventType","processInstanceId","entity.signalPayload.name")
+        .contains(
+                tuple(  BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                		process1.getId(),
+                		"go"),
+                tuple(  BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                		process2.getId(),
+                		"go")
+        );     
+    }
+    
+    @Test
+    public void shouldGetSignalReceivedEventWithVariables(){
+
+        //given
+        securityUtil.logInAs("salaboy");
+
+        //when
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey("ProcessWithBoundarySignal")
+                .withVariable("name","peter")
+                .build());
+        
+        SignalPayload signalPayload = ProcessPayloadBuilder.signal()
+        		.withName("go")
+        		.withVariable("signal-variable","test")
+        		.build();
+        processRuntime.signal(signalPayload);
+        
+        
+        //then
+        assertThat(RuntimeTestConfiguration.signalReceivedEvents)
+        .isNotEmpty()
+        .hasSize(1);
+        
+        BPMNSignalReceivedEvent event = RuntimeTestConfiguration.signalReceivedEvents.iterator().next();
+        
+        assertThat(event.getEntity()).isNotNull();
+        assertThat(event.getProcessInstanceId()).isEqualTo(process.getId());
+        assertThat(event.getEntity().getSignalPayload()).isNotNull();
+        assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo("go");   
+        assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(1);     
+        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal-variable")).isEqualTo("test");    
     }
     
 }
