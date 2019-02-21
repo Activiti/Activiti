@@ -250,10 +250,15 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
    */
   T taskDueAfter(Date dueDate);
 
-  /*
+  /**
   * Only select subtasks of the given parent task
   */
   T taskParentTaskId(String parentTaskId);
+
+  /**
+   * Only select standalone tasks
+   */
+  T standAlone(boolean standAlone);
 
   /**
    * Only select tasks with no due date.

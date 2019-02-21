@@ -115,6 +115,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected boolean orActive;
   protected List<TaskQueryImpl> orQueryObjects = new ArrayList<TaskQueryImpl>();
   protected TaskQueryImpl currentOrQueryObject = null;
+  protected boolean standAlone;
   
   public TaskQueryImpl() {
   }
@@ -635,6 +636,15 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       this.currentOrQueryObject.taskParentTaskId = parentTaskId;
     } else {
       this.taskParentTaskId = parentTaskId;
+    }
+    return this;
+  }
+
+  public TaskQuery standAlone(boolean standAlone) {
+    if (orActive) {
+      this.currentOrQueryObject.standAlone = standAlone;
+    } else {
+      this.standAlone = standAlone;
     }
     return this;
   }

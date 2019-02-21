@@ -111,6 +111,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected List<HistoricTaskInstanceQueryImpl> orQueryObjects = new ArrayList<HistoricTaskInstanceQueryImpl>();
   protected HistoricTaskInstanceQueryImpl currentOrQueryObject = null;
   protected boolean inOrStatement = false;
+  protected boolean standAlone;
 
   public HistoricTaskInstanceQueryImpl() {
   }
@@ -156,6 +157,15 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
       this.currentOrQueryObject.processInstanceId = processInstanceId;
     } else {
       this.processInstanceId = processInstanceId;
+    }
+    return this;
+  }
+
+  public HistoricTaskInstanceQueryImpl standAlone (boolean standAlone) {
+    if (inOrStatement) {
+      this.currentOrQueryObject.standAlone = standAlone;
+    } else {
+      this.standAlone = standAlone;
     }
     return this;
   }
