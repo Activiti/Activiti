@@ -121,15 +121,11 @@ public class ProcessRuntimeEvents {
     @Test
     public void shouldGetSignalReceivedEventsForProcessWithSignalStart(){
 
-    	//In this test processInstanceId is null
+    	//In this test processWithSignalStart1 should be started, but processInstanceId is null
         //given
         securityUtil.logInAs("salaboy");
 
         //when
-        ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey("processWithSignalStart1")
-                .build());
-        
         SignalPayload signalPayload = new SignalPayload("The Signal", null);
         processRuntime.signal(signalPayload);
         
@@ -142,6 +138,7 @@ public class ProcessRuntimeEvents {
         BPMNSignalReceivedEvent event = RuntimeTestConfiguration.signalReceivedEvents.iterator().next();
         
         assertThat(event.getEventType()).isEqualTo(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED);
+        assertThat(event.getProcessDefinitionId()).contains("processWithSignalStart1");
         assertThat(event.getEntity()).isNotNull();
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
         assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo("The Signal");     
