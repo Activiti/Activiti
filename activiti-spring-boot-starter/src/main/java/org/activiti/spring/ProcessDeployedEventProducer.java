@@ -16,16 +16,24 @@
 
 package org.activiti.spring;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.api.runtime.event.impl.ProcessDeployedEvents;
 import org.activiti.api.runtime.event.impl.ProcessDeployedEventImpl;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
+import org.apache.commons.io.IOUtils;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationListener;
 
 public class ProcessDeployedEventProducer implements ApplicationListener<ApplicationReadyEvent> {
@@ -33,26 +41,40 @@ public class ProcessDeployedEventProducer implements ApplicationListener<Applica
     private RepositoryService repositoryService;
     private APIProcessDefinitionConverter converter;
     private List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners;
+    private ApplicationEventPublisher eventPublisher;
 
     public ProcessDeployedEventProducer(RepositoryService repositoryService,
                                         APIProcessDefinitionConverter converter,
-                                        List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners) {
+                                        List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners,
+                                        ApplicationEventPublisher eventPublisher) {
         this.repositoryService = repositoryService;
         this.converter = converter;
         this.listeners = listeners;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
         if (!WebApplicationType.NONE.equals(event.getSpringApplication().getWebApplicationType())) {
             List<ProcessDefinition> processDefinitions = converter.from(repositoryService.createProcessDefinitionQuery().list());
+            List<ProcessDeployedEvent> processDeployedEvents = new ArrayList<>();
             for (ProcessDefinition processDefinition : processDefinitions) {
-                ProcessDeployedEventImpl processDeployedEvent = new ProcessDeployedEventImpl(processDefinition);
-                for (ProcessRuntimeEventListener<ProcessDeployedEvent> listener : listeners) {
-                    listener.onEvent(processDeployedEvent);
+                try (InputStream inputStream = repositoryService.getProcessModel(processDefinition.getId())) {
+                    String xmlModel = IOUtils.toString(inputStream,
+                                                       StandardCharsets.UTF_8);
+                    ProcessDeployedEventImpl processDeployedEvent = new ProcessDeployedEventImpl(processDefinition, xmlModel);
+                    processDeployedEvents.add(processDeployedEvent);
+                    for (ProcessRuntimeEventListener<ProcessDeployedEvent> listener : listeners) {
+                        listener.onEvent(processDeployedEvent);
+                    }
+                } catch (IOException e) {
+                    throw new ActivitiException("Error occurred while getting process model '" + processDefinition.getId() + "' : ",
+                                                e);
                 }
+            }
+            if (!processDeployedEvents.isEmpty()) {
+                eventPublisher.publishEvent(new ProcessDeployedEvents(processDeployedEvents));
             }
         }
     }
-
 }
