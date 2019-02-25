@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2019 Alfresco, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,22 @@
  * limitations under the License.
  */
 
-package org.activiti.api.process.model.events;
+package org.activiti.api.runtime.event.impl;
 
-public interface ProcessDeployedEvent extends ProcessDefinitionEvent {
+import java.util.List;
 
-    String getProcessModelContent();
+import org.activiti.api.process.model.events.ProcessDeployedEvent;
+
+public class ProcessDeployedEvents {
+
+    private List<ProcessDeployedEvent> processDeployedEvents;
+
+    public ProcessDeployedEvents(List<ProcessDeployedEvent> processDeployedEvents) {
+        this.processDeployedEvents = processDeployedEvents;
+    }
+
+    public List<ProcessDeployedEvent> getProcessDeployedEvents() {
+        return processDeployedEvents;
+    }
 
 }
