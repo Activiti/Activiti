@@ -19,6 +19,7 @@ package org.activiti.runtime.api.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -30,6 +31,7 @@ import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.DeleteTaskPayload;
+import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
@@ -40,6 +42,7 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
+import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -50,13 +53,17 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
 
     private final APITaskConverter taskConverter;
     
+    private final APIVariableInstanceConverter variableInstanceConverter;
+    
     private final TaskRuntimeHelper taskRuntimeHelper;
 
     public TaskAdminRuntimeImpl(TaskService taskService,
                                 APITaskConverter taskConverter,
+                                APIVariableInstanceConverter variableInstanceConverter,
                                 TaskRuntimeHelper taskRuntimeHelper) {
         this.taskService = taskService;
         this.taskConverter = taskConverter;
+        this.variableInstanceConverter = variableInstanceConverter;
         this.taskRuntimeHelper=taskRuntimeHelper;
     }
 
@@ -112,8 +119,13 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     @Override
     public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
         taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
-                                          setTaskVariablesPayload.getVariables());
+                                      setTaskVariablesPayload.getVariables());
 
+    }
+    
+    @Override
+    public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
+        return variableInstanceConverter.from(taskService.getVariableInstancesLocal(getTaskVariablesPayload.getTaskId()).values());
     }
 
     @Override
