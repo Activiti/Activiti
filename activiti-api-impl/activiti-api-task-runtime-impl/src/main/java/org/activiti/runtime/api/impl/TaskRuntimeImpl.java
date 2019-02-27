@@ -138,10 +138,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
                               Math.toIntExact(taskQuery.count()));
     }
 
-    @Override
-    public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
-        return variableInstanceConverter.from(taskService.getVariableInstancesLocal(getTaskVariablesPayload.getTaskId()).values());
-    }
     
     @Override
     public Task complete(CompleteTaskPayload completeTaskPayload) {
@@ -420,13 +416,22 @@ public class TaskRuntimeImpl implements TaskRuntime {
         return groupCandidates;
     }
 
-    
+     
+    @Override
+    public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
+        return variableInstanceConverter.from(taskRuntimeHelper.getInternalTaskVariables(getTaskVariablesPayload.getTaskId()).values());
+    }
     
     @Override
-    public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
-        taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
-                                          setTaskVariablesPayload.getVariables());
+    public void newVariable(SetTaskVariablesPayload setTaskVariablesPayload) {
+    	taskRuntimeHelper.newVariable(false, setTaskVariablesPayload);
     }
+    
+    @Override
+    public void updateVariable(SetTaskVariablesPayload setTaskVariablesPayload) {
+    	taskRuntimeHelper.updateVariable(false, setTaskVariablesPayload);
+    }
+
 
     private List<IdentityLink> getIdentityLinks(String taskId) {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();

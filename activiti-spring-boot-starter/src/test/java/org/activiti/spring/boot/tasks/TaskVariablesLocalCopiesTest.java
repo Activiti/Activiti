@@ -119,9 +119,10 @@ public class TaskVariablesLocalCopiesTest {
 
 
         securityUtil.logInAs("salaboy");
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task1.getId()).build());
 
         //if one modifies, the other should not see the modification
-        taskRuntime.setVariables(TaskPayloadBuilder.setVariables().withTaskId(task1.getId()).withVariables(Collections.singletonMap("start1","modifiedstart1")).build());
+        taskRuntime.updateVariable(TaskPayloadBuilder.setVariables().withTaskId(task1.getId()).withVariable("start1","modifiedstart1").build());
 
         //the task where it was modified should reflect the modification
         assertThat(taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()))
@@ -141,7 +142,6 @@ public class TaskVariablesLocalCopiesTest {
 
         securityUtil.logInAs("salaboy");
         //complete and change var again
-        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task1.getId()).build());
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task1.getId()).withVariable("start1","modagainstart1").build());
 
         //after completion the process variable should be updated but only the one that was modified
@@ -197,7 +197,7 @@ public class TaskVariablesLocalCopiesTest {
 
  
         //check that admin can modify task variables
-        taskAdminRuntime.setVariables(TaskPayloadBuilder.setVariables().withTaskId(task1.getId()).withVariables(Collections.singletonMap("start1","modifiedstart1")).build());
+        taskAdminRuntime.updateVariable(TaskPayloadBuilder.setVariables().withTaskId(task1.getId()).withVariable("start1","modifiedstart1").build());
 
         //the task where it was modified should reflect the modification
         assertThat(taskAdminRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()))

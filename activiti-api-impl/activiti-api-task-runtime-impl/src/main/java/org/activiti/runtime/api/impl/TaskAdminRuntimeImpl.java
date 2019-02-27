@@ -18,6 +18,7 @@ package org.activiti.runtime.api.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.query.Page;
@@ -117,16 +118,20 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     }
 
     @Override
-    public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
-        taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
-                                      setTaskVariablesPayload.getVariables());
-
+    public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
+        return variableInstanceConverter.from(taskRuntimeHelper.getInternalTaskVariables(getTaskVariablesPayload.getTaskId()).values());
     }
     
     @Override
-    public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
-        return variableInstanceConverter.from(taskService.getVariableInstancesLocal(getTaskVariablesPayload.getTaskId()).values());
+    public void newVariable(SetTaskVariablesPayload setTaskVariablesPayload) {
+    	taskRuntimeHelper.newVariable(true, setTaskVariablesPayload);
     }
+    
+    @Override
+    public void updateVariable(SetTaskVariablesPayload setTaskVariablesPayload) {
+    	taskRuntimeHelper.updateVariable(true, setTaskVariablesPayload);
+    }
+
 
     @Override
     public Task complete(CompleteTaskPayload completeTaskPayload) {
