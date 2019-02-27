@@ -89,9 +89,8 @@ public interface TaskAdminRuntime {
      */
     Task update(UpdateTaskPayload updateTaskPayload);
 
-
-    void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);
-    
+    void newVariable(SetTaskVariablesPayload setTaskVariablesPayload);
+    void updateVariable(SetTaskVariablesPayload setTaskVariablesPayload);
     List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
 
     /**

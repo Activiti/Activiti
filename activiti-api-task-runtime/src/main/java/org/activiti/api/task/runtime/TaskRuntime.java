@@ -114,9 +114,9 @@ public interface TaskRuntime {
      */
     Task delete(DeleteTaskPayload deleteTaskPayload);
 
+    void newVariable(SetTaskVariablesPayload setTaskVariablesPayload);
+    void updateVariable(SetTaskVariablesPayload setTaskVariablesPayload);
     List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
-
-    void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);
     
     void addCandidateUsers(CandidateUsersPayload candidateUsersPayload);
     void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload);
