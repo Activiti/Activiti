@@ -17,7 +17,9 @@
 package org.activiti.spring.boot.process;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
@@ -28,14 +30,19 @@ import org.springframework.boot.test.context.TestComponent;
 public class DeployedProcessesListener implements ProcessRuntimeEventListener<ProcessDeployedEvent> {
 
     private List<ProcessDefinition> deployedProcesses = new ArrayList<>();
+    private Map<String, String> processModelContents = new HashMap<>();
 
     @Override
     public void onEvent(ProcessDeployedEvent event) {
         deployedProcesses.add(event.getEntity());
+        processModelContents.put(event.getProcessDefinitionKey(), event.getProcessModelContent());
     }
 
     public List<ProcessDefinition> getDeployedProcesses() {
         return deployedProcesses;
     }
 
+    public Map<String, String> getProcessModelContents() {
+        return processModelContents;
+    }
 }

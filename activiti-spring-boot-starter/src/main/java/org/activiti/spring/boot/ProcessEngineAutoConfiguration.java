@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
@@ -158,11 +159,13 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     @ConditionalOnMissingBean
     public ProcessDeployedEventProducer processDeployedEventProducer(RepositoryService repositoryService,
                                                                      APIProcessDefinitionConverter converter,
-                                                                     @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners) {
+                                                                     @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners,
+                                                                     ApplicationEventPublisher eventPublisher) {
         return new ProcessDeployedEventProducer(repositoryService,
-                converter,
-                Optional.ofNullable(listeners)
-                        .orElse(Collections.emptyList()));
+                                                converter,
+                                                Optional.ofNullable(listeners)
+                                                        .orElse(Collections.emptyList()),
+                                                eventPublisher);
     }
 }
 
