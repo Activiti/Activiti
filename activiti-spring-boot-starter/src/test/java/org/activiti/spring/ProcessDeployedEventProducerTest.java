@@ -16,6 +16,7 @@
 
 package org.activiti.spring;
 
+import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,8 +33,10 @@ import org.mockito.Mock;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationEventPublisher;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -57,13 +60,17 @@ public class ProcessDeployedEventProducerTest {
     @Mock
     private ProcessRuntimeEventListener<ProcessDeployedEvent> secondListener;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     @Before
     public void setUp() {
         initMocks(this);
         producer = new ProcessDeployedEventProducer(repositoryService,
                                                     converter,
                                                     Arrays.asList(firstListener,
-                                                                  secondListener));
+                                                                  secondListener),
+                                                    eventPublisher);
     }
 
     @Test
@@ -77,9 +84,11 @@ public class ProcessDeployedEventProducerTest {
 
         given(definitionQuery.list()).willReturn(internalProcessDefinitions);
 
-        List<org.activiti.api.process.model.ProcessDefinition> apiProcessDefinitions = Arrays.asList(mock(org.activiti.api.process.model.ProcessDefinition.class),
-                                                                                                     mock(org.activiti.api.process.model.ProcessDefinition.class));
+        List<org.activiti.api.process.model.ProcessDefinition> apiProcessDefinitions = Arrays.asList(buildAPIProcessDefinition("id1"),
+                                                                                                     buildAPIProcessDefinition("id2"));
         given(converter.from(internalProcessDefinitions)).willReturn(apiProcessDefinitions);
+        given(repositoryService.getProcessModel("id1")).willReturn(new ByteArrayInputStream("content1".getBytes()));
+        given(repositoryService.getProcessModel("id2")).willReturn(new ByteArrayInputStream("content2".getBytes()));
 
         //when
         producer.onApplicationEvent(buildApplicationReadyEvent(WebApplicationType.SERVLET));
@@ -93,11 +102,23 @@ public class ProcessDeployedEventProducerTest {
 
         List<ProcessDeployedEvent> allValues = captor.getAllValues();
         assertThat(allValues)
-                .extracting(ProcessDeployedEvent::getEntity)
-                .containsExactly(apiProcessDefinitions.get(0),//firstListener
-                                 apiProcessDefinitions.get(1),//firstListener
-                                 apiProcessDefinitions.get(0),//secondListener
-                                 apiProcessDefinitions.get(1));//secondListener
+                .extracting(ProcessDeployedEvent::getEntity,
+                            ProcessDeployedEvent::getProcessModelContent)
+                .containsExactly(tuple(apiProcessDefinitions.get(0),
+                                       "content1"),//firstListener
+
+                                 tuple(apiProcessDefinitions.get(1),
+                                       "content2"),//firstListener
+                                 tuple(apiProcessDefinitions.get(0),
+                                       "content1"),//secondListener
+                                 tuple(apiProcessDefinitions.get(1),
+                                       "content2"));//secondListener
+    }
+
+    private org.activiti.api.process.model.ProcessDefinition buildAPIProcessDefinition(String processDefinitionId) {
+        org.activiti.api.process.model.ProcessDefinition processDefinition = mock(org.activiti.api.process.model.ProcessDefinition.class);
+        given(processDefinition.getId()).willReturn(processDefinitionId);
+        return processDefinition;
     }
 
     private ApplicationReadyEvent buildApplicationReadyEvent(WebApplicationType applicationType) {

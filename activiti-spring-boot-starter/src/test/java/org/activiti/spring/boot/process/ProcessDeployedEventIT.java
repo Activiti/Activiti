@@ -16,6 +16,7 @@
 
 package org.activiti.spring.boot.process;
 
+import java.io.File;
 import java.util.List;
 
 import org.activiti.api.process.model.ProcessDefinition;
@@ -49,6 +50,9 @@ public class ProcessDeployedEventIT {
                 .contains(CATEGORIZE_PROCESS,
                           CATEGORIZE_HUMAN_PROCESS,
                           ONE_STEP_PROCESS);
+        assertThat(listener.getProcessModelContents().get(CATEGORIZE_PROCESS))
+                .isNotEmpty()
+                .isXmlEqualToContentOf(new File("src/test/resources/processes/categorize-image.bpmn20.xml"));
     }
 
 }
