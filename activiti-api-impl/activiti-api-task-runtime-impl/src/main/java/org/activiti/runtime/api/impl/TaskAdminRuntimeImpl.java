@@ -31,12 +31,14 @@ import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
 import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
+import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
 import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
+import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.IdentityLink;
@@ -123,15 +125,22 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     }
     
     @Override
-    public void newVariable(SetTaskVariablesPayload setTaskVariablesPayload) {
-    	taskRuntimeHelper.newVariable(true, setTaskVariablesPayload);
+    public void createVariable(CreateTaskVariablePayload createTaskVariablePayload) {
+    	taskRuntimeHelper.createVariable(true, createTaskVariablePayload);
     }
     
     @Override
-    public void updateVariable(SetTaskVariablesPayload setTaskVariablesPayload) {
-    	taskRuntimeHelper.updateVariable(true, setTaskVariablesPayload);
+    public void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload) {
+    	taskRuntimeHelper.updateVariable(true, updateTaskVariablePayload);
     }
 
+    //To do: check if we need this method
+    @Override
+    public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
+        taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
+                                      setTaskVariablesPayload.getVariables());
+    }
+    
 
     @Override
     public Task complete(CompleteTaskPayload completeTaskPayload) {

@@ -14,14 +14,12 @@ import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -122,7 +120,7 @@ public class TaskVariablesLocalCopiesTest {
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task1.getId()).build());
 
         //if one modifies, the other should not see the modification
-        taskRuntime.updateVariable(TaskPayloadBuilder.setVariables().withTaskId(task1.getId()).withVariable("start1","modifiedstart1").build());
+        taskRuntime.updateVariable(TaskPayloadBuilder.updateVariable().withTaskId(task1.getId()).withVariable("start1","modifiedstart1").build());
 
         //the task where it was modified should reflect the modification
         assertThat(taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()))
@@ -197,7 +195,7 @@ public class TaskVariablesLocalCopiesTest {
 
  
         //check that admin can modify task variables
-        taskAdminRuntime.updateVariable(TaskPayloadBuilder.setVariables().withTaskId(task1.getId()).withVariable("start1","modifiedstart1").build());
+        taskAdminRuntime.updateVariable(TaskPayloadBuilder.updateVariable().withTaskId(task1.getId()).withVariable("start1","modifiedstart1").build());
 
         //the task where it was modified should reflect the modification
         assertThat(taskAdminRuntime.variables(TaskPayloadBuilder.variables().withTaskId(task1.getId()).build()))

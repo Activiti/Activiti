@@ -34,12 +34,14 @@ import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.CreateTaskPayload;
+import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
 import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
+import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.engine.TaskService;
@@ -416,22 +418,28 @@ public class TaskRuntimeImpl implements TaskRuntime {
         return groupCandidates;
     }
 
-     
     @Override
     public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
         return variableInstanceConverter.from(taskRuntimeHelper.getInternalTaskVariables(getTaskVariablesPayload.getTaskId()).values());
     }
     
     @Override
-    public void newVariable(SetTaskVariablesPayload setTaskVariablesPayload) {
-    	taskRuntimeHelper.newVariable(false, setTaskVariablesPayload);
+    public void createVariable(CreateTaskVariablePayload createTaskVariablePayload) {
+    	taskRuntimeHelper.createVariable(false, createTaskVariablePayload);
     }
     
     @Override
-    public void updateVariable(SetTaskVariablesPayload setTaskVariablesPayload) {
-    	taskRuntimeHelper.updateVariable(false, setTaskVariablesPayload);
+    public void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload) {
+    	taskRuntimeHelper.updateVariable(false, updateTaskVariablePayload);
     }
 
+    //To do: check if we need this method
+    @Override
+    public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
+        taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
+                                      setTaskVariablesPayload.getVariables());
+    }
+    
 
     private List<IdentityLink> getIdentityLinks(String taskId) {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();

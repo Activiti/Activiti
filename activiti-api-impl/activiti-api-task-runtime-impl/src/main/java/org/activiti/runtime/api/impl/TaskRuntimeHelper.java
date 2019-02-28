@@ -11,9 +11,11 @@ import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
+import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.engine.TaskService;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
@@ -195,61 +197,53 @@ public class TaskRuntimeHelper {
     	return taskService.getVariableInstancesLocal(taskId);
     }
     
-    public void newVariable(boolean isAdmin, SetTaskVariablesPayload setTaskVariablesPayload) {	
-    	 if (!isAdmin) {
+    public void createVariable(boolean isAdmin, CreateTaskVariablePayload createTaskVariablePayload) {	
+    	if (!isAdmin) {
     		 //Check assignee
-        	 getTaskToUpdate(setTaskVariablesPayload.getTaskId()); 
-         }
+    		getTaskToUpdate(createTaskVariablePayload.getTaskId()); 
+        }
     	 
-    	final Map<String,Object> payloadVariables = setTaskVariablesPayload.getVariables();
-    	if (payloadVariables == null || payloadVariables.isEmpty()) return;
-    	
-    	String variableName = payloadVariables.entrySet().iterator().next().getKey();   
-    	if (variableName == null) {
+    	if (createTaskVariablePayload.getName() == null || createTaskVariablePayload.getName().isEmpty()) {
     		throw new IllegalStateException("You cannot create a variable without name");
     	}
     	
-    	Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables = taskService.getVariableInstancesLocal(setTaskVariablesPayload.getTaskId());
+    	Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables = taskService.getVariableInstancesLocal(createTaskVariablePayload.getTaskId());
     	    		
 		//Check if variable already exists
-		if (variables != null && variables.containsKey(variableName)) {
+		if (variables != null && variables.containsKey(createTaskVariablePayload.getName())) {
 			throw new IllegalStateException("Variable already exists");
 		}	
     	
-		taskService.setVariableLocal(setTaskVariablesPayload.getTaskId(),
-									 variableName,
-									 payloadVariables.entrySet().iterator().next().getValue());	
+		taskService.setVariableLocal(createTaskVariablePayload.getTaskId(),
+									 createTaskVariablePayload.getName(),
+									 createTaskVariablePayload.getValue());	
     	    
     }
     
-    public void updateVariable(boolean isAdmin, SetTaskVariablesPayload setTaskVariablesPayload) {	
+    public void updateVariable(boolean isAdmin, UpdateTaskVariablePayload updateTaskVariablePayload) {	
    	 	if (!isAdmin) {
    	 		//Check assignee
-   	 		getTaskToUpdate(setTaskVariablesPayload.getTaskId()); 
+   	 		getTaskToUpdate(updateTaskVariablePayload.getTaskId()); 
         }
-   	 
-	   	final Map<String,Object> payloadVariables = setTaskVariablesPayload.getVariables();
-	   	if (payloadVariables == null || payloadVariables.isEmpty()) return;
-   	
-	   	String variableName = payloadVariables.entrySet().iterator().next().getKey();   
-	   	if (variableName == null) {
+   	 	
+	   	if (updateTaskVariablePayload.getName() == null || updateTaskVariablePayload.getName().isEmpty()) {
 	   		throw new IllegalStateException("You cannot update a variable without name");
 	   	}
    	
-	   	Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables = taskService.getVariableInstancesLocal(setTaskVariablesPayload.getTaskId());
+	   	Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables = taskService.getVariableInstancesLocal(updateTaskVariablePayload.getTaskId());
    	    		
 		//Check if variable exists
 		if (variables == null) {
 			throw new IllegalStateException("Variable does not exist");
 		}	
 		
-		if (!variables.containsKey(variableName)) {
+		if (!variables.containsKey(updateTaskVariablePayload.getName())) {
 			throw new IllegalStateException("Variable does not exist");
 		}
    	
-		taskService.setVariableLocal(setTaskVariablesPayload.getTaskId(),
-									 variableName,
-									 payloadVariables.entrySet().iterator().next().getValue());	
+		taskService.setVariableLocal(updateTaskVariablePayload.getTaskId(),
+									 updateTaskVariablePayload.getName(),
+									 updateTaskVariablePayload.getValue());	
    	    
    }
 
