@@ -21,6 +21,14 @@ public class TaskPayloadBuilder {
     public static SetTaskVariablesPayloadBuilder setVariables() {
         return new SetTaskVariablesPayloadBuilder();
     }
+    
+    public static CreateTaskVariablePayloadBuilder createVariable() {
+        return new CreateTaskVariablePayloadBuilder();
+    }
+    
+    public static UpdateTaskVariablePayloadBuilder updateVariable() {
+        return new UpdateTaskVariablePayloadBuilder();
+    }
 
     public static GetTaskVariablesPayloadBuilder variables() {
         return new GetTaskVariablesPayloadBuilder();

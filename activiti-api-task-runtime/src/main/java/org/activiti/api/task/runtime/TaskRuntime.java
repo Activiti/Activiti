@@ -27,12 +27,14 @@ import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.CreateTaskPayload;
+import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
 import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
+import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 
 
@@ -113,9 +115,12 @@ public interface TaskRuntime {
      * - this method returns a shallow Task with the necessary information to validate that the task was deleted
      */
     Task delete(DeleteTaskPayload deleteTaskPayload);
+    
+    //Old method: check if it should be removed
+    void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);
 
-    void newVariable(SetTaskVariablesPayload setTaskVariablesPayload);
-    void updateVariable(SetTaskVariablesPayload setTaskVariablesPayload);
+    void createVariable(CreateTaskVariablePayload createTaskVariablePayload);
+    void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload);
     List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
     
     void addCandidateUsers(CandidateUsersPayload candidateUsersPayload);

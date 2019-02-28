@@ -27,12 +27,14 @@ import org.activiti.api.task.model.payloads.CandidateGroupsPayload;
 import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
+import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
 import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
 import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
+import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 
 /**
  * All the methods require an authenticated Admin user
@@ -89,8 +91,11 @@ public interface TaskAdminRuntime {
      */
     Task update(UpdateTaskPayload updateTaskPayload);
 
-    void newVariable(SetTaskVariablesPayload setTaskVariablesPayload);
-    void updateVariable(SetTaskVariablesPayload setTaskVariablesPayload);
+    //Old method: check if it should be removed
+    void setVariables(SetTaskVariablesPayload setTaskVariablesPayload);
+
+    void createVariable(CreateTaskVariablePayload createTaskVariablePayload);
+    void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload);
     List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload);
 
     /**
