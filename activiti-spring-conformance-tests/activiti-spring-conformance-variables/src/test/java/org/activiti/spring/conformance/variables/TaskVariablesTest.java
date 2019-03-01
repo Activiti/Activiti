@@ -1,7 +1,10 @@
 package org.activiti.spring.conformance.variables;
 
+import java.util.List;
+
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.event.VariableEvent;
+import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNActivityEvent;
@@ -12,11 +15,10 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.CreateTaskVariablePayloadBuilder;
 import org.activiti.api.task.model.builders.GetTaskVariablesPayloadBuilder;
-import org.activiti.api.task.model.builders.SetTaskVariablesPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
-import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -25,10 +27,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.activiti.spring.conformance.variables.VariablesRuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -70,7 +68,7 @@ public class TaskVariablesTest {
 
         startProcess();
 
-        setVariables();
+        createVariables();
 
         assertThat(collectedEvents)
                 .extracting("eventType","entity.name","entity.value")
@@ -91,7 +89,7 @@ public class TaskVariablesTest {
 
         startProcess();
 
-        setVariables();
+        createVariables();
 
         VariableInstance variableOneRuntime = variableInstanceList.get(0);
         assertThat(variableOneRuntime.getTaskId()).isEqualTo(taskId);
@@ -116,7 +114,7 @@ public class TaskVariablesTest {
 
         startProcess();
 
-        setVariables();
+        createVariables();
 
         VariableInstance variableOneRuntime = variableInstanceList.get(0);
         assertThat(variableOneRuntime.isTaskVariable()).isTrue();
@@ -139,7 +137,7 @@ public class TaskVariablesTest {
 
         startProcess();
 
-        setVariables();
+        createVariables();
 
         VariableInstance variableOneRuntime = variableInstanceList.get(0);
         VariableInstance variableTwoRuntime = variableInstanceList.get(1);
@@ -196,13 +194,12 @@ public class TaskVariablesTest {
         assertThat(tasks.getTotalItems()).isEqualTo(1);
     }
 
-    private void setVariables(){
+    private void createVariables() {
 
-        Map<String, Object> variablesMap = new HashMap<>();
-        variablesMap.put("one", "variableOne");
-        variablesMap.put("two", 2);
-
-        taskRuntime.setVariables(new SetTaskVariablesPayloadBuilder().withVariables(variablesMap).withTaskId(taskId).build());
+        taskRuntime.createVariable(new CreateTaskVariablePayloadBuilder().withVariable("one",
+                                                                                       "variableOne").withTaskId(taskId).build());
+        taskRuntime.createVariable(new CreateTaskVariablePayloadBuilder().withVariable("two",
+                                                                                       2).withTaskId(taskId).build());
 
         variableInstanceList = taskRuntime.variables(new GetTaskVariablesPayloadBuilder().withTaskId(taskId).build());
     }
