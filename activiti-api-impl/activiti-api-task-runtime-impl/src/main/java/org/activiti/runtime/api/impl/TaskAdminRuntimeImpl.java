@@ -18,7 +18,6 @@ package org.activiti.runtime.api.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.query.Page;
@@ -36,7 +35,6 @@ import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
-import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
@@ -134,14 +132,6 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     	taskRuntimeHelper.updateVariable(true, updateTaskVariablePayload);
     }
 
-    //To do: check if we need this method
-    @Override
-    public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
-        taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
-                                      setTaskVariablesPayload.getVariables());
-    }
-    
-
     @Override
     public Task complete(CompleteTaskPayload completeTaskPayload) {
         Task task = task(completeTaskPayload.getTaskId());
@@ -225,7 +215,7 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     @Override
     public List<String> userCandidates(String taskId) {
         List<IdentityLink> identityLinks= getIdentityLinks(taskId);
-        List<String> userCandidates = new ArrayList<String>();
+        List<String> userCandidates = new ArrayList<>();
         if (identityLinks!=null) {
             for (IdentityLink i : identityLinks) {
                 if (i.getUserId()!=null) {
@@ -242,7 +232,7 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     @Override
     public List<String> groupCandidates(String taskId) {
         List<IdentityLink> identityLinks= getIdentityLinks(taskId);
-        List<String> groupCandidates = new ArrayList<String>();
+        List<String> groupCandidates = new ArrayList<>();
         if (identityLinks!=null) {
             for (IdentityLink i : identityLinks) {
                 if (i.getGroupId()!=null) {

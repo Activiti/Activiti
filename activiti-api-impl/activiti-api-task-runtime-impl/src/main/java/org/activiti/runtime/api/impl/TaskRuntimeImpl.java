@@ -39,7 +39,6 @@ import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
-import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.api.task.runtime.TaskRuntime;
@@ -387,7 +386,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     @Override
     public List<String> userCandidates(String taskId) {
         List<IdentityLink> identityLinks= getIdentityLinks(taskId);
-        List<String> userCandidates = new ArrayList<String>();
+        List<String> userCandidates = new ArrayList<>();
         if (identityLinks!=null) {
             for (IdentityLink i : identityLinks) {
                 if (i.getUserId()!=null) {
@@ -404,7 +403,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     @Override
     public List<String> groupCandidates(String taskId) {
         List<IdentityLink> identityLinks= getIdentityLinks(taskId);
-        List<String> groupCandidates = new ArrayList<String>();
+        List<String> groupCandidates = new ArrayList<>();
         if (identityLinks!=null) {
             for (IdentityLink i : identityLinks) {
                 if (i.getGroupId()!=null) {
@@ -432,14 +431,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload) {
     	taskRuntimeHelper.updateVariable(false, updateTaskVariablePayload);
     }
-
-    //To do: check if we need this method
-    @Override
-    public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
-        taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
-                                      setTaskVariablesPayload.getVariables());
-    }
-    
 
     private List<IdentityLink> getIdentityLinks(String taskId) {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
