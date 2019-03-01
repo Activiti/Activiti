@@ -13,15 +13,16 @@ public class UpdateTaskVariablePayloadBuilder {
         return this;
     }
 
-    public UpdateTaskVariablePayloadBuilder withVariable(String name, Object value) {
-		this.name = name;
-		this.value = value;		
-		return this;
-	}    
+    public UpdateTaskVariablePayloadBuilder withVariable(String name,
+                                                         Object value) {
+        this.name = name;
+        this.value = value;
+        return this;
+    }
 
     public UpdateTaskVariablePayload build() {
         return new UpdateTaskVariablePayload(taskId,
-                                           	 name,
+                                             name,
                                              value);
     }
 }

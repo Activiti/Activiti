@@ -10,14 +10,14 @@ public class CreateTaskVariablePayload implements Payload {
     private String taskId;
     private String name;
     private Object value;
-    
+
     public CreateTaskVariablePayload() {
         this.id = UUID.randomUUID().toString();
     }
 
     public CreateTaskVariablePayload(String taskId,
-    								 String name,
-    								 Object value) {
+                                     String name,
+                                     Object value) {
         this();
         this.taskId = taskId;
         this.name = name;
@@ -38,19 +38,18 @@ public class CreateTaskVariablePayload implements Payload {
     }
 
     public String getName() {
-		return name;
-	}
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Object getValue() {
-		return value;
-	}
+    public Object getValue() {
+        return value;
+    }
 
-	public void setValue(Object value) {
-		this.value = value;
-	}
-
+    public void setValue(Object value) {
+        this.value = value;
+    }
 }
