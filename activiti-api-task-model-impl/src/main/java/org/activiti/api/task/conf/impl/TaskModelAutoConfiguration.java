@@ -27,6 +27,9 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.TaskCandidateGroup;
 import org.activiti.api.task.model.TaskCandidateUser;
+import org.activiti.api.task.model.impl.TaskCandidateGroupImpl;
+import org.activiti.api.task.model.impl.TaskCandidateUserImpl;
+import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.CreateTaskPayload;
@@ -34,12 +37,8 @@ import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
-import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.results.TaskResult;
-import org.activiti.api.task.model.impl.TaskCandidateGroupImpl;
-import org.activiti.api.task.model.impl.TaskCandidateUserImpl;
-import org.activiti.api.task.model.impl.TaskImpl;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -94,9 +93,6 @@ public class TaskModelAutoConfiguration {
 
         module.registerSubtypes(new NamedType(ReleaseTaskPayload.class,
                                               ReleaseTaskPayload.class.getSimpleName()));
-
-        module.registerSubtypes(new NamedType(SetTaskVariablesPayload.class,
-                                              SetTaskVariablesPayload.class.getSimpleName()));
 
         module.registerSubtypes(new NamedType(UpdateTaskPayload.class,
                                               UpdateTaskPayload.class.getSimpleName()));
