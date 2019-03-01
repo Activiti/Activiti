@@ -181,6 +181,10 @@ public class TaskRuntimeHelper {
         throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
     }
 
+    public void assertHasAccessToTask(String taskId) {
+        getInternalTaskWithChecks(taskId);
+    }
+
     private String getAuthenticatedUser() {
         return securityManager!=null ? securityManager.getAuthenticatedUserId() : null;
     }

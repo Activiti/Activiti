@@ -419,6 +419,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     @Override
     public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
+        taskRuntimeHelper.assertHasAccessToTask(getTaskVariablesPayload.getTaskId());
         return variableInstanceConverter.from(taskRuntimeHelper.getInternalTaskVariables(getTaskVariablesPayload.getTaskId()).values());
     }
     
