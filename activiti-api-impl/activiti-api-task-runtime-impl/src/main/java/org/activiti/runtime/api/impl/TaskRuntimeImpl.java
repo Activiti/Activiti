@@ -34,12 +34,13 @@ import org.activiti.api.task.model.payloads.CandidateUsersPayload;
 import org.activiti.api.task.model.payloads.ClaimTaskPayload;
 import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.CreateTaskPayload;
+import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
 import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
-import org.activiti.api.task.model.payloads.SetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
+import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.engine.TaskService;
@@ -138,10 +139,6 @@ public class TaskRuntimeImpl implements TaskRuntime {
                               Math.toIntExact(taskQuery.count()));
     }
 
-    @Override
-    public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
-        return variableInstanceConverter.from(taskService.getVariableInstancesLocal(getTaskVariablesPayload.getTaskId()).values());
-    }
     
     @Override
     public Task complete(CompleteTaskPayload completeTaskPayload) {
@@ -389,7 +386,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     @Override
     public List<String> userCandidates(String taskId) {
         List<IdentityLink> identityLinks= getIdentityLinks(taskId);
-        List<String> userCandidates = new ArrayList<String>();
+        List<String> userCandidates = new ArrayList<>();
         if (identityLinks!=null) {
             for (IdentityLink i : identityLinks) {
                 if (i.getUserId()!=null) {
@@ -406,7 +403,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     @Override
     public List<String> groupCandidates(String taskId) {
         List<IdentityLink> identityLinks= getIdentityLinks(taskId);
-        List<String> groupCandidates = new ArrayList<String>();
+        List<String> groupCandidates = new ArrayList<>();
         if (identityLinks!=null) {
             for (IdentityLink i : identityLinks) {
                 if (i.getGroupId()!=null) {
@@ -420,12 +417,20 @@ public class TaskRuntimeImpl implements TaskRuntime {
         return groupCandidates;
     }
 
-    
+    @Override
+    public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
+        taskRuntimeHelper.assertHasAccessToTask(getTaskVariablesPayload.getTaskId());
+        return variableInstanceConverter.from(taskRuntimeHelper.getInternalTaskVariables(getTaskVariablesPayload.getTaskId()).values());
+    }
     
     @Override
-    public void setVariables(SetTaskVariablesPayload setTaskVariablesPayload) {
-        taskService.setVariablesLocal(setTaskVariablesPayload.getTaskId(),
-                                          setTaskVariablesPayload.getVariables());
+    public void createVariable(CreateTaskVariablePayload createTaskVariablePayload) {
+    	taskRuntimeHelper.createVariable(false, createTaskVariablePayload);
+    }
+    
+    @Override
+    public void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload) {
+    	taskRuntimeHelper.updateVariable(false, updateTaskVariablePayload);
     }
 
     private List<IdentityLink> getIdentityLinks(String taskId) {

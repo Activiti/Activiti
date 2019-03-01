@@ -101,9 +101,11 @@ public class TaskRuntimeAutoConfiguration {
     @Bean
     public TaskAdminRuntime taskAdminRuntime(TaskService taskService,
                                              APITaskConverter taskConverter,
+                                             APIVariableInstanceConverter variableInstanceConverter,
                                              TaskRuntimeHelper taskRuntimeHelper) {
         return new TaskAdminRuntimeImpl(taskService,
                                         taskConverter,
+                                        variableInstanceConverter,
                                         taskRuntimeHelper
                                         
         );
