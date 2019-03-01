@@ -187,59 +187,59 @@ public class TaskRuntimeHelper {
         }
         return internalTask;
     }
-    
+
     public Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> getInternalTaskVariables(String taskId) {
-    	return taskService.getVariableInstancesLocal(taskId);
+        return taskService.getVariableInstancesLocal(taskId);
     }
-    
-    public void createVariable(boolean isAdmin, CreateTaskVariablePayload createTaskVariablePayload) {	
-    	if (!isAdmin) {
-    		 //Check assignee
-    		getTaskToUpdate(createTaskVariablePayload.getTaskId()); 
+
+    public void createVariable(boolean isAdmin,
+                               CreateTaskVariablePayload createTaskVariablePayload) {
+        if (!isAdmin) {
+            //Check assignee
+            getTaskToUpdate(createTaskVariablePayload.getTaskId());
         }
-    	 
-    	if (createTaskVariablePayload.getName() == null || createTaskVariablePayload.getName().isEmpty()) {
-    		throw new IllegalStateException("You cannot create a variable without name");
-    	}
-    	
-    	Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables = taskService.getVariableInstancesLocal(createTaskVariablePayload.getTaskId());
-    	    		
-		//Check if variable already exists
-		if (variables != null && variables.containsKey(createTaskVariablePayload.getName())) {
-			throw new IllegalStateException("Variable already exists");
-		}	
-    	
-		taskService.setVariableLocal(createTaskVariablePayload.getTaskId(),
-									 createTaskVariablePayload.getName(),
-									 createTaskVariablePayload.getValue());	
-    	    
+
+        if (createTaskVariablePayload.getName() == null || createTaskVariablePayload.getName().isEmpty()) {
+            throw new IllegalStateException("You cannot create a variable without name");
+        }
+
+        Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables = taskService.getVariableInstancesLocal(createTaskVariablePayload.getTaskId());
+
+        //Check if variable already exists
+        if (variables != null && variables.containsKey(createTaskVariablePayload.getName())) {
+            throw new IllegalStateException("Variable already exists");
+        }
+
+        taskService.setVariableLocal(createTaskVariablePayload.getTaskId(),
+                                     createTaskVariablePayload.getName(),
+                                     createTaskVariablePayload.getValue());
     }
-    
-    public void updateVariable(boolean isAdmin, UpdateTaskVariablePayload updateTaskVariablePayload) {	
-   	 	if (!isAdmin) {
-   	 		//Check assignee
-   	 		getTaskToUpdate(updateTaskVariablePayload.getTaskId()); 
+
+    public void updateVariable(boolean isAdmin,
+                               UpdateTaskVariablePayload updateTaskVariablePayload) {
+        if (!isAdmin) {
+            //Check assignee
+            getTaskToUpdate(updateTaskVariablePayload.getTaskId());
         }
-   	 	
-	   	if (updateTaskVariablePayload.getName() == null || updateTaskVariablePayload.getName().isEmpty()) {
-	   		throw new IllegalStateException("You cannot update a variable without name");
-	   	}
-   	
-	   	Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables = taskService.getVariableInstancesLocal(updateTaskVariablePayload.getTaskId());
-   	    		
-		//Check if variable exists
-		if (variables == null) {
-			throw new IllegalStateException("Variable does not exist");
-		}	
-		
-		if (!variables.containsKey(updateTaskVariablePayload.getName())) {
-			throw new IllegalStateException("Variable does not exist");
-		}
-   	
-		taskService.setVariableLocal(updateTaskVariablePayload.getTaskId(),
-									 updateTaskVariablePayload.getName(),
-									 updateTaskVariablePayload.getValue());	
-   	    
-   }
+
+        if (updateTaskVariablePayload.getName() == null || updateTaskVariablePayload.getName().isEmpty()) {
+            throw new IllegalStateException("You cannot update a variable without name");
+        }
+
+        Map<String, org.activiti.engine.impl.persistence.entity.VariableInstance> variables = taskService.getVariableInstancesLocal(updateTaskVariablePayload.getTaskId());
+
+        //Check if variable exists
+        if (variables == null) {
+            throw new IllegalStateException("Variable does not exist");
+        }
+
+        if (!variables.containsKey(updateTaskVariablePayload.getName())) {
+            throw new IllegalStateException("Variable does not exist");
+        }
+
+        taskService.setVariableLocal(updateTaskVariablePayload.getTaskId(),
+                                     updateTaskVariablePayload.getName(),
+                                     updateTaskVariablePayload.getValue());
+    }
 
 }
