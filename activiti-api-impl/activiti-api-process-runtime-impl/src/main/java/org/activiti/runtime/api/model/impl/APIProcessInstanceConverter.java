@@ -28,7 +28,6 @@ public class APIProcessInstanceConverter extends ListConverter<org.activiti.engi
         processInstance.setId(internalProcessInstance.getId());
         processInstance.setParentId(internalProcessInstance.getParentProcessInstanceId());
         processInstance.setName(internalProcessInstance.getName());
-        processInstance.setDescription(internalProcessInstance.getDescription());
         processInstance.setProcessDefinitionId(internalProcessInstance.getProcessDefinitionId());
         processInstance.setProcessDefinitionKey(internalProcessInstance.getProcessDefinitionKey());
         processInstance.setProcessDefinitionVersion(internalProcessInstance.getProcessDefinitionVersion());
