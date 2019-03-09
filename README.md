@@ -181,5 +181,3 @@ FAQ
 
         #yinbing yinbing new new old old
 
-* add by cuidi on cuidi_branch on 20190309 
-* 1234567
