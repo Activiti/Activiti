@@ -87,17 +87,5 @@ public class CallActivityTest extends PluggableActivitiTestCase {
     subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
     assertEquals("123", subProcessInstance.getBusinessKey());
   }
-
-  @Deployment(resources = {"org/activiti/examples/bpmn/callactivity/parentProcess.bpmn20.xml",
-          "org/activiti/examples/bpmn/callactivity/subProcess.bpmn20.xml"})
-  public void testCheckSubProcessTaskWhenCallActivity(){
-    // After the process has started, the 'subProcess task should be active
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("parentproc-843144bc-3797-40db-8edc-d23190b118e3");
-    Task verifyCreditTask = taskService.createTaskQuery().singleResult();
-    assertEquals("my-task", verifyCreditTask.getName());
-
-    // Verify with Query API
-    ProcessInstance subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
-    assertNotNull(subProcessInstance);
-  }
+  
 }
