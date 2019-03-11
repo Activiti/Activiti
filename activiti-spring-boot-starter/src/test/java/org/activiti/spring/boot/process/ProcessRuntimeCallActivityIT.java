@@ -51,7 +51,7 @@ public class ProcessRuntimeCallActivityIT {
                 Pageable.of(0, 50),
                 ProcessPayloadBuilder
                         .processInstances()
-                        .withProcessDefinitionKey(SUB_PROCESS_CALL_ACTIVITY)
+                        .withParentProcessInstanceId(processInstance.getId())
                         .build())
                 .getContent()
                 .get(0);
