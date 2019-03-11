@@ -3,6 +3,7 @@ package org.activiti.spring.boot.process;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
@@ -13,6 +14,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -47,27 +50,34 @@ public class ProcessRuntimeCallActivityIT {
         assertThat(processInstance).isNotNull();
 
         //verify the existence of the sub process itself
-        ProcessInstance subProcessInstance = processRuntime.processInstances(
+        List<ProcessInstance> subProcessInstancePage = processRuntime.processInstances(
                 Pageable.of(0, 50),
                 ProcessPayloadBuilder
                         .processInstances()
                         .withParentProcessInstanceId(processInstance.getId())
                         .build())
-                .getContent()
-                .get(0);
+                .getContent();
+
+        assertThat(subProcessInstancePage).isNotNull();
+
+        ProcessInstance subProcessInstance = subProcessInstancePage.get(0);
 
         assertThat(subProcessInstance).isNotNull();
         assertThat(subProcessInstance.getParentId()).isEqualTo(processInstance.getId());
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
-        Task task = taskRuntime.tasks(
+        //verify the existence of the task in the sub process
+        List <Task> taskList = taskRuntime.tasks(
                 Pageable.of(0, 50),
                 TaskPayloadBuilder
                         .tasks()
                         .withProcessInstanceId(subProcessInstance.getId())
                         .build())
-                .getContent()
-                .get(0);
+                .getContent();
+
+        assertThat(taskList).isNotNull();
+
+        Task task = taskList.get(0);
 
         assertThat(task).isNotNull();
         assertThat("my-task-call-activity").isEqualTo(task.getName());
