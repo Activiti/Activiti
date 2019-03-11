@@ -49,7 +49,7 @@ public class ProcessRuntimeCallActivityIT {
         assertThat(processInstance).isNotNull();
 
         //verify the existence of the sub process itself
-        List<ProcessInstance> subProcessInstancePage = processRuntime.processInstances(
+        List<ProcessInstance> subProcessInstanceList = processRuntime.processInstances(
                 Pageable.of(0, 50),
                 ProcessPayloadBuilder
                         .processInstances()
@@ -57,9 +57,9 @@ public class ProcessRuntimeCallActivityIT {
                         .build())
                 .getContent();
 
-        assertThat(subProcessInstancePage).isNotNull();
+        assertThat(subProcessInstanceList).isNotEmpty();
 
-        ProcessInstance subProcessInstance = subProcessInstancePage.get(0);
+        ProcessInstance subProcessInstance = subProcessInstanceList.get(0);
 
         assertThat(subProcessInstance).isNotNull();
         assertThat(subProcessInstance.getParentId()).isEqualTo(processInstance.getId());
@@ -74,7 +74,7 @@ public class ProcessRuntimeCallActivityIT {
                         .build())
                 .getContent();
 
-        assertThat(taskList).isNotNull();
+        assertThat(taskList).isNotEmpty();
 
         Task task = taskList.get(0);
 
