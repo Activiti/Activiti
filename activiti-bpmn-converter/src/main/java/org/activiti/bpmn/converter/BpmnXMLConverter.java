@@ -354,7 +354,13 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
           interfaceParser.parse(xtr, model);
 
         } else if (ELEMENT_IOSPECIFICATION.equals(xtr.getLocalName())) {
-          ioSpecificationParser.parseChildElement(xtr, activeProcess, model);
+                  BaseElement parentElement;
+                  if (!activeSubProcessList.isEmpty()) {
+                    parentElement = activeSubProcessList.get(activeSubProcessList.size() - 1);
+                  } else {
+                    parentElement = activeProcess;
+                  }
+          ioSpecificationParser.parseChildElement(xtr, parentElement, model);
 
         } else if (ELEMENT_PARTICIPANT.equals(xtr.getLocalName())) {
           participantParser.parse(xtr, model);
