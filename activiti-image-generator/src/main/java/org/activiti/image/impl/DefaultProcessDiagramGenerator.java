@@ -72,6 +72,7 @@ import org.activiti.image.ProcessDiagramGenerator;
 import org.activiti.image.exception.ActivitiInterchangeInfoNotFoundException;
 import org.activiti.image.exception.ActivitiImageException;
 import org.springframework.stereotype.Component;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Class to generate an svg based the diagram interchange information in a
@@ -1263,6 +1264,10 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
             if (flowElement instanceof FlowNode) {
                 flowNodes.add((FlowNode) flowElement);
+            }
+            if (flowElement instanceof SequenceFlow) {
+                SequenceFlow sf= (SequenceFlow) flowElement;
+                flowNodes.stream().filter(k->StringUtils.equals(k.getId(), sf.getSourceRef())).forEach(k->k.getOutgoingFlows().add(sf));
             }
             if (flowElement instanceof FlowElementsContainer) {
                 flowNodes.addAll(gatherAllFlowNodes((FlowElementsContainer) flowElement));
