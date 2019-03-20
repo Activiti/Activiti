@@ -20,7 +20,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public abstract class FlowElement extends BaseElement implements HasExecutionListeners {
 
   protected String name;
-  protected String documentation;
   protected List<ActivitiListener> executionListeners = new ArrayList<ActivitiListener>();
   protected FlowElementsContainer parentContainer;
 
@@ -30,14 +29,6 @@ public abstract class FlowElement extends BaseElement implements HasExecutionLis
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public String getDocumentation() {
-    return documentation;
-  }
-
-  public void setDocumentation(String documentation) {
-    this.documentation = documentation;
   }
 
   public List<ActivitiListener> getExecutionListeners() {
