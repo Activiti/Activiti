@@ -28,6 +28,8 @@ public abstract class BaseElement implements HasExtensionAttributes {
   /** extension attributes could be part of each element */
   protected Map<String, List<ExtensionAttribute>> attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
 
+  protected String documentation;
+
   public String getId() {
     return id;
   }
@@ -135,6 +137,14 @@ public abstract class BaseElement implements HasExtensionAttributes {
         }
       }
     }
+  }
+
+  public String getDocumentation() {
+    return documentation;
+  }
+
+  public void setDocumentation(String documentation) {
+    this.documentation = documentation;
   }
 
   public abstract BaseElement clone();
