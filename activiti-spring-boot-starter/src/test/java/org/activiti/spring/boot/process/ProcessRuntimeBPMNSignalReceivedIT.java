@@ -27,7 +27,9 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.spring.boot.process.listener.DummyBPMNSignalReceivedListener;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.assertj.core.groups.Tuple;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,9 +53,13 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
     @Autowired
     private DummyBPMNSignalReceivedListener listener;
 
+    @Autowired
+    private ProcessCleanUpUtil processCleanUpUtil;
+
     @Before
     public void setUp() {
         listener.clear();
+        processCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
