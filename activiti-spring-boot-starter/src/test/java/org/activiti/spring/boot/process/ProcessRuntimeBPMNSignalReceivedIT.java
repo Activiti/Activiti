@@ -77,13 +77,20 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         processRuntime.signal(signalPayload);
 
         //then
+        String processDefinitionId = processDefinitionPage.getContent().get(0).getId();
         assertThat(listener.getSignalReceivedEvents())
                 .extracting(BPMNSignalReceivedEvent::getEventType,
                             BPMNSignalReceivedEvent::getProcessDefinitionId,
-                            event -> event.getEntity().getSignalPayload().getName())
+                            event -> event.getEntity().getSignalPayload().getName(),
+                            event -> event.getEntity().getElementId(),
+                            event -> event.getEntity().getProcessDefinitionId()
+                )
                 .contains(Tuple.tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
-                                      processDefinitionPage.getContent().get(0).getId(),
-                                      "The Signal"));
+                                      processDefinitionId,
+                                      "The Signal",
+                                      "theStart",
+                                      processDefinitionId
+                ));
     }
 
     @Test
@@ -111,15 +118,30 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
 
         assertThat(listener.getSignalReceivedEvents())
                 .extracting(BPMNSignalReceivedEvent::getEventType,
+                            BPMNSignalReceivedEvent::getProcessDefinitionId,
                             BPMNSignalReceivedEvent::getProcessInstanceId,
-                            event -> event.getEntity().getSignalPayload().getName())
+                            event -> event.getEntity().getSignalPayload().getName(),
+                            event -> event.getEntity().getElementId(),
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId()
+                            )
                 .contains(
                         tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                              process1.getProcessDefinitionId(),
                               process1.getId(),
-                              "go"),
+                              "go",
+                              "sid-6220E76D-719E-4C05-A664-BC186E50D477",
+                              process1.getProcessDefinitionId(),
+                              process1.getId()
+                        ),
                         tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                              process2.getProcessDefinitionId(),
                               process2.getId(),
-                              "go")
+                              "go",
+                              "sid-6220E76D-719E-4C05-A664-BC186E50D477",
+                              process2.getProcessDefinitionId(),
+                              process2.getId()
+                        )
                 );
     }
 
