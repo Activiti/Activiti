@@ -127,6 +127,7 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_DATA_OUTPUT = "dataOutput";
   public static final String ELEMENT_DATA_INPUT_REFS = "dataInputRefs";
   public static final String ELEMENT_DATA_OUTPUT_REFS = "dataOutputRefs";
+  public static final String ATTRIBUTE_IS_COLLECTION = "isCollection";
 
   public static final String ELEMENT_INPUT_ASSOCIATION = "dataInputAssociation";
   public static final String ELEMENT_OUTPUT_ASSOCIATION = "dataOutputAssociation";
