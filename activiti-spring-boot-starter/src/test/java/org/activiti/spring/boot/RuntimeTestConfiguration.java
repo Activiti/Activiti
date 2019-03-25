@@ -8,7 +8,6 @@ import java.util.Set;
 
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
-import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
@@ -57,8 +56,6 @@ public class RuntimeTestConfiguration {
 
     public static Set<TaskCandidateUserRemovedEvent> taskCandidateUserRemovedEvents = new HashSet<>();
     
-    public static Set<BPMNSignalReceivedEvent> signalReceivedEvents = new HashSet<>();
-
     @Bean
     public UserDetailsService myUserDetailsService() {
         ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
@@ -177,11 +174,6 @@ public class RuntimeTestConfiguration {
         return sequenceFlowTakenEvent -> sequenceFlowTakenEvents.add(sequenceFlowTakenEvent);
     }
     
-    @Bean
-    public BPMNElementEventListener<BPMNSignalReceivedEvent> signalReceivedEventListener() {
-        return signalReceivedEvent -> signalReceivedEvents.add(signalReceivedEvent);
-    }
-
     @Bean
     public VariableEventListener<VariableCreatedEvent> variableCreatedEventFromProcessInstanceListener() {
         return variableCreatedEvent -> {

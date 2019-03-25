@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.List;
 
 import org.activiti.api.process.model.ProcessDefinition;
+import org.activiti.spring.boot.process.listener.DeployedProcessesListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
