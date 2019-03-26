@@ -59,6 +59,10 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
     @Before
     public void setUp() {
         listener.clear();
+    }
+
+    @After
+    public void tearDown() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
