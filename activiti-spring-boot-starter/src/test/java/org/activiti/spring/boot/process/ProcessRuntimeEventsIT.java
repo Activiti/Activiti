@@ -1,5 +1,7 @@
 package org.activiti.spring.boot.process;
 
+import java.util.HashMap;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -12,22 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.HashMap;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class ProcessRuntimeEvents {
+public class ProcessRuntimeEventsIT {
 
     private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
-
+    
     @Autowired
     private ProcessRuntime processRuntime;
 
     @Autowired
     private SecurityUtil securityUtil;
-
 
     @Before
     public void init() {
@@ -112,4 +112,5 @@ public class ProcessRuntimeEvents {
                 .isNotEmpty()
                 .hasSize(3);
     }
+
 }
