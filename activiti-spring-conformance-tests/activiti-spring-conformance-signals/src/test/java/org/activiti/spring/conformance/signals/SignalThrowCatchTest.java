@@ -117,7 +117,7 @@ public class SignalThrowCatchTest {
     	String processInstanceId = startBoundaryEventSignalProcess();
     	
         SignalPayload signalPayload = ProcessPayloadBuilder.signal()
-                .withName("go")
+                .withName("Test")
                 .withVariable("signal-variable",
                               "test")
                 .build();
@@ -142,6 +142,42 @@ public class SignalThrowCatchTest {
 
         assertThat(event.getEntity()).isNotNull();
         assertThat(event.getProcessInstanceId()).isEqualTo(processInstanceId);
+        assertThat(event.getEntity().getSignalPayload()).isNotNull();
+        assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
+        assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
+        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal-variable")).isEqualTo("test");
+        
+        
+        collectedEvents.clear();
+    }
+    
+    @Test
+    public void testProcessStartedBySignal() {
+    	securityUtil.logInAs("user1");
+    	
+        SignalPayload signalPayload = ProcessPayloadBuilder.signal()
+                .withName("SignalStart")
+                .withVariable("signal-variable",
+                              "test")
+                .build();
+        processRuntime.signal(signalPayload);
+        
+        assertThat(collectedEvents)
+		.extracting(RuntimeEvent::getEventType)
+		.containsExactly(
+				    BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,    
+				    ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                    ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                    BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                    ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
+        );
+        
+        BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent)collectedEvents.get(0);
+
+        assertThat(event.getEntity()).isNotNull();
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
         assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
         assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
