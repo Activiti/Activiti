@@ -4,6 +4,7 @@ import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
+import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.runtime.events.*;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
@@ -47,4 +48,11 @@ public class SignalsRuntimeTestConfiguration {
     public ProcessRuntimeEventListener<ProcessCompletedEvent> processCompletedListener() {
         return processCompletedEvent -> collectedEvents.add(processCompletedEvent);
     }
+    
+    @Bean
+    public BPMNElementEventListener<BPMNSignalReceivedEvent> bpmnSignalReceivedListener() {
+        return bpmnSignalReceivedEvent -> collectedEvents.add(bpmnSignalReceivedEvent);
+    }
+    
+    
 }
