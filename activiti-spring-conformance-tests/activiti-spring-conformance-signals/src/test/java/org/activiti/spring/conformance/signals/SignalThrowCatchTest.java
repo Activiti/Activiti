@@ -147,6 +147,7 @@ public class SignalThrowCatchTest {
         );
         
         assertThat(collectedEvents)
+        .filteredOn(event -> BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED.name().equals(event.getEventType().name()))
 		.extracting(RuntimeEvent::getEventType,	RuntimeEvent::getProcessInstanceId)
 		.contains(
 				  tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,processInstanceCatch)
