@@ -24,6 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.activiti.spring.conformance.signals.SignalsRuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -109,6 +110,51 @@ public class SignalThrowCatchTest {
         
     	collectedEvents.clear();
     }
+    
+    @Test
+    public void testProcessesWithThrowCatchSignal() {
+    	securityUtil.logInAs("user1");
+    	
+    	String processInstanceCatch = startIntermediateCatchEventSignalProcess();
+    	String processInstanceThrow = startThrowSignalProcess();
+    	
+        assertThat(collectedEvents)
+		.extracting(RuntimeEvent::getEventType)
+		.contains(
+				    ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                    ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                    BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                    ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                    ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                    BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                    BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                    BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                    BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                    ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                    ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
+        );
+        
+        assertThat(collectedEvents)
+		.extracting(RuntimeEvent::getEventType,	RuntimeEvent::getProcessInstanceId)
+		.contains(
+				  tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,processInstanceCatch)
+        );
+        
+    	collectedEvents.clear();
+    }
+    
     
 
     @Test
@@ -198,32 +244,37 @@ public class SignalThrowCatchTest {
     }
 
     private String startThrowSignalProcess(){
-        return processRuntime.start(ProcessPayloadBuilder
+    	ProcessInstance process = processRuntime.start(ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey("broadcastSignalEventProcess")
                 .withBusinessKey("broadcast-signal-business-key")
                 .withName("broadcast-signal-instance-name")
-                .build()).getId();
+                .build());
+    	
+        return process.getId();
 
     }
     
     private String startIntermediateCatchEventSignalProcess(){
-        return processRuntime.start(ProcessPayloadBuilder
+    	ProcessInstance process = processRuntime.start(ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey("broadcastSignalCatchEventProcess")
                 .withBusinessKey("catch-business-key")
                 .withName("catch-signal-instance-name")
-                .build()).getId();
-
+                .build());
+        
+        return process.getId();
     }
     
     private String startBoundaryEventSignalProcess(){
-        return processRuntime.start(ProcessPayloadBuilder
+    	ProcessInstance process = processRuntime.start(ProcessPayloadBuilder
                 .start()
                 .withProcessDefinitionKey("ProcessWithBoundarySignal")
                 .withBusinessKey("boundary-business-key")
                 .withName("boundary-signal-instance-name")
-                .build()).getId();
+                .build());
+    	
+    	return process.getId();
 
     }
     

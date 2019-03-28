@@ -4,7 +4,7 @@
   <process id="broadcastSignalEventProcess" name="Broadcast Signal Event Process" isExecutable="true">
     <startEvent id="startevent1" name="Start"></startEvent>
     <intermediateThrowEvent id="signalintermediatethrowevent1" name="SignalThrowEvent">
-      <signalEventDefinition signalRef="go"></signalEventDefinition>
+      <signalEventDefinition signalRef="test"></signalEventDefinition>
     </intermediateThrowEvent>
     <endEvent id="endevent1" name="End"></endEvent>
     <sequenceFlow id="flow4" sourceRef="signalintermediatethrowevent1" targetRef="endevent1"></sequenceFlow>
