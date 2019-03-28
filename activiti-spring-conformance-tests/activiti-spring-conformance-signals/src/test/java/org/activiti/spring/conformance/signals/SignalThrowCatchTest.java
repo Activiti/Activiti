@@ -43,29 +43,29 @@ public class SignalThrowCatchTest {
         collectedEvents.clear();
     }
 
-//    @Test
-//    public void testProcessWithThrowSignal() {
-//    	securityUtil.logInAs("user1");
-//    	
-//    	String processInstanceId = startThrowSignalProcess();
-//    	
-//        assertThat(collectedEvents)
-//		.extracting(RuntimeEvent::getEventType)
-//		.containsExactly(
-//				    ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-//                    ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-//                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-//                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-//                    BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-//                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-//                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-//                    BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-//                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-//                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-//                    ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
-//        );
-//    	collectedEvents.clear();
-//    }
+    @Test
+    public void testProcessWithThrowSignal() {
+    	securityUtil.logInAs("user1");
+    	
+    	String processInstanceId = startThrowSignalProcess();
+    	
+        assertThat(collectedEvents)
+		.extracting(RuntimeEvent::getEventType)
+		.containsExactly(
+				    ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                    ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                    BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                    BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+                    ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
+        );
+    	collectedEvents.clear();
+    }
     
     @Test
     public void testProcessWithIntermediateCatchEventSignal() {
@@ -109,6 +109,7 @@ public class SignalThrowCatchTest {
         
     	collectedEvents.clear();
     }
+    
 
     @Test
     public void testProcessWithBoundaryEventSignal() {
