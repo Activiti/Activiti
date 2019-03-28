@@ -18,6 +18,7 @@ package org.activiti.spring.boot.process;
 
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.ProcessInstance.ProcessInstanceStatus;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNSignalEvent;
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
@@ -192,4 +193,28 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(1);
         assertThat(event.getEntity().getSignalPayload().getVariables().get("signal-variable")).isEqualTo("test");
     }
+    
+    
+    @Test
+    public void shouldThrowSignalAndCompleteProcess() {
+    	
+        //given
+        securityUtil.logInAs("salaboy");
+
+        //when
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                               .withProcessDefinitionKey("signalThrowEventProcess")
+                                                               .withVariable("name",
+                                                                             "peter")
+                                                               .build());
+        
+        //then
+        assertThat(process.getStatus()).isEqualTo(ProcessInstanceStatus.COMPLETED);
+        
+    }
+
+    
+    
+    
+    
 }
