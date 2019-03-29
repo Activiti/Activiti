@@ -44,11 +44,12 @@ public class SignalThrowCatchTest {
         collectedEvents.clear();
     }
 
-    @Test
+    @SuppressWarnings("unused")
+	@Test
     public void testProcessWithThrowSignal() {
     	securityUtil.logInAs("user1");
     	
-    	String processInstanceId = startThrowSignalProcess();
+    	String processInstaneId = startThrowSignalProcess();
     	
         assertThat(collectedEvents)
 		.extracting(RuntimeEvent::getEventType)
@@ -111,7 +112,8 @@ public class SignalThrowCatchTest {
     	collectedEvents.clear();
     }
     
-    @Test
+    @SuppressWarnings("unused")
+	@Test
     public void testProcessesWithThrowCatchSignal() {
     	securityUtil.logInAs("user1");
     	
@@ -147,10 +149,10 @@ public class SignalThrowCatchTest {
         );
         
         assertThat(collectedEvents)
-        .filteredOn(event -> BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED.name().equals(event.getEventType().name()))
-		.extracting(RuntimeEvent::getEventType,	RuntimeEvent::getProcessInstanceId)
-		.contains(
-				  tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,processInstanceCatch)
+            .filteredOn(event -> BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED.name().equals(event.getEventType().name()))
+            .extracting(RuntimeEvent::getEventType,	RuntimeEvent::getProcessInstanceId)
+            .contains(
+                tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,processInstanceCatch)
         );
         
     	collectedEvents.clear();
@@ -211,16 +213,16 @@ public class SignalThrowCatchTest {
         processRuntime.signal(signalPayload);
         
         assertThat(collectedEvents)
-		.extracting(RuntimeEvent::getEventType)
-		.containsExactly(
-				    BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,    
-				    ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-                    ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
-                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                    BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                    BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
-                    BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
-                    ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
+         .extracting(RuntimeEvent::getEventType)
+         .containsExactly(
+              BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,    
+              ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+              ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+              BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+              BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
+              BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+              BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
+              ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
         );
         
         BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent)collectedEvents.get(0);
