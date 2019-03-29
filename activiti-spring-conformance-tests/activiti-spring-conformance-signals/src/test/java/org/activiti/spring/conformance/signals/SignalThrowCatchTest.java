@@ -3,6 +3,7 @@ package org.activiti.spring.conformance.signals;
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.BPMNActivity;
 import org.activiti.api.process.model.events.BPMNActivityEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.BPMNSignalEvent;
@@ -44,7 +45,6 @@ public class SignalThrowCatchTest {
         collectedEvents.clear();
     }
 
-    @SuppressWarnings("unused")
 	@Test
     public void testProcessWithThrowSignal() {
     	securityUtil.logInAs("user1");
@@ -52,7 +52,7 @@ public class SignalThrowCatchTest {
     	String processInstaneId = startThrowSignalProcess();
     	
         assertThat(collectedEvents)
-		.extracting(RuntimeEvent::getEventType)
+        .extracting( RuntimeEvent::getEventType)
 		.containsExactly(
 				    ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
                     ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
@@ -66,6 +66,16 @@ public class SignalThrowCatchTest {
                     BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                     ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
         );
+        
+        assertThat(collectedEvents)
+                .filteredOn( event -> event.getEventType().equals(BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED))       
+                .filteredOn( event -> ((BPMNActivity)event.getEntity()).getActivityType().equals("throwEvent"))
+                .extracting( event -> ((BPMNActivity)event.getEntity()).getActivityType(), 		     
+                             event -> ((BPMNActivity)event.getEntity()).getProcessInstanceId())
+                .contains(
+				    tuple( "throwEvent",
+                           processInstaneId));
+                
     	collectedEvents.clear();
     }
     
