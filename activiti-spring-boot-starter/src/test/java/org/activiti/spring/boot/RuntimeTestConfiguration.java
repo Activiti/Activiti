@@ -194,7 +194,7 @@ public class RuntimeTestConfiguration {
         return candidateUserRemovedEvent -> taskCandidateUserRemovedEvents.add(candidateUserRemovedEvent);
     }
 
-    @Bean(name = "variableMappingConnectorId.variableMappingActionId")
+    @Bean(name = "Variable Mapping Connector.variableMappingActionName")
     public Connector variableMappingActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
