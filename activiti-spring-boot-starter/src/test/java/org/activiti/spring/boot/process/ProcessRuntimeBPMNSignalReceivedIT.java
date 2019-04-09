@@ -44,6 +44,8 @@ import static org.assertj.core.api.Java6Assertions.tuple;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeBPMNSignalReceivedIT {
 
+    private static final String PROCESS_WITH_BOUNDARY_SIGNAL = "ProcessWithBoundarySignal";
+
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -109,17 +111,18 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         //given
         securityUtil.logInAs("salaboy");
 
+        ProcessInstance boundarySignalProcInst1 = processRuntime.start(ProcessPayloadBuilder.start()
+                                                                               .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
+                                                                               .build());
+
+        ProcessInstance boundarySignalProcInst2 = processRuntime.start(ProcessPayloadBuilder.start()
+                                                                               .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
+                                                                               .build());
+
         //when
-        ProcessInstance process1 = processRuntime.start(ProcessPayloadBuilder.start()
-                                                                .withProcessDefinitionKey("ProcessWithBoundarySignal")
-                                                                .build());
-
-        ProcessInstance process2 = processRuntime.start(ProcessPayloadBuilder.start()
-                                                                .withProcessDefinitionKey("ProcessWithBoundarySignal")
-                                                                .build());
-
-        SignalPayload signalPayload = ProcessPayloadBuilder.signal().withName("go").build();
-        processRuntime.signal(signalPayload);
+        processRuntime.start(ProcessPayloadBuilder.start()
+                                     .withProcessDefinitionKey("signalThrowEventProcess")
+                                     .build());
 
         //then
         assertThat(listener.getSignalReceivedEvents())
@@ -134,23 +137,23 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
                             event -> event.getEntity().getElementId(),
                             event -> event.getEntity().getProcessDefinitionId(),
                             event -> event.getEntity().getProcessInstanceId()
-                            )
+                )
                 .contains(
                         tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
-                              process1.getProcessDefinitionId(),
-                              process1.getId(),
+                              boundarySignalProcInst1.getProcessDefinitionId(),
+                              boundarySignalProcInst1.getId(),
                               "go",
                               "sid-6220E76D-719E-4C05-A664-BC186E50D477",
-                              process1.getProcessDefinitionId(),
-                              process1.getId()
+                              boundarySignalProcInst1.getProcessDefinitionId(),
+                              boundarySignalProcInst1.getId()
                         ),
                         tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
-                              process2.getProcessDefinitionId(),
-                              process2.getId(),
+                              boundarySignalProcInst2.getProcessDefinitionId(),
+                              boundarySignalProcInst2.getId(),
                               "go",
                               "sid-6220E76D-719E-4C05-A664-BC186E50D477",
-                              process2.getProcessDefinitionId(),
-                              process2.getId()
+                              boundarySignalProcInst2.getProcessDefinitionId(),
+                              boundarySignalProcInst2.getId()
                         )
                 );
     }
@@ -163,7 +166,7 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
 
         //when
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
-                                                               .withProcessDefinitionKey("ProcessWithBoundarySignal")
+                                                               .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
                                                                .withVariable("name",
                                                                              "peter")
                                                                .build());
