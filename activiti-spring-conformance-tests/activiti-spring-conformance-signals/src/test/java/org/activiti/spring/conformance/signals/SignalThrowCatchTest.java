@@ -45,11 +45,22 @@ public class SignalThrowCatchTest {
         collectedEvents.clear();
     }
 
+    @After
+    public void cleanup() {
+        securityUtil.logInAs("admin");
+        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0,
+                                                                                                     50));
+        for (ProcessInstance pi : processInstancePage.getContent()) {
+            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
+        }
+        collectedEvents.clear();
+    }
+
     @Test
     public void testProcessWithThrowSignal() {
         securityUtil.logInAs("user1");
 
-        String processInstaneId = startThrowSignalProcess();
+        ProcessInstance processInstance = startThrowSignalProcess();
 
         assertThat(collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
@@ -74,16 +85,15 @@ public class SignalThrowCatchTest {
                             event -> ((BPMNActivity) event.getEntity()).getProcessInstanceId())
                 .contains(
                         tuple("throwEvent",
-                              processInstaneId));
+                              processInstance.getId()));
 
-        collectedEvents.clear();
     }
 
     @Test
     public void testProcessWithIntermediateCatchEventSignal() {
         securityUtil.logInAs("user1");
 
-        String processInstanceId = startIntermediateCatchEventSignalProcess();
+        ProcessInstance processInstance = startIntermediateCatchEventSignalProcess();
 
         SignalPayload signalPayload = ProcessPayloadBuilder.signal()
                 .withName("Test")
@@ -112,25 +122,24 @@ public class SignalThrowCatchTest {
         BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent) collectedEvents.get(6);
 
         assertThat(event.getEntity()).isNotNull();
-        assertThat(event.getProcessInstanceId()).isEqualTo(processInstanceId);
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
         assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
         assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
         assertThat(event.getEntity().getSignalPayload().getVariables().get("signal-variable")).isEqualTo("test");
 
-        collectedEvents.clear();
     }
 
-    @SuppressWarnings("unused")
     @Test
     public void testProcessesWithThrowCatchSignal() {
         securityUtil.logInAs("user1");
 
-        String processInstanceCatch = startIntermediateCatchEventSignalProcess();
-        String processInstanceThrow = startThrowSignalProcess();
+        ProcessInstance processInstanceCatch = startIntermediateCatchEventSignalProcess();
+        ProcessInstance processInstanceThrow = startThrowSignalProcess();
 
         assertThat(collectedEvents)
-                .extracting(RuntimeEvent::getEventType)
+                .extracting(RuntimeEvent::getEventType
+                            )
                 .contains(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
@@ -158,22 +167,41 @@ public class SignalThrowCatchTest {
                 );
 
         assertThat(collectedEvents)
+                .filteredOn(runtimeEvent -> runtimeEvent.getEntity() instanceof ProcessInstance)
+                .extracting(RuntimeEvent::getEventType,
+                            runtimeEvent -> ((ProcessInstance)runtimeEvent.getEntity()).getId())
+                .contains(
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                                processInstanceCatch.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                                processInstanceCatch.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              processInstanceCatch.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                              processInstanceThrow.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
+                              processInstanceThrow.getId()),
+                        tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                              processInstanceThrow.getId())
+                          );
+
+
+        assertThat(collectedEvents)
                 .filteredOn(event -> BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED.name().equals(event.getEventType().name()))
                 .extracting(RuntimeEvent::getEventType,
                             RuntimeEvent::getProcessInstanceId)
                 .contains(
                         tuple(BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
-                              processInstanceCatch)
+                              processInstanceCatch.getId())
                 );
 
-        collectedEvents.clear();
     }
 
     @Test
     public void testProcessWithBoundaryEventSignal() {
         securityUtil.logInAs("user1");
 
-        String processInstanceId = startBoundaryEventSignalProcess();
+        ProcessInstance processInstance = startBoundaryEventSignalProcess();
 
         SignalPayload signalPayload = ProcessPayloadBuilder.signal()
                 .withName("Test")
@@ -200,7 +228,7 @@ public class SignalThrowCatchTest {
         BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent) collectedEvents.get(6);
 
         assertThat(event.getEntity()).isNotNull();
-        assertThat(event.getProcessInstanceId()).isEqualTo(processInstanceId);
+        assertThat(event.getProcessInstanceId()).isEqualTo(processInstance.getId());
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
         assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
         assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
@@ -244,45 +272,32 @@ public class SignalThrowCatchTest {
         collectedEvents.clear();
     }
 
-    @After
-    public void cleanup() {
-        securityUtil.logInAs("admin");
-        Page<ProcessInstance> processInstancePage = processAdminRuntime.processInstances(Pageable.of(0,
-                                                                                                     50));
-        for (ProcessInstance pi : processInstancePage.getContent()) {
-            processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
-        }
-    }
+    private ProcessInstance startThrowSignalProcess() {
 
-    private String startThrowSignalProcess() {
-        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder
+        return processRuntime.start(ProcessPayloadBuilder
                                                                .start()
                                                                .withProcessDefinitionKey("broadcastSignalEventProcess")
                                                                .withBusinessKey("broadcast-signal-business-key")
                                                                .withName("broadcast-signal-instance-name")
                                                                .build());
-
-        return process.getId();
     }
 
-    private String startIntermediateCatchEventSignalProcess() {
-        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder
+    private ProcessInstance startIntermediateCatchEventSignalProcess() {
+
+        return processRuntime.start(ProcessPayloadBuilder
                                                                .start()
                                                                .withProcessDefinitionKey("broadcastSignalCatchEventProcess")
                                                                .withBusinessKey("catch-business-key")
                                                                .withName("catch-signal-instance-name")
                                                                .build());
-
-        return process.getId();
     }
 
-    private String startBoundaryEventSignalProcess() {
-        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder
+    private ProcessInstance startBoundaryEventSignalProcess() {
+        return processRuntime.start(ProcessPayloadBuilder
                                                                .start()
                                                                .withProcessDefinitionKey("ProcessWithBoundarySignal")
                                                                .withBusinessKey("boundary-business-key")
                                                                .withName("boundary-signal-instance-name")
                                                                .build());
-        return process.getId();
     }
 }
