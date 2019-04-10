@@ -121,7 +121,7 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
                                                                                .build());
 
         //when
-        processRuntime.start(ProcessPayloadBuilder.start()
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                      .withProcessDefinitionKey("signalThrowEventProcess")
                                      .build());
 
@@ -157,6 +157,8 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
                               boundarySignalProcInst2.getId()
                         )
                 );
+        
+        assertThat(process.getStatus()).isEqualTo(ProcessInstanceStatus.COMPLETED);
     }
 
     @Test
@@ -193,28 +195,6 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
         assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(1);
         assertThat(event.getEntity().getSignalPayload().getVariables().get("signal-variable")).isEqualTo("test");
     }
-    
-    
-    @Test
-    public void shouldThrowSignalAndCompleteProcess() {
-    	
-        //given
-        securityUtil.logInAs("salaboy");
-
-        //when
-        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
-                                                               .withProcessDefinitionKey("signalThrowEventProcess")
-                                                               .withVariable("name",
-                                                                             "peter")
-                                                               .build());
-        
-        //then
-        assertThat(process.getStatus()).isEqualTo(ProcessInstanceStatus.COMPLETED);
-        
-    }
-
-    
-    
     
     
 }
