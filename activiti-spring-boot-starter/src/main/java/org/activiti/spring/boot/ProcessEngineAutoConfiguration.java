@@ -12,6 +12,13 @@
  */
 package org.activiti.spring.boot;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import javax.sql.DataSource;
+
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
@@ -23,7 +30,6 @@ import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
-import org.activiti.spring.bpmn.parser.CloudActivityBehaviorFactory;
 import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +42,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 
 @Configuration
 @AutoConfigureAfter(name = {"org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
@@ -64,13 +63,13 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             SpringAsyncExecutor springAsyncExecutor,
             ActivitiProperties activitiProperties,
             ProcessDefinitionResourceFinder processDefinitionResourceFinder,
-            @Autowired(required = false) ProcessEngineConfigurationConfigurer processEngineConfigurationConfigurer,
+            @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
             @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators) throws IOException {
 
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration();
         conf.setConfigurators(processEngineConfigurators);
         configureProcessDefinitionResources(processDefinitionResourceFinder,
-                conf);
+                                            conf);
         conf.setDataSource(dataSource);
         conf.setTransactionManager(transactionManager);
 
@@ -130,10 +129,10 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             conf.setDeploymentMode(activitiProperties.getDeploymentMode());
         }
 
-        conf.setActivityBehaviorFactory(new CloudActivityBehaviorFactory());
-
-        if (processEngineConfigurationConfigurer != null) {
-            processEngineConfigurationConfigurer.configure(conf);
+        if (processEngineConfigurationConfigurers != null) {
+            for (ProcessEngineConfigurationConfigurer processEngineConfigurationConfigurer : processEngineConfigurationConfigurers) {
+                processEngineConfigurationConfigurer.configure(conf);
+            }
         }
 
         return conf;
@@ -152,7 +151,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     public ProcessDefinitionResourceFinder processDefinitionResourceFinder(ActivitiProperties activitiProperties,
                                                                            ResourcePatternResolver resourcePatternResolver) {
         return new ProcessDefinitionResourceFinder(activitiProperties,
-                resourcePatternResolver);
+                                                   resourcePatternResolver);
     }
 
     @Bean
