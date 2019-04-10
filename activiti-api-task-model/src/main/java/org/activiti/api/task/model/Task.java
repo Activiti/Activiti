@@ -60,4 +60,6 @@ public interface Task {
     Date getCompletedDate();
 
     Long getDuration();
+    
+    Integer getProcessDefinitionVersion();
 }

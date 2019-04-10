@@ -39,6 +39,7 @@ public class TaskImpl implements Task {
     private String formKey;
     private Date completedDate;
     private Long duration;
+    private Integer processDefinitionVersion;
 
     public TaskImpl() {
     }
@@ -178,6 +179,14 @@ public class TaskImpl implements Task {
     public void setDuration(Long duration) {
         this.duration = duration;
     }
+    
+    public Integer getProcessDefinitionVersion() { 
+        return processDefinitionVersion; 
+    }
+    
+    public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
+        this.processDefinitionVersion = processDefinitionVersion;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -213,6 +222,8 @@ public class TaskImpl implements Task {
                                task.parentTaskId) &&
                 Objects.equals(formKey,
                                task.formKey) &&
+                Objects.equals(processDefinitionVersion,
+                               task.processDefinitionVersion) &&
                 status == task.status;
     }
 
@@ -232,7 +243,8 @@ public class TaskImpl implements Task {
                             processInstanceId,
                             parentTaskId,
                             formKey,
-                            status);
+                            status,
+                            processDefinitionVersion);
     }
 
     @Override
@@ -252,6 +264,7 @@ public class TaskImpl implements Task {
                 ", parentTaskId='" + parentTaskId + '\'' +
                 ", formKey='" + formKey + '\'' +
                 ", status=" + status +
+                ", processDefinitionVersion=" + processDefinitionVersion +
                 '}';
     }
 }
