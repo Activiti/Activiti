@@ -26,7 +26,6 @@ public class TaskCreatedEventImpl extends RuntimeEventImpl<Task, TaskRuntimeEven
 
     public TaskCreatedEventImpl(Task entity) {
         super(entity);
-        setProcessDefinitionVersion(entity.getProcessDefinitionVersion());
     }
 
     @Override
