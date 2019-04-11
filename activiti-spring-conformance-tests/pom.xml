@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-core-dependencies</artifactId>
-        <version>7.1.0-SNAPSHOT</version>
-        <relativePath>../activiti-core-dependencies</relativePath>
-    </parent>
-    <artifactId>activiti-spring-conformance-tests</artifactId>
-    <packaging>pom</packaging>
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-core-dependencies</artifactId>
+    <version>7.1.0-SNAPSHOT</version>
+    <relativePath>../activiti-core-dependencies</relativePath>
+  </parent>
+  <artifactId>activiti-spring-conformance-tests</artifactId>
+  <packaging>pom</packaging>
 
-    <name>Activiti Spring :: Conformance Tests Parent</name>
-    <description>Activiti Spring :: Conformance Tests Parent</description>
+  <name>Activiti Spring :: Conformance Tests Parent</name>
+  <description>Activiti Spring :: Conformance Tests Parent</description>
 
-    <modules>
-        <module>activiti-spring-conformance-util</module>
-        <module>activiti-spring-conformance-set0</module>
-        <module>activiti-spring-conformance-set1</module>
-        <module>activiti-spring-conformance-set2</module>
-        <module>activiti-spring-conformance-set3</module>
-        <module>activiti-spring-conformance-set4</module>
-        <module>activiti-spring-conformance-set5</module>
-        <module>activiti-spring-conformance-variables</module>
-    </modules>
+  <modules>
+    <module>activiti-spring-conformance-util</module>
+    <module>activiti-spring-conformance-set0</module>
+    <module>activiti-spring-conformance-set1</module>
+    <module>activiti-spring-conformance-set2</module>
+    <module>activiti-spring-conformance-set3</module>
+    <module>activiti-spring-conformance-set4</module>
+    <module>activiti-spring-conformance-set5</module>
+    <module>activiti-spring-conformance-variables</module>
+    <module>activiti-spring-conformance-signals</module>
+  </modules>
 </project>
