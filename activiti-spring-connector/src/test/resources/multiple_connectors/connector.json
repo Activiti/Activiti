@@ -2,7 +2,6 @@
   "id": "connector-uuid",
   "name": "Name-of-the-connector",
   "description": "Description of the connector",
-  "icon": "path to icon",
   "actions": {
     "actionId1": {
       "id": "actionId1",

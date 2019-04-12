@@ -10,8 +10,6 @@ public class ConnectorDefinition {
 
     private String description;
 
-    private String icon;
-
     private Map<String, ActionDefinition> actions;
 
     public String getId() {
@@ -24,10 +22,6 @@ public class ConnectorDefinition {
 
     public String getDescription() {
         return description;
-    }
-
-    public String getIcon() {
-        return icon;
     }
 
     public Map<String, ActionDefinition> getActions() {
@@ -44,10 +38,6 @@ public class ConnectorDefinition {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
     }
 
     public void setActions(Map<String, ActionDefinition> actions) {
