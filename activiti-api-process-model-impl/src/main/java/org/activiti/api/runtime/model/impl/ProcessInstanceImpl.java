@@ -25,7 +25,6 @@ public class ProcessInstanceImpl implements ProcessInstance {
 
     private String id;
     private String name;
-    private String description;
     private String processDefinitionId;
     private String processDefinitionKey;
     private String initiator;
@@ -46,11 +45,6 @@ public class ProcessInstanceImpl implements ProcessInstance {
     @Override
     public String getName() {
         return name;
-    }
-
-    @Override
-    public String getDescription() {
-        return description;
     }
 
     @Override
@@ -93,10 +87,6 @@ public class ProcessInstanceImpl implements ProcessInstance {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public void setProcessDefinitionId(String processDefinitionId) {
@@ -145,8 +135,6 @@ public class ProcessInstanceImpl implements ProcessInstance {
                               that.id) &&
                 Objects.equals(name,
                                that.name) &&
-                Objects.equals(description,
-                               that.description) &&
                 Objects.equals(processDefinitionId,
                                that.processDefinitionId) &&
                 Objects.equals(parentId,
@@ -167,7 +155,6 @@ public class ProcessInstanceImpl implements ProcessInstance {
 
         return Objects.hash(id,
                             name,
-                            description,
                             processDefinitionId,
                             processDefinitionKey,
                             initiator,
@@ -183,7 +170,6 @@ public class ProcessInstanceImpl implements ProcessInstance {
         return "ProcessInstance{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
                 ", processDefinitionId='" + processDefinitionId + '\'' +
                 ", processDefinitionKey='" + processDefinitionKey + '\'' +
                 ", parentId='" + parentId + '\'' +

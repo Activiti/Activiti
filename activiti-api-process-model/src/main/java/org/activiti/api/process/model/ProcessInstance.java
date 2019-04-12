@@ -33,8 +33,6 @@ public interface ProcessInstance {
 
     String getName();
 
-    String getDescription();
-
     Date getStartDate();
 
     String getInitiator();
