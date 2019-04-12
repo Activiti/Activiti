@@ -16,7 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(
         locations = {"classpath:application.properties"}
 )
-public class ProcessRuntimeConnectorTest {
+public class ProcessRuntimeConnectorIT {
 
     private static final String CATEGORIZE_IMAGE_CONNECTORS_PROCESS = "categorizeProcessConnectors";
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2019 Alfresco, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.activiti.spring.boot.process;
+package org.activiti.spring.boot.process.listener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
@@ -28,14 +30,19 @@ import org.springframework.boot.test.context.TestComponent;
 public class DeployedProcessesListener implements ProcessRuntimeEventListener<ProcessDeployedEvent> {
 
     private List<ProcessDefinition> deployedProcesses = new ArrayList<>();
+    private Map<String, String> processModelContents = new HashMap<>();
 
     @Override
     public void onEvent(ProcessDeployedEvent event) {
         deployedProcesses.add(event.getEntity());
+        processModelContents.put(event.getProcessDefinitionKey(), event.getProcessModelContent());
     }
 
     public List<ProcessDefinition> getDeployedProcesses() {
         return deployedProcesses;
     }
 
+    public Map<String, String> getProcessModelContents() {
+        return processModelContents;
+    }
 }

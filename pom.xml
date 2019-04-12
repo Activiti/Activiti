@@ -5,20 +5,20 @@
   <parent>
     <groupId>org.activiti.build</groupId> 
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.59</version>
+    <version>7.1.14</version>
     <relativePath/>
   </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-root</artifactId>
   <packaging>pom</packaging>
   <name>Activiti Core :: Parent</name>
-  <version>7.0.0-SNAPSHOT</version>
+  <version>7.1.0-SNAPSHOT</version>
   <description>Activiti Core :: Parent</description>
   <url>http://activiti.org</url>
   <properties>
-    <activiti-build.version>7.0.59</activiti-build.version>
-    <activiti-api.version>7.0.86</activiti-api.version>
-    <activiti-core-common.version>7.0.47</activiti-core-common.version>
+    <activiti-build.version>7.1.14</activiti-build.version>
+    <activiti-api.version>7.1.15</activiti-api.version>
+    <activiti-core-common.version>7.1.13</activiti-core-common.version>
     <activiti.version>${project.version}</activiti.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
@@ -29,7 +29,7 @@
     <java-uuid-generator.version>3.1.4</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <javax.enterprise.concurrent-api.version>1.0</javax.enterprise.concurrent-api.version>
-    <jaxb-api.version>2.2.11</jaxb-api.version>
+    <jaxb-api.version>2.3.1</jaxb-api.version>
     <jgraphx.version>3.9.8.1</jgraphx.version>
     <json-unit.version>1.24.0</json-unit.version>
     <jsr250-api.version>1.0</jsr250-api.version>
@@ -207,7 +207,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-
   <!-- Activiti Build Parent Marker Dependency for Dependency Convergence Tests -->
   <dependencies>
     <dependency>
