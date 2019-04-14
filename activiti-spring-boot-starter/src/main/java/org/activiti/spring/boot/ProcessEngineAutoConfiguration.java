@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
 import javax.sql.DataSource;
 
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
@@ -30,9 +31,12 @@ import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
+import org.activiti.spring.process.ProcessExtensionResourceFinder;
+import org.activiti.spring.process.ResourceFinderImpl;
 import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -62,13 +66,19 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             PlatformTransactionManager transactionManager,
             SpringAsyncExecutor springAsyncExecutor,
             ActivitiProperties activitiProperties,
+            ResourceFinderImpl resourceFinderImpl,
             ProcessDefinitionResourceFinder processDefinitionResourceFinder,
+            ProcessExtensionResourceFinder processExtensionResourceFinder,
             @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
             @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators) throws IOException {
 
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration();
         conf.setConfigurators(processEngineConfigurators);
-        configureProcessDefinitionResources(processDefinitionResourceFinder,
+        
+    
+        configureProcessDefinitionResources(resourceFinderImpl,
+                                            processDefinitionResourceFinder,
+                                            processExtensionResourceFinder,
                                             conf);
         conf.setDataSource(dataSource);
         conf.setTransactionManager(transactionManager);
@@ -138,22 +148,40 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         return conf;
     }
 
-    private void configureProcessDefinitionResources(ProcessDefinitionResourceFinder processDefinitionResourceFinder,
+    private void configureProcessDefinitionResources(ResourceFinderImpl resourceFinderImpl,
+                                                     ProcessDefinitionResourceFinder processDefinitionResourceFinder,
+                                                     ProcessExtensionResourceFinder processExtensionResourceFinder,
                                                      SpringProcessEngineConfiguration conf) throws IOException {
-        List<Resource> procDefResources = processDefinitionResourceFinder.discoverProcessDefinitionResources();
+        List<Resource> procDefResources = resourceFinderImpl.discoverResources(processDefinitionResourceFinder);
         if (!procDefResources.isEmpty()) {
+            List<Resource> procExtensionResources = resourceFinderImpl.discoverResources(processExtensionResourceFinder);
             conf.setDeploymentResources(procDefResources.toArray(new Resource[0]));
         }
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessDefinitionResourceFinder processDefinitionResourceFinder(ActivitiProperties activitiProperties,
-                                                                           ResourcePatternResolver resourcePatternResolver) {
-        return new ProcessDefinitionResourceFinder(activitiProperties,
-                                                   resourcePatternResolver);
+    public ResourceFinderImpl resourceFinderImpl(ResourcePatternResolver resourcePatternResolver) {
+        return new ResourceFinderImpl(resourcePatternResolver);
     }
-
+    
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessDefinitionResourceFinder processDefinitionResourceFinder(ActivitiProperties activitiProperties) {
+        return new ProcessDefinitionResourceFinder(activitiProperties);
+    }
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessExtensionResourceFinder processExtensionResourceFinder(ActivitiProperties activitiProperties,
+                                                                         @Value("${activiti.process.extensions.dir:classpath:/processes/}") String locationPrefix,
+                                                                         @Value("${activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix) {
+        return new ProcessExtensionResourceFinder(activitiProperties.isCheckProcessDefinitions(),
+                                                  locationPrefix,
+                                                  locationSuffix);
+    }
+    
     @Bean
     @ConditionalOnMissingBean
     public ProcessDeployedEventProducer processDeployedEventProducer(RepositoryService repositoryService,

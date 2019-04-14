@@ -16,45 +16,41 @@
 
 package org.activiti.spring.boot;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.ResourcePatternResolver;
+import org.activiti.spring.process.ResourceFinderDescriptor;
 
-public class ProcessDefinitionResourceFinder {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionResourceFinder.class);
-
+public class ProcessDefinitionResourceFinder implements ResourceFinderDescriptor {
+    
     private ActivitiProperties activitiProperties;
-
-    private ResourcePatternResolver resourceLoader;
-
-    public ProcessDefinitionResourceFinder(ActivitiProperties activitiProperties,
-                                           ResourcePatternResolver resourceLoader) {
-        this.activitiProperties = activitiProperties;
-        this.resourceLoader = resourceLoader;
+    
+    public ProcessDefinitionResourceFinder(ActivitiProperties activitiProperties) {
+       this.activitiProperties = activitiProperties;
     }
 
-    public List<Resource> discoverProcessDefinitionResources() throws IOException {
-        List<Resource> resources = new ArrayList<>();
-        if (activitiProperties.isCheckProcessDefinitions()) {
-            for (String suffix : activitiProperties.getProcessDefinitionLocationSuffixes()) {
-                String path = activitiProperties.getProcessDefinitionLocationPrefix() + suffix;
-                resources.addAll(Arrays.asList(resourceLoader.getResources(path)));
-            }
-            if (resources.isEmpty()) {
-                LOGGER.info("No process definitions were found for auto-deployment in the location `" + activitiProperties.getProcessDefinitionLocationPrefix() + "`");
-            } else {
-                List<String> resourcesNames = resources.stream().map(Resource::getFilename).collect(Collectors.toList());
-                LOGGER.info("The following process definition files will be deployed: " + resourcesNames);
-            }
-        }
-        return resources;
+    @Override
+    public List<String> getLocationSuffixes() {
+        return activitiProperties.getProcessDefinitionLocationSuffixes();
     }
+
+    @Override
+    public String getLocationPrefix() {
+        return activitiProperties.getProcessDefinitionLocationPrefix();
+    }
+
+    @Override
+    public boolean isCheckResources() {
+        return activitiProperties.isCheckProcessDefinitions();
+    }
+
+    @Override
+    public String getMsgForEmptyResources() {
+        return "No process definitions were found for auto-deployment in the location";
+    }
+
+    @Override
+    public String getMsgForResourcesLoadOk() {
+        return "The following process definition files will be deployed:";
+    }
+   
 }
