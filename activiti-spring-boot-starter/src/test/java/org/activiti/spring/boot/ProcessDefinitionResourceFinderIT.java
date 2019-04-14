@@ -16,8 +16,12 @@
 
 package org.activiti.spring.boot;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+
 import java.util.List;
 
+import org.activiti.spring.process.ResourceFinderImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +30,15 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessDefinitionResourceFinderIT {
 
     @Autowired
-    private ProcessDefinitionResourceFinder resourceFinder;
+    private ProcessDefinitionResourceFinder processDefinitionResourceFinder;
+    
+    @Autowired
+    private ResourceFinderImpl resourceFinder;
 
     @SpyBean
     private ActivitiProperties activitiProperties;
@@ -42,8 +46,8 @@ public class ProcessDefinitionResourceFinderIT {
     @Test
     public void shouldReturnAllTheProcessDefinitionFilesOnSpecifiedFolder() throws Exception {
         //when
-        List<Resource> resources = resourceFinder.discoverProcessDefinitionResources();
-
+        List<Resource> resources = resourceFinder.discoverResources(processDefinitionResourceFinder);
+     
         //then
         assertThat(resources)
                 .extracting(Resource::getFilename)
@@ -60,7 +64,7 @@ public class ProcessDefinitionResourceFinderIT {
         given(activitiProperties.getProcessDefinitionLocationPrefix()).willReturn("classpath:**/processes-empty/");
 
         //when
-        List<Resource> resources = resourceFinder.discoverProcessDefinitionResources();
+        List<Resource> resources = resourceFinder.discoverResources(processDefinitionResourceFinder);
 
         //then
         assertThat(resources).isEmpty();
@@ -72,7 +76,7 @@ public class ProcessDefinitionResourceFinderIT {
         given(activitiProperties.getProcessDefinitionLocationPrefix()).willReturn("classpath:**/does-not-exist/");
 
         //when
-        List<Resource> resources = resourceFinder.discoverProcessDefinitionResources();
+        List<Resource> resources = resourceFinder.discoverResources(processDefinitionResourceFinder);
 
         //then
         assertThat(resources).isEmpty();
