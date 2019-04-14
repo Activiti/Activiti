@@ -90,7 +90,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
     // Note that it can happen that there are multiple such execution in those activity ids,
     // (for example a parallel gw going twice to the event based gateway, kinda silly, but valid)
     // so we only take _one_ result of such a query for deletion.
-    
+
     // Gather all activity ids for the events after the event based gateway that need to be destroyed
     List<SequenceFlow> outgoingSequenceFlows = eventGateway.getOutgoingFlows();
     Set<String> eventActivityIds = new HashSet<String>(outgoingSequenceFlows.size() - 1); // -1, the event being triggered does not need to be deleted
@@ -99,6 +99,9 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
           && !outgoingSequenceFlow.getTargetFlowElement().getId().equals(execution.getCurrentActivityId())) {
         eventActivityIds.add(outgoingSequenceFlow.getTargetFlowElement().getId());
       }
+    }
+    if (eventActivityIds.size() == 0) {
+      return;
     }
     
     CommandContext commandContext = Context.getCommandContext();

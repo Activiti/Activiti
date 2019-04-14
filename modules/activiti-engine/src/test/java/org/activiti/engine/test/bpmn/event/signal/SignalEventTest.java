@@ -35,6 +35,19 @@ import org.activiti.validation.validator.Problems;
  */
 public class SignalEventTest extends PluggableActivitiTestCase {
 
+  @Deployment
+  public void testSignalsChain() {
+    runtimeService.startProcessInstanceByKey("signalsChain");
+
+    Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("trigger").singleResult();
+    assertNotNull(execution);
+
+    runtimeService.messageEventReceived("trigger", execution.getId());
+
+    assertEquals(0, createEventSubscriptionQuery().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  }
+
   @Deployment(resources = { "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.catchAlertSignal.bpmn20.xml",
       "org/activiti/engine/test/bpmn/event/signal/SignalEventTests.throwAlertSignal.bpmn20.xml" })
   public void testSignalCatchIntermediate() {

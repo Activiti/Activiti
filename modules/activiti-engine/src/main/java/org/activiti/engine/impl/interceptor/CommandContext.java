@@ -51,6 +51,7 @@ public class CommandContext {
   protected boolean reused;
 
   protected ActivitiEngineAgenda agenda;
+  protected LinkedList<ActivitiEngineAgenda> agendaStack;
   protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the command
   protected LinkedList<Object> resultStack = new LinkedList<Object>(); // needs to be a stack, as JavaDelegates can do api calls again
 
@@ -130,6 +131,20 @@ public class CommandContext {
       throw (RuntimeException) exception;
     } else {
       throw new ActivitiException("exception while executing command " + command, exception);
+    }
+  }
+
+  public void pushAgenda(){
+    if(agendaStack == null) {
+      agendaStack = new LinkedList<ActivitiEngineAgenda>();
+    }
+    agendaStack.push(agenda);
+    agenda = processEngineConfiguration.getEngineAgendaFactory().createAgenda(this);
+  }
+
+  public void popAgenda(){
+    if(agendaStack != null && agendaStack.isEmpty()) {
+        agenda = agendaStack.pollLast();
     }
   }
 

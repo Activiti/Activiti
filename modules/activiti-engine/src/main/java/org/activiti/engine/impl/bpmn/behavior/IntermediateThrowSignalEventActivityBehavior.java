@@ -21,6 +21,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -68,7 +69,7 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
       eventSubscriptionName = expressionObject.getValue(execution).toString();
     }
 
-    EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
+    final EventSubscriptionEntityManager eventSubscriptionEntityManager = commandContext.getEventSubscriptionEntityManager();
     List<SignalEventSubscriptionEntity> subscriptionEntities = null;
     if (processInstanceScope) {
       subscriptionEntities = eventSubscriptionEntityManager
@@ -78,13 +79,19 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
           .findSignalEventSubscriptionsByEventName(eventSubscriptionName, execution.getTenantId());
     }
 
-    for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
+    for (final SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
           ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalEventSubscriptionEntity.getActivityId(), eventSubscriptionName,
               null, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(),
               signalEventSubscriptionEntity.getProcessDefinitionId()));
 
-      eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, signalEventDefinition.isAsync());
+      commandContext.getProcessEngineConfiguration().getCommandExecutor().execute(new Command<Object>() {
+        @Override
+        public Object execute(CommandContext x) {
+          eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity, null, signalEventDefinition.isAsync());
+          return null;
+        }
+      });
     }
 
     Context.getAgenda().planTakeOutgoingSequenceFlowsOperation((ExecutionEntity) execution, true);

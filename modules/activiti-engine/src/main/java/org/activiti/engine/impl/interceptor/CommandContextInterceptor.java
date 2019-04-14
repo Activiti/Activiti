@@ -49,6 +49,7 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
       log.debug("Valid context found. Reusing it for the current command '{}'", command.getClass().getCanonicalName());
       contextReused = true;
       context.setReused(true);
+      context.pushAgenda();
     }
 
     try {
@@ -74,6 +75,9 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
       } finally {
         
         // Pop from stack
+        if (contextReused) {
+          context.popAgenda();
+        }
         Context.removeCommandContext();
         Context.removeProcessEngineConfiguration();
         Context.removeBpmnOverrideContext();
