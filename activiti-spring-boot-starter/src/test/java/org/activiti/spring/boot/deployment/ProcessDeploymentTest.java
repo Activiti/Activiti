@@ -6,12 +6,14 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Map.Entry;
+import java.util.Optional;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -121,60 +123,101 @@ public class ProcessDeploymentTest {
         repositoryService.deleteDeployment(deploymentId);
     }
     
+    
     @Test
-    public void shouldAddProcessExtensionsToDeployment() throws Exception{
+    public void shoulCreateDeploymentsWithProcessExtensions() throws Exception{
         variableTypeMap.clear();
         
+        //Get all procssDefinitions
+        Map<String, String> deployedProcess = new HashMap<>();
         List<Resource> processDefinitionResources = resourceFinder.discoverResources(processDefinitionResourceFinder);
+        assertThat(processDefinitionResources.size()>1).isTrue();
         
-        Resource xmlResource = processDefinitionResources
-                    .stream()
-                    .filter(r -> r.getFilename().equalsIgnoreCase(RESOURCE_INITIAL_VARS_PROCESS))
-                    .collect(Collectors.toList())
-                    .get(0);        
-            
+        //Get all extensions
+        Map<String, Resource> processExtensions = readProcessExtensions();
+        assertThat(processExtensions.size()>1).isTrue();
+        
+        //Deploy processes
+        for (Resource r: processDefinitionResources) {
+            Entry<String, String> entry = deployProcessFromResource(r, processExtensions);
+            deployedProcess.put(entry.getKey(), entry.getValue());
+        }
+           
+        //Check process definitions
+        for (Map.Entry<String, String> entry : deployedProcess.entrySet()) {
+            Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(entry.getKey()).singleResult();
+            assertThat(deployment.getKey()).isEqualTo(entry.getValue());
+            Optional<String> processExtensionName = getProcessExtension(deployment.getId());
+            if (processExtensionName.isPresent()) {
+                InputStream deploymentResourceInputStream = repositoryService.getResourceAsStream(deployment.getId(), processExtensionName.get());
+                assertNotNull(deploymentResourceInputStream);
+                
+                ProcessExtensionModel deploymentExtensionModel = readAndConvertVariables(deploymentResourceInputStream);
+                assertNotNull(deploymentExtensionModel);
+            }
+         }
+        
+        
+        //Clear all
+        for (Map.Entry<String, String> entry : deployedProcess.entrySet()) {
+            repositoryService.deleteDeployment(entry.getKey());
+        }
+        variableTypeMap.clear();
+    }
+    
+    
+    private Optional<String> getProcessExtension(String deploymentId) {
+        
+        List <String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
+        if (resourceNames != null) {
+            return resourceNames.stream()
+                        .filter(s -> s.contains("_extension.json"))
+                        .findFirst();
+        }
+        return Optional.empty();
+    }
+    
+    private Entry<String, String> deployProcessFromResource(Resource xmlResource,
+                                             Map<String, Resource> processExtensions) throws Exception {
+        
         //Check / get BpmnModel  
         BpmnModel bpmnModel = getBpmnModelFromProcessDefinitionResource(xmlResource);
         assertNotNull(bpmnModel);
         
         //Get main process
         Process process = bpmnModel.getMainProcess();
-        assertThat(process.getId().equalsIgnoreCase(INITIAL_VARS_PROCESS));
-        
-        //Get all extensions
-        Map<String, Resource> processExtensions = readProcessExtensions();
-        assertThat(processExtensions.size()>1).isTrue();
-        
+         
         //Find Extensions for our process
         Resource processExtensionResource = processExtensions.get(process.getId());
-        assertNotNull(processExtensionResource);
         
         //Deploy process       
         DeploymentBuilder deploymentBuilder = repositoryService
                                                 .createDeployment()
-                                                .name("deploymentName");
+                                                .key(process.getId())
+                                                .name(xmlResource.getFilename());
         deploymentBuilder.addBpmnModel(xmlResource.getFilename(), bpmnModel);
         
         //Add process extensions (as resource)
-        deploymentBuilder.addInputStream(processExtensionResource.getFilename(), processExtensionResource);
+        if (processExtensionResource != null) {
+            deploymentBuilder.addInputStream(processExtensionResource.getFilename(), processExtensionResource);
+            
+        }
         
         Deployment deployment = deploymentBuilder.deploy();
         assertNotNull(deployment);
         
         //Check Resource is stored OK
-        String deploymentId = deployment.getId();
-        
-        InputStream deploymentResourceInputStream = repositoryService.getResourceAsStream(deploymentId,processExtensionResource.getFilename());
-        assertNotNull(deploymentResourceInputStream);
-        
-        assertThat(deploymentResourceInputStream.equals(processExtensionResource.getInputStream()));
-        
-        ProcessExtensionModel deploymentExtensionModel = readAndConvertVariables(deploymentResourceInputStream);
-        assertNotNull(deploymentExtensionModel);
-   
-        repositoryService.deleteDeployment(deploymentId);
-        variableTypeMap.clear();
+        if (processExtensionResource != null) {
+            String deploymentId = deployment.getId();
+            
+            InputStream deploymentResourceInputStream = repositoryService.getResourceAsStream(deploymentId,processExtensionResource.getFilename());
+            assertNotNull(deploymentResourceInputStream);
+            
+            assertThat(deploymentResourceInputStream.equals(processExtensionResource.getInputStream()));
+        }
+        return new AbstractMap.SimpleEntry<String, String>(deployment.getId(),process.getId());
     }
+    
     
        
     private Map<String, Resource> readProcessExtensions() throws IOException {
