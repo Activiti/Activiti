@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @TestPropertySource(
         locations = {"classpath:application-connectors-empty.properties"}
 )
-public class ProcessRuntimeEmptyConnectorDefinitionTest {
+public class ProcessRuntimeEmptyConnectorDefinitionIT {
 
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
 
