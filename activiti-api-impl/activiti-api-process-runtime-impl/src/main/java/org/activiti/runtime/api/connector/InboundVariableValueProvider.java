@@ -23,6 +23,9 @@ import org.activiti.spring.process.model.Mapping;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.ProcessVariablesMapping;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class InboundVariableValueProvider {
 
     private ProcessExtensionService processExtensionService;
@@ -47,5 +50,15 @@ public class InboundVariableValueProvider {
             }
         }
         return execution.getVariable(variableDefinition.getName());
+    }
+
+    public Map<String, Object> calculateStaticValues(DelegateExecution execution) {
+        ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
+        ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getCurrentActivityId());
+        Map<String, Mapping> inputs = processVariablesMapping.getInputs();
+        Map<String, Object> staticValuesMap = inputs.entrySet().stream()
+                .filter(input -> Mapping.SourceMappingType.STATIC_VALUE.equals(input.getValue().getType()))
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue()));
+        return staticValuesMap;
     }
 }
