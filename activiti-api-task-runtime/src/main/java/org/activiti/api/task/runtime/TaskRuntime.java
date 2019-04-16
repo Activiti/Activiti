@@ -32,9 +32,9 @@ import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
-import org.activiti.api.task.model.payloads.SaveTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
+import org.activiti.api.task.model.payloads.UpdateTaskVariablesPayload;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 
 
@@ -101,12 +101,11 @@ public interface TaskRuntime {
     Task complete(CompleteTaskPayload completeTaskPayload);
 
     /**
-     * Saves the selected task with the variables set in the payload
+     * Updates the selected task with the variables set in the payload
      * - This method checks that the task is visible by the authenticated user
-     * - This method also check that the task is assigned to the currently authenticated user before complete
-     * - This method return a shallow Task object with the basic information needed to validate that the task was completed
+     * - This method also check that the task is assigned to the currently authenticated user
      */
-    Task saveVariables(SaveTaskVariablesPayload saveTaskVariablesPayload);
+    void updateVariables(UpdateTaskVariablesPayload updateTaskVariablesPayload);
 
     
     /**
