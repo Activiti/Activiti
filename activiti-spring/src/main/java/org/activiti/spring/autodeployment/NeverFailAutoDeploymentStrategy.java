@@ -18,12 +18,16 @@ public class NeverFailAutoDeploymentStrategy extends AbstractAutoDeploymentStrat
     }
 
     @Override
-    public void deployResources(String deploymentNameHint, Resource[] resources, RepositoryService repositoryService) {
+    public void deployResources(String deploymentNameHint, RepositoryService repositoryService) {
+        if (processDefinitionResources == null || processDefinitionResources.length <1) {
+            return;
+        }
+        
         final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering()
                 .name(deploymentNameHint);
 
         int validProcessCount = 0;
-        for (final Resource resource : resources) {
+        for (final Resource resource : processDefinitionResources) {
             final String resourceName = determineResourceName(resource);
 
             if (validateModel(resource, repositoryService)) {

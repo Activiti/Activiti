@@ -35,12 +35,16 @@ public class SingleResourceAutoDeploymentStrategy extends AbstractAutoDeployment
   }
 
   @Override
-  public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {
+  public void deployResources(final String deploymentNameHint, final RepositoryService repositoryService) {
 
+    if (processDefinitionResources == null || processDefinitionResources.length <1) {
+        return;
+    }
+      
     // Create a separate deployment for each resource using the resource
     // name
 
-    for (final Resource resource : resources) {
+    for (final Resource resource : processDefinitionResources) {
 
       final String resourceName = determineResourceName(resource);
       final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(resourceName);
