@@ -3,35 +3,35 @@ package org.activiti.api.task.model.builders;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.api.task.model.payloads.CompleteTaskPayload;
+import org.activiti.api.task.model.payloads.SaveTaskPayload;
 
 public class SaveTaskPayloadBuilder {
 
     private String taskId;
-    private Map<String, Object> variables;
+    private Map<String, Object> taskVariables;
 
     public SaveTaskPayloadBuilder withTaskId(String taskId) {
         this.taskId = taskId;
         return this;
     }
 
-    public SaveTaskPayloadBuilder withVariables(Map<String, Object> variables) {
-        this.variables = variables;
+    public SaveTaskPayloadBuilder withVariables(Map<String, Object> taskVariables) {
+        this.taskVariables = taskVariables;
         return this;
     }
 
-    public SaveTaskPayloadBuilder withVariable(String name,
+    public SaveTaskPayloadBuilder withTaskVariable(String name,
                                                    Object value) {
-        if (this.variables == null) {
-            this.variables = new HashMap<>();
+        if (this.taskVariables == null) {
+            this.taskVariables = new HashMap<>();
         }
-        this.variables.put(name,
+        this.taskVariables.put(name,
                            value);
         return this;
     }
 
-    public CompleteTaskPayload build() {
-        return new CompleteTaskPayload(taskId,
-                                       variables);
+    public SaveTaskPayload build() {
+        return new SaveTaskPayload(taskId,
+                                   taskVariables);
     }
 }
