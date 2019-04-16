@@ -2,6 +2,7 @@ package org.activiti.spring.boot.deployment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -166,12 +167,29 @@ public class ProcessDeploymentTest {
     }
     
     
+    @Test
+    public void shouldBeDeployedWithExtension() throws Exception{
+  
+        Deployment deployment = repositoryService.createDeploymentQuery().deploymentKey(INITIAL_VARS_PROCESS).singleResult();
+        assertNotNull(deployment);
+        
+        Optional<String> processExtensionName = getProcessExtension(deployment.getId());
+        assertTrue(processExtensionName.isPresent());
+       
+        InputStream deploymentResourceInputStream = repositoryService.getResourceAsStream(deployment.getId(), processExtensionName.get());
+        assertNotNull(deploymentResourceInputStream);
+        
+        ProcessExtensionModel deploymentExtensionModel = readAndConvertVariables(deploymentResourceInputStream);
+        assertNotNull(deploymentExtensionModel);   
+    }
+    
+    
     private Optional<String> getProcessExtension(String deploymentId) {
         
         List <String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
         if (resourceNames != null) {
             return resourceNames.stream()
-                        .filter(s -> s.contains("_extension.json"))
+                        .filter(s -> s.contains("-extensions.json"))
                         .findFirst();
         }
         return Optional.empty();

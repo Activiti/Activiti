@@ -17,11 +17,17 @@
 package org.activiti.spring.process;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -32,9 +38,12 @@ public class ResourceFinderImpl {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceFinderImpl.class);
     
     private ResourcePatternResolver resourceLoader;
+    private ObjectMapper objectMapper;
     
-    public ResourceFinderImpl(ResourcePatternResolver resourceLoader) {
+    public ResourceFinderImpl(ResourcePatternResolver resourceLoader,
+                              ObjectMapper objectMapper) {
         this.resourceLoader = resourceLoader;   
+        this.objectMapper = objectMapper;  
     }
     
     public List<Resource> discoverResources(ResourceFinderDescriptor resourceFinderDescriptor) throws IOException {
@@ -56,6 +65,28 @@ public class ResourceFinderImpl {
         return resources;
     }
  
+    public ProcessExtensionModel read(InputStream inputStream) throws IOException {
+        objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
+        return  objectMapper.readValue(inputStream,
+                ProcessExtensionModel.class);
+    }
+    
+    public Map<String, Resource> readMapProcessExtensions(ResourceFinderDescriptor resourceFinderDescriptor) throws IOException {
+        Map<String, Resource> mapProcessExtensionResources = new HashMap<>();
+        
+        List<Resource> procExtensionResources = discoverResources(resourceFinderDescriptor);
+        
+        if (!procExtensionResources.isEmpty()) {
+            for (Resource resource : procExtensionResources) {
+                ProcessExtensionModel processExtensionModel = read(resource.getInputStream());
+                
+                if (processExtensionModel != null) {
+                    mapProcessExtensionResources.put(processExtensionModel.getId(),resource);
+                }
+            }
+        }
+        return mapProcessExtensionResources;
+    }
     
 
   

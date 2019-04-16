@@ -45,12 +45,15 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
   }
 
   @Override
-  public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {
+  public void deployResources(final String deploymentNameHint, final RepositoryService repositoryService) {
 
+    if (processDefinitionResources == null || processDefinitionResources.length <1) {
+        return;
+    }
     // Create a deployment for each distinct parent folder using the name
     // hint
     // as a prefix
-    final Map<String, Set<Resource>> resourcesMap = createMap(resources);
+    final Map<String, Set<Resource>> resourcesMap = createMap(processDefinitionResources);
 
     for (final Entry<String, Set<Resource>> group : resourcesMap.entrySet()) {
 

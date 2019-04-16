@@ -13,8 +13,17 @@
 
 package org.activiti.spring.autodeployment;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
@@ -43,6 +52,24 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
      * @return the name of the deployment mode
      */
     protected abstract String getDeploymentMode();
+    
+    protected Resource[] processDefinitionResources = new Resource[0];
+    protected Map<String, Resource> processExtensionResources = new HashMap<>();
+    
+    public void setProcessDefinitionResources(final Resource[] processDefinitionResources) {
+        this.processDefinitionResources = processDefinitionResources;
+    } 
+    public void setProcessExtensionResources(final Map<String, Resource> processExtensionResources) {
+        this.processExtensionResources = processExtensionResources;
+        
+    }
+    
+    public void deployResources(final String deploymentNameHint, Resource[] resources, final RepositoryService repositoryService) {
+
+        setProcessDefinitionResources(resources);
+        deployResources(deploymentNameHint,repositoryService);
+    }
+    
 
     @Override
     public boolean handlesMode(final String mode) {
@@ -111,4 +138,18 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
         }
         return true;
     }
+    
+    protected BpmnModel getBpmnModelFromProcessDefinitionResource(Resource resource) throws Exception {
+        assertNotNull(resource);
+        return getBpmnModelFromInputStream(resource.getInputStream());
+    }
+    
+    protected BpmnModel getBpmnModelFromInputStream(InputStream stream) throws Exception {
+        assertNotNull(stream);
+        XMLInputFactory xif = XMLInputFactory.newInstance();
+        InputStreamReader in = new InputStreamReader(stream, "UTF-8");
+        XMLStreamReader xtr = xif.createXMLStreamReader(in);
+        return  new BpmnXMLConverter().convertToBpmnModel(xtr);
+     }
+    
 }

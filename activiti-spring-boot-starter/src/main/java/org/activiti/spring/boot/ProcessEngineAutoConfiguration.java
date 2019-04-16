@@ -16,10 +16,12 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
@@ -153,16 +155,19 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                                                      ProcessExtensionResourceFinder processExtensionResourceFinder,
                                                      SpringProcessEngineConfiguration conf) throws IOException {
         List<Resource> procDefResources = resourceFinderImpl.discoverResources(processDefinitionResourceFinder);
+       
         if (!procDefResources.isEmpty()) {
-            List<Resource> procExtensionResources = resourceFinderImpl.discoverResources(processExtensionResourceFinder);
             conf.setDeploymentResources(procDefResources.toArray(new Resource[0]));
+            conf.setProcessExtensionResources(resourceFinderImpl.readMapProcessExtensions(processExtensionResourceFinder));
         }
     }
+    
 
     @Bean
     @ConditionalOnMissingBean
-    public ResourceFinderImpl resourceFinderImpl(ResourcePatternResolver resourcePatternResolver) {
-        return new ResourceFinderImpl(resourcePatternResolver);
+    public ResourceFinderImpl resourceFinderImpl(ResourcePatternResolver resourcePatternResolver,
+                                                 ObjectMapper objectMapper) {
+        return new ResourceFinderImpl(resourcePatternResolver, objectMapper);
     }
     
     

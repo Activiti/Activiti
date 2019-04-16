@@ -39,6 +39,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
 
@@ -51,6 +53,9 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   protected PlatformTransactionManager transactionManager;
   protected String deploymentName = "SpringAutoDeployment";
   protected Resource[] deploymentResources = new Resource[0];
+  protected Map<String, Resource> processExtensionResources = new HashMap<>();
+  
+  
   protected String deploymentMode = "default";
   protected ApplicationContext applicationContext;
   protected Integer transactionSynchronizationAdapterOrder = null;
@@ -115,8 +120,11 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
 
   protected void autoDeployResources(ProcessEngine processEngine) {
     if (deploymentResources != null && deploymentResources.length > 0) {
-      final AutoDeploymentStrategy strategy = getAutoDeploymentStrategy(deploymentMode);
-      strategy.deployResources(deploymentName, deploymentResources, processEngine.getRepositoryService());
+      final DefaultAutoDeploymentStrategy strategy = getAutoDeploymentStrategy(deploymentMode);
+      
+      strategy.setProcessDefinitionResources(deploymentResources);
+      strategy.setProcessExtensionResources(processExtensionResources);
+      strategy.deployResources(deploymentName, processEngine.getRepositoryService());
     }
   }
 
@@ -154,6 +162,15 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   public void setDeploymentResources(Resource[] deploymentResources) {
     this.deploymentResources = deploymentResources;
   }
+  
+  public Map<String, Resource> getProcessExtensionResources() {
+      return processExtensionResources;
+  }
+  
+  public void setProcessExtensionResources(Map<String, Resource> processExtensionResources) {
+      this.processExtensionResources = processExtensionResources;
+  }
+  
 
   public ApplicationContext getApplicationContext() {
     return applicationContext;
@@ -180,11 +197,11 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
    *          the mode to get the strategy for
    * @return the deployment strategy to use for the mode. Never <code>null</code>
    */
-  protected AutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
-    AutoDeploymentStrategy result = new DefaultAutoDeploymentStrategy();
+  protected DefaultAutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
+    DefaultAutoDeploymentStrategy result = new DefaultAutoDeploymentStrategy();
     for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
       if (strategy.handlesMode(mode)) {
-        result = strategy;
+        result = (DefaultAutoDeploymentStrategy)strategy;
         break;
       }
     }
