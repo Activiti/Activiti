@@ -9,6 +9,7 @@ public class CompleteTaskPayloadBuilder {
 
     private String taskId;
     private Map<String, Object> variables;
+    private Map<String, Object> taskVariables;
 
     public CompleteTaskPayloadBuilder withTaskId(String taskId) {
         this.taskId = taskId;
@@ -20,6 +21,11 @@ public class CompleteTaskPayloadBuilder {
         return this;
     }
 
+    public CompleteTaskPayloadBuilder withTaskVariables(Map<String, Object> taskVariables) {
+        this.taskVariables = taskVariables;
+        return this;
+    }
+    
     public CompleteTaskPayloadBuilder withVariable(String name,
                                                    Object value) {
         if (this.variables == null) {
@@ -30,6 +36,16 @@ public class CompleteTaskPayloadBuilder {
         return this;
     }
 
+    public CompleteTaskPayloadBuilder withTaskVariable(String name,
+                                                       Object value) {
+        if (this.taskVariables == null) {
+            this.taskVariables = new HashMap<>();
+        }
+        this.taskVariables.put(name,
+                           value);
+        return this;
+    }
+    
     public CompleteTaskPayload build() {
         return new CompleteTaskPayload(taskId,
                                        variables);

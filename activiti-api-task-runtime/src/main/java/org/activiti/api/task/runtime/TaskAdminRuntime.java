@@ -32,6 +32,7 @@ import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
+import org.activiti.api.task.model.payloads.SaveTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 
@@ -76,6 +77,14 @@ public interface TaskAdminRuntime {
      * - The authenticated user needs to be the assignee in order to release it
      */
     Task release(ReleaseTaskPayload releaseTaskPayload);
+
+    /**
+     * Saves the selected task with the variables set in the payload
+     * - This method checks that the task is visible by the authenticated user
+     * - This method also check that the task is assigned to the currently authenticated user before complete
+     * - This method return a shallow Task object with the basic information needed to validate that the task was completed
+     */
+    Task save(SaveTaskPayload saveTaskPayload);
 
     /**
      * Completes the selected task with the variables set in the payload
