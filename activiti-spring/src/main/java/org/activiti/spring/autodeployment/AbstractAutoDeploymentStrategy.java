@@ -18,17 +18,22 @@ import static org.junit.Assert.assertNotNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.Process;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.util.io.InputStreamSource;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.validation.ValidationError;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -151,5 +156,45 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
         XMLStreamReader xtr = xif.createXMLStreamReader(in);
         return  new BpmnXMLConverter().convertToBpmnModel(xtr);
      }
+    
+    protected Entry<String, String> deployProcessFromResource(final String deploymentNameHint,
+                                                              final RepositoryService repositoryService,
+                                                              Resource xmlResource) {
+                       
+       //Check / get BpmnModel  
+        BpmnModel bpmnModel; 
+        try {
+            bpmnModel = getBpmnModelFromProcessDefinitionResource(xmlResource);
+            assertNotNull(bpmnModel);
+        } catch (Exception e) {
+            return null;
+        }
+       
+       
+       //Get main process
+       Process process = bpmnModel.getMainProcess();
+        
+       //Find Extensions for our process
+       Resource processExtensionResource = processExtensionResources.get(process.getId());
+       
+       //Deploy process       
+       DeploymentBuilder deploymentBuilder = repositoryService.createDeployment()
+                                                   .enableDuplicateFiltering()
+                                                   .name(deploymentNameHint)
+                                                   .key(process.getId());
+
+       deploymentBuilder.addBpmnModel(xmlResource.getFilename(), bpmnModel);
+       
+       //Add process extensions (as resource)
+       if (processExtensionResource != null) {
+           deploymentBuilder.addInputStream(processExtensionResource.getFilename(), processExtensionResource);
+           
+       }
+       
+       Deployment deployment = deploymentBuilder.deploy();
+       assertNotNull(deployment);
+       
+       return new AbstractMap.SimpleEntry<String, String>(deployment.getId(),process.getId());
+    }
     
 }
