@@ -48,6 +48,7 @@ public class CompleteTaskPayloadBuilder {
     
     public CompleteTaskPayload build() {
         return new CompleteTaskPayload(taskId,
-                                       variables);
+                                       variables,
+                                       taskVariables);
     }
 }
