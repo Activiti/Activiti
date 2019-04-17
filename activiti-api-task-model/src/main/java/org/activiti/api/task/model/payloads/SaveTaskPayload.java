@@ -5,17 +5,17 @@ import java.util.UUID;
 
 import org.activiti.api.model.shared.Payload;
 
-public class UpdateTaskVariablesPayload implements Payload {
+public class SaveTaskPayload implements Payload {
 
     private String id;
     private String taskId;
     private Map<String, Object> variables;
 
-    public UpdateTaskVariablesPayload() {
+    public SaveTaskPayload() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public UpdateTaskVariablesPayload(String taskId,
+    public SaveTaskPayload(String taskId,
                                Map<String, Object> variables) {
         this();
         this.taskId = taskId;
