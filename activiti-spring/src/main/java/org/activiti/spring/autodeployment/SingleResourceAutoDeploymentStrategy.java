@@ -13,10 +13,6 @@
 
 package org.activiti.spring.autodeployment;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.core.io.Resource;
@@ -33,34 +29,27 @@ public class SingleResourceAutoDeploymentStrategy extends AbstractAutoDeployment
    */
   public static final String DEPLOYMENT_MODE = "single-resource";
   
-  private Map<String, String> deployedProcess = new HashMap<>();
-  
-
   @Override
   protected String getDeploymentMode() {
     return DEPLOYMENT_MODE;
   }
 
   @Override
-  public void deployResources(final String deploymentNameHint, final RepositoryService repositoryService) {
-
-    if (processDefinitionResources == null || processDefinitionResources.length <1) {
-        return;
-    }
-      
+  public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {
     // Create a separate deployment for each resource using the resource
     // name
 
-    for (final Resource resource : processDefinitionResources) {
+    for (final Resource resource : resources) {
 
-      Entry<String, String> deployEntry = deployProcessFromResource(deploymentNameHint,
-                                                                    repositoryService, 
-                                                                    resource);
-      if (deployEntry != null) {
-          deployedProcess.put(deployEntry.getKey(), deployEntry.getValue());
-      } 
-      
+        final String resourceName = determineResourceName(resource);
+        final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(resourceName);
+
+        deploymentBuilder.addInputStream(resourceName,
+                                         resource);
+
+        deploymentBuilder.deploy();
+      }
     }
+
   }
 
-}

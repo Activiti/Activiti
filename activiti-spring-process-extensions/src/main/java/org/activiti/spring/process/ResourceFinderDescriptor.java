@@ -22,8 +22,8 @@ public interface ResourceFinderDescriptor {
 
     public List<String> getLocationSuffixes();
     public String getLocationPrefix();
-    public boolean isCheckResources();
+    public boolean shouldLookUpResources();
     public String getMsgForEmptyResources();
-    public String getMsgForResourcesLoadOk();
+    public String getMsgForResourcesFound();
   
 }

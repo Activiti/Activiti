@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -22,15 +23,21 @@ import javax.xml.stream.XMLStreamReader;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.boot.ActivitiProperties;
-import org.activiti.spring.boot.ProcessDefinitionResourceFinder;
-import org.activiti.spring.process.ProcessExtensionResourceFinder;
+import org.activiti.spring.boot.ProcessDefinitionResourceFinderDescriptor;
+import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
 import org.activiti.spring.process.ResourceFinderImpl;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
@@ -68,10 +75,10 @@ public class ProcessDeploymentTest {
     ResourceFinderImpl resourceFinder;
     
     @Autowired
-    private ProcessDefinitionResourceFinder processDefinitionResourceFinder;
+    private ProcessDefinitionResourceFinderDescriptor processDefinitionResourceFinder;
     
     @Autowired
-    ProcessExtensionResourceFinder processExtensionResourceFinder;
+    ProcessExtensionResourceFinderDescriptor processExtensionResourceFinder;
     
     @Autowired
     private ResourcePatternResolver resourceLoader;
@@ -79,11 +86,21 @@ public class ProcessDeploymentTest {
     @Autowired
     private ObjectMapper objectMapper;
     
+    @Autowired
+    private SecurityUtil securityUtil;
+    
     @SpyBean
     private ActivitiProperties activitiProperties;
     
     private Map<String, VariableType> variableTypeMap = new HashMap<>();
+    
+    //deploymentId,     processDefinitionKey, ProcessExtensionModel
+    private Map<String, Map<String,ProcessExtensionModel>> processExtensionModelDeploymentMap = new HashMap<>();
+    
+    
 
+    @Autowired
+    private ProcessRuntime processRuntime;
 
     @Test
     public void shouldAddConnectorResourcesToDeploymentResourceLoader() throws Exception{
@@ -170,6 +187,12 @@ public class ProcessDeploymentTest {
     @Test
     public void shouldBeDeployedWithExtension() throws Exception{
   
+        List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
+        assertNotNull(deployments);
+        
+        List<ProcessDefinition> definitions = repositoryService.createProcessDefinitionQuery().list();
+        assertNotNull(definitions);
+        
         Deployment deployment = repositoryService.createDeploymentQuery().deploymentKey(INITIAL_VARS_PROCESS).singleResult();
         assertNotNull(deployment);
         
@@ -184,6 +207,47 @@ public class ProcessDeploymentTest {
     }
     
     
+    @Test
+    public void shouldStartTheProcessWithExtension() throws Exception{
+  
+        ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(INITIAL_VARS_PROCESS).singleResult();
+        assertNotNull(definition);
+        
+        ProcessExtensionModel processExtensionModel = getProcessExtension(definition);
+        assertNotNull(processExtensionModel);
+        
+        //Check that now it is in cache
+        processExtensionModel = getProcessExtension(definition);
+        assertNotNull(processExtensionModel);
+        
+        
+        securityUtil.logInAs("salaboy");
+        
+        // start a process with vars then check default and specified vars exist
+        ProcessInstance initialVarsProcess = processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(INITIAL_VARS_PROCESS)
+                .withVariable("extraVar",
+                        true)
+                .withVariable("age",
+                        10)
+                .withBusinessKey("my business key")
+                .build());
+
+        assertThat(initialVarsProcess).isNotNull();
+        assertThat(initialVarsProcess.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
+
+        List<VariableInstance> variableInstances = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(initialVarsProcess).build());
+
+        assertThat(variableInstances).isNotNull();
+        assertThat(variableInstances).hasSize(4);
+
+        assertThat(variableInstances).extracting("name")
+                .contains("extraVar", "name", "age", "birth");
+        
+     // cleanup
+        processRuntime.delete(ProcessPayloadBuilder.delete(initialVarsProcess));
+    }
+    
     private Optional<String> getProcessExtension(String deploymentId) {
         
         List <String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
@@ -194,6 +258,53 @@ public class ProcessDeploymentTest {
         }
         return Optional.empty();
     }
+    
+    
+   private ProcessExtensionModel getProcessExtension(ProcessDefinition definition) {
+       String deploymentId = definition.getDeploymentId();
+       String processDefinitionKey = definition.getKey();
+       
+       Map<String,ProcessExtensionModel> processExtensionModelMap = getProcessExtensionsForDeploymentId(deploymentId);
+       return processExtensionModelMap.get(processDefinitionKey);
+   }
+   
+   //Do this once for each deplymentId
+   private Map<String,ProcessExtensionModel> getProcessExtensionsForDeploymentId(String deploymentId) {
+       
+       Map<String,ProcessExtensionModel> processExtensionModelMap = processExtensionModelDeploymentMap.get(deploymentId);
+       
+       if (processExtensionModelMap != null) {
+           return processExtensionModelMap;
+       }
+          
+       processExtensionModelMap = new HashMap<>();
+       
+       List <String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
+       
+       if (resourceNames != null && !resourceNames.isEmpty()) {
+           
+           List <String> processExtensionNames = resourceNames.stream()
+                                                   .filter(s -> s.contains("-extensions.json"))
+                                                   .collect(Collectors.toList());
+           
+           if (processExtensionNames != null && !processExtensionNames.isEmpty()) {
+               for (String name:processExtensionNames) {
+                   try {
+                       ProcessExtensionModel processExtensionModel = read(repositoryService.getResourceAsStream(deploymentId, name));
+                       if (processExtensionModel != null) {
+                           processExtensionModelMap.put(processExtensionModel.getId(), processExtensionModel); 
+                       }
+                   } catch (Exception e)  {
+                       
+                   }
+               }
+           }
+           
+       }
+       processExtensionModelDeploymentMap.put(deploymentId, processExtensionModelMap);
+       return processExtensionModelMap;
+   }
+   
     
     private Entry<String, String> deployProcessFromResource(Resource xmlResource,
                                              Map<String, Resource> processExtensions) throws Exception {

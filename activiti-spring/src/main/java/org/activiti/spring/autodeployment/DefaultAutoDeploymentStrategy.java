@@ -13,11 +13,8 @@
 
 package org.activiti.spring.autodeployment;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.DeploymentBuilder;
 import org.springframework.core.io.Resource;
 
 /**
@@ -27,36 +24,32 @@ import org.springframework.core.io.Resource;
  */
 public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 
-  /**
-   * The deployment mode this strategy handles.
-   */
-  public static final String DEPLOYMENT_MODE = "default";
-  
-  private Map<String, String> deployedProcess = new HashMap<>();
-  
-  @Override
-  protected String getDeploymentMode() {
-    return DEPLOYMENT_MODE;
-  }
+    /**
+     * The deployment mode this strategy handles.
+     */
+    public static final String DEPLOYMENT_MODE = "default";
 
-  @Override
-  public void deployResources(final String deploymentNameHint, final RepositoryService repositoryService) {
+    @Override
+    protected String getDeploymentMode() {
+      return DEPLOYMENT_MODE;
+    }
 
-    // Should work in the same way like SingleResourceAutoDeploymentStrategy
-    // so that processExtension can be stored for deployment
-    if (processDefinitionResources == null || processDefinitionResources.length <1) {
-        return;
+    @Override
+    public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {
+
+      // Create a single deployment for all resources using the name hint as
+      // the
+      // literal name
+      final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentNameHint);
+
+      for (final Resource resource : resources) {
+        final String resourceName = determineResourceName(resource);
+
+        deploymentBuilder.addInputStream(resourceName,
+                                         resource);
+      }
+
+      deploymentBuilder.deploy();
+
     }
-    for (final Resource resource : processDefinitionResources) {
-        Entry<String, String> deployEntry = deployProcessFromResource(deploymentNameHint,
-                                                                      repositoryService, 
-                                                                      resource);
-        if (deployEntry != null) {
-            deployedProcess.put(deployEntry.getKey(), deployEntry.getValue());
-        }
-    }
-    
   }
-  
-  
-}

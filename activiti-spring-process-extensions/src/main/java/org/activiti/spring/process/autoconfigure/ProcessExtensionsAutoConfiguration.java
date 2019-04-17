@@ -13,27 +13,26 @@
 
 package org.activiti.spring.process.autoconfigure;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.spring.process.ProcessExtensionService;
-import org.activiti.spring.process.ProcessVariablesInitiator;
-import org.activiti.spring.process.model.ProcessExtensionModel;
-import org.activiti.spring.process.variable.VariableParsingService;
-import org.activiti.spring.process.variable.VariableValidationService;
-import org.activiti.spring.process.variable.types.JsonObjectVariableType;
-import org.activiti.spring.process.variable.types.DateVariableType;
-import org.activiti.spring.process.variable.types.VariableType;
-import org.activiti.spring.process.variable.types.JavaObjectVariableType;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.ProcessVariablesInitiator;
+import org.activiti.spring.process.model.ProcessExtensionModel;
+import org.activiti.spring.process.variable.VariableParsingService;
+import org.activiti.spring.process.variable.VariableValidationService;
+import org.activiti.spring.process.variable.types.DateVariableType;
+import org.activiti.spring.process.variable.types.JavaObjectVariableType;
+import org.activiti.spring.process.variable.types.JsonObjectVariableType;
+import org.activiti.spring.process.variable.types.VariableType;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
 
 @Configuration
@@ -63,6 +62,7 @@ public class ProcessExtensionsAutoConfiguration {
         return new ProcessExtensionService(processExtensionsRoot, processExtensionsSuffix, objectMapper, resourceLoader, variableTypeMap);
     }
 
+    
     @Bean
     public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper){
 

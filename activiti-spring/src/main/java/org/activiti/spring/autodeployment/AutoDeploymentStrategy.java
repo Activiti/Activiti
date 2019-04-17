@@ -47,5 +47,5 @@ public interface AutoDeploymentStrategy {
    * @param repositoryService
    *          the repository service to use for deployment(s)
    */
-  void deployResources(final String deploymentNameHint, final RepositoryService repositoryService);
+   void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService);
 }
