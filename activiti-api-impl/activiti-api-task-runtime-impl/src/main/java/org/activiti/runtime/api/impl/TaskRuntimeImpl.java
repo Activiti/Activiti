@@ -447,5 +447,13 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
         throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
     }
+
+    @Override
+    public void save(SaveTaskPayload saveTaskPayload) {
+        taskRuntimeHelper.assertHasAccessToTask(saveTaskPayload.getTaskId());
+        
+        taskService.setVariablesLocal(saveTaskPayload.getTaskId(),
+                                      saveTaskPayload.getVariables());
+    }
     
 }
