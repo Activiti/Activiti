@@ -11,19 +11,16 @@ public class CompleteTaskPayload implements Payload {
     private String id;
     private String taskId;
     private Map<String, Object> variables = new LinkedHashMap<>();
-    private Map<String, Object> taskVariables = new LinkedHashMap<>();
 
     public CompleteTaskPayload() {
         this.id = UUID.randomUUID().toString();
     }
 
     public CompleteTaskPayload(String taskId,
-                               Map<String, Object> variables,
-                               Map<String, Object> taskVariables) {
+                               Map<String, Object> variables) {
         this();
         this.taskId = taskId;
         this.variables = variables;
-        this.taskVariables = taskVariables;
     }
 
     @Override
@@ -45,15 +42,5 @@ public class CompleteTaskPayload implements Payload {
 
     public void setVariables(Map<String, Object> variables) {
         this.variables = variables;
-    }
-
-    
-    public Map<String, Object> getTaskVariables() {
-        return taskVariables;
-    }
-
-    
-    public void setTaskVariables(Map<String, Object> taskVariables) {
-        this.taskVariables = taskVariables;
     }
 }
