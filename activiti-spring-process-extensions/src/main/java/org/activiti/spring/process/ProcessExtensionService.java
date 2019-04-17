@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
@@ -44,6 +45,9 @@ public class ProcessExtensionService {
     private Map<String, String> procDefIdToKey = new HashMap<>();
     private static final ProcessExtensionModel EMPTY_EXTENSIONS = new ProcessExtensionModel();
 
+    //deploymentId,     processDefinitionKey, ProcessExtensionModel
+    private Map<String, Map<String,ProcessExtensionModel>> processExtensionModelDeploymentMap = new HashMap<>();
+    
     public ProcessExtensionService(String processExtensionsRoot, String processExtensionsSuffix,
                                    ObjectMapper objectMapper, ResourcePatternResolver resourceLoader,
                                    Map<String, VariableType> variableTypeMap) {
@@ -55,6 +59,43 @@ public class ProcessExtensionService {
         this.variableTypeMap = variableTypeMap;
     }
 
+    //Do this once for each deplymentId
+//    private Map<String,ProcessExtensionModel> getProcessExtensionsForDeploymentId(String deploymentId) {
+//        
+//        Map<String,ProcessExtensionModel> processExtensionModelMap = processExtensionModelDeploymentMap.get(deploymentId);
+//        
+//        if (processExtensionModelMap != null) {
+//            return processExtensionModelMap;
+//        }
+//           
+//        processExtensionModelMap = new HashMap<>();
+//        
+//        List <String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
+//        
+//        if (resourceNames != null && !resourceNames.isEmpty()) {
+//            
+//            List <String> processExtensionNames = resourceNames.stream()
+//                                                    .filter(s -> s.contains("-extensions.json"))
+//                                                    .collect(Collectors.toList());
+//            
+//            if (processExtensionNames != null && !processExtensionNames.isEmpty()) {
+//                for (String name:processExtensionNames) {
+//                    try {
+//                        ProcessExtensionModel processExtensionModel = read(repositoryService.getResourceAsStream(deploymentId, name));
+//                        if (processExtensionModel != null) {
+//                            processExtensionModelMap.put(processExtensionModel.getId(), processExtensionModel); 
+//                        }
+//                    } catch (Exception e)  {
+//                        
+//                    }
+//                }
+//            }
+//            
+//        }
+//        processExtensionModelDeploymentMap.put(deploymentId, processExtensionModelMap);
+//        return processExtensionModelMap;
+//    }
+    
     private Optional<Resource[]> retrieveResources() throws IOException {
         Optional<Resource[]> resources = Optional.empty();
         Resource processExtensionsResource = resourceLoader.getResource(processExtensionsRoot);

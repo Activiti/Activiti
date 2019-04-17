@@ -45,63 +45,59 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
   }
 
   @Override
-  public void deployResources(final String deploymentNameHint, final RepositoryService repositoryService) {
+  public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {
+      // Create a deployment for each distinct parent folder using the name
+      // hint
+      // as a prefix
+      final Map<String, Set<Resource>> resourcesMap = createMap(resources);
 
-    if (processDefinitionResources == null || processDefinitionResources.length <1) {
-        return;
-    }
-    // Create a deployment for each distinct parent folder using the name
-    // hint
-    // as a prefix
-    final Map<String, Set<Resource>> resourcesMap = createMap(processDefinitionResources);
+      for (final Entry<String, Set<Resource>> group : resourcesMap.entrySet()) {
 
-    for (final Entry<String, Set<Resource>> group : resourcesMap.entrySet()) {
+        final String deploymentName = determineDeploymentName(deploymentNameHint, group.getKey());
 
-      final String deploymentName = determineDeploymentName(deploymentNameHint, group.getKey());
+        final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);
 
-      final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);
+        for (final Resource resource : group.getValue()) {
+          final String resourceName = determineResourceName(resource);
 
-      for (final Resource resource : group.getValue()) {
-        final String resourceName = determineResourceName(resource);
-
-        deploymentBuilder.addInputStream(resourceName,
-                                         resource);
+          deploymentBuilder.addInputStream(resourceName,
+                                           resource);
+        }
+        deploymentBuilder.deploy();
       }
-      deploymentBuilder.deploy();
-    }
 
   }
 
   private Map<String, Set<Resource>> createMap(final Resource[] resources) {
-    final Map<String, Set<Resource>> resourcesMap = new HashMap<String, Set<Resource>>();
+      final Map<String, Set<Resource>> resourcesMap = new HashMap<String, Set<Resource>>();
 
-    for (final Resource resource : resources) {
-      final String parentFolderName = determineGroupName(resource);
-      if (resourcesMap.get(parentFolderName) == null) {
-        resourcesMap.put(parentFolderName, new HashSet<Resource>());
+      for (final Resource resource : resources) {
+        final String parentFolderName = determineGroupName(resource);
+        if (resourcesMap.get(parentFolderName) == null) {
+          resourcesMap.put(parentFolderName, new HashSet<Resource>());
+        }
+        resourcesMap.get(parentFolderName).add(resource);
       }
-      resourcesMap.get(parentFolderName).add(resource);
-    }
-    return resourcesMap;
+      return resourcesMap;
   }
 
   private String determineGroupName(final Resource resource) {
-    String result = determineResourceName(resource);
-    try {
-      if (resourceParentIsDirectory(resource)) {
-        result = resource.getFile().getParentFile().getName();
+      String result = determineResourceName(resource);
+      try {
+        if (resourceParentIsDirectory(resource)) {
+          result = resource.getFile().getParentFile().getName();
+        }
+      } catch (IOException e) {
+        // no-op, fallback to resource name
       }
-    } catch (IOException e) {
-      // no-op, fallback to resource name
-    }
-    return result;
+      return result;
   }
 
   private boolean resourceParentIsDirectory(final Resource resource) throws IOException {
-    return resource.getFile() != null && resource.getFile().getParentFile() != null && resource.getFile().getParentFile().isDirectory();
+      return resource.getFile() != null && resource.getFile().getParentFile() != null && resource.getFile().getParentFile().isDirectory();
   }
 
   private String determineDeploymentName(final String deploymentNameHint, final String groupName) {
-    return String.format(DEPLOYMENT_NAME_PATTERN, deploymentNameHint, groupName);
+      return String.format(DEPLOYMENT_NAME_PATTERN, deploymentNameHint, groupName);
   }
 }

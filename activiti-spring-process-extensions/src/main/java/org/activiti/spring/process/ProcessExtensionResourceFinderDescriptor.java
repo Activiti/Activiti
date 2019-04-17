@@ -19,13 +19,13 @@ package org.activiti.spring.process;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcessExtensionResourceFinder implements ResourceFinderDescriptor {
+public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderDescriptor {
 
     private boolean checkResources;
     private String locationPrefix;
     private List<String> locationSuffixes;
         
-    public ProcessExtensionResourceFinder(boolean checkResources,
+    public ProcessExtensionResourceFinderDescriptor(boolean checkResources,
                                           String locationPrefix,
                                           String locationSuffix) {
         
@@ -48,7 +48,7 @@ public class ProcessExtensionResourceFinder implements ResourceFinderDescriptor 
     }
 
     @Override
-    public boolean isCheckResources() {
+    public boolean shouldLookUpResources() {
         return checkResources;
     }
 
@@ -58,7 +58,7 @@ public class ProcessExtensionResourceFinder implements ResourceFinderDescriptor 
     }
 
     @Override
-    public String getMsgForResourcesLoadOk() {
+    public String getMsgForResourcesFound() {
         return "The following process extension files will be deployed:";
     }
     

@@ -35,7 +35,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class ProcessDefinitionResourceFinderIT {
 
     @Autowired
-    private ProcessDefinitionResourceFinder processDefinitionResourceFinder;
+    private ProcessDefinitionResourceFinderDescriptor processDefinitionResourceFinder;
     
     @Autowired
     private ResourceFinderImpl resourceFinder;

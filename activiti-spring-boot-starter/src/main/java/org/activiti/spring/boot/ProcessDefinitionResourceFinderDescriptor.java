@@ -20,11 +20,11 @@ import java.util.List;
 
 import org.activiti.spring.process.ResourceFinderDescriptor;
 
-public class ProcessDefinitionResourceFinder implements ResourceFinderDescriptor {
+public class ProcessDefinitionResourceFinderDescriptor implements ResourceFinderDescriptor {
     
     private ActivitiProperties activitiProperties;
     
-    public ProcessDefinitionResourceFinder(ActivitiProperties activitiProperties) {
+    public ProcessDefinitionResourceFinderDescriptor(ActivitiProperties activitiProperties) {
        this.activitiProperties = activitiProperties;
     }
 
@@ -39,7 +39,7 @@ public class ProcessDefinitionResourceFinder implements ResourceFinderDescriptor
     }
 
     @Override
-    public boolean isCheckResources() {
+    public boolean shouldLookUpResources() {
         return activitiProperties.isCheckProcessDefinitions();
     }
 
@@ -49,7 +49,7 @@ public class ProcessDefinitionResourceFinder implements ResourceFinderDescriptor
     }
 
     @Override
-    public String getMsgForResourcesLoadOk() {
+    public String getMsgForResourcesFound() {
         return "The following process definition files will be deployed:";
     }
    
