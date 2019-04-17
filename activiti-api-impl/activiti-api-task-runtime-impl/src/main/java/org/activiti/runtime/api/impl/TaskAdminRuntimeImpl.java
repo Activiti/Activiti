@@ -141,8 +141,11 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         TaskImpl competedTaskData = new TaskImpl(task.getId(),
                                                  task.getName(),
                                                  Task.TaskStatus.COMPLETED);
+        
+        // Complete task with provided variables to be propagated in the process instance scope 
         taskService.complete(completeTaskPayload.getTaskId(),
-                             completeTaskPayload.getVariables(),true);
+                             completeTaskPayload.getVariables());
+        
         return competedTaskData;
     }
 
