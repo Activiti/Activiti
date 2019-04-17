@@ -39,7 +39,6 @@ import org.activiti.api.task.model.payloads.DeleteTaskPayload;
 import org.activiti.api.task.model.payloads.GetTaskVariablesPayload;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.model.payloads.ReleaseTaskPayload;
-import org.activiti.api.task.model.payloads.SaveTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.api.task.runtime.TaskRuntime;
@@ -162,11 +161,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
         TaskImpl competedTaskData = new TaskImpl(task.getId(),
                                                  task.getName(),
                                                  Task.TaskStatus.COMPLETED);
-        
-        // Complete task with provided variables to be propagated in the process instance scope 
         taskService.complete(completeTaskPayload.getTaskId(),
-                             completeTaskPayload.getVariables());
-        
+                             completeTaskPayload.getVariables(),true);
         return competedTaskData;
     }
 
@@ -446,7 +442,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
                                                                                                                userGroups).taskId(taskId).singleResult();
             if (internalTask == null) {
                 throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
-            }
+            }   
             return taskService.getIdentityLinksForTask(taskId);
         }
         throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
