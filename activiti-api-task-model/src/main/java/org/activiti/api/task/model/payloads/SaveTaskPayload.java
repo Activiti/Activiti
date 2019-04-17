@@ -1,22 +1,21 @@
 package org.activiti.api.task.model.payloads;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import org.activiti.api.model.shared.Payload;
 
-public class CompleteTaskPayload implements Payload {
+public class SaveTaskPayload implements Payload {
 
     private String id;
     private String taskId;
-    private Map<String, Object> variables = new LinkedHashMap<>();
+    private Map<String, Object> variables;
 
-    public CompleteTaskPayload() {
+    public SaveTaskPayload() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public CompleteTaskPayload(String taskId,
+    public SaveTaskPayload(String taskId,
                                Map<String, Object> variables) {
         this();
         this.taskId = taskId;
