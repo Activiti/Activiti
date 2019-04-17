@@ -29,8 +29,6 @@ import org.mockito.Answers;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
-import static org.activiti.bpmn.constants.BpmnXMLConstants.ACTIVITI_EXTENSIONS_NAMESPACE;
-import static org.activiti.bpmn.constants.BpmnXMLConstants.ACTIVITI_EXTENSIONS_PREFIX;
 import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_TASK_IMPLEMENTATION;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -83,9 +81,7 @@ public class ServiceTaskXMLConverterTest {
                                             writer);
 
         //then
-        verify(writer).writeAttribute(eq(ACTIVITI_EXTENSIONS_PREFIX),
-                                      eq(ACTIVITI_EXTENSIONS_NAMESPACE),
-                                      eq(ATTRIBUTE_TASK_IMPLEMENTATION),
+        verify(writer).writeAttribute(eq(ATTRIBUTE_TASK_IMPLEMENTATION),
                                       eq("myConnectorImplementation"));
     }
 }
