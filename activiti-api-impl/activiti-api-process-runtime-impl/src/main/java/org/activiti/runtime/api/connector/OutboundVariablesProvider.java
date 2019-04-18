@@ -43,7 +43,8 @@ public class OutboundVariablesProvider {
     public Map<String, Object> calculateVariables(IntegrationContext integrationContext,
                                                   ActionDefinition actionDefinition) {
         Map<String, Object> outboundVariables = integrationContext.getOutBoundVariables();
-        if (actionDefinition == null || !processExtensionService.hasExtensionsFor(integrationContext.getProcessDefinitionKey())) {
+        if (actionDefinition == null || !processExtensionService.hasExtensionsFor(integrationContext.getProcessDefinitionId(),
+                                                                                  integrationContext.getProcessDefinitionKey())) {
             return outboundVariables;
         }
         Map<String, Object> mappedOutboundVariables = new HashMap<>();
