@@ -108,7 +108,7 @@ public class RuntimeTestConfiguration {
         };
     }
 
-    @Bean(name = "processImageConnectorId.processImageActionId")
+    @Bean(name = "Process Image Connector.processImageActionName")
     public Connector processImageActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
@@ -123,7 +123,7 @@ public class RuntimeTestConfiguration {
         };
     }
 
-    @Bean(name = "tagImageConnectorId.tagImageActionId")
+    @Bean(name = "Tag Image Connector.tagImageActionName")
     public Connector tagImageActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
@@ -194,7 +194,7 @@ public class RuntimeTestConfiguration {
         return candidateUserRemovedEvent -> taskCandidateUserRemovedEvents.add(candidateUserRemovedEvent);
     }
 
-    @Bean(name = "variableMappingConnectorId.variableMappingActionId")
+    @Bean(name = "Variable Mapping Connector.variableMappingActionName")
     public Connector variableMappingActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();

@@ -10,7 +10,7 @@
 
         <sequenceFlow id="flow1" sourceRef="start" targetRef="serviceTask"/>
 
-        <serviceTask id="serviceTask" implementation="variableMappingConnectorId.variableMappingActionId"/>
+        <serviceTask id="serviceTask" implementation="Variable Mapping Connector.variableMappingActionName"/>
 
         <sequenceFlow id="flow2" sourceRef="serviceTask" targetRef="userTask"/>
 
