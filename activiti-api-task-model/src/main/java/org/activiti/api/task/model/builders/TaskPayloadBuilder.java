@@ -10,6 +10,10 @@ public class TaskPayloadBuilder {
         return new CompleteTaskPayloadBuilder();
     }
 
+    public static SaveTaskPayloadBuilder save() {
+        return new SaveTaskPayloadBuilder();
+    }
+    
     public static ClaimTaskPayloadBuilder claim() {
         return new ClaimTaskPayloadBuilder();
     }
