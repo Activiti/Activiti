@@ -60,15 +60,15 @@ public class ConnectorActionDefinitionFinder {
         return actionDefinitionOptional;
     }
 
-    public static List<ActionDefinition> filterByName(Map<String, ActionDefinition> actionDefinitions,
+    private List<ActionDefinition> filterByName(Map<String, ActionDefinition> actionDefinitions,
                                                       String actionName) {
         if (actionDefinitions == null || actionName == null) {
             return null;
         }
         return actionDefinitions.entrySet()
                 .stream()
-                .filter(a -> actionName.equals(a.getValue().getName()))
-                .map(a -> a.getValue())
+                .filter(entry -> actionName.equals(entry.getValue().getName()))
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList());
     }
 }
