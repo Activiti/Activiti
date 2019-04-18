@@ -185,29 +185,6 @@ public class ProcessDeploymentTest {
     
     
     @Test
-    public void shouldBeDeployedWithExtension() throws Exception{
-  
-        List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
-        assertNotNull(deployments);
-        
-        List<ProcessDefinition> definitions = repositoryService.createProcessDefinitionQuery().list();
-        assertNotNull(definitions);
-        
-        Deployment deployment = repositoryService.createDeploymentQuery().deploymentKey(INITIAL_VARS_PROCESS).singleResult();
-        assertNotNull(deployment);
-        
-        Optional<String> processExtensionName = getProcessExtension(deployment.getId());
-        assertTrue(processExtensionName.isPresent());
-       
-        InputStream deploymentResourceInputStream = repositoryService.getResourceAsStream(deployment.getId(), processExtensionName.get());
-        assertNotNull(deploymentResourceInputStream);
-        
-        ProcessExtensionModel deploymentExtensionModel = readAndConvertVariables(deploymentResourceInputStream);
-        assertNotNull(deploymentExtensionModel);   
-    }
-    
-    
-    @Test
     public void shouldStartTheProcessWithExtension() throws Exception{
   
         ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(INITIAL_VARS_PROCESS).singleResult();

@@ -31,25 +31,27 @@ import org.activiti.spring.process.variable.VariableValidationService;
 
 public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
-    private final ProcessExtensionService processExtensionService;
+    private ProcessExtensionService processExtensionService;
 
     private final VariableParsingService variableParsingService;
 
     private final VariableValidationService variableValidationService;
 
-    public ProcessVariablesInitiator(ProcessExtensionService processExtensionService,
-                                     VariableParsingService variableParsingService,
+    public ProcessVariablesInitiator(VariableParsingService variableParsingService,
                                      VariableValidationService variableValidationService) {
-        this.processExtensionService = processExtensionService;
+        
         this.variableParsingService = variableParsingService;
         this.variableValidationService = variableValidationService;
+    }
+    
+    public void setProcessExtensionService(ProcessExtensionService processExtensionService) {
+        this.processExtensionService = processExtensionService;
     }
 
     @Override
     public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition, String businessKey, String processInstanceName, FlowElement initialFlowElement, Process process, Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
             ProcessExtensionModel processExtensionModel = processExtensionService.getExtensionsFor(processDefinition);
-            processExtensionService.cache(processDefinition);
             Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions().getProperties();
             Map<String, Object> processedVariables = processVariables(variables, variableDefinitionMap);
             Set<String> missingRequiredVars = checkRequiredVariables(processedVariables, variableDefinitionMap);
