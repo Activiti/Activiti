@@ -38,12 +38,8 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 public class ProcessExtensionService {
 
-    private String processExtensionsRoot;
-    private String processExtensionsSuffix;
     private final ObjectMapper objectMapper;
-    private ResourcePatternResolver resourceLoader;
     private Map<String, VariableType> variableTypeMap;
-    private Map<String, ProcessExtensionModel> processExtensionModelMap;
     private final RepositoryService repositoryService;
     
     //processDefinitionId => deploymentId, processDefinitionKey
@@ -54,15 +50,11 @@ public class ProcessExtensionService {
     //deploymentId => processDefinitionKey, ProcessExtensionModel
     private Map<String, Map<String,ProcessExtensionModel>> processExtensionModelDeploymentMap = new HashMap<>();
     
-    public ProcessExtensionService(String processExtensionsRoot, String processExtensionsSuffix,
-                                   ObjectMapper objectMapper, ResourcePatternResolver resourceLoader,
+    public ProcessExtensionService(ObjectMapper objectMapper, 
                                    Map<String, VariableType> variableTypeMap,
                                    RepositoryService repositoryService) {
 
-        this.processExtensionsRoot = processExtensionsRoot;
-        this.processExtensionsSuffix = processExtensionsSuffix;
         this.objectMapper = objectMapper;
-        this.resourceLoader = resourceLoader;
         this.variableTypeMap = variableTypeMap;
         this.repositoryService = repositoryService;
     }
@@ -133,17 +125,6 @@ public class ProcessExtensionService {
         return processExtensionModel;
     }
     
-    
-    //!!!We do not need this anymore
-    private Optional<Resource[]> retrieveResources() throws IOException {
-        Optional<Resource[]> resources = Optional.empty();
-        Resource processExtensionsResource = resourceLoader.getResource(processExtensionsRoot);
-        if (processExtensionsResource.exists()) {
-            return Optional.ofNullable(resourceLoader.getResources(processExtensionsRoot + processExtensionsSuffix));
-        }
-        return resources;
-    }
-
     private ProcessExtensionModel read(InputStream inputStream) throws IOException {
         objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
         ProcessExtensionModel mappedModel = objectMapper.readValue(inputStream,
@@ -166,18 +147,6 @@ public class ProcessExtensionService {
             }
         }
         return processExtensionModel;
-    }
-
-    public Map<String, ProcessExtensionModel> readProcessExtensions() throws IOException {
-        List<ProcessExtensionModel> processExtensionModels = new ArrayList<>();
-        Optional<Resource[]> resourcesOptional = retrieveResources();
-        if (resourcesOptional.isPresent()) {
-            for (Resource resource : resourcesOptional.get()) {
-                processExtensionModels.add(read(resource.getInputStream()));
-            }
-        }
-        processExtensionModelMap = convertToMap(processExtensionModels);
-        return processExtensionModelMap;
     }
 
     public void cache(ProcessDefinition processDefinition) {
@@ -230,9 +199,4 @@ public class ProcessExtensionService {
         return processExtensionModel != null? processExtensionModel : EMPTY_EXTENSIONS;
     }
 
-    private Map<String, ProcessExtensionModel> convertToMap(List<ProcessExtensionModel> processExtensionModelList){
-        return processExtensionModelList.stream()
-                .collect(Collectors.toMap(ProcessExtensionModel::getId,
-                        Function.identity()));
-    }
 }

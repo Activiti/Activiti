@@ -115,10 +115,12 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
       sessionFactories.put(EntityManagerSession.class, new SpringEntityManagerSessionFactory(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager));
     }
   }
-
+ 
   protected void autoDeployResources(ProcessEngine processEngine) {
-      final AutoDeploymentStrategy strategy = getAutoDeploymentStrategy(deploymentMode);
-      strategy.deployResources(deploymentName, deploymentResources, processEngine.getRepositoryService());
+      if (deploymentResources != null && deploymentResources.length > 0) {
+        final AutoDeploymentStrategy strategy = getAutoDeploymentStrategy(deploymentMode);
+        strategy.deployResources(deploymentName, deploymentResources, processEngine.getRepositoryService());
+      }
   }
 
   @Override
@@ -181,15 +183,16 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
    *          the mode to get the strategy for
    * @return the deployment strategy to use for the mode. Never <code>null</code>
    */
-  protected DefaultAutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
-    DefaultAutoDeploymentStrategy result = new DefaultAutoDeploymentStrategy();
-    for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
-      if (strategy.handlesMode(mode)) {
-        result = (DefaultAutoDeploymentStrategy)strategy;
-        break;
+  protected AutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
+      AutoDeploymentStrategy result = new DefaultAutoDeploymentStrategy();
+      for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
+        if (strategy.handlesMode(mode)) {
+          result = strategy;
+          break;
+        }
       }
+      return result;
     }
-    return result;
-  }
+  
 
 }
