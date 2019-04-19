@@ -66,6 +66,10 @@
           "input-variable-3": {
             "type": "value",
             "value": 5
+          },
+          "input-static-value": {
+            "type": "static_value",
+            "value": "a static value"
           }
         },
         "outputs": {

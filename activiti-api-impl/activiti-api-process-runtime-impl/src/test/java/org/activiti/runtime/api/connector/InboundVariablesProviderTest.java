@@ -46,23 +46,31 @@ public class InboundVariablesProviderTest {
     }
 
     @Test
-    public void calculateVariablesShouldReturnExecutionVariablesWhenActionDefinitionIsNull() {
+    public void calculateVariablesShouldReturnExecutionVariablesMergedWithStaticValuesWhenActionDefinitionIsNull() {
         //given
         Map<String, Object> executionVariables = Collections.singletonMap("key",
                                                          "value");
         DelegateExecution execution = mock(DelegateExecution.class);
         given(execution.getVariables()).willReturn(executionVariables);
 
+        Map<String, Object> staticValues = Collections.singletonMap("myStatic",
+                                                         "st");
+        given(mappedValueProvider.calculateStaticValues(execution))
+                .willReturn(staticValues);
+
         //when
         Map<String, Object> inboundVariables = inboundVariablesProvider.calculateVariables(execution,
                                                                                           null);
 
         //then
-        assertThat(inboundVariables).isEqualTo(executionVariables);
+        assertThat(inboundVariables)
+                .containsAllEntriesOf(executionVariables)
+                .containsAllEntriesOf(staticValues)
+                .hasSize(2);
     }
 
     @Test
-    public void calculateVariablesShouldMapConnectorsInputsWhenActionDefinitionIsAvailable() {
+    public void calculateVariablesShouldMapConnectorsInputsAndMergeStaticValuesWhenActionDefinitionIsAvailable() {
         //given
         VariableDefinition variableDefinition = new VariableDefinition();
         variableDefinition.setName("inputVar");
@@ -75,13 +83,19 @@ public class InboundVariablesProviderTest {
                                                        execution))
                 .willReturn("inValue");
 
+        Map<String, Object> staticValues = Collections.singletonMap("myStatic",
+                                                                    "st");
+        given(mappedValueProvider.calculateStaticValues(execution))
+                .willReturn(staticValues);
+
         //when
         Map<String, Object> inboundVariables = inboundVariablesProvider.calculateVariables(execution,
                                                                                           actionDefinition);
 
         //then
         assertThat(inboundVariables)
-                .hasSize(1)
-                .containsEntry("inputVar", "inValue");
+                .hasSize(2)
+                .containsEntry("inputVar", "inValue")
+                .containsAllEntriesOf(staticValues);
     }
 }

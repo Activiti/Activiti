@@ -26,7 +26,9 @@ public class Mapping {
 
         VARIABLE,
 
-        VALUE
+        VALUE,
+
+        STATIC_VALUE
 
     }
 

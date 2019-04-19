@@ -1,15 +1,22 @@
 package org.activiti.spring.boot.process;
 
+import java.util.List;
+
+import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -26,6 +33,11 @@ public class ProcessRuntimeConnectorIT {
     @Autowired
     private SecurityUtil securityUtil;
 
+    @Before
+    public void setUp() {
+        securityUtil.logInAs("salaboy");
+    }
+
     /**
      * It tests two connector actions inside the xml against two different connector json definitions:
      * the first input variable is defined in the first connector action,
@@ -34,7 +46,6 @@ public class ProcessRuntimeConnectorIT {
     @Test
     public void shouldConnectorMatchWithConnectorDefinition() {
 
-        securityUtil.logInAs("salaboy");
 
         processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(CATEGORIZE_IMAGE_CONNECTORS_PROCESS)
@@ -46,5 +57,29 @@ public class ProcessRuntimeConnectorIT {
                         true)
                 .build());
 
+    }
+
+    @Test
+    public void shouldSupportStaticValuesForConnectorInputsEvenWhenThereIsNoConnectorDefinition() {
+        //given
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+                                                                       .withProcessDefinitionKey("processWithExtensionsButNoConnectorDef")
+                                                                       .build());
+
+        //when
+        List<VariableInstance> variables = processRuntime.variables(ProcessPayloadBuilder.variables().withProcessInstance(processInstance).build());
+
+
+        //then
+        assertThat(variables)
+                .extracting(VariableInstance::getName,
+                            VariableInstance::getValue)
+                .containsOnly(
+                        tuple(
+                                "age",
+                                21), //default value incremented by one by the connector
+                        tuple("name",
+                              "Paul") //static value passed to the connector ans send back as part of integration result
+                );
     }
 }

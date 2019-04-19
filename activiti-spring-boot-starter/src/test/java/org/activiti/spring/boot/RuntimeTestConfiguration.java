@@ -202,6 +202,7 @@ public class RuntimeTestConfiguration {
             String variableOne = "input-variable-name-1";
             String variableTwo = "input-variable-name-2";
             String variableThree = "input-variable-name-3";
+            String staticValue = "input-static-value";
 
             //this variable is not mapped, but its name matches with a process variable
             //so value will be provided from process variable
@@ -221,7 +222,9 @@ public class RuntimeTestConfiguration {
                             tuple(variableThree,
                                   5),
                             tuple(unmappedMatchingVariable,
-                                  "inTest"));
+                                  "inTest"),
+                            tuple(staticValue,
+                                  "a static value"));
 
             integrationContext.addOutBoundVariable("out-variable-name-1",
                                                    "outName");
