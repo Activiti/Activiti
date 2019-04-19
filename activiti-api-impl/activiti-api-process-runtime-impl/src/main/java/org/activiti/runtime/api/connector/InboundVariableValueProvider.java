@@ -16,15 +16,15 @@
 
 package org.activiti.runtime.api.connector;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.activiti.core.common.model.connector.VariableDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Mapping;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.ProcessVariablesMapping;
-
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class InboundVariableValueProvider {
 
@@ -43,10 +43,12 @@ public class InboundVariableValueProvider {
             if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())) {
                 return inputMapping.getValue();
             }
-            String variableUUID = inputMapping.getValue().toString();
-            org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getProperty(variableUUID);
-            if (processVariableDefinition != null) {
-                return execution.getVariable(processVariableDefinition.getName());
+            if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
+                String variableUUID = inputMapping.getValue().toString();
+                org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getProperty(variableUUID);
+                if (processVariableDefinition != null) {
+                    return execution.getVariable(processVariableDefinition.getName());
+                }
             }
         }
         return execution.getVariable(variableDefinition.getName());
@@ -56,9 +58,8 @@ public class InboundVariableValueProvider {
         ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
         ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getCurrentActivityId());
         Map<String, Mapping> inputs = processVariablesMapping.getInputs();
-        Map<String, Object> staticValuesMap = inputs.entrySet().stream()
+        return inputs.entrySet().stream()
                 .filter(input -> Mapping.SourceMappingType.STATIC_VALUE.equals(input.getValue().getType()))
-                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().getValue()));
-        return staticValuesMap;
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
     }
 }
