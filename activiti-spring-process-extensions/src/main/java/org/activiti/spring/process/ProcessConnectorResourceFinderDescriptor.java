@@ -19,13 +19,13 @@ package org.activiti.spring.process;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderDescriptor {
+public class ProcessConnectorResourceFinderDescriptor implements ResourceFinderDescriptor {
 
     private boolean checkResources;
     private String locationPrefix;
     private List<String> locationSuffixes;
         
-    public ProcessExtensionResourceFinderDescriptor(boolean checkResources,
+    public ProcessConnectorResourceFinderDescriptor(boolean checkResources,
                                           String locationPrefix,
                                           String locationSuffix) {
         
@@ -51,20 +51,21 @@ public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderD
     public boolean shouldLookUpResources() {
         return checkResources;
     }
-
-    @Override
-    public String getFilterSuffixForName() {
-          return null;
-    }
     
     @Override
+    public String getFilterSuffixForName() {
+          //return "-connectors.json";
+        return null;
+    }
+
+    @Override
     public String getMsgForEmptyResources() {
-        return "No process extensions were found for auto-deployment in the location";
+        return "No process connectors were found for auto-deployment in the location";
     }
 
     @Override
     public String getMsgForResourcesFound() {
-        return "The following process extension files will be deployed:";
+        return "The following process connector files will be deployed:";
     }
     
     

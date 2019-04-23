@@ -32,6 +32,7 @@ import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
+import org.activiti.spring.process.ProcessConnectorResourceFinderDescriptor;
 import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
 import org.activiti.spring.process.ResourceFinderDescriptor;
 import org.activiti.spring.process.ResourceFinderImpl;
@@ -180,6 +181,16 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                                                                          @Value("${activiti.process.extensions.dir:classpath:/processes/}") String locationPrefix,
                                                                          @Value("${activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix) {
         return new ProcessExtensionResourceFinderDescriptor(activitiProperties.isCheckProcessDefinitions(),
+                                                  locationPrefix,
+                                                  locationSuffix);
+    }
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessConnectorResourceFinderDescriptor processConnectorResourceFinder(ActivitiProperties activitiProperties,
+                                                                         @Value("${activiti.connectors.dir:classpath:/connectors/}") String locationPrefix,
+                                                                         @Value("${activiti.process.extensions.suffix:**.json}") String locationSuffix) {
+        return new ProcessConnectorResourceFinderDescriptor(activitiProperties.isCheckProcessDefinitions(),
                                                   locationPrefix,
                                                   locationSuffix);
     }
