@@ -42,6 +42,11 @@ public class ProcessDefinitionResourceFinderDescriptor implements ResourceFinder
     public boolean shouldLookUpResources() {
         return activitiProperties.isCheckProcessDefinitions();
     }
+    
+    @Override
+    public String getFilterSuffixForName() {
+          return null;
+    }
 
     @Override
     public String getMsgForEmptyResources() {
@@ -52,5 +57,6 @@ public class ProcessDefinitionResourceFinderDescriptor implements ResourceFinder
     public String getMsgForResourcesFound() {
         return "The following process definition files will be deployed:";
     }
+  
    
 }

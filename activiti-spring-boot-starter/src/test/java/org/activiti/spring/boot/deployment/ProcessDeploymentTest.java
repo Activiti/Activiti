@@ -2,6 +2,7 @@ package org.activiti.spring.boot.deployment;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,6 +37,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.boot.ActivitiProperties;
 import org.activiti.spring.boot.ProcessDefinitionResourceFinderDescriptor;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.process.ProcessConnectorResourceFinderDescriptor;
 import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
 import org.activiti.spring.process.ResourceFinderImpl;
 import org.activiti.spring.process.model.ProcessExtensionModel;
@@ -78,6 +80,9 @@ public class ProcessDeploymentTest {
     
     @Autowired
     ProcessExtensionResourceFinderDescriptor processExtensionResourceFinder;
+    
+    @Autowired
+    ProcessConnectorResourceFinderDescriptor processConnectorResourceFinder;
     
     @Autowired
     private ResourcePatternResolver resourceLoader;
@@ -142,7 +147,7 @@ public class ProcessDeploymentTest {
     
     
     @Test
-    public void shoulCreateDeploymentsWithProcessExtensions() throws Exception{
+    public void shouldCreateDeploymentsWithProcessExtensions() throws Exception{
         variableTypeMap.clear();
         
         //Get all procssDefinitions
@@ -222,6 +227,15 @@ public class ProcessDeploymentTest {
         
      // cleanup
         processRuntime.delete(ProcessPayloadBuilder.delete(initialVarsProcess));
+    }
+    
+    @Test
+    public void shouldLoadProcessConnectors() throws Exception{
+        
+        //Get all connectors
+        List<Resource> processConnectors = resourceFinder.discoverResources(processConnectorResourceFinder);
+        assertTrue(processConnectors.size()>1);
+        
     }
     
     private Optional<String> getProcessExtension(String deploymentId) {
@@ -378,7 +392,7 @@ public class ProcessDeploymentTest {
         return  new BpmnXMLConverter().convertToBpmnModel(xtr);
      }
     
-
+    
     
     
 }
