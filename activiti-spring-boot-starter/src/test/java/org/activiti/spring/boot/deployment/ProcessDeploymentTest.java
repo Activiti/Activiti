@@ -230,12 +230,31 @@ public class ProcessDeploymentTest {
     }
     
     @Test
-    public void shouldLoadProcessConnectors() throws Exception{
+    public void shouldLoadAndFilterProcessConnectors() throws Exception{
         
         //Get all connectors
         List<Resource> processConnectors = resourceFinder.discoverResources(processConnectorResourceFinder);
         assertTrue(processConnectors.size()>1);
         
+        ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(INITIAL_VARS_PROCESS).singleResult();
+        assertNotNull(definition);
+        
+        String deploymentId = definition.getDeploymentId();
+        String processDefinitionKey = definition.getKey();
+        
+        List <String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
+    
+        if (resourceNames != null && !resourceNames.isEmpty()) {
+        
+            List <String> processConectorNames = resourceNames.stream()
+                                                .filter(s -> s.contains("\\connectors\\"))
+                                                .collect(Collectors.toList());
+            
+            assertTrue(processConectorNames.size()>1);
+            
+            
+        }
+ 
     }
     
     private Optional<String> getProcessExtension(String deploymentId) {
@@ -257,6 +276,7 @@ public class ProcessDeploymentTest {
        Map<String,ProcessExtensionModel> processExtensionModelMap = getProcessExtensionsForDeploymentId(deploymentId);
        return processExtensionModelMap.get(processDefinitionKey);
    }
+   
    
    //Do this once for each deplymentId
    private Map<String,ProcessExtensionModel> getProcessExtensionsForDeploymentId(String deploymentId) {
