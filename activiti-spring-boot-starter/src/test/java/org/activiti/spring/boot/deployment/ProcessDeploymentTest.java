@@ -30,6 +30,7 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
+import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
@@ -101,6 +102,7 @@ public class ProcessDeploymentTest {
     //deploymentId,     processDefinitionKey, ProcessExtensionModel
     private Map<String, Map<String,ProcessExtensionModel>> processExtensionModelDeploymentMap = new HashMap<>();
     
+    private Map<String, List<ConnectorDefinition>> processConnectorDefinitionsMap = new HashMap<>();
     
 
     @Autowired
@@ -240,20 +242,10 @@ public class ProcessDeploymentTest {
         assertNotNull(definition);
         
         String deploymentId = definition.getDeploymentId();
-        String processDefinitionKey = definition.getKey();
         
-        List <String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
-    
-        if (resourceNames != null && !resourceNames.isEmpty()) {
+        List<ConnectorDefinition> connectorDefinitionList = getProcessConnectorDefinitionsForDeploymentId(deploymentId);
+        assertTrue(connectorDefinitionList.size()>1);
         
-            List <String> processConectorNames = resourceNames.stream()
-                                                .filter(s -> s.contains("\\connectors\\"))
-                                                .collect(Collectors.toList());
-            
-            assertTrue(processConectorNames.size()>1);
-            
-            
-        }
  
     }
     
@@ -314,6 +306,40 @@ public class ProcessDeploymentTest {
        processExtensionModelDeploymentMap.put(deploymentId, processExtensionModelMap);
        return processExtensionModelMap;
    }
+   
+   private List<ConnectorDefinition> getProcessConnectorDefinitionsForDeploymentId(String deploymentId) {
+  
+       List<ConnectorDefinition> processConnectorDefinitions = processConnectorDefinitionsMap.get(deploymentId);
+       
+       if (processConnectorDefinitions != null) {
+           return processConnectorDefinitions;
+       }
+          
+       processConnectorDefinitions = new ArrayList<>();
+       
+       List <String> resourceNames = repositoryService.getDeploymentResourceNames(deploymentId);
+       
+       if (resourceNames != null && !resourceNames.isEmpty()) {
+           
+           List <String> processExtensionNames = resourceNames.stream()
+                                                   .filter(s -> s.contains("\\connectors\\"))
+                                                   .collect(Collectors.toList());
+           
+           if (processExtensionNames != null && !processExtensionNames.isEmpty()) {
+               for (String name:processExtensionNames) {
+                   try {
+                       processConnectorDefinitions.add(objectMapper.readValue(repositoryService.getResourceAsStream(deploymentId, name),ConnectorDefinition.class));
+                   } catch (Exception e)  {
+                       
+                   }
+                  
+               }
+           }
+       }
+       processConnectorDefinitionsMap.put(deploymentId, processConnectorDefinitions);
+       return processConnectorDefinitions;
+   }
+   
    
     
     private Entry<String, String> deployProcessFromResource(Resource xmlResource,

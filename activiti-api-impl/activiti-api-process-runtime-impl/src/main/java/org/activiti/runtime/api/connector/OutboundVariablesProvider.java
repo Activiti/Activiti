@@ -23,6 +23,7 @@ import java.util.Optional;
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.core.common.model.connector.VariableDefinition;
+import org.activiti.spring.process.ProcessConnectorService;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
@@ -31,13 +32,13 @@ import org.activiti.spring.process.model.ProcessVariablesMapping;
 public class OutboundVariablesProvider {
 
     private ProcessExtensionService processExtensionService;
-    private ConnectorActionDefinitionFinder connectorActionDefinitionFinder;
+    private ProcessConnectorService processConnectorService;
 
 
     public OutboundVariablesProvider(ProcessExtensionService processExtensionService,
-                                     ConnectorActionDefinitionFinder connectorActionDefinitionFinder) {
+                                     ProcessConnectorService processConnectorService) {
         this.processExtensionService = processExtensionService;
-        this.connectorActionDefinitionFinder = connectorActionDefinitionFinder;
+        this.processConnectorService = processConnectorService;
     }
 
     public Map<String, Object> calculateVariables(IntegrationContext integrationContext,
@@ -78,9 +79,17 @@ public class OutboundVariablesProvider {
                                                                                        value)));
         return mappedOutboundVariables;
     }
+    
+    public Optional<ActionDefinition> find(String processDefinitionId, String connectorType) {
+        return processConnectorService.find(processExtensionService.getDeploymentIdForProcessDefinitionId(processDefinitionId), connectorType);
+    }
+    
+    public Optional<ActionDefinition> find(IntegrationContext integrationContext) {
+        return processConnectorService.find(integrationContext.getProcessDefinitionId(), integrationContext.getConnectorType());
+    }
 
     public Map<String, Object> calculateVariables(IntegrationContext integrationContext) {
-        Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(integrationContext.getConnectorType());
+        Optional<ActionDefinition> actionDefinitionOptional = find(integrationContext);
         return calculateVariables(integrationContext, actionDefinitionOptional.orElse(null));
     }
 }

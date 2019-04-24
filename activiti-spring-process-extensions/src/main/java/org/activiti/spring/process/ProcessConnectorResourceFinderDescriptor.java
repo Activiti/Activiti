@@ -101,11 +101,9 @@ public class ProcessConnectorResourceFinderDescriptor implements ResourceFinderD
                     if (name.contains(".")) {
                         throw new IllegalStateException("connectorDefinition name cannot have '.' character");
                     }
-                    
-                    //We have to modify names inside connectors before using this check...
-//                    if (!duplicates.add(name)) {
-//                        throw new IllegalStateException("connectorDefinition name '" + name + "' already present");
-//                    }
+                    if (!duplicates.add(name)) {
+                        throw new IllegalStateException("connectorDefinition name '" + name + "' already present");
+                    }
                 
                 }
             }

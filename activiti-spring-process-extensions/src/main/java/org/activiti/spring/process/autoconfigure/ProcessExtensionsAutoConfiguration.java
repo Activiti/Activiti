@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.RepositoryService;
+import org.activiti.spring.process.ProcessConnectorService;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.process.variable.VariableParsingService;
@@ -54,6 +55,12 @@ public class ProcessExtensionsAutoConfiguration {
                                                             Map<String, VariableType> variableTypeMap,
                                                             RepositoryService repositoryService) {
         return new ProcessExtensionService(objectMapper, variableTypeMap, repositoryService);
+    }
+    
+    @Bean
+    public ProcessConnectorService processConnectorService( ObjectMapper objectMapper,
+                                                            RepositoryService repositoryService) {
+        return new ProcessConnectorService(objectMapper, repositoryService);
     }
 
     

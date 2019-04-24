@@ -199,4 +199,10 @@ public class ProcessExtensionService {
         return processExtensionModel != null? processExtensionModel : EMPTY_EXTENSIONS;
     }
 
+    public String getDeploymentIdForProcessDefinitionId(String processDefinitionId) {
+        Entry<String, String> deployIdDefKey = procDefIdToDeployIdDefKey.get(processDefinitionId);
+
+        return deployIdDefKey != null ? deployIdDefKey.getKey() : null;
+    }
+    
 }
