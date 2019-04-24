@@ -42,11 +42,6 @@ public class ProcessDefinitionResourceFinderDescriptor implements ResourceFinder
     public boolean shouldLookUpResources() {
         return activitiProperties.isCheckProcessDefinitions();
     }
-    
-    @Override
-    public String getFilterSuffixForName() {
-          return null;
-    }
 
     @Override
     public String getMsgForEmptyResources() {

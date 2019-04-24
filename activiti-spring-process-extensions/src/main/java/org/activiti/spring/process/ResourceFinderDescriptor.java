@@ -23,7 +23,6 @@ public interface ResourceFinderDescriptor {
     public List<String> getLocationSuffixes();
     public String getLocationPrefix();
     public boolean shouldLookUpResources();
-    public String getFilterSuffixForName();
     public String getMsgForEmptyResources();
     public String getMsgForResourcesFound();
   

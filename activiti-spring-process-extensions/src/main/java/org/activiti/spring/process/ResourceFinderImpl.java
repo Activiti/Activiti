@@ -48,11 +48,6 @@ public class ResourceFinderImpl {
             if (resources.isEmpty()) {
                 LOGGER.info(resourceFinderDescriptor.getMsgForEmptyResources() + " `" + resourceFinderDescriptor.getLocationPrefix() + "`");
             } else {
-                //Apply filter suffix for names if needed
-                if (resourceFinderDescriptor.getFilterSuffixForName() != null) {
-                
-                    
-                }
                 List<String> resourcesNames = resources.stream().map(Resource::getFilename).collect(Collectors.toList());
                 LOGGER.info(resourceFinderDescriptor.getMsgForResourcesFound() + " " + resourcesNames);
                 

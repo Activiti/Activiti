@@ -51,12 +51,6 @@ public class ProcessConnectorResourceFinderDescriptor implements ResourceFinderD
     public boolean shouldLookUpResources() {
         return checkResources;
     }
-    
-    @Override
-    public String getFilterSuffixForName() {
-          //return "-connectors.json";
-        return null;
-    }
 
     @Override
     public String getMsgForEmptyResources() {

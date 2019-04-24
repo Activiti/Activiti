@@ -51,11 +51,6 @@ public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderD
     public boolean shouldLookUpResources() {
         return checkResources;
     }
-
-    @Override
-    public String getFilterSuffixForName() {
-          return null;
-    }
     
     @Override
     public String getMsgForEmptyResources() {
