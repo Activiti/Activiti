@@ -22,7 +22,7 @@
       <bpmn2:outgoing>SequenceFlow_05ujyt9</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_05ujyt9" sourceRef="StartEvent_1" targetRef="Task_1xqe2ob" />
-    <bpmn2:serviceTask id="Task_1xqe2ob" name="Get Movie Description" implementation="connector-8abc839468e609ca0168e61babb60005.getMovieDescId">
+    <bpmn2:serviceTask id="Task_1xqe2ob" name="Get Movie Description" implementation="MoviesWithUUIDs.getMovieDesc">
       <bpmn2:incoming>SequenceFlow_05ujyt9</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1va8d3a</bpmn2:outgoing>
     </bpmn2:serviceTask>

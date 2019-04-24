@@ -129,12 +129,12 @@ public class DemoApplication implements CommandLineRunner {
         }
     }
 
-    @Bean("MoviesId.getMovieDescId")
+    @Bean("Movies.getMovieDesc")
     public Connector getMovieDesc() {
         return getConnector();
     }
 
-    @Bean("connector-8abc839468e609ca0168e61babb60005.getMovieDescId")
+    @Bean("MoviesWithUUIDs.getMovieDesc")
     public Connector getMovieDescUUIDs() {
         return getConnector();
     }

@@ -6,7 +6,7 @@
       <bpmn2:outgoing>SequenceFlow_02b718w</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_02b718w" sourceRef="StartEvent_1" targetRef="Task_1spvopd" />
-    <bpmn2:serviceTask id="Task_1spvopd" name="Get Movie Description" implementation="MoviesId.getMovieDescId">
+    <bpmn2:serviceTask id="Task_1spvopd" name="Get Movie Description" implementation="Movies.getMovieDesc">
       <bpmn2:incoming>SequenceFlow_02b718w</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_19i3kha</bpmn2:outgoing>
     </bpmn2:serviceTask>
