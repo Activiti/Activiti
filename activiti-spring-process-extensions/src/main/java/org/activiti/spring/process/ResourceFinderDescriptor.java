@@ -16,13 +16,17 @@
 
 package org.activiti.spring.process;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.springframework.core.io.Resource;
 
 public interface ResourceFinderDescriptor {
 
     public List<String> getLocationSuffixes();
     public String getLocationPrefix();
     public boolean shouldLookUpResources();
+    public void validate(List<Resource> resources) throws IOException;
     public String getMsgForEmptyResources();
     public String getMsgForResourcesFound();
   
