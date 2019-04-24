@@ -16,18 +16,28 @@
 
 package org.activiti.spring.process;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.core.common.model.connector.ConnectorDefinition;
+import org.springframework.core.io.Resource;
 
 public class ProcessConnectorResourceFinderDescriptor implements ResourceFinderDescriptor {
 
     private boolean checkResources;
     private String locationPrefix;
     private List<String> locationSuffixes;
+    private final ObjectMapper objectMapper;
         
     public ProcessConnectorResourceFinderDescriptor(boolean checkResources,
                                           String locationPrefix,
-                                          String locationSuffix) {
+                                          String locationSuffix,
+                                          ObjectMapper objectMapper) {
         
         this.checkResources = checkResources;
         this.locationPrefix = locationPrefix;
@@ -35,6 +45,7 @@ public class ProcessConnectorResourceFinderDescriptor implements ResourceFinderD
         if (locationSuffix != null) {
             locationSuffixes.add(locationSuffix);
         }
+        this.objectMapper = objectMapper;
     }
     
     @Override
@@ -60,6 +71,47 @@ public class ProcessConnectorResourceFinderDescriptor implements ResourceFinderD
     @Override
     public String getMsgForResourcesFound() {
         return "The following process connector files will be deployed:";
+    }
+    
+    private ConnectorDefinition read(InputStream inputStream) throws IOException {
+        return objectMapper.readValue(inputStream,
+                ConnectorDefinition.class);
+    }
+    
+    @Override
+    public void validate(List<Resource> resources) throws IOException {
+        if (!resources.isEmpty()) {
+      
+            List<ConnectorDefinition> connectorDefinitions = new ArrayList<>();
+            
+            for (Resource resource : resources) {
+                connectorDefinitions.add(read(resource.getInputStream()));
+            }
+            
+            if (!connectorDefinitions.isEmpty()) {
+                Set<String> duplicates = new HashSet<>(); 
+                String name;
+
+                for (ConnectorDefinition connectorDefinition : connectorDefinitions) {
+                    name = connectorDefinition.getName();
+                    if (name == null || name.isEmpty()) {
+                        throw new IllegalStateException("connectorDefinition name cannot be empty");
+                        
+                    }
+                    if (name.contains(".")) {
+                        throw new IllegalStateException("connectorDefinition name cannot have '.' character");
+                    }
+                    
+                    //We have to modify names inside connectors before using this check...
+//                    if (!duplicates.add(name)) {
+//                        throw new IllegalStateException("connectorDefinition name '" + name + "' already present");
+//                    }
+                
+                }
+            }
+
+        }
+        
     }
     
     

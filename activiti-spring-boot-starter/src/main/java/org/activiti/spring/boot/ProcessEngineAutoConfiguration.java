@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
@@ -42,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -187,12 +189,22 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     
     @Bean
     @ConditionalOnMissingBean
+    @ConditionalOnMissingClass(value = "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder")
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
+    }
+    
+    
+    @Bean
+    @ConditionalOnMissingBean
     public ProcessConnectorResourceFinderDescriptor processConnectorResourceFinder(ActivitiProperties activitiProperties,
                                                                          @Value("${activiti.connectors.dir:classpath:/connectors/}") String locationPrefix,
-                                                                         @Value("${activiti.process.extensions.suffix:**.json}") String locationSuffix) {
+                                                                         @Value("${activiti.process.extensions.suffix:**.json}") String locationSuffix,
+                                                                         ObjectMapper objectMapper) {
         return new ProcessConnectorResourceFinderDescriptor(activitiProperties.isCheckProcessDefinitions(),
                                                   locationPrefix,
-                                                  locationSuffix);
+                                                  locationSuffix,
+                                                  objectMapper);
     }
     
     @Bean
