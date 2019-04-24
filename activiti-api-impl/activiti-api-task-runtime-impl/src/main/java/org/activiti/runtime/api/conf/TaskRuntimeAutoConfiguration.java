@@ -102,11 +102,13 @@ public class TaskRuntimeAutoConfiguration {
     public TaskAdminRuntime taskAdminRuntime(TaskService taskService,
                                              APITaskConverter taskConverter,
                                              APIVariableInstanceConverter variableInstanceConverter,
-                                             TaskRuntimeHelper taskRuntimeHelper) {
+                                             TaskRuntimeHelper taskRuntimeHelper,
+                                             SecurityManager securityManager) {
         return new TaskAdminRuntimeImpl(taskService,
                                         taskConverter,
                                         variableInstanceConverter,
-                                        taskRuntimeHelper
+                                        taskRuntimeHelper,
+                                        securityManager
                                         
         );
     }

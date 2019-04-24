@@ -235,9 +235,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
         TaskImpl deletedTaskData = new TaskImpl(task.getId(),
                                                 task.getName(),
-                                                Task.TaskStatus.DELETED);
+                                                Task.TaskStatus.CANCELLED);
         if (!deleteTaskPayload.hasReason()) {
-            deleteTaskPayload.setReason("Cancelled by " + authenticatedUserId);
+            deleteTaskPayload.setReason("Task deleted by " + authenticatedUserId);
         }
         taskService.deleteTask(deleteTaskPayload.getTaskId(),
                                deleteTaskPayload.getReason(),

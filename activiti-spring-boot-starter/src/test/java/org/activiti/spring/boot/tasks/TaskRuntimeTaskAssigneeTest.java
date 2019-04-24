@@ -78,7 +78,7 @@ public class TaskRuntimeTaskAssigneeTest {
                 .build());
 
         assertThat(deletedTask).isNotNull();
-        assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.DELETED);
+        assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.CANCELLED);
 
         tasks = taskRuntime.tasks(Pageable.of(0,
                 50));
