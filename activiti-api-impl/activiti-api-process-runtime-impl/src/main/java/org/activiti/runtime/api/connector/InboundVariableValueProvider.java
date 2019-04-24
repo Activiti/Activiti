@@ -16,6 +16,9 @@
 
 package org.activiti.runtime.api.connector;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.activiti.core.common.model.connector.VariableDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
@@ -40,12 +43,23 @@ public class InboundVariableValueProvider {
             if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())) {
                 return inputMapping.getValue();
             }
-            String variableUUID = inputMapping.getValue().toString();
-            org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getProperty(variableUUID);
-            if (processVariableDefinition != null) {
-                return execution.getVariable(processVariableDefinition.getName());
+            if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
+                String variableUUID = inputMapping.getValue().toString();
+                org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getProperty(variableUUID);
+                if (processVariableDefinition != null) {
+                    return execution.getVariable(processVariableDefinition.getName());
+                }
             }
         }
         return execution.getVariable(variableDefinition.getName());
+    }
+
+    public Map<String, Object> calculateStaticValues(DelegateExecution execution) {
+        ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
+        ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getCurrentActivityId());
+        Map<String, Mapping> inputs = processVariablesMapping.getInputs();
+        return inputs.entrySet().stream()
+                .filter(input -> Mapping.SourceMappingType.STATIC_VALUE.equals(input.getValue().getType()))
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getValue()));
     }
 }

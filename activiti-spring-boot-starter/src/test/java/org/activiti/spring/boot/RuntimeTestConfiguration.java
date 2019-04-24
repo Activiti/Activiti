@@ -108,7 +108,7 @@ public class RuntimeTestConfiguration {
         };
     }
 
-    @Bean(name = "processImageConnectorId.processImageActionId")
+    @Bean(name = "Process Image Connector.processImageActionName")
     public Connector processImageActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
@@ -123,7 +123,7 @@ public class RuntimeTestConfiguration {
         };
     }
 
-    @Bean(name = "tagImageConnectorId.tagImageActionId")
+    @Bean(name = "Tag Image Connector.tagImageActionName")
     public Connector tagImageActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
@@ -194,7 +194,7 @@ public class RuntimeTestConfiguration {
         return candidateUserRemovedEvent -> taskCandidateUserRemovedEvents.add(candidateUserRemovedEvent);
     }
 
-    @Bean(name = "variableMappingConnectorId.variableMappingActionId")
+    @Bean(name = "Variable Mapping Connector.variableMappingActionName")
     public Connector variableMappingActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
@@ -202,6 +202,7 @@ public class RuntimeTestConfiguration {
             String variableOne = "input-variable-name-1";
             String variableTwo = "input-variable-name-2";
             String variableThree = "input-variable-name-3";
+            String staticValue = "input-static-value";
 
             //this variable is not mapped, but its name matches with a process variable
             //so value will be provided from process variable
@@ -221,7 +222,9 @@ public class RuntimeTestConfiguration {
                             tuple(variableThree,
                                   5),
                             tuple(unmappedMatchingVariable,
-                                  "inTest"));
+                                  "inTest"),
+                            tuple(staticValue,
+                                  "a static value"));
 
             integrationContext.addOutBoundVariable("out-variable-name-1",
                                                    "outName");

@@ -36,7 +36,7 @@ public class InboundVariablesProvider {
                                                   ActionDefinition actionDefinition) {
         Map<String, Object> inboundVariables;
         if (actionDefinition == null) {
-            inboundVariables = execution.getVariables();
+            inboundVariables = new HashMap<>(execution.getVariables());
         } else {
             List<VariableDefinition> connectorInputs = actionDefinition.getInputs();
             inboundVariables = new HashMap<>();
@@ -49,6 +49,7 @@ public class InboundVariablesProvider {
                 }
             });
         }
+        inboundVariables.putAll(mappedValueProvider.calculateStaticValues(execution));
         return inboundVariables;
     }
 }

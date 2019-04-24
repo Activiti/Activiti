@@ -1,0 +1,30 @@
+{
+  "id":"processWithExtensionsButNoConnectorDef",
+  "name":"processWithExtensionsButNoConnectorDef",
+  "extensions": {
+    "properties": {
+      "age-id": {
+        "id": "age-id",
+        "name": "age",
+        "type": "integer",
+        "value": 20
+      },
+      "name-id": {
+        "id": "name-id",
+        "name": "name",
+        "type": "string",
+        "value": "inName"
+      }
+    },
+    "mappings": {
+      "myServiceTask": {
+        "inputs": {
+          "nameAsStaticValue": {
+            "type": "static_value",
+            "value": "Paul"
+          }
+        }
+      }
+    }
+  }
+}

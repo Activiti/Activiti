@@ -89,7 +89,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
     } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(serviceTask.getImplementationType())) {
       writeQualifiedAttribute(ATTRIBUTE_TASK_SERVICE_DELEGATEEXPRESSION, serviceTask.getImplementation(), xtw);
     } else {
-      writeQualifiedAttribute(ATTRIBUTE_TASK_IMPLEMENTATION, serviceTask.getImplementation(), xtw);
+      writeDefaultAttribute(ATTRIBUTE_TASK_IMPLEMENTATION, serviceTask.getImplementation(), xtw);
     }
 
     if (StringUtils.isNotEmpty(serviceTask.getResultVariableName())) {

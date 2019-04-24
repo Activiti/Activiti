@@ -22,6 +22,7 @@ import java.util.List;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
@@ -58,14 +59,18 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     
     private final TaskRuntimeHelper taskRuntimeHelper;
 
+    private final SecurityManager securityManager;
+
     public TaskAdminRuntimeImpl(TaskService taskService,
                                 APITaskConverter taskConverter,
                                 APIVariableInstanceConverter variableInstanceConverter,
-                                TaskRuntimeHelper taskRuntimeHelper) {
+                                TaskRuntimeHelper taskRuntimeHelper,
+                                SecurityManager securityManager) {
         this.taskService = taskService;
         this.taskConverter = taskConverter;
         this.variableInstanceConverter = variableInstanceConverter;
         this.taskRuntimeHelper=taskRuntimeHelper;
+        this.securityManager = securityManager;
     }
 
     @Override
@@ -110,7 +115,14 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
 
         TaskImpl deletedTaskData = new TaskImpl(task.getId(),
                                                 task.getName(),
-                                                Task.TaskStatus.DELETED);
+                                                Task.TaskStatus.CANCELLED);
+
+        String authenticatedUserId = securityManager.getAuthenticatedUserId();
+
+        if (!deleteTaskPayload.hasReason()) {
+            deleteTaskPayload.setReason("Task deleted by " + authenticatedUserId);
+        }
+
         taskService.deleteTask(deleteTaskPayload.getTaskId(),
                                deleteTaskPayload.getReason(),
                                true);

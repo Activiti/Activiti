@@ -1,8 +1,7 @@
 {
   "id": "tagImageConnectorId",
-  "name": "Name of the connector",
-  "description": "Description of the connector",
-  "icon": "icon-name",
+  "name": "Tag Image Connector",
+  "description": "Description of the Tag Image Connector",
   "actions": {
     "tagImageActionId": {
       "id": "tagImageActionId",

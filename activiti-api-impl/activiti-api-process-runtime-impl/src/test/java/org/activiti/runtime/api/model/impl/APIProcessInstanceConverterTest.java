@@ -97,7 +97,6 @@ public class APIProcessInstanceConverterTest {
         assertThat(result.getProcessDefinitionVersion()).isEqualTo(PROCESS_DEFINITION_VERSION);
         assertThat(result.getParentId()).isEqualTo(PARENT_PROCESS_INSTANCE_ID);
         assertThat(result.getName()).isEqualTo(NAME);
-        assertThat(result.getDescription()).isEqualTo(DESCRIPTION);
         assertThat(result.getParentId()).isEqualTo(PARENT_PROCESS_INSTANCE_ID);
         assertThat(result.getInitiator()).isEqualTo(START_USER_ID);
         assertThat(result.getStartDate()).isEqualTo(startTime);

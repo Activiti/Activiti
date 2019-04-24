@@ -25,15 +25,15 @@
       <bpmn:incoming>SequenceFlow_1nn2llw</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1nn2llw" sourceRef="Task_0snvh02" targetRef="EndEvent_1ogwwp9" />
-    <bpmn:serviceTask id="Task_1ylvdew" name="Process Image" implementation="processImageConnectorId.processImageActionId">
+    <bpmn:serviceTask id="Task_1ylvdew" name="Process Image" implementation="Process Image Connector.processImageActionName">
       <bpmn:incoming>SequenceFlow_09xowo4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1jzbgkj</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_0snvh02" name="Tag categorized Image" implementation="tagImageConnectorId.tagImageActionId">
+    <bpmn:serviceTask id="Task_0snvh02" name="Tag categorized Image" implementation="Tag Image Connector.tagImageActionName">
       <bpmn:incoming>SequenceFlow_0tsc63v</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1nn2llw</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_1asxw87" name="Discard and Notify user" implementation="discardImageConnectorId.discardImageActionId">
+    <bpmn:serviceTask id="Task_1asxw87" name="Discard and Notify user" implementation="Discard Image Connector Name.discardImageActionName">
       <bpmn:incoming>SequenceFlow_049fuit</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0upfncf</bpmn:outgoing>
     </bpmn:serviceTask>

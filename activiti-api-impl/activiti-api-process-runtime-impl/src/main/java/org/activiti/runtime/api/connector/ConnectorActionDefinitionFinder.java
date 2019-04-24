@@ -1,6 +1,7 @@
 package org.activiti.runtime.api.connector;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,32 +17,69 @@ public class ConnectorActionDefinitionFinder {
         this.connectorDefinitions = connectorDefinitions;
     }
 
-    public Optional<ActionDefinition> find(String implementation){
+    public Optional<ActionDefinition> find(String implementation) {
 
-        Optional<ActionDefinition> actionDefinitionOptional = Optional.empty();
+        String connectorName = StringUtils.substringBefore(implementation,
+                                                           ".");
+        String actionName = StringUtils.substringAfter(implementation,
+                                                       ".");
 
-        String connectorId = StringUtils.substringBefore(implementation,
-                                                         ".");
-        String actionId = StringUtils.substringAfter(implementation,
-                                                     ".");
+        ConnectorDefinition connectorDefinition = findConnector(connectorName);
 
-        List<ConnectorDefinition> resultingConnectors = connectorDefinitions.stream().filter(c -> c.getId().equals(connectorId)).collect(Collectors.toList());
-        if (resultingConnectors != null && resultingConnectors.size() != 0) {
+        ActionDefinition actionDefinition = findActionDefinition(actionName,
+                                                                 connectorDefinition);
+
+        return Optional.ofNullable(actionDefinition);
+    }
+
+    private ConnectorDefinition findConnector(String connectorName) {
+        List<ConnectorDefinition> resultingConnectors = connectorDefinitions.stream()
+                .filter(c -> connectorName.equals(c.getName()))
+                .collect(Collectors.toList());
+
+        ConnectorDefinition connectorDefinition = null;
+        if (resultingConnectors != null && !resultingConnectors.isEmpty()) {
             if (resultingConnectors.size() != 1) {
-                throw new RuntimeException("Expecting exactly 1 connector definition with id mapping `" + connectorId +
+                throw new RuntimeException("Expecting exactly 1 connector definition with name mapping `" + connectorName +
                                                    "`, but were found " + resultingConnectors.size());
             }
-            ConnectorDefinition connectorDefinition = resultingConnectors.get(0);
 
-            ActionDefinition actionDefinition = connectorDefinition.getActions().get(actionId);
-            if (actionDefinition == null) {
-                throw new RuntimeException("No action with id mapping `" + actionId + "` was found in connector `" +
-                                                   connectorId + "`");
+            connectorDefinition = resultingConnectors.get(0);
+        }
+        return connectorDefinition;
+    }
+
+    private ActionDefinition findActionDefinition(String actionName,
+                                                  ConnectorDefinition connectorDefinition) {
+        ActionDefinition actionDefinition = null;
+        if (connectorDefinition != null) {
+            List<ActionDefinition> actionDefinitions = filterByName(connectorDefinition.getActions(),
+                                                                    actionName);
+            if (actionDefinitions != null) {
+                if (actionDefinitions.size() != 1) {
+                    throw new RuntimeException("Expecting exactly 1 action definition with name mapping `" + actionName +
+                                                       "`, but were found " + actionDefinitions.size());
+                }
+                actionDefinition = actionDefinitions.get(0);
             }
 
-            actionDefinitionOptional = Optional.of(actionDefinition);
+            if (actionDefinition == null) {
+                throw new RuntimeException("No action with name mapping `" + actionName + "` was found in connector `" +
+                                                   connectorDefinition.getName() + "`");
+            }
         }
+        return actionDefinition;
+    }
 
-        return actionDefinitionOptional;
+    private List<ActionDefinition> filterByName(Map<String, ActionDefinition> actionDefinitions,
+                                                String actionName) {
+        if (actionDefinitions == null || actionName == null) {
+            return null;
+        }
+        return actionDefinitions.entrySet()
+                .stream()
+                .filter(entry -> actionName.equals(entry.getValue().getName()))
+                .map(Map.Entry::getValue)
+                .collect(Collectors.toList());
     }
 }

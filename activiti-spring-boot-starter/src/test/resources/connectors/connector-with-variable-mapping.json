@@ -1,8 +1,7 @@
 {
   "id": "variableMappingConnectorId",
-  "name": "Name of the connector",
-  "description": "Description of the connector",
-  "icon": "icon-name",
+  "name": "Variable Mapping Connector",
+  "description": "Description of the Variable Mapping Connector",
   "actions": {
     "variableMappingActionId": {
       "id": "variableMappingActionId",
