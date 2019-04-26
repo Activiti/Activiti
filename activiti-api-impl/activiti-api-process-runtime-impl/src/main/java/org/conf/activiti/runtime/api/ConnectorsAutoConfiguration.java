@@ -16,13 +16,15 @@
 
 package org.conf.activiti.runtime.api;
 
+import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
+import org.activiti.runtime.api.connector.ConnectorActionDefinitionFinder;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.InboundVariableValueProvider;
 import org.activiti.runtime.api.connector.InboundVariablesProvider;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.connector.OutboundVariablesProvider;
-import org.activiti.spring.process.ProcessConnectorService;
+import org.activiti.spring.connector.loader.ProcessConnectorService;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
@@ -41,18 +43,24 @@ public class ConnectorsAutoConfiguration {
     @ConditionalOnMissingBean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     public DefaultServiceTaskBehavior defaultServiceTaskBehavior(ApplicationContext applicationContext,
                                                                  IntegrationContextBuilder integrationContextBuilder,
+                                                                 ConnectorActionDefinitionFinder connectorActionDefinitionFinder,
                                                                  OutboundVariablesProvider outboundVariablesProvider) {
         return new DefaultServiceTaskBehavior(applicationContext,
                                               integrationContextBuilder,
+                                              connectorActionDefinitionFinder,
                                               outboundVariablesProvider);
     }
 
     @Bean
-    public OutboundVariablesProvider outboundVariablesProvider(ProcessConnectorService processConnectorService,
+    public OutboundVariablesProvider outboundVariablesProvider(ConnectorActionDefinitionFinder connectorActionDefinitionFinder,
                                                                ProcessExtensionService processExtensionService) {
         return new OutboundVariablesProvider(processExtensionService,
-                                             processConnectorService);
+                                             connectorActionDefinitionFinder);
     }
     
 
+    @Bean
+    public ConnectorActionDefinitionFinder connectorActionDefinitionFinder(ProcessConnectorService processConnectorService) {
+        return new ConnectorActionDefinitionFinder(processConnectorService);
+    }
 }

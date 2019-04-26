@@ -16,12 +16,9 @@
 
 package org.activiti.spring.boot;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-
 import java.util.List;
 
-import org.activiti.spring.process.ResourceFinderImpl;
+import org.activiti.spring.resources.ResourceFinder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +26,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -38,7 +38,7 @@ public class ProcessDefinitionResourceFinderIT {
     private ProcessDefinitionResourceFinderDescriptor processDefinitionResourceFinder;
     
     @Autowired
-    private ResourceFinderImpl resourceFinder;
+    private ResourceFinder resourceFinder;
 
     @SpyBean
     private ActivitiProperties activitiProperties;

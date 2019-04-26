@@ -16,10 +16,10 @@
 
 package org.activiti.spring.process;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.springframework.core.io.Resource;
 
 public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderDescriptor {
@@ -61,12 +61,12 @@ public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderD
     }
 
     @Override
-    public String getMsgForResourcesFound() {
-        return "The following process extension files will be deployed:";
+    public String getMsgForResourcesFound(List<String> processExtensionFiles) {
+        return "The following process extension files will be deployed: " + processExtensionFiles;
     }
     
     @Override
-    public void validate(List<Resource> resources) throws IOException {
+    public void validate(List<Resource> resources) {
         
     }
     

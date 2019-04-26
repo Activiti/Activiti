@@ -16,10 +16,9 @@
 
 package org.activiti.spring.boot;
 
-import java.io.IOException;
 import java.util.List;
 
-import org.activiti.spring.process.ResourceFinderDescriptor;
+import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.springframework.core.io.Resource;
 
 public class ProcessDefinitionResourceFinderDescriptor implements ResourceFinderDescriptor {
@@ -47,16 +46,16 @@ public class ProcessDefinitionResourceFinderDescriptor implements ResourceFinder
 
     @Override
     public String getMsgForEmptyResources() {
-        return "No process definitions were found for auto-deployment in the location";
+        return "No process definitions were found for auto-deployment in the location `" + getLocationPrefix() + "`";
     }
 
     @Override
-    public String getMsgForResourcesFound() {
-        return "The following process definition files will be deployed:";
+    public String getMsgForResourcesFound(List<String> foundProcessResources) {
+        return "The following process definition files will be deployed: " + foundProcessResources;
     }
     
     @Override
-    public void validate(List<Resource> resources) throws IOException {
+    public void validate(List<Resource> resources) {
         
     }
   

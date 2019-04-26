@@ -1,9 +1,5 @@
 package org.activiti.spring.boot.deployment;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -16,7 +12,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
@@ -38,12 +33,12 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.boot.ActivitiProperties;
 import org.activiti.spring.boot.ProcessDefinitionResourceFinderDescriptor;
 import org.activiti.spring.boot.security.util.SecurityUtil;
-import org.activiti.spring.process.ProcessConnectorResourceFinderDescriptor;
+import org.activiti.core.common.spring.connector.ConnectorResourceFinderDescriptor;
 import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
-import org.activiti.spring.process.ResourceFinderImpl;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.types.VariableType;
+import org.activiti.spring.resources.ResourceFinder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +47,10 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -74,7 +73,7 @@ public class ProcessDeploymentTest {
     private RepositoryService repositoryService;
     
     @Autowired
-    ResourceFinderImpl resourceFinder;
+    ResourceFinder resourceFinder;
     
     @Autowired
     private ProcessDefinitionResourceFinderDescriptor processDefinitionResourceFinder;
@@ -83,7 +82,7 @@ public class ProcessDeploymentTest {
     ProcessExtensionResourceFinderDescriptor processExtensionResourceFinder;
     
     @Autowired
-    ProcessConnectorResourceFinderDescriptor processConnectorResourceFinder;
+    ConnectorResourceFinderDescriptor processConnectorResourceFinder;
     
     @Autowired
     private ResourcePatternResolver resourceLoader;
@@ -139,8 +138,8 @@ public class ProcessDeploymentTest {
         String deploymentId = deployment.getId();
          
         for (Resource r: connectors) {
-            InputStream resourceStream = repositoryService.getResourceAsStream(deploymentId, connectorLocation+r.getFilename());
-            assertThat(resourceStream.equals(r.getInputStream()));
+            InputStream resourceStream = repositoryService.getResourceAsStream(deploymentId, connectorLocation + r.getFilename());
+            assertThat(resourceStream).isEqualTo(r.getInputStream());
         }
         
 

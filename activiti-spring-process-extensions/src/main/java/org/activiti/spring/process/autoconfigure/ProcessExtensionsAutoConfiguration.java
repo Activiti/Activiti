@@ -20,15 +20,17 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.RepositoryService;
-import org.activiti.spring.process.ProcessConnectorService;
+import org.activiti.spring.process.ProcessExtensionResourceReader;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
+import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
 import org.activiti.spring.process.variable.types.DateVariableType;
 import org.activiti.spring.process.variable.types.JavaObjectVariableType;
 import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.VariableType;
+import org.activiti.spring.resources.DeploymentResourceLoader;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,20 +51,21 @@ public class ProcessExtensionsAutoConfiguration {
                                                                      ProcessExtensionService processExtensionService){
         return () -> processVariablesInitiator.setProcessExtensionService(processExtensionService);
     }
- 
+
     @Bean
-    public ProcessExtensionService processExtensionService( ObjectMapper objectMapper,
-                                                            Map<String, VariableType> variableTypeMap,
-                                                            RepositoryService repositoryService) {
-        return new ProcessExtensionService(objectMapper, variableTypeMap, repositoryService);
-    }
-    
-    @Bean
-    public ProcessConnectorService processConnectorService( ObjectMapper objectMapper,
-                                                            RepositoryService repositoryService) {
-        return new ProcessConnectorService(objectMapper, repositoryService);
+    public DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader(RepositoryService repositoryService){
+        return new DeploymentResourceLoader<>(repositoryService);
     }
 
+    @Bean
+    public ProcessExtensionService processExtensionService(ObjectMapper objectMapper,
+                                                           Map<String, VariableType> variableTypeMap,
+                                                           RepositoryService repositoryService) {
+        return new ProcessExtensionService(
+                new DeploymentResourceLoader<>(repositoryService),
+                new ProcessExtensionResourceReader(objectMapper, variableTypeMap),
+                repositoryService);
+    }
     
     @Bean
     public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper){
