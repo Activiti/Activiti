@@ -208,8 +208,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
             throw new IllegalStateException("You cannot release a task where you are not the assignee");
         }
 
-        taskService.unclaim(releaseTaskPayload.getTaskId());
-        return task(releaseTaskPayload.getTaskId());
+        taskService.unclaim(releaseTaskPayload.getTaskId()); 
+        return taskConverter.from(taskRuntimeHelper.getInternalTask(releaseTaskPayload.getTaskId()));
     }
     
     @Override
