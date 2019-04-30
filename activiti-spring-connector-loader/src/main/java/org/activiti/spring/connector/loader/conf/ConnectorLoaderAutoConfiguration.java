@@ -16,7 +16,7 @@
 
 package org.activiti.spring.connector.loader.conf;
 
-import org.activiti.core.common.spring.connector.ConnectorReader;
+import org.activiti.core.common.spring.connector.ConnectorDefinitionReader;
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.connector.loader.ProcessConnectorService;
 import org.activiti.spring.resources.DeploymentResourceLoader;
@@ -28,7 +28,7 @@ public class ConnectorLoaderAutoConfiguration {
 
     @Bean
     public ProcessConnectorService processConnectorService(RepositoryService repositoryService,
-                                                           ConnectorReader connectorReader) {
+                                                           ConnectorDefinitionReader connectorReader) {
         return new ProcessConnectorService(new DeploymentResourceLoader<>(repositoryService),
                                            connectorReader,
                                            repositoryService);

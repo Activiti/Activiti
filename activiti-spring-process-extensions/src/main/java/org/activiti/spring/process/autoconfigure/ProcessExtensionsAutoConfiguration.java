@@ -58,12 +58,17 @@ public class ProcessExtensionsAutoConfiguration {
     }
 
     @Bean
-    public ProcessExtensionService processExtensionService(ObjectMapper objectMapper,
-                                                           Map<String, VariableType> variableTypeMap,
+    public ProcessExtensionResourceReader processExtensionResourceReader(ObjectMapper objectMapper,
+                                                                         Map<String, VariableType> variableTypeMap) {
+        return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
+    }
+
+    @Bean
+    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
                                                            RepositoryService repositoryService) {
         return new ProcessExtensionService(
                 new DeploymentResourceLoader<>(repositoryService),
-                new ProcessExtensionResourceReader(objectMapper, variableTypeMap),
+                processExtensionResourceReader,
                 repositoryService);
     }
     

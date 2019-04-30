@@ -35,9 +35,6 @@ public class ProcessExtensionService {
     //deploymentId => processDefinitionKey, ProcessExtensionModel
     private Map<String, Map<String,ProcessExtensionModel>> processExtensionModelDeploymentMap = new HashMap<>();
 
-    //processDefinitionId => processDefinition
-    private Map<String, ProcessDefinition>  loadedProcessDefinitions = new HashMap<>();
-    
     public ProcessExtensionService(DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader,
                                    ProcessExtensionResourceReader processExtensionReader,
                                    RepositoryService repositoryService) {
@@ -65,26 +62,12 @@ public class ProcessExtensionService {
     
 
     public boolean hasExtensionsFor(ProcessDefinition processDefinition) {
-        loadedProcessDefinitions.putIfAbsent(processDefinition.getId(),
-                                             processDefinition);
         return !EMPTY_EXTENSIONS.equals(getExtensionsFor(processDefinition));
     }
 
     public boolean hasExtensionsFor(String processDefinitionId) {
-        ProcessDefinition processDefinition = loadProcessDefinition(processDefinitionId);
-        ProcessExtensionModel processExtensionModel = getExtensionsFor(processDefinition);
-            
-        return (processExtensionModel != null);
-    }
-
-    private ProcessDefinition loadProcessDefinition(String processDefinitionId) {
-        //TODO: check if this cache is really necessary. Seems to be already cached in repository service
-        ProcessDefinition processDefinition = loadedProcessDefinitions.get(processDefinitionId);
-        if (processDefinition == null) {
-            processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
-            loadedProcessDefinitions.put(processDefinition.getId(), processDefinition);
-        }
-        return processDefinition;
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+        return hasExtensionsFor(processDefinition);
     }
 
     public ProcessExtensionModel getExtensionsFor(ProcessDefinition processDefinition) {
@@ -99,7 +82,7 @@ public class ProcessExtensionService {
     }
 
     public ProcessExtensionModel getExtensionsForId(String processDefinitionId) {
-        ProcessDefinition processDefinition = loadProcessDefinition(processDefinitionId);
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
         ProcessExtensionModel processExtensionModel = getExtensionsFor(processDefinition);
         return processExtensionModel != null? processExtensionModel : EMPTY_EXTENSIONS;
     }

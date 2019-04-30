@@ -61,13 +61,13 @@ public class DeploymentResourceLoader<T> {
     }
 
     private List<T> loadResources(String deploymentId,
-                                  ResourceReader<T> resourceLoaderDescriptor,
+                                  ResourceReader<T> resourceReader,
                                   List<String> selectedResources) {
         List<T> resources = new ArrayList<>();
         for (String name : selectedResources) {
             try (InputStream resourceAsStream = repositoryService.getResourceAsStream(deploymentId,
                                                                                       name)) {
-                T resource = resourceLoaderDescriptor.read(resourceAsStream);
+                T resource = resourceReader.read(resourceAsStream);
                 if (resource != null) {
                     resources.add(resource);
                 }

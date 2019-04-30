@@ -26,7 +26,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>activiti-spring-connector-loader</artifactId>
-    <name>Activiti :: Process Extensions</name>
+    <name>Activiti :: Connector Loader</name>
     <dependencies>
         <dependency>
             <groupId>org.activiti.core.common</groupId>

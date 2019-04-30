@@ -7,6 +7,8 @@ import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,25 +40,34 @@ public class ProcessRuntimeConnectorIT {
         securityUtil.logInAs("salaboy");
     }
 
+    @Autowired
+    private ProcessCleanUpUtil processCleanUpUtil;
+
+    @After
+    public void cleanUp(){
+        processCleanUpUtil.cleanUpWithAdmin();
+    }
+
+
     /**
      * It tests two connector actions inside the xml against two different connector json definitions:
      * the first input variable is defined in the first connector action,
      * the second input variable in the second connector action.
      **/
     @Test
-    public void shouldConnectorMatchWithConnectorDefinition() {
+    public void shouldExecuteProcessWithConnectorDefinition() {
 
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+                                                                   .withProcessDefinitionKey(CATEGORIZE_IMAGE_CONNECTORS_PROCESS)
+                                                                   .withVariable("input-variable-name-1",
+                                                                                 "input-variable-name-1")
+                                                                   .withVariable("input-variable-name-2",
+                                                                                 "input-variable-name-2")
+                                                                   .withVariable("expectedKey",
+                                                                                 true)
+                                                                   .build());
 
-        processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(CATEGORIZE_IMAGE_CONNECTORS_PROCESS)
-                .withVariable("input-variable-name-1",
-                        "input-variable-name-1")
-                .withVariable("input-variable-name-2",
-                        "input-variable-name-2")
-                .withVariable("expectedKey",
-                        true)
-                .build());
-
+        assertThat(processInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.COMPLETED);
     }
 
     @Test

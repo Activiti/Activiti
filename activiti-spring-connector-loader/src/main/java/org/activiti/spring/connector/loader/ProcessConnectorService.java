@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.activiti.core.common.model.connector.ConnectorDefinition;
-import org.activiti.core.common.spring.connector.ConnectorReader;
+import org.activiti.core.common.spring.connector.ConnectorDefinitionReader;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.resources.DeploymentResourceLoader;
@@ -43,14 +43,14 @@ import org.activiti.spring.resources.DeploymentResourceLoader;
 public class ProcessConnectorService {
 
     private final DeploymentResourceLoader<ConnectorDefinition> connectorResourceLoader;
-    private final ConnectorReader connectorReader;
+    private final ConnectorDefinitionReader connectorReader;
     private final RepositoryService repositoryService;
 
     //deploymentId => List <ConnectorDefinition>
     private Map<String, List<ConnectorDefinition>> processConnectorDefinitionsMap = new HashMap<>();
 
     public ProcessConnectorService(DeploymentResourceLoader<ConnectorDefinition> connectorResourceLoader,
-                                   ConnectorReader connectorReader,
+                                   ConnectorDefinitionReader connectorReader,
                                    RepositoryService repositoryService) {
         this.connectorResourceLoader = connectorResourceLoader;
         this.connectorReader = connectorReader;
