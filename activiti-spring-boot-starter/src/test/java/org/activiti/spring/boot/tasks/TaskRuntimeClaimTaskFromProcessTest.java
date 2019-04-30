@@ -3,6 +3,7 @@ package org.activiti.spring.boot.tasks;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
@@ -17,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -32,7 +34,8 @@ public class TaskRuntimeClaimTaskFromProcessTest {
     private SecurityUtil securityUtil;
 
     private static final String TWOTASK_PROCESS = "twoTaskProcess";
-
+    private static final String ONETASK_PROCESS = "SingleTaskProcess";
+    
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
@@ -67,6 +70,50 @@ public class TaskRuntimeClaimTaskFromProcessTest {
 
     }
 
+    @Test
+    public void claimTaskWithoutCandidatesAfterTaskRelease() {
+
+        securityUtil.logInAs("salaboy");
+
+        //when
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(ONETASK_PROCESS)
+                .build());
+
+        securityUtil.logInAs("garth");
+
+        Task task = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        String taskId = task.getId();
+        
+        assertThat(task.getAssignee()).isEqualTo("garth");
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+        
+        Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(taskId).build());
+        
+        assertThat(releasedTask.getAssignee()).isNull();
+        assertThat(releasedTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+        
+        //This should not happen
+        Throwable throwable = catchThrowable(() ->
+            taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(taskId).build()));
+
+        assertThat(throwable)
+            .isInstanceOf(NotFoundException.class);
+
+
+        //This should work
+        
+//        task = taskRuntime.task(taskId);
+//        assertThat(task).isNotNull();
+//        assertThat(task.getAssignee()).isEqualTo("garth");
+//        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+//        
+//
+//        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+
+    }
+    
+    
 
 
 

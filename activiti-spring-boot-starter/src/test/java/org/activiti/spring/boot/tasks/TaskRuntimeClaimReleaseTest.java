@@ -123,5 +123,61 @@ public class TaskRuntimeClaimReleaseTest {
         assertThat(throwable)
                 .isInstanceOf(NotFoundException.class);
     }
+    
+
+    @Test
+    public void createStandaloneTaskWithoutCandidatesAndClaimAndReleaseAndClaim() {
+
+        securityUtil.logInAs("garth");
+
+        taskRuntime.create(TaskPayloadBuilder.create()
+                .withName("task without candidates")
+                .build());
+
+        // the owner should be able to see the created task
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        
+        Task task = tasks.getContent().get(0);
+        String taskId = task.getId();
+        assertThat(task.getAssignee()).isNull();
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+        
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(taskId).build());
+        
+        task = taskRuntime.task(taskId);
+        assertThat(task.getAssignee()).isEqualTo("garth");
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+     
+        taskRuntime.release(TaskPayloadBuilder.release().withTaskId(taskId).build());
+        task = taskRuntime.task(taskId);
+        assertThat(task.getAssignee()).isNull();
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+
+        //Check that only task creator may claim the task now
+        securityUtil.logInAs("salaboy");
+
+        Throwable throwable = catchThrowable(() ->
+                taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(taskId).build()));
+        
+        assertThat(throwable)
+                .isInstanceOf(NotFoundException.class);
+        
+        securityUtil.logInAs("garth");  
+        
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(taskId).build());
+        task = taskRuntime.task(taskId);
+        assertThat(task.getAssignee()).isEqualTo("garth");
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+        
+        
+        taskRuntime.delete(TaskPayloadBuilder
+                              .delete()
+                              .withTaskId(task.getId())
+                              .withReason("test clean up")
+                              .build());
+    }
 
 }
