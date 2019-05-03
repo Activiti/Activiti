@@ -172,7 +172,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         // Validate that the task is visible by the currently authorized user
         Task task;
         try {
-            task = task(claimTaskPayload.getTaskId());
+            task = taskConverter.from(taskRuntimeHelper.getInternalTaskWithChecksForClaimAndView(claimTaskPayload.getTaskId()));
         } catch (IllegalStateException ex) {
             throw new IllegalStateException("The authenticated user cannot claim task" + claimTaskPayload.getTaskId() + " due it is not a candidate for it");
         }

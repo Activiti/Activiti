@@ -1,9 +1,10 @@
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
@@ -16,9 +17,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -94,22 +92,14 @@ public class TaskRuntimeClaimTaskFromProcessTest {
         assertThat(releasedTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
         
         //This should not happen
-        Throwable throwable = catchThrowable(() ->
-            taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(taskId).build()));
-
-        assertThat(throwable)
-            .isInstanceOf(NotFoundException.class);
-
-
-        //This should work
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(taskId).build());
         
-//        task = taskRuntime.task(taskId);
-//        assertThat(task).isNotNull();
-//        assertThat(task.getAssignee()).isEqualTo("garth");
-//        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
-//        
-//
-//        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+        task = taskRuntime.task(taskId);
+        assertThat(task).isNotNull();
+        assertThat(task.getAssignee()).isEqualTo("garth");
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
     }
     

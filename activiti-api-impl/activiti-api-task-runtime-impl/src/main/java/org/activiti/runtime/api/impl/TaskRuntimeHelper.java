@@ -13,6 +13,7 @@ import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
 public class TaskRuntimeHelper {
@@ -172,6 +173,51 @@ public class TaskRuntimeHelper {
             List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
             org.activiti.engine.task.Task task = taskService.createTaskQuery().taskCandidateOrAssigned(authenticatedUserId,
                                                                                                        userGroups).taskId(taskId).singleResult();
+            if (task == null) {
+                throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
+            }
+            
+            return task;
+        }
+        throw new IllegalStateException("There is no authenticated user, we need a user authenticated to find tasks");
+    }
+    
+    public org.activiti.engine.task.Task getInternalTaskWithChecksForClaimAndView(String taskId) {
+        String authenticatedUserId = getAuthenticatedUser();
+
+        if (authenticatedUserId != null && !authenticatedUserId.isEmpty() && userGroupManager!=null) {
+            
+            List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
+            List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+            
+            org.activiti.engine.task.Task task = taskService.createTaskQuery()
+                    .or()
+                    .taskCandidateOrAssigned(authenticatedUserId,
+                                             userGroups)
+                    .taskOwner(authenticatedUserId)
+                    .endOr()
+                    .taskId(taskId)
+                    .singleResult();
+            
+            if (task == null) {
+                task = taskService.createTaskQuery().taskId(taskId).singleResult();
+                //Check this only for tasks from processInstance
+                if (task != null) {
+                    Integer ok = 0;
+                    if (task.getProcessInstanceId() != null) {
+                      //Check maybe no candidates for task is set at all
+                      List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(taskId);
+                      if (identityLinks == null || identityLinks.isEmpty()) {
+                           //We may set here default security policy
+                           ok=1;
+                      }
+                    }
+                    if (ok == 0) {
+                        task = null;
+                    }
+                }
+            }
+            
             if (task == null) {
                 throw new NotFoundException("Unable to find task for the given id: " + taskId + " for user: " + authenticatedUserId + " (with groups: " + userGroups + " & with roles: " + userRoles + ")");
             }
