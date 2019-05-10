@@ -68,7 +68,6 @@ public class IntegrationContextBuilder {
 
             if(processDefinition != null) {
                 integrationContext.setProcessDefinitionKey(processDefinition.getKey());
-                integrationContext.setProcessDefinitionKey(processDefinition.getKey());
                 integrationContext.setProcessDefinitionVersion(processDefinition.getVersion());
             }
             
