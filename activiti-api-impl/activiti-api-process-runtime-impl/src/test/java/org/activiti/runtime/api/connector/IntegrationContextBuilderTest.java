@@ -16,23 +16,27 @@
 
 package org.activiti.runtime.api.connector;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import java.util.Collections;
 import java.util.Map;
 
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.core.common.model.connector.ActionDefinition;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class IntegrationContextBuilderTest {
     
@@ -55,6 +59,19 @@ public class IntegrationContextBuilderTest {
     @Before
     public void setUp() {
         initMocks(this);
+        
+        ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
+        Context.setProcessEngineConfiguration(processEngineConfiguration);
+        
+        DeploymentManager deploymentManager = mock(DeploymentManager.class);
+        ProcessDefinition processDefinition = mock(ProcessDefinition.class);
+        
+        given(processEngineConfiguration.getDeploymentManager()).willReturn(deploymentManager);
+        given(deploymentManager.findDeployedProcessDefinitionById(PROCESS_DEFINITION_ID)).willReturn(processDefinition);
+        
+        given(processDefinition.getId()).willReturn(PROCESS_DEFINITION_ID);
+        given(processDefinition.getKey()).willReturn(PROCESS_DEFINITION_KEY);
+        given(processDefinition.getVersion()).willReturn(PROCESS_DEFINITION_VERSION);        
     }
 
     @Test
@@ -81,8 +98,6 @@ public class IntegrationContextBuilderTest {
         given(execution.getCurrentActivityId()).willReturn(CURRENT_ACTIVITY_ID);
         given(execution.getProcessInstanceBusinessKey()).willReturn(PROCESS_INSTANCE_BUSINESS_KEY);
         given(execution.getProcessInstance()).willReturn(processInstance);
-        given(processInstance.getProcessDefinitionKey()).willReturn(PROCESS_DEFINITION_KEY);
-        given(processInstance.getProcessDefinitionVersion()).willReturn(PROCESS_DEFINITION_VERSION);
         given(processInstance.getParentProcessInstanceId()).willReturn(PARENT_PROCESS_INSTANCE_ID);
 
         //when
@@ -127,8 +142,6 @@ public class IntegrationContextBuilderTest {
         given(execution.getCurrentActivityId()).willReturn(CURRENT_ACTIVITY_ID);
         given(execution.getProcessInstanceBusinessKey()).willReturn(PROCESS_INSTANCE_BUSINESS_KEY);
         given(execution.getProcessInstance()).willReturn(processInstance);
-        given(processInstance.getProcessDefinitionKey()).willReturn(PROCESS_DEFINITION_KEY);
-        given(processInstance.getProcessDefinitionVersion()).willReturn(PROCESS_DEFINITION_VERSION);
         given(processInstance.getParentProcessInstanceId()).willReturn(PARENT_PROCESS_INSTANCE_ID);
 
         IntegrationContextEntityImpl integrationContextEntity = new IntegrationContextEntityImpl();
