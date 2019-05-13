@@ -8,6 +8,10 @@ import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.runtime.events.*;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.api.task.runtime.events.TaskCancelledEvent;
+import org.activiti.api.task.runtime.events.TaskCompletedEvent;
+import org.activiti.api.task.runtime.events.TaskCreatedEvent;
+import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,6 +31,21 @@ public class SignalsRuntimeTestConfiguration {
     @Bean
     public BPMNElementEventListener<BPMNActivityCompletedEvent> bpmnActivityCompletedListener() {
         return bpmnActivityCompletedEvent -> collectedEvents.add(bpmnActivityCompletedEvent);
+    }
+
+    @Bean
+    public TaskRuntimeEventListener<TaskCreatedEvent> taskCreatedEventListener() {
+        return taskCreatedEvent -> collectedEvents.add(taskCreatedEvent);
+    }
+
+    @Bean
+    public TaskRuntimeEventListener<TaskCompletedEvent> taskCompletedEventListener() {
+        return taskCompletedEvent -> collectedEvents.add(taskCompletedEvent);
+    }
+
+    @Bean
+    public TaskRuntimeEventListener<TaskCancelledEvent> taskCancelledEventTaskRuntimeEventListener(){
+        return taskCancelledEvent -> collectedEvents.add(taskCancelledEvent);
     }
 
     @Bean
