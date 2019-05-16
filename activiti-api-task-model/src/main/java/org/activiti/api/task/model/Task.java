@@ -21,12 +21,22 @@ import java.util.Date;
 public interface Task {
 
     enum TaskStatus {
-        CREATED,
-        ASSIGNED,
-        SUSPENDED,
-        COMPLETED,
-        CANCELLED,
-        DELETED
+        CREATED(false),
+        ASSIGNED(false),
+        SUSPENDED(false),
+        COMPLETED(true),
+        CANCELLED(true),
+        DELETED(true);
+
+        private final boolean finalState;
+
+        TaskStatus(boolean finalState) {
+            this.finalState = finalState;
+        }
+
+        public boolean isFinalState() {
+            return finalState;
+        }
     }
 
     String getId();
