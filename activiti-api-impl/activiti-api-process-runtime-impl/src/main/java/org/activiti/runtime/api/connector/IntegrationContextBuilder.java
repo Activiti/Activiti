@@ -21,8 +21,10 @@ import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
+import org.activiti.engine.repository.ProcessDefinition;
 
 public class IntegrationContextBuilder {
 
@@ -53,13 +55,22 @@ public class IntegrationContextBuilder {
         integrationContext.setClientId(execution.getCurrentActivityId());
 
         if(ExecutionEntity.class.isInstance(execution)) {
-            ExecutionEntity processInstance = ExecutionEntity.class.cast(execution)
-                                                                   .getProcessInstance();
+            ExecutionContext executionContext = new ExecutionContext(ExecutionEntity.class.cast(execution));
+
+            ExecutionEntity processInstance = executionContext.getProcessInstance(); 
+
             if(processInstance != null) {
-                integrationContext.setProcessDefinitionKey(processInstance.getProcessDefinitionKey());
-                integrationContext.setProcessDefinitionVersion(processInstance.getProcessDefinitionVersion());
                 integrationContext.setParentProcessInstanceId(processInstance.getParentProcessInstanceId());
             }
+            
+            // Let's try to resolve process definition attributes  
+            ProcessDefinition processDefinition = executionContext.getProcessDefinition();
+
+            if(processDefinition != null) {
+                integrationContext.setProcessDefinitionKey(processDefinition.getKey());
+                integrationContext.setProcessDefinitionVersion(processDefinition.getVersion());
+            }
+            
         }
 
         ServiceTask serviceTask = (ServiceTask)execution.getCurrentFlowElement();
