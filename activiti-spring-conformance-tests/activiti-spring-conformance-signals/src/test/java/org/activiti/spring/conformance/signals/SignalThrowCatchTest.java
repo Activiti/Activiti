@@ -15,6 +15,7 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.model.impl.BPMNActivityImpl;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -210,7 +211,8 @@ public class SignalThrowCatchTest {
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                 BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
+                BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                TaskRuntimeEvent.TaskEvents.TASK_CREATED
         );
         
         BPMNActivityImpl signalCatchEvent = (BPMNActivityImpl)collectedEvents.get(5).getEntity();
@@ -230,9 +232,11 @@ public class SignalThrowCatchTest {
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
+                        TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                         BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
-                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED
+                        BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
+                        TaskRuntimeEvent.TaskEvents.TASK_CREATED
                 );
 
         BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent) collectedEvents.get(0);
