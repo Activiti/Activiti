@@ -21,12 +21,22 @@ import java.util.Date;
 public interface ProcessInstance {
 
     enum ProcessInstanceStatus {
-        CREATED,
-        RUNNING,
-        SUSPENDED,
-        CANCELLED,
-        COMPLETED,
-        DELETED
+        CREATED(false),
+        RUNNING(false),
+        SUSPENDED(false),
+        CANCELLED(true),
+        COMPLETED(true),
+        DELETED(true);
+
+        private final boolean finalState;
+
+        ProcessInstanceStatus(boolean finalState) {
+            this.finalState = finalState;
+        }
+
+        public boolean isFinalState() {
+            return finalState;
+        }
     }
 
     String getId();
