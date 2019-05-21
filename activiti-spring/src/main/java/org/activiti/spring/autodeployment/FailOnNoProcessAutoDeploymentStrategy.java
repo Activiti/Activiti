@@ -31,7 +31,7 @@ public class FailOnNoProcessAutoDeploymentStrategy extends AbstractAutoDeploymen
                 validProcessCount++;
                 deploymentBuilder.addInputStream(resourceName, resource);
             } else {
-                LOGGER.error("The following resource wasn't included in the deployment since it is invalid: ",
+                LOGGER.error("The following resource wasn't included in the deployment since it is invalid:\n{}",
                         resourceName);
             }
         }
