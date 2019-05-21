@@ -40,6 +40,7 @@ public class TaskImpl implements Task {
     private Date completedDate;
     private Long duration;
     private Integer processDefinitionVersion;
+    private String businessKey;
 
     public TaskImpl() {
     }
@@ -187,6 +188,14 @@ public class TaskImpl implements Task {
     public void setProcessDefinitionVersion(Integer processDefinitionVersion) {
         this.processDefinitionVersion = processDefinitionVersion;
     }
+    
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -224,6 +233,8 @@ public class TaskImpl implements Task {
                                task.formKey) &&
                 Objects.equals(processDefinitionVersion,
                                task.processDefinitionVersion) &&
+                Objects.equals(businessKey,
+                               task.businessKey) &&
                 status == task.status;
     }
 
@@ -244,7 +255,8 @@ public class TaskImpl implements Task {
                             parentTaskId,
                             formKey,
                             status,
-                            processDefinitionVersion);
+                            processDefinitionVersion,
+                            businessKey);
     }
 
     @Override
@@ -265,6 +277,7 @@ public class TaskImpl implements Task {
                 ", formKey='" + formKey + '\'' +
                 ", status=" + status +
                 ", processDefinitionVersion=" + processDefinitionVersion +
+                ", businessKey=" + businessKey +
                 '}';
     }
 }
