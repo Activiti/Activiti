@@ -159,12 +159,14 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (!task.getAssignee().equals(authenticatedUserId)) {
             throw new IllegalStateException("You cannot complete the task if you are not assigned to it");
         }
-        TaskImpl competedTaskData = new TaskImpl(task.getId(),
-                                                 task.getName(),
-                                                 Task.TaskStatus.COMPLETED);
+
         taskService.complete(completeTaskPayload.getTaskId(),
                              completeTaskPayload.getVariables(),true);
-        return competedTaskData;
+        
+             
+        ((TaskImpl)task).setStatus(Task.TaskStatus.COMPLETED);
+        
+        return task;
     }
 
     @Override
