@@ -1,6 +1,5 @@
 package org.activiti.spring.conformance.set2;
 
-import static org.activiti.spring.conformance.set2.Set2RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -18,6 +17,7 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -47,7 +47,7 @@ public class UserTaskCandidateDeleteRuntimeTest {
 
     @Before
     public void cleanUp() {
-        collectedEvents.clear();
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 
@@ -91,7 +91,7 @@ public class UserTaskCandidateDeleteRuntimeTest {
         assertThat(task.getAssignee()).isNull();
 
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
@@ -102,7 +102,7 @@ public class UserTaskCandidateDeleteRuntimeTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        collectedEvents.clear();
+        RuntimeTestConfiguration.collectedEvents.clear();
 
         Throwable throwable = catchThrowable(() -> taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build()));
 
@@ -119,6 +119,7 @@ public class UserTaskCandidateDeleteRuntimeTest {
         for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 }

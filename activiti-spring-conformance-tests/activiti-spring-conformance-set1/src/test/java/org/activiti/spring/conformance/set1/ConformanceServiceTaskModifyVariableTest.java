@@ -1,6 +1,5 @@
 package org.activiti.spring.conformance.set1;
 
-import static org.activiti.spring.conformance.set1.Set1RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -14,6 +13,7 @@ import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Test;
@@ -93,7 +93,7 @@ public class ConformanceServiceTaskModifyVariableTest {
 
         assertThat(Set1RuntimeTestConfiguration.isConnector2Executed()).isTrue();
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
@@ -110,10 +110,8 @@ public class ConformanceServiceTaskModifyVariableTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
 
-        assertThat((String)((VariableUpdatedEvent)collectedEvents.get(7)).getEntity().getValue()).isEqualTo("value1-modified");
+        assertThat((String)((VariableUpdatedEvent)RuntimeTestConfiguration.collectedEvents.get(7)).getEntity().getValue()).isEqualTo("value1-modified");
 
     }
-
-
 
 }

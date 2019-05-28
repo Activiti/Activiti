@@ -1,13 +1,13 @@
 package org.activiti.spring.conformance.set0;
 
 import org.activiti.api.process.model.ProcessDefinition;
-import org.activiti.api.process.model.ProcessDefinitionMeta;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Test;
@@ -18,7 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import static org.activiti.spring.conformance.set0.Set0RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -43,7 +42,7 @@ public class ConformanceBasicProcessRuntimeTest {
         List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners = configuration.processEventListeners();
         List<VariableEventListener<?>> variableEventListeners = configuration.variableEventListeners();
         //then
-        assertThat(processRuntimeEventListeners).hasSize(10);
+        assertThat(processRuntimeEventListeners).hasSize(11);
         assertThat(variableEventListeners).hasSize(3);
 
     }
@@ -80,7 +79,7 @@ public class ConformanceBasicProcessRuntimeTest {
 
     @After
     public void cleanUp() {
-        collectedEvents.clear();
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 

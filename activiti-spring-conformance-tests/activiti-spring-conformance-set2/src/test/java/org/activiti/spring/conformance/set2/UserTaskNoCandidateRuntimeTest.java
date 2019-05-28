@@ -1,6 +1,5 @@
 package org.activiti.spring.conformance.set2;
 
-import static org.activiti.spring.conformance.set2.Set2RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.activiti.api.process.model.ProcessInstance;
@@ -12,6 +11,7 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -44,7 +44,7 @@ public class UserTaskNoCandidateRuntimeTest {
 
     @Before
     public void cleanUp() {
-        collectedEvents.clear();
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 
@@ -100,6 +100,7 @@ public class UserTaskNoCandidateRuntimeTest {
         for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 

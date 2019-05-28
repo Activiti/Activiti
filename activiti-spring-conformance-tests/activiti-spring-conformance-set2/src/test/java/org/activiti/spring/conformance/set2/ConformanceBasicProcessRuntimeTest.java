@@ -41,7 +41,7 @@ public class ConformanceBasicProcessRuntimeTest {
         List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners = configuration.processEventListeners();
         List<VariableEventListener<?>> variableEventListeners = configuration.variableEventListeners();
         //then
-        assertThat(processRuntimeEventListeners).hasSize(10);
+        assertThat(processRuntimeEventListeners).hasSize(11);
         assertThat(variableEventListeners).hasSize(3);
 
     }
