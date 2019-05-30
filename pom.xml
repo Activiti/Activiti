@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?> 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -21,9 +21,9 @@
 
   <properties>
     <activiti-build.version>7.1.14</activiti-build.version>
-    <activiti-api.version>7.1.23</activiti-api.version>
-    <activiti-core-common.version>7.1.23</activiti-core-common.version> 
-    <activiti.version>7.1.32</activiti.version>
+    <activiti-api.version>7.1.25</activiti-api.version>
+    <activiti-core-common.version>7.1.25</activiti-core-common.version> 
+    <activiti.version>7.1.33</activiti.version>
   </properties>
 
   <organization>
