@@ -46,7 +46,7 @@ public class BasicParallelGatewayTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -102,7 +102,7 @@ public class BasicParallelGatewayTest {
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
 
-        cleanUp();
+        clearEvents();
 
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
@@ -123,7 +123,7 @@ public class BasicParallelGatewayTest {
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED,
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
-        cleanUp();
+        clearEvents();
 
 
         // User 1 has his/her task
@@ -172,6 +172,10 @@ public class BasicParallelGatewayTest {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
         
+        clearEvents();
+    }
+    
+    public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
 

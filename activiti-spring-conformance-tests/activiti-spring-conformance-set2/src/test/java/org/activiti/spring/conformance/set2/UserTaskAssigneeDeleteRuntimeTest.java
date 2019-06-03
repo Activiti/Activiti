@@ -48,7 +48,7 @@ public class UserTaskAssigneeDeleteRuntimeTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -102,7 +102,7 @@ public class UserTaskAssigneeDeleteRuntimeTest {
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED,
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
-        cleanUp();
+        clearEvents();
 
         Throwable throwable = catchThrowable(() ->  taskRuntime.delete(TaskPayloadBuilder.delete()
                 .withTaskId(task.getId())
@@ -122,6 +122,10 @@ public class UserTaskAssigneeDeleteRuntimeTest {
         for(ProcessInstance pi : processInstancePage.getContent()){
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
+        clearEvents();
+    }
+    
+    public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
 

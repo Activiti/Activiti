@@ -53,7 +53,7 @@ public class ProcessVariablesTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
     @Test
@@ -158,7 +158,7 @@ public class ProcessVariablesTest {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
         
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
     private void startProcess(){
@@ -182,7 +182,7 @@ public class ProcessVariablesTest {
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED
                 );
 
-        cleanUp();
+        clearEvents();
     }
 
     private void setVariables(){
@@ -194,6 +194,10 @@ public class ProcessVariablesTest {
         processRuntime.setVariables(new SetVariablesPayloadBuilder().withVariables(variablesMap).withProcessInstanceId(processInstanceId).build());
 
         variableInstanceList = processRuntime.variables(new GetVariablesPayloadBuilder().withProcessInstanceId(processInstanceId).build());
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 }

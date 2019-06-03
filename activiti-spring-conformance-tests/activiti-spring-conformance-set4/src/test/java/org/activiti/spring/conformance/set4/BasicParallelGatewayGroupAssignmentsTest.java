@@ -46,7 +46,7 @@ public class BasicParallelGatewayGroupAssignmentsTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -102,7 +102,7 @@ public class BasicParallelGatewayGroupAssignmentsTest {
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
 
-        cleanUp();
+        clearEvents();
 
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
@@ -121,7 +121,7 @@ public class BasicParallelGatewayGroupAssignmentsTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        cleanUp();
+        clearEvents();
 
 
         // User 1 is a candidate for a task
@@ -177,6 +177,10 @@ public class BasicParallelGatewayGroupAssignmentsTest {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
         
+        clearEvents();
+    }
+    
+    public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
 

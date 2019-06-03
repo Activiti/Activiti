@@ -49,7 +49,7 @@ public class BasicExclusiveGatewayErrorTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -105,7 +105,7 @@ public class BasicExclusiveGatewayErrorTest {
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
 
-        cleanUp();
+        clearEvents();
 
 
 
@@ -130,6 +130,10 @@ public class BasicExclusiveGatewayErrorTest {
         for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
+        clearEvents();
+    }
+    
+    public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
 

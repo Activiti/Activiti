@@ -46,7 +46,7 @@ public class BasicExclusiveGatewayTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -102,7 +102,7 @@ public class BasicExclusiveGatewayTest {
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
 
-        cleanUp();
+        clearEvents();
 
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
@@ -119,7 +119,7 @@ public class BasicExclusiveGatewayTest {
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED,
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
-        cleanUp();
+        clearEvents();
 
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
@@ -147,6 +147,10 @@ public class BasicExclusiveGatewayTest {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
         
+        clearEvents();
+    }
+    
+    public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
 

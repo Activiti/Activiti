@@ -46,7 +46,7 @@ public class BasicCallActivityTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -92,8 +92,8 @@ public class BasicCallActivityTest {
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
 
-        cleanUp();
-
+        clearEvents();
+        
         // I should get a task for User1
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
@@ -128,7 +128,7 @@ public class BasicCallActivityTest {
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED,
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
-        cleanUp();
+        clearEvents();
 
 
     }
@@ -145,6 +145,10 @@ public class BasicCallActivityTest {
             }
         }
         
+        clearEvents();
+    }
+    
+    public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
 

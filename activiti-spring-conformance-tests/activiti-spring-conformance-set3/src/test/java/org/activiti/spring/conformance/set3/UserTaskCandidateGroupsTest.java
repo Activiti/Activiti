@@ -47,7 +47,7 @@ public class UserTaskCandidateGroupsTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -101,7 +101,7 @@ public class UserTaskCandidateGroupsTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        cleanUp();
+        clearEvents();
         
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
@@ -111,7 +111,7 @@ public class UserTaskCandidateGroupsTest {
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                         TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
 
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
@@ -169,7 +169,11 @@ public class UserTaskCandidateGroupsTest {
         for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
+    }
+    
 }

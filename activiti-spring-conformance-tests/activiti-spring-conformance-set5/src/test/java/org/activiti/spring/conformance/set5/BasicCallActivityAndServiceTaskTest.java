@@ -40,7 +40,7 @@ public class BasicCallActivityAndServiceTaskTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -91,7 +91,7 @@ public class BasicCallActivityAndServiceTaskTest {
                         );
 
 
-        cleanUp();
+        clearEvents();
 
     }
 
@@ -107,6 +107,10 @@ public class BasicCallActivityAndServiceTaskTest {
             }
         }
         
+        clearEvents();
+    }
+    
+    public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
 

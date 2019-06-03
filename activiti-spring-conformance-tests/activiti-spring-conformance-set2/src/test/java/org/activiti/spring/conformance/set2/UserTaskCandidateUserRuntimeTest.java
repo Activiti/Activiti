@@ -48,7 +48,7 @@ public class UserTaskCandidateUserRuntimeTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -103,7 +103,7 @@ public class UserTaskCandidateUserRuntimeTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        cleanUp();
+        clearEvents();
 
         // Check with user2
         securityUtil.logInAs("user2");
@@ -138,7 +138,7 @@ public class UserTaskCandidateUserRuntimeTest {
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                                  TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
         
-        cleanUp();
+        clearEvents();
 
         //complete task now should work
         Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(claimedTask.getId()).build());
@@ -196,7 +196,7 @@ public class UserTaskCandidateUserRuntimeTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        cleanUp();
+        clearEvents();
 
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
@@ -208,7 +208,7 @@ public class UserTaskCandidateUserRuntimeTest {
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                                  TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
         
-        cleanUp();
+        clearEvents();
 
         Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(task.getId()).build());
 
@@ -220,7 +220,7 @@ public class UserTaskCandidateUserRuntimeTest {
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                                  TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
-        cleanUp();
+        clearEvents();
 
     }
 
@@ -231,6 +231,10 @@ public class UserTaskCandidateUserRuntimeTest {
         for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
+        clearEvents();
+    }
+    
+    public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
 

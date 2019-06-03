@@ -48,7 +48,7 @@ public class UserTaskCandidateGroupRuntimeTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -103,7 +103,7 @@ public class UserTaskCandidateGroupRuntimeTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        cleanUp();
+        clearEvents();
 
         // Check with user2
         securityUtil.logInAs("user2");
@@ -146,7 +146,7 @@ public class UserTaskCandidateGroupRuntimeTest {
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                                  TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
-        cleanUp();
+        clearEvents();
 
         //complete task now should work
         Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(claimedTask.getId()).build());
@@ -204,7 +204,7 @@ public class UserTaskCandidateGroupRuntimeTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        cleanUp();
+        clearEvents();
 
         // Check with user3
         securityUtil.logInAs("user3");
@@ -226,7 +226,7 @@ public class UserTaskCandidateGroupRuntimeTest {
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                                  TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
-        cleanUp();
+        clearEvents();
 
         // Check with user3, he/she shouldn't see any task now that the task was assigned
         securityUtil.logInAs("user3");
@@ -249,7 +249,7 @@ public class UserTaskCandidateGroupRuntimeTest {
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                                  TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
-        cleanUp();
+        clearEvents();
 
         // User 1 should be able to see the task to claim now
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
@@ -275,6 +275,10 @@ public class UserTaskCandidateGroupRuntimeTest {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
         
+        clearEvents();
+    }
+    
+    public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
     

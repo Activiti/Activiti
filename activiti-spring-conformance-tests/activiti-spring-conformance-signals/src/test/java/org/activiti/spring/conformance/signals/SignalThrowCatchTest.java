@@ -45,7 +45,7 @@ public class SignalThrowCatchTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
     @After
@@ -56,7 +56,7 @@ public class SignalThrowCatchTest {
         for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
     @Test
@@ -111,7 +111,7 @@ public class SignalThrowCatchTest {
         BPMNActivityImpl signalCatchEvent = (BPMNActivityImpl)RuntimeTestConfiguration.collectedEvents.get(5).getEntity();
         assertThat(signalCatchEvent.getActivityType()).isEqualTo("intermediateCatchEvent");
                
-        cleanUp();
+        clearEvents();
         SignalPayload signalPayload = ProcessPayloadBuilder.signal()
                 .withName("Test")
                 .withVariable("signal-variable",
@@ -161,7 +161,7 @@ public class SignalThrowCatchTest {
         BPMNActivityImpl signalCatchEvent = (BPMNActivityImpl)RuntimeTestConfiguration.collectedEvents.get(5).getEntity();
         assertThat(signalCatchEvent.getActivityType()).isEqualTo("intermediateCatchEvent");
         
-        cleanUp();
+        clearEvents();
         
         startThrowSignalProcess();
 
@@ -221,7 +221,7 @@ public class SignalThrowCatchTest {
         assertThat(signalCatchEvent.getActivityType()).isEqualTo("userTask");
         assertThat(signalCatchEvent.getActivityName()).isEqualTo("Boundary container");
 
-        cleanUp();
+        clearEvents();
         
         SignalPayload signalPayload = ProcessPayloadBuilder.signal()
                 .withName("Test")
@@ -253,7 +253,7 @@ public class SignalThrowCatchTest {
         assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
         assertThat(event.getEntity().getSignalPayload().getVariables().get("signal-variable")).isEqualTo("test");
 
-        cleanUp();
+        clearEvents();
     }
 
     @Test
@@ -289,7 +289,7 @@ public class SignalThrowCatchTest {
         assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
         assertThat(event.getEntity().getSignalPayload().getVariables().get("signal-variable")).isEqualTo("test");
 
-        cleanUp();
+        clearEvents();
     }
 
     private ProcessInstance startThrowSignalProcess() {
@@ -319,5 +319,9 @@ public class SignalThrowCatchTest {
                                                                .withBusinessKey("boundary-business-key")
                                                                .withName("boundary-signal-instance-name")
                                                                .build());
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 }

@@ -58,7 +58,7 @@ public class TaskVariablesTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
     @Test
@@ -164,7 +164,7 @@ public class TaskVariablesTest {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
         
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -189,7 +189,7 @@ public class TaskVariablesTest {
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED
                 );
 
-        cleanUp();
+        clearEvents();
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
         taskId = tasks.getContent().get(0).getId();
@@ -204,6 +204,10 @@ public class TaskVariablesTest {
                                                                                        2).withTaskId(taskId).build());
 
         variableInstanceList = taskRuntime.variables(new GetTaskVariablesPayloadBuilder().withTaskId(taskId).build());
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 }

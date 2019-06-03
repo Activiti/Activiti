@@ -49,7 +49,7 @@ public class UserTaskAssigneeRuntimeTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
     @Test
@@ -136,7 +136,7 @@ public class UserTaskAssigneeRuntimeTest {
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED,
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
-        cleanUp();
+        clearEvents();
 
         // complete with user1
         securityUtil.logInAs("user1");
@@ -156,6 +156,10 @@ public class UserTaskAssigneeRuntimeTest {
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
 
 
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 }

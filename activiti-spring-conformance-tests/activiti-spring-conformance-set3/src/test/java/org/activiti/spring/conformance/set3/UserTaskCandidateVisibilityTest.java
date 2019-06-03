@@ -50,7 +50,7 @@ public class UserTaskCandidateVisibilityTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -105,7 +105,7 @@ public class UserTaskCandidateVisibilityTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        cleanUp();
+        clearEvents();
 
         // Check with user2
         securityUtil.logInAs("user2");
@@ -217,7 +217,7 @@ public class UserTaskCandidateVisibilityTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        cleanUp();
+        clearEvents();
 
         // Check with user2
         securityUtil.logInAs("user2");
@@ -261,7 +261,7 @@ public class UserTaskCandidateVisibilityTest {
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                         TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
-        cleanUp();
+        clearEvents();
 
         // Now it should work
         taskRuntime.addCandidateGroups(TaskPayloadBuilder
@@ -276,7 +276,7 @@ public class UserTaskCandidateVisibilityTest {
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly();
 
-        cleanUp();
+        clearEvents();
 
         candidateGroups = taskRuntime.groupCandidates(task.getId());
         assertThat(candidateGroups).contains("group1", "group2");
@@ -290,7 +290,7 @@ public class UserTaskCandidateVisibilityTest {
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                         TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
-        cleanUp();
+        clearEvents();
 
         // Check with user2
         securityUtil.logInAs("user2");
@@ -308,6 +308,10 @@ public class UserTaskCandidateVisibilityTest {
         for(ProcessInstance pi : processInstancePage.getContent()){
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
+        clearEvents();
+    }
+    
+    public void clearEvents() {
         RuntimeTestConfiguration.collectedEvents.clear();
     }
     

@@ -34,7 +34,7 @@ public class ProcessInstanceOperationsTest {
 
     @Before
     public void cleanUp() {
-        RuntimeTestConfiguration.collectedEvents.clear();
+        clearEvents();
     }
 
     /*
@@ -66,7 +66,7 @@ public class ProcessInstanceOperationsTest {
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                 TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        cleanUp();
+        clearEvents();
 
         ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(processInstance.getId()));
         assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.DELETED);
@@ -113,7 +113,7 @@ public class ProcessInstanceOperationsTest {
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                 TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        cleanUp();
+        clearEvents();
 
         ProcessInstance suspendedProcessInstance = processRuntime.suspend(ProcessPayloadBuilder.suspend(processInstance.getId()));
         assertThat(suspendedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.SUSPENDED);
@@ -123,12 +123,16 @@ public class ProcessInstanceOperationsTest {
         .containsExactly(ProcessRuntimeEvent.ProcessEvents.PROCESS_SUSPENDED,
                          TaskRuntimeEvent.TaskEvents.TASK_SUSPENDED);
 
-        cleanUp();
+        clearEvents();
 
         ProcessInstance resumedProcessInstance = processRuntime.resume(ProcessPayloadBuilder.resume(suspendedProcessInstance.getId()));
         assertThat(resumedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.RUNNING);
 
         assertThat(RuntimeTestConfiguration.collectedEvents).extracting(RuntimeEvent::getEventType).containsExactly(ProcessRuntimeEvent.ProcessEvents.PROCESS_RESUMED);
         
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 }
