@@ -26,4 +26,16 @@
     <module>activiti-spring-conformance-variables</module>
     <module>activiti-spring-conformance-signals</module>
   </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.activiti.steps</groupId>
+        <artifactId>activiti-steps-dependencies</artifactId>
+        <version>7.1.0-SNAPSHOT</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>

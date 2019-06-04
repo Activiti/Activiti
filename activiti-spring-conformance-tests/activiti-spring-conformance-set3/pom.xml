@@ -16,6 +16,10 @@
 
   <dependencies>
     <dependency>
+      <groupId>org.activiti.steps</groupId>
+      <artifactId>activiti-steps-assertions</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-spring-conformance-util</artifactId>
     </dependency>
