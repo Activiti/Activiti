@@ -14,6 +14,7 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.spring.conformance.set5.Set5RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -46,7 +46,7 @@ public class BasicCallActivityTest {
 
     @Before
     public void cleanUp() {
-        collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -73,7 +73,7 @@ public class BasicCallActivityTest {
 
         assertThat(processInstanceById).isEqualTo(processInstance);
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
@@ -92,8 +92,8 @@ public class BasicCallActivityTest {
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
 
-        collectedEvents.clear();
-
+        clearEvents();
+        
         // I should get a task for User1
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
 
@@ -113,7 +113,7 @@ public class BasicCallActivityTest {
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
@@ -128,7 +128,7 @@ public class BasicCallActivityTest {
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED,
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
-        collectedEvents.clear();
+        clearEvents();
 
 
     }
@@ -144,6 +144,12 @@ public class BasicCallActivityTest {
                 processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
             }
         }
+        
+        clearEvents();
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 }

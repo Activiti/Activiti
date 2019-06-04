@@ -10,10 +10,8 @@ import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
-import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.builders.TaskPayloadBuilder;
-import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -23,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.spring.conformance.set5.Set5RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -36,9 +33,6 @@ public class BasicCallActivityAndServiceTaskTest {
     private ProcessRuntime processRuntime;
 
     @Autowired
-    private TaskRuntime taskRuntime;
-
-    @Autowired
     private SecurityUtil securityUtil;
 
     @Autowired
@@ -46,7 +40,7 @@ public class BasicCallActivityAndServiceTaskTest {
 
     @Before
     public void cleanUp() {
-        collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -69,7 +63,7 @@ public class BasicCallActivityAndServiceTaskTest {
         assertThat(processInstance.getName()).isEqualTo("my-process-instance-name");
         
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
@@ -97,9 +91,7 @@ public class BasicCallActivityAndServiceTaskTest {
                         );
 
 
-        collectedEvents.clear();
-
-
+        clearEvents();
 
     }
 
@@ -114,6 +106,12 @@ public class BasicCallActivityAndServiceTaskTest {
                 processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
             }
         }
+        
+        clearEvents();
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 }

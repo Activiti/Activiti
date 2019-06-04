@@ -1,6 +1,5 @@
 package org.activiti.spring.conformance.set2;
 
-import static org.activiti.spring.conformance.set2.Set2RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -24,6 +23,7 @@ import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +49,7 @@ public class UserTaskAssigneeRuntimeTest {
 
     @Before
     public void cleanUp() {
-        collectedEvents.clear();
+        clearEvents();
     }
 
     @Test
@@ -64,9 +64,9 @@ public class UserTaskAssigneeRuntimeTest {
         List<VariableEventListener<?>> variableEventListeners = configuration.variableEventListeners();
         List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners = processRuntime.configuration().processEventListeners();
         //then
-        assertThat(taskRuntimeEventListeners).hasSize(5);
+        assertThat(taskRuntimeEventListeners).hasSize(6);
         assertThat(variableEventListeners).hasSize(3);
-        assertThat(processRuntimeEventListeners).hasSize(10);
+        assertThat(processRuntimeEventListeners).hasSize(11);
 
     }
 
@@ -124,7 +124,7 @@ public class UserTaskAssigneeRuntimeTest {
                 .isInstanceOf(NotFoundException.class);
 
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
@@ -136,7 +136,7 @@ public class UserTaskAssigneeRuntimeTest {
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED,
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
 
-        collectedEvents.clear();
+        clearEvents();
 
         // complete with user1
         securityUtil.logInAs("user1");
@@ -145,7 +145,7 @@ public class UserTaskAssigneeRuntimeTest {
 
         assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
@@ -156,6 +156,10 @@ public class UserTaskAssigneeRuntimeTest {
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED);
 
 
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 }

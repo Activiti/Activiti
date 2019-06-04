@@ -15,6 +15,7 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -26,7 +27,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import static org.activiti.spring.conformance.set3.Set3RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -50,7 +50,7 @@ public class UserTaskCandidateVisibilityTest {
 
     @Before
     public void cleanUp() {
-        collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -94,7 +94,7 @@ public class UserTaskCandidateVisibilityTest {
         assertThat(task.getAssignee()).isNull();
 
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
@@ -105,7 +105,7 @@ public class UserTaskCandidateVisibilityTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        collectedEvents.clear();
+        clearEvents();
 
         // Check with user2
         securityUtil.logInAs("user2");
@@ -206,7 +206,7 @@ public class UserTaskCandidateVisibilityTest {
         assertThat(task.getAssignee()).isNull();
 
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
@@ -217,7 +217,7 @@ public class UserTaskCandidateVisibilityTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        collectedEvents.clear();
+        clearEvents();
 
         // Check with user2
         securityUtil.logInAs("user2");
@@ -256,12 +256,12 @@ public class UserTaskCandidateVisibilityTest {
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                         TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
-        collectedEvents.clear();
+        clearEvents();
 
         // Now it should work
         taskRuntime.addCandidateGroups(TaskPayloadBuilder
@@ -272,11 +272,11 @@ public class UserTaskCandidateVisibilityTest {
 
         //@TODO: operations should cause events
         // https://github.com/Activiti/Activiti/issues/2330
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly();
 
-        collectedEvents.clear();
+        clearEvents();
 
         candidateGroups = taskRuntime.groupCandidates(task.getId());
         assertThat(candidateGroups).contains("group1", "group2");
@@ -285,12 +285,12 @@ public class UserTaskCandidateVisibilityTest {
 
         taskRuntime.release(TaskPayloadBuilder.release().withTaskId(task.getId()).build());
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                         TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
-        collectedEvents.clear();
+        clearEvents();
 
         // Check with user2
         securityUtil.logInAs("user2");
@@ -308,6 +308,11 @@ public class UserTaskCandidateVisibilityTest {
         for(ProcessInstance pi : processInstancePage.getContent()){
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
+        clearEvents();
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
     
 }

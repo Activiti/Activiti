@@ -19,6 +19,7 @@ import org.activiti.api.task.model.builders.CreateTaskVariablePayloadBuilder;
 import org.activiti.api.task.model.builders.GetTaskVariablesPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.spring.conformance.variables.VariablesRuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.tuple;
 
@@ -58,7 +58,7 @@ public class TaskVariablesTest {
 
     @Before
     public void cleanUp() {
-        collectedEvents.clear();
+        clearEvents();
     }
 
     @Test
@@ -70,7 +70,7 @@ public class TaskVariablesTest {
 
         createVariables();
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
                         tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -95,7 +95,7 @@ public class TaskVariablesTest {
         assertThat(variableOneRuntime.getTaskId()).isEqualTo(taskId);
         assertThat(variableOneRuntime.getProcessInstanceId()).isEqualTo(processInstanceId);
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
                         tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -119,7 +119,7 @@ public class TaskVariablesTest {
         VariableInstance variableOneRuntime = variableInstanceList.get(0);
         assertThat(variableOneRuntime.isTaskVariable()).isTrue();
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
                         tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -144,7 +144,7 @@ public class TaskVariablesTest {
         assertThat(variableOneRuntime.getType()).isEqualTo("string");
         assertThat(variableTwoRuntime.getType()).isEqualTo("integer");
         
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
                         tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -163,6 +163,8 @@ public class TaskVariablesTest {
         for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
+        
+        clearEvents();
     }
 
 
@@ -174,7 +176,7 @@ public class TaskVariablesTest {
                 .withName("my-process-instance-name")
                 .build()).getId();
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
@@ -187,7 +189,7 @@ public class TaskVariablesTest {
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED
                 );
 
-        collectedEvents.clear();
+        clearEvents();
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 50));
         taskId = tasks.getContent().get(0).getId();
@@ -202,6 +204,10 @@ public class TaskVariablesTest {
                                                                                        2).withTaskId(taskId).build());
 
         variableInstanceList = taskRuntime.variables(new GetTaskVariablesPayloadBuilder().withTaskId(taskId).build());
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 }

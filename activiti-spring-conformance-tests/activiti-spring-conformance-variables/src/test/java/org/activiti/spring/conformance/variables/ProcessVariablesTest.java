@@ -15,6 +15,7 @@ import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -28,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.activiti.spring.conformance.variables.VariablesRuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Java6Assertions.tuple;
 
@@ -53,7 +53,7 @@ public class ProcessVariablesTest {
 
     @Before
     public void cleanUp() {
-        collectedEvents.clear();
+        clearEvents();
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ProcessVariablesTest {
 
         setVariables();
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
                         tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -90,7 +90,7 @@ public class ProcessVariablesTest {
         assertThat(variableOneRuntime.getProcessInstanceId()).isEqualTo(processInstanceId);
         assertThat(variableOneRuntime.getTaskId()).isNull();
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
                         tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -113,7 +113,7 @@ public class ProcessVariablesTest {
         VariableInstance variableOneRuntime = variableInstanceList.get(0);
         assertThat(variableOneRuntime.isTaskVariable()).isFalse();
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
                         tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -138,7 +138,7 @@ public class ProcessVariablesTest {
         assertThat(variableOneRuntime.getType()).isEqualTo("string");
         assertThat(variableTwoRuntime.getType()).isEqualTo("integer");
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting("eventType","entity.name","entity.value")
                 .containsExactly(
                         tuple(  VariableEvent.VariableEvents.VARIABLE_CREATED,
@@ -157,6 +157,8 @@ public class ProcessVariablesTest {
         for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
+        
+        clearEvents();
     }
 
     private void startProcess(){
@@ -167,7 +169,7 @@ public class ProcessVariablesTest {
                 .withName("my-process-instance-name")
                 .build()).getId();
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
@@ -180,7 +182,7 @@ public class ProcessVariablesTest {
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED
                 );
 
-        collectedEvents.clear();
+        clearEvents();
     }
 
     private void setVariables(){
@@ -192,6 +194,10 @@ public class ProcessVariablesTest {
         processRuntime.setVariables(new SetVariablesPayloadBuilder().withVariables(variablesMap).withProcessInstanceId(processInstanceId).build());
 
         variableInstanceList = processRuntime.variables(new GetVariablesPayloadBuilder().withProcessInstanceId(processInstanceId).build());
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 }

@@ -1,6 +1,5 @@
 package org.activiti.spring.conformance.set0;
 
-import static org.activiti.spring.conformance.set0.Set0RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -12,6 +11,7 @@ import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.NotFoundException;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Test;
@@ -33,7 +33,7 @@ public class ConformanceBasicGenericTaskTest {
 
     @After
     public void cleanUp() {
-        collectedEvents.clear();
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
     /*
@@ -87,7 +87,7 @@ public class ConformanceBasicGenericTaskTest {
                 .isInstanceOf(NotFoundException.class);
 
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,

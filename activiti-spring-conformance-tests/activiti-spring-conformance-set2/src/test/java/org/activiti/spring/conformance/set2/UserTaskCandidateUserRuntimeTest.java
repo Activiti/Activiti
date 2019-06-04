@@ -1,6 +1,5 @@
 package org.activiti.spring.conformance.set2;
 
-import static org.activiti.spring.conformance.set2.Set2RuntimeTestConfiguration.collectedEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
@@ -19,6 +18,7 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -48,7 +48,7 @@ public class UserTaskCandidateUserRuntimeTest {
 
     @Before
     public void cleanUp() {
-        collectedEvents.clear();
+        clearEvents();
     }
 
 
@@ -92,7 +92,7 @@ public class UserTaskCandidateUserRuntimeTest {
         assertThat(task.getAssignee()).isNull();
 
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
@@ -103,7 +103,7 @@ public class UserTaskCandidateUserRuntimeTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        collectedEvents.clear();
+        clearEvents();
 
         // Check with user2
         securityUtil.logInAs("user2");
@@ -133,19 +133,19 @@ public class UserTaskCandidateUserRuntimeTest {
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
         assertThat(claimedTask.getAssignee()).isEqualTo("user1");
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                                  TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
         
-        collectedEvents.clear();
+        clearEvents();
 
         //complete task now should work
         Task completedTask = taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(claimedTask.getId()).build());
 
         assertThat(completedTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
@@ -185,7 +185,7 @@ public class UserTaskCandidateUserRuntimeTest {
 
         assertThat(taskById.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
@@ -196,31 +196,31 @@ public class UserTaskCandidateUserRuntimeTest {
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_STARTED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED);
 
-        collectedEvents.clear();
+        clearEvents();
 
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
         assertThat(claimedTask.getAssignee()).isEqualTo("user1");
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                                  TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
         
-        collectedEvents.clear();
+        clearEvents();
 
         Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(task.getId()).build());
 
         assertThat(releasedTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
         assertThat(releasedTask.getAssignee()).isNull();
 
-        assertThat(collectedEvents)
+        assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED,
                                  TaskRuntimeEvent.TaskEvents.TASK_UPDATED);
 
-        collectedEvents.clear();
+        clearEvents();
 
     }
 
@@ -231,6 +231,11 @@ public class UserTaskCandidateUserRuntimeTest {
         for (ProcessInstance pi : processInstancePage.getContent()) {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
+        clearEvents();
+    }
+    
+    public void clearEvents() {
+        RuntimeTestConfiguration.collectedEvents.clear();
     }
 
 }
