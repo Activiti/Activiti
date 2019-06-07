@@ -16,7 +16,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.activiti.steps</groupId>
+      <groupId>org.activiti.core.common</groupId>
       <artifactId>activiti-steps-assertions</artifactId>
     </dependency>
     <dependency>
