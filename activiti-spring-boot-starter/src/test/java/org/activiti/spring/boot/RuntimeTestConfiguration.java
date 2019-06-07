@@ -225,7 +225,7 @@ public class RuntimeTestConfiguration {
                                   "inTest"),
                             tuple(staticValue,
                                   "a static value"));
-
+            
             integrationContext.addOutBoundVariable("out-variable-name-1",
                                                    "outName");
             integrationContext.addOutBoundVariable("out-variable-name-2",

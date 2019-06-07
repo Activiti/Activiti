@@ -52,15 +52,15 @@ public class OutboundVariablesProvider {
         Extension extensions = extensionsModel.getExtensions();
         ProcessVariablesMapping processVariablesMapping = extensions.getMappingForFlowElement(integrationContext.getClientId());
         processVariablesMapping.getOutputs().forEach(
-                (varUUID, mapping) -> {
+                (varName, mapping) -> {
                     VariableDefinition outBoundVariableDefinition = actionDefinition.getOutputs()
                             .stream()
                             .filter(variableDefinition ->
-                                            variableDefinition.getId().equals(mapping.getValue()))
+                                            variableDefinition.getName().equals(mapping.getValue()))
                             .findFirst()
                             .orElse(null);
                     //fixme have single VariableDefinition
-                    org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getProperty(varUUID);
+                    org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getPropertyByName(varName);
                     if (outBoundVariableDefinition != null && processVariableDefinition != null) {
                         mappedOutboundVariables.put(processVariableDefinition.getName(),
                                                     //use remove instead of get to keep only outbound variables without mapping
