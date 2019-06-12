@@ -26,15 +26,15 @@
     "mappings": {
       "Task_1xqe2ob": {
         "inputs": {
-          "movieNameId": {
+          "movieName": {
             "type": "variable",
-            "value": "35c54866-e134-4b9d-9d82-54e2052989f7"
+            "value": "movieToRank"
           }
         },
         "outputs": {
-          "0eac1bbd-2612-42cc-8e4a-0425cf273d4f": {
+          "movieDesc": {
             "type": "variable",
-            "value": "movieDescriptionId"
+            "value": "movieDescription"
           }
         }
       }
