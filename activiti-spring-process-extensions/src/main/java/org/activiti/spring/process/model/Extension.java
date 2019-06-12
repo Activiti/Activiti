@@ -15,6 +15,7 @@ package org.activiti.spring.process.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Extension {
 
@@ -45,5 +46,19 @@ public class Extension {
 
     public VariableDefinition getProperty(String propertyUUID){
         return properties != null? properties.get(propertyUUID) : null;
+    }
+    
+    public VariableDefinition getPropertyByName(String name){
+        if (properties != null) {
+            for (Map.Entry<String, VariableDefinition> variableDefinition : properties.entrySet()) {
+                if (variableDefinition.getValue() != null) {
+                    if (Objects.equals(variableDefinition.getValue().getName(), name)) {
+                        return variableDefinition.getValue();
+                    }
+                }  
+            } 
+        }
+       
+        return null;
     }
 }

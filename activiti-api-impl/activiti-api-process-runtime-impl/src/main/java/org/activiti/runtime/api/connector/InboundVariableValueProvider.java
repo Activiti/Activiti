@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2019 Alfresco, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,14 +38,16 @@ public class InboundVariableValueProvider {
                                        DelegateExecution execution) {
         ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
         ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getCurrentActivityId());
-        Mapping inputMapping = processVariablesMapping.getInputMapping(variableDefinition.getId());
+        Mapping inputMapping = processVariablesMapping.getInputMapping(variableDefinition.getName());
         if (inputMapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())) {
                 return inputMapping.getValue();
             }
             if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
-                String variableUUID = inputMapping.getValue().toString();
-                org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getProperty(variableUUID);
+                String name = inputMapping.getValue().toString();
+                
+                //This is extra check, we may search variable simply by variableName
+                org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
                 if (processVariableDefinition != null) {
                     return execution.getVariable(processVariableDefinition.getName());
                 }

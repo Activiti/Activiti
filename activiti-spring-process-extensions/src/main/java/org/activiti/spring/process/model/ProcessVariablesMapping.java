@@ -28,8 +28,8 @@ public class ProcessVariablesMapping {
         this.inputs = inputs;
     }
 
-    public Mapping getInputMapping(String inputUUID) {
-        return inputs.get(inputUUID);
+    public Mapping getInputMapping(String inputName) {
+        return inputs.get(inputName);
     }
 
     public Map<String, Mapping> getOutputs() {

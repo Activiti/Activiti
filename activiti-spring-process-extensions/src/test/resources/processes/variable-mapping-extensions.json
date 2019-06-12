@@ -34,26 +34,26 @@
     "mappings": {
       "serviceTask": {
         "inputs": {
-          "input-variable-1": {
+          "input-variable-name-1": {
             "type": "variable",
-            "value": "name-id"
+            "value": "name"
           },
-          "input-variable-2": {
+          "input-variable-name-2": {
             "type": "variable",
-            "value": "age-id"
+            "value": "age"
           },
-          "input-variable-3": {
+          "input-variable-name-3": {
             "type": "value",
             "value": 5
           }
         },
         "outputs": {
-          "name-id": {
+          "name": {
             "type": "variable",
-            "value" : "out-variable-1"},
-          "age-id": {
+            "value" : "out-variable-name-1"},
+          "age": {
             "type": "variable",
-            "value" : "out-variable-2"}
+            "value" : "out-variable-name-2"}
         }
       }
     }
