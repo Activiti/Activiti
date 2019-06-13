@@ -78,7 +78,7 @@ public class ProcessInstanceMatchers {
         };
     }
 
-    public ProcessResultMatcher hasStatus(ProcessInstance.ProcessInstanceStatus status){
+    public ProcessResultMatcher status(ProcessInstance.ProcessInstanceStatus status){
         return (processInstance) -> assertThat(processInstance.getStatus()).isEqualTo(status);
     }
 
