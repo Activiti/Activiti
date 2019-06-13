@@ -20,4 +20,16 @@
         <module>activiti-api-spring-integration-example</module>
         <module>activiti-api-web-example</module>
     </modules>
+
+    <repositories>
+        <repository>
+            <id>alfresco</id>
+            <name>Activiti Releases</name>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/activiti-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
   </project>
