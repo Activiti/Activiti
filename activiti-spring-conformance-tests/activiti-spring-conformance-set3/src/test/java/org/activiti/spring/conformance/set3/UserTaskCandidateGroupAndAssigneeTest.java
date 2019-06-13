@@ -12,8 +12,8 @@ import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
-import org.activiti.steps.operations.ProcessOperations;
-import org.activiti.steps.operations.TaskOperations;
+import org.activiti.test.operations.ProcessOperations;
+import org.activiti.test.operations.TaskOperations;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,16 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.activiti.steps.matchers.BPMNStartEventMatchers.startEvent;
-import static org.activiti.steps.matchers.ProcessInstanceMatchers.processInstance;
-import static org.activiti.steps.matchers.ProcessTaskMatchers.task;
-import static org.activiti.steps.matchers.SequenceFlowMatchers.sequenceFlow;
-import static org.activiti.steps.matchers.TaskMatchers.task;
-import static org.activiti.steps.matchers.TaskMatchers.withAssignee;
+import static org.activiti.test.matchers.BPMNStartEventMatchers.startEvent;
+import static org.activiti.test.matchers.ProcessInstanceMatchers.processInstance;
+import static org.activiti.test.matchers.ProcessTaskMatchers.taskWithName;
+import static org.activiti.test.matchers.SequenceFlowMatchers.sequenceFlow;
+import static org.activiti.test.matchers.TaskMatchers.task;
+import static org.activiti.test.matchers.TaskMatchers.withAssignee;
 import static org.assertj.core.api.Assertions.*;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -69,18 +66,18 @@ public class UserTaskCandidateGroupAndAssigneeTest {
                                                                           .withName("my-process-instance-name")
                                                                           .build())
                 //then
-                .expect(processInstance().hasStatus(ProcessInstance.ProcessInstanceStatus.RUNNING),
-                        processInstance().hasName("my-process-instance-name"),
-                        processInstance().hasBusinessKey("my-business-key"))
+                .expectFields(processInstance().status(ProcessInstance.ProcessInstanceStatus.RUNNING),
+                        processInstance().name("my-process-instance-name"),
+                        processInstance().businessKey("my-business-key"))
                 .expect(processInstance().hasTask("Task User1",
                                                   Task.TaskStatus.ASSIGNED,
                                                   withAssignee("user1")))
-                .expect(processInstance().hasBeenStarted(),
+                .expectEvents(processInstance().hasBeenStarted(),
                         startEvent("StartEvent_1").hasBeenStarted(),
                         startEvent("StartEvent_1").hasBeenCompleted(),
                         sequenceFlow("SequenceFlow_1uccvwa").hasBeenTaken(),
-                        task("Task User1").hasBeenCreated(),
-                        task("Task User1").hasBeenAssigned()
+                        taskWithName("Task User1").hasBeenCreated(),
+                        taskWithName("Task User1").hasBeenAssigned()
                 )
                 .andReturn();
 
@@ -99,9 +96,9 @@ public class UserTaskCandidateGroupAndAssigneeTest {
         //given
         taskOperations.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build())
                 //then
-                .expect(task().hasBeenCompleted(),
+                .expectEvents(task().hasBeenCompleted(),
                         sequenceFlow("SequenceFlow_151v2cg").hasBeenTaken(),
-                        task("Task Group1").hasBeenCreated())
+                        taskWithName("Task Group1").hasBeenCreated())
                 .expect(processInstance().hasTask("Task Group1",
                                                   Task.TaskStatus.CREATED,
                                                   createdTask -> {
