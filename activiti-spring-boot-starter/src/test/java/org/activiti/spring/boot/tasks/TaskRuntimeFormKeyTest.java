@@ -108,7 +108,7 @@ public class TaskRuntimeFormKeyTest {
     }
 
     @Test
-    public void processTaskHasFormKey() {
+    public void processTaskHasFormKeyAndTaskDefinitionKey() {
         securityUtil.logInAs("garth");
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                 .withProcessDefinitionKey(SINGLE_TASK_PROCESS)
@@ -121,6 +121,7 @@ public class TaskRuntimeFormKeyTest {
         Task task = tasks.getContent().get(0);
 
         assertThat(task.getFormKey()).isEqualTo("taskForm");
+        assertThat(task.getTaskDefinitionKey()).isEqualTo("Task_03l0zc2");
 
         processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
     }
