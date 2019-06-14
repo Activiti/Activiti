@@ -17,7 +17,7 @@
   <dependencies>
     <dependency>
       <groupId>org.activiti.core.common</groupId>
-      <artifactId>activiti-core-test-assertions</artifactId>
+      <artifactId>activiti-core-test-local-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
