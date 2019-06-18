@@ -44,8 +44,6 @@ public class ToJobExecutedSuccessConverter implements EventConverter<BPMNTimerFi
                                     .withDueDate(jobEntity.getDuedate())
                                     .withEndDate(jobEntity.getEndDate())
                                     .withExecutionId(jobEntity.getExecutionId())
-                                    .withProcessInstanceId(jobEntity.getProcessInstanceId())
-                                    .withProcessDefinitionId(jobEntity.getProcessDefinitionId())
                                     .withIsExclusive(jobEntity.isExclusive())
                                     .withRetries(jobEntity.getRetries())
                                     .withMaxIterations(jobEntity.getMaxIterations())
