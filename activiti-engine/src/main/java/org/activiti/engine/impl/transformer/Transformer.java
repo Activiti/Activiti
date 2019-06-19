@@ -13,12 +13,14 @@
 package org.activiti.engine.impl.transformer;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * A Transformer is responsible of transforming an object into a different object
  * 
 
  */
+@Internal
 public interface Transformer {
 
   /**

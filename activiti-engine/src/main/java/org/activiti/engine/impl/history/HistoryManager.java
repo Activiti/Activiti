@@ -3,6 +3,7 @@ package org.activiti.engine.impl.history;
 import java.util.Date;
 
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
@@ -10,6 +11,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.IdentityLink;
 
+@Internal
 public interface HistoryManager {
 
   /**

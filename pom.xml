@@ -3,22 +3,22 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.activiti.build</groupId>
+    <groupId>org.activiti.build</groupId> 
     <artifactId>activiti-parent</artifactId>
-    <version>7.0.45</version>
+    <version>7.1.14</version>
     <relativePath/>
-  </parent> 
+  </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-root</artifactId>
   <packaging>pom</packaging>
   <name>Activiti Core :: Parent</name>
-  <version>7.0.0-SNAPSHOT</version>
+  <version>7.1.0-SNAPSHOT</version>
   <description>Activiti Core :: Parent</description>
   <url>http://activiti.org</url>
   <properties>
-    <activiti-build.version>7.0.45</activiti-build.version> 
-    <activiti-api.version>7.0.58</activiti-api.version>
-    <activiti-core-common.version>7.0.27</activiti-core-common.version>
+    <activiti-build.version>7.1.14</activiti-build.version>
+    <activiti-api.version>7.1.26</activiti-api.version>
+    <activiti-core-common.version>7.1.28</activiti-core-common.version>
     <activiti.version>${project.version}</activiti.version>
     <batik.version>1.10</batik.version>
     <commons-email.version>1.5</commons-email.version>
@@ -29,7 +29,7 @@
     <java-uuid-generator.version>3.1.4</java-uuid-generator.version>
     <javaGeom.version>0.11.1</javaGeom.version>
     <javax.enterprise.concurrent-api.version>1.0</javax.enterprise.concurrent-api.version>
-    <jaxb-api.version>2.2.11</jaxb-api.version>
+    <jaxb-api.version>2.3.1</jaxb-api.version>
     <jgraphx.version>3.9.8.1</jgraphx.version>
     <json-unit.version>1.24.0</json-unit.version>
     <jsr250-api.version>1.0</jsr250-api.version>
@@ -180,6 +180,7 @@
       </dependency>
 
       <!-- Test -->
+
       <dependency>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-fluent</artifactId>
@@ -206,7 +207,6 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  
   <!-- Activiti Build Parent Marker Dependency for Dependency Convergence Tests -->
   <dependencies>
     <dependency>
@@ -228,7 +228,7 @@
       <type>pom</type>
     </dependency>
   </dependencies>
-  
+
   <modules>
     <module>activiti-core-dependencies-tests</module>
     <module>activiti-core-dependencies</module>
@@ -243,6 +243,8 @@
     <module>activiti-spring</module>
     <module>activiti-spring-boot-starter</module>
     <module>activiti-spring-app-process</module>
+    <module>activiti-spring-process-extensions</module>
+    <module>activiti-spring-conformance-tests</module>
   </modules>
 
   <repositories>
@@ -277,11 +279,11 @@
           <deployAtEnd>true</deployAtEnd>
         </configuration>
       </plugin>
-    
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M1</version></plugin>
+        <version>${maven-surefire-plugin.version}</version></plugin>
     </plugins>
     </build>
   </project>

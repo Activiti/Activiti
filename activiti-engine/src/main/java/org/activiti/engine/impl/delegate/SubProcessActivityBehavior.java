@@ -13,13 +13,14 @@
 
 package org.activiti.engine.impl.delegate;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.DelegateExecution;
 
 /**
  * behavior for activities that delegate to a complete separate execution of a process definition. In BPMN terminology this can be used to implement a reusable subprocess.
- * 
-
+ *
  */
+@Internal
 public interface SubProcessActivityBehavior extends ActivityBehavior {
 
   /**

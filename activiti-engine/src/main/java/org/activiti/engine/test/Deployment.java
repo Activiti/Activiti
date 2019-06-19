@@ -13,6 +13,8 @@
 
 package org.activiti.engine.test;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -46,10 +48,12 @@ import java.lang.annotation.RetentionPolicy;
  *   }
  * </pre>
  * 
-
+ * @deprecated in favour of creating tests based on fixed classpath resources as done in activiti-spring-boot-starter
 
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Deprecated
+@Internal
 public @interface Deployment {
 
   /** Specify resources that make up the process definition. */

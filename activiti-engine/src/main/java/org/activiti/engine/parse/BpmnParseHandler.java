@@ -15,6 +15,7 @@ package org.activiti.engine.parse;
 import java.util.Collection;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -26,9 +27,9 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
  * {@link #getHandledTypes()} method.
  * 
  * @see AbstractBpmnParseHandler
- * 
-
+ *
  */
+@Internal
 public interface BpmnParseHandler {
 
   /**

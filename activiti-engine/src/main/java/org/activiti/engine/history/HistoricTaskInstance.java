@@ -15,14 +15,14 @@ package org.activiti.engine.history;
 
 import java.util.Date;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.task.TaskInfo;
 
 /**
  * Represents a historic task instance (waiting, finished or deleted) that is stored permanent for statistics, audit and other business intelligence purposes.
- * 
-
-
+ *
  */
+@Internal
 public interface HistoricTaskInstance extends TaskInfo, HistoricData {
 
   /**

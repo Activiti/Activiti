@@ -14,11 +14,14 @@
 package org.activiti.engine.impl.variable;
 
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * Common interface for regular and historic variable entities.
  * 
 
  */
+@Internal
 public interface ValueFields {
 
   /**

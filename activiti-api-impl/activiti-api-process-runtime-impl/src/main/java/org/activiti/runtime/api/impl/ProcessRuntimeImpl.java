@@ -55,7 +55,9 @@ import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 
 @PreAuthorize("hasRole('ACTIVITI_USER')")
 public class ProcessRuntimeImpl implements ProcessRuntime {
@@ -74,13 +76,16 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
 
     private final ProcessSecurityPoliciesManager securityPoliciesManager;
 
+    private final ApplicationEventPublisher eventPublisher;
+
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
                               RuntimeService runtimeService,
                               ProcessSecurityPoliciesManager securityPoliciesManager,
                               APIProcessInstanceConverter processInstanceConverter,
                               APIVariableInstanceConverter variableInstanceConverter,
-                              ProcessRuntimeConfiguration configuration) {
+                              ProcessRuntimeConfiguration configuration,
+                              ApplicationEventPublisher eventPublisher) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
@@ -88,6 +93,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         this.processInstanceConverter = processInstanceConverter;
         this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -190,6 +196,10 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             internalQuery.active();
         }
 
+        if (getProcessInstancesPayload.getParentProcessInstanceId()!=null) {
+            internalQuery.superProcessInstanceId(getProcessInstancesPayload.getParentProcessInstanceId());
+        }
+        
         return new PageImpl<>(processInstanceConverter.from(internalQuery.listPage(pageable.getStartIndex(),
                                                                                    pageable.getMaxItems())),
                               Math.toIntExact(internalQuery.count()));
@@ -221,7 +231,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                                                      .processDefinitionKey(startProcessPayload.getProcessDefinitionKey())
                                                      .businessKey(startProcessPayload.getBusinessKey())
                                                      .variables(startProcessPayload.getVariables())
-                                                     .name(startProcessPayload.getProcessInstanceName())
+                                                     .name(startProcessPayload.getName())
                                                      .start());
     }
 
@@ -292,10 +302,10 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     @Override
+    @Transactional
     public void signal(SignalPayload signalPayload) {
         //@TODO: define security policies for signalling
-        runtimeService.signalEventReceived(signalPayload.getName(),
-                                           signalPayload.getVariables());
+        eventPublisher.publishEvent(signalPayload);
     }
 
     @Override
@@ -323,10 +333,15 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         
         if (updateProcessPayload.getBusinessKey()!=null)
             runtimeService.updateBusinessKey(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getBusinessKey());
-        if (updateProcessPayload.getProcessInstanceName()!=null)
-            runtimeService.setProcessInstanceName(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getProcessInstanceName());
+        if (updateProcessPayload.getName()!=null)
+            runtimeService.setProcessInstanceName(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getName());
         
-        return processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
-                                             .processInstanceId(updateProcessPayload.getProcessInstanceId()).singleResult());
+        ProcessInstance updatedProcessInstance=processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
+                                                                             .processInstanceId(updateProcessPayload.getProcessInstanceId())
+                                                                             .singleResult());
+        
+        return updatedProcessInstance;
+ 
     }
+    
 }

@@ -13,9 +13,12 @@
 package org.activiti.engine.impl.persistence.entity;
 
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
 
  */
+@Internal
 public interface ProcessDefinitionInfoEntityManager extends EntityManager<ProcessDefinitionInfoEntity> {
 
   void insertProcessDefinitionInfo(ProcessDefinitionInfoEntity processDefinitionInfo);

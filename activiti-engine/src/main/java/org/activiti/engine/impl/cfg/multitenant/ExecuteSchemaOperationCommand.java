@@ -21,9 +21,9 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * {@link Command} that is used by the {@link MultiSchemaMultiTenantProcessEngineConfiguration} to 
  * make sure the 'databaseSchemaUpdate' setting is applied for each tenant datasource.
- * 
-
+ * @deprecated multi-tenant code will be removed in future version of Activiti and Activiti Cloud
  */
+@Deprecated
 public class ExecuteSchemaOperationCommand implements Command<Void> {
   
   protected String schemaOperation;

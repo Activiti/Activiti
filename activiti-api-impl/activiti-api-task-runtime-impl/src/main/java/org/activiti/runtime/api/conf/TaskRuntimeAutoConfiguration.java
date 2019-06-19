@@ -62,7 +62,9 @@ import org.activiti.runtime.api.event.internal.TaskCandidateUserRemovedListenerD
 import org.activiti.runtime.api.event.internal.TaskCompletedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TaskCreatedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TaskSuspendedListenerDelegate;
+import org.activiti.runtime.api.event.internal.TaskUpdatedListenerDelegate;
 import org.activiti.runtime.api.impl.TaskAdminRuntimeImpl;
+import org.activiti.runtime.api.impl.TaskRuntimeHelper;
 import org.activiti.runtime.api.impl.TaskRuntimeImpl;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
@@ -70,11 +72,12 @@ import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
 public class TaskRuntimeAutoConfiguration {
 
     @Bean
@@ -84,21 +87,42 @@ public class TaskRuntimeAutoConfiguration {
                                    APITaskConverter taskConverter,
                                    APIVariableInstanceConverter variableInstanceConverter,
                                    TaskRuntimeConfiguration configuration,
-                                   @Autowired(required = false) List<TaskRuntimeEventListener<TaskUpdatedEvent>> listeners) {
+                                   TaskRuntimeHelper taskRuntimeHelper
+                                   ) {
         return new TaskRuntimeImpl(taskService,
                                    userGroupManager,
                                    securityManager,
                                    taskConverter,
                                    variableInstanceConverter,
                                    configuration,
-                                   getInitializedTaskRuntimeEventListeners(listeners));
+                                   taskRuntimeHelper);
     }
 
     @Bean
     public TaskAdminRuntime taskAdminRuntime(TaskService taskService,
-                                             APITaskConverter taskConverter) {
+                                             APITaskConverter taskConverter,
+                                             APIVariableInstanceConverter variableInstanceConverter,
+                                             TaskRuntimeHelper taskRuntimeHelper,
+                                             SecurityManager securityManager) {
         return new TaskAdminRuntimeImpl(taskService,
-                                        taskConverter
+                                        taskConverter,
+                                        variableInstanceConverter,
+                                        taskRuntimeHelper,
+                                        securityManager
+                                        
+        );
+    }
+    
+    @Bean
+    public TaskRuntimeHelper taskRuntimeHelper(TaskService taskService,
+                                               APITaskConverter taskConverter,
+                                               SecurityManager securityManager,
+                                               UserGroupManager userGroupManager) {
+        return new TaskRuntimeHelper(
+                             taskService,
+                             taskConverter,
+                             securityManager,
+                             userGroupManager
         );
     }
 
@@ -109,18 +133,12 @@ public class TaskRuntimeAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public APIVariableInstanceConverter apiVariableInstanceConverter(APIVariableInstanceConverter variableInstanceConverter) {
-        return new APIVariableInstanceConverter();
-    }
-
-    @Bean
     public TaskRuntimeConfiguration taskRuntimeConfiguration(@Autowired(required = false) List<TaskRuntimeEventListener<?>> taskRuntimeEventListeners,
                                                              @Autowired(required = false) List<VariableEventListener<?>> variableEventListeners) {
         return new TaskRuntimeConfigurationImpl(getInitializedTaskRuntimeEventListeners(taskRuntimeEventListeners),
                                                 getInitializedTaskRuntimeEventListeners(variableEventListeners));
     }
-
+    
     @Bean
     public InitializingBean registerTaskCreatedEventListener(RuntimeService runtimeService,
                                                              @Autowired(required = false) List<TaskRuntimeEventListener<TaskCreatedEvent>> listeners,
@@ -129,6 +147,16 @@ public class TaskRuntimeAutoConfiguration {
                                                                                      taskCreatedEventConverter),
                                                      ActivitiEventType.TASK_CREATED);
     }
+    
+    @Bean
+    public InitializingBean registerTaskUpdatedEventListener(RuntimeService runtimeService,
+                                                             @Autowired(required = false) List<TaskRuntimeEventListener<TaskUpdatedEvent>> listeners,
+                                                             ToAPITaskUpdatedEventConverter taskCreatedEventConverter) {
+        return () -> runtimeService.addEventListener(new TaskUpdatedListenerDelegate(getInitializedTaskRuntimeEventListeners(listeners),
+                                                                                     taskCreatedEventConverter),
+                                                     ActivitiEventType.ENTITY_UPDATED);
+    }
+    
 
     private <T> List<T> getInitializedTaskRuntimeEventListeners(List<T> taskRuntimeEventListeners) {
         return taskRuntimeEventListeners != null ? taskRuntimeEventListeners : Collections.emptyList();

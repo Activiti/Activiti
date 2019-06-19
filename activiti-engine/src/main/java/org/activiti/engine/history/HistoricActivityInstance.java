@@ -14,14 +14,15 @@
 
 package org.activiti.engine.history;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.Date;
 
 /**
  * Represents one execution of an activity and it's stored permanent for statistics, audit and other business intelligence purposes.
- * 
-
-
+ *
  */
+@Internal
 public interface HistoricActivityInstance extends HistoricData {
 
   /** The unique identifier of this historic activity instance. */

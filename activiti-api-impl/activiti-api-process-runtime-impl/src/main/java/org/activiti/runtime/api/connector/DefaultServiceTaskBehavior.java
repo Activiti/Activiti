@@ -16,42 +16,31 @@
 
 package org.activiti.runtime.api.connector;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-import org.activiti.core.common.model.connector.ActionDefinition;
-import org.activiti.core.common.model.connector.ConnectorDefinition;
-import org.activiti.core.common.model.connector.VariableDefinition;
 import org.springframework.context.ApplicationContext;
 
 public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
     private final ApplicationContext applicationContext;
     private final IntegrationContextBuilder integrationContextBuilder;
-    private List<ConnectorDefinition> connectorDefinitions;
     private ConnectorActionDefinitionFinder connectorActionDefinitionFinder;
-    private VariablesMatchHelper variablesMatchHelper;
-
-    public DefaultServiceTaskBehavior(ApplicationContext applicationContext, IntegrationContextBuilder integrationContextBuilder) {
-        this.applicationContext = applicationContext;
-        this.integrationContextBuilder = integrationContextBuilder;
-    }
+    private OutboundVariablesProvider outboundVariablesProvider;
 
     public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
                                       IntegrationContextBuilder integrationContextBuilder,
-                                      List<ConnectorDefinition> connectorDefinitions,
                                       ConnectorActionDefinitionFinder connectorActionDefinitionFinder,
-                                      VariablesMatchHelper variablesMatchHelper) {
+                                      OutboundVariablesProvider outboundVariablesProvider) {
         this.applicationContext = applicationContext;
-        this.integrationContextBuilder = integrationContextBuilder;
-        this.connectorDefinitions = connectorDefinitions;
         this.connectorActionDefinitionFinder = connectorActionDefinitionFinder;
-        this.variablesMatchHelper = variablesMatchHelper;
+        this.integrationContextBuilder = integrationContextBuilder;
+        this.outboundVariablesProvider = outboundVariablesProvider;
     }
 
     /**
@@ -60,53 +49,38 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
      **/
     @Override
     public void execute(DelegateExecution execution) {
-        Connector connector;
-        IntegrationContext context;
+        ActionDefinition actionDefinition = findRelatedActionDefinition(execution);
 
-        String implementation = ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
-        List<VariableDefinition> outBoundVariableDefinitions = null;
-        if(connectorActionDefinitionFinder != null && connectorDefinitions != null) {
+        Connector connector = getConnector(getImplementation(execution));
+        IntegrationContext integrationContext = connector.apply(integrationContextBuilder.from(execution,
+                                                                                    actionDefinition));
 
-            Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(implementation,
-                    connectorDefinitions);
-            ActionDefinition actionDefinition = null;
-            if (actionDefinitionOptional.isPresent()) {
-                actionDefinition = actionDefinitionOptional.get();
-                context = integrationContextBuilder.from(execution,
-                        actionDefinition);
-                connector = applicationContext.getBean(actionDefinition.getName(),
-                        Connector.class);
-            } else {
-                context = integrationContextBuilder.from(execution,
-                        null);
-                connector = applicationContext.getBean(implementation,
-                        Connector.class);
-            }
-            outBoundVariableDefinitions = actionDefinition == null ? null : actionDefinition.getOutput();
-        }else{
-            context = integrationContextBuilder.from(execution,
-                    null);
-            connector = applicationContext.getBean(implementation,
-                    Connector.class);
-        }
-
-        IntegrationContext results = connector.execute(context);
-
-        if(variablesMatchHelper != null) {
-            execution.setVariables(variablesMatchHelper.match(results.getOutBoundVariables(),
-                    outBoundVariableDefinitions));
-        }else{
-            execution.setVariables(results.getOutBoundVariables());
-        }
+        execution.setVariables(outboundVariablesProvider.calculateVariables(integrationContext,
+                                                                            actionDefinition));
 
         leave(execution);
+    }
+
+    public ActionDefinition findRelatedActionDefinition(DelegateExecution execution) {
+        String implementation = getImplementation(execution);
+        Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(implementation);
+        return actionDefinitionOptional.orElse(null);
+    }
+
+    private String getImplementation(DelegateExecution execution) {
+        return ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
+    }
+
+    private Connector getConnector(String implementation) {
+        return applicationContext.getBean(implementation,
+                                          Connector.class);
     }
 
     private String getServiceTaskImplementation(DelegateExecution execution) {
         return ((ServiceTask) execution.getCurrentFlowElement()).getImplementation();
     }
 
-    protected boolean hasConnectorBean(DelegateExecution execution) {
+    public boolean hasConnectorBean(DelegateExecution execution) {
         String implementation = getServiceTaskImplementation(execution);
         return applicationContext.containsBean(implementation)
                 && applicationContext.getBean(implementation) instanceof Connector;

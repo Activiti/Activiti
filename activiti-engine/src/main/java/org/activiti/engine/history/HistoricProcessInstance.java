@@ -17,13 +17,14 @@ package org.activiti.engine.history;
 import java.util.Date;
 import java.util.Map;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * A single execution of a whole process definition that is stored permanently.
- * 
-
+ *
  */
+@Internal
 public interface HistoricProcessInstance {
 
   /**

@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -19,6 +20,7 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 /**
 
  */
+@Internal
 public interface JobHandler {
 
   String getType();

@@ -23,8 +23,9 @@ import java.util.Collection;
  * 
  * Typically used with {@link ThreadLocal}'s in the implementation.
  * 
-
+ * @deprecated multi-tenant code will be removed in future version of Activiti and Activiti Cloud
  */
+@Deprecated
 public interface TenantInfoHolder {
   
   /**

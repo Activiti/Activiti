@@ -12,9 +12,12 @@
  */
 package org.activiti.engine.impl.persistence;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
 
  */
+@Internal
 public interface CountingExecutionEntity {
   
   boolean isCountEnabled();

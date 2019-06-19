@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.runtime;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * Represent a 'path of execution' in a process instance.
  * 
@@ -19,6 +21,7 @@ package org.activiti.engine.runtime;
  * 
 
  */
+@Internal
 public interface Execution {
 
   /**
@@ -60,6 +63,12 @@ public interface Execution {
    * Id of the root of the execution tree representing the process instance that has no super execution.
    */
   public String getRootProcessInstanceId();
+  
+  /**
+   * Returns Id of the process instance related to the super execution of this execution.
+   */
+  public String getParentProcessInstanceId();
+  
 
   /**
    * The tenant identifier of this process instance

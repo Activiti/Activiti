@@ -12,14 +12,15 @@
  */
 package org.activiti.engine.task;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.Date;
 
 /**
  * Represents one task for a human user.
- * 
-
-
+ *
  */
+@Internal
 public interface Task extends TaskInfo {
 
   /**

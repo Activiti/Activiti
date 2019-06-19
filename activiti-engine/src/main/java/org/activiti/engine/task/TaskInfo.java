@@ -12,12 +12,15 @@
  */
 package org.activiti.engine.task;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.Date;
 import java.util.Map;
 
 /**
 
  */
+@Internal
 public interface TaskInfo {
 
   /** DB id of the task. */

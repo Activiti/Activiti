@@ -87,4 +87,5 @@ public class CallActivityTest extends PluggableActivitiTestCase {
     subProcessInstance = runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).singleResult();
     assertEquals("123", subProcessInstance.getBusinessKey());
   }
+  
 }

@@ -19,17 +19,15 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
 
 /**
  * Allows programmatic querying of {@link HistoricProcessInstance}s.
- * 
-
-
-
-
+ *
  */
+@Internal
 public interface HistoricProcessInstanceQuery extends Query<HistoricProcessInstanceQuery, HistoricProcessInstance> {
 
   /**

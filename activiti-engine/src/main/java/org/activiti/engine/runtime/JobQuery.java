@@ -15,14 +15,16 @@ package org.activiti.engine.runtime;
 
 import java.util.Date;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 
 /**
  * Allows programmatic querying of {@link Job}s.
- * 
-
-
+ *
+ * @deprecated we recommend against using the Job Executor, this should be handled by an integration instead of an internal component
  */
+@Deprecated
+@Internal
 public interface JobQuery extends Query<JobQuery, Job> {
 
   /** Only select jobs with the given id */

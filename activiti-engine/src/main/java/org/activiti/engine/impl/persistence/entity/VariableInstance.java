@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.variable.ValueFields;
 
@@ -20,6 +21,7 @@ import org.activiti.engine.impl.variable.ValueFields;
  * 
  * Generic variable class that can be reused for Activiti 6 and 5 engine
  */
+@Internal
 public interface VariableInstance extends ValueFields, Entity, HasRevision {
   
   void setName(String name);

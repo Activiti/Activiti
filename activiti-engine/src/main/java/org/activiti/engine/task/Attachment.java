@@ -16,12 +16,16 @@ package org.activiti.engine.task;
 import java.util.Date;
 
 import org.activiti.engine.TaskService;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Any type of content that is be associated with a task or with a process instance.
- * 
-
+ *
+ * @deprecated this interface and its implementations are going to be removed in future iterations
+ * Atttachments doesn't belong to the Process/Task Runtime
  */
+@Deprecated
+@Internal
 public interface Attachment {
 
   /** unique id for this attachment */

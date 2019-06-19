@@ -63,7 +63,7 @@ public class TaskRuntimeDeleteTaskTest {
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         Task deletedTask = taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(task.getId()).build());
-        assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.DELETED);
+        assertThat(deletedTask.getStatus()).isEqualTo(Task.TaskStatus.CANCELLED);
     }
 
     @Test
@@ -73,7 +73,7 @@ public class TaskRuntimeDeleteTaskTest {
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("simple task")
-                .withGroup("activitiTeam")
+                .withCandidateGroup("activitiTeam")
                 .build());
 
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,

@@ -23,6 +23,7 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
+import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.api.task.model.impl.TaskImpl;
 
@@ -40,12 +41,21 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEve
 
     @Override
     public Optional<TaskCancelledEvent> from(ActivitiActivityCancelledEvent internalEvent) {
-        List<org.activiti.engine.task.Task> tasks = taskService.createTaskQuery()
-                .processInstanceId(internalEvent.getProcessInstanceId())
-                .taskDefinitionKey(internalEvent.getActivityId())
-                .list();
+        TaskQuery taskQuery = taskService.createTaskQuery();
+        if (internalEvent.getProcessInstanceId() != null) {
+            taskQuery.processInstanceId(internalEvent.getProcessInstanceId());
+            if (internalEvent.getActivityId() != null) {
+                taskQuery.taskDefinitionKey(internalEvent.getActivityId());
+            }
+        } else {
+            if (internalEvent.getExecutionId() != null) {
+                //temporary workaround for stand alone tasks, task id is mapped as execution id
+                taskQuery.taskId(internalEvent.getExecutionId());
+            }
+        }
+        List<org.activiti.engine.task.Task> tasks = taskQuery.list();
         TaskCancelledEvent event = null;
-        if (!tasks.isEmpty()) {
+        if (tasks.size() == 1) {
             Task task = taskConverter.from(tasks.get(0));
             ((TaskImpl) task).setStatus(Task.TaskStatus.CANCELLED);
             event = new TaskCancelledImpl(task);

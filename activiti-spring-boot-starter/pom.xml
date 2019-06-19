@@ -5,7 +5,7 @@
     <parent>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-core-dependencies</artifactId>
-      <version>7.0.0-SNAPSHOT</version>
+      <version>7.1.0-SNAPSHOT</version>
       <relativePath>../activiti-core-dependencies</relativePath>
     </parent>
     <artifactId>activiti-spring-boot-starter</artifactId>
@@ -64,6 +64,10 @@
             <artifactId>activiti-api-task-runtime-impl</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring-process-extensions</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
         </dependency>
@@ -98,6 +102,10 @@
         <dependency>
             <groupId>com.fasterxml.uuid</groupId>
             <artifactId>java-uuid-generator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>

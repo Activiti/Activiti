@@ -13,6 +13,7 @@
 
 package org.activiti.spring;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.runtime.Job;
 
@@ -21,8 +22,10 @@ import org.activiti.engine.runtime.Job;
  * Strategy for handling jobs that were acquired but cannot be executed at this point (queue-size exceeded).
  * </p>
  * 
-
+ * @deprecated we recommend against the Job Executor
  */
+@Deprecated
+@Internal
 public interface SpringRejectedJobsHandler {
 
   public void jobRejected(AsyncExecutor asyncExecutor, Job job);

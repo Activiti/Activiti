@@ -53,4 +53,13 @@ public class ProcessStartedEventImpl extends RuntimeEventImpl<ProcessInstance, P
     public ProcessEvents getEventType() {
         return ProcessEvents.PROCESS_STARTED;
     }
+
+    @Override
+    public String toString() {
+        return "ProcessStartedEventImpl{" +
+                super.toString() +
+                "nestedProcessDefinitionId='" + nestedProcessDefinitionId + '\'' +
+                ", nestedProcessInstanceId='" + nestedProcessInstanceId + '\'' +
+                '}';
+    }
 }

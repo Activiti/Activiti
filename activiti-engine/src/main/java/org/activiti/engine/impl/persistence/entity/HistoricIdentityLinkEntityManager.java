@@ -12,11 +12,14 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.List;
 
 /**
 
  */
+@Internal
 public interface HistoricIdentityLinkEntityManager extends EntityManager<HistoricIdentityLinkEntity> {
 
   List<HistoricIdentityLinkEntity> findHistoricIdentityLinksByTaskId(String taskId);

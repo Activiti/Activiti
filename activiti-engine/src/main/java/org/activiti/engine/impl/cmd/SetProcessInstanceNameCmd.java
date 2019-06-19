@@ -17,6 +17,8 @@ import java.io.Serializable;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -56,6 +58,10 @@ public class SetProcessInstanceNameCmd implements Command<Void>, Serializable {
 
     // Actually set the name
     execution.setName(name);
+    
+    if (commandContext.getEventDispatcher().isEnabled()) {
+        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, execution));
+      }
 
     // Record the change in history
     commandContext.getHistoryManager().recordProcessInstanceNameChange(processInstanceId, name);

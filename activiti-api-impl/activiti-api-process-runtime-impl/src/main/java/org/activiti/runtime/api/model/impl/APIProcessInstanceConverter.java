@@ -1,4 +1,4 @@
-/*
+/* 
  * Copyright 2018 Alfresco, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,14 +26,17 @@ public class APIProcessInstanceConverter extends ListConverter<org.activiti.engi
     public ProcessInstance from(org.activiti.engine.runtime.ProcessInstance internalProcessInstance) {
         ProcessInstanceImpl processInstance = new ProcessInstanceImpl();
         processInstance.setId(internalProcessInstance.getId());
+        processInstance.setParentId(internalProcessInstance.getParentProcessInstanceId());
         processInstance.setName(internalProcessInstance.getName());
-        processInstance.setDescription(internalProcessInstance.getDescription());
         processInstance.setProcessDefinitionId(internalProcessInstance.getProcessDefinitionId());
+        processInstance.setProcessDefinitionKey(internalProcessInstance.getProcessDefinitionKey());
+        processInstance.setProcessDefinitionVersion(internalProcessInstance.getProcessDefinitionVersion());
         processInstance.setInitiator(internalProcessInstance.getStartUserId());
         processInstance.setStartDate(internalProcessInstance.getStartTime());
         processInstance.setProcessDefinitionKey(internalProcessInstance.getProcessDefinitionKey());
         processInstance.setBusinessKey(internalProcessInstance.getBusinessKey());
         processInstance.setStatus(calculateStatus(internalProcessInstance));
+        processInstance.setProcessDefinitionVersion(internalProcessInstance.getProcessDefinitionVersion());
         return processInstance;
     }
 

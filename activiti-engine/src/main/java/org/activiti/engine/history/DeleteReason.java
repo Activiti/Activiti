@@ -12,9 +12,12 @@
  */
 package org.activiti.engine.history;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
 
  */
+@Internal
 public interface DeleteReason {
   
   String PROCESS_INSTANCE_DELETED = "process instance deleted";

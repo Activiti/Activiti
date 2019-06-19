@@ -14,12 +14,14 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricActivityInstance;
 
 /**
 
 
  */
+@Internal
 public interface HistoricActivityInstanceEntity extends HistoricActivityInstance, HistoricScopeInstanceEntity {
 
   void setActivityId(String activityId);

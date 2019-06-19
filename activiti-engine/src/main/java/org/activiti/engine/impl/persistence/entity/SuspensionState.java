@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
@@ -22,6 +23,7 @@ import org.activiti.engine.impl.context.Context;
  * 
 
  */
+@Internal
 public interface SuspensionState {
 
   SuspensionState ACTIVE = new SuspensionStateImpl(1, "active");

@@ -12,11 +12,13 @@
  */
 package org.activiti.engine.impl.bpmn.data;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * Represents a structure definition based on fields
- * 
-
+ *
  */
+@Internal
 public interface FieldBaseStructureDefinition extends StructureDefinition {
 
   /**

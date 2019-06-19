@@ -1,14 +1,13 @@
 {
   "id": "tagImageConnectorId",
-  "name": "Name of the connector",
-  "description": "Description of the connector",
-  "icon": "icon-name",
+  "name": "Tag Image Connector",
+  "description": "Description of the Tag Image Connector",
   "actions": {
     "tagImageActionId": {
       "id": "tagImageActionId",
       "name": "tagImageActionName",
       "description": "...",
-      "input": [
+      "inputs": [
         {
           "id": "input-variable-2",
           "name": "input-variable-name-2",
@@ -24,7 +23,7 @@
           "description": ""
         }
       ],
-      "output": [
+      "outputs": [
         {
           "id": "approved",
           "name": "approved",

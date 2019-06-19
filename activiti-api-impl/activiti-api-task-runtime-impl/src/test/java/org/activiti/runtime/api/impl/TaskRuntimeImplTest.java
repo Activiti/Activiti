@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Alfresco, Inc. and/or its affiliates.
+ * Copyright 2019 Alfresco, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,105 +16,49 @@
 
 package org.activiti.runtime.api.impl;
 
-import java.util.Collections;
-
-import org.activiti.api.runtime.shared.security.SecurityManager;
+import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
-import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
-import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
-import org.activiti.engine.TaskService;
-import org.activiti.engine.task.Task;
-import org.activiti.engine.task.TaskQuery;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TaskRuntimeImplTest {
 
+    @InjectMocks
     private TaskRuntimeImpl taskRuntime;
 
     @Mock
-    private SecurityManager securityManager;
-
-    @Mock
-    private TaskService taskService;
-
-    @Mock
-    private TaskRuntimeEventListener<TaskUpdatedEvent> listener;
+    private TaskRuntimeHelper taskRuntimeHelper;
 
     @Before
     public void setUp() {
         initMocks(this);
-        taskRuntime = spy(new TaskRuntimeImpl(taskService,
-                            null,
-                            securityManager,
-                            null,
-                            null,
-                            null,
-                            Collections.singletonList(listener)));
-        when(securityManager.getAuthenticatedUserId()).thenReturn("user");
     }
 
     @Test
-    public void updateShouldThrowExceptionWhenAssigneeIsNotSet() {
+    public void updateShouldReturnResultOfHelper() {
         //given
         UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder
                 .update()
                 .withTaskId("taskId")
                 .withDescription("new description")
                 .build();
-        doReturn(new TaskImpl()).when(taskRuntime).task("taskId");
+
+        TaskImpl updatedTask = new TaskImpl();
+        given(taskRuntimeHelper.applyUpdateTaskPayload(false,
+                                                       updateTaskPayload)).willReturn(updatedTask);
 
         //when
-        Throwable throwable = catchThrowable(() -> taskRuntime.update(updateTaskPayload));
+        Task retrievedTask = taskRuntime.update(updateTaskPayload);
 
         //then
-        assertThat(throwable)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("You cannot update a task where you are not the assignee");
-    }
-
-    @Test
-    public void updateShouldBeAbleToUpdateDescriptionOnly() {
-        //given
-        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder
-                .update()
-                .withTaskId("taskId")
-                .withDescription("new description")
-                .build();
-        TaskImpl task = new TaskImpl();
-        task.setAssignee("user");
-        doReturn(task).when(taskRuntime).task("taskId");
-
-        TaskQuery taskQuery = mock(TaskQuery.class);
-        given(taskQuery.taskId("taskId")).willReturn(taskQuery);
-        given(taskService.createTaskQuery()).willReturn(taskQuery);
-
-        Task internalTask = mock(Task.class);
-        given(taskQuery.singleResult()).willReturn(internalTask);
-
-        //when
-        org.activiti.api.task.model.Task updatedTask = taskRuntime.update(updateTaskPayload);
-
-        //then
-        verify(internalTask).setDescription("new description");
-        verifyNoMoreInteractions(internalTask);
-        ArgumentCaptor<TaskUpdatedEvent> captor = ArgumentCaptor.forClass(TaskUpdatedEvent.class);
-        verify(listener).onEvent(captor.capture());
-        assertThat(captor.getValue().getEntity()).isEqualTo(updatedTask);
+        assertThat(retrievedTask).isEqualTo(updatedTask);
     }
 }

@@ -17,12 +17,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.repository.Deployment;
 
 /**
 
 
  */
+@Internal
 public interface DeploymentEntity extends Deployment, Entity {
 
   void addResource(ResourceEntity resource);

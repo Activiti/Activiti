@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.util.Date;
 
 /**
@@ -20,6 +22,7 @@ import java.util.Date;
 
 
  */
+@Internal
 public interface JobEntity extends AbstractJobEntity {
 
   String getLockOwner();

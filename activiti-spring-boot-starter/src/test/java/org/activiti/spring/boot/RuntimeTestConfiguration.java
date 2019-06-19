@@ -7,11 +7,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
-import org.activiti.api.process.model.events.SequenceFlowTakenEvent;
+import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
+import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
+import org.activiti.api.task.runtime.events.TaskCandidateUserAddedEvent;
+import org.activiti.api.task.runtime.events.TaskCandidateUserRemovedEvent;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
@@ -25,7 +28,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @Configuration
 public class RuntimeTestConfiguration {
@@ -44,10 +48,14 @@ public class RuntimeTestConfiguration {
 
     public static Set<String> completedProcesses = new HashSet<>();
 
-    public static Set<SequenceFlowTakenEvent> sequenceFlowTakenEvents = new HashSet<>();
+    public static Set<BPMNSequenceFlowTakenEvent> sequenceFlowTakenEvents = new HashSet<>();
 
     public static Set<VariableCreatedEvent> variableCreatedEventsFromProcessInstance = new HashSet<>();
 
+    public static Set<TaskCandidateUserAddedEvent> taskCandidateUserAddedEvents = new HashSet<>();
+
+    public static Set<TaskCandidateUserRemovedEvent> taskCandidateUserRemovedEvents = new HashSet<>();
+    
     @Bean
     public UserDetailsService myUserDetailsService() {
         ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
@@ -79,8 +87,8 @@ public class RuntimeTestConfiguration {
         List<GrantedAuthority> deanAuthorities = new ArrayList<>();
         deanAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
         extendedInMemoryUserDetailsManager.createUser(new User("dean",
-                "password",
-                deanAuthorities));
+                                                               "password",
+                                                               deanAuthorities));
 
         return extendedInMemoryUserDetailsManager;
     }
@@ -100,7 +108,7 @@ public class RuntimeTestConfiguration {
         };
     }
 
-    @Bean
+    @Bean(name = "Process Image Connector.processImageActionName")
     public Connector processImageActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
@@ -115,7 +123,7 @@ public class RuntimeTestConfiguration {
         };
     }
 
-    @Bean
+    @Bean(name = "Tag Image Connector.tagImageActionName")
     public Connector tagImageActionName() {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
@@ -162,17 +170,71 @@ public class RuntimeTestConfiguration {
     }
 
     @Bean
-    public ProcessRuntimeEventListener<SequenceFlowTakenEvent> sequenceFlowTakenEventListener() {
+    public BPMNElementEventListener<BPMNSequenceFlowTakenEvent> sequenceFlowTakenEventListener() {
         return sequenceFlowTakenEvent -> sequenceFlowTakenEvents.add(sequenceFlowTakenEvent);
     }
-
+    
     @Bean
     public VariableEventListener<VariableCreatedEvent> variableCreatedEventFromProcessInstanceListener() {
         return variableCreatedEvent -> {
             //we filter out the events from tasks
-            if (variableCreatedEvent.getEntity().getTaskId() == null){
+            if (variableCreatedEvent.getEntity().getTaskId() == null) {
                 variableCreatedEventsFromProcessInstance.add(variableCreatedEvent);
             }
+        };
+    }
+
+    @Bean
+    public TaskRuntimeEventListener<TaskCandidateUserAddedEvent> CandidateUserAddedListener() {
+        return candidateUserAddedEvent -> taskCandidateUserAddedEvents.add(candidateUserAddedEvent);
+    }
+
+    @Bean
+    public TaskRuntimeEventListener<TaskCandidateUserRemovedEvent> CandidateUserRemovedListener() {
+        return candidateUserRemovedEvent -> taskCandidateUserRemovedEvents.add(candidateUserRemovedEvent);
+    }
+
+    @Bean(name = "Variable Mapping Connector.variableMappingActionName")
+    public Connector variableMappingActionName() {
+        return integrationContext -> {
+            Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
+
+            String variableOne = "input-variable-name-1";
+            String variableTwo = "input-variable-name-2";
+            String variableThree = "input-variable-name-3";
+            String staticValue = "input-static-value";
+
+            //this variable is not mapped, but its name matches with a process variable
+            //so value will be provided from process variable
+            String unmappedMatchingVariable = "input-unmapped-variable-with-matching-name";
+
+            Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
+            Integer offSet = (Integer) inBoundVariables.get(variableThree);
+
+            assertThat(inBoundVariables.entrySet())
+                    .extracting(Map.Entry::getKey,
+                                Map.Entry::getValue)
+                    .containsOnly(
+                            tuple(variableOne,
+                                  "inName"),
+                            tuple(variableTwo,
+                                  20),
+                            tuple(variableThree,
+                                  5),
+                            tuple(unmappedMatchingVariable,
+                                  "inTest"),
+                            tuple(staticValue,
+                                  "a static value"));
+            
+            integrationContext.addOutBoundVariable("out-variable-name-1",
+                                                   "outName");
+            integrationContext.addOutBoundVariable("out-variable-name-2",
+                                                   currentAge + offSet);
+            integrationContext.addOutBoundVariable("out-unmapped-variable-matching-name",
+                                                   "outTest");
+            integrationContext.addOutBoundVariable("out-unmapped-variable-non-matching-name",
+                                                   "outTest");
+            return integrationContext;
         };
     }
 }

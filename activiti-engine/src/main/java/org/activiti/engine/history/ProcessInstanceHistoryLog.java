@@ -3,13 +3,14 @@ package org.activiti.engine.history;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * A trail of data for a given process instance.
- * 
-
+ *
  */
+@Internal
 public interface ProcessInstanceHistoryLog {
 
   /**
@@ -36,8 +37,7 @@ public interface ProcessInstanceHistoryLog {
 
   /**
    * The authenticated user that started this process instance.
-   * 
-   * @see IdentityService#setAuthenticatedUserId(String)
+   *
    */
   String getStartUserId();
 

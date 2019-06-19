@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.api.internal.Internal;
 import org.springframework.core.io.Resource;
 
 /**
@@ -27,10 +28,9 @@ import org.springframework.core.io.Resource;
  * Multiple resources can be added to one deployment before calling the {@link #deploy()} operation.
  * 
  * After deploying, no more changes can be made to the returned deployment and the builder instance can be disposed.
- * 
-
-
+ *
  */
+@Internal
 public interface DeploymentBuilder {
 
   DeploymentBuilder addInputStream(String resourceName, InputStream inputStream);

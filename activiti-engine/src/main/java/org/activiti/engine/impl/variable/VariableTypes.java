@@ -13,12 +13,15 @@
 
 package org.activiti.engine.impl.variable;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * Interface describing a container for all available {@link VariableType}s of variables.
  * 
 
 
  */
+@Internal
 public interface VariableTypes {
 
   /**

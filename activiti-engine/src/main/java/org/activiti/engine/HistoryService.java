@@ -16,6 +16,7 @@ package org.activiti.engine;
 
 import java.util.List;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.history.HistoricDetail;
@@ -39,11 +40,9 @@ import org.activiti.engine.task.IdentityLink;
 /**
  * Service exposing information about ongoing and past process instances. This is different from the runtime information in the sense that this runtime information only contains the actual runtime
  * state at any given moment and it is optimized for runtime process execution performance. The history information is optimized for easy querying and remains permanent in the persistent storage.
- * 
-
-
-
+ *
  */
+@Internal
 public interface HistoryService {
 
   /**

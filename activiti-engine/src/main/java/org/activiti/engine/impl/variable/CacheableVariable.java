@@ -13,12 +13,15 @@
 
 package org.activiti.engine.impl.variable;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * Interface to abstract the JPA cacheable setting
  * 
 
  * 
  */
+@Internal
 public interface CacheableVariable {
 
   public void setForceCacheable(boolean forceCachedValue);

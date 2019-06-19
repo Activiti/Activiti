@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.ModelQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.repository.Model;
@@ -22,6 +23,7 @@ import org.activiti.engine.repository.Model;
 /**
 
  */
+@Internal
 public interface ModelEntityManager extends EntityManager<ModelEntity> {
 
   void insertEditorSourceForModel(String modelId, byte[] modelSource);

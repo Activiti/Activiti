@@ -16,12 +16,13 @@ package org.activiti.engine.query;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Describes basic methods for doing native queries
- * 
-
+ *
  */
+@Internal
 public interface NativeQuery<T extends NativeQuery<?, ?>, U extends Object> {
 
   /**

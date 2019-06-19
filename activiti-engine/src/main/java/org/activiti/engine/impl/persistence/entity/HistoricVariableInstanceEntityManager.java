@@ -15,6 +15,7 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
@@ -22,6 +23,7 @@ import org.activiti.engine.impl.Page;
 /**
 
  */
+@Internal
 public interface HistoricVariableInstanceEntityManager extends EntityManager<HistoricVariableInstanceEntity> {
 
   HistoricVariableInstanceEntity copyAndInsert(VariableInstanceEntity variableInstance);

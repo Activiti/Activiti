@@ -13,6 +13,8 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +23,8 @@ import java.util.Map;
 /**
 
  */
+@Internal
+@Deprecated
 public class AttachmentEntityImpl extends AbstractEntity implements AttachmentEntity, Serializable {
 
   private static final long serialVersionUID = 1L;

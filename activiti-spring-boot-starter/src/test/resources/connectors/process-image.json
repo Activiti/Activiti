@@ -1,14 +1,13 @@
 {
   "id": "processImageConnectorId",
-  "name": "Name of the connector",
-  "description": "Description of the connector",
-  "icon": "icon-name",
+  "name": "Process Image Connector",
+  "description": "Description of the Process Image Connector",
   "actions": {
     "processImageActionId": {
       "id": "processImageActionId",
       "name": "processImageActionName",
       "description": "...",
-      "input": [
+      "inputs": [
         {
           "id": "input-variable-1",
           "name": "input-variable-name-1",
@@ -24,7 +23,7 @@
           "description": ""
         }
       ],
-      "output": [
+      "outputs": [
         {
           "id": "approved",
           "name": "approved",

@@ -12,11 +12,13 @@
  */
 package org.activiti.engine.management;
 
+import org.activiti.engine.api.internal.Internal;
+
 /**
  * Allows programmatic querying of {@link TablePage}s.
- * 
-
+ *
  */
+@Internal
 public interface TablePageQuery {
 
   /**

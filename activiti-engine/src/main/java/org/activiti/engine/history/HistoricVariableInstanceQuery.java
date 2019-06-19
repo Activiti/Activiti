@@ -15,14 +15,14 @@ package org.activiti.engine.history;
 
 import java.util.Set;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.query.Query;
 
 /** 
  * Programmatic querying for {@link HistoricVariableInstance}s.
- * 
-
-
+ *
  */
+@Internal
 public interface HistoricVariableInstanceQuery extends Query<HistoricVariableInstanceQuery, HistoricVariableInstance> {
 
   /** Only select a historic variable with the given id. */

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.variable.ValueFields;
@@ -22,6 +23,7 @@ import org.activiti.engine.impl.variable.VariableType;
 
 
  */
+@Internal
 public interface HistoricDetailVariableInstanceUpdateEntity extends HistoricDetailEntity, ValueFields, HistoricVariableUpdate, Entity, HasRevision {
 
   void setName(String name);

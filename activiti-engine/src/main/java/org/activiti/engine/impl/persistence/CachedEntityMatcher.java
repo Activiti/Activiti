@@ -2,6 +2,7 @@ package org.activiti.engine.impl.persistence;
 
 import java.util.Collection;
 
+import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.impl.persistence.cache.CachedEntity;
 import org.activiti.engine.impl.persistence.entity.Entity;
 
@@ -10,6 +11,7 @@ import org.activiti.engine.impl.persistence.entity.Entity;
  * 
 
  */
+@Internal
 public interface CachedEntityMatcher<EntityImpl extends Entity> {
 
   /**

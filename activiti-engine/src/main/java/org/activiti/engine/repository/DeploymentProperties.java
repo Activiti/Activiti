@@ -12,6 +12,9 @@
  */
 package org.activiti.engine.repository;
 
+import org.activiti.engine.api.internal.Internal;
+
+@Internal
 public interface DeploymentProperties {
 
 

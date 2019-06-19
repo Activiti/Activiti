@@ -17,6 +17,7 @@
 package org.activiti.bpmn.converter;
 
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
@@ -26,9 +27,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.mockito.Spy;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.activiti.bpmn.constants.BpmnXMLConstants.ATTRIBUTE_TASK_IMPLEMENTATION;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ServiceTaskXMLConverterTest {
@@ -37,6 +41,15 @@ public class ServiceTaskXMLConverterTest {
 
     @Mock(answer = Answers.RETURNS_MOCKS)
     private XMLStreamReader reader;
+
+    @Spy
+    private XMLStreamWriter writer;
+
+    @Mock
+    private BpmnModel bpmnModel;
+
+    @Mock
+    private ServiceTask serviceTask;
 
     @Before
     public void setUp() throws Exception {
@@ -51,10 +64,24 @@ public class ServiceTaskXMLConverterTest {
 
         //when
         BaseElement element = converter.convertXMLToElement(reader,
-                                                                new BpmnModel());
+                                                            new BpmnModel());
 
         //then
-        assertThat(((ServiceTask)element).getImplementation()).isEqualTo("myConnector");
+        assertThat(((ServiceTask) element).getImplementation()).isEqualTo("myConnector");
     }
 
+    @Test
+    public void convertServiceTaskElementToXMLShouldWriteTheImplementionAttribute() throws Exception {
+        //given
+        given(serviceTask.getImplementation()).willReturn("myConnectorImplementation");
+
+        //when
+        converter.writeAdditionalAttributes(serviceTask,
+                                            bpmnModel,
+                                            writer);
+
+        //then
+        verify(writer).writeAttribute(eq(ATTRIBUTE_TASK_IMPLEMENTATION),
+                                      eq("myConnectorImplementation"));
+    }
 }
