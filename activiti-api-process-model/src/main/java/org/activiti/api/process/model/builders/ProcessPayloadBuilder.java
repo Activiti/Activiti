@@ -44,6 +44,10 @@ public class ProcessPayloadBuilder {
     public static SignalPayloadBuilder signal() {
         return new SignalPayloadBuilder();
     }
+    
+    public static TimerPayloadBuilder timer() {
+        return new TimerPayloadBuilder();
+    }
 
     public static GetProcessDefinitionsPayloadBuilder processDefinitions() {
         return new GetProcessDefinitionsPayloadBuilder();
