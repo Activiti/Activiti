@@ -24,12 +24,14 @@ import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListe
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
+import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
+import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,5 +168,12 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                                                         .orElse(Collections.emptyList()),
                                                 eventPublisher);
     }
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public UserTaskMappingBehaviorConfigurer userTaskMappingBehaviorConfigurer(ProcessExtensionService  processExtensionService) {
+        return new UserTaskMappingBehaviorConfigurer(processExtensionService);
+    }    
+    
 }
 

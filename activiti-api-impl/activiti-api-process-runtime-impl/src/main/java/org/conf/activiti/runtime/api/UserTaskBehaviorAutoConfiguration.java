@@ -29,8 +29,8 @@ import org.springframework.context.annotation.Configuration;
 public class UserTaskBehaviorAutoConfiguration {
 
 
-    @Bean()
-    @ConditionalOnMissingBean()
+    @Bean
+    @ConditionalOnMissingBean
     public DefaultUserTaskBehavior defaultUserTaskBehavior(UserTask userTask,
                                                            ProcessExtensionService processExtensionService) {
         return new DefaultUserTaskBehavior(userTask,

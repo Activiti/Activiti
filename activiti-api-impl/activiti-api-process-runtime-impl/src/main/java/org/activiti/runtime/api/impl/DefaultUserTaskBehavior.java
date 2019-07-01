@@ -38,10 +38,7 @@ public class DefaultUserTaskBehavior extends UserTaskActivityBehavior {
      **/
     @Override
     public void execute(DelegateExecution execution) {
-       
-     //Do something here
-  
-        leave(execution);
+        super.execute(execution);
     }
 
 }

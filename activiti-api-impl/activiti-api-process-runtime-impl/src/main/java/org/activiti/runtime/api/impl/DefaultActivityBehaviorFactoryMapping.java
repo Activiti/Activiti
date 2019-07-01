@@ -14,7 +14,6 @@ package org.activiti.runtime.api.impl;
 
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -27,9 +26,8 @@ public class DefaultActivityBehaviorFactoryMapping extends DefaultActivityBehavi
 
     private ProcessExtensionService processExtensionService;
 
-    public DefaultActivityBehaviorFactoryMapping(DefaultClassDelegateFactory defaultClassDelegateFactory,
-                                          ProcessExtensionService processExtensionService) {
-        super(defaultClassDelegateFactory);
+    public DefaultActivityBehaviorFactoryMapping(ProcessExtensionService processExtensionService) {
+        super();
         this.processExtensionService = processExtensionService;
     }
     
