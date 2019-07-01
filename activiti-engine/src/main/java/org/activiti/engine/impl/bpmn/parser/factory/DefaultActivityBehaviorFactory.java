@@ -105,6 +105,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
 
     public static final String DEFAULT_SERVICE_TASK_BEAN_NAME = "defaultServiceTaskBehavior";
+    
     private final ClassDelegateFactory classDelegateFactory;
 
     public DefaultActivityBehaviorFactory(ClassDelegateFactory classDelegateFactory) {
@@ -541,4 +542,5 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
         return new BoundaryMessageEventActivityBehavior(messageEventDefinition,
                                                         interrupting);
     }
+    
 }
