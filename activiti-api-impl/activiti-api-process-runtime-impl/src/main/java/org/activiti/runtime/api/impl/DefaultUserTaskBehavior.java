@@ -16,15 +16,20 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.Map;
+
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.helper.TaskVariableCopier;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.spring.process.ProcessExtensionService;
 
 public class DefaultUserTaskBehavior extends UserTaskActivityBehavior {
 
-    private UserTask userTask;
     private ProcessExtensionService processExtensionService;
+    private Map<String, Object> inboundVars = null;
   
     public DefaultUserTaskBehavior(UserTask userTask,
                                    ProcessExtensionService processExtensionService) {
@@ -32,13 +37,26 @@ public class DefaultUserTaskBehavior extends UserTaskActivityBehavior {
         this.processExtensionService = processExtensionService;
     }
 
-    /**
-     * We have two different implementation strategy that can be executed
-     * in according if we have a connector action definition match or not.
-     **/
+ 
     @Override
     public void execute(DelegateExecution execution) {
+        
+        InboundVariablesMappingProvider MappingProvider = new InboundVariablesMappingProvider(processExtensionService);
+        inboundVars = MappingProvider.calculateVariables(execution);
+        
         super.execute(execution);
+    }
+    
+    @Override
+    public void setTaskVariables(CommandContext commandContext, TaskEntity task) {
+        if (inboundVars == null) {
+            super.setTaskVariables(commandContext, task);  
+        } else {
+            task.setVariablesLocal(inboundVars);
+            
+        }
+       
+        
     }
 
 }

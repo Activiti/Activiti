@@ -198,10 +198,10 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
     taskEntityManager.insert(task, (ExecutionEntity) execution);
 
-    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
-      TaskVariableCopier.copyVariablesIntoTaskLocal(task);
-    }
-
+    //This we have to Override 
+    setTaskVariables(commandContext, task);
+    
+ 
     boolean skipUserTask = false;
     if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
       Expression skipExpression = expressionManager.createExpression(activeTaskSkipExpression);
@@ -234,6 +234,15 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     }
 
   }
+  
+  //Default Behavior
+  public void setTaskVariables(CommandContext commandContext, TaskEntity task) {
+      if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
+          TaskVariableCopier.copyVariablesIntoTaskLocal(task);
+      } 
+      
+  }
+  
 
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     CommandContext commandContext = Context.getCommandContext();
