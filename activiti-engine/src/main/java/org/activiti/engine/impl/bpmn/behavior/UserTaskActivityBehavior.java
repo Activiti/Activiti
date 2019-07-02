@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
@@ -198,9 +199,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
     taskEntityManager.insert(task, (ExecutionEntity) execution);
 
-    //This we have to Override 
-    setTaskVariables(commandContext, task);
-    
+    calculateVariables(execution, commandContext, task);   
  
     boolean skipUserTask = false;
     if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
@@ -234,13 +233,24 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     }
 
   }
+
+  protected void calculateVariables(DelegateExecution execution,
+                                    CommandContext commandContext, 
+                                    TaskEntity task) {
+      Map<String, Object> inboundVars = getInboundVariables(execution);
+          
+      if (inboundVars==null) {  
+          if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
+              TaskVariableCopier.copyVariablesIntoTaskLocal(task);
+          }     
+      } else {
+          //Check what to do if empty mapping
+          task.setVariablesLocal(inboundVars);       
+      }    
+  }
   
-  //Default Behavior
-  public void setTaskVariables(CommandContext commandContext, TaskEntity task) {
-      if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
-          TaskVariableCopier.copyVariablesIntoTaskLocal(task);
-      } 
-      
+  protected Map<String, Object> getInboundVariables(DelegateExecution execution) {
+      return null;
   }
   
 
