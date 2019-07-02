@@ -282,12 +282,15 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
                                             null;   
     
     if (processInstanceEntity != null) {
-        Map<String, Object> taskVariables = ( commandContext.getCommand() instanceof CompleteTaskCmd) ?
-                                            ((CompleteTaskCmd)commandContext.getCommand()).getVariables() :
-                                            null;
+        Map<String, Object> taskVariables = null;
+                
+        if (commandContext.getCommand() instanceof CompleteTaskCmd) {
+            taskVariables = ((CompleteTaskCmd)commandContext.getCommand()).getTaskVariables();
+        }
         Map<String, Object> outboundVariables = getOutBoundVariables(commandContext,
                                                                      execution,
                                                                      taskVariables);
+        
         if (outboundVariables != null) {
             processInstanceEntity.setVariables(outboundVariables);       
         }     
