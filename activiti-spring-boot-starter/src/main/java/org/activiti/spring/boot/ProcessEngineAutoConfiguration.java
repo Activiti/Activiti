@@ -171,8 +171,8 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     
     @Bean
     @ConditionalOnMissingBean
-    public UserTaskMappingBehaviorConfigurer userTaskMappingBehaviorConfigurer(ProcessExtensionService  processExtensionService) {
-        return new UserTaskMappingBehaviorConfigurer(processExtensionService);
+    public DefaultActivityBehaviorFactoryMappingConfigurer defaultActivityBehaviorFactoryMappingConfigurer(ProcessExtensionService  processExtensionService) {
+        return new DefaultActivityBehaviorFactoryMappingConfigurer(processExtensionService);
     }    
     
 }
