@@ -28,35 +28,18 @@ import org.activiti.spring.process.ProcessExtensionService;
 
 public class DefaultUserTaskBehavior extends UserTaskActivityBehavior {
 
-    private ProcessExtensionService processExtensionService;
-    private Map<String, Object> inboundVars = null;
+    InboundVariablesMappingProvider mappingProvider;
   
     public DefaultUserTaskBehavior(UserTask userTask,
-                                   ProcessExtensionService processExtensionService) {
+                                   InboundVariablesMappingProvider mappingProvider) {
         super(userTask);
-        this.processExtensionService = processExtensionService;
+        this.mappingProvider = mappingProvider;
     }
 
  
     @Override
-    public void execute(DelegateExecution execution) {
-        
-        InboundVariablesMappingProvider MappingProvider = new InboundVariablesMappingProvider(processExtensionService);
-        inboundVars = MappingProvider.calculateVariables(execution);
-        
-        super.execute(execution);
-    }
-    
-    @Override
-    public void setTaskVariables(CommandContext commandContext, TaskEntity task) {
-        if (inboundVars == null) {
-            super.setTaskVariables(commandContext, task);  
-        } else {
-            task.setVariablesLocal(inboundVars);
-            
-        }
-       
-        
+    protected Map<String, Object> getInboundVariables(DelegateExecution execution) {
+        return mappingProvider.calculateVariables(execution);
     }
 
 }

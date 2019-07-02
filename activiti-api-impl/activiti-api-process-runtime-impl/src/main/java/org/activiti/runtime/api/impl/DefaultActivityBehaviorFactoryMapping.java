@@ -35,7 +35,7 @@ public class DefaultActivityBehaviorFactoryMapping extends DefaultActivityBehavi
     @Override
     public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
         return new DefaultUserTaskBehavior(userTask,
-                                           processExtensionService);
+                                           new InboundVariablesMappingProvider(processExtensionService));
     }
 
  
