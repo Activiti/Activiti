@@ -120,8 +120,6 @@ public class TaskRuntimeVariableMappingTest {
         
         
         //Check Process Variables for output mapping
-        //This will be changed after we will complete mappings...
-        //This should be done on task complete, cancel...
         
         procVariables = processRuntime.variables( ProcessPayloadBuilder
                                                  .variables()
@@ -133,16 +131,12 @@ public class TaskRuntimeVariableMappingTest {
                             VariableInstance::getValue)
                 .containsOnly(
                       tuple("process_variable_unmapped_1",
-                            "unmapped1Value"), 
+                            "unmapped1Value"),          //Should be unchanged
                       tuple("process_variable_inputmap_1",
                             "inputmap1Value"),          //Should be unchanged
                       tuple("process_variable_outputmap_1",
-                            "outputmap1Value"),         //Should be changed to 'outputTaskValue' after implementation of mapping
-                      
-                      tuple("task_input_variable_name_1",   //after completion of task taskVariable is set to processVariable
-                            "outputValue"),
-                      tuple("task_output_variable_name_1",  //after completion of task taskVariable is set to processVariable
-                            "outputTaskValue")                                  
+                            "outputTaskValue")          //Should be changed to 'outputTaskValue' after implementation of mapping
+                                                      
         );    
                 
         processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());

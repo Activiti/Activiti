@@ -62,10 +62,11 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
         task.setTransientVariables(transientVariables);
       }
     }
-
-    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
-      TaskVariableCopier.copyVariablesOutFromTaskLocal(task);
-    }
+//    We have moved this logic to UserTaskActivityBehavior.trigger(..
+//
+//    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
+//      TaskVariableCopier.copyVariablesOutFromTaskLocal(task);
+//    }
 
     executeTaskComplete(commandContext, task, variables, localScope);
     return null;
@@ -76,4 +77,11 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
     return "Cannot complete a suspended task";
   }
 
+  public Map<String, Object> getVariables() {
+      return variables;  
+  }
+  
+  public Map<String, Object> getTransientVariables() {
+      return transientVariables;  
+  }
 }

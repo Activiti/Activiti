@@ -21,17 +21,14 @@ import java.util.Map;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.helper.TaskVariableCopier;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.spring.process.ProcessExtensionService;
 
 public class DefaultUserTaskBehavior extends UserTaskActivityBehavior {
 
-    InboundVariablesMappingProvider mappingProvider;
+    VariablesMappingProvider mappingProvider;
   
     public DefaultUserTaskBehavior(UserTask userTask,
-                                   InboundVariablesMappingProvider mappingProvider) {
+                                   VariablesMappingProvider mappingProvider) {
         super(userTask);
         this.mappingProvider = mappingProvider;
     }
@@ -39,7 +36,19 @@ public class DefaultUserTaskBehavior extends UserTaskActivityBehavior {
  
     @Override
     protected Map<String, Object> getInboundVariables(DelegateExecution execution) {
-        return mappingProvider.calculateVariables(execution);
+        return mappingProvider.calculateInputVariables(execution);
     }
+    
+    @Override
+    protected Map<String, Object> getOutBoundVariables(CommandContext commandContext,
+                                                       DelegateExecution execution, 
+                                                       Map<String, Object> taskCompleteVariables) {
+        
+        return mappingProvider.calculateOutPutVariables(execution.getProcessDefinitionId(), 
+                                                        execution.getCurrentActivityId(),
+                                                        taskCompleteVariables); 
+    }
+    
+  
 
 }

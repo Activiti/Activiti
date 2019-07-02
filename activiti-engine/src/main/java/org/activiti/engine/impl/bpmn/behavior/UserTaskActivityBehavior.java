@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -34,6 +35,7 @@ import org.activiti.engine.impl.bpmn.helper.TaskVariableCopier;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.cmd.CompleteTaskCmd;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -43,8 +45,6 @@ import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
 
@@ -253,9 +253,20 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       return null;
   }
   
+  
+  protected Map<String, Object> getOutBoundVariables(CommandContext commandContext,
+                                                     DelegateExecution execution, 
+                                                     Map<String, Object> taskVariables) {
+      
+      if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
+          return taskVariables;
+      }
+      return null;
+  }
 
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
     CommandContext commandContext = Context.getCommandContext();
+    
     TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
     List<TaskEntity> taskEntities = taskEntityManager.findTasksByExecutionId(execution.getId()); // Should be only one
     for (TaskEntity taskEntity : taskEntities) {
@@ -263,6 +274,25 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         throw new ActivitiException("UserTask should not be signalled before complete");
       }
     }
+    
+    //Propagate variables to the process
+    String processInstanceId = execution.getProcessInstanceId();
+    ExecutionEntity processInstanceEntity = processInstanceId != null ? 
+                                            commandContext.getExecutionEntityManager().findById(processInstanceId) :
+                                            null;   
+    
+    if (processInstanceEntity != null) {
+        Map<String, Object> taskVariables = ( commandContext.getCommand() instanceof CompleteTaskCmd) ?
+                                            ((CompleteTaskCmd)commandContext.getCommand()).getVariables() :
+                                            null;
+        Map<String, Object> outboundVariables = getOutBoundVariables(commandContext,
+                                                                     execution,
+                                                                     taskVariables);
+        if (outboundVariables != null) {
+            processInstanceEntity.setVariables(outboundVariables);       
+        }     
+    }
+    
     leave(execution);
   }
 

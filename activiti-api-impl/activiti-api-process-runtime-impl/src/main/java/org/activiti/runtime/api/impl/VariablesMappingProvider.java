@@ -23,17 +23,18 @@ import java.util.Map;
 import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.core.common.model.connector.VariableDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.runtime.api.connector.InboundVariableValueProvider;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Mapping;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.ProcessVariablesMapping;
 
-public class InboundVariablesMappingProvider {
+public class VariablesMappingProvider {
 
     private ProcessExtensionService processExtensionService;
 
-    public InboundVariablesMappingProvider(ProcessExtensionService processExtensionService) {
+    public VariablesMappingProvider(ProcessExtensionService processExtensionService) {
         this.processExtensionService = processExtensionService;
     }
 
@@ -61,7 +62,7 @@ public class InboundVariablesMappingProvider {
     }
     
     
-    public Map<String, Object> calculateVariables(DelegateExecution execution) {
+    public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
         
         Map<String, Object> inboundVariables = null;
         ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());      
@@ -93,5 +94,65 @@ public class InboundVariablesMappingProvider {
         }
         
         return inboundVariables;
+    }
+    
+    public Object calculateOutPutMappedValue(Mapping mapping,
+                                             Map<String, Object> activitiCompleteVariables) {
+    
+        if (mapping != null) {
+            if (Mapping.SourceMappingType.VALUE.equals(mapping.getType())) {
+                return mapping.getValue();
+            }
+            if (Mapping.SourceMappingType.VARIABLE.equals(mapping.getType())) {
+                String name = mapping.getValue().toString();
+                
+                return activitiCompleteVariables != null ?
+                       activitiCompleteVariables.get(name) :
+                       null;
+                
+            }
+        }
+        return null;
+    }
+    
+    public Map<String, Object> calculateOutPutVariables(String processDefinitionId, 
+                                                        String activityId,
+                                                        Map<String, Object> activitiCompleteVariables) {
+        
+        Map<String, Object> outboundVariables = new HashMap<>();    
+        
+        if (activitiCompleteVariables != null && !activitiCompleteVariables.isEmpty()) {
+            ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(processDefinitionId);      
+            if (extensions != null) {
+                ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(activityId);
+                if (processVariablesMapping != null) {
+                    Map<String, Mapping> outputMappings = processVariablesMapping.getOutputs();
+                   
+                    if (!outputMappings.isEmpty()) {
+                          
+                        for (Map.Entry<String, Mapping> mapping : outputMappings.entrySet()) {
+                            
+                            String name = mapping.getKey();
+                            
+                            //Check that we have this process variables in extensions
+                            //TO DO: can we create a process variable if it is not defined in extension file?
+                            org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
+                            if (processVariableDefinition != null) {
+                                outboundVariables.put(name, calculateOutPutMappedValue(mapping.getValue(),
+                                                                                       activitiCompleteVariables));                              
+                            }                                                               
+                        }     
+                    }
+                    
+                }            
+            }
+           
+            //Nothing found - put all completeVariables
+            if (outboundVariables.isEmpty()) {
+                outboundVariables = new HashMap<>(activitiCompleteVariables);      
+            }
+        }
+        
+        return outboundVariables;
     }
 }
