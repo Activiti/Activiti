@@ -64,4 +64,8 @@ public class GetTasksPayload implements Payload {
     public void setParentTaskId(String parentTaskId) {
         this.parentTaskId = parentTaskId;
     }
+
+    public boolean isStandalone() {
+        return getProcessInstanceId() == null;
+    }
 }

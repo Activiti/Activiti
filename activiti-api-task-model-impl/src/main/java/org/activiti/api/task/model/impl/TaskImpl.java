@@ -193,6 +193,11 @@ public class TaskImpl implements Task {
         return businessKey;
     }
 
+    @Override
+    public boolean isStandalone() {
+        return getProcessInstanceId() == null;
+    }
+
     public void setBusinessKey(String businessKey) {
         this.businessKey = businessKey;
     }

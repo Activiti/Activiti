@@ -64,4 +64,6 @@ public interface Task {
     Integer getProcessDefinitionVersion();
     
     String getBusinessKey();
+
+    boolean isStandalone();
 }
