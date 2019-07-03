@@ -40,17 +40,23 @@ public class VariablesMappingProvider {
         if (inputMapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())) {
                 return inputMapping.getValue();
-            }
-            if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
-                String name = inputMapping.getValue().toString();
-               //This is extra check
-                org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
-                if (processVariableDefinition != null) {
-                    return execution.getVariable(processVariableDefinition.getName());
+            } else {
+                if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
+                    String name = inputMapping.getValue().toString();
+                   //This is extra check
+                    org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
+                    if (processVariableDefinition != null) {
+                        return execution.getVariable(processVariableDefinition.getName());
+                    }
+                    //We may agree that modeller will check everything
+                    //In this case we may use simply:
+                    //return execution.getVariable(name);
+                    
+                } else {
+                    if (Mapping.SourceMappingType.STATIC_VALUE.equals(inputMapping.getType())) {
+                        return inputMapping.getValue();         
+                    } 
                 }
-                //We may agree that modeller will check everything
-                //In this case we may use simply:
-                //return execution.getVariable(name);
                 
             }
         }
