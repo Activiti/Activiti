@@ -115,7 +115,8 @@ public class VariablesMappingProvider {
         return null;
     }
     
-    public Map<String, Object> calculateOutPutVariables(String processDefinitionId, 
+    public Map<String, Object> calculateOutPutVariables(boolean defaultCopyAllVariables,
+                                                        String processDefinitionId, 
                                                         String activityId,
                                                         Map<String, Object> activitiCompleteVariables) {
         
@@ -148,7 +149,7 @@ public class VariablesMappingProvider {
             }
            
             //Nothing found - put all completeVariables
-            if (outboundVariables.isEmpty()) {
+            if (outboundVariables.isEmpty() && defaultCopyAllVariables) {
                 outboundVariables = new HashMap<>(activitiCompleteVariables);      
             }
         }

@@ -69,11 +69,8 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
 //    }
 //
     
-    //Added to use taskVariables later for mapping
-    if (commandContext.getCommand() instanceof CompleteTaskCmd) {
-       ((CompleteTaskCmd)commandContext.getCommand()).setTaskVariables(task.getVariablesLocal()); 
-    } 
-       
+    setTaskVariables(task.getVariablesLocal()); 
+    
     
     executeTaskComplete(commandContext, task, variables, localScope);
     return null;
