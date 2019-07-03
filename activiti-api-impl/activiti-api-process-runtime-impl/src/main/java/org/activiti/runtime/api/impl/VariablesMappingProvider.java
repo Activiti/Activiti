@@ -17,14 +17,9 @@
 package org.activiti.runtime.api.impl;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.activiti.core.common.model.connector.ActionDefinition;
-import org.activiti.core.common.model.connector.VariableDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.runtime.api.connector.InboundVariableValueProvider;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Mapping;
 import org.activiti.spring.process.model.ProcessExtensionModel;
@@ -48,14 +43,15 @@ public class VariablesMappingProvider {
             }
             if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
                 String name = inputMapping.getValue().toString();
+               //This is extra check
+                org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
+                if (processVariableDefinition != null) {
+                    return execution.getVariable(processVariableDefinition.getName());
+                }
+                //We may agree that modeller will check everything
+                //In this case we may use simply:
+                //return execution.getVariable(name);
                 
-                return execution.getVariable(name);
-                
-                //This is extra check, we may agree that modeller will check everything???
-//                org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
-//                if (processVariableDefinition != null) {
-//                    return execution.getVariable(processVariableDefinition.getName());
-//                }
             }
         }
         return null;
