@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -26,7 +28,7 @@ public class ProcessRuntimeCallActivityMappingIT {
 
     private static final String PARENT_PROCESS_CALL_ACTIVITY = "parentproc-843144bc-3797-40db-8edc-d23190b118e5";
     private static final String SUB_PROCESS_CALL_ACTIVITY = "subprocess-fb5f2386-709a-4947-9aa0-bbf31497384g";
-    
+
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -37,7 +39,7 @@ public class ProcessRuntimeCallActivityMappingIT {
     private SecurityUtil securityUtil;
 
     @Test
-    public void testCheckSubProcessTaskWhenCallActivity (){
+    public void testCheckSubProcessTaskWhenCallActivity() {
 
         securityUtil.logInAs("salaboy");
 
@@ -68,7 +70,7 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
         //verify the existence of the task in the sub process
-        List <Task> taskList = taskRuntime.tasks(
+        List<Task> taskList = taskRuntime.tasks(
                 Pageable.of(0, 50),
                 TaskPayloadBuilder
                         .tasks()
@@ -79,24 +81,24 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(taskList).isNotEmpty();
 
         //parent process
-        List<VariableInstance> procVariables = processRuntime.variables( ProcessPayloadBuilder
+        List<VariableInstance> procVariables = processRuntime.variables(ProcessPayloadBuilder
                 .variables()
                 .withProcessInstanceId(processInstance.getId())
                 .build());
 
         for (VariableInstance procVariable : procVariables) {
-            System.out.println("ParentProcess:"+procVariable.getName()+":"+procVariable.getValue());
+            System.out.println("ParentProcess:" + procVariable.getName() + ":" + procVariable.getValue());
 
         }
 
-       //subprocess
-        List<VariableInstance> subProcVariables = processRuntime.variables( ProcessPayloadBuilder
+        //subprocess
+        List<VariableInstance> subProcVariables = processRuntime.variables(ProcessPayloadBuilder
                 .variables()
                 .withProcessInstanceId(subProcessInstance.getId())
                 .build());
 
         for (VariableInstance procVariable : subProcVariables) {
-            System.out.println("Subprocess:"+procVariable.getName()+":"+procVariable.getValue());
+            System.out.println("Subprocess:" + procVariable.getName() + ":" + procVariable.getValue());
 
         }
 
@@ -115,13 +117,13 @@ public class ProcessRuntimeCallActivityMappingIT {
                 );
 
         //parent process
-        List<VariableInstance> pProcVariables = processRuntime.variables( ProcessPayloadBuilder
+        List<VariableInstance> pProcVariables = processRuntime.variables(ProcessPayloadBuilder
                 .variables()
                 .withProcessInstanceId(processInstance.getId())
                 .build());
 
         for (VariableInstance procVariable : pProcVariables) {
-            System.out.println("ParentProcess:"+procVariable.getName()+":"+procVariable.getValue());
+            System.out.println("ParentProcess:" + procVariable.getName() + ":" + procVariable.getValue());
         }
 
 
@@ -136,17 +138,29 @@ public class ProcessRuntimeCallActivityMappingIT {
         //out_var_name_2=39
 
         //finish subprocess
-        //check if in main process variables are changed
+
+        Map<String, Object> variablesForTask = new HashMap<>();
+        variablesForTask.put("out_var_name_1", "fromSubprocessName");
+        variablesForTask.put("out_var_name_2", 39);
+
+
+        Task completeTask = taskRuntime.complete(TaskPayloadBuilder
+                .complete()
+                .withTaskId(task.getId())
+                .withVariables(variablesForTask)
+                .build());
+        assertThat(completeTask).isNotNull();
+        assertThat(completeTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
 
 
         //parent process
-        List<VariableInstance> parentVariables = processRuntime.variables( ProcessPayloadBuilder
+        List<VariableInstance> parentVariables = processRuntime.variables(ProcessPayloadBuilder
                 .variables()
                 .withProcessInstanceId(processInstance.getId())
                 .build());
 
         for (VariableInstance procVariable : procVariables) {
-            System.out.println("ParentProcess:"+procVariable.getName()+":"+procVariable.getValue());
+            System.out.println("ParentProcess:" + procVariable.getName() + ":" + procVariable.getValue());
             assertThat(subProcVariables).extracting(VariableInstance::getName,
                     VariableInstance::getValue)
                     .containsOnly(
@@ -155,10 +169,7 @@ public class ProcessRuntimeCallActivityMappingIT {
                             tuple("out-var-name-2",
                                     39)
                     );
-
-
-
         }
-    }
 
+    }
 }
