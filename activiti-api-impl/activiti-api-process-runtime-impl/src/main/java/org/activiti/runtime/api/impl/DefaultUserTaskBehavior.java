@@ -44,7 +44,8 @@ public class DefaultUserTaskBehavior extends UserTaskActivityBehavior {
                                                        DelegateExecution execution, 
                                                        Map<String, Object> taskCompleteVariables) {
         
-        return mappingProvider.calculateOutPutVariables(execution.getProcessDefinitionId(), 
+        return mappingProvider.calculateOutPutVariables(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks(),
+                                                        execution.getProcessDefinitionId(), 
                                                         execution.getCurrentActivityId(),
                                                         taskCompleteVariables); 
     }
