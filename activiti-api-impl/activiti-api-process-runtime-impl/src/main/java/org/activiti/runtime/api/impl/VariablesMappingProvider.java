@@ -52,7 +52,9 @@ public class VariablesMappingProvider {
                     //In this case we may use simply:
                     //return execution.getVariable(name);
                     
-                } else {
+                } 
+                //We have to check if this is needed?
+                else {
                     if (Mapping.SourceMappingType.STATIC_VALUE.equals(inputMapping.getType())) {
                         return inputMapping.getValue();         
                     } 
@@ -104,15 +106,16 @@ public class VariablesMappingProvider {
         if (mapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(mapping.getType())) {
                 return mapping.getValue();
+            } else {
+                if (Mapping.SourceMappingType.VARIABLE.equals(mapping.getType())) {
+                    String name = mapping.getValue().toString();
+                    
+                    return activitiCompleteVariables != null ?
+                           activitiCompleteVariables.get(name) :
+                           null;     
+                }
             }
-            if (Mapping.SourceMappingType.VARIABLE.equals(mapping.getType())) {
-                String name = mapping.getValue().toString();
-                
-                return activitiCompleteVariables != null ?
-                       activitiCompleteVariables.get(name) :
-                       null;
-                
-            }
+            
         }
         return null;
     }
