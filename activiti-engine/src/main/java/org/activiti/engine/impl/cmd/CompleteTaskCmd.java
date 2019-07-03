@@ -16,7 +16,6 @@ import java.util.Map;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.bpmn.helper.TaskVariableCopier;
 
 
 /**
@@ -27,6 +26,7 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
   private static final long serialVersionUID = 1L;
   protected Map<String, Object> variables;
   protected Map<String, Object> transientVariables;
+  protected Map<String, Object> taskVariables;
   protected boolean localScope;
 
   public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
@@ -62,11 +62,19 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
         task.setTransientVariables(transientVariables);
       }
     }
-
-    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
-      TaskVariableCopier.copyVariablesOutFromTaskLocal(task);
-    }
-
+//    We have moved this logic to UserTaskActivityBehavior.trigger(..
+//
+//    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
+//      TaskVariableCopier.copyVariablesOutFromTaskLocal(task);
+//    }
+//
+    
+    //Added to use taskVariables later for mapping
+    if (commandContext.getCommand() instanceof CompleteTaskCmd) {
+       ((CompleteTaskCmd)commandContext.getCommand()).setTaskVariables(task.getVariablesLocal()); 
+    } 
+       
+    
     executeTaskComplete(commandContext, task, variables, localScope);
     return null;
   }
@@ -76,4 +84,21 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
     return "Cannot complete a suspended task";
   }
 
+  public Map<String, Object> getVariables() {
+      return variables;  
+  }
+  
+  public Map<String, Object> getTransientVariables() {
+      return transientVariables;  
+  }
+  
+  public void setTaskVariables(Map<String, Object> taskVariables) {
+      this.taskVariables = taskVariables;  
+  }
+  
+  public Map<String, Object> getTaskVariables() {
+      return taskVariables;  
+  }
+  
+  
 }
