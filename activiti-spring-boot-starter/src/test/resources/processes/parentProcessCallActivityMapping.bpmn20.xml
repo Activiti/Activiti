@@ -11,10 +11,11 @@
             <bpmn2:outgoing>SequenceFlow_0cv1cal</bpmn2:outgoing>
         </bpmn2:callActivity>
         <bpmn2:sequenceFlow id="SequenceFlow_0cv1cal" sourceRef="Task_0v0jw9c" targetRef="Task_0wtbu1d" />
-        <bpmn2:userTask id="Task_0wtbu1d" name="my-task-call-activity">
+         <bpmn2:userTask id="Task_0wtbu1d" name="my-task">
             <bpmn2:incoming>SequenceFlow_0cv1cal</bpmn2:incoming>
             <bpmn2:outgoing>SequenceFlow_1e705xf</bpmn2:outgoing>
         </bpmn2:userTask>
+        
         <bpmn2:endEvent id="EndEvent_0lj7d7o">
             <bpmn2:incoming>SequenceFlow_1e705xf</bpmn2:incoming>
         </bpmn2:endEvent>

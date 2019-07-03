@@ -1,0 +1,71 @@
+{
+  "id":"subprocess-fb5f2386-709a-4947-9aa0-bbf31497384g",
+  "name":"mySubProcess.bpmn",
+  "extensions": {
+    "properties": {
+     "input-variable-name-1-id": {
+        "id": "input-variable-name-1-id",
+        "name": "input-variable-name-1",
+        "type": "string",
+        "required": true,
+        "value": "value1"
+     },
+     "input-variable-name-2-id": {
+        "id": "input-variable-name-2-id",
+        "name": "input-variable-name-2",
+        "type": "integer",
+        "value": 0
+      },
+      "input-variable-name-3-id": {
+        "id": "input-variable-name-3-id",
+        "name": "input-variable-name-3",
+        "type": "integer",
+        "value": 0
+      },
+      "input-static-value-id": {
+        "id": "input-static-value-id",
+        "name": "input-static-value",
+        "type": "string",
+        "value": "some value"
+      },
+      "out-variable-name-1-id": {
+        "id": "out-variable-name-1-id",
+        "name": "out-variable-name-1",
+        "type": "string",
+        "value": "outValue"
+     },
+     "out-variable-name-2-id": {
+        "id": "out-variable-name-2-id",
+        "name": "out-variable-name-2",
+        "type": "integer",
+        "value": 0
+      }
+    },
+    "mappings": {
+      "Task_0oz023e": {
+        "inputs": {
+          "task-variable-name-1": {
+            "type": "variable",
+            "value": "input-variable-name-1"
+          },
+          "task-variable-name-2": {
+            "type": "variable",
+            "value": "input-variable-name-2"
+          },
+          "task-variable-name-3": {
+            "type": "value",
+            "value": 5
+          }
+        },
+        "outputs": {
+          "out-variable-name-1": {
+            "type": "variable",
+            "value" : "task-variable-name-1"},
+          "out-variable-name-2": {
+            "type": "variable",
+            "value" : "task-variable-name-2"}
+        }
+      }
+    }
+  }
+}
