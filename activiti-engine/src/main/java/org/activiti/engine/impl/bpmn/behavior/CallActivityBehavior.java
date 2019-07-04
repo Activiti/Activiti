@@ -20,12 +20,15 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.bpmn.helper.TaskVariableCopier;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
@@ -118,6 +121,8 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       }
     }
 
+    variables=calculateVariables(execution,subProcess);
+
     // copy process variables
     for (IOParameter ioParameter : callActivity.getInParameters()) {
       Object value = null;
@@ -147,7 +152,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
     // only data. no control flow available on this execution.
-
+    CommandContext commandContext = Context.getCommandContext();
     ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
 
     // copy process variables
@@ -164,6 +169,12 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       }
       execution.setVariable(ioParameter.getTarget(), value);
     }
+      Map<String, Object> outboundVariables = getOutBoundVariables(commandContext,
+              execution,subProcessInstance.getVariables());
+      if (outboundVariables != null) {
+          execution.getParent().setVariables(outboundVariables);
+      }
+
   }
 
   public void completed(DelegateExecution execution) throws Exception {
@@ -204,4 +215,36 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   public String getProcessDefinitonKey() {
     return processDefinitonKey;
   }
+
+  protected  Map<String, Object>  calculateVariables(DelegateExecution execution,
+//                                    CommandContext commandContext,
+                                    Process subProcess) {
+    Map<String, Object> inboundVars = getInboundVariables(execution);
+    return inboundVars;
+
+   // if (inboundVars==null) {
+//      if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
+//        TaskVariableCopier.copyVariablesIntoTaskLocal(task);
+//      }
+//    } else {
+//      //Check what to do if empty mapping
+
+
+  }
+
+  protected Map<String, Object> getInboundVariables(DelegateExecution execution) {
+    return null;
+  }
+
+
+  protected Map<String, Object> getOutBoundVariables(CommandContext commandContext,
+                                                     DelegateExecution execution,
+                                                     Map<String, Object> taskVariables) {
+
+    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
+      return taskVariables;
+    }
+    return null;
+  }
+
 }

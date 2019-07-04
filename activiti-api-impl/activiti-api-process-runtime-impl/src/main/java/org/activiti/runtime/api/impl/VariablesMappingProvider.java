@@ -64,7 +64,7 @@ public class VariablesMappingProvider {
         }
         return null;
     }
-    
+
     
     public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
         

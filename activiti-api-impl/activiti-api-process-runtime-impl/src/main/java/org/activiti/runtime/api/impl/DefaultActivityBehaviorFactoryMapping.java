@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -12,7 +12,9 @@
  */
 package org.activiti.runtime.api.impl;
 
+import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
@@ -30,14 +32,18 @@ public class DefaultActivityBehaviorFactoryMapping extends DefaultActivityBehavi
         super();
         this.processExtensionService = processExtensionService;
     }
-    
+
 
     @Override
     public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
         return new DefaultUserTaskBehavior(userTask,
-                                           new VariablesMappingProvider(processExtensionService));
+                new VariablesMappingProvider(processExtensionService));
     }
 
- 
-    
+    @Override
+    public CallActivityBehavior createCallActivityBehavior(CallActivity callActivity) {
+        return new DefaultCallActivityBehavior(callActivity,
+                new VariablesMappingProvider(processExtensionService));
+    }
+
 }

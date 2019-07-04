@@ -1,6 +1,6 @@
 {
   "id":"subprocess-fb5f2386-709a-4947-9aa0-bbf31497384g",
-  "name":"mySubProcess.bpmn",
+  "name":"mySubProcess123.bpmn",
   "extensions": {
     "properties": {
      "input-variable-name-1-id": {
@@ -60,7 +60,7 @@
         "outputs": {
           "out-variable-name-1": {
             "type": "variable",
-            "value" : "task-variable-name-1"},
+            "value" : "task-height"},
           "out-variable-name-2": {
             "type": "variable",
             "value" : "task-variable-name-2"}

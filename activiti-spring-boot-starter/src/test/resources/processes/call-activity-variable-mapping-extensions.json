@@ -1,6 +1,6 @@
 {
   "id":"parentproc-843144bc-3797-40db-8edc-d23190b118e5",
-  "name":"myProcess.bpmn",
+  "name":"myProcess234.bpmn",
   "extensions": {
     "properties": {
       "age-id": {
@@ -9,6 +9,13 @@
         "type": "integer",
         "value": 20
       },
+
+      "height-id": {
+        "id": "height-id",
+        "name": "height",
+        "type": "integer",
+        "value": 333
+      },
       "name-id": {
         "id": "name-id",
         "name": "name",
@@ -16,6 +23,7 @@
         "required": true,
         "value": "inName"
       },
+
       "nick-name-id": {
         "id": "nick-name-id",
         "name": "nickName",
@@ -70,15 +78,25 @@
           "input-static-value": {
             "type": "static_value",
             "value": "a static value"
+          },
+          "out-variable-name-1": {
+            "type": "variable",
+            "value": "height"
           }
         },
         "outputs": {
           "name": {
             "type": "variable",
-            "value" : "out-variable-name-1"},
+            "value" : "input-variable-name-1"},
           "age": {
             "type": "variable",
-            "value" : "out-variable-name-2"}
+            "value" : "input-variable-name-2"},
+          "nickName": {
+            "type": "variable",
+            "value" : "input-variable-name-3"},
+          "height": {
+            "type": "variable",
+            "value" : "out-variable-name-1"}
         }
       }
     }
