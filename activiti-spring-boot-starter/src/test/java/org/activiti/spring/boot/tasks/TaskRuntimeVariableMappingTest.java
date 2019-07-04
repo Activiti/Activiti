@@ -196,9 +196,6 @@ public class TaskRuntimeVariableMappingTest {
                 .withTaskId(task.getId())
                 .build());
 
-//        assertThat(taskVariables)
-//                .hasSize(0);
-
         assertThat(taskVariables)
                 .isNotNull()
                 .extracting(VariableInstance::getName,
