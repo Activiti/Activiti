@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="processDefinitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="processDefinitions">
+
+    <process id="taskEmptyVarMapping">
+
+        <startEvent id="start"/>
+
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="simpleTask"/>
+
+        <userTask id="simpleTask" name="testSimpleTask" activiti:assignee="garth"/>
+
+        <sequenceFlow id="flow2" sourceRef="simpleTask" targetRef="userTask"/>
+
+        <userTask id="userTask" name="My user task" activiti:assignee="garth"/>
+
+        <sequenceFlow id="flow3" sourceRef="userTask" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>
