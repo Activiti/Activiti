@@ -52,6 +52,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class TaskRuntimeVariableMappingTest {
 
     private static final String TASK_VAR_MAPPING = "taskVarMapping";
+    private static final String TASK_EMPTY_VAR_MAPPING = "taskEmptyVarMapping";
 
     @Autowired
     private TaskRuntime taskRuntime;
@@ -153,6 +154,52 @@ public class TaskRuntimeVariableMappingTest {
                                                  .build());
         assertThat(completeTask).isNotNull();
         assertThat(completeTask.getStatus()).isEqualTo(TaskStatus.COMPLETED);    
+    }
+
+    @Test
+    public void processShouldHaveNoVariablesWhenMappingIsEmpty(){
+
+        securityUtil.logInAs("garth");
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(TASK_EMPTY_VAR_MAPPING)
+                .build());
+
+
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        Task task = tasks.getContent().get(0);
+
+        assertThat(task.getName()).isEqualTo("testSimpleTask");
+
+        //Check Process Variables
+        List<VariableInstance> procVariables = processRuntime.variables( ProcessPayloadBuilder
+                .variables()
+                .withProcessInstanceId(process.getId())
+                .build());
+
+        assertThat(procVariables)
+                .isNotNull()
+                .extracting(VariableInstance::getName,
+                            VariableInstance::getValue)
+                .containsOnly(tuple("process_variable_unmapped_1",
+                                "unmapped1Value"),
+                                tuple("process_variable_inputmap_1",
+                                        "inputmap1Value"),
+                                tuple("process_variable_outputmap_1",
+                                        "outputmap1Value"));
+
+        //Check Task Variables: only variables defined in 'mappings' should be present, and since there is no mapping, none should
+        List<VariableInstance> taskVariables = taskRuntime.variables(TaskPayloadBuilder
+                .variables()
+                .withTaskId(task.getId())
+                .build());
+
+        assertThat(taskVariables).hasSize(0);
+
+
+        processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
     }
 
     
