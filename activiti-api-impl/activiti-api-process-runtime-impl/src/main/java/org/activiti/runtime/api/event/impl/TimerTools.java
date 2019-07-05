@@ -20,6 +20,7 @@ import org.activiti.api.process.model.payloads.TimerPayload;
 import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.persistence.entity.AbstractJobEntity;
 import org.activiti.engine.impl.persistence.entity.AbstractJobEntityImpl;
 
@@ -33,9 +34,7 @@ public class TimerTools {
         timerPayload.setRetries(jobEntity.getRetries());
         timerPayload.setMaxIterations(jobEntity.getMaxIterations());
         timerPayload.setRepeat(jobEntity.getRepeat());
-        timerPayload.setJobHandlerType(jobEntity.getJobHandlerType());
-        timerPayload.setJobHandlerConfiguration(jobEntity.getJobHandlerConfiguration()); 
-        timerPayload.setJobType(jobEntity.getJobType());
+        timerPayload.setActivityId(TimerEventHandler.getActivityIdFromConfiguration(jobEntity.getJobHandlerConfiguration()));
         timerPayload.setExceptionMessage(jobEntity.getExceptionMessage());
         
         return timerPayload;
@@ -44,11 +43,12 @@ public class TimerTools {
     
     public static BPMNTimerImpl convertToBPMNTimer(ActivitiEntityEvent internalEvent) {
         AbstractJobEntityImpl jobEntity = (AbstractJobEntityImpl)internalEvent.getEntity();
+        TimerPayload timerPayload = convertToTimerPayload(jobEntity);
         
-        BPMNTimerImpl timer = new BPMNTimerImpl(jobEntity.getId());
+        BPMNTimerImpl timer = new BPMNTimerImpl(timerPayload.getActivityId());
         timer.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         timer.setProcessInstanceId(internalEvent.getProcessInstanceId());
-        timer.setTimerPayload(convertToTimerPayload(jobEntity));
+        timer.setTimerPayload(timerPayload);
         
         return timer;    
     }

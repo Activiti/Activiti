@@ -117,14 +117,16 @@ public class ProcessRuntimeBPMNTimerIT {
             .extracting(BPMNTimerEvent::getEventType,
                         BPMNTimerEvent::getProcessDefinitionId,
                         event -> event.getEntity().getProcessDefinitionId(),
-                        event -> event.getEntity().getTimerPayload().getJobType(),
-                        event -> event.getEntity().getTimerPayload().getJobHandlerType()         
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getElementId(),
+                        event -> event.getEntity().getTimerPayload().getActivityId()         
             )
             .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
                                   process.getProcessDefinitionId(),
                                   process.getProcessDefinitionId(),
+                                  process.getId(),
                                   "timer",
-                                  "trigger-timer"
+                                  "timer"
                                   )
              
         );
@@ -147,14 +149,16 @@ public class ProcessRuntimeBPMNTimerIT {
                 .extracting(BPMNTimerEvent::getEventType,
                             BPMNTimerEvent::getProcessDefinitionId,
                             event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getTimerPayload().getJobType(),
-                            event -> event.getEntity().getTimerPayload().getJobHandlerType()         
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> event.getEntity().getElementId(),
+                            event -> event.getEntity().getTimerPayload().getActivityId()         
                 )
                 .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
                                       process.getProcessDefinitionId(),
                                       process.getProcessDefinitionId(),
+                                      process.getId(),
                                       "timer",
-                                      "trigger-timer"
+                                      "timer"
                                       )
                      
                 );
@@ -163,14 +167,16 @@ public class ProcessRuntimeBPMNTimerIT {
                 .extracting(BPMNTimerEvent::getEventType,
                             BPMNTimerEvent::getProcessDefinitionId,
                             event -> event.getEntity().getProcessDefinitionId(),
-                            event -> event.getEntity().getTimerPayload().getJobType(),
-                            event -> event.getEntity().getTimerPayload().getJobHandlerType()         
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> event.getEntity().getElementId(),
+                            event -> event.getEntity().getTimerPayload().getActivityId()          
                 )
                 .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
                                       process.getProcessDefinitionId(),
                                       process.getProcessDefinitionId(),
+                                      process.getId(),
                                       "timer",
-                                      "trigger-timer"
+                                      "timer"
                                       )
              
         );
@@ -200,14 +206,16 @@ public class ProcessRuntimeBPMNTimerIT {
             .extracting(BPMNTimerEvent::getEventType,
                         BPMNTimerEvent::getProcessDefinitionId,
                         event -> event.getEntity().getProcessDefinitionId(),
-                        event -> event.getEntity().getTimerPayload().getJobType(),
-                        event -> event.getEntity().getTimerPayload().getJobHandlerType()         
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getElementId(),
+                        event -> event.getEntity().getTimerPayload().getActivityId()         
             )
             .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_CANCELLED,
                                   process.getProcessDefinitionId(),
                                   process.getProcessDefinitionId(),
+                                  process.getId(),
                                   "timer",
-                                  "trigger-timer"
+                                  "timer"
                                   )
              
         );
@@ -237,14 +245,16 @@ public class ProcessRuntimeBPMNTimerIT {
             .extracting(BPMNTimerEvent::getEventType,
                         BPMNTimerEvent::getProcessDefinitionId,
                         event -> event.getEntity().getProcessDefinitionId(),
-                        event -> event.getEntity().getTimerPayload().getJobType(),
-                        event -> event.getEntity().getTimerPayload().getJobHandlerType()         
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getElementId(),
+                        event -> event.getEntity().getTimerPayload().getActivityId()         
             )
             .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_CANCELLED,
                                   process.getProcessDefinitionId(),
                                   process.getProcessDefinitionId(),
+                                  process.getId(),
                                   "timer",
-                                  "trigger-timer"
+                                  "timer"
                                   )
              
         );
@@ -269,14 +279,16 @@ public class ProcessRuntimeBPMNTimerIT {
             .extracting(BPMNTimerEvent::getEventType,
                         BPMNTimerEvent::getProcessDefinitionId,
                         event -> event.getEntity().getProcessDefinitionId(),
-                        event -> event.getEntity().getTimerPayload().getJobType(),
-                        event -> event.getEntity().getTimerPayload().getJobHandlerType()         
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getElementId(),
+                        event -> event.getEntity().getTimerPayload().getActivityId()          
             )
             .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
                                   process.getProcessDefinitionId(),
                                   process.getProcessDefinitionId(),
+                                  process.getId(),
                                   "timer",
-                                  "trigger-timer"
+                                  "timer"
                                   )
              
         );
@@ -302,14 +314,16 @@ public class ProcessRuntimeBPMNTimerIT {
             .extracting(BPMNTimerEvent::getEventType,
                         BPMNTimerEvent::getProcessDefinitionId,
                         event -> event.getEntity().getProcessDefinitionId(),
-                        event -> event.getEntity().getTimerPayload().getJobType(),
-                        event -> event.getEntity().getTimerPayload().getJobHandlerType()         
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getElementId(),
+                        event -> event.getEntity().getTimerPayload().getActivityId()        
             )
             .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_CANCELLED,
                                   process.getProcessDefinitionId(),
                                   process.getProcessDefinitionId(),
+                                  process.getId(),
                                   "timer",
-                                  "trigger-timer"
+                                  "timer"
                                   )
              
         );
