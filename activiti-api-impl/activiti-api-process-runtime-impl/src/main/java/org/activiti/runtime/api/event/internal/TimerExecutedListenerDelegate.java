@@ -18,42 +18,35 @@ package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
 
-import org.activiti.api.process.model.events.BPMNTimerCanceledEvent;
+import org.activiti.api.process.model.events.BPMNTimerExecutedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.impl.persistence.entity.TimerJobEntity;
-import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
-import org.activiti.runtime.api.event.impl.ToTimerCanceledConverter;
+import org.activiti.runtime.api.event.impl.TimerTools;
+import org.activiti.runtime.api.event.impl.ToTimerExecutedConverter;
 
-public class TimerCanceledListenerDelegate implements ActivitiEventListener {
+public class TimerExecutedListenerDelegate implements ActivitiEventListener {
 
-    private List<BPMNElementEventListener<BPMNTimerCanceledEvent>> processRuntimeEventListeners;
+    private List<BPMNElementEventListener<BPMNTimerExecutedEvent>> processRuntimeEventListeners;
 
-    private ToTimerCanceledConverter converter;
+    private ToTimerExecutedConverter converter;
 
-    public TimerCanceledListenerDelegate(List<BPMNElementEventListener<BPMNTimerCanceledEvent>> processRuntimeEventListeners,
-                                         ToTimerCanceledConverter converter) {
+    public TimerExecutedListenerDelegate(List<BPMNElementEventListener<BPMNTimerExecutedEvent>> processRuntimeEventListeners,
+                                         ToTimerExecutedConverter converter) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
     }
 
     @Override
-    public void onEvent(ActivitiEvent event) {
-        if (event.getType().equals(ActivitiEventType.JOB_CANCELED)) {  
-        
-            if (event instanceof ActivitiEntityEvent && 
-                TimerJobEntity.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass()) &&
-                ((TimerJobEntityImpl)((ActivitiEntityEvent) event).getEntity()).getJobType().equals("timer")) {
+    public void onEvent(ActivitiEvent event) {       
+        if (TimerTools.isTimerRelatedEvent(event)) {
                 converter.from((ActivitiEntityEvent) event)
                         .ifPresent(convertedEvent -> {
-                            for (BPMNElementEventListener<BPMNTimerCanceledEvent> listener : processRuntimeEventListeners) {
+                            for (BPMNElementEventListener<BPMNTimerExecutedEvent> listener : processRuntimeEventListeners) {
                                 listener.onEvent(convertedEvent);
                             }
                         });
-            }
         }
     }
 

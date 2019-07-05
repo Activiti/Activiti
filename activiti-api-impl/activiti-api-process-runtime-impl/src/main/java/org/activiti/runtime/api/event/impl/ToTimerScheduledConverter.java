@@ -18,13 +18,9 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
-import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNTimerScheduledEvent;
-import org.activiti.api.process.model.payloads.TimerPayload;
 import org.activiti.api.runtime.event.impl.BPMNTimerScheduledEventImpl;
-import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti.engine.impl.persistence.entity.TimerJobEntityImpl;
 
 public class ToTimerScheduledConverter implements EventConverter<BPMNTimerScheduledEvent, ActivitiEntityEvent> {
 
@@ -33,31 +29,7 @@ public class ToTimerScheduledConverter implements EventConverter<BPMNTimerSchedu
 
     @Override
     public Optional<BPMNTimerScheduledEvent> from(ActivitiEntityEvent internalEvent) {
-        
-        TimerJobEntityImpl jobEntity = (TimerJobEntityImpl)internalEvent.getEntity();
-        
-        BPMNTimerImpl timer = new BPMNTimerImpl(jobEntity.getId());
-        timer.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
-        timer.setProcessInstanceId(internalEvent.getProcessInstanceId());
-
-        TimerPayload timerPayload = ProcessPayloadBuilder.timer()
-                                    .withDueDate(jobEntity.getDuedate())
-                                    .withEndDate(jobEntity.getEndDate())
-                                    .withExecutionId(jobEntity.getExecutionId())
-                                    .withIsExclusive(jobEntity.isExclusive())
-                                    .withRetries(jobEntity.getRetries())
-                                    .withMaxIterations(jobEntity.getMaxIterations())
-                                    .withRepeat(jobEntity.getRepeat())
-                                    .withJobHandlerType(jobEntity.getJobHandlerType())
-                                    .withJobHandlerConfiguration(jobEntity.getJobHandlerConfiguration())
-                                    .withExceptionMessage(jobEntity.getExceptionMessage())
-                                    .withTenantId(jobEntity.getTenantId())
-                                    .withJobType(jobEntity.getJobType())
-                                    .build();
-
-        timer.setTimerPayload(timerPayload);
-        BPMNTimerScheduledEventImpl event = new BPMNTimerScheduledEventImpl(timer);
-        
+        BPMNTimerScheduledEventImpl event = new BPMNTimerScheduledEventImpl(TimerTools.convertToBPMNTimer(internalEvent));        
        	event.setProcessInstanceId(internalEvent.getProcessInstanceId());
         event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         return Optional.of(event);

@@ -19,22 +19,21 @@ package org.activiti.spring.boot.process.listener;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.activiti.api.process.model.events.BPMNTimerCanceledEvent;
-import org.activiti.api.process.model.events.BPMNTimerScheduledEvent;
+import org.activiti.api.process.model.events.BPMNTimerFailedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.springframework.boot.test.context.TestComponent;
 
 @TestComponent
-public class DummyBPMNTimerCanceledListener implements BPMNElementEventListener<BPMNTimerCanceledEvent> { 
+public class DummyBPMNTimerFailedListener implements BPMNElementEventListener<BPMNTimerFailedEvent> { 
 
-    private List<BPMNTimerCanceledEvent> events = new LinkedList<>();
+    private List<BPMNTimerFailedEvent> events = new LinkedList<>();
     
     @Override
-    public void onEvent(BPMNTimerCanceledEvent event) {
+    public void onEvent(BPMNTimerFailedEvent event) {
         events.add(event);
     }
      
-    public List<BPMNTimerCanceledEvent> getEvents() {
+    public List<BPMNTimerFailedEvent> getEvents() {
         return events;
     }
     

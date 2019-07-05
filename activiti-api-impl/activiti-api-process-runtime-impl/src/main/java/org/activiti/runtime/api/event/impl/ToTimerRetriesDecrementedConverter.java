@@ -33,31 +33,7 @@ public class ToTimerRetriesDecrementedConverter implements EventConverter<BPMNTi
 
     @Override
     public Optional<BPMNTimerRetriesDecrementedEvent> from(ActivitiEntityEvent internalEvent) {
-        
-        DeadLetterJobEntityImpl jobEntity = (DeadLetterJobEntityImpl)internalEvent.getEntity();
-        
-        BPMNTimerImpl timer = new BPMNTimerImpl(jobEntity.getId());
-        timer.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
-        timer.setProcessInstanceId(internalEvent.getProcessInstanceId());
-
-        TimerPayload timerPayload = ProcessPayloadBuilder.timer()
-                                    .withDueDate(jobEntity.getDuedate())
-                                    .withEndDate(jobEntity.getEndDate())
-                                    .withExecutionId(jobEntity.getExecutionId())
-                                    .withIsExclusive(jobEntity.isExclusive())
-                                    .withRetries(jobEntity.getRetries())
-                                    .withMaxIterations(jobEntity.getMaxIterations())
-                                    .withRepeat(jobEntity.getRepeat())
-                                    .withJobHandlerType(jobEntity.getJobHandlerType())
-                                    .withJobHandlerConfiguration(jobEntity.getJobHandlerConfiguration())
-                                    .withExceptionMessage(jobEntity.getExceptionMessage())
-                                    .withTenantId(jobEntity.getTenantId())
-                                    .withJobType(jobEntity.getJobType())
-                                    .build();
-
-        timer.setTimerPayload(timerPayload);
-        
-        BPMNTimerRetriesDecrementedEventImpl event = new BPMNTimerRetriesDecrementedEventImpl(timer);
+        BPMNTimerRetriesDecrementedEventImpl event = new BPMNTimerRetriesDecrementedEventImpl(TimerTools.convertToBPMNTimer(internalEvent));
      	event.setProcessInstanceId(internalEvent.getProcessInstanceId());
         event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         return Optional.of(event);

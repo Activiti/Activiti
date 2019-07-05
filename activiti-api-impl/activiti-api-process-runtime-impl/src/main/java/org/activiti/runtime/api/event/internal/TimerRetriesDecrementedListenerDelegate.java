@@ -23,9 +23,7 @@ import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntity;
-import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl;
+import org.activiti.runtime.api.event.impl.TimerTools;
 import org.activiti.runtime.api.event.impl.ToTimerRetriesDecrementedConverter;
 
 public class TimerRetriesDecrementedListenerDelegate implements ActivitiEventListener {
@@ -42,18 +40,13 @@ public class TimerRetriesDecrementedListenerDelegate implements ActivitiEventLis
 
     @Override
     public void onEvent(ActivitiEvent event) {
-        if (event.getType().equals(ActivitiEventType.JOB_RETRIES_DECREMENTED)) {  
-        
-            if (event instanceof ActivitiEntityEvent && 
-                DeadLetterJobEntity.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass()) &&
-                ((DeadLetterJobEntityImpl)((ActivitiEntityEvent) event).getEntity()).getJobType().equals("timer")) {
-                converter.from((ActivitiEntityEvent) event)
-                        .ifPresent(convertedEvent -> {
-                            for (BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent> listener : processRuntimeEventListeners) {
-                                listener.onEvent(convertedEvent);
-                            }
-                        });
-            }
+        if (TimerTools.isTimerRelatedEvent(event)){
+            converter.from((ActivitiEntityEvent) event)
+                    .ifPresent(convertedEvent -> {
+                        for (BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent> listener : processRuntimeEventListeners) {
+                            listener.onEvent(convertedEvent);
+                        }
+                    });
         }
     }
 

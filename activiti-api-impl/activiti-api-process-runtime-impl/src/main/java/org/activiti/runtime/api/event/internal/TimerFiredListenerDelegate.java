@@ -23,8 +23,7 @@ import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.runtime.api.event.impl.TimerTools;
 import org.activiti.runtime.api.event.impl.ToTimerFiredConverter;
 
 public class TimerFiredListenerDelegate implements ActivitiEventListener {
@@ -40,17 +39,14 @@ public class TimerFiredListenerDelegate implements ActivitiEventListener {
     }
 
     @Override
-    public void onEvent(ActivitiEvent event) {
-        if (event.getType().equals(ActivitiEventType.TIMER_FIRED)) {  
-            
-            if (event instanceof ActivitiEntityEvent && JobEntity.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass())) {
-                converter.from((ActivitiEntityEvent) event)
-                        .ifPresent(convertedEvent -> {
-                            for (BPMNElementEventListener<BPMNTimerFiredEvent> listener : processRuntimeEventListeners) {
-                                listener.onEvent(convertedEvent);
-                            }
-                        });
-            }
+    public void onEvent(ActivitiEvent event) {           
+        if (TimerTools.isTimerRelatedEvent(event)) {
+            converter.from((ActivitiEntityEvent) event)
+                    .ifPresent(convertedEvent -> {
+                        for (BPMNElementEventListener<BPMNTimerFiredEvent> listener : processRuntimeEventListeners) {
+                            listener.onEvent(convertedEvent);
+                        }
+                    });
         }
     }
 

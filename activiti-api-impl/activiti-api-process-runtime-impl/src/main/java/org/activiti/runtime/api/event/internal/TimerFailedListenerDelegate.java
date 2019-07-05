@@ -18,37 +18,37 @@ package org.activiti.runtime.api.event.internal;
 
 import java.util.List;
 
-import org.activiti.api.process.model.events.BPMNTimerScheduledEvent;
+import org.activiti.api.process.model.events.BPMNTimerFailedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.TimerTools;
-import org.activiti.runtime.api.event.impl.ToTimerScheduledConverter;
+import org.activiti.runtime.api.event.impl.ToTimerFailedConverter;
 
+public class TimerFailedListenerDelegate implements ActivitiEventListener {
 
-public class TimerScheduledListenerDelegate implements ActivitiEventListener {
+    private List<BPMNElementEventListener<BPMNTimerFailedEvent>> processRuntimeEventListeners;
 
-    private List<BPMNElementEventListener<BPMNTimerScheduledEvent>> processRuntimeEventListeners;
+    private ToTimerFailedConverter converter;
 
-    private ToTimerScheduledConverter converter;
-
-    public TimerScheduledListenerDelegate(List<BPMNElementEventListener<BPMNTimerScheduledEvent>> processRuntimeEventListeners,
-                                          ToTimerScheduledConverter converter) {
+    public TimerFailedListenerDelegate(List<BPMNElementEventListener<BPMNTimerFailedEvent>> processRuntimeEventListeners,
+                                       ToTimerFailedConverter converter) {
         this.processRuntimeEventListeners = processRuntimeEventListeners;
         this.converter = converter;
     }
 
     @Override
-    public void onEvent(ActivitiEvent event) {
+    public void onEvent(ActivitiEvent event) {      
         if (TimerTools.isTimerRelatedEvent(event)) {
             converter.from((ActivitiEntityEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (BPMNElementEventListener<BPMNTimerScheduledEvent> listener : processRuntimeEventListeners) {
+                        for (BPMNElementEventListener<BPMNTimerFailedEvent> listener : processRuntimeEventListeners) {
                             listener.onEvent(convertedEvent);
                         }
                     });
         }
+
     }
 
     @Override
