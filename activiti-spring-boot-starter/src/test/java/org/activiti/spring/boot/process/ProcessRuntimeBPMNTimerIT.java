@@ -284,7 +284,11 @@ public class ProcessRuntimeBPMNTimerIT {
         clear();
         
         
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build());
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10),
+                                             TaskPayloadBuilder
+                                             .tasks()
+                                             .withProcessInstanceId(process.getId())
+                                             .build());
         assertThat(tasks.getContent().size()).isEqualTo(1);
         
         
