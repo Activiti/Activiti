@@ -180,8 +180,18 @@ public class ProcessRuntimeBPMNTimerIT {
                                       )
              
         );
- 
         
+        //then the execution reaches the task
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10),
+                                             TaskPayloadBuilder
+                                             .tasks()
+                                             .withProcessInstanceId(process.getId())
+                                             .build());
+        assertThat(tasks.getContent().size()).isEqualTo(1);
+        assertThat(tasks.getContent().get(0).getName()).isEqualTo("User Task");
+        
+        processRuntime.delete(ProcessPayloadBuilder.delete(process.getId()));
+            
     }
     
     @Test
@@ -294,8 +304,7 @@ public class ProcessRuntimeBPMNTimerIT {
         );
       
         clear();
-        
-        
+              
         Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 10),
                                              TaskPayloadBuilder
                                              .tasks()
