@@ -112,8 +112,6 @@ public class ProcessRuntimeBPMNTimerIT {
                 .withProcessDefinitionKey(PROCESS_INTERMEDIATE_TIMER_EVENT)
                 .build());
         
-        assertThat(managementService.createTimerJobQuery().count()).isEqualTo(1);
-        
         List<BPMNTimerScheduledEvent> eventsScheduled = listenerScheduled.getEvents();
         assertThat(eventsScheduled)
             .extracting(BPMNTimerEvent::getEventType,
@@ -215,6 +213,43 @@ public class ProcessRuntimeBPMNTimerIT {
         );
         
         processRuntime.delete(ProcessPayloadBuilder.delete(process.getId()));
+    }
+    
+    @Test
+    public void shouldGetTimerCanceledEventByProcessDelete() throws Exception {
+        // GIVEN
+        securityUtil.logInAs("salaboy");
+
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                       .withProcessDefinitionKey(PROCESS_TIMER_CANCELLED_EVENT)
+                                                       .build());
+        
+        String jobId = managementService.createTimerJobQuery().singleResult().getId();
+
+        assertThat(jobId).isNotNull();
+        
+        // WHEN
+        processRuntime.delete(ProcessPayloadBuilder.delete(process.getId()));
+
+        // THEN
+        List<BPMNTimerCancelledEvent> eventsCancelled = listenerCancelled.getEvents();
+        assertThat(eventsCancelled)
+            .extracting(BPMNTimerEvent::getEventType,
+                        BPMNTimerEvent::getProcessDefinitionId,
+                        event -> event.getEntity().getProcessDefinitionId(),
+                        event -> event.getEntity().getTimerPayload().getJobType(),
+                        event -> event.getEntity().getTimerPayload().getJobHandlerType()         
+            )
+            .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_CANCELLED,
+                                  process.getProcessDefinitionId(),
+                                  process.getProcessDefinitionId(),
+                                  "timer",
+                                  "trigger-timer"
+                                  )
+             
+        );
+        
+        
     }
     
      
