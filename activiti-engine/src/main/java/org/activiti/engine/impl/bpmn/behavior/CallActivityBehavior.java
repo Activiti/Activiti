@@ -123,6 +123,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
     variables=calculateVariables(execution,subProcess);
 
+
     // copy process variables
     for (IOParameter ioParameter : callActivity.getInParameters()) {
       Object value = null;
@@ -221,15 +222,6 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
                                     Process subProcess) {
     Map<String, Object> inboundVars = getInboundVariables(execution);
     return inboundVars;
-
-   // if (inboundVars==null) {
-//      if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
-//        TaskVariableCopier.copyVariablesIntoTaskLocal(task);
-//      }
-//    } else {
-//      //Check what to do if empty mapping
-
-
   }
 
   protected Map<String, Object> getInboundVariables(DelegateExecution execution) {

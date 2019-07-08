@@ -20,6 +20,7 @@ import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.spring.process.ProcessExtensionService;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Default implementation of the {@link ActivityBehaviorFactory}. Used when no custom {@link ActivityBehaviorFactory} is injected on the {@link ProcessEngineConfigurationImpl}.
@@ -42,8 +43,17 @@ public class DefaultActivityBehaviorFactoryMapping extends DefaultActivityBehavi
 
     @Override
     public CallActivityBehavior createCallActivityBehavior(CallActivity callActivity) {
-        return new DefaultCallActivityBehavior(callActivity,
-                new VariablesMappingProvider(processExtensionService));
+
+        String expressionRegex = "\\$+\\{+.+\\}";
+        CallActivityBehavior callActivityBehaviour = null;
+        if (StringUtils.isNotEmpty(callActivity.getCalledElement()) && callActivity.getCalledElement().matches(expressionRegex)) {
+            callActivityBehaviour = new DefaultCallActivityBehavior(expressionManager.createExpression(callActivity.getCalledElement()),
+                    callActivity.getMapExceptions(), new VariablesMappingProvider(processExtensionService));
+        } else {
+            callActivityBehaviour = new DefaultCallActivityBehavior(callActivity.getCalledElement(),
+                    callActivity.getMapExceptions(), new VariablesMappingProvider(processExtensionService));
+        }
+        return callActivityBehaviour;
     }
 
 }

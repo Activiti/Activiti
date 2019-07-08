@@ -16,10 +16,13 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
@@ -27,13 +30,15 @@ public class DefaultCallActivityBehavior extends CallActivityBehavior {
 
     VariablesMappingProvider mappingProvider;
 
-    public DefaultCallActivityBehavior(CallActivity callActivity,
-                                       VariablesMappingProvider mappingProvider) {
-        ////this is incorrect id
-        super(callActivity.getCalledElement(),null);
-        this.mappingProvider = mappingProvider;
+    public DefaultCallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions,VariablesMappingProvider mappingProvider) {
+        super(processDefinitionKey,mapExceptions);
+        this.mappingProvider=mappingProvider;
     }
 
+    public DefaultCallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions,VariablesMappingProvider mappingProvider) {
+        super(processDefinitionExpression,mapExceptions);
+        this.mappingProvider=mappingProvider;
+    }
 
     @Override
     protected Map<String, Object> getInboundVariables(DelegateExecution execution) {
