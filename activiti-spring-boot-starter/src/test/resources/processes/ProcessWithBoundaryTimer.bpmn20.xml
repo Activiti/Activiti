@@ -18,8 +18,7 @@
     <sequenceFlow sourceRef="theStart" targetRef="task" />
       
     <userTask id="task" name="User Task" activiti:candidateUsers="salaboy"></userTask>
-      
-    
+         
     <boundaryEvent attachedToRef="task" id="timer" cancelActivity="false">
     	<timerEventDefinition>
         <timeDuration>PT10H</timeDuration>
