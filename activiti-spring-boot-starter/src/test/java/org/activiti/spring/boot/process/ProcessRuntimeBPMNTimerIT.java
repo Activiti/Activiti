@@ -17,10 +17,8 @@
 package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.Date;
 import java.util.List;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNTimerCancelledEvent;
@@ -50,7 +48,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -118,30 +115,26 @@ public class ProcessRuntimeBPMNTimerIT {
                         BPMNTimerEvent::getProcessDefinitionId,
                         event -> event.getEntity().getProcessDefinitionId(),
                         event -> event.getEntity().getProcessInstanceId(),
-                        event -> event.getEntity().getElementId(),
-                        event -> event.getEntity().getTimerPayload().getActivityId()         
+                        event -> event.getEntity().getElementId()         
             )
             .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
                                   process.getProcessDefinitionId(),
                                   process.getProcessDefinitionId(),
                                   process.getId(),
-                                  "timer",
                                   "timer"
                                   )
              
         );
         List<BPMNTimerFiredEvent> eventsFired = listenerFired.getEvents();
         assertThat(eventsFired.size()).isEqualTo(0);
-        
-        
+             
         long waitTime = 50 * 60 * 1000;
         Date dueDate = new Date(startTime.getTime() + waitTime);
         
         // After setting the clock to time '50minutes and 5 seconds', the second timer should fire
         processEngineConfiguration.getClock().setCurrentTime(new Date(dueDate.getTime() + 5000));
         waitForJobExecutorToProcessAllJobs(5000L, 25L);
-        
-        
+              
         //then
         eventsFired = listenerFired.getEvents();
          
@@ -150,14 +143,12 @@ public class ProcessRuntimeBPMNTimerIT {
                             BPMNTimerEvent::getProcessDefinitionId,
                             event -> event.getEntity().getProcessDefinitionId(),
                             event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId(),
-                            event -> event.getEntity().getTimerPayload().getActivityId()         
+                            event -> event.getEntity().getElementId()         
                 )
                 .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
                                       process.getProcessDefinitionId(),
                                       process.getProcessDefinitionId(),
                                       process.getId(),
-                                      "timer",
                                       "timer"
                                       )
                      
@@ -168,14 +159,12 @@ public class ProcessRuntimeBPMNTimerIT {
                             BPMNTimerEvent::getProcessDefinitionId,
                             event -> event.getEntity().getProcessDefinitionId(),
                             event -> event.getEntity().getProcessInstanceId(),
-                            event -> event.getEntity().getElementId(),
-                            event -> event.getEntity().getTimerPayload().getActivityId()          
+                            event -> event.getEntity().getElementId()         
                 )
                 .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
                                       process.getProcessDefinitionId(),
                                       process.getProcessDefinitionId(),
                                       process.getId(),
-                                      "timer",
                                       "timer"
                                       )
              
@@ -190,47 +179,7 @@ public class ProcessRuntimeBPMNTimerIT {
         assertThat(tasks.getContent().size()).isEqualTo(1);
         assertThat(tasks.getContent().get(0).getName()).isEqualTo("User Task");
         
-        processRuntime.delete(ProcessPayloadBuilder.delete(process.getId()));
-            
-    }
-    
-    @Test
-    public void shouldGetTimerCanceledEventByManagementService() throws Exception {
-        // GIVEN
-        securityUtil.logInAs("salaboy");
-
-        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
-                                                       .withProcessDefinitionKey(PROCESS_TIMER_CANCELLED_EVENT)
-                                                       .build());
-        
-        String jobId = managementService.createTimerJobQuery().singleResult().getId();
-
-        assertThat(jobId).isNotNull();
-        
-        // WHEN
-        managementService.deleteTimerJob(jobId);
-
-        // THEN
-        List<BPMNTimerCancelledEvent> eventsCancelled = listenerCancelled.getEvents();
-        assertThat(eventsCancelled)
-            .extracting(BPMNTimerEvent::getEventType,
-                        BPMNTimerEvent::getProcessDefinitionId,
-                        event -> event.getEntity().getProcessDefinitionId(),
-                        event -> event.getEntity().getProcessInstanceId(),
-                        event -> event.getEntity().getElementId(),
-                        event -> event.getEntity().getTimerPayload().getActivityId()         
-            )
-            .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_CANCELLED,
-                                  process.getProcessDefinitionId(),
-                                  process.getProcessDefinitionId(),
-                                  process.getId(),
-                                  "timer",
-                                  "timer"
-                                  )
-             
-        );
-        
-        processRuntime.delete(ProcessPayloadBuilder.delete(process.getId()));
+        processRuntime.delete(ProcessPayloadBuilder.delete(process.getId()));           
     }
     
     @Test
@@ -256,23 +205,18 @@ public class ProcessRuntimeBPMNTimerIT {
                         BPMNTimerEvent::getProcessDefinitionId,
                         event -> event.getEntity().getProcessDefinitionId(),
                         event -> event.getEntity().getProcessInstanceId(),
-                        event -> event.getEntity().getElementId(),
-                        event -> event.getEntity().getTimerPayload().getActivityId()         
+                        event -> event.getEntity().getElementId()         
             )
             .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_CANCELLED,
                                   process.getProcessDefinitionId(),
                                   process.getProcessDefinitionId(),
                                   process.getId(),
-                                  "timer",
                                   "timer"
                                   )
              
-        );
-        
-        
+        );                
     }
-    
-     
+        
     @Test
     public void shouldGetTimerCanceledEventOnBoundaryEvent() throws Exception {
         //given
@@ -290,14 +234,12 @@ public class ProcessRuntimeBPMNTimerIT {
                         BPMNTimerEvent::getProcessDefinitionId,
                         event -> event.getEntity().getProcessDefinitionId(),
                         event -> event.getEntity().getProcessInstanceId(),
-                        event -> event.getEntity().getElementId(),
-                        event -> event.getEntity().getTimerPayload().getActivityId()          
+                        event -> event.getEntity().getElementId()          
             )
             .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
                                   process.getProcessDefinitionId(),
                                   process.getProcessDefinitionId(),
                                   process.getId(),
-                                  "timer",
                                   "timer"
                                   )
              
@@ -311,8 +253,7 @@ public class ProcessRuntimeBPMNTimerIT {
                                              .withProcessInstanceId(process.getId())
                                              .build());
         assertThat(tasks.getContent().size()).isEqualTo(1);
-        
-        
+                
         Task task = tasks.getContent().get(0);
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
         
@@ -324,20 +265,16 @@ public class ProcessRuntimeBPMNTimerIT {
                         BPMNTimerEvent::getProcessDefinitionId,
                         event -> event.getEntity().getProcessDefinitionId(),
                         event -> event.getEntity().getProcessInstanceId(),
-                        event -> event.getEntity().getElementId(),
-                        event -> event.getEntity().getTimerPayload().getActivityId()        
+                        event -> event.getEntity().getElementId()        
             )
             .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_CANCELLED,
                                   process.getProcessDefinitionId(),
                                   process.getProcessDefinitionId(),
                                   process.getId(),
-                                  "timer",
                                   "timer"
                                   )
              
-        );
-        
-        
+        );       
     }
         
     public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
