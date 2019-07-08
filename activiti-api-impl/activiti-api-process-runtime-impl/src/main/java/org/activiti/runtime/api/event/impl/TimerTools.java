@@ -34,21 +34,18 @@ public class TimerTools {
         timerPayload.setRetries(jobEntity.getRetries());
         timerPayload.setMaxIterations(jobEntity.getMaxIterations());
         timerPayload.setRepeat(jobEntity.getRepeat());
-        timerPayload.setActivityId(TimerEventHandler.getActivityIdFromConfiguration(jobEntity.getJobHandlerConfiguration()));
         timerPayload.setExceptionMessage(jobEntity.getExceptionMessage());
         
-        return timerPayload;
-        
+        return timerPayload;  
     }
     
     public static BPMNTimerImpl convertToBPMNTimer(ActivitiEntityEvent internalEvent) {
         AbstractJobEntityImpl jobEntity = (AbstractJobEntityImpl)internalEvent.getEntity();
-        TimerPayload timerPayload = convertToTimerPayload(jobEntity);
         
-        BPMNTimerImpl timer = new BPMNTimerImpl(timerPayload.getActivityId());
+        BPMNTimerImpl timer = new BPMNTimerImpl(TimerEventHandler.getActivityIdFromConfiguration(jobEntity.getJobHandlerConfiguration()));
         timer.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         timer.setProcessInstanceId(internalEvent.getProcessInstanceId());
-        timer.setTimerPayload(timerPayload);
+        timer.setTimerPayload(convertToTimerPayload(jobEntity));
         
         return timer;    
     }
@@ -58,8 +55,6 @@ public class TimerTools {
             event instanceof ActivitiEntityEvent && 
             AbstractJobEntity.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass()) &&
             ((AbstractJobEntityImpl)((ActivitiEntityEvent) event).getEntity()).getJobType().equals("timer")
-        );
-        
-    }
-    
+        );   
+    }   
 }
