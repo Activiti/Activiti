@@ -26,17 +26,17 @@ import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl;
 
-public class ToTimerRetriesDecrementedConverter implements EventConverter<BPMNTimerRetriesDecrementedEvent, ActivitiEntityEvent> {
+public class ToTimerRetriesDecrementedConverter extends ToTimerConverter implements EventConverter<BPMNTimerRetriesDecrementedEvent, ActivitiEntityEvent> {
 
-    public ToTimerRetriesDecrementedConverter() {
+    public ToTimerRetriesDecrementedConverter(TimerTools timerTools) {
+        super(timerTools);
     }
 
     @Override
     public Optional<BPMNTimerRetriesDecrementedEvent> from(ActivitiEntityEvent internalEvent) {
-        BPMNTimerRetriesDecrementedEventImpl event = new BPMNTimerRetriesDecrementedEventImpl(TimerTools.convertToBPMNTimer(internalEvent));
+        BPMNTimerRetriesDecrementedEventImpl event = new BPMNTimerRetriesDecrementedEventImpl(getTimerTools().convertToBPMNTimer(internalEvent));
      	event.setProcessInstanceId(internalEvent.getProcessInstanceId());
         event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         return Optional.of(event);
-    }
-    
+    } 
 }

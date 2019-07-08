@@ -22,18 +22,18 @@ import org.activiti.api.process.model.events.BPMNTimerExecutedEvent;
 import org.activiti.api.runtime.event.impl.BPMNTimerExecutedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
-public class ToTimerExecutedConverter implements EventConverter<BPMNTimerExecutedEvent, ActivitiEntityEvent> {
+public class ToTimerExecutedConverter extends ToTimerConverter implements EventConverter<BPMNTimerExecutedEvent, ActivitiEntityEvent> {
 
-    public ToTimerExecutedConverter() {
+    public ToTimerExecutedConverter(TimerTools timerTools) {
+        super(timerTools);
     }
 
     @Override
     public Optional<BPMNTimerExecutedEvent> from(ActivitiEntityEvent internalEvent) {       
-        BPMNTimerExecutedEventImpl event = new BPMNTimerExecutedEventImpl(TimerTools.convertToBPMNTimer(internalEvent));
+        BPMNTimerExecutedEventImpl event = new BPMNTimerExecutedEventImpl(getTimerTools().convertToBPMNTimer(internalEvent));
      	event.setProcessInstanceId(internalEvent.getProcessInstanceId());
         event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         return Optional.of(event);
         
-    }
-    
+    }  
 }

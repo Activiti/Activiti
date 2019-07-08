@@ -22,17 +22,17 @@ import org.activiti.api.process.model.events.BPMNTimerCancelledEvent;
 import org.activiti.api.runtime.event.impl.BPMNTimerCancelledEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
-public class ToTimerCancelledConverter implements EventConverter<BPMNTimerCancelledEvent, ActivitiEntityEvent> {
+public class ToTimerCancelledConverter extends ToTimerConverter implements EventConverter<BPMNTimerCancelledEvent, ActivitiEntityEvent> {
 
-    public ToTimerCancelledConverter() {
+    public ToTimerCancelledConverter(TimerTools timerTools) {
+        super(timerTools);
     }
 
     @Override
     public Optional<BPMNTimerCancelledEvent> from(ActivitiEntityEvent internalEvent) {        
-        BPMNTimerCancelledEventImpl event = new BPMNTimerCancelledEventImpl(TimerTools.convertToBPMNTimer(internalEvent));
+        BPMNTimerCancelledEventImpl event = new BPMNTimerCancelledEventImpl(getTimerTools().convertToBPMNTimer(internalEvent));
      	event.setProcessInstanceId(internalEvent.getProcessInstanceId());
         event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         return Optional.of(event);
     }
-    
 }

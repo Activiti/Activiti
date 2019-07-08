@@ -18,25 +18,21 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
-import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNTimerFiredEvent;
-import org.activiti.api.process.model.payloads.TimerPayload;
 import org.activiti.api.runtime.event.impl.BPMNTimerFiredEventImpl;
-import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti.engine.impl.persistence.entity.JobEntityImpl;
 
-public class ToTimerFiredConverter implements EventConverter<BPMNTimerFiredEvent, ActivitiEntityEvent> {
+public class ToTimerFiredConverter extends ToTimerConverter implements EventConverter<BPMNTimerFiredEvent, ActivitiEntityEvent> {
 
-    public ToTimerFiredConverter() {
+    public ToTimerFiredConverter(TimerTools timerTools) {
+        super(timerTools);
     }
 
     @Override
     public Optional<BPMNTimerFiredEvent> from(ActivitiEntityEvent internalEvent) {
-        BPMNTimerFiredEventImpl event = new BPMNTimerFiredEventImpl(TimerTools.convertToBPMNTimer(internalEvent));
+        BPMNTimerFiredEventImpl event = new BPMNTimerFiredEventImpl(getTimerTools().convertToBPMNTimer(internalEvent));
      	event.setProcessInstanceId(internalEvent.getProcessInstanceId());
         event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         return Optional.of(event);
-    }
-    
+    }  
 }
