@@ -225,7 +225,7 @@ public class TaskRuntimeVariableMappingTest {
                         tuple("task_input_variable_name_1",
                                 "outputValue"),
                         tuple("task_output_variable_name_1",
-                                "outputTaskValue")
+                                "outputTaskValue") //since there is no mapping for outputs either, all the variables are passed
                 );
 
         processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
