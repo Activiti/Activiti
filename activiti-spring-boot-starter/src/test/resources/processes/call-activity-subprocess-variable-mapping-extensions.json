@@ -40,32 +40,6 @@
         "type": "integer",
         "value": 0
       }
-    },
-    "mappings": {
-      "Task_0oz023e": {
-        "inputs": {
-          "task-variable-name-1": {
-            "type": "variable",
-            "value": "input-variable-name-1"
-          },
-          "task-variable-name-2": {
-            "type": "variable",
-            "value": "input-variable-name-2"
-          },
-          "task-variable-name-3": {
-            "type": "value",
-            "value": 5
-          }
-        },
-        "outputs": {
-          "out-variable-name-1": {
-            "type": "variable",
-            "value" : "task-height"},
-          "out-variable-name-2": {
-            "type": "variable",
-            "value" : "task-variable-name-2"}
-        }
-      }
     }
   }
 }
