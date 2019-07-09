@@ -120,9 +120,9 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
         variables.put(entry.getKey(), entry.getValue());
       }
     }
-
-    variables=calculateVariables(execution,subProcess);
-
+    Map<String, Object> calculateVariables = calculateVariables(execution,
+                                                             subProcess);
+    variables.putAll(calculateVariables);
 
     // copy process variables
     for (IOParameter ioParameter : callActivity.getInParameters()) {
