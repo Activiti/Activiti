@@ -52,7 +52,6 @@ public class BasicInclusiveGatewayTest {
         clearEvents();
     }
 
-
     @Test
     public void testProcessExecutionWithInclusiveGateway() {
 
@@ -97,7 +96,6 @@ public class BasicInclusiveGatewayTest {
                         VariableEvent.VariableEvents.VARIABLE_CREATED,
                         TaskRuntimeEvent.TaskEvents.TASK_CREATED,
                         TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED);
-
 
         clearEvents();
 
@@ -149,8 +147,6 @@ public class BasicInclusiveGatewayTest {
 
         clearEvents();
         
-        
-        
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task1.getId()).build());
         
         //then - only second task should be available
@@ -163,7 +159,6 @@ public class BasicInclusiveGatewayTest {
                 tuple(  task2.getStatus(),
                         task2.getName())
         );
-        
         
         //check some events here, including start event for inclusiveGatewayEnd 
         assertThat(RuntimeTestConfiguration.collectedEvents)
@@ -220,9 +215,7 @@ public class BasicInclusiveGatewayTest {
                     ));
         
         clearEvents();
-
     }
-
 
     @After
     public void cleanup() {
