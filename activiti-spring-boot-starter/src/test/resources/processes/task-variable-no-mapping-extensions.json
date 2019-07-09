@@ -1,9 +1,9 @@
 {
-  "id":"taskEmptyVarMapping",
-  "name":"myProcess.bpmn",
+  "id":"taskVariableNoMapping",
+  "name":"myProcess",
   "extensions": {
     "properties": {
-     "process-variable-unmapped-1-id": {
+      "process-variable-unmapped-1-id": {
         "id": "process-variable-unmapped-1-id",
         "name": "process_variable_unmapped_1",
         "type": "string",

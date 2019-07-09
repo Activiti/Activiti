@@ -423,6 +423,8 @@ public class ProcessRuntimeCallActivityMappingIT {
     @Test
     public void testCheckSubProcessTaskWhenCallActivity() {
 
+        //TODO: unexpected behaviour, needs fixing
+
         securityUtil.logInAs("salaboy");
 
         // After the process has started, the subProcess task should be active

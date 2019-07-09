@@ -61,4 +61,14 @@ public class Extension {
        
         return null;
     }
+
+    public boolean isTaskElementPresentInMappingSection(String taskId) {
+        {
+            ProcessVariablesMapping processVariablesMapping = mappings.get(taskId);
+            if(processVariablesMapping == null) {
+                return false;
+            }
+            return true;
+        }
+    }
 }

@@ -70,11 +70,9 @@ public class VariablesMappingProvider {
         Map<String, Object> inboundVariables = null;
         boolean copyAllVariables = true;
         ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
-
-        if (extensions.getExtensions().isTaskElementExistInMappingSection(execution.getCurrentActivityId())) {
+        if (extensions.getExtensions().isTaskElementPresentInMappingSection(execution.getCurrentActivityId())) {
             ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getCurrentActivityId());
-            extensions.getExtensions().isTaskElementExistInMappingSection(execution.getCurrentActivityId());
-
+            extensions.getExtensions().isTaskElementPresentInMappingSection(execution.getCurrentActivityId());
             Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
             if (!inputMappings.isEmpty()) {
                 inboundVariables = new HashMap<>();
@@ -87,13 +85,14 @@ public class VariablesMappingProvider {
                                 value);
                     }
                 }
-            } else {
+            }
+            else {
                 copyAllVariables = false;
             }
         }
-        //Nothing found - put all process variables if TaskId is empty and if task is not empty
+        //Nothing found - put all process variables if Task is empty if task is not empty
         if (inboundVariables == null) {
-            if (copyAllVariables == true) {
+            if (copyAllVariables) {
                 inboundVariables = new HashMap<>(execution.getVariables());
             } else {
                 inboundVariables = new HashMap<>();
