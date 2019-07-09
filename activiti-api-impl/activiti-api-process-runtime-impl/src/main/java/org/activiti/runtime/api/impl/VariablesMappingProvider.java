@@ -75,11 +75,11 @@ public class VariablesMappingProvider {
                 inboundVariables = new HashMap<>();
                 for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
                     Object value = calculateMappedValue(mapping.getValue(),
-                            execution,
-                            extensions);
+                                                        execution,
+                                                        extensions);
                     if (value != null) {
                         inboundVariables.put(mapping.getKey(),
-                                value);
+                                             value);
                     }
                 }
             } else {
@@ -97,6 +97,7 @@ public class VariablesMappingProvider {
 
     public Object calculateOutPutMappedValue(Mapping mapping,
                                              Map<String, Object> activitiCompleteVariables) {
+
         if (mapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(mapping.getType())) {
 
@@ -140,7 +141,7 @@ public class VariablesMappingProvider {
 
                         if (processVariableDefinition != null) {
                             outboundVariables.put(name, calculateOutPutMappedValue(mapping.getValue(),
-                                    activitiCompleteVariables));
+                                                                                   activitiCompleteVariables));
                         }
                     }
 
@@ -157,6 +158,5 @@ public class VariablesMappingProvider {
         }
 
         return outboundVariables;
-
     }
 }
