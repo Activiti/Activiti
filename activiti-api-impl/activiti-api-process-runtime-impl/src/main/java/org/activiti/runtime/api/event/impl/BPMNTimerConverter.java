@@ -22,7 +22,6 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.persistence.entity.AbstractJobEntity;
-import org.activiti.engine.impl.persistence.entity.AbstractJobEntityImpl;
 
 public class BPMNTimerConverter {
 
@@ -54,7 +53,7 @@ public class BPMNTimerConverter {
         return (
             event instanceof ActivitiEntityEvent && 
             AbstractJobEntity.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass()) &&
-            ((AbstractJobEntityImpl)((ActivitiEntityEvent) event).getEntity()).getJobType().equals("timer")
+            ((AbstractJobEntity)((ActivitiEntityEvent) event).getEntity()).getJobType().equals("timer")
         );   
     }   
 }

@@ -21,18 +21,24 @@ import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNTimerRetriesDecrementedEvent;
 import org.activiti.api.runtime.event.impl.BPMNTimerRetriesDecrementedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
 
-public class ToTimerRetriesDecrementedConverter extends ToTimerConverter implements EventConverter<BPMNTimerRetriesDecrementedEvent, ActivitiEntityEvent> {
+public class ToTimerRetriesDecrementedConverter implements EventConverter<BPMNTimerRetriesDecrementedEvent, ActivitiEvent> {
+
+    private BPMNTimerConverter bpmnTimerConverter;
 
     public ToTimerRetriesDecrementedConverter(BPMNTimerConverter bpmnTimerConverter) {
-        super(bpmnTimerConverter);
+        this.bpmnTimerConverter = bpmnTimerConverter;
     }
 
     @Override
-    public Optional<BPMNTimerRetriesDecrementedEvent> from(ActivitiEntityEvent internalEvent) {
-        BPMNTimerRetriesDecrementedEventImpl event = new BPMNTimerRetriesDecrementedEventImpl(getBpmnTimerConverter().convertToBPMNTimer(internalEvent));
-     	event.setProcessInstanceId(internalEvent.getProcessInstanceId());
-        event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
-        return Optional.of(event);
-    } 
+    public Optional<BPMNTimerRetriesDecrementedEvent> from(ActivitiEvent internalEvent) {
+        BPMNTimerRetriesDecrementedEventImpl event = null;
+        if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
+            event = new BPMNTimerRetriesDecrementedEventImpl(bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent));
+            event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+            event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+        }
+        return Optional.ofNullable(event);
+    }
 }

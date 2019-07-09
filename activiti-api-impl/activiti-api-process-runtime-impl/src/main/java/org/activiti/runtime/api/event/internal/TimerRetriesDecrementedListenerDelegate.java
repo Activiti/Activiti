@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.activiti.api.process.model.events.BPMNTimerRetriesDecrementedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToTimerRetriesDecrementedConverter;
@@ -39,14 +38,12 @@ public class TimerRetriesDecrementedListenerDelegate implements ActivitiEventLis
 
     @Override
     public void onEvent(ActivitiEvent event) {
-        if (converter.getBpmnTimerConverter().isTimerRelatedEvent(event)){
-            converter.from((ActivitiEntityEvent) event)
-                    .ifPresent(convertedEvent -> {
-                        for (BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent> listener : processRuntimeEventListeners) {
-                            listener.onEvent(convertedEvent);
-                        }
-                    });
-        }
+        converter.from(event)
+                .ifPresent(convertedEvent -> {
+                    for (BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent> listener : processRuntimeEventListeners) {
+                        listener.onEvent(convertedEvent);
+                    }
+                });
     }
 
     @Override

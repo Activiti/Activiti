@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.activiti.api.process.model.events.BPMNTimerCancelledEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToTimerCancelledConverter;
@@ -38,15 +37,13 @@ public class TimerCancelledListenerDelegate implements ActivitiEventListener {
     }
 
     @Override
-    public void onEvent(ActivitiEvent event) {  
-        if (converter.getBpmnTimerConverter().isTimerRelatedEvent(event)) {
-                converter.from((ActivitiEntityEvent) event)
-                        .ifPresent(convertedEvent -> {
-                            for (BPMNElementEventListener<BPMNTimerCancelledEvent> listener : processRuntimeEventListeners) {
-                                listener.onEvent(convertedEvent);
-                            }
-                        });
-            }
+    public void onEvent(ActivitiEvent event) {
+        converter.from(event)
+                .ifPresent(convertedEvent -> {
+                    for (BPMNElementEventListener<BPMNTimerCancelledEvent> listener : processRuntimeEventListeners) {
+                        listener.onEvent(convertedEvent);
+                    }
+                });
     }
 
     @Override

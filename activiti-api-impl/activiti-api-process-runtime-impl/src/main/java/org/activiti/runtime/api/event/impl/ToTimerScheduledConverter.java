@@ -21,18 +21,24 @@ import java.util.Optional;
 import org.activiti.api.process.model.events.BPMNTimerScheduledEvent;
 import org.activiti.api.runtime.event.impl.BPMNTimerScheduledEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiEvent;
 
-public class ToTimerScheduledConverter extends ToTimerConverter implements EventConverter<BPMNTimerScheduledEvent, ActivitiEntityEvent> {
+public class ToTimerScheduledConverter implements EventConverter<BPMNTimerScheduledEvent, ActivitiEvent> {
+
+    private BPMNTimerConverter bpmnTimerConverter;
 
     public ToTimerScheduledConverter(BPMNTimerConverter bpmnTimerConverter) {
-        super(bpmnTimerConverter);
+        this.bpmnTimerConverter = bpmnTimerConverter;
     }
 
     @Override
-    public Optional<BPMNTimerScheduledEvent> from(ActivitiEntityEvent internalEvent) {
-        BPMNTimerScheduledEventImpl event = new BPMNTimerScheduledEventImpl(getBpmnTimerConverter().convertToBPMNTimer(internalEvent));
-       	event.setProcessInstanceId(internalEvent.getProcessInstanceId());
-        event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
-        return Optional.of(event);
-    } 
+    public Optional<BPMNTimerScheduledEvent> from(ActivitiEvent internalEvent) {
+        BPMNTimerScheduledEventImpl event = null;
+        if (bpmnTimerConverter.isTimerRelatedEvent(internalEvent)) {
+            event = new BPMNTimerScheduledEventImpl(bpmnTimerConverter.convertToBPMNTimer((ActivitiEntityEvent) internalEvent));
+            event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+            event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+        }
+        return Optional.ofNullable(event);
+    }
 }
