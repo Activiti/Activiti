@@ -36,7 +36,7 @@ public class VariablesMappingProvider {
     public Object calculateMappedValue(Mapping inputMapping,
                                        DelegateExecution execution,
                                        ProcessExtensionModel extensions) {
-    
+
         if (inputMapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())) {
                 return inputMapping.getValue();
@@ -51,114 +51,116 @@ public class VariablesMappingProvider {
                     //We may agree that modeller will check everything
                     //In this case we may use simply:
                     //return execution.getVariable(name);
-                    
-                } 
+
+                }
                 //We have to check if this is needed?
                 else {
                     if (Mapping.SourceMappingType.STATIC_VALUE.equals(inputMapping.getType())) {
-                        return inputMapping.getValue();         
-                    } 
+                        return inputMapping.getValue();
+                    }
                 }
-                
+
             }
         }
         return null;
     }
 
-    
     public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
-        
+
         Map<String, Object> inboundVariables = null;
-        ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());      
-        if (extensions != null) {
+        boolean copyAllVariables = true;
+        ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
+
+        if (extensions.getExtensions().isTaskElementExistInMappingSection(execution.getCurrentActivityId())) {
             ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getCurrentActivityId());
-            if (processVariablesMapping != null) {
-                Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
-               
-                if (!inputMappings.isEmpty()) {
-                    inboundVariables = new HashMap<>();
-                    
-                    for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
-                        Object value = calculateMappedValue(mapping.getValue(),
-                                                            execution,
-                                                            extensions);
-                        if (value != null) {
-                            inboundVariables.put(mapping.getKey(),
-                                                 value);
-                        }                                                                               
-                    }     
+            extensions.getExtensions().isTaskElementExistInMappingSection(execution.getCurrentActivityId());
+
+            Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
+            if (!inputMappings.isEmpty()) {
+                inboundVariables = new HashMap<>();
+                for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
+                    Object value = calculateMappedValue(mapping.getValue(),
+                            execution,
+                            extensions);
+                    if (value != null) {
+                        inboundVariables.put(mapping.getKey(),
+                                value);
+                    }
                 }
-                
-            }            
+            } else {
+                copyAllVariables = false;
+            }
         }
-       
-        //Nothing found - put all process variables
+        //Nothing found - put all process variables if TaskId is empty and if task is not empty
         if (inboundVariables == null) {
-            inboundVariables = new HashMap<>(execution.getVariables());      
+            if (copyAllVariables == true) {
+                inboundVariables = new HashMap<>(execution.getVariables());
+            } else {
+                inboundVariables = new HashMap<>();
+            }
         }
-        
+
         return inboundVariables;
     }
-    
+
     public Object calculateOutPutMappedValue(Mapping mapping,
                                              Map<String, Object> activitiCompleteVariables) {
-    
+
         if (mapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(mapping.getType())) {
                 return mapping.getValue();
             } else {
                 if (Mapping.SourceMappingType.VARIABLE.equals(mapping.getType())) {
                     String name = mapping.getValue().toString();
-                    
+
                     return activitiCompleteVariables != null ?
-                           activitiCompleteVariables.get(name) :
-                           null;     
+                            activitiCompleteVariables.get(name) :
+                            null;
                 }
             }
-            
+
         }
         return null;
     }
-    
+
     public Map<String, Object> calculateOutPutVariables(boolean defaultCopyAllVariables,
-                                                        String processDefinitionId, 
+                                                        String processDefinitionId,
                                                         String activityId,
                                                         Map<String, Object> activitiCompleteVariables) {
-        
-        Map<String, Object> outboundVariables = new HashMap<>();    
-        
+
+        Map<String, Object> outboundVariables = new HashMap<>();
         if (activitiCompleteVariables != null && !activitiCompleteVariables.isEmpty()) {
-            ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(processDefinitionId);      
+            ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(processDefinitionId);
             if (extensions != null) {
                 ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(activityId);
                 if (processVariablesMapping != null) {
                     Map<String, Mapping> outputMappings = processVariablesMapping.getOutputs();
-                   
+
                     if (!outputMappings.isEmpty()) {
-                          
+
                         for (Map.Entry<String, Mapping> mapping : outputMappings.entrySet()) {
-                            
+
                             String name = mapping.getKey();
-                            
+
                             //Check that we have this process variables in extensions
                             //TO DO: can we create a process variable if it is not defined in extension file?
                             org.activiti.spring.process.model.VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
                             if (processVariableDefinition != null) {
                                 outboundVariables.put(name, calculateOutPutMappedValue(mapping.getValue(),
-                                                                                       activitiCompleteVariables));                              
-                            }                                                               
-                        }     
+                                        activitiCompleteVariables));
+                            }
+                        }
                     }
-                    
-                }            
+
+                }
             }
-           
+
             //Nothing found - put all completeVariables
             if (outboundVariables.isEmpty() && defaultCopyAllVariables) {
-                outboundVariables = new HashMap<>(activitiCompleteVariables);      
+                outboundVariables = new HashMap<>(activitiCompleteVariables);
             }
         }
-        
+
         return outboundVariables;
     }
 }
