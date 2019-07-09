@@ -52,7 +52,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class TaskRuntimeVariableMappingTest {
 
     private static final String TASK_VAR_MAPPING = "taskVarMapping";
-    private static final String TASK_EMPTY_VAR_MAPPING = "taskVariableMappingEmpty";
+    private static final String TASK_VAR_NO_MAPPING = "taskVariableNoMapping";
+    private static final String TASK_EMPTY_VAR_MAPPING = "taskVariableEmptyMapping";
 
     @Autowired
     private TaskRuntime taskRuntime;
@@ -145,7 +146,7 @@ public class TaskRuntimeVariableMappingTest {
     
     
     
-    public void completeTask(String taskId, Map<String, Object> variables) {
+    private void completeTask(String taskId, Map<String, Object> variables) {
         
         Task completeTask = taskRuntime.complete(TaskPayloadBuilder
                                                  .complete()
@@ -157,7 +158,92 @@ public class TaskRuntimeVariableMappingTest {
     }
 
     @Test
-    public void processShouldHaveNoVariablesWhenMappingIsEmpty(){
+    public void allVariablesShouldBePassedWhenThereIsNoMapping(){
+
+        securityUtil.logInAs("garth");
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(TASK_VAR_NO_MAPPING)
+                .build());
+
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        Task task = tasks.getContent().get(0);
+
+        assertThat(task.getName()).isEqualTo("testSimpleTask");
+
+        //Check Process Variables
+        List<VariableInstance> procVariables = processRuntime.variables( ProcessPayloadBuilder
+                .variables()
+                .withProcessInstanceId(process.getId())
+                .build());
+
+        assertThat(procVariables)
+                .isNotNull()
+                .extracting(VariableInstance::getName,
+                        VariableInstance::getValue)
+                .containsOnly(tuple("process_variable_unmapped_1",
+                        "unmapped1Value"),
+                        tuple("process_variable_inputmap_1",
+                                "inputmap1Value"),
+                        tuple("process_variable_outputmap_1",
+                                "outputmap1Value"));
+
+
+        //Check Task Variables: when there is no mapping, the default behavior is to pass all the process variables
+        List<VariableInstance> taskVariables = taskRuntime.variables(TaskPayloadBuilder
+                .variables()
+                .withTaskId(task.getId())
+                .build());
+
+        assertThat(taskVariables)
+                .isNotNull()
+                .extracting(VariableInstance::getName,
+                        VariableInstance::getValue)
+                .containsOnly(tuple("process_variable_unmapped_1",
+                        "unmapped1Value"),
+                        tuple("process_variable_inputmap_1",
+                                "inputmap1Value"),
+                        tuple("process_variable_outputmap_1",
+                                "outputmap1Value"));
+
+        //Complete task with variables
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("task_input_variable_name_1", "outputValue"); //This should not be set to 'process_variable_inputmap_1'
+        variables.put("task_output_variable_name_1", "outputTaskValue"); //This should be set to 'process_variable_outputmap_1'
+
+        completeTask(task.getId(), variables);
+
+        //Check Process Variables for output mapping
+
+        procVariables = processRuntime.variables( ProcessPayloadBuilder
+                .variables()
+                .withProcessInstanceId(process.getId())
+                .build());
+        assertThat(procVariables)
+                .isNotNull()
+                .extracting(VariableInstance::getName,
+                        VariableInstance::getValue)
+                .containsExactlyInAnyOrder(
+                        tuple("process_variable_unmapped_1",
+                                "unmapped1Value"),
+                        tuple("process_variable_inputmap_1",
+                                "inputmap1Value"),
+                        tuple("process_variable_outputmap_1",
+                                "outputmap1Value"),
+                        tuple("task_input_variable_name_1",
+                                "outputValue"),
+                        tuple("task_output_variable_name_1",
+                                "outputTaskValue")
+                );
+
+        processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
+
+    }
+
+    @Test
+    public void taskShouldHaveNoVariablesWhenMappingIsEmpty(){
 
         securityUtil.logInAs("garth");
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
@@ -197,6 +283,16 @@ public class TaskRuntimeVariableMappingTest {
                 .build());
 
         assertThat(taskVariables)
+                .isEmpty();
+
+        //Complete task with variables
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("task_input_variable_name_1", "outputValue");
+        variables.put("task_output_variable_name_1", "outputTaskValue");
+
+        completeTask(task.getId(), variables);
+
+        assertThat(procVariables)
                 .isNotNull()
                 .extracting(VariableInstance::getName,
                         VariableInstance::getValue)
@@ -205,11 +301,9 @@ public class TaskRuntimeVariableMappingTest {
                         tuple("process_variable_inputmap_1",
                                 "inputmap1Value"),
                         tuple("process_variable_outputmap_1",
-                                "outputmap1Value"));
-
+                                "outputmap1Value")); //this does not have the value 'outputTaskValue', since the output mapping was empty
 
         processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
-
     }
 
     
