@@ -64,39 +64,41 @@ public class VariablesMappingProvider {
         }
         return null;
     }
-    
-    
+
     public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
-        
+
         Map<String, Object> inboundVariables = null;
-        ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());      
-        if (extensions != null) {
+        boolean copyAllVariables = true;
+        ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
+        if (extensions.getExtensions().isTaskElementPresentInMappingSection(execution.getCurrentActivityId())) {
             ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getCurrentActivityId());
-            if (processVariablesMapping != null) {
-                Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
-               
-                if (!inputMappings.isEmpty()) {
-                    inboundVariables = new HashMap<>();
-                    
-                    for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
-                        Object value = calculateMappedValue(mapping.getValue(),
-                                                            execution,
-                                                            extensions);
-                        if (value != null) {
-                            inboundVariables.put(mapping.getKey(),
-                                                 value);
-                        }                                                                               
-                    }     
+            extensions.getExtensions().isTaskElementPresentInMappingSection(execution.getCurrentActivityId());
+            Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
+            if (!inputMappings.isEmpty()) {
+                inboundVariables = new HashMap<>();
+                for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
+                    Object value = calculateMappedValue(mapping.getValue(),
+                            execution,
+                            extensions);
+                    if (value != null) {
+                        inboundVariables.put(mapping.getKey(),
+                                value);
+                    }
                 }
-                
-            }            
+            }
+            else {
+                copyAllVariables = false;
+            }
         }
-       
-        //Nothing found - put all process variables
+        //Nothing found - put all process variables if Task is empty if task is not empty
         if (inboundVariables == null) {
-            inboundVariables = new HashMap<>(execution.getVariables());      
+            if (copyAllVariables) {
+                inboundVariables = new HashMap<>(execution.getVariables());
+            } else {
+                inboundVariables = new HashMap<>();
+            }
         }
-        
+
         return inboundVariables;
     }
     
