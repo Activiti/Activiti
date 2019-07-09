@@ -49,7 +49,7 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.runtime.api.conf.CommonRuntimeAutoConfiguration;
 import org.activiti.runtime.api.conf.impl.ProcessRuntimeConfigurationImpl;
-import org.activiti.runtime.api.event.impl.TimerTools;
+import org.activiti.runtime.api.event.impl.BPMNTimerConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCreatedEventConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessStartedEventConverter;
 import org.activiti.runtime.api.event.impl.ToActivityCancelledConverter;
@@ -276,8 +276,8 @@ public class ProcessRuntimeAutoConfiguration {
     }
     
     @Bean
-    public TimerTools timerTools() {
-        return new TimerTools();
+    public BPMNTimerConverter bpmnTimerConveter() {
+        return new BPMNTimerConverter();
     }
 
     @Bean
@@ -319,54 +319,54 @@ public class ProcessRuntimeAutoConfiguration {
     @Bean
     public InitializingBean registerTimerFiredListenerDelegate(RuntimeService runtimeService,
                                                                @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerFiredEvent>> eventListeners,
-                                                               TimerTools timerTools) {
+                                                               BPMNTimerConverter bpmnTimerConverter) {
         return () -> runtimeService.addEventListener(new TimerFiredListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerFiredConverter(timerTools)),
+                        new ToTimerFiredConverter(bpmnTimerConverter)),
                 ActivitiEventType.TIMER_FIRED);
     }
 
     @Bean
     public InitializingBean registerTimerScheduledListenerDelegate(RuntimeService runtimeService,
                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerScheduledEvent>> eventListeners,
-                                                                   TimerTools timerTools) {
+                                                                   BPMNTimerConverter bpmnTimerConverter) {
         return () -> runtimeService.addEventListener(new TimerScheduledListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerScheduledConverter(timerTools)),
+                        new ToTimerScheduledConverter(bpmnTimerConverter)),
                 ActivitiEventType.TIMER_SCHEDULED);
     }
     
     @Bean
     public InitializingBean registerTimerCancelledListenerDelegate(RuntimeService runtimeService,
                                                                   @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerCancelledEvent>> eventListeners,
-                                                                  TimerTools timerTools) {
+                                                                  BPMNTimerConverter bpmnTimerConverter) {
         return () -> runtimeService.addEventListener(new TimerCancelledListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerCancelledConverter(timerTools)),
+                        new ToTimerCancelledConverter(bpmnTimerConverter)),
                 ActivitiEventType.JOB_CANCELED);
     }
     
     @Bean
     public InitializingBean registerTimerFailedListenerDelegate(RuntimeService runtimeService,
                                                                 @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerFailedEvent>> eventListeners,
-                                                                TimerTools timerTools) {
+                                                                BPMNTimerConverter bpmnTimerConverter) {
         return () -> runtimeService.addEventListener(new TimerFailedListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerFailedConverter(timerTools)),
+                        new ToTimerFailedConverter(bpmnTimerConverter)),
                 ActivitiEventType.JOB_EXECUTION_FAILURE);
     }
     
     @Bean
     public InitializingBean registerTimerExecutedListenerDelegate(RuntimeService runtimeService,
                                                                   @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerExecutedEvent>> eventListeners,
-                                                                  TimerTools timerTools) {
+                                                                  BPMNTimerConverter bpmnTimerConverter) {
         return () -> runtimeService.addEventListener(new TimerExecutedListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerExecutedConverter(timerTools)),
+                        new ToTimerExecutedConverter(bpmnTimerConverter)),
                 ActivitiEventType.JOB_EXECUTION_SUCCESS);
     }
     
     @Bean
     public InitializingBean registerTimerRetriesDecrementedListenerDelegate(RuntimeService runtimeService,
                                                                             @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent>> eventListeners,
-                                                                            TimerTools timerTools) {
+                                                                            BPMNTimerConverter bpmnTimerConverter) {
         return () -> runtimeService.addEventListener(new TimerRetriesDecrementedListenerDelegate(getInitializedListeners(eventListeners),
-                        new ToTimerRetriesDecrementedConverter(timerTools)),
+                        new ToTimerRetriesDecrementedConverter(bpmnTimerConverter)),
                 ActivitiEventType.JOB_RETRIES_DECREMENTED);
     }
 

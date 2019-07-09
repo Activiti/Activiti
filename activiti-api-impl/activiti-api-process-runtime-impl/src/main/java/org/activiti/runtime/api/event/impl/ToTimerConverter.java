@@ -18,14 +18,14 @@ package org.activiti.runtime.api.event.impl;
 
 public class ToTimerConverter {
 
-    private TimerTools timerTools;
+    private BPMNTimerConverter bpmnTimerConverter;
     
-    public ToTimerConverter(TimerTools timerTools) {
-        this.timerTools =timerTools;
+    public ToTimerConverter(BPMNTimerConverter bpmnTimerConverter) {
+        this.bpmnTimerConverter = bpmnTimerConverter;
     }
 
  
-    public TimerTools getTimerTools() {
-        return timerTools;
+    public BPMNTimerConverter getBpmnTimerConverter() {
+        return bpmnTimerConverter;
     }
 }

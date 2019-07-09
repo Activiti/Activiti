@@ -24,9 +24,9 @@ import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.persistence.entity.AbstractJobEntity;
 import org.activiti.engine.impl.persistence.entity.AbstractJobEntityImpl;
 
-public class TimerTools {
+public class BPMNTimerConverter {
 
-    public TimerPayload convertToTimerPayload(AbstractJobEntityImpl jobEntity) {
+    public TimerPayload convertToTimerPayload(AbstractJobEntity jobEntity) {
         TimerPayload timerPayload = new TimerPayload();
         
         timerPayload.setDuedate(jobEntity.getDuedate());
@@ -40,7 +40,7 @@ public class TimerTools {
     }
     
     public BPMNTimerImpl convertToBPMNTimer(ActivitiEntityEvent internalEvent) {
-        AbstractJobEntityImpl jobEntity = (AbstractJobEntityImpl)internalEvent.getEntity();
+        AbstractJobEntity jobEntity = (AbstractJobEntity)internalEvent.getEntity();
         
         BPMNTimerImpl timer = new BPMNTimerImpl(TimerEventHandler.getActivityIdFromConfiguration(jobEntity.getJobHandlerConfiguration()));
         timer.setProcessDefinitionId(internalEvent.getProcessDefinitionId());

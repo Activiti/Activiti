@@ -39,7 +39,7 @@ public class TimerFailedListenerDelegate implements ActivitiEventListener {
 
     @Override
     public void onEvent(ActivitiEvent event) {      
-        if (converter.getTimerTools().isTimerRelatedEvent(event)) {
+        if (converter.getBpmnTimerConverter().isTimerRelatedEvent(event)) {
             converter.from((ActivitiEntityEvent) event)
                     .ifPresent(convertedEvent -> {
                         for (BPMNElementEventListener<BPMNTimerFailedEvent> listener : processRuntimeEventListeners) {

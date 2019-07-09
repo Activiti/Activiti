@@ -18,23 +18,19 @@ package org.activiti.runtime.api.event.impl;
 
 import java.util.Optional;
 
-import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNTimerRetriesDecrementedEvent;
-import org.activiti.api.process.model.payloads.TimerPayload;
 import org.activiti.api.runtime.event.impl.BPMNTimerRetriesDecrementedEventImpl;
-import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti.engine.impl.persistence.entity.DeadLetterJobEntityImpl;
 
 public class ToTimerRetriesDecrementedConverter extends ToTimerConverter implements EventConverter<BPMNTimerRetriesDecrementedEvent, ActivitiEntityEvent> {
 
-    public ToTimerRetriesDecrementedConverter(TimerTools timerTools) {
-        super(timerTools);
+    public ToTimerRetriesDecrementedConverter(BPMNTimerConverter bpmnTimerConverter) {
+        super(bpmnTimerConverter);
     }
 
     @Override
     public Optional<BPMNTimerRetriesDecrementedEvent> from(ActivitiEntityEvent internalEvent) {
-        BPMNTimerRetriesDecrementedEventImpl event = new BPMNTimerRetriesDecrementedEventImpl(getTimerTools().convertToBPMNTimer(internalEvent));
+        BPMNTimerRetriesDecrementedEventImpl event = new BPMNTimerRetriesDecrementedEventImpl(getBpmnTimerConverter().convertToBPMNTimer(internalEvent));
      	event.setProcessInstanceId(internalEvent.getProcessInstanceId());
         event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         return Optional.of(event);

@@ -24,13 +24,13 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
 public class ToTimerFiredConverter extends ToTimerConverter implements EventConverter<BPMNTimerFiredEvent, ActivitiEntityEvent> {
 
-    public ToTimerFiredConverter(TimerTools timerTools) {
-        super(timerTools);
+    public ToTimerFiredConverter(BPMNTimerConverter bpmnTimerConverter) {
+        super(bpmnTimerConverter);
     }
 
     @Override
     public Optional<BPMNTimerFiredEvent> from(ActivitiEntityEvent internalEvent) {
-        BPMNTimerFiredEventImpl event = new BPMNTimerFiredEventImpl(getTimerTools().convertToBPMNTimer(internalEvent));
+        BPMNTimerFiredEventImpl event = new BPMNTimerFiredEventImpl(getBpmnTimerConverter().convertToBPMNTimer(internalEvent));
      	event.setProcessInstanceId(internalEvent.getProcessInstanceId());
         event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         return Optional.of(event);
