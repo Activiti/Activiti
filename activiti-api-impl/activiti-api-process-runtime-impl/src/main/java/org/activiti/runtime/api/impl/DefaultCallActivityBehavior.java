@@ -49,10 +49,8 @@ public class DefaultCallActivityBehavior extends CallActivityBehavior {
                                                        DelegateExecution execution,
                                                        Map<String, Object> taskCompleteVariables) {
 
-        return mappingProvider.calculateOutPutVariables(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks(),
-                execution.getProcessDefinitionId(),
-                execution.getCurrentActivityId(),
-                taskCompleteVariables);
+        return mappingProvider.calculateOutPutVariables(execution,
+                                                        taskCompleteVariables);
     }
 
 }
