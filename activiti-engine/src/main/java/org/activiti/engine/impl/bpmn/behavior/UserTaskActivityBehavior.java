@@ -12,12 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.model.UserTask;
@@ -261,7 +256,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
           return taskVariables;
       }
-      return null;
+      return Collections.emptyMap();
   }
 
   public void trigger(DelegateExecution execution, String signalName, Object signalData) {
@@ -282,7 +277,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
                                             null;   
     
     if (processInstanceEntity != null) {
-        Map<String, Object> taskVariables = null;
+        Map<String, Object> taskVariables = new HashMap<>();
                 
         if (commandContext.getCommand() instanceof CompleteTaskCmd) {
             taskVariables = ((CompleteTaskCmd)commandContext.getCommand()).getTaskVariables();
@@ -290,10 +285,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         Map<String, Object> outboundVariables = getOutBoundVariables(commandContext,
                                                                      execution,
                                                                      taskVariables);
-        
-        if (outboundVariables != null) {
-            processInstanceEntity.setVariables(outboundVariables);       
-        }     
+        processInstanceEntity.setVariables(outboundVariables);
+
     }
     
     leave(execution);
