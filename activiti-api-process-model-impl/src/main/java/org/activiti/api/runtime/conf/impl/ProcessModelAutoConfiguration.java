@@ -30,6 +30,7 @@ import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.BPMNSequenceFlow;
 import org.activiti.api.process.model.BPMNSignal;
+import org.activiti.api.process.model.BPMNTimer;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
@@ -40,6 +41,7 @@ import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.SuspendProcessPayload;
+import org.activiti.api.process.model.payloads.TimerPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.model.results.ProcessInstanceResult;
 import org.activiti.api.runtime.model.impl.BPMNActivityImpl;
@@ -48,6 +50,7 @@ import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.api.runtime.model.impl.BPMNSequenceFlowImpl;
 import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
+import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -85,6 +88,8 @@ public class ProcessModelAutoConfiguration {
                             IntegrationContextImpl.class);
         resolver.addMapping(BPMNSignal.class,
         					BPMNSignalImpl.class);
+        resolver.addMapping(BPMNTimer.class,
+                            BPMNTimerImpl.class);
 
         module.registerSubtypes(new NamedType(ProcessInstanceResult.class,
                                               ProcessInstanceResult.class.getSimpleName()));
@@ -103,6 +108,8 @@ public class ProcessModelAutoConfiguration {
                                               SetProcessVariablesPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(SignalPayload.class,
                                               SignalPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(TimerPayload.class,
+                                              TimerPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(StartProcessPayload.class,
                                               StartProcessPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(SuspendProcessPayload.class,
