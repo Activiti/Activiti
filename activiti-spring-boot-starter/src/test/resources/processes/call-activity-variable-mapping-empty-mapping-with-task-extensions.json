@@ -1,6 +1,6 @@
 {
-  "id":"parentproc-843144bc-3797-40db-8edc-d23190b118e5",
-  "name":"myProcess234.bpmn",
+  "id": "parentproc-843144bc-3797-40db-8edc-d23190b118e7",
+  "name": "parentProcessCallActivityMappingEmptyMappingWithTask.bpmn20.xml",
   "extensions": {
     "properties": {
       "age-id": {
@@ -34,37 +34,8 @@
     "mappings": {
       "Task_0v0jw9c": {
         "inputs": {
-          "input-variable-name-1": {
-            "type": "variable",
-            "value": "name"
-          },
-          "input-variable-name-2": {
-            "type": "variable",
-            "value": "age"
-          },
-          "input-variable-name-3": {
-            "type": "value",
-            "value": 5
-          },
-          "input-static-value": {
-            "type": "static_value",
-            "value": "a static value"
-          },
-          "out-variable-name-1": {
-            "type": "variable",
-            "value": "height"
-          }
         },
         "outputs": {
-          "name": {
-            "type": "variable",
-            "value" : "input-variable-name-1"},
-          "age": {
-            "type": "variable",
-            "value" : "input-variable-name-2"},
-          "height": {
-            "type": "variable",
-            "value" : "out-variable-name-1"}
         }
       }
     }
