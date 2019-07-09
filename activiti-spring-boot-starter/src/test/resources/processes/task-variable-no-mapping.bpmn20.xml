@@ -4,7 +4,7 @@
              xmlns:activiti="http://activiti.org/bpmn"
              targetNamespace="processDefinitions">
 
-    <process id="taskVariableMappingEmpty" name="myProcess">
+    <process id="taskVariableNoMapping" name="myProcess">
 
         <startEvent id="start"/>
 

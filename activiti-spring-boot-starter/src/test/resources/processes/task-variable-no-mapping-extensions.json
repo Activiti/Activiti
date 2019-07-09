@@ -1,5 +1,5 @@
 {
-  "id":"taskVariableMappingEmpty",
+  "id":"taskVariableNoMapping",
   "name":"myProcess",
   "extensions": {
     "properties": {
