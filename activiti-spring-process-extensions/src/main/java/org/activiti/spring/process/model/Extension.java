@@ -62,13 +62,19 @@ public class Extension {
         return null;
     }
 
-    public boolean isTaskElementPresentInMappingSection(String taskId) {
-        {
-            ProcessVariablesMapping processVariablesMapping = mappings.get(taskId);
-            if(processVariablesMapping == null) {
-                return false;
-            }
-            return true;
-        }
+    public boolean hasEmptyInputsMapping(String elementId){
+        ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
+        return processVariablesMapping != null && processVariablesMapping.getInputs().size() == 0;
     }
+
+    public boolean hasEmptyOututsMapping(String elementId){
+        ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
+        return processVariablesMapping != null && processVariablesMapping.getOutputs().size() == 0;
+    }
+
+    public boolean hasNoMapping(String taskId){
+        return mappings.get(taskId) == null;
+    }
+
+
 }
