@@ -19,7 +19,6 @@ package org.activiti.runtime.api.impl;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
@@ -30,14 +29,14 @@ public class DefaultCallActivityBehavior extends CallActivityBehavior {
 
     VariablesMappingProvider mappingProvider;
 
-    public DefaultCallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions,VariablesMappingProvider mappingProvider) {
-        super(processDefinitionKey,mapExceptions);
-        this.mappingProvider=mappingProvider;
+    public DefaultCallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions, VariablesMappingProvider mappingProvider) {
+        super(processDefinitionKey, mapExceptions);
+        this.mappingProvider = mappingProvider;
     }
 
-    public DefaultCallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions,VariablesMappingProvider mappingProvider) {
-        super(processDefinitionExpression,mapExceptions);
-        this.mappingProvider=mappingProvider;
+    public DefaultCallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions, VariablesMappingProvider mappingProvider) {
+        super(processDefinitionExpression, mapExceptions);
+        this.mappingProvider = mappingProvider;
     }
 
     @Override

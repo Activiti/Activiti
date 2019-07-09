@@ -225,7 +225,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   }
 
   protected Map<String, Object> getInboundVariables(DelegateExecution execution) {
-    return null;
+    return new HashMap<String, Object>();
   }
 
 
@@ -236,7 +236,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
       return taskVariables;
     }
-    return null;
+    return new HashMap<String, Object>();
   }
 
 }
