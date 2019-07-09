@@ -25,7 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 
 public class DefaultUserTaskBehavior extends UserTaskActivityBehavior {
 
-    VariablesMappingProvider mappingProvider;
+    private VariablesMappingProvider mappingProvider;
   
     public DefaultUserTaskBehavior(UserTask userTask,
                                    VariablesMappingProvider mappingProvider) {
@@ -44,9 +44,7 @@ public class DefaultUserTaskBehavior extends UserTaskActivityBehavior {
                                                        DelegateExecution execution, 
                                                        Map<String, Object> taskCompleteVariables) {
         
-        return mappingProvider.calculateOutPutVariables(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks(),
-                                                        execution.getProcessDefinitionId(), 
-                                                        execution.getCurrentActivityId(),
+        return mappingProvider.calculateOutPutVariables(execution,
                                                         taskCompleteVariables); 
     }
     
