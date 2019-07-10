@@ -62,8 +62,8 @@ public class VariableMappingProviderTest {
         given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
         given(execution.getCurrentActivityId()).willReturn("simpleTask");
         Map<String,Object> variables = new HashMap<>();
-        variables.put("varone", "uno");
-        variables.put("vartwo", 2);
+        variables.put("var-one", "one");
+        variables.put("var-two", 2);
         given(execution.getVariables()).willReturn(variables);
 
         //when
