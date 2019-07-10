@@ -18,6 +18,7 @@ package org.activiti.runtime.api.impl;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.process.model.Mapping;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.ProcessVariablesMapping;
@@ -31,8 +32,15 @@ public class VariablesMappingProvider {
 
     private ProcessExtensionService processExtensionService;
 
-    public VariablesMappingProvider(ProcessExtensionService processExtensionService) {
+    public ProcessVariablesInitiator processVariablesInitiator;
+
+    public ProcessVariablesInitiator getProcessVariablesInitiator() {
+        return processVariablesInitiator;
+    }
+
+    public VariablesMappingProvider(ProcessExtensionService processExtensionService,ProcessVariablesInitiator processVariablesInitiator) {
         this.processExtensionService = processExtensionService;
+        this.processVariablesInitiator=processVariablesInitiator;
     }
 
     public Object calculateMappedValue(Mapping inputMapping,

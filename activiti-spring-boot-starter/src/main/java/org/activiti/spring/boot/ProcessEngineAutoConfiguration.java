@@ -32,6 +32,7 @@ import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
 import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -168,12 +169,13 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                                                         .orElse(Collections.emptyList()),
                                                 eventPublisher);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
-    public DefaultActivityBehaviorFactoryMappingConfigurer defaultActivityBehaviorFactoryMappingConfigurer(ProcessExtensionService  processExtensionService) {
-        return new DefaultActivityBehaviorFactoryMappingConfigurer(processExtensionService);
-    }    
-    
+    public DefaultActivityBehaviorFactoryMappingConfigurer defaultActivityBehaviorFactoryMappingConfigurer(ProcessExtensionService processExtensionService,
+                                                                                                           ProcessVariablesInitiator processVariablesInitiator) {
+        return new DefaultActivityBehaviorFactoryMappingConfigurer(processExtensionService,
+                                                                   processVariablesInitiator);
+    }
 }
 
