@@ -39,7 +39,6 @@ import javax.sql.DataSource;
 import javax.xml.namespace.QName;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.ActivitiException;
@@ -1844,42 +1843,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public void initAsyncExecutor() {
     if (asyncExecutor == null) {
       DefaultAsyncJobExecutor defaultAsyncExecutor = new DefaultAsyncJobExecutor();
-
-      // Message queue mode
-      defaultAsyncExecutor.setMessageQueueMode(asyncExecutorMessageQueueMode);
-
-      // Thread pool config
-      defaultAsyncExecutor.setCorePoolSize(asyncExecutorCorePoolSize);
-      defaultAsyncExecutor.setMaxPoolSize(asyncExecutorMaxPoolSize);
-      defaultAsyncExecutor.setKeepAliveTime(asyncExecutorThreadKeepAliveTime);
-
-      // Threadpool queue
-      if (asyncExecutorThreadPoolQueue != null) {
-        defaultAsyncExecutor.setThreadPoolQueue(asyncExecutorThreadPoolQueue);
-      }
-      defaultAsyncExecutor.setQueueSize(asyncExecutorThreadPoolQueueSize);
-
-      // Acquisition wait time
-      defaultAsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(asyncExecutorDefaultTimerJobAcquireWaitTime);
-      defaultAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(asyncExecutorDefaultAsyncJobAcquireWaitTime);
-
-      // Queue full wait time
-      defaultAsyncExecutor.setDefaultQueueSizeFullWaitTimeInMillis(asyncExecutorDefaultQueueSizeFullWaitTime);
-
-      // Job locking
-      defaultAsyncExecutor.setTimerLockTimeInMillis(asyncExecutorTimerLockTimeInMillis);
-      defaultAsyncExecutor.setAsyncJobLockTimeInMillis(asyncExecutorAsyncJobLockTimeInMillis);
-      if (asyncExecutorLockOwner != null) {
-        defaultAsyncExecutor.setLockOwner(asyncExecutorLockOwner);
-      }
-
-      // Reset expired
-      defaultAsyncExecutor.setResetExpiredJobsInterval(asyncExecutorResetExpiredJobsInterval);
-      defaultAsyncExecutor.setResetExpiredJobsPageSize(asyncExecutorResetExpiredJobsPageSize);
-
-      // Shutdown
-      defaultAsyncExecutor.setSecondsToWaitOnShutdown(asyncExecutorSecondsToWaitOnShutdown);
-
+      defaultAsyncExecutor.applyConfig(this);
       asyncExecutor = defaultAsyncExecutor;
     }
 

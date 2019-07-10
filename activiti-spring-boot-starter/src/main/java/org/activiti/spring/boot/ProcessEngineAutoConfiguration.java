@@ -73,9 +73,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         conf.setDataSource(dataSource);
         conf.setTransactionManager(transactionManager);
 
-        if (springAsyncExecutor != null) {
-            conf.setAsyncExecutor(springAsyncExecutor);
-        }
+        conf.setAsyncExecutor(springAsyncExecutor);
         conf.setDeploymentName(activitiProperties.getDeploymentName());
         conf.setDatabaseSchema(activitiProperties.getDatabaseSchema());
         conf.setDatabaseSchemaUpdate(activitiProperties.getDatabaseSchemaUpdate());
@@ -134,7 +132,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                 processEngineConfigurationConfigurer.configure(conf);
             }
         }
-
+        springAsyncExecutor.applyConfig(conf);
         return conf;
     }
 
