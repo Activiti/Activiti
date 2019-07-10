@@ -92,4 +92,77 @@ public class VariableMappingProviderTest {
         //then
         assertThat(inputVariables).isEmpty();
     }
+
+    @Test
+    public void calculateOutputVariablesShouldDoMappingWhenThereIsMappingSet() throws Exception{
+
+        //given
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-mapping-extensions.json"), ProcessExtensionModel.class);
+
+
+
+        DelegateExecution execution = mock(DelegateExecution.class);
+        given(processExtensionService.getExtensionsForId("taskVarMapping")).willReturn(extensions);
+        given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
+        given(execution.getCurrentActivityId()).willReturn("simpleTask");
+        given(execution.getVariable("process_variable_inputmap_1")).willReturn("new-input-value");
+
+        Map<String,Object> entityVariables = new HashMap<>();
+        entityVariables.put("task_output_variable_name_1", "var-one");
+
+        //when
+        Map<String,Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(execution, entityVariables);
+
+        //then
+        assertThat(outPutVariables.get("process_variable_outputmap_1")).isEqualTo("var-one");
+    }
+
+    @Test
+    public void calculateOutputVariablesShouldPassAllVariablesWhenThereIsNoMapping() throws Exception{
+        //given
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-no-mapping-extensions.json"), ProcessExtensionModel.class);
+
+        DelegateExecution execution = mock(DelegateExecution.class);
+        given(processExtensionService.getExtensionsForId("taskVarMapping")).willReturn(extensions);
+        given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
+        given(execution.getCurrentActivityId()).willReturn("simpleTask");
+
+        Map<String,Object> entityVariables = new HashMap<>();
+        entityVariables.put("task_output_variable_name_1", "var-one");
+        entityVariables.put("non-mapped-output_variable_name_2", "var-two");
+
+        //when
+        Map<String,Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(execution, entityVariables);
+
+        //then
+        assertThat(outPutVariables).isEqualTo(entityVariables);
+    }
+
+    @Test
+    public void calculateOutputVariablesShouldNotPassAnyVariablesWhenTheMappingIsEmpty () throws Exception{
+
+        //given
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-empty-mapping-extensions.json"), ProcessExtensionModel.class);
+
+        DelegateExecution execution = mock(DelegateExecution.class);
+        given(processExtensionService.getExtensionsForId("taskVarMapping")).willReturn(extensions);
+        given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
+        given(execution.getCurrentActivityId()).willReturn("simpleTask");
+        given(execution.getVariable("process_variable_inputmap_1")).willReturn("new-input-value");
+
+        Map<String,Object> entityVariables = new HashMap<>();
+        entityVariables.put("task_output_variable_name_1", "var-one");
+        entityVariables.put("non-mapped-output_variable_name_2", "var-two");
+        
+        //when
+        Map<String,Object> inputVariables = variablesMappingProvider.calculateOutPutVariables(execution, entityVariables);
+
+        //then
+        assertThat(inputVariables).isEmpty();
+    }
+
+
 }
