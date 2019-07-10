@@ -27,33 +27,31 @@ public class BPMNTimerConverter {
 
     public TimerPayload convertToTimerPayload(AbstractJobEntity jobEntity) {
         TimerPayload timerPayload = new TimerPayload();
-        
+
         timerPayload.setDuedate(jobEntity.getDuedate());
         timerPayload.setEndDate(jobEntity.getEndDate());
         timerPayload.setRetries(jobEntity.getRetries());
         timerPayload.setMaxIterations(jobEntity.getMaxIterations());
         timerPayload.setRepeat(jobEntity.getRepeat());
         timerPayload.setExceptionMessage(jobEntity.getExceptionMessage());
-        
-        return timerPayload;  
+
+        return timerPayload;
     }
-    
+
     public BPMNTimerImpl convertToBPMNTimer(ActivitiEntityEvent internalEvent) {
-        AbstractJobEntity jobEntity = (AbstractJobEntity)internalEvent.getEntity();
-        
+        AbstractJobEntity jobEntity = (AbstractJobEntity) internalEvent.getEntity();
+
         BPMNTimerImpl timer = new BPMNTimerImpl(TimerEventHandler.getActivityIdFromConfiguration(jobEntity.getJobHandlerConfiguration()));
         timer.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         timer.setProcessInstanceId(internalEvent.getProcessInstanceId());
         timer.setTimerPayload(convertToTimerPayload(jobEntity));
-        
-        return timer;    
+
+        return timer;
     }
-    
+
     public boolean isTimerRelatedEvent(ActivitiEvent event) {
-        return (
-            event instanceof ActivitiEntityEvent && 
-            AbstractJobEntity.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass()) &&
-            ((AbstractJobEntity)((ActivitiEntityEvent) event).getEntity()).getJobType().equals("timer")
-        );   
-    }   
+        return event instanceof ActivitiEntityEvent &&
+                AbstractJobEntity.class.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass()) &&
+                ((AbstractJobEntity) ((ActivitiEntityEvent) event).getEntity()).getJobType().equals("timer");
+    }
 }
