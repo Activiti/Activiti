@@ -20,7 +20,6 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.bpmn.helper.TaskVariableCopier;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.SubProcessActivityBehavior;
@@ -28,7 +27,6 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
@@ -120,8 +118,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
         variables.put(entry.getKey(), entry.getValue());
       }
     }
-    Map<String, Object> calculateVariables = calculateVariables(execution,
-                                                             subProcess);
+    Map<String,Object> variablesFromExtensionFile=getVariablesFromExtensionFile(processDefinition);
+      variables.putAll(variablesFromExtensionFile);
+    Map<String, Object> calculateVariables = calculateInputVariables(execution,
+                                                                     subProcess);
     variables.putAll(calculateVariables);
 
     // copy process variables
@@ -217,9 +217,9 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     return processDefinitonKey;
   }
 
-  protected  Map<String, Object>  calculateVariables(DelegateExecution execution,
+  protected  Map<String, Object> calculateInputVariables(DelegateExecution execution,
 //                                    CommandContext commandContext,
-                                    Process subProcess) {
+                                                         Process subProcess) {
     Map<String, Object> inboundVars = getInboundVariables(execution);
     return inboundVars;
   }
@@ -232,11 +232,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   protected Map<String, Object> getOutBoundVariables(CommandContext commandContext,
                                                      DelegateExecution execution,
                                                      Map<String, Object> taskVariables) {
-
-    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
-      return taskVariables;
-    }
     return new HashMap<String, Object>();
   }
 
+  protected Map<String, Object> getVariablesFromExtensionFile(ProcessDefinition processDefinition) {
+      return new HashMap<String, Object>();
+  }
 }

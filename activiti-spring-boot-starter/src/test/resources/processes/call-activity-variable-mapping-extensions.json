@@ -34,15 +34,19 @@
     "mappings": {
       "Task_0v0jw9c": {
         "inputs": {
-          "input-variable-name-1": {
+          "subprocess-input-var1": {
             "type": "variable",
             "value": "name"
           },
-          "input-variable-name-2": {
+          "subprocess-input-var2": {
             "type": "variable",
             "value": "age"
           },
-          "input-variable-name-3": {
+          "var-not-exist-in-subprocess-extension-file": {
+            "type": "variable",
+            "value": "age"
+          },
+          "subprocess-input-var3": {
             "type": "value",
             "value": 5
           },
@@ -50,21 +54,25 @@
             "type": "static_value",
             "value": "a static value"
           },
-          "out-variable-name-1": {
+          "input-not-existing-value": {
             "type": "variable",
-            "value": "height"
+            "value": "not-existing"
           }
         },
         "outputs": {
           "name": {
             "type": "variable",
-            "value" : "input-variable-name-1"},
+            "value" : "subprocess-out-var1"},
           "age": {
             "type": "variable",
-            "value" : "input-variable-name-2"},
-          "height": {
+            "value" : "subprocess-out-var2"},
+          "from-subprocess-static-value": {
+            "type": "static_value",
+            "value": "output-unmapped-variable-with-non-matching-name-id"
+          },
+          "not-existing": {
             "type": "variable",
-            "value" : "out-variable-name-1"}
+            "value" : "subprocess-out-var1"}
         }
       }
     }

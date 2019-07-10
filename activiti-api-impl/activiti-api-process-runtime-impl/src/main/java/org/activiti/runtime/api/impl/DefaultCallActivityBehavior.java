@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +25,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.repository.ProcessDefinition;
 
 public class DefaultCallActivityBehavior extends CallActivityBehavior {
 
@@ -39,6 +41,7 @@ public class DefaultCallActivityBehavior extends CallActivityBehavior {
         this.mappingProvider = mappingProvider;
     }
 
+
     @Override
     protected Map<String, Object> getInboundVariables(DelegateExecution execution) {
         return mappingProvider.calculateInputVariables(execution);
@@ -51,6 +54,11 @@ public class DefaultCallActivityBehavior extends CallActivityBehavior {
 
         return mappingProvider.calculateOutPutVariables(execution,
                                                         taskCompleteVariables);
+    }
+    @Override
+    protected Map<String, Object> getVariablesFromExtensionFile(ProcessDefinition processDefinition) {
+        Map<String, Object> extensionFileVariables=mappingProvider.getProcessVariablesInitiator().getVariablesFromExtensionFile(processDefinition,new HashMap<>() );
+        return extensionFileVariables;
     }
 
 }

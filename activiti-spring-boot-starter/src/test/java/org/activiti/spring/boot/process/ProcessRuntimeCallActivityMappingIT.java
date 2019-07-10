@@ -40,10 +40,11 @@ public class ProcessRuntimeCallActivityMappingIT {
 
     @Autowired
     private SecurityUtil securityUtil;
+    boolean printDebug = true;
 
     @Test
     public void basicCallActivityMappingTest() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
                 ProcessPayloadBuilder
@@ -53,7 +54,8 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(processInstance).isNotNull();
 
         List<ProcessInstance> subProcessInstanceList = processRuntime.processInstances(
-                Pageable.of(0, 50),
+                Pageable.of(0,
+                            50),
                 ProcessPayloadBuilder
                         .processInstances()
                         .withParentProcessInstanceId(processInstance.getId())
@@ -69,7 +71,8 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
         List<Task> taskList = taskRuntime.tasks(
-                Pageable.of(0, 50),
+                Pageable.of(0,
+                            50),
                 TaskPayloadBuilder
                         .tasks()
                         .withProcessInstanceId(subProcessInstance.getId())
@@ -84,61 +87,82 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
-        printVariables(processInstance, "ParentProcess");
+        printVariables(processInstance,
+                       "ParentProcess");
 
         List<VariableInstance> subProcVariables = processRuntime.variables(ProcessPayloadBuilder
-                .variables()
-                .withProcessInstanceId(subProcessInstance.getId())
-                .build());
+                                                                                   .variables()
+                                                                                   .withProcessInstanceId(subProcessInstance.getId())
+                                                                                   .build());
 
         assertThat(subProcVariables).extracting(VariableInstance::getName,
-                VariableInstance::getValue)
+                                                VariableInstance::getValue)
                 .containsOnly(
-                        tuple("input-variable-name-1",
-                                "inName"),
-                        tuple("input-variable-name-2",
-                                20),
-                        tuple("input-variable-name-3",
-                                5),
+                        tuple("subprocess-input-var1",
+                              "inName"),
+                        tuple("subprocess-input-var2",
+                              20),
+                        tuple("subprocess-input-var3",
+                              5),
                         tuple("input-static-value",
-                                "a static value")
+//
+                              "a static value"),
+                        tuple("subprocess-out-var1",
+                              "outValue"),
+                        tuple("subprocess-out-var2",
+                              222),
+                        tuple("subprocess-static-value",
+                              "static some value"),
+                        tuple("var-not-exist-in-subprocess-extension-file",
+                              20)
+
                 );
 
-        assertThat("my-task-call-activity").isEqualTo(task.getName());
+        assertThat("my-task-call-activity").
+
+                isEqualTo(task.getName());
 
         Map<String, Object> variablesForTask = new HashMap<>();
-        variablesForTask.put("input-variable-name-1", "fromSubprocessName");
-        variablesForTask.put("input-variable-name-2", 39);
-        variablesForTask.put("out-variable-name-1", 176);
+        variablesForTask.put("input-variable-name-1",
+                             "fromSubprocessName");
+        variablesForTask.put("input-variable-name-2",
+                             39);
+        variablesForTask.put("out-variable-name-1",
+                             176);
 
-        printVariables(subProcessInstance, "Subprocess");
+        printVariables(subProcessInstance,
+                       "Subprocess");
 
-        completeTask(task.getId(), variablesForTask);
+        completeTask(task.getId(),
+
+                     variablesForTask);
 
         List<VariableInstance> parentVariables = processRuntime.variables(ProcessPayloadBuilder
-                .variables()
-                .withProcessInstanceId(processInstance.getId())
-                .build());
+                                                                                  .variables()
+                                                                                  .withProcessInstanceId(processInstance.getId())
+                                                                                  .build());
 
         assertThat(parentVariables).extracting(VariableInstance::getName,
-                VariableInstance::getValue)
+                                               VariableInstance::getValue)
                 .containsOnly(
                         tuple("name",
-                                "fromSubprocessName"),
+                              "outValue"),
                         tuple("age",
-                                39),
-                        tuple("output-unmapped-variable-with-non-matching-connector-output-name", "default"),
-                        tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTest")
+                              222),
+                        tuple("output-unmapped-variable-with-non-matching-connector-output-name",
+                              "default"),
+                        tuple("input-unmapped-variable-with-non-matching-connector-input-name",
+                              "inTest")
 
                 );
 
-        printVariables(processInstance, "ParentProcessAgain");
-
+        printVariables(processInstance,
+                       "ParentProcessAgain");
     }
 
     @Test
     public void haveToPassAllVariablesCallActivityEmptyMappingNoTaskTest() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         // After the process has started, the subProcess task should be active
         ProcessInstance processInstance = processRuntime.start(
                 ProcessPayloadBuilder
@@ -148,7 +172,8 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(processInstance).isNotNull();
 
         List<ProcessInstance> subProcessInstanceList = processRuntime.processInstances(
-                Pageable.of(0, 50),
+                Pageable.of(0,
+                            50),
                 ProcessPayloadBuilder
                         .processInstances()
                         .withParentProcessInstanceId(processInstance.getId())
@@ -164,7 +189,8 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
         List<Task> taskList = taskRuntime.tasks(
-                Pageable.of(0, 50),
+                Pageable.of(0,
+                            50),
                 TaskPayloadBuilder
                         .tasks()
                         .withProcessInstanceId(subProcessInstance.getId())
@@ -179,52 +205,91 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
-        printVariables(processInstance, "ParentProcess");
+        printVariables(processInstance,
+                       "ParentProcess");
 
         List<VariableInstance> subProcVariables = processRuntime.variables(ProcessPayloadBuilder
-                .variables()
-                .withProcessInstanceId(subProcessInstance.getId())
-                .build());
+                                                                                   .variables()
+                                                                                   .withProcessInstanceId(subProcessInstance.getId())
+                                                                                   .build());
 
         assertThat(subProcVariables).extracting(VariableInstance::getName,
-                VariableInstance::getValue)
+                                                VariableInstance::getValue)
                 .containsOnly(
-                        tuple("output-unmapped-variable-with-non-matching-connector-output-name", "default"),
-                        tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTest"),
-                        tuple("name", "inName"),
-                        tuple("age", 20)
+                        tuple("output-unmapped-variable-with-non-matching-connector-output-name",
+                              "default"),
+                        tuple("input-unmapped-variable-with-non-matching-connector-input-name",
+                              "inTest"),
+                        tuple("name",
+                              "inName"),
+                        tuple("age",
+                              20),
+                        tuple("subprocess-input-var2",
+                              2),
+                        tuple("subprocess-input-var3",
+                              3),
+                        tuple("subprocess-out-var2",
+                              222),
+                        tuple("subprocess-out-var1",
+                              "outValue"),
+
+                        tuple("subprocess-input-var1",
+                              "value1"),
+                        tuple("subprocess-static-value",
+                              "static some value")
                 );
 
         assertThat("my-task-call-activity").isEqualTo(task.getName());
 
         Map<String, Object> variablesForTask = new HashMap<>();
-        variablesForTask.put("input-variable-name-1", "fromSubprocessName");
+        variablesForTask.put("input-variable-name-1",
+                             "fromSubprocessName");
 
-        printVariables(subProcessInstance, "Subprocess");
+        printVariables(subProcessInstance,
+                       "Subprocess");
 
-        completeTask(task.getId(), variablesForTask);
+        completeTask(task.getId(),
+                     variablesForTask);
         List<VariableInstance> parentVariablesAfterComnplete = processRuntime.variables(ProcessPayloadBuilder
-                .variables()
-                .withProcessInstanceId(processInstance.getId())
-                .build());
+                                                                                                .variables()
+                                                                                                .withProcessInstanceId(processInstance.getId())
+                                                                                                .build());
 
         assertThat(parentVariablesAfterComnplete).extracting(VariableInstance::getName,
-                VariableInstance::getValue)
+                                                             VariableInstance::getValue)
                 .containsOnly(
-                        tuple("output-unmapped-variable-with-non-matching-connector-output-name", "default"),
-                        tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTest"),
-                        tuple("name", "inName"),
-                        tuple("age", 20),
-                        tuple("input-variable-name-1", "fromSubprocessName")
+                        tuple("output-unmapped-variable-with-non-matching-connector-output-name",
+                              "default"),
+                        tuple("input-unmapped-variable-with-non-matching-connector-input-name",
+                              "inTest"),
+                        tuple("name",
+                              "inName"),
+                        tuple("age",
+                              20),
+                        tuple("subprocess-input-var2",
+                              2),
+                        tuple("subprocess-input-var3",
+                              3),
+                        tuple("subprocess-out-var2",
+                              222),
+                        tuple("subprocess-out-var1",
+                              "outValue"),
+
+                        tuple("subprocess-input-var1",
+                              "value1"),
+                        tuple("subprocess-static-value",
+                              "static some value"),
+                        tuple("input-variable-name-1",
+                              "fromSubprocessName")
                 );
 
-        printVariables(processInstance, "ParentProcessAgain");
-
+        printVariables(processInstance,
+                       "ParentProcessAgain");
     }
 
     @Test
     public void haveToPassNoVariablesCallActivityEmptyMappingWithTaskTest() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         ProcessInstance processInstance = processRuntime.start(
                 ProcessPayloadBuilder
@@ -234,7 +299,8 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(processInstance).isNotNull();
 
         List<ProcessInstance> subProcessInstanceList = processRuntime.processInstances(
-                Pageable.of(0, 50),
+                Pageable.of(0,
+                            50),
                 ProcessPayloadBuilder
                         .processInstances()
                         .withParentProcessInstanceId(processInstance.getId())
@@ -250,7 +316,8 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
         List<Task> taskList = taskRuntime.tasks(
-                Pageable.of(0, 50),
+                Pageable.of(0,
+                            50),
                 TaskPayloadBuilder
                         .tasks()
                         .withProcessInstanceId(subProcessInstance.getId())
@@ -265,63 +332,91 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
-        printVariables(processInstance, "ParentProcess");
+        printVariables(processInstance,
+                       "ParentProcess");
 
         List<VariableInstance> subProcVariables = processRuntime.variables(ProcessPayloadBuilder
-                .variables()
-                .withProcessInstanceId(subProcessInstance.getId())
-                .build());
+                                                                                   .variables()
+                                                                                   .withProcessInstanceId(subProcessInstance.getId())
+                                                                                   .build());
 
         assertThat(subProcVariables).extracting(VariableInstance::getName,
-                VariableInstance::getValue).size().isEqualTo(0);
+                                                VariableInstance::getValue).size().isEqualTo(6);
+        assertThat(subProcVariables).extracting(VariableInstance::getName,
+                                                VariableInstance::getValue)
+                .containsOnly(
+                        tuple("subprocess-input-var2",
+                              2),
+                        tuple("subprocess-input-var3",
+                              3),
+                        tuple("subprocess-out-var2",
+                              222),
+                        tuple("subprocess-out-var1",
+                              "outValue"),
 
+                        tuple("subprocess-input-var1",
+                              "value1"),
+                        tuple("subprocess-static-value",
+                              "static some value")
+                );
 
         assertThat("my-task-call-activity").isEqualTo(task.getName());
 
         Map<String, Object> variablesForTask = new HashMap<>();
-        variablesForTask.put("input-variable-name-1", "fromSubprocessName");
+        variablesForTask.put("input-variable-name-1",
+                             "fromSubprocessName");
 
-        printVariables(subProcessInstance, "Subprocess");
+        printVariables(subProcessInstance,
+                       "Subprocess");
 
-        completeTask(task.getId(), variablesForTask);
+        completeTask(task.getId(),
+                     variablesForTask);
         List<VariableInstance> parentVariablesAfterComnplete = processRuntime.variables(ProcessPayloadBuilder
-                .variables()
-                .withProcessInstanceId(processInstance.getId())
-                .build());
+                                                                                                .variables()
+                                                                                                .withProcessInstanceId(processInstance.getId())
+                                                                                                .build());
         assertThat(parentVariablesAfterComnplete).extracting(VariableInstance::getName,
-                VariableInstance::getValue)
+                                                             VariableInstance::getValue)
                 .containsOnly(
-                        tuple("output-unmapped-variable-with-non-matching-connector-output-name", "default"),
-                        tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTest"),
-                        tuple("name", "inName"),
-                        tuple("age", 20)
+                        tuple("output-unmapped-variable-with-non-matching-connector-output-name",
+                              "default"),
+                        tuple("input-unmapped-variable-with-non-matching-connector-input-name",
+                              "inTest"),
+                        tuple("name",
+                              "inName"),
+                        tuple("age",
+                              20)
                 );
 
-        printVariables(processInstance, "ParentProcessAgain");
-
+        printVariables(processInstance,
+                       "ParentProcessAgain");
     }
 
-    public void completeTask(String taskId, Map<String, Object> variables) {
+    public void completeTask(String taskId,
+                             Map<String, Object> variables) {
 
         Task completeTask = taskRuntime.complete(TaskPayloadBuilder
-                .complete()
-                .withTaskId(taskId)
-                .withVariables(variables)
-                .build());
+                                                         .complete()
+                                                         .withTaskId(taskId)
+                                                         .withVariables(variables)
+                                                         .build());
         assertThat(completeTask).isNotNull();
         assertThat(completeTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
     }
 
-    public List<VariableInstance> printVariables(ProcessInstance subProcessInstance, String debugString) {
+    public List<VariableInstance> printVariables(ProcessInstance subProcessInstance,
+                                                 String debugString) {
         List<VariableInstance> subProcVariables = processRuntime.variables(ProcessPayloadBuilder
-                .variables()
-                .withProcessInstanceId(subProcessInstance.getId())
-                .build());
+                                                                                   .variables()
+                                                                                   .withProcessInstanceId(subProcessInstance.getId())
+                                                                                   .build());
+        if (printDebug) {
+            System.out.println("_______________________________");
 
-        for (VariableInstance sprocVariable : subProcVariables) {
-            System.out.println(debugString + ":::::" + sprocVariable.getName() + ":" + sprocVariable.getValue());
+            for (VariableInstance sprocVariable : subProcVariables) {
+                System.out.println(debugString + ":::::" + sprocVariable.getName() + ":" + sprocVariable.getValue());
+            }
         }
-        System.out.println("_______________________________");
         return subProcVariables;
     }
 }
