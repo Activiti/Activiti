@@ -33,7 +33,6 @@ public class OutboundVariablesProvider {
     private ProcessExtensionService processExtensionService;
     private ConnectorActionDefinitionFinder connectorActionDefinitionFinder;
 
-
     public OutboundVariablesProvider(ProcessExtensionService processExtensionService,
                                      ConnectorActionDefinitionFinder connectorActionDefinitionFinder) {
         this.processExtensionService = processExtensionService;
@@ -43,7 +42,7 @@ public class OutboundVariablesProvider {
     public Map<String, Object> calculateVariables(IntegrationContext integrationContext,
                                                   ActionDefinition actionDefinition) {
         Map<String, Object> outboundVariables = integrationContext.getOutBoundVariables();
-        if (actionDefinition == null || !processExtensionService.hasExtensionsFor(integrationContext.getProcessDefinitionKey())) {
+        if (actionDefinition == null || !processExtensionService.hasExtensionsFor(integrationContext.getProcessDefinitionId())) {
             return outboundVariables;
         }
         Map<String, Object> mappedOutboundVariables = new HashMap<>();
@@ -77,9 +76,9 @@ public class OutboundVariablesProvider {
                                                                                        value)));
         return mappedOutboundVariables;
     }
-
+    
     public Map<String, Object> calculateVariables(IntegrationContext integrationContext) {
-        Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(integrationContext.getConnectorType());
+        Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(integrationContext.getProcessDefinitionId(), integrationContext.getConnectorType());
         return calculateVariables(integrationContext, actionDefinitionOptional.orElse(null));
     }
 }

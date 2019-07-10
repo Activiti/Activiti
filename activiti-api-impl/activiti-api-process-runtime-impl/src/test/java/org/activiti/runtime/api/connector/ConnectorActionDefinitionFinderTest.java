@@ -16,26 +16,39 @@
 
 package org.activiti.runtime.api.connector;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
+import org.activiti.spring.connector.loader.ProcessConnectorService;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ConnectorActionDefinitionFinderTest {
+
+    @InjectMocks
+    private ConnectorActionDefinitionFinder finder;
+
+    @Mock
+    private ProcessConnectorService connectorService;
+
+    @Before
+    public void setUp() {
+        initMocks(this);
+    }
 
     @Test
     public void findShouldReturnActionMatchingWithImplementation() {
         //given
-        ConnectorDefinition firstConnector = buildConnector("firstConnector");
         ConnectorDefinition secondConnector = buildConnector("secondConnector");
-        ConnectorDefinition thirdConnector = buildConnector("thirdConnector");
 
         ActionDefinition firstAction = buildActionDefinition("firstAction");
         ActionDefinition secondAction = buildActionDefinition("secondAction");
@@ -48,12 +61,11 @@ public class ConnectorActionDefinitionFinderTest {
 
         secondConnector.setActions(actions);
 
-        ConnectorActionDefinitionFinder finder = new ConnectorActionDefinitionFinder(Arrays.asList(firstConnector,
-                                                                                                                            secondConnector,
-                                                                                                                            thirdConnector));
+        given(connectorService.findConnector("procDefId", "secondConnector"))
+                .willReturn(secondConnector);
 
         //when
-        ActionDefinition actionDefinition = finder.find("secondConnector.secondAction").orElse(null);
+        ActionDefinition actionDefinition = finder.find("procDefId" , "secondConnector.secondAction").orElse(null);
 
         //then
         assertThat(actionDefinition).isNotNull();
@@ -78,10 +90,9 @@ public class ConnectorActionDefinitionFinderTest {
         //given
         ConnectorDefinition connectorDefinition = new ConnectorDefinition();
         connectorDefinition.setName("my connector");
-        ConnectorActionDefinitionFinder finder = new ConnectorActionDefinitionFinder(Collections.singletonList(connectorDefinition));
 
         //when
-        Optional<ActionDefinition> actionDefinitionOptional = finder.find("does not contain dot");
+        Optional<ActionDefinition> actionDefinitionOptional = finder.find("procDefId", "does not contain dot");
 
         //then
         assertThat(actionDefinitionOptional).isNotPresent();

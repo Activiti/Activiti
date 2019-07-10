@@ -13,56 +13,65 @@
 
 package org.activiti.spring.process.autoconfigure;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.RepositoryService;
+import org.activiti.spring.process.ProcessExtensionResourceReader;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
-import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.DateVariableType;
-import org.activiti.spring.process.variable.types.VariableType;
 import org.activiti.spring.process.variable.types.JavaObjectVariableType;
-import org.springframework.beans.factory.annotation.Value;
+import org.activiti.spring.process.variable.types.JsonObjectVariableType;
+import org.activiti.spring.process.variable.types.VariableType;
+import org.activiti.spring.resources.DeploymentResourceLoader;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 
 @Configuration
 public class ProcessExtensionsAutoConfiguration {
 
     @Bean
-    public ProcessVariablesInitiator processVariablesInitiator(ProcessExtensionService processExtensionService,
-                                                               VariableParsingService variableParsingService,
+    public ProcessVariablesInitiator processVariablesInitiator(VariableParsingService variableParsingService,
                                                                VariableValidationService variableValidationService) {
-        return new ProcessVariablesInitiator(processExtensionService,
-                                             variableParsingService,
+        return new ProcessVariablesInitiator(variableParsingService,
                                              variableValidationService);
     }
 
     @Bean
-    public Map<String, ProcessExtensionModel> processExtensionsMap(ProcessExtensionService processExtensionService) throws IOException {
-        return processExtensionService.readProcessExtensions();
-
+    InitializingBean setProcessExtensionForProcessVariablesInitiator(ProcessVariablesInitiator processVariablesInitiator,
+                                                                     ProcessExtensionService processExtensionService){
+        return () -> processVariablesInitiator.setProcessExtensionService(processExtensionService);
     }
 
     @Bean
-    public ProcessExtensionService processExtensionService(@Value("${activiti.process.extensions.dir:classpath:/processes/}") String processExtensionsRoot,
-                                                            @Value("${activiti.process.extensions.suffix:**-extensions.json}") String processExtensionsSuffix,
-                                                            ObjectMapper objectMapper,
-                                                            ResourcePatternResolver resourceLoader,
-                                                            Map<String, VariableType> variableTypeMap) {
-        return new ProcessExtensionService(processExtensionsRoot, processExtensionsSuffix, objectMapper, resourceLoader, variableTypeMap);
+    public DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader(RepositoryService repositoryService){
+        return new DeploymentResourceLoader<>(repositoryService);
     }
 
+    @Bean
+    public ProcessExtensionResourceReader processExtensionResourceReader(ObjectMapper objectMapper,
+                                                                         Map<String, VariableType> variableTypeMap) {
+        return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
+    }
+
+    @Bean
+    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
+                                                           RepositoryService repositoryService) {
+        return new ProcessExtensionService(
+                new DeploymentResourceLoader<>(repositoryService),
+                processExtensionResourceReader,
+                repositoryService);
+    }
+    
     @Bean
     public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper){
 

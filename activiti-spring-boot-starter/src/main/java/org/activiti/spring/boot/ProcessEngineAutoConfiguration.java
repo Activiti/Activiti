@@ -13,12 +13,14 @@
 package org.activiti.spring.boot;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
@@ -30,17 +32,21 @@ import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
+import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
+import org.activiti.spring.resources.ResourceFinder;
+import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.transaction.PlatformTransactionManager;
 
 @Configuration
@@ -62,14 +68,18 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             PlatformTransactionManager transactionManager,
             SpringAsyncExecutor springAsyncExecutor,
             ActivitiProperties activitiProperties,
-            ProcessDefinitionResourceFinder processDefinitionResourceFinder,
+            ResourceFinder resourceFinder,
+            List<ResourceFinderDescriptor> resourceFinderDescriptors,
             @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
             @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators) throws IOException {
 
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration();
         conf.setConfigurators(processEngineConfigurators);
-        configureProcessDefinitionResources(processDefinitionResourceFinder,
-                                            conf);
+        
+    
+        configureResources(resourceFinder,
+                           resourceFinderDescriptors,
+                           conf);
         conf.setDataSource(dataSource);
         conf.setTransactionManager(transactionManager);
 
@@ -138,22 +148,43 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         return conf;
     }
 
-    private void configureProcessDefinitionResources(ProcessDefinitionResourceFinder processDefinitionResourceFinder,
-                                                     SpringProcessEngineConfiguration conf) throws IOException {
-        List<Resource> procDefResources = processDefinitionResourceFinder.discoverProcessDefinitionResources();
-        if (!procDefResources.isEmpty()) {
-            conf.setDeploymentResources(procDefResources.toArray(new Resource[0]));
+    private void configureResources(ResourceFinder resourceFinder,
+                                    List<ResourceFinderDescriptor> resourceFinderDescriptors,
+                                    SpringProcessEngineConfiguration conf) throws IOException {
+        
+        List<Resource> resources = new ArrayList<>();
+        for (ResourceFinderDescriptor resourceFinderDescriptor: resourceFinderDescriptors) {
+            resources.addAll(resourceFinder.discoverResources(resourceFinderDescriptor));
         }
+       
+        conf.setDeploymentResources(resources.toArray(new Resource[0]));
     }
+    
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessDefinitionResourceFinder processDefinitionResourceFinder(ActivitiProperties activitiProperties,
-                                                                           ResourcePatternResolver resourcePatternResolver) {
-        return new ProcessDefinitionResourceFinder(activitiProperties,
-                                                   resourcePatternResolver);
+    public ProcessDefinitionResourceFinderDescriptor processDefinitionResourceFinder(ActivitiProperties activitiProperties) {
+        return new ProcessDefinitionResourceFinderDescriptor(activitiProperties);
+    }
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinder(ActivitiProperties activitiProperties,
+                                                                         @Value("${activiti.process.extensions.dir:classpath:**/processes/}") String locationPrefix,
+                                                                         @Value("${activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix) {
+        return new ProcessExtensionResourceFinderDescriptor(activitiProperties.isCheckProcessDefinitions(),
+                                                  locationPrefix,
+                                                  locationSuffix);
+    }
+    
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnMissingClass(value = "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder")
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
+    
     @Bean
     @ConditionalOnMissingBean
     public ProcessDeployedEventProducer processDeployedEventProducer(RepositoryService repositoryService,

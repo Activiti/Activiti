@@ -28,7 +28,7 @@ public class SingleResourceAutoDeploymentStrategy extends AbstractAutoDeployment
    * The deployment mode this strategy handles.
    */
   public static final String DEPLOYMENT_MODE = "single-resource";
-
+  
   @Override
   protected String getDeploymentMode() {
     return DEPLOYMENT_MODE;
@@ -36,20 +36,20 @@ public class SingleResourceAutoDeploymentStrategy extends AbstractAutoDeployment
 
   @Override
   public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {
-
     // Create a separate deployment for each resource using the resource
     // name
 
     for (final Resource resource : resources) {
 
-      final String resourceName = determineResourceName(resource);
-      final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(resourceName);
+        final String resourceName = determineResourceName(resource);
+        final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(resourceName);
 
-      deploymentBuilder.addInputStream(resourceName,
-                                       resource);
+        deploymentBuilder.addInputStream(resourceName,
+                                         resource);
 
-      deploymentBuilder.deploy();
+        deploymentBuilder.deploy();
+      }
     }
+
   }
 
-}

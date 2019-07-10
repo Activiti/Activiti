@@ -7,46 +7,30 @@ import java.util.stream.Collectors;
 
 import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
+import org.activiti.spring.connector.loader.ProcessConnectorService;
 import org.apache.commons.lang3.StringUtils;
 
 public class ConnectorActionDefinitionFinder {
 
-    private final List<ConnectorDefinition> connectorDefinitions;
+    private final ProcessConnectorService connectorService;
 
-    public ConnectorActionDefinitionFinder(List<ConnectorDefinition> connectorDefinitions) {
-        this.connectorDefinitions = connectorDefinitions;
+    public ConnectorActionDefinitionFinder(ProcessConnectorService connectorService) {
+        this.connectorService = connectorService;
     }
 
-    public Optional<ActionDefinition> find(String implementation) {
+    public Optional<ActionDefinition> find(String processDefinitionId, String implementation) {
 
         String connectorName = StringUtils.substringBefore(implementation,
                                                            ".");
         String actionName = StringUtils.substringAfter(implementation,
                                                        ".");
 
-        ConnectorDefinition connectorDefinition = findConnector(connectorName);
+        ConnectorDefinition connectorDefinition = connectorService.findConnector(processDefinitionId, connectorName);
 
         ActionDefinition actionDefinition = findActionDefinition(actionName,
                                                                  connectorDefinition);
 
         return Optional.ofNullable(actionDefinition);
-    }
-
-    private ConnectorDefinition findConnector(String connectorName) {
-        List<ConnectorDefinition> resultingConnectors = connectorDefinitions.stream()
-                .filter(c -> connectorName.equals(c.getName()))
-                .collect(Collectors.toList());
-
-        ConnectorDefinition connectorDefinition = null;
-        if (resultingConnectors != null && !resultingConnectors.isEmpty()) {
-            if (resultingConnectors.size() != 1) {
-                throw new RuntimeException("Expecting exactly 1 connector definition with name mapping `" + connectorName +
-                                                   "`, but were found " + resultingConnectors.size());
-            }
-
-            connectorDefinition = resultingConnectors.get(0);
-        }
-        return connectorDefinition;
     }
 
     private ActionDefinition findActionDefinition(String actionName,

@@ -16,8 +16,6 @@
 
 package org.conf.activiti.runtime.api;
 
-import java.util.List;
-
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.runtime.api.connector.ConnectorActionDefinitionFinder;
@@ -26,6 +24,7 @@ import org.activiti.runtime.api.connector.InboundVariableValueProvider;
 import org.activiti.runtime.api.connector.InboundVariablesProvider;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.connector.OutboundVariablesProvider;
+import org.activiti.spring.connector.loader.ProcessConnectorService;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
@@ -43,8 +42,8 @@ public class ConnectorsAutoConfiguration {
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     @ConditionalOnMissingBean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     public DefaultServiceTaskBehavior defaultServiceTaskBehavior(ApplicationContext applicationContext,
-                                                                 ConnectorActionDefinitionFinder connectorActionDefinitionFinder,
                                                                  IntegrationContextBuilder integrationContextBuilder,
+                                                                 ConnectorActionDefinitionFinder connectorActionDefinitionFinder,
                                                                  OutboundVariablesProvider outboundVariablesProvider) {
         return new DefaultServiceTaskBehavior(applicationContext,
                                               integrationContextBuilder,
@@ -58,9 +57,10 @@ public class ConnectorsAutoConfiguration {
         return new OutboundVariablesProvider(processExtensionService,
                                              connectorActionDefinitionFinder);
     }
+    
 
     @Bean
-    public ConnectorActionDefinitionFinder connectorActionDefinitionFinder(List<ConnectorDefinition> connectorDefinitions) {
-        return new ConnectorActionDefinitionFinder(connectorDefinitions);
+    public ConnectorActionDefinitionFinder connectorActionDefinitionFinder(ProcessConnectorService processConnectorService) {
+        return new ConnectorActionDefinitionFinder(processConnectorService);
     }
 }

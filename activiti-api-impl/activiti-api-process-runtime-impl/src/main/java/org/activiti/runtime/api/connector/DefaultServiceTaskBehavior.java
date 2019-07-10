@@ -16,8 +16,6 @@
 
 package org.activiti.runtime.api.connector;
 
-import java.util.Optional;
-
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.bpmn.model.ServiceTask;
@@ -62,9 +60,9 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
     }
 
     public ActionDefinition findRelatedActionDefinition(DelegateExecution execution) {
-        String implementation = getImplementation(execution);
-        Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(implementation);
-        return actionDefinitionOptional.orElse(null);
+        return connectorActionDefinitionFinder.find(execution.getProcessDefinitionId(),
+                                                    getImplementation(execution))
+                .orElse(null);
     }
 
     private String getImplementation(DelegateExecution execution) {

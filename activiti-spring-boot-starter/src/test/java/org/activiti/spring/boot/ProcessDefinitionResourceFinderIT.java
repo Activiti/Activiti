@@ -18,6 +18,7 @@ package org.activiti.spring.boot;
 
 import java.util.List;
 
+import org.activiti.spring.resources.ResourceFinder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,10 @@ import static org.mockito.BDDMockito.given;
 public class ProcessDefinitionResourceFinderIT {
 
     @Autowired
-    private ProcessDefinitionResourceFinder resourceFinder;
+    private ProcessDefinitionResourceFinderDescriptor processDefinitionResourceFinder;
+    
+    @Autowired
+    private ResourceFinder resourceFinder;
 
     @SpyBean
     private ActivitiProperties activitiProperties;
@@ -42,8 +46,8 @@ public class ProcessDefinitionResourceFinderIT {
     @Test
     public void shouldReturnAllTheProcessDefinitionFilesOnSpecifiedFolder() throws Exception {
         //when
-        List<Resource> resources = resourceFinder.discoverProcessDefinitionResources();
-
+        List<Resource> resources = resourceFinder.discoverResources(processDefinitionResourceFinder);
+     
         //then
         assertThat(resources)
                 .extracting(Resource::getFilename)
@@ -60,7 +64,7 @@ public class ProcessDefinitionResourceFinderIT {
         given(activitiProperties.getProcessDefinitionLocationPrefix()).willReturn("classpath:**/processes-empty/");
 
         //when
-        List<Resource> resources = resourceFinder.discoverProcessDefinitionResources();
+        List<Resource> resources = resourceFinder.discoverResources(processDefinitionResourceFinder);
 
         //then
         assertThat(resources).isEmpty();
@@ -72,7 +76,7 @@ public class ProcessDefinitionResourceFinderIT {
         given(activitiProperties.getProcessDefinitionLocationPrefix()).willReturn("classpath:**/does-not-exist/");
 
         //when
-        List<Resource> resources = resourceFinder.discoverProcessDefinitionResources();
+        List<Resource> resources = resourceFinder.discoverResources(processDefinitionResourceFinder);
 
         //then
         assertThat(resources).isEmpty();

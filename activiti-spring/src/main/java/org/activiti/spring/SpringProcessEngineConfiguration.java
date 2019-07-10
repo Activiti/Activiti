@@ -39,6 +39,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
 
@@ -51,6 +53,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   protected PlatformTransactionManager transactionManager;
   protected String deploymentName = "SpringAutoDeployment";
   protected Resource[] deploymentResources = new Resource[0];
+  
   protected String deploymentMode = "default";
   protected ApplicationContext applicationContext;
   protected Integer transactionSynchronizationAdapterOrder = null;
@@ -112,12 +115,12 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
       sessionFactories.put(EntityManagerSession.class, new SpringEntityManagerSessionFactory(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager));
     }
   }
-
+ 
   protected void autoDeployResources(ProcessEngine processEngine) {
-    if (deploymentResources != null && deploymentResources.length > 0) {
-      final AutoDeploymentStrategy strategy = getAutoDeploymentStrategy(deploymentMode);
-      strategy.deployResources(deploymentName, deploymentResources, processEngine.getRepositoryService());
-    }
+      if (deploymentResources != null && deploymentResources.length > 0) {
+        final AutoDeploymentStrategy strategy = getAutoDeploymentStrategy(deploymentMode);
+        strategy.deployResources(deploymentName, deploymentResources, processEngine.getRepositoryService());
+      }
   }
 
   @Override
@@ -181,14 +184,15 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
    * @return the deployment strategy to use for the mode. Never <code>null</code>
    */
   protected AutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
-    AutoDeploymentStrategy result = new DefaultAutoDeploymentStrategy();
-    for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
-      if (strategy.handlesMode(mode)) {
-        result = strategy;
-        break;
+      AutoDeploymentStrategy result = new DefaultAutoDeploymentStrategy();
+      for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
+        if (strategy.handlesMode(mode)) {
+          result = strategy;
+          break;
+        }
       }
+      return result;
     }
-    return result;
-  }
+  
 
 }

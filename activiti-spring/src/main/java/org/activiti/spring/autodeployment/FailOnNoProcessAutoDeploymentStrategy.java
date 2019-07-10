@@ -42,4 +42,5 @@ public class FailOnNoProcessAutoDeploymentStrategy extends AbstractAutoDeploymen
             throw new ActivitiException("No process definition was deployed.");
         }
     }
+
 }

@@ -9,8 +9,12 @@ import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @Component
 public class ProcessCleanUpUtil {
+
+    private static final int MAX_ITEMS = 100;
 
     @Autowired
     private ProcessAdminRuntime processAdminRuntime;
@@ -21,13 +25,20 @@ public class ProcessCleanUpUtil {
     public void cleanUpWithAdmin() {
         securityUtil.logInAs("admin");
         Page<ProcessInstance> processes = processAdminRuntime.processInstances(Pageable.of(0,
-                50));
+                                                                                           MAX_ITEMS));
         for (ProcessInstance p : processes.getContent()) {
-            processAdminRuntime.delete(ProcessPayloadBuilder
-                    .delete()
-                    .withProcessInstance(p)
-                    .withReason("test clean up")
-                    .build());
+            //only delete parent process instances: children instances will be deleted on cascade
+            if (p.getParentId() == null) {
+                processAdminRuntime.delete(ProcessPayloadBuilder
+                                                   .delete()
+                                                   .withProcessInstance(p)
+                                                   .withReason("test clean up")
+                                                   .build());
+            }
         }
+        assertThat(processAdminRuntime.processInstances(Pageable.of(0,
+                                                                    MAX_ITEMS)).getContent())
+                .as("fail to clean up all the process instances")
+                .isEmpty();
     }
 }

@@ -43,72 +43,73 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
      * @return the name of the deployment mode
      */
     protected abstract String getDeploymentMode();
-
+    
     @Override
     public boolean handlesMode(final String mode) {
         return StringUtils.equalsIgnoreCase(mode, getDeploymentMode());
     }
 
-    /**
-     * Determines the name to be used for the provided resource.
-     * 
-     * @param resource the resource to get the name for
-     * @return the name of the resource
-     */
-    protected String determineResourceName(final Resource resource) {
-        String resourceName = null;
+  /**
+   * Determines the name to be used for the provided resource.
+   * 
+   * @param resource the resource to get the name for
+   * @return the name of the resource
+   */
+  protected String determineResourceName(final Resource resource) {
+      String resourceName = null;
 
-        if (resource instanceof ContextResource) {
-            resourceName = ((ContextResource) resource).getPathWithinContext();
+      if (resource instanceof ContextResource) {
+          resourceName = ((ContextResource) resource).getPathWithinContext();
 
-        } else if (resource instanceof ByteArrayResource) {
-            resourceName = resource.getDescription();
+      } else if (resource instanceof ByteArrayResource) {
+          resourceName = resource.getDescription();
 
-        } else {
-            try {
-                resourceName = resource.getFile().getAbsolutePath();
-            } catch (IOException e) {
-                resourceName = resource.getFilename();
-            }
-        }
-        return resourceName;
-    }
+      } else {
+          try {
+              resourceName = resource.getFile().getAbsolutePath();
+          } catch (IOException e) {
+              resourceName = resource.getFilename();
+          }
+      }
+      return resourceName;
+  }
 
-    protected boolean validateModel(Resource resource, final RepositoryService repositoryService) {
-        try {
-            BpmnXMLConverter converter = new BpmnXMLConverter();
-            BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(resource.getInputStream()), true,
-                    false);
-            List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
-            if ( validationErrors != null && !validationErrors.isEmpty() ) {
-                StringBuilder warningBuilder = new StringBuilder();
-                StringBuilder errorBuilder = new StringBuilder();
+  protected boolean validateModel(Resource resource, final RepositoryService repositoryService) {
+      try {
+          BpmnXMLConverter converter = new BpmnXMLConverter();
+          BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(resource.getInputStream()), true,
+                  false);
+          List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
+          if ( validationErrors != null && !validationErrors.isEmpty() ) {
+              StringBuilder warningBuilder = new StringBuilder();
+              StringBuilder errorBuilder = new StringBuilder();
 
-                for (ValidationError error : validationErrors) {
-                    if ( error.isWarning() ) {
-                        warningBuilder.append(error.toString());
-                        warningBuilder.append("\n");
-                    } else {
-                        errorBuilder.append(error.toString());
-                        errorBuilder.append("\n");
-                    }
+              for (ValidationError error : validationErrors) {
+                  if ( error.isWarning() ) {
+                      warningBuilder.append(error.toString());
+                      warningBuilder.append("\n");
+                  } else {
+                      errorBuilder.append(error.toString());
+                      errorBuilder.append("\n");
+                  }
 
-                    // Write out warnings (if any)
-                    if ( warningBuilder.length() > 0 ) {
-                        LOGGER.warn("Following warnings encountered during process validation: "
-                                + warningBuilder.toString());
-                    }
+                  // Write out warnings (if any)
+                  if ( warningBuilder.length() > 0 ) {
+                      LOGGER.warn("Following warnings encountered during process validation: "
+                              + warningBuilder.toString());
+                  }
 
-                    if ( errorBuilder.length() > 0 ) {
-                        LOGGER.error("Errors while parsing:\n" + errorBuilder.toString());
-                        return false;
-                    }
-                }
-            }
-        } catch ( Exception e ) {
-            LOGGER.error("Error parsing XML", e);
-            return false;
-        }
-        return true;
-    }
+                  if ( errorBuilder.length() > 0 ) {
+                      LOGGER.error("Errors while parsing:\n" + errorBuilder.toString());
+                      return false;
+                  }
+              }
+          }
+      } catch ( Exception e ) {
+          LOGGER.error("Error parsing XML", e);
+          return false;
+      }
+      return true;
+  }
+  
 }
