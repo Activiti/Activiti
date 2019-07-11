@@ -1,6 +1,7 @@
 {
   "id":"taskVariableEmptyMapping",
-  "name":"myProcess",
+  "type": "PROCESS",
+  "name": "process",
   "extensions": {
     "properties": {
       "process-variable-unmapped-1-id": {

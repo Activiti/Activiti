@@ -32,7 +32,7 @@
         <di:waypoint x="579" y="258" />
         <di:waypoint x="618" y="258" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_1j9gp5g_di" bpmnElement="CallActivity_17pqb3s">
+      <bpmndi:BPMNShape id="UserTask_1j9gp5g_di" bpmnElement="simpleTask">
         <dc:Bounds x="479" y="218" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0j0jsvc_di" bpmnElement="SequenceFlow_0j0jsvc">
