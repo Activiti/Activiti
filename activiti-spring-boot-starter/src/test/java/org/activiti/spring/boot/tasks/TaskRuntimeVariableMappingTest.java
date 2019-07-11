@@ -103,9 +103,6 @@ public class TaskRuntimeVariableMappingTest {
                                                                              .variables()
                                                                              .withTaskId(task.getId())
                                                                              .build());
-        for (VariableInstance taskVariable : taskVariables) {
-            System.out.println("In task after start " + taskVariable.getName() + "<=====::" + taskVariable.getValue());
-        }
         assertThat(taskVariables)
                 .isNotNull()
                 .extracting(VariableInstance::getName,

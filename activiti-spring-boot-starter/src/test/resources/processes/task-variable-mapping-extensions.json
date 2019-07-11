@@ -1,9 +1,10 @@
 {
-  "id":"taskVarMapping",
-  "name":"myProcess.bpmn",
+  "id": "taskVarMapping",
+  "type": "PROCESS",
+  "name": "process",
   "extensions": {
     "properties": {
-     "process-variable-unmapped-1-id": {
+      "process-variable-unmapped-1-id": {
         "id": "process-variable-unmapped-1-id",
         "name": "process_variable_unmapped_1",
         "type": "string",
@@ -25,21 +26,21 @@
         "value": "outputmap1Value"
       }
     },
-    "mappings": {
-      "simpleTask": {
-        "inputs": {
-          "task_input_variable_name_1": {
-            "type": "variable",
-            "value": "process_variable_inputmap_1"
-          }
-        },
-        "outputs": {
-          "process_variable_outputmap_1": {
-            "type": "variable",
-            "value": "task_output_variable_name_1"
-           }
+  "mappings": {
+    "simpleTask": {
+      "inputs": {
+        "task_input_variable_name_1": {
+          "type": "variable",
+          "value": "process_variable_inputmap_1"
+        }
+      },
+      "outputs": {
+        "process_variable_outputmap_1": {
+          "type": "variable",
+          "value": "task_output_variable_name_1"
         }
       }
     }
   }
+}
 }
