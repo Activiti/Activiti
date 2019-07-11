@@ -27,6 +27,7 @@ import org.activiti.spring.process.model.VariableDefinition;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class VariablesMappingProvider {
 
@@ -43,12 +44,12 @@ public class VariablesMappingProvider {
         this.processVariablesInitiator=processVariablesInitiator;
     }
 
-    public Object calculateMappedValue(Mapping inputMapping,
+    public Optional<Object> calculateMappedValue(Mapping inputMapping,
                                        DelegateExecution execution,
                                        ProcessExtensionModel extensions) {
         if (inputMapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType()) || Mapping.SourceMappingType.STATIC_VALUE.equals(inputMapping.getType())) {
-                return inputMapping.getValue();
+                return Optional.of(inputMapping.getValue());
             }
 
             if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
@@ -56,12 +57,11 @@ public class VariablesMappingProvider {
 
                 VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
                 if (processVariableDefinition != null) {
-                    return execution.getVariable(processVariableDefinition.getName());
+                    return Optional.of(execution.getVariable(processVariableDefinition.getName()));
                 }
             }
         }
-
-        return null;
+        return Optional.empty();
     }
 
     public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
@@ -87,35 +87,34 @@ public class VariablesMappingProvider {
         Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
 
         for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
-            Object value = calculateMappedValue(mapping.getValue(),
+            Optional<Object> value = calculateMappedValue(mapping.getValue(),
                                                 execution,
                                                 extensions);
-            if (value != null) {
+            if (value.isPresent()) {
                 inboundVariables.put(mapping.getKey(),
-                                     value);
+                                     value.get());
             }
         }
 
         return inboundVariables;
     }
 
-    public Object calculateOutPutMappedValue(Mapping mapping,
+    public Optional<Object> calculateOutPutMappedValue(Mapping mapping,
                                              Map<String, Object> activitiCompleteVariables) {
         if (mapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(mapping.getType())) {
-
-                return mapping.getValue();
+                return Optional.of(mapping.getValue());
             } else {
                 if (Mapping.SourceMappingType.VARIABLE.equals(mapping.getType())) {
                     String name = mapping.getValue().toString();
 
                     return activitiCompleteVariables != null ?
-                            activitiCompleteVariables.get(name) :
-                            null;
+                            Optional.of(activitiCompleteVariables.get(name)) :
+                            Optional.empty();
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public Map<String, Object> calculateOutPutVariables(DelegateExecution execution,
