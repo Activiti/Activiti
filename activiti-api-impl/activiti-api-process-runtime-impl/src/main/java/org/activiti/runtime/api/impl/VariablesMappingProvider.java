@@ -152,7 +152,7 @@ public class VariablesMappingProvider {
 
             if (processVariableDefinition != null) {
                 outboundVariables.put(name, calculateOutPutMappedValue(mapping.getValue(),
-                                                                       activitiCompleteVariables));
+                                                                       activitiCompleteVariables).get());
             }
         }
 
