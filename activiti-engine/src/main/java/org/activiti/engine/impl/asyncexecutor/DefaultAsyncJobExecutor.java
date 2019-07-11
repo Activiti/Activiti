@@ -321,6 +321,45 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
     }
   }
 
+  public void applyConfig(ProcessEngineConfigurationImpl processEngineConfiguration){
+    isMessageQueueMode = processEngineConfiguration.isAsyncExecutorIsMessageQueueMode();
+    applyThreadPoolConfig(processEngineConfiguration);
+    applyQueueConfig(processEngineConfiguration);
+
+    defaultTimerJobAcquireWaitTimeInMillis = processEngineConfiguration.getAsyncExecutorDefaultTimerJobAcquireWaitTime();
+    defaultAsyncJobAcquireWaitTimeInMillis = processEngineConfiguration.getAsyncExecutorDefaultAsyncJobAcquireWaitTime();
+
+    applyLockConfig(processEngineConfiguration);
+
+    resetExpiredJobsInterval = processEngineConfiguration.getAsyncExecutorResetExpiredJobsInterval();
+    resetExpiredJobsPageSize = processEngineConfiguration.getAsyncExecutorResetExpiredJobsPageSize();
+
+    secondsToWaitOnShutdown = processEngineConfiguration.getAsyncExecutorSecondsToWaitOnShutdown();
+
+  }
+
+  private void applyLockConfig(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    timerLockTimeInMillis = processEngineConfiguration.getAsyncExecutorTimerLockTimeInMillis();
+    asyncJobLockTimeInMillis = processEngineConfiguration.getAsyncExecutorAsyncJobLockTimeInMillis();
+    if (processEngineConfiguration.getAsyncExecutorLockOwner() != null) {
+      lockOwner = processEngineConfiguration.getAsyncExecutorLockOwner();
+    }
+  }
+
+  private void applyQueueConfig(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    if (processEngineConfiguration.getAsyncExecutorThreadPoolQueue() != null) {
+      threadPoolQueue = processEngineConfiguration.getAsyncExecutorThreadPoolQueue();
+    }
+    queueSize = processEngineConfiguration.getAsyncExecutorThreadPoolQueueSize();
+    defaultQueueSizeFullWaitTime = processEngineConfiguration.getAsyncExecutorDefaultQueueSizeFullWaitTime();
+  }
+
+  private void applyThreadPoolConfig(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    corePoolSize = processEngineConfiguration.getAsyncExecutorCorePoolSize();
+    maxPoolSize = processEngineConfiguration.getAsyncExecutorMaxPoolSize();
+    keepAliveTime = processEngineConfiguration.getAsyncExecutorThreadKeepAliveTime();
+  }
+
   /* getters and setters */
   
   public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {

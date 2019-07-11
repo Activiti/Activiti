@@ -1,10 +1,5 @@
 package org.activiti.spring.boot.process;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -35,6 +30,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -217,7 +215,7 @@ public class ProcessRuntimeIT {
 
         //then
         assertThat(processInstancePage).isNotNull();
-        assertThat(processInstancePage.getContent()).hasSize(0);
+        assertThat(processInstancePage.getContent()).isEmpty();
 
         //given
         // start a process with a business key to check filters
@@ -366,7 +364,7 @@ public class ProcessRuntimeIT {
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                 50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent()).extracting((ProcessDefinition pd) -> pd.getKey())
+        assertThat(processDefinitionPage.getContent()).extracting(ProcessDefinition::getKey)
                 .contains(CATEGORIZE_HUMAN_PROCESS);
 
 
@@ -434,7 +432,7 @@ public class ProcessRuntimeIT {
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                 50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent()).extracting((ProcessDefinition pd) -> pd.getKey())
+        assertThat(processDefinitionPage.getContent()).extracting(ProcessDefinition::getKey)
                 .contains(CATEGORIZE_HUMAN_PROCESS);
 
 
@@ -503,7 +501,7 @@ public class ProcessRuntimeIT {
         Page<ProcessDefinition> processDefinitionPage = processAdminRuntime.processDefinitions(Pageable.of(0,
                 50));
         assertThat(processDefinitionPage.getContent()).isNotNull();
-        assertThat(processDefinitionPage.getContent()).extracting((ProcessDefinition pd) -> pd.getKey())
+        assertThat(processDefinitionPage.getContent()).extracting(ProcessDefinition::getKey)
                 .contains(CATEGORIZE_HUMAN_PROCESS);
 
 
