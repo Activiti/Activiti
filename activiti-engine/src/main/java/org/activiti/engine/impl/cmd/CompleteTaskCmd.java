@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -38,7 +38,7 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
     this(taskId, variables);
     this.localScope = localScope;
   }
-  
+
   public CompleteTaskCmd(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
     this(taskId, variables);
     this.transientVariables = transientVariables;
@@ -46,15 +46,15 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
 
   protected Void execute(CommandContext commandContext, TaskEntity task) {
     if (variables != null) {
-    	if (localScope) {
-    		task.setVariablesLocal(variables);
-    	} else if (task.getExecutionId() != null) {
-    		task.setExecutionVariables(variables);
-    	} else {
-    		task.setVariables(variables);
-    	}
+      if (localScope) {
+        task.setVariablesLocal(variables);
+      } else if (task.getExecutionId() != null) {
+        task.setExecutionVariables(variables);
+      } else {
+        task.setVariables(variables);
+      }
     }
-    
+
     if (transientVariables != null) {
       if (localScope) {
         task.setTransientVariablesLocal(transientVariables);
@@ -62,16 +62,10 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
         task.setTransientVariables(transientVariables);
       }
     }
-//    We have moved this logic to UserTaskActivityBehavior.trigger(..
-//
-//    if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
-//      TaskVariableCopier.copyVariablesOutFromTaskLocal(task);
-//    }
-//
-    
-    setTaskVariables(task.getVariablesLocal()); 
-    
-    
+
+    setTaskVariables(task.getVariablesLocal());
+
+
     executeTaskComplete(commandContext, task, variables, localScope);
     return null;
   }
@@ -82,20 +76,20 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
   }
 
   public Map<String, Object> getVariables() {
-      return variables;  
+    return variables;
   }
-  
+
   public Map<String, Object> getTransientVariables() {
-      return transientVariables;  
+    return transientVariables;
   }
-  
-  public void setTaskVariables(Map<String, Object> taskVariables) {
-      this.taskVariables = taskVariables;  
-  }
-  
+
   public Map<String, Object> getTaskVariables() {
-      return taskVariables;  
+    return taskVariables;
   }
-  
-  
+
+  public void setTaskVariables(Map<String, Object> taskVariables) {
+    this.taskVariables = taskVariables;
+  }
+
+
 }

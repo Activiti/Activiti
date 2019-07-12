@@ -29,7 +29,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 
 public class DefaultCallActivityBehavior extends CallActivityBehavior {
 
-    VariablesMappingProvider mappingProvider;
+    private VariablesMappingProvider mappingProvider;
 
     public DefaultCallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions, VariablesMappingProvider mappingProvider) {
         super(processDefinitionKey, mapExceptions);
