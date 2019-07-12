@@ -40,7 +40,6 @@ public class ProcessRuntimeCallActivityMappingIT {
 
     @Autowired
     private SecurityUtil securityUtil;
-    boolean printDebug = true;
 
     @Test
     public void basicCallActivityMappingTest() {
@@ -87,9 +86,6 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
-        printVariables(processInstance,
-                       "ParentProcess");
-
         List<VariableInstance> subProcVariables = processRuntime.variables(ProcessPayloadBuilder
                                                                                    .variables()
                                                                                    .withProcessInstanceId(subProcessInstance.getId())
@@ -130,9 +126,6 @@ public class ProcessRuntimeCallActivityMappingIT {
         variablesForTask.put("out-variable-name-1",
                              176);
 
-        printVariables(subProcessInstance,
-                       "Subprocess");
-
         completeTask(task.getId(),
 
                      variablesForTask);
@@ -155,9 +148,6 @@ public class ProcessRuntimeCallActivityMappingIT {
                               "inTest")
 
                 );
-
-        printVariables(processInstance,
-                       "ParentProcessAgain");
     }
 
     @Test
@@ -205,9 +195,6 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
-        printVariables(processInstance,
-                       "ParentProcess");
-
         List<VariableInstance> subProcVariables = processRuntime.variables(ProcessPayloadBuilder
                                                                                    .variables()
                                                                                    .withProcessInstanceId(subProcessInstance.getId())
@@ -245,9 +232,6 @@ public class ProcessRuntimeCallActivityMappingIT {
         variablesForTask.put("input-variable-name-1",
                              "fromSubprocessName");
 
-        printVariables(subProcessInstance,
-                       "Subprocess");
-
         completeTask(task.getId(),
                      variablesForTask);
         List<VariableInstance> parentVariablesAfterComnplete = processRuntime.variables(ProcessPayloadBuilder
@@ -282,9 +266,6 @@ public class ProcessRuntimeCallActivityMappingIT {
                         tuple("input-variable-name-1",
                               "fromSubprocessName")
                 );
-
-        printVariables(processInstance,
-                       "ParentProcessAgain");
     }
 
     @Test
@@ -332,9 +313,6 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
-        printVariables(processInstance,
-                       "ParentProcess");
-
         List<VariableInstance> subProcVariables = processRuntime.variables(ProcessPayloadBuilder
                                                                                    .variables()
                                                                                    .withProcessInstanceId(subProcessInstance.getId())
@@ -366,9 +344,6 @@ public class ProcessRuntimeCallActivityMappingIT {
         variablesForTask.put("input-variable-name-1",
                              "fromSubprocessName");
 
-        printVariables(subProcessInstance,
-                       "Subprocess");
-
         completeTask(task.getId(),
                      variablesForTask);
         List<VariableInstance> parentVariablesAfterComnplete = processRuntime.variables(ProcessPayloadBuilder
@@ -388,8 +363,6 @@ public class ProcessRuntimeCallActivityMappingIT {
                               20)
                 );
 
-        printVariables(processInstance,
-                       "ParentProcessAgain");
     }
 
     public void completeTask(String taskId,
@@ -404,19 +377,4 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(completeTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
     }
 
-    public List<VariableInstance> printVariables(ProcessInstance subProcessInstance,
-                                                 String debugString) {
-        List<VariableInstance> subProcVariables = processRuntime.variables(ProcessPayloadBuilder
-                                                                                   .variables()
-                                                                                   .withProcessInstanceId(subProcessInstance.getId())
-                                                                                   .build());
-        if (printDebug) {
-            System.out.println("_______________________________");
-
-            for (VariableInstance sprocVariable : subProcVariables) {
-                System.out.println(debugString + ":::::" + sprocVariable.getName() + ":" + sprocVariable.getValue());
-            }
-        }
-        return subProcVariables;
-    }
 }
