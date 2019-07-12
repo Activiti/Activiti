@@ -18,9 +18,7 @@ import java.util.Date;
 
 /**
  * This interface provides full access to the clock
- * @deprecated dealing with Clock, Calendars and Time will be delaged to a separate service/library
  */
-@Deprecated
 public interface Clock extends ClockReader {
 
   void setCurrentTime(Date currentTime);

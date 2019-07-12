@@ -15,9 +15,7 @@ import org.activiti.engine.runtime.Job;
 /**
  * Contains methods that are not tied to any specific job type (async, timer, suspended or deadletter),
  * but which are generally applicable or are about going from one type to another.
- * @deprecated we discourage the use of tenant aware interfaces/classes this will be removed in future versions
  */
-@Deprecated
 @Internal
 public interface JobManager {
   

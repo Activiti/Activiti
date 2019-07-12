@@ -21,9 +21,7 @@ import org.activiti.engine.api.internal.Internal;
 /**
  * Represents one job (timer, async job, etc.).
  *
- * @deprecated we recommend against using the Job Executor, this should be handled by an integration instead of an internal component
  */
-@Deprecated
 @Internal
 public interface Job {
   

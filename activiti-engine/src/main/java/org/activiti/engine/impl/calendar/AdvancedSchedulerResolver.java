@@ -9,9 +9,7 @@ import org.activiti.engine.runtime.ClockReader;
 /**
  * Provides an interface for versioned due date resolvers.
  * 
- * @deprecated Calendar Functionally will be provided as a separate service/library
  */
-@Deprecated
 @Internal
 public interface AdvancedSchedulerResolver {
 
