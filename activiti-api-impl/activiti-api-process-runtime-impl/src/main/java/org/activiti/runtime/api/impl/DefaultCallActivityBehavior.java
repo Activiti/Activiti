@@ -57,8 +57,7 @@ public class DefaultCallActivityBehavior extends CallActivityBehavior {
     }
     @Override
     protected Map<String, Object> getVariablesFromExtensionFile(ProcessDefinition processDefinition) {
-        Map<String, Object> extensionFileVariables=mappingProvider.getProcessVariablesInitiator().getVariablesFromExtensionFile(processDefinition,new HashMap<>() );
-        return extensionFileVariables;
+        return mappingProvider.getProcessVariablesInitiator().getVariablesFromExtensionFile(processDefinition,new HashMap<>() );
     }
 
 }

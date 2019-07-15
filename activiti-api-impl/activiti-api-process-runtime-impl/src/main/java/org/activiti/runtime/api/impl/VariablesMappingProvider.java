@@ -33,7 +33,7 @@ public class VariablesMappingProvider {
 
     private ProcessExtensionService processExtensionService;
 
-    public ProcessVariablesInitiator processVariablesInitiator;
+    private ProcessVariablesInitiator processVariablesInitiator;
 
     public ProcessVariablesInitiator getProcessVariablesInitiator() {
         return processVariablesInitiator;
