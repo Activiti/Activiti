@@ -92,10 +92,7 @@ public class BasicInclusiveGatewayTest {
                               taskWithName("Start Process").hasBeenAssigned()
                 )
                 .andReturn();
-        
-    
-
-        
+  
         // I should be able to get the process instance from the Runtime
         ProcessInstance processInstanceById = processRuntime.processInstance(processInstance.getId());
         assertThat(processInstanceById).isEqualTo(processInstance);
@@ -134,9 +131,6 @@ public class BasicInclusiveGatewayTest {
                                                   Task.TaskStatus.ASSIGNED)
                 );
         
-        
-
-        
         //then - two tasks should be available
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getTotalItems()).isEqualTo(2);
@@ -155,10 +149,7 @@ public class BasicInclusiveGatewayTest {
                 .expectEvents(task().hasBeenCompleted(),
                               inclusiveGateway("inclusiveGatewayEnd").hasBeenStarted())
                 .expect(processInstance().hasTask(task2.getName(),
-                                                  task2.getStatus())
-                );
-        
-        
+                                                  task2.getStatus()));
         
         //then - only second task should be available
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
@@ -184,8 +175,7 @@ public class BasicInclusiveGatewayTest {
                               inclusiveGateway("inclusiveGatewayEnd").hasBeenCompleted(),
                               endEvent("theEnd").hasBeenStarted(),
                               endEvent("theEnd").hasBeenCompleted());
-        
-        
+         
         //No tasks should be available
         tasks = taskRuntime.tasks(Pageable.of(0, 50));
         assertThat(tasks.getTotalItems()).isEqualTo(0);              
