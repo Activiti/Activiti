@@ -60,6 +60,7 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(task.getAssignee()).isEqualTo("salaboy");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+        assertThat(task.isStandalone()).isTrue();
 
         Task deletedTask = taskRuntime.delete(TaskPayloadBuilder
                 .delete()
@@ -123,6 +124,7 @@ public class TaskRuntimeStandaloneTaskTest {
         assertThat(task.getId()).isEqualTo(standAloneTask.getId());
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+        assertThat(task.isStandalone()).isTrue();
 
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 

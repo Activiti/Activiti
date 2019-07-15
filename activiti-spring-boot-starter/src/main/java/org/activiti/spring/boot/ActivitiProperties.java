@@ -24,7 +24,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 public class ActivitiProperties {
 
   private boolean checkProcessDefinitions = true;
-  private boolean asyncExecutorActivate = false;
+  private boolean asyncExecutorActivate = true;
   private String deploymentName = "SpringAutoDeployment";
   private String mailServerHost = "localhost";
   private int mailServerPort = 1025;
