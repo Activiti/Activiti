@@ -12,8 +12,11 @@
  */
 package org.activiti.runtime.api.impl;
 
-import org.activiti.bpmn.model.CallActivity;
+import java.util.List;
+
+import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
@@ -21,7 +24,6 @@ import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFacto
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Default implementation of the {@link ActivityBehaviorFactory}. Used when no custom {@link ActivityBehaviorFactory} is injected on the {@link ProcessEngineConfigurationImpl}.
@@ -47,21 +49,19 @@ public class DefaultActivityBehaviorFactoryMapping extends DefaultActivityBehavi
     }
 
     @Override
-    public CallActivityBehavior createCallActivityBehavior(CallActivity callActivity) {
+    protected CallActivityBehavior createCallActivityBehavior(Expression expression, List<MapExceptionEntry> mapExceptions) {
+        return new DefaultCallActivityBehavior(expression,
+                                               mapExceptions,
+                                               new VariablesMappingProvider(processExtensionService,
+                                                                            processVariablesInitiator));
+    }
 
-        String expressionRegex = "\\$+\\{+.+\\}";
-        CallActivityBehavior callActivityBehaviour = null;
-        if (StringUtils.isNotEmpty(callActivity.getCalledElement()) && callActivity.getCalledElement().matches(expressionRegex)) {
-            callActivityBehaviour = new DefaultCallActivityBehavior(expressionManager.createExpression(callActivity.getCalledElement()),
-                                                                    callActivity.getMapExceptions(),
-                                                                    new VariablesMappingProvider(processExtensionService,
-                                                                                                 processVariablesInitiator));
-        } else {
-            callActivityBehaviour = new DefaultCallActivityBehavior(callActivity.getCalledElement(),
-                                                                    callActivity.getMapExceptions(),
-                                                                    new VariablesMappingProvider(processExtensionService,
-                                                                                                 processVariablesInitiator));
-        }
-        return callActivityBehaviour;
+    @Override
+    protected CallActivityBehavior createCallActivityBehavior(String calledElement,
+                                                              List<MapExceptionEntry> mapExceptions) {
+        return new DefaultCallActivityBehavior(calledElement,
+                                               mapExceptions,
+                                               new VariablesMappingProvider(processExtensionService,
+                                                                            processVariablesInitiator));
     }
 }
