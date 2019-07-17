@@ -118,9 +118,9 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
         variables.put(entry.getKey(), entry.getValue());
       }
     }
-    Map<String,Object> variablesFromExtensionFile = getVariablesFromExtensionFile(processDefinition,calculateInputVariables(execution,
-                                                                                                                            subProcess));
-      variables.putAll(variablesFromExtensionFile);
+    Map<String, Object> variablesFromExtensionFile = getVariablesFromExtensionFile(processDefinition,
+                                                                                   calculateInputVariables(execution));
+    variables.putAll(variablesFromExtensionFile);
 
     // copy process variables
     for (IOParameter ioParameter : callActivity.getInParameters()) {
@@ -168,12 +168,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       }
       execution.setVariable(ioParameter.getTarget(), value);
     }
-      Map<String, Object> outboundVariables = getOutBoundVariables(commandContext,
-              execution,subProcessInstance.getVariables());
+      Map<String, Object> outboundVariables = calculateOutBoundVariables(execution, subProcessInstance.getVariables());
       if (outboundVariables != null) {
-          execution.getParent().setVariables(outboundVariables);
+          execution.setVariables(outboundVariables);
       }
-
   }
 
   public void completed(DelegateExecution execution) throws Exception {
@@ -215,20 +213,19 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     return processDefinitonKey;
   }
 
-  protected  Map<String, Object> calculateInputVariables(DelegateExecution execution,
-                                                         Process subProcess) {
-    Map<String, Object> inboundVars = getInboundVariables(execution);
+  protected  Map<String, Object> calculateInputVariables(DelegateExecution execution) {
+
+    Map<String, Object> inboundVars = calculateInboundVariables(execution);
     return inboundVars;
   }
 
-  protected Map<String, Object> getInboundVariables(DelegateExecution execution) {
+  protected Map<String, Object> calculateInboundVariables(DelegateExecution execution) {
     return new HashMap<String, Object>();
   }
 
 
-  protected Map<String, Object> getOutBoundVariables(CommandContext commandContext,
-                                                     DelegateExecution execution,
-                                                     Map<String, Object> taskVariables) {
+  protected Map<String, Object> calculateOutBoundVariables(DelegateExecution execution,
+                                                           Map<String, Object> taskVariables) {
     return new HashMap<String, Object>();
   }
 
