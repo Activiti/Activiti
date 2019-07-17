@@ -118,11 +118,9 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
         variables.put(entry.getKey(), entry.getValue());
       }
     }
-    Map<String,Object> variablesFromExtensionFile=getVariablesFromExtensionFile(processDefinition);
+    Map<String,Object> variablesFromExtensionFile = getVariablesFromExtensionFile(processDefinition,calculateInputVariables(execution,
+                                                                                                                            subProcess));
       variables.putAll(variablesFromExtensionFile);
-    Map<String, Object> calculateVariables = calculateInputVariables(execution,
-                                                                     subProcess);
-    variables.putAll(calculateVariables);
 
     // copy process variables
     for (IOParameter ioParameter : callActivity.getInParameters()) {
@@ -218,7 +216,6 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   }
 
   protected  Map<String, Object> calculateInputVariables(DelegateExecution execution,
-//                                    CommandContext commandContext,
                                                          Process subProcess) {
     Map<String, Object> inboundVars = getInboundVariables(execution);
     return inboundVars;
@@ -235,7 +232,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     return new HashMap<String, Object>();
   }
 
-  protected Map<String, Object> getVariablesFromExtensionFile(ProcessDefinition processDefinition) {
+  protected Map<String, Object> getVariablesFromExtensionFile(ProcessDefinition processDefinition, Map<String,Object> calculatedVariables) {
       return new HashMap<String, Object>();
   }
 }

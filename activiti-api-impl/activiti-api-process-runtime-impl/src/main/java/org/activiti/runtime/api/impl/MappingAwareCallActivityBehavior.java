@@ -56,8 +56,8 @@ public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
                                                         taskCompleteVariables);
     }
     @Override
-    protected Map<String, Object> getVariablesFromExtensionFile(ProcessDefinition processDefinition) {
-        return mappingProvider.getProcessVariablesInitiator().calculateVariablesFromExtensionFile(processDefinition, new HashMap<>() );
+    protected Map<String, Object> getVariablesFromExtensionFile(ProcessDefinition processDefinition, Map<String,Object> calculatedVariables) {
+        return mappingProvider.getProcessVariablesInitiator().calculateVariablesFromExtensionFile(processDefinition, calculatedVariables );
     }
 
 }
