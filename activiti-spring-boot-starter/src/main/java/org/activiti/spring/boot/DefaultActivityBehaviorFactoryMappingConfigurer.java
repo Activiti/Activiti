@@ -1,6 +1,6 @@
 package org.activiti.spring.boot;
 
-import org.activiti.runtime.api.impl.DefaultActivityBehaviorFactoryMapping;
+import org.activiti.runtime.api.impl.MappingAwareActivityBehaviorFactory;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
@@ -18,6 +18,6 @@ public class DefaultActivityBehaviorFactoryMappingConfigurer implements ProcessE
     }
     @Override
     public void configure(SpringProcessEngineConfiguration processEngineConfiguration){
-        processEngineConfiguration.setActivityBehaviorFactory(new DefaultActivityBehaviorFactoryMapping(processExtensionService,processVariablesInitiator));
+        processEngineConfiguration.setActivityBehaviorFactory(new MappingAwareActivityBehaviorFactory(processExtensionService, processVariablesInitiator));
     }
 }

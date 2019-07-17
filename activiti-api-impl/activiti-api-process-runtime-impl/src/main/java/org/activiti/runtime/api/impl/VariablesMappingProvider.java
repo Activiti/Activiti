@@ -122,7 +122,7 @@ public class VariablesMappingProvider {
 
         ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
 
-        if(extensions.getExtensions().hasEmptyOututsMapping(execution.getCurrentActivityId())){
+        if(extensions.getExtensions().hasEmptyOutputsMapping(execution.getCurrentActivityId())){
             return Collections.emptyMap();
         }
 

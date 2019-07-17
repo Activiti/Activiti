@@ -28,14 +28,14 @@ import org.activiti.spring.process.ProcessVariablesInitiator;
 /**
  * Default implementation of the {@link ActivityBehaviorFactory}. Used when no custom {@link ActivityBehaviorFactory} is injected on the {@link ProcessEngineConfigurationImpl}.
  */
-public class DefaultActivityBehaviorFactoryMapping extends DefaultActivityBehaviorFactory {
+public class MappingAwareActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 
     private ProcessExtensionService processExtensionService;
 
     private ProcessVariablesInitiator processVariablesInitiator;
 
-    public DefaultActivityBehaviorFactoryMapping(ProcessExtensionService processExtensionService,
-                                                 ProcessVariablesInitiator processVariablesInitiator) {
+    public MappingAwareActivityBehaviorFactory(ProcessExtensionService processExtensionService,
+                                               ProcessVariablesInitiator processVariablesInitiator) {
         super();
         this.processExtensionService = processExtensionService;
         this.processVariablesInitiator = processVariablesInitiator;
@@ -50,18 +50,18 @@ public class DefaultActivityBehaviorFactoryMapping extends DefaultActivityBehavi
 
     @Override
     protected CallActivityBehavior createCallActivityBehavior(Expression expression, List<MapExceptionEntry> mapExceptions) {
-        return new DefaultCallActivityBehavior(expression,
-                                               mapExceptions,
-                                               new VariablesMappingProvider(processExtensionService,
+        return new MappingAwareCallActivityBehavior(expression,
+                                                    mapExceptions,
+                                                    new VariablesMappingProvider(processExtensionService,
                                                                             processVariablesInitiator));
     }
 
     @Override
     protected CallActivityBehavior createCallActivityBehavior(String calledElement,
                                                               List<MapExceptionEntry> mapExceptions) {
-        return new DefaultCallActivityBehavior(calledElement,
-                                               mapExceptions,
-                                               new VariablesMappingProvider(processExtensionService,
+        return new MappingAwareCallActivityBehavior(calledElement,
+                                                    mapExceptions,
+                                                    new VariablesMappingProvider(processExtensionService,
                                                                             processVariablesInitiator));
     }
 }

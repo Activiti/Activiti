@@ -45,8 +45,8 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         this.variableValidationService = variableValidationService;
     }
 
-    public Map<String, Object> getVariablesFromExtensionFile(ProcessDefinition processDefinition,
-                                                             Map<String, Object> variables) {
+    public Map<String, Object> calculateVariablesFromExtensionFile(ProcessDefinition processDefinition,
+                                                                   Map<String, Object> variables) {
         Map<String, Object> processedVariables = new HashMap<>();
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
             ProcessExtensionModel processExtensionModel = processExtensionService.getExtensionsFor(processDefinition);
@@ -77,7 +77,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     @Override
     public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition, String businessKey, String processInstanceName, FlowElement initialFlowElement, Process process, Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
-            Map<String, Object> processedVariables=getVariablesFromExtensionFile(processDefinition,variables);
+            Map<String, Object> processedVariables = calculateVariablesFromExtensionFile(processDefinition, variables);
             return super.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process, processedVariables, transientVariables, startProcessInstance);
         }
         return super.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process, variables, transientVariables, startProcessInstance);

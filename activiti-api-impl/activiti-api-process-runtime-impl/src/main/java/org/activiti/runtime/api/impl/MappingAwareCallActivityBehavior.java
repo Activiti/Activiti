@@ -27,16 +27,16 @@ import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.repository.ProcessDefinition;
 
-public class DefaultCallActivityBehavior extends CallActivityBehavior {
+public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
 
     private VariablesMappingProvider mappingProvider;
 
-    public DefaultCallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions, VariablesMappingProvider mappingProvider) {
+    public MappingAwareCallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions, VariablesMappingProvider mappingProvider) {
         super(processDefinitionKey, mapExceptions);
         this.mappingProvider = mappingProvider;
     }
 
-    public DefaultCallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions, VariablesMappingProvider mappingProvider) {
+    public MappingAwareCallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions, VariablesMappingProvider mappingProvider) {
         super(processDefinitionExpression, mapExceptions);
         this.mappingProvider = mappingProvider;
     }
@@ -57,7 +57,7 @@ public class DefaultCallActivityBehavior extends CallActivityBehavior {
     }
     @Override
     protected Map<String, Object> getVariablesFromExtensionFile(ProcessDefinition processDefinition) {
-        return mappingProvider.getProcessVariablesInitiator().getVariablesFromExtensionFile(processDefinition,new HashMap<>() );
+        return mappingProvider.getProcessVariablesInitiator().calculateVariablesFromExtensionFile(processDefinition, new HashMap<>() );
     }
 
 }
