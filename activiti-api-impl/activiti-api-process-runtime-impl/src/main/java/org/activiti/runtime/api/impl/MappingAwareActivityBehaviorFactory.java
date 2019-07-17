@@ -43,8 +43,8 @@ public class MappingAwareActivityBehaviorFactory extends DefaultActivityBehavior
 
     @Override
     public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
-        return new DefaultUserTaskBehavior(userTask,
-                                           new VariablesMappingProvider(processExtensionService,
+        return new MappingAwareUserTaskBehavior(userTask,
+                                                new VariablesMappingProvider(processExtensionService,
                                                                         processVariablesInitiator));
     }
 

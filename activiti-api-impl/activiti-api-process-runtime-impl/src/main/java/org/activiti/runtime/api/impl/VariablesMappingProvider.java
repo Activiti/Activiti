@@ -44,7 +44,7 @@ public class VariablesMappingProvider {
         this.processVariablesInitiator=processVariablesInitiator;
     }
 
-    public Optional<Object> calculateMappedValue(Mapping inputMapping,
+    protected Optional<Object> calculateMappedValue(Mapping inputMapping,
                                        DelegateExecution execution,
                                        ProcessExtensionModel extensions) {
         if (inputMapping != null) {
@@ -99,8 +99,8 @@ public class VariablesMappingProvider {
         return inboundVariables;
     }
 
-    public Optional<Object> calculateOutPutMappedValue(Mapping mapping,
-                                             Map<String, Object> activitiCompleteVariables) {
+    protected Optional<Object> calculateOutPutMappedValue(Mapping mapping,
+                                             Map<String, Object> currentContextVariables) {
         if (mapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(mapping.getType())) {
                 return Optional.of(mapping.getValue());
@@ -108,8 +108,8 @@ public class VariablesMappingProvider {
                 if (Mapping.SourceMappingType.VARIABLE.equals(mapping.getType())) {
                     String name = mapping.getValue().toString();
 
-                    return activitiCompleteVariables != null ?
-                            Optional.of(activitiCompleteVariables.get(name)) :
+                    return currentContextVariables != null ?
+                            Optional.of(currentContextVariables.get(name)) :
                             Optional.empty();
                 }
             }
@@ -150,7 +150,8 @@ public class VariablesMappingProvider {
 
             VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
 
-            if (processVariableDefinition != null) {
+            if (processVariableDefinition != null && calculateOutPutMappedValue(mapping.getValue(),
+                                                                                activitiCompleteVariables).isPresent()) {
                 outboundVariables.put(name, calculateOutPutMappedValue(mapping.getValue(),
                                                                        activitiCompleteVariables).get());
             }

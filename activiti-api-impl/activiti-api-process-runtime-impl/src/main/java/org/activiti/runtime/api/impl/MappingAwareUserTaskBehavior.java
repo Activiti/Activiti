@@ -23,12 +23,12 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-public class DefaultUserTaskBehavior extends UserTaskActivityBehavior {
+public class MappingAwareUserTaskBehavior extends UserTaskActivityBehavior {
 
     private VariablesMappingProvider mappingProvider;
   
-    public DefaultUserTaskBehavior(UserTask userTask,
-                                   VariablesMappingProvider mappingProvider) {
+    public MappingAwareUserTaskBehavior(UserTask userTask,
+                                        VariablesMappingProvider mappingProvider) {
         super(userTask);
         this.mappingProvider = mappingProvider;
     }
@@ -40,9 +40,9 @@ public class DefaultUserTaskBehavior extends UserTaskActivityBehavior {
     }
     
     @Override
-    protected Map<String, Object> getOutBoundVariables(CommandContext commandContext,
-                                                       DelegateExecution execution, 
-                                                       Map<String, Object> taskCompleteVariables) {
+    protected Map<String, Object> calculateOutBoundVariables(CommandContext commandContext,
+                                                             DelegateExecution execution,
+                                                             Map<String, Object> taskCompleteVariables) {
         
         return mappingProvider.calculateOutPutVariables(execution,
                                                         taskCompleteVariables); 

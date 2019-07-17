@@ -18,7 +18,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-public class VariableMappingProviderTest {
+public class VariablesMappingProviderTest {
 
     @InjectMocks
     private VariablesMappingProvider variablesMappingProvider;
@@ -38,10 +38,7 @@ public class VariableMappingProviderTest {
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-mapping-extensions.json"), ProcessExtensionModel.class);
 
-        DelegateExecution execution = mock(DelegateExecution.class);
-        given(processExtensionService.getExtensionsForId("taskVarMapping")).willReturn(extensions);
-        given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
-        given(execution.getCurrentActivityId()).willReturn("simpleTask");
+        DelegateExecution execution = buildExecution(extensions);
         given(execution.getVariable("process_variable_inputmap_1")).willReturn("new-input-value");
 
         //when
@@ -51,16 +48,21 @@ public class VariableMappingProviderTest {
         assertThat(inputVariables.get("task_input_variable_name_1")).isEqualTo("new-input-value");
     }
 
+    private DelegateExecution buildExecution(ProcessExtensionModel extensions) {
+        DelegateExecution execution = mock(DelegateExecution.class);
+        given(processExtensionService.getExtensionsForId("taskVarMapping")).willReturn(extensions);
+        given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
+        given(execution.getCurrentActivityId()).willReturn("simpleTask");
+        return execution;
+    }
+
     @Test
     public void calculateInputVariablesShouldPassAllVariablesWhenThereIsNoMapping() throws Exception{
         //given
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-no-mapping-extensions.json"), ProcessExtensionModel.class);
 
-        DelegateExecution execution = mock(DelegateExecution.class);
-        given(processExtensionService.getExtensionsForId("taskVarMapping")).willReturn(extensions);
-        given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
-        given(execution.getCurrentActivityId()).willReturn("simpleTask");
+        DelegateExecution execution = buildExecution(extensions);
         Map<String,Object> variables = new HashMap<>();
         variables.put("var-one", "one");
         variables.put("var-two", 2);
@@ -80,11 +82,7 @@ public class VariableMappingProviderTest {
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-empty-mapping-extensions.json"), ProcessExtensionModel.class);
 
-        DelegateExecution execution = mock(DelegateExecution.class);
-        given(processExtensionService.getExtensionsForId("taskVarMapping")).willReturn(extensions);
-        given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
-        given(execution.getCurrentActivityId()).willReturn("simpleTask");
-        given(execution.getVariable("process_variable_inputmap_1")).willReturn("new-input-value");
+        DelegateExecution execution = buildExecution(extensions);
 
         //when
         Map<String,Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
@@ -100,13 +98,7 @@ public class VariableMappingProviderTest {
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-mapping-extensions.json"), ProcessExtensionModel.class);
 
-
-
-        DelegateExecution execution = mock(DelegateExecution.class);
-        given(processExtensionService.getExtensionsForId("taskVarMapping")).willReturn(extensions);
-        given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
-        given(execution.getCurrentActivityId()).willReturn("simpleTask");
-        given(execution.getVariable("process_variable_inputmap_1")).willReturn("new-input-value");
+        DelegateExecution execution = buildExecution(extensions);
 
         Map<String,Object> entityVariables = new HashMap<>();
         entityVariables.put("task_output_variable_name_1", "var-one");
@@ -124,10 +116,7 @@ public class VariableMappingProviderTest {
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-no-mapping-extensions.json"), ProcessExtensionModel.class);
 
-        DelegateExecution execution = mock(DelegateExecution.class);
-        given(processExtensionService.getExtensionsForId("taskVarMapping")).willReturn(extensions);
-        given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
-        given(execution.getCurrentActivityId()).willReturn("simpleTask");
+        DelegateExecution execution = buildExecution(extensions);
 
         Map<String,Object> entityVariables = new HashMap<>();
         entityVariables.put("task_output_variable_name_1", "var-one");
@@ -147,11 +136,7 @@ public class VariableMappingProviderTest {
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-empty-mapping-extensions.json"), ProcessExtensionModel.class);
 
-        DelegateExecution execution = mock(DelegateExecution.class);
-        given(processExtensionService.getExtensionsForId("taskVarMapping")).willReturn(extensions);
-        given(execution.getProcessDefinitionId()).willReturn("taskVarMapping");
-        given(execution.getCurrentActivityId()).willReturn("simpleTask");
-        given(execution.getVariable("process_variable_inputmap_1")).willReturn("new-input-value");
+        DelegateExecution execution = buildExecution(extensions);
 
         Map<String,Object> entityVariables = new HashMap<>();
         entityVariables.put("task_output_variable_name_1", "var-one");

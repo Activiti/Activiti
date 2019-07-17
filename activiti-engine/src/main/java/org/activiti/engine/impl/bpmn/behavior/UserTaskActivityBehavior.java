@@ -249,9 +249,9 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
   
   
-  protected Map<String, Object> getOutBoundVariables(CommandContext commandContext,
-                                                     DelegateExecution execution, 
-                                                     Map<String, Object> taskVariables) {
+  protected Map<String, Object> calculateOutBoundVariables(CommandContext commandContext,
+                                                           DelegateExecution execution,
+                                                           Map<String, Object> taskVariables) {
       
       if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
           return taskVariables;
@@ -269,27 +269,31 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         throw new ActivitiException("UserTask should not be signalled before complete");
       }
     }
-    
-    //Propagate variables to the process
-    String processInstanceId = execution.getProcessInstanceId();
-    ExecutionEntity processInstanceEntity = processInstanceId != null ? 
-                                            commandContext.getExecutionEntityManager().findById(processInstanceId) :
-                                            null;   
-    
-    if (processInstanceEntity != null) {
-        Map<String, Object> taskVariables = new HashMap<>();
-                
-        if (commandContext.getCommand() instanceof CompleteTaskCmd) {
-            taskVariables = ((CompleteTaskCmd)commandContext.getCommand()).getTaskVariables();
-        }
-        Map<String, Object> outboundVariables = getOutBoundVariables(commandContext,
-                                                                     execution,
-                                                                     taskVariables);
-        processInstanceEntity.setVariables(outboundVariables);
 
-    }
-    
+    propagateVariablesToProcess(execution,
+                                commandContext);
+
     leave(execution);
+  }
+
+  private void propagateVariablesToProcess(DelegateExecution execution,
+                                           CommandContext commandContext) {
+    String processInstanceId = execution.getProcessInstanceId();
+    ExecutionEntity processInstanceEntity = processInstanceId != null ?
+            commandContext.getExecutionEntityManager().findById(processInstanceId) :
+            null;
+
+    if (processInstanceEntity != null) {
+      Map<String, Object> taskVariables = new HashMap<>();
+
+      if (commandContext.getCommand() instanceof CompleteTaskCmd) {
+        taskVariables = ((CompleteTaskCmd) commandContext.getCommand()).getTaskVariables();
+      }
+      Map<String, Object> outboundVariables = calculateOutBoundVariables(commandContext,
+                                                                         execution,
+                                                                         taskVariables);
+      processInstanceEntity.setVariables(outboundVariables);
+    }
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
