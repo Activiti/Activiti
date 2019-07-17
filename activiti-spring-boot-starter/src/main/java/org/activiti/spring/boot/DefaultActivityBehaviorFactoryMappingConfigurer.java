@@ -4,9 +4,7 @@ import org.activiti.runtime.api.impl.MappingAwareActivityBehaviorFactory;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
-import org.springframework.context.annotation.Configuration;
 
-@Configuration
 public class DefaultActivityBehaviorFactoryMappingConfigurer implements ProcessEngineConfigurationConfigurer {
 
     private ProcessExtensionService  processExtensionService;
