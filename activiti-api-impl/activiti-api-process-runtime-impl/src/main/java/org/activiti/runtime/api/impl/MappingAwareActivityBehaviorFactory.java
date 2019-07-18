@@ -30,30 +30,24 @@ import org.activiti.spring.process.ProcessVariablesInitiator;
  */
 public class MappingAwareActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 
-    private ProcessExtensionService processExtensionService;
+    private VariablesMappingProvider variablesMappingProvider;
 
-    private ProcessVariablesInitiator processVariablesInitiator;
-
-    public MappingAwareActivityBehaviorFactory(ProcessExtensionService processExtensionService,
-                                               ProcessVariablesInitiator processVariablesInitiator) {
+    public MappingAwareActivityBehaviorFactory(VariablesMappingProvider variablesMappingProvider) {
         super();
-        this.processExtensionService = processExtensionService;
-        this.processVariablesInitiator = processVariablesInitiator;
+        this.variablesMappingProvider = variablesMappingProvider;
     }
 
     @Override
     public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask) {
         return new MappingAwareUserTaskBehavior(userTask,
-                                                new VariablesMappingProvider(processExtensionService,
-                                                                        processVariablesInitiator));
+                                                variablesMappingProvider);
     }
 
     @Override
     protected CallActivityBehavior createCallActivityBehavior(Expression expression, List<MapExceptionEntry> mapExceptions) {
         return new MappingAwareCallActivityBehavior(expression,
                                                     mapExceptions,
-                                                    new VariablesMappingProvider(processExtensionService,
-                                                                            processVariablesInitiator));
+                                                    variablesMappingProvider);
     }
 
     @Override
@@ -61,7 +55,6 @@ public class MappingAwareActivityBehaviorFactory extends DefaultActivityBehavior
                                                               List<MapExceptionEntry> mapExceptions) {
         return new MappingAwareCallActivityBehavior(calledElement,
                                                     mapExceptions,
-                                                    new VariablesMappingProvider(processExtensionService,
-                                                                            processVariablesInitiator));
+                                                    variablesMappingProvider);
     }
 }
