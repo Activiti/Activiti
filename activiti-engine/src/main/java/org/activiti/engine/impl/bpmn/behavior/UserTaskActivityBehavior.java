@@ -229,25 +229,16 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   }
 
-  protected void calculateVariables(DelegateExecution execution,
+  protected Map<String, Object> calculateVariables(DelegateExecution execution,
                                     CommandContext commandContext, 
                                     TaskEntity task) {
-      Map<String, Object> inboundVars = getInboundVariables(execution);
-          
-      if (inboundVars==null) {  
-          if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
-              TaskVariableCopier.copyVariablesIntoTaskLocal(task);
-          }     
-      } else {
-          //Check what to do if empty mapping
-          task.setVariablesLocal(inboundVars);       
-      }    
+        if (commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
+          TaskVariableCopier.copyVariablesIntoTaskLocal(task);
+          return task.getVariablesLocal();
+        } else {
+          return Collections.emptyMap();
+        }
   }
-  
-  protected Map<String, Object> getInboundVariables(DelegateExecution execution) {
-      return null;
-  }
-  
   
   protected Map<String, Object> calculateOutBoundVariables(CommandContext commandContext,
                                                            DelegateExecution execution,

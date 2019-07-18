@@ -21,7 +21,9 @@ import java.util.Map;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.helper.TaskVariableCopier;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
 public class MappingAwareUserTaskBehavior extends UserTaskActivityBehavior {
 
@@ -35,8 +37,12 @@ public class MappingAwareUserTaskBehavior extends UserTaskActivityBehavior {
 
  
     @Override
-    protected Map<String, Object> getInboundVariables(DelegateExecution execution) {
-        return mappingProvider.calculateInputVariables(execution);
+    protected Map<String, Object> calculateVariables(DelegateExecution execution,
+                                                     CommandContext commandContext,
+                                                     TaskEntity task) {
+        Map<String,Object> inboundVars = mappingProvider.calculateInputVariables(execution);
+        task.setVariablesLocal(inboundVars);
+        return inboundVars;
     }
     
     @Override
