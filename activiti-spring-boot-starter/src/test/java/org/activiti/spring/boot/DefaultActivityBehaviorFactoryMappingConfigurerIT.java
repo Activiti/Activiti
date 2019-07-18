@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class DefaultActivityBehaviorFactoryMappingConfigurerIT {
     
     @Autowired
-    SpringProcessEngineConfiguration processEngineConfiguration;
+    private SpringProcessEngineConfiguration processEngineConfiguration;
 
     @Test
     public void processEngineConfigurationShouldHaveSetMappingAwareActivityBehaviorFactoryAsActivityBehaviorFactory(){
