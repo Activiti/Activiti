@@ -151,7 +151,6 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
     // only data. no control flow available on this execution.
-    CommandContext commandContext = Context.getCommandContext();
     ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
 
     // copy process variables
