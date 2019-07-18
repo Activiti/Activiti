@@ -13,13 +13,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class DefaultActivityBehaviorFactoryMappingConfigurerIT {
-
-
+    
     @Autowired
     SpringProcessEngineConfiguration processEngineConfiguration;
 
     @Test
-    public void processEngineConfigarationShouldHaveSetMappingAwareActivityBehaviorFactoryAsActivityBehaviorFactory(){
+    public void processEngineConfigurationShouldHaveSetMappingAwareActivityBehaviorFactoryAsActivityBehaviorFactory(){
         assertThat(processEngineConfiguration.getActivityBehaviorFactory())
                 .isInstanceOf(MappingAwareActivityBehaviorFactory.class);
     }
