@@ -229,29 +229,20 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   }
 
-  protected void calculateVariables(DelegateExecution execution,
+  protected Map<String, Object> calculateVariables(DelegateExecution execution,
                                     CommandContext commandContext, 
                                     TaskEntity task) {
-      Map<String, Object> inboundVars = getInboundVariables(execution);
-          
-      if (inboundVars==null) {  
-          if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
-              TaskVariableCopier.copyVariablesIntoTaskLocal(task);
-          }     
-      } else {
-          //Check what to do if empty mapping
-          task.setVariablesLocal(inboundVars);       
-      }    
+        if (commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
+          TaskVariableCopier.copyVariablesIntoTaskLocal(task);
+          return task.getVariablesLocal();
+        } else {
+          return Collections.emptyMap();
+        }
   }
   
-  protected Map<String, Object> getInboundVariables(DelegateExecution execution) {
-      return null;
-  }
-  
-  
-  protected Map<String, Object> getOutBoundVariables(CommandContext commandContext,
-                                                     DelegateExecution execution, 
-                                                     Map<String, Object> taskVariables) {
+  protected Map<String, Object> calculateOutBoundVariables(CommandContext commandContext,
+                                                           DelegateExecution execution,
+                                                           Map<String, Object> taskVariables) {
       
       if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
           return taskVariables;
@@ -269,27 +260,31 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
         throw new ActivitiException("UserTask should not be signalled before complete");
       }
     }
-    
-    //Propagate variables to the process
-    String processInstanceId = execution.getProcessInstanceId();
-    ExecutionEntity processInstanceEntity = processInstanceId != null ? 
-                                            commandContext.getExecutionEntityManager().findById(processInstanceId) :
-                                            null;   
-    
-    if (processInstanceEntity != null) {
-        Map<String, Object> taskVariables = new HashMap<>();
-                
-        if (commandContext.getCommand() instanceof CompleteTaskCmd) {
-            taskVariables = ((CompleteTaskCmd)commandContext.getCommand()).getTaskVariables();
-        }
-        Map<String, Object> outboundVariables = getOutBoundVariables(commandContext,
-                                                                     execution,
-                                                                     taskVariables);
-        processInstanceEntity.setVariables(outboundVariables);
 
-    }
-    
+    propagateVariablesToProcess(execution,
+                                commandContext);
+
     leave(execution);
+  }
+
+  private void propagateVariablesToProcess(DelegateExecution execution,
+                                           CommandContext commandContext) {
+    String processInstanceId = execution.getProcessInstanceId();
+    ExecutionEntity processInstanceEntity = processInstanceId != null ?
+            commandContext.getExecutionEntityManager().findById(processInstanceId) :
+            null;
+
+    if (processInstanceEntity != null) {
+      Map<String, Object> taskVariables = new HashMap<>();
+
+      if (commandContext.getCommand() instanceof CompleteTaskCmd) {
+        taskVariables = ((CompleteTaskCmd) commandContext.getCommand()).getTaskVariables();
+      }
+      Map<String, Object> outboundVariables = calculateOutBoundVariables(commandContext,
+                                                                         execution,
+                                                                         taskVariables);
+      processInstanceEntity.setVariables(outboundVariables);
+    }
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })

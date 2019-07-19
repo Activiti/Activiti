@@ -24,15 +24,13 @@ import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListe
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
-import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
+import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
-import org.activiti.spring.process.ProcessExtensionService;
-import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,10 +170,8 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
 
     @Bean
     @ConditionalOnMissingBean
-    public DefaultActivityBehaviorFactoryMappingConfigurer defaultActivityBehaviorFactoryMappingConfigurer(ProcessExtensionService processExtensionService,
-                                                                                                           ProcessVariablesInitiator processVariablesInitiator) {
-        return new DefaultActivityBehaviorFactoryMappingConfigurer(processExtensionService,
-                                                                   processVariablesInitiator);
+    public DefaultActivityBehaviorFactoryMappingConfigurer defaultActivityBehaviorFactoryMappingConfigurer(VariablesMappingProvider variablesMappingProvider) {
+        return new DefaultActivityBehaviorFactoryMappingConfigurer(variablesMappingProvider);
     }
 }
 

@@ -9,6 +9,8 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,14 @@ public class ProcessRuntimeCallActivityMappingIT {
     @Autowired
     private SecurityUtil securityUtil;
 
+    @Autowired
+    private ProcessCleanUpUtil processCleanUpUtil;
+
+    @After
+    public void cleanUp(){
+        processCleanUpUtil.cleanUpWithAdmin();
+    }
+
     @Test
     public void basicCallActivityMappingTest() {
         securityUtil.logInAs("user");
@@ -52,37 +62,10 @@ public class ProcessRuntimeCallActivityMappingIT {
                         .build());
         assertThat(processInstance).isNotNull();
 
-        List<ProcessInstance> subProcessInstanceList = processRuntime.processInstances(
-                Pageable.of(0,
-                            50),
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .withParentProcessInstanceId(processInstance.getId())
-                        .build())
-                .getContent();
-
-        assertThat(subProcessInstanceList).isNotEmpty();
-
-        ProcessInstance subProcessInstance = subProcessInstanceList.get(0);
-
-        assertThat(subProcessInstance).isNotNull();
-        assertThat(subProcessInstance.getParentId()).isEqualTo(processInstance.getId());
+        ProcessInstance subProcessInstance = getSupProcess(processInstance);
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
-        List<Task> taskList = taskRuntime.tasks(
-                Pageable.of(0,
-                            50),
-                TaskPayloadBuilder
-                        .tasks()
-                        .withProcessInstanceId(subProcessInstance.getId())
-                        .build())
-                .getContent();
-
-        assertThat(taskList).isNotEmpty();
-        Task task = taskList.get(0);
-
-        assertThat(task.getAssignee()).isNull();
-        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+        Task task = getTask(subProcessInstance);
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
@@ -161,37 +144,10 @@ public class ProcessRuntimeCallActivityMappingIT {
                         .build());
         assertThat(processInstance).isNotNull();
 
-        List<ProcessInstance> subProcessInstanceList = processRuntime.processInstances(
-                Pageable.of(0,
-                            50),
-                ProcessPayloadBuilder
-                        .processInstances()
-                        .withParentProcessInstanceId(processInstance.getId())
-                        .build())
-                .getContent();
-
-        assertThat(subProcessInstanceList).isNotEmpty();
-
-        ProcessInstance subProcessInstance = subProcessInstanceList.get(0);
-
-        assertThat(subProcessInstance).isNotNull();
-        assertThat(subProcessInstance.getParentId()).isEqualTo(processInstance.getId());
+        ProcessInstance subProcessInstance = getSupProcess(processInstance);
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
-        List<Task> taskList = taskRuntime.tasks(
-                Pageable.of(0,
-                            50),
-                TaskPayloadBuilder
-                        .tasks()
-                        .withProcessInstanceId(subProcessInstance.getId())
-                        .build())
-                .getContent();
-
-        assertThat(taskList).isNotEmpty();
-        Task task = taskList.get(0);
-
-        assertThat(task.getAssignee()).isNull();
-        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+        Task task = getTask(subProcessInstance);
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 
@@ -268,17 +224,25 @@ public class ProcessRuntimeCallActivityMappingIT {
                 );
     }
 
-    @Test
-    public void haveToPassNoVariablesCallActivityEmptyMappingWithTaskTest() {
-        securityUtil.logInAs("user");
+    private Task getTask(ProcessInstance subProcessInstance) {
+        List<Task> taskList = taskRuntime.tasks(
+                Pageable.of(0,
+                            50),
+                TaskPayloadBuilder
+                        .tasks()
+                        .withProcessInstanceId(subProcessInstance.getId())
+                        .build())
+                .getContent();
 
-        ProcessInstance processInstance = processRuntime.start(
-                ProcessPayloadBuilder
-                        .start()
-                        .withProcessDefinitionKey(PARENT_PROCESS_CALL_ACTIVITY_EMPTY_MAPPING_WITH_TASK)
-                        .build());
-        assertThat(processInstance).isNotNull();
+        assertThat(taskList).isNotEmpty();
+        Task task = taskList.get(0);
 
+        assertThat(task.getAssignee()).isNull();
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+        return task;
+    }
+
+    private ProcessInstance getSupProcess(ProcessInstance processInstance) {
         List<ProcessInstance> subProcessInstanceList = processRuntime.processInstances(
                 Pageable.of(0,
                             50),
@@ -294,22 +258,24 @@ public class ProcessRuntimeCallActivityMappingIT {
 
         assertThat(subProcessInstance).isNotNull();
         assertThat(subProcessInstance.getParentId()).isEqualTo(processInstance.getId());
+        return subProcessInstance;
+    }
+
+    @Test
+    public void haveToPassNoVariablesCallActivityEmptyMappingWithTaskTest() {
+        securityUtil.logInAs("user");
+
+        ProcessInstance processInstance = processRuntime.start(
+                ProcessPayloadBuilder
+                        .start()
+                        .withProcessDefinitionKey(PARENT_PROCESS_CALL_ACTIVITY_EMPTY_MAPPING_WITH_TASK)
+                        .build());
+        assertThat(processInstance).isNotNull();
+
+        ProcessInstance subProcessInstance = getSupProcess(processInstance);
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
-        List<Task> taskList = taskRuntime.tasks(
-                Pageable.of(0,
-                            50),
-                TaskPayloadBuilder
-                        .tasks()
-                        .withProcessInstanceId(subProcessInstance.getId())
-                        .build())
-                .getContent();
-
-        assertThat(taskList).isNotEmpty();
-        Task task = taskList.get(0);
-
-        assertThat(task.getAssignee()).isNull();
-        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+        Task task = getTask(subProcessInstance);
 
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
 

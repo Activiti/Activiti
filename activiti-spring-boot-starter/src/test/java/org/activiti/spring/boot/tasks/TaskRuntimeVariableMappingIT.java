@@ -31,9 +31,12 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.Task.TaskStatus;
+import org.activiti.api.task.model.builders.GetTasksPayloadBuilder;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.junit.After;
 import org.junit.FixMethodOrder;
@@ -49,7 +52,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TaskRuntimeVariableMappingTest {
+public class TaskRuntimeVariableMappingIT {
 
     private static final String TASK_VAR_MAPPING = "taskVarMapping";
     private static final String TASK_VAR_NO_MAPPING = "taskVariableNoMapping";
@@ -64,8 +67,12 @@ public class TaskRuntimeVariableMappingTest {
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
+    @Autowired
+    private ProcessCleanUpUtil processCleanUpUtil;
+
     @After
-    public void taskCleanUp() {
+    public void cleanUp() {
+        processCleanUpUtil.cleanUpWithAdmin();
         taskCleanUpUtil.cleanUpWithAdmin();
     }
 
@@ -76,11 +83,7 @@ public class TaskRuntimeVariableMappingTest {
                                                                .withProcessDefinitionKey(TASK_VAR_MAPPING)
                                                                .build());
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         50));
-
-        assertThat(tasks.getContent()).hasSize(1);
-        Task task = tasks.getContent().get(0);
+        Task task = checkTasks(process.getId());
 
         assertThat(task.getName()).isEqualTo("testSimpleTask");
 
@@ -160,11 +163,7 @@ public class TaskRuntimeVariableMappingTest {
                                                                .withProcessDefinitionKey(TASK_VAR_NO_MAPPING)
                                                                .build());
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         50));
-
-        assertThat(tasks.getContent()).hasSize(1);
-        Task task = tasks.getContent().get(0);
+        Task task = checkTasks(process.getId());
 
         assertThat(task.getName()).isEqualTo("testSimpleTask");
 
@@ -234,6 +233,16 @@ public class TaskRuntimeVariableMappingTest {
         processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
     }
 
+    private Task checkTasks(String processInstanceId) {
+        GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder().withProcessInstanceId(processInstanceId).build();
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                                                         50),
+                                             getTasksPayload);
+
+        assertThat(tasks.getContent()).hasSize(1);
+        return tasks.getContent().get(0);
+    }
+
     @Test
     public void taskShouldHaveNoVariablesWhenMappingIsEmpty() {
 
@@ -242,11 +251,7 @@ public class TaskRuntimeVariableMappingTest {
                                                                .withProcessDefinitionKey(TASK_EMPTY_VAR_MAPPING)
                                                                .build());
 
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         50));
-
-        assertThat(tasks.getContent()).hasSize(1);
-        Task task = tasks.getContent().get(0);
+        Task task = checkTasks(process.getId());
 
         assertThat(task.getName()).isEqualTo("testSimpleTask");
 

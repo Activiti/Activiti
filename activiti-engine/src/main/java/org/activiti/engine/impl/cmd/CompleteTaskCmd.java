@@ -75,19 +75,11 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
     return "Cannot complete a suspended task";
   }
 
-  public Map<String, Object> getVariables() {
-    return variables;
-  }
-
-  public Map<String, Object> getTransientVariables() {
-    return transientVariables;
-  }
-
   public Map<String, Object> getTaskVariables() {
     return taskVariables;
   }
 
-  public void setTaskVariables(Map<String, Object> taskVariables) {
+  private void setTaskVariables(Map<String, Object> taskVariables) {
     this.taskVariables = taskVariables;
   }
 
