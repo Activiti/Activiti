@@ -14,8 +14,6 @@
 package org.activiti.spring.process.autoconfigure;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.process.model.ProcessExtensionModel;
