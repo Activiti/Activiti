@@ -47,7 +47,7 @@ public class ProcessRuntimeCallActivityMappingIT {
     private ProcessCleanUpUtil processCleanUpUtil;
 
     @After
-    public void cleanUp(){
+    public void cleanUp() {
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
@@ -62,7 +62,7 @@ public class ProcessRuntimeCallActivityMappingIT {
                         .build());
         assertThat(processInstance).isNotNull();
 
-        ProcessInstance subProcessInstance = getSupProcess(processInstance);
+        ProcessInstance subProcessInstance = getSubProcess(processInstance);
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
         Task task = getTask(subProcessInstance);
@@ -131,6 +131,8 @@ public class ProcessRuntimeCallActivityMappingIT {
                               "inTest")
 
                 );
+        cleanUp();
+
     }
 
     @Test
@@ -144,7 +146,7 @@ public class ProcessRuntimeCallActivityMappingIT {
                         .build());
         assertThat(processInstance).isNotNull();
 
-        ProcessInstance subProcessInstance = getSupProcess(processInstance);
+        ProcessInstance subProcessInstance = getSubProcess(processInstance);
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
         Task task = getTask(subProcessInstance);
@@ -242,7 +244,7 @@ public class ProcessRuntimeCallActivityMappingIT {
         return task;
     }
 
-    private ProcessInstance getSupProcess(ProcessInstance processInstance) {
+    private ProcessInstance getSubProcess(ProcessInstance processInstance) {
         List<ProcessInstance> subProcessInstanceList = processRuntime.processInstances(
                 Pageable.of(0,
                             50),
@@ -272,7 +274,7 @@ public class ProcessRuntimeCallActivityMappingIT {
                         .build());
         assertThat(processInstance).isNotNull();
 
-        ProcessInstance subProcessInstance = getSupProcess(processInstance);
+        ProcessInstance subProcessInstance = getSubProcess(processInstance);
         assertThat(subProcessInstance.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS_CALL_ACTIVITY);
 
         Task task = getTask(subProcessInstance);
@@ -328,7 +330,6 @@ public class ProcessRuntimeCallActivityMappingIT {
                         tuple("age",
                               20)
                 );
-
     }
 
     public void completeTask(String taskId,
@@ -342,5 +343,4 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(completeTask).isNotNull();
         assertThat(completeTask.getStatus()).isEqualTo(Task.TaskStatus.COMPLETED);
     }
-
 }

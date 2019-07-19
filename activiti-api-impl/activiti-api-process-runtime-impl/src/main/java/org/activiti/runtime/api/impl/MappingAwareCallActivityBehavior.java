@@ -18,6 +18,7 @@ package org.activiti.runtime.api.impl;
 
 import java.util.List;
 import java.util.Map;
+
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
@@ -45,8 +46,12 @@ public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
     }
 
     @Override
-    protected Map<String, Object> calculateInboundVariables(DelegateExecution execution) {
-        return mappingProvider.calculateInputVariables(execution);
+    protected Map<String, Object> calculateInboundVariables(DelegateExecution execution,
+                                                            ProcessDefinition processDefinition) {
+
+        Map<String, Object> inputVariables = mappingProvider.calculateInputVariables(execution);
+        return mappingProvider.getProcessVariablesInitiator().calculateVariablesFromExtensionFile(processDefinition,
+                                                                                                  inputVariables);
     }
 
     @Override
@@ -55,12 +60,5 @@ public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
 
         return mappingProvider.calculateOutPutVariables(execution,
                                                         taskCompleteVariables);
-    }
-
-    @Override
-    protected Map<String, Object> getVariablesFromExtensionFile(ProcessDefinition processDefinition,
-                                                                Map<String, Object> calculatedVariables) {
-        return mappingProvider.getProcessVariablesInitiator().calculateVariablesFromExtensionFile(processDefinition,
-                                                                                                  calculatedVariables);
     }
 }
