@@ -1277,6 +1277,10 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             Task task = taskService.createTaskQuery().singleResult();
 
             taskService.setVariable(task.getId(), "variable1", "value1");
+            
+            // allow a time gap between the two variable updates
+            waitForJobExecutorToProcessAllJobs(2000, 1000);
+            
             taskService.setVariable(task.getId(), "variable1", "value2");
 
             HistoricActivityInstance historicActivitiInstance = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId())
