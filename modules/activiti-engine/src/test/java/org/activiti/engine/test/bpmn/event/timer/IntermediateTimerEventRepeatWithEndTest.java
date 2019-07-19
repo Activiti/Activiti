@@ -107,7 +107,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     nextTimeCal.add(Calendar.MINUTE, 30); //after 1H 30 minutes from process start, the timer will trigger because of the endDate
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-    waitForJobExecutorToProcessAllJobs(2000, 500);
+    waitForJobExecutorToProcessAllJobs(4000, 500);
     //expect to execute because the end time is reached.
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
