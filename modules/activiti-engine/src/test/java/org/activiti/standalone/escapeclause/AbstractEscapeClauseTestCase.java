@@ -14,7 +14,7 @@ package org.activiti.standalone.escapeclause;
 
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 
-public class AbstractEscapeClauseTestCase extends ResourceActivitiTestCase {
+public abstract class AbstractEscapeClauseTestCase extends ResourceActivitiTestCase {
 
   public AbstractEscapeClauseTestCase() {
     this(null);
