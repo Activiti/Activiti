@@ -21,6 +21,9 @@ public class DefaultActivityBehaviorFactoryMappingConfigurerIT {
     public void processEngineConfigurationShouldHaveSetMappingAwareActivityBehaviorFactoryAsActivityBehaviorFactory(){
         assertThat(processEngineConfiguration.getActivityBehaviorFactory())
                 .isInstanceOf(MappingAwareActivityBehaviorFactory.class);
+        assertThat(processEngineConfiguration.getBpmnParser().getActivityBehaviorFactory())
+                .isInstanceOf(MappingAwareActivityBehaviorFactory.class);
+
     }
 
 
