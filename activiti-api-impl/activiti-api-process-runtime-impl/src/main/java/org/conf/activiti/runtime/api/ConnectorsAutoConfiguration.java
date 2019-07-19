@@ -28,7 +28,6 @@ import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.connector.OutboundVariablesProvider;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.spring.process.ProcessExtensionService;
-import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -68,9 +67,7 @@ public class ConnectorsAutoConfiguration {
 
 
     @Bean
-    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService,
-                                                             ProcessVariablesInitiator processVariablesInitiator){
-        return new VariablesMappingProvider(processExtensionService,
-                                            processVariablesInitiator);
+    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService){
+        return new VariablesMappingProvider(processExtensionService);
     }
 }

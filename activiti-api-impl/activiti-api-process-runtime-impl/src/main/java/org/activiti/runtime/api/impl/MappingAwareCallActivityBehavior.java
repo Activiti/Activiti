@@ -24,25 +24,31 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.spring.process.ProcessVariablesInitiator;
 
 public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
 
     private VariablesMappingProvider mappingProvider;
+    private ProcessVariablesInitiator processVariablesInitiator;
 
     public MappingAwareCallActivityBehavior(String processDefinitionKey,
                                             List<MapExceptionEntry> mapExceptions,
-                                            VariablesMappingProvider mappingProvider) {
+                                            VariablesMappingProvider mappingProvider,
+                                            ProcessVariablesInitiator processVariablesInitiator) {
         super(processDefinitionKey,
               mapExceptions);
         this.mappingProvider = mappingProvider;
+        this.processVariablesInitiator = processVariablesInitiator;
     }
 
     public MappingAwareCallActivityBehavior(Expression processDefinitionExpression,
                                             List<MapExceptionEntry> mapExceptions,
-                                            VariablesMappingProvider mappingProvider) {
+                                            VariablesMappingProvider mappingProvider,
+                                            ProcessVariablesInitiator processVariablesInitiator) {
         super(processDefinitionExpression,
               mapExceptions);
         this.mappingProvider = mappingProvider;
+        this.processVariablesInitiator = processVariablesInitiator;
     }
 
     @Override
@@ -50,15 +56,15 @@ public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
                                                             ProcessDefinition processDefinition) {
 
         Map<String, Object> inputVariables = mappingProvider.calculateInputVariables(execution);
-        return mappingProvider.getProcessVariablesInitiator().calculateVariablesFromExtensionFile(processDefinition,
+        return processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
                                                                                                   inputVariables);
     }
 
     @Override
     protected Map<String, Object> calculateOutBoundVariables(DelegateExecution execution,
-                                                             Map<String, Object> taskCompleteVariables) {
+                                                             Map<String, Object> availableVariables) {
 
         return mappingProvider.calculateOutPutVariables(execution,
-                                                        taskCompleteVariables);
+                                                        availableVariables);
     }
 }

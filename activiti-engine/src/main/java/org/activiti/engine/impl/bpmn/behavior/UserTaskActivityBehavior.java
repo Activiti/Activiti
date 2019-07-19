@@ -12,7 +12,14 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.activiti.bpmn.model.UserTask;
@@ -26,7 +33,6 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
-import org.activiti.engine.impl.bpmn.helper.TaskVariableCopier;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -194,8 +200,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
     taskEntityManager.insert(task, (ExecutionEntity) execution);
 
-    calculateVariables(execution, commandContext, task);   
- 
+    task.setVariablesLocal(calculateInputVariables(execution));
+
     boolean skipUserTask = false;
     if (StringUtils.isNotEmpty(activeTaskSkipExpression)) {
       Expression skipExpression = expressionManager.createExpression(activeTaskSkipExpression);
@@ -229,21 +235,18 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
   }
 
-  protected Map<String, Object> calculateVariables(DelegateExecution execution,
-                                    CommandContext commandContext, 
-                                    TaskEntity task) {
+  protected Map<String, Object> calculateInputVariables(DelegateExecution execution) {
+        CommandContext commandContext = Context.getCommandContext();
         if (commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()) {
-          TaskVariableCopier.copyVariablesIntoTaskLocal(task);
-          return task.getVariablesLocal();
+          return execution.getVariables();
         } else {
           return Collections.emptyMap();
         }
   }
   
-  protected Map<String, Object> calculateOutBoundVariables(CommandContext commandContext,
-                                                           DelegateExecution execution,
+  protected Map<String, Object> calculateOutBoundVariables(DelegateExecution execution,
                                                            Map<String, Object> taskVariables) {
-      
+    CommandContext commandContext = Context.getCommandContext();
       if(commandContext.getProcessEngineConfiguration().isCopyVariablesToLocalForTasks()){
           return taskVariables;
       }
@@ -280,8 +283,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       if (commandContext.getCommand() instanceof CompleteTaskCmd) {
         taskVariables = ((CompleteTaskCmd) commandContext.getCommand()).getTaskVariables();
       }
-      Map<String, Object> outboundVariables = calculateOutBoundVariables(commandContext,
-                                                                         execution,
+      Map<String, Object> outboundVariables = calculateOutBoundVariables(execution,
                                                                          taskVariables);
       processInstanceEntity.setVariables(outboundVariables);
     }
