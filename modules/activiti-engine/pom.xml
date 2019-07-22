@@ -325,19 +325,6 @@
                   </tasks>
                 </configuration>
               </execution>
-              <execution>
-                <id>database-test-drop-schema</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <echo message="dropping schema in ${database}" />
-                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
-                  </tasks>
-                </configuration>
-              </execution>
             </executions>
           </plugin>
         </plugins>
@@ -369,19 +356,6 @@
                     <copy file="${basedir}/../../qa/db/schema/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
                       <filterset filtersfile="${user.home}/.activiti/jdbc/build.${databasewithschema}.properties" />
                     </copy>
-                  </tasks>
-                </configuration>
-              </execution>
-              <execution>
-                <id>database-test-drop-schema</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <echo message="dropping schema in ${databasewithschema}" />
-                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
                   </tasks>
                 </configuration>
               </execution>
@@ -449,19 +423,6 @@
                   </tasks>
                 </configuration>
               </execution>
-              <execution>
-                <id>database-test-drop-schema</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <echo message="dropping schema in ${database}" />
-                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
-                  </tasks>
-                </configuration>
-              </execution>
             </executions>
           </plugin>
           <plugin>
@@ -510,19 +471,6 @@
                   <copy file="${basedir}/../../qa/jta/${database}/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
                   </copy>
-                </tasks>
-              </configuration>
-            </execution>
-            <execution>
-              <id>database-test-drop-schema</id>
-              <phase>prepare-package</phase>
-              <goals>
-                <goal>run</goal>
-              </goals>
-              <configuration>
-                <tasks>
-                  <echo message="dropping schema in ${database}" />
-                  <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
                 </tasks>
               </configuration>
             </execution>
@@ -617,19 +565,6 @@
                       <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
                     </copy>
                     <rename src="target/test-classes/historyfull.activiti.cfg.xml" dest="target/test-classes/activiti.cfg.xml"/>
-                  </tasks>
-                </configuration>
-              </execution>
-              <execution>
-                <id>database-test-drop-schema</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <echo message="dropping schema in ${database}" />
-                    <java classname="org.activiti.engine.impl.db.DbSchemaDrop" classpathref="maven.test.classpath" />
                   </tasks>
                 </configuration>
               </execution>
@@ -772,23 +707,6 @@
                     </ant>
                     <echo message="updating activiti cfg to ${metadatabase}" />
                     <ant antfile="${basedir}/../../qa/db/build.xml" target="create.activiti.cfg">
-                      <property name="database" value="${metadatabase}" />
-                    </ant>
-                  </tasks>
-                </configuration>
-              </execution>
-              <execution>
-                <id>database-test-drop-schema</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <tasks>
-                    <echo message="dropping schema in ${metadatabase}" />
-                    <ant antfile="${basedir}/../../qa/db/build.xml" target="drop.db.schema"
-                         inheritAll="false">
-                      <property name="test_classpath" refid="maven.test.classpath" />
                       <property name="database" value="${metadatabase}" />
                     </ant>
                   </tasks>
