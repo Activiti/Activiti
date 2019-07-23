@@ -51,6 +51,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @EnableConfigurationProperties(ActivitiProperties.class)
 public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoConfiguration {
 
+    public static final String BEHAVIOR_FACTORY_MAPPING_CONFIGURER = "behaviorFactoryMappingConfigurer";
     private final UserGroupManager userGroupManager;
 
     public ProcessEngineAutoConfiguration(UserGroupManager userGroupManager) {
@@ -173,8 +174,8 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                                                 eventPublisher);
     }
 
-    @Bean
-    @ConditionalOnMissingBean
+    @Bean(name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
+    @ConditionalOnMissingBean (name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
     public DefaultActivityBehaviorFactoryMappingConfigurer defaultActivityBehaviorFactoryMappingConfigurer(VariablesMappingProvider variablesMappingProvider,
                                                                                                            ProcessVariablesInitiator processVariablesInitiator) {
         return new DefaultActivityBehaviorFactoryMappingConfigurer(variablesMappingProvider,
