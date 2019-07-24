@@ -22,8 +22,6 @@ import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.runtime.api.connector.ConnectorActionDefinitionFinder;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
-import org.activiti.runtime.api.connector.InboundVariableValueProvider;
-import org.activiti.runtime.api.connector.InboundVariablesProvider;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.connector.OutboundVariablesProvider;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
