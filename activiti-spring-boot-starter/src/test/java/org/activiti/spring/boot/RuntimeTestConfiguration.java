@@ -209,10 +209,6 @@ public class RuntimeTestConfiguration {
             String variableThree = "input-variable-name-3";
             String staticValue = "input-static-value";
 
-            //this variable is not mapped, but its name matches with a process variable
-            //so value will be provided from process variable
-            String unmappedMatchingVariable = "input-unmapped-variable-with-matching-name";
-
             Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
             Integer offSet = (Integer) inBoundVariables.get(variableThree);
 
@@ -226,8 +222,6 @@ public class RuntimeTestConfiguration {
                                   20),
                             tuple(variableThree,
                                   5),
-                            tuple(unmappedMatchingVariable,
-                                  "inTest"),
                             tuple(staticValue,
                                   "a static value"));
             
