@@ -38,7 +38,7 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     public IntegrationContextBuilder integrationContextBuilder(ProcessExtensionService processExtensionService) {
-        return new IntegrationContextBuilder(new InboundVariablesProvider(new InboundVariableValueProvider(processExtensionService)));
+        return new IntegrationContextBuilder(new VariablesMappingProvider(processExtensionService));
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)

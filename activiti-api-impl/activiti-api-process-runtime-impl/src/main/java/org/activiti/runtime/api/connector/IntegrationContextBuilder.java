@@ -19,35 +19,33 @@ package org.activiti.runtime.api.connector;
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
 import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntity;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.runtime.api.impl.VariablesMappingProvider;
 
 public class IntegrationContextBuilder {
 
-    private InboundVariablesProvider inboundVariablesProvider;
+    private VariablesMappingProvider inboundVariablesProvider;
 
-    public IntegrationContextBuilder(InboundVariablesProvider inboundVariablesProvider) {
+    public IntegrationContextBuilder(VariablesMappingProvider inboundVariablesProvider) {
         this.inboundVariablesProvider = inboundVariablesProvider;
     }
 
     public IntegrationContext from(IntegrationContextEntity integrationContextEntity,
-                                   DelegateExecution execution, ActionDefinition actionDefinition) {
-        IntegrationContextImpl integrationContext = buildFromExecution(execution, actionDefinition);
+                                   DelegateExecution execution) {
+        IntegrationContextImpl integrationContext = buildFromExecution(execution);
         integrationContext.setId(integrationContextEntity.getId());
         return integrationContext;
     }
 
-    public IntegrationContext from(DelegateExecution execution, ActionDefinition actionDefinition) {
-        return buildFromExecution(execution,
-                                  actionDefinition);
+    public IntegrationContext from(DelegateExecution execution) {
+        return buildFromExecution(execution);
     }
 
-    private IntegrationContextImpl buildFromExecution(DelegateExecution execution,
-                                                      ActionDefinition actionDefinition) {
+    private IntegrationContextImpl buildFromExecution(DelegateExecution execution) {
         IntegrationContextImpl integrationContext = new IntegrationContextImpl();
         integrationContext.setProcessInstanceId(execution.getProcessInstanceId());
         integrationContext.setProcessDefinitionId(execution.getProcessDefinitionId());
@@ -81,7 +79,7 @@ public class IntegrationContextBuilder {
         }
 
 
-        integrationContext.setInBoundVariables(inboundVariablesProvider.calculateVariables(execution, actionDefinition));
+        integrationContext.setInBoundVariables(inboundVariablesProvider.calculateInputVariables(execution));
 
         return integrationContext;
     }

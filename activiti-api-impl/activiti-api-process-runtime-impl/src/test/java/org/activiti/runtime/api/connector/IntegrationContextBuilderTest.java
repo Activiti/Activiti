@@ -33,6 +33,7 @@ import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.integration.IntegrationContextEntityImpl;
 import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -54,7 +55,7 @@ public class IntegrationContextBuilderTest {
     private IntegrationContextBuilder builder;
 
     @Mock
-    private InboundVariablesProvider inboundVariablesProvider;
+    private VariablesMappingProvider inboundVariablesProvider;
 
     @Before
     public void setUp() {
@@ -82,9 +83,7 @@ public class IntegrationContextBuilderTest {
         ServiceTask serviceTask = mock(ServiceTask.class);
 
         Map<String, Object> variables = Collections.singletonMap("key", "value");
-        ActionDefinition actionDefinition = new ActionDefinition();
-        given(inboundVariablesProvider.calculateVariables(execution,
-                                                          actionDefinition))
+        given(inboundVariablesProvider.calculateInputVariables(execution))
                 .willReturn(variables);
 
 
@@ -101,7 +100,7 @@ public class IntegrationContextBuilderTest {
         given(processInstance.getParentProcessInstanceId()).willReturn(PARENT_PROCESS_INSTANCE_ID);
 
         //when
-        IntegrationContext integrationContext = builder.from(execution, actionDefinition);
+        IntegrationContext integrationContext = builder.from(execution);
 
         //then
         assertThat(integrationContext).isNotNull();
@@ -126,9 +125,7 @@ public class IntegrationContextBuilderTest {
         ServiceTask serviceTask = mock(ServiceTask.class);
 
         Map<String, Object> variables = Collections.singletonMap("key", "value");
-        ActionDefinition actionDefinition = new ActionDefinition();
-        given(inboundVariablesProvider.calculateVariables(execution,
-                                                          actionDefinition))
+        given(inboundVariablesProvider.calculateInputVariables(execution))
                 .willReturn(variables);
 
 
@@ -148,7 +145,7 @@ public class IntegrationContextBuilderTest {
         integrationContextEntity.setId("entityId");
 
         //when
-        IntegrationContext integrationContext = builder.from(integrationContextEntity, execution, actionDefinition);
+        IntegrationContext integrationContext = builder.from(integrationContextEntity, execution);
 
         //then
         assertThat(integrationContext).isNotNull();
