@@ -16,11 +16,7 @@
 
 package org.conf.activiti.runtime.api;
 
-import java.util.List;
-
-import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
-import org.activiti.runtime.api.connector.ConnectorActionDefinitionFinder;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
@@ -41,20 +37,12 @@ public class ConnectorsAutoConfiguration {
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     @ConditionalOnMissingBean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
     public DefaultServiceTaskBehavior defaultServiceTaskBehavior(ApplicationContext applicationContext,
-                                                                 ConnectorActionDefinitionFinder connectorActionDefinitionFinder,
                                                                  IntegrationContextBuilder integrationContextBuilder,
                                                                  VariablesMappingProvider outboundVariablesProvider) {
         return new DefaultServiceTaskBehavior(applicationContext,
                                               integrationContextBuilder,
-                                              connectorActionDefinitionFinder,
                                               outboundVariablesProvider);
     }
-
-    @Bean
-    public ConnectorActionDefinitionFinder connectorActionDefinitionFinder(List<ConnectorDefinition> connectorDefinitions) {
-        return new ConnectorActionDefinitionFinder(connectorDefinitions);
-    }
-
 
     @Bean
     public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService){
