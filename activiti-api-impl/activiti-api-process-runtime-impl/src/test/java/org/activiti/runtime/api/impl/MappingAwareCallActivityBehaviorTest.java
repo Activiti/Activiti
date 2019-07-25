@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import mockit.MockUp;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.ProcessVariablesInitiator;
