@@ -19,6 +19,8 @@ package org.activiti.spring.boot;
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,14 @@ public class ProcessDefinitionFormKeyIT {
 
     @Autowired
     private ProcessRuntime processRuntime;
+
+    @Autowired
+    private ProcessCleanUpUtil processCleanUpUtil;
+
+    @After
+    public void cleanUp(){
+        processCleanUpUtil.cleanUpWithAdmin();
+    }
 
     @Test
     public void processDefinitionHasFormKey() {

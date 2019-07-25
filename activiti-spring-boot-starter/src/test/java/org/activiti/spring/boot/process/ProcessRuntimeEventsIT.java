@@ -7,6 +7,8 @@ import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +31,9 @@ public class ProcessRuntimeEventsIT {
     @Autowired
     private SecurityUtil securityUtil;
 
+    @Autowired
+    private ProcessCleanUpUtil processCleanUpUtil;
+
     @Before
     public void init() {
         //Reset test variables
@@ -38,6 +43,11 @@ public class ProcessRuntimeEventsIT {
         //Reset event collections
         RuntimeTestConfiguration.variableCreatedEventsFromProcessInstance.clear();
         RuntimeTestConfiguration.sequenceFlowTakenEvents.clear();
+    }
+
+    @After
+    public void cleanUp(){
+        processCleanUpUtil.cleanUpWithAdmin();
     }
 
     @Test
