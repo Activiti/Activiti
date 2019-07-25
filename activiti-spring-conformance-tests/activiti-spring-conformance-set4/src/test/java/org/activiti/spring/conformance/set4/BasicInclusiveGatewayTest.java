@@ -1,16 +1,5 @@
 package org.activiti.spring.conformance.set4;
 
-import static org.activiti.test.matchers.BPMNStartEventMatchers.startEvent;
-import static org.activiti.test.matchers.EndEventMatchers.endEvent;
-import static org.activiti.test.matchers.InclusiveGatewayMatchers.inclusiveGateway;
-import static org.activiti.test.matchers.ProcessInstanceMatchers.processInstance;
-import static org.activiti.test.matchers.ProcessTaskMatchers.taskWithName;
-import static org.activiti.test.matchers.SequenceFlowMatchers.sequenceFlow;
-import static org.activiti.test.matchers.TaskMatchers.task;
-import static org.activiti.test.matchers.TaskMatchers.withAssignee;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Java6Assertions.tuple;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
@@ -21,23 +10,32 @@ import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.payloads.GetTasksPayload;
 import org.activiti.api.task.runtime.TaskRuntime;
-import org.activiti.spring.conformance.util.RuntimeTestConfiguration;
 import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.activiti.test.operations.ProcessOperations;
 import org.activiti.test.operations.TaskOperations;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.activiti.test.matchers.BPMNStartEventMatchers.startEvent;
+import static org.activiti.test.matchers.EndEventMatchers.endEvent;
+import static org.activiti.test.matchers.InclusiveGatewayMatchers.inclusiveGateway;
+import static org.activiti.test.matchers.ProcessInstanceMatchers.processInstance;
+import static org.activiti.test.matchers.ProcessTaskMatchers.taskWithName;
+import static org.activiti.test.matchers.SequenceFlowMatchers.sequenceFlow;
+import static org.activiti.test.matchers.TaskMatchers.task;
+import static org.activiti.test.matchers.TaskMatchers.withAssignee;
+import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Java6Assertions.tuple;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class BasicInclusiveGatewayTest {
 
-    private final String processKey = "basicInclusiveGateway";
+    private static final String PROCESS_KEY = "basicInclusiveGateway";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -57,11 +55,6 @@ public class BasicInclusiveGatewayTest {
     @Autowired
     private TaskOperations taskOperations;
 
-    @Before
-    public void cleanUp() {
-        clearEvents();
-    }
-    
     @Test
     public void testProcessExecutionWithInclusiveGateway() {
         //given
@@ -70,7 +63,7 @@ public class BasicInclusiveGatewayTest {
         //given
         ProcessInstance processInstance = processOperations.start(ProcessPayloadBuilder
                 .start()
-                .withProcessDefinitionKey(processKey)
+                .withProcessDefinitionKey(PROCESS_KEY)
                 .withBusinessKey("my-business-key")
                 .withName("my-process-instance-name")
                 .withVariable("input",1)
@@ -109,8 +102,6 @@ public class BasicInclusiveGatewayTest {
         assertThat(tasks.getTotalItems()).isEqualTo(1);
         Task task = tasks.getContent().get(0);
         
-        clearEvents();
-        
         //given
         taskOperations.complete(TaskPayloadBuilder
                                 .complete()
@@ -138,8 +129,6 @@ public class BasicInclusiveGatewayTest {
         Task task1 = tasks.getContent().get(0);
         Task task2 = tasks.getContent().get(1);
         
-        clearEvents();
-   
         //given
         taskOperations.complete(TaskPayloadBuilder
                                 .complete()
@@ -162,8 +151,6 @@ public class BasicInclusiveGatewayTest {
                         task2.getName())
         );
         
-        clearEvents();
-        
         //complete second task
         taskOperations.complete(TaskPayloadBuilder
                                 .complete()
@@ -171,7 +158,6 @@ public class BasicInclusiveGatewayTest {
                                 .build())
         //then
                 .expectEvents(task().hasBeenCompleted(),
-                              inclusiveGateway("inclusiveGatewayEnd").hasBeenStarted(),
                               inclusiveGateway("inclusiveGatewayEnd").hasBeenCompleted(),
                               endEvent("theEnd").hasBeenStarted(),
                               endEvent("theEnd").hasBeenCompleted());
@@ -189,11 +175,6 @@ public class BasicInclusiveGatewayTest {
             processAdminRuntime.delete(ProcessPayloadBuilder.delete(pi.getId()));
         }
         
-        clearEvents();
     }
     
-    public void clearEvents() {
-        RuntimeTestConfiguration.collectedEvents.clear();
-    }
-
 }
