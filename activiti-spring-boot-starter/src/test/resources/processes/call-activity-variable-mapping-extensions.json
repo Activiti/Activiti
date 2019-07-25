@@ -1,0 +1,80 @@
+{
+  "id":"parentproc-843144bc-3797-40db-8edc-d23190b118e5",
+  "name":"myProcess234.bpmn",
+  "extensions": {
+    "properties": {
+      "age-id": {
+        "id": "age-id",
+        "name": "age",
+        "type": "integer",
+        "value": 20
+      },
+      "name-id": {
+        "id": "name-id",
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "value": "inName"
+      },
+      "input-unmapped-variable-with-non-matching-name-id": {
+        "id": "input-unmapped-variable-with-non-matching-connector-input-name-id",
+        "name": "input-unmapped-variable-with-non-matching-connector-input-name",
+        "type": "string",
+        "required": false,
+        "value": "inTest"
+      },
+      "output-unmapped-variable-with-non-matching-name-id": {
+        "id": "output-unmapped-variable-with-non-matching-name-id",
+        "name": "output-unmapped-variable-with-non-matching-connector-output-name",
+        "type": "string",
+        "required": false,
+        "value": "default"
+      }
+    },
+    "mappings": {
+      "Task_0v0jw9c": {
+        "inputs": {
+          "subprocess-input-var1": {
+            "type": "variable",
+            "value": "name"
+          },
+          "subprocess-input-var2": {
+            "type": "variable",
+            "value": "age"
+          },
+          "var-not-exist-in-subprocess-extension-file": {
+            "type": "variable",
+            "value": "age"
+          },
+          "subprocess-input-var3": {
+            "type": "value",
+            "value": 5
+          },
+          "input-static-value": {
+            "type": "static_value",
+            "value": "a static value"
+          },
+          "input-not-existing-value": {
+            "type": "variable",
+            "value": "not-existing"
+          }
+        },
+        "outputs": {
+          "name": {
+            "type": "variable",
+            "value" : "subprocess-out-var1"},
+          "age": {
+            "type": "variable",
+            "value" : "subprocess-out-var2"},
+          "from-subprocess-static-value": {
+            "type": "static_value",
+            "value": "output-unmapped-variable-with-non-matching-name-id"
+          },
+          "not-existing": {
+            "type": "variable",
+            "value" : "subprocess-out-var1"}
+        }
+      }
+    }
+  }
+}

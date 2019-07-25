@@ -25,11 +25,13 @@ import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
+import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
+import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @EnableConfigurationProperties(ActivitiProperties.class)
 public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoConfiguration {
 
+    public static final String BEHAVIOR_FACTORY_MAPPING_CONFIGURER = "behaviorFactoryMappingConfigurer";
     private final UserGroupManager userGroupManager;
 
     public ProcessEngineAutoConfiguration(UserGroupManager userGroupManager) {
@@ -169,6 +172,14 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                                                 Optional.ofNullable(listeners)
                                                         .orElse(Collections.emptyList()),
                                                 eventPublisher);
+    }
+
+    @Bean(name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
+    @ConditionalOnMissingBean (name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
+    public DefaultActivityBehaviorFactoryMappingConfigurer defaultActivityBehaviorFactoryMappingConfigurer(VariablesMappingProvider variablesMappingProvider,
+                                                                                                           ProcessVariablesInitiator processVariablesInitiator) {
+        return new DefaultActivityBehaviorFactoryMappingConfigurer(variablesMappingProvider,
+                                                                   processVariablesInitiator);
     }
 }
 

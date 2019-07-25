@@ -105,6 +105,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
 
     public static final String DEFAULT_SERVICE_TASK_BEAN_NAME = "defaultServiceTaskBehavior";
+    
     private final ClassDelegateFactory classDelegateFactory;
 
     public DefaultActivityBehaviorFactory(ClassDelegateFactory classDelegateFactory) {
@@ -411,14 +412,22 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
         CallActivityBehavior callActivityBehaviour = null;
         if (StringUtils.isNotEmpty(callActivity.getCalledElement()) && callActivity.getCalledElement().matches(expressionRegex)) {
-            callActivityBehaviour = new CallActivityBehavior(expressionManager.createExpression(callActivity.getCalledElement()),
-                                                             callActivity.getMapExceptions());
+            callActivityBehaviour = createCallActivityBehavior(expressionManager.createExpression(callActivity.getCalledElement()), callActivity.getMapExceptions());
         } else {
-            callActivityBehaviour = new CallActivityBehavior(callActivity.getCalledElement(),
-                                                             callActivity.getMapExceptions());
+            callActivityBehaviour = createCallActivityBehavior(callActivity.getCalledElement(), callActivity.getMapExceptions());
         }
 
         return callActivityBehaviour;
+    }
+
+    protected CallActivityBehavior createCallActivityBehavior(String calledElement, List<MapExceptionEntry> mapExceptions) {
+        return new CallActivityBehavior(calledElement,
+                mapExceptions);
+    }
+
+    protected CallActivityBehavior createCallActivityBehavior(Expression expression, List<MapExceptionEntry> mapExceptions) {
+        return new CallActivityBehavior(expression,
+                mapExceptions);
     }
 
     // Transaction
@@ -541,4 +550,5 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
         return new BoundaryMessageEventActivityBehavior(messageEventDefinition,
                                                         interrupting);
     }
+    
 }

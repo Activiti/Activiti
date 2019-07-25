@@ -13,8 +13,17 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import org.activiti.bpmn.model.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.IOParameter;
+import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -29,11 +38,6 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Implementation of the BPMN 2.0 call activity (limited currently to calling a subprocess and not (yet) a global task).
@@ -117,6 +121,9 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
         variables.put(entry.getKey(), entry.getValue());
       }
     }
+    Map<String, Object> variablesFromExtensionFile = calculateInboundVariables(execution, processDefinition);
+
+    variables.putAll(variablesFromExtensionFile);
 
     // copy process variables
     for (IOParameter ioParameter : callActivity.getInParameters()) {
@@ -147,7 +154,6 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
     // only data. no control flow available on this execution.
-
     ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
 
     // copy process variables
@@ -164,6 +170,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       }
       execution.setVariable(ioParameter.getTarget(), value);
     }
+      Map<String, Object> outboundVariables = calculateOutBoundVariables(execution, subProcessInstance.getVariables());
+      if (outboundVariables != null) {
+          execution.setVariables(outboundVariables);
+      }
   }
 
   public void completed(DelegateExecution execution) throws Exception {
@@ -204,4 +214,15 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   public String getProcessDefinitonKey() {
     return processDefinitonKey;
   }
+
+  protected Map<String, Object> calculateInboundVariables(DelegateExecution execution,
+                                                          ProcessDefinition processDefinition) {
+    return new HashMap<String, Object>();
+  }
+
+  protected Map<String, Object> calculateOutBoundVariables(DelegateExecution execution,
+                                                           Map<String, Object> subProcessVariables) {
+    return new HashMap<String, Object>();
+  }
+
 }
