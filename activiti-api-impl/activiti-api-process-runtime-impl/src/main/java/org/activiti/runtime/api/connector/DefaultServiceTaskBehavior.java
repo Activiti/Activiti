@@ -16,13 +16,18 @@
 
 package org.activiti.runtime.api.connector;
 
+import java.util.Optional;
+
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.springframework.context.ApplicationContext;
+
+import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
 
 public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
@@ -47,7 +52,7 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
         Connector connector = getConnector(getImplementation(execution));
         IntegrationContext integrationContext = connector.apply(integrationContextBuilder.from(execution));
 
-        execution.setVariables(outboundVariablesProvider.calculateOutPutVariables(execution,
+        execution.setVariables(outboundVariablesProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                                                   integrationContext.getOutBoundVariables()));
 
         leave(execution);
