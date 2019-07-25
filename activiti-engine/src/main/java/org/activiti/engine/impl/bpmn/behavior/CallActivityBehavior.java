@@ -140,8 +140,6 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   }
 
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
-    // only data. no control flow available on this execution.
-      ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
 
       Map<String, Object> outboundVariables = calculateOutBoundVariables(execution, subProcessInstance.getVariables());
       if (outboundVariables != null) {

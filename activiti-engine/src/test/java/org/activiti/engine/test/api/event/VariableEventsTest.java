@@ -299,7 +299,6 @@ public class VariableEventsTest extends PluggableActivitiTestCase {
 
       assertEquals(2,
           listener.getEventsReceived().size());
-      List<String> variableList = new ArrayList<String>();
 
       ActivitiVariableEvent event = (ActivitiVariableEvent) listener.getEventsReceived().get(0);
       assertEquals(ActivitiEventType.VARIABLE_CREATED,
