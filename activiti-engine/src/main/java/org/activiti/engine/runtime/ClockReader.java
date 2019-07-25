@@ -19,9 +19,7 @@ import java.util.TimeZone;
 
 /**
  * This interface provides clock reading functionality
- @deprecated dealing with Clock, Calendars and Time will be delaged to a separate service/library
  */
-@Deprecated
 public interface ClockReader {
 
   Date getCurrentTime();
