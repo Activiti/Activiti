@@ -26,11 +26,11 @@
       <bpmn2:incoming>SequenceFlow_1na0oew</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_1na0oew" sourceRef="Task_0pbjier" targetRef="EndEvent_16qpwr2" />
-    <bpmn2:userTask id="Task_1fhojlw" name="User Task User 1" activiti:assignee="user1">
+    <bpmn2:userTask id="Task_1fhojlw" name="Task 1 User 1" activiti:assignee="user1">
       <bpmn2:incoming>SequenceFlow_1035s34</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0pdm5j0</bpmn2:outgoing>
     </bpmn2:userTask>
-    <bpmn2:userTask id="Task_0pbjier" name="User Task User 1" activiti:assignee="user1">
+    <bpmn2:userTask id="Task_0pbjier" name="Task 2 User 1" activiti:assignee="user1">
       <bpmn2:incoming>SequenceFlow_1tut9mk</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1na0oew</bpmn2:outgoing>
     </bpmn2:userTask>

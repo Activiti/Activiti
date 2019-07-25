@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  targetNamespace="Examples">
+  
+  <process id="basicInclusiveGateway" name="Basic Inclusive Gateway" isExecutable="true">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task0" />
+    
+    <userTask id="task0" name="Start Process" activiti:assignee="user1"/>
+    
+    <sequenceFlow id="flow2" sourceRef="task0" targetRef="inclusiveGateway" />
+    
+    <inclusiveGateway id="inclusiveGateway" name="Inclusive Gateway" />
+    
+    <sequenceFlow id="flow3" sourceRef="inclusiveGateway" targetRef="theTask1">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${input == 1}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <sequenceFlow id="flow4" sourceRef="inclusiveGateway" targetRef="theTask2">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${input <= 2}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <sequenceFlow id="flow5" sourceRef="inclusiveGateway" targetRef="theTask3">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${input == 3}]]>
+      </conditionExpression>
+    </sequenceFlow>
+
+    <userTask id="theTask1" name="Send e-mail"  activiti:assignee="user1"/>
+    
+    <sequenceFlow id="flow6" sourceRef="theTask1" targetRef="inclusiveGatewayEnd" />
+    
+    <userTask id="theTask2" name="Check account"  activiti:assignee="user1"/>
+    
+    <sequenceFlow id="flow7" sourceRef="theTask2" targetRef="inclusiveGatewayEnd" />
+    
+    <userTask id="theTask3" name="Call customer"   activiti:assignee="user1"/>
+    
+    <sequenceFlow id="flow8" sourceRef="theTask3" targetRef="inclusiveGatewayEnd" />  
+     
+    <inclusiveGateway id="inclusiveGatewayEnd" name="Inclusive Gateway End" />
+     
+    <sequenceFlow id="flow9" sourceRef="inclusiveGatewayEnd" targetRef="theEnd" />    
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>
