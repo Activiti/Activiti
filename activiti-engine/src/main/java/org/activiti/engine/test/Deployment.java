@@ -13,10 +13,10 @@
 
 package org.activiti.engine.test;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import org.activiti.engine.api.internal.Internal;
 
 /**
  * Annotation for a test method to create and delete a deployment around a test method.
@@ -48,11 +48,8 @@ import java.lang.annotation.RetentionPolicy;
  *   }
  * </pre>
  * 
- * @deprecated in favour of creating tests based on fixed classpath resources as done in activiti-spring-boot-starter
-
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Deprecated
 @Internal
 public @interface Deployment {
 

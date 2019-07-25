@@ -17,9 +17,7 @@ import org.activiti.engine.api.internal.Internal;
 
 /*
  * Represents a modeled DataObject.
- * @deprecated dealing with custom data objects will delegated to a separate library
  */
-@Deprecated
 @Internal
 public interface DataObject {
   
