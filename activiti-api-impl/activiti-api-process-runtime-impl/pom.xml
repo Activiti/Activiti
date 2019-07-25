@@ -105,11 +105,5 @@
       <artifactId>spring-boot-starter-test</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.jmockit</groupId>
-      <artifactId>jmockit</artifactId>
-      <version>1.24</version>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
 </project>
