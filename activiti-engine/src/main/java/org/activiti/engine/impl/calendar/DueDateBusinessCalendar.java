@@ -19,10 +19,7 @@ import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ClockReader;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
-/*
- * @deprecated Calendar Functionally will be provided as a separate service/library
- */
-@Deprecated
+
 @Internal
 public class DueDateBusinessCalendar extends BusinessCalendarImpl {
 

@@ -22,9 +22,7 @@ import org.activiti.engine.impl.cfg.multitenant.MultiSchemaMultiTenantProcessEng
  * Interface for {@link AsyncExecutor} implementations used in conjucntion with the 
  * {@link MultiSchemaMultiTenantProcessEngineConfiguration}. Allows to dynamically
  * add tenant executors to the engine.
- * @deprecated we discourage the use of tenant aware interfaces/classes this will be removed in future versions
  */
-@Deprecated
 public interface TenantAwareAsyncExecutor extends AsyncExecutor {
   
   Set<String> getTenantIds();

@@ -20,9 +20,7 @@ import org.activiti.engine.query.Query;
 
 /**
  * Allows programmatic querying of {@link Job}s.
- * @deprecated we recommend against using the Job Executor, this should be handled by an integration instead of an internal component
  */
-@Deprecated
 @Internal
 public interface DeadLetterJobQuery extends Query<DeadLetterJobQuery, Job> {
 

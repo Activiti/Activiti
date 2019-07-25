@@ -18,13 +18,9 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.runtime.Job;
 
 /**
-
- * @deprecated We discourage the use of the Async Executor inside the engine, we will provide external alternatives
- * for Activiti Cloud. As soon as we provide this alternatives this class will be cleaned up. Until then, use at your own risk
  *
  */
 @Internal
-@Deprecated
 public interface AsyncExecutor {
 
   /**

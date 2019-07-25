@@ -11,9 +11,7 @@ import org.activiti.engine.runtime.ClockReader;
 /**
  * Resolves a due date taking into account the specified time zone.
  *
- * @deprecated Calendar Functionally will be provided as a separate service/library
  */
-@Deprecated
 @Internal
 public class AdvancedSchedulerResolverWithTimeZone implements AdvancedSchedulerResolver {
 
