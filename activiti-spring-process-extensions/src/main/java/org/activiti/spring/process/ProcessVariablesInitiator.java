@@ -45,21 +45,39 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         this.variableValidationService = variableValidationService;
     }
 
+    public Map<String, Object> calculateVariablesFromExtensionFile(ProcessDefinition processDefinition,
+                                                                   Map<String, Object> variables) {
+        Map<String, Object> processedVariables = new HashMap<>();
+        if (processExtensionService.hasExtensionsFor(processDefinition)) {
+            ProcessExtensionModel processExtensionModel = processExtensionService.getExtensionsFor(processDefinition);
+
+            processExtensionService.cache(processDefinition);
+            Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions().getProperties();
+            processedVariables = processVariables(variables,
+                                                                      variableDefinitionMap);
+
+            Set<String> missingRequiredVars = checkRequiredVariables(processedVariables,
+                                                                     variableDefinitionMap);
+            if (!missingRequiredVars.isEmpty()) {
+                throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' without required variables - " + String.join(", ",
+                                                                                                                                                   missingRequiredVars));
+            }
+            Set<String> varsWithMismatchedTypes = validateVariablesAgainstDefinitions(processedVariables,
+                                                                                      variableDefinitionMap);
+            if (!varsWithMismatchedTypes.isEmpty()) {
+                throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' as variables fail type validation - " + String.join(", ",
+                                                                                                                                                          varsWithMismatchedTypes));
+            }
+        }
+
+        return processedVariables;
+    }
+
+
     @Override
     public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition, String businessKey, String processInstanceName, FlowElement initialFlowElement, Process process, Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
-            ProcessExtensionModel processExtensionModel = processExtensionService.getExtensionsFor(processDefinition);
-            processExtensionService.cache(processDefinition);
-            Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions().getProperties();
-            Map<String, Object> processedVariables = processVariables(variables, variableDefinitionMap);
-            Set<String> missingRequiredVars = checkRequiredVariables(processedVariables, variableDefinitionMap);
-            if (!missingRequiredVars.isEmpty()) {
-                throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' without required variables - " + String.join(", ", missingRequiredVars));
-            }
-            Set<String> varsWithMismatchedTypes = validateVariablesAgainstDefinitions(processedVariables, variableDefinitionMap);
-            if(!varsWithMismatchedTypes.isEmpty()){
-                throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' as variables fail type validation - " + String.join(", ", varsWithMismatchedTypes));
-            }
+            Map<String, Object> processedVariables = calculateVariablesFromExtensionFile(processDefinition, variables);
             return super.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process, processedVariables, transientVariables, startProcessInstance);
         }
         return super.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process, variables, transientVariables, startProcessInstance);

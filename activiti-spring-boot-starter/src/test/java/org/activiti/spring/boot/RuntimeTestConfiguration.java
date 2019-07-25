@@ -68,6 +68,11 @@ public class RuntimeTestConfiguration {
                                                                "password",
                                                                salaboyAuthorities));
 
+        extendedInMemoryUserDetailsManager.createUser(new User("user",
+                                                               "password",
+                                                               salaboyAuthorities));
+
+
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
 

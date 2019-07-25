@@ -1,0 +1,43 @@
+{
+  "id": "parentproc-843144bc-3797-40db-8edc-d23190b118e7",
+  "name": "parentProcessCallActivityMappingEmptyMappingWithTask.bpmn20.xml",
+  "extensions": {
+    "properties": {
+      "age-id": {
+        "id": "age-id",
+        "name": "age",
+        "type": "integer",
+        "value": 20
+      },
+      "name-id": {
+        "id": "name-id",
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "value": "inName"
+      },
+      "input-unmapped-variable-with-non-matching-name-id": {
+        "id": "input-unmapped-variable-with-non-matching-connector-input-name-id",
+        "name": "input-unmapped-variable-with-non-matching-connector-input-name",
+        "type": "string",
+        "required": false,
+        "value": "inTest"
+      },
+      "output-unmapped-variable-with-non-matching-name-id": {
+        "id": "output-unmapped-variable-with-non-matching-name-id",
+        "name": "output-unmapped-variable-with-non-matching-connector-output-name",
+        "type": "string",
+        "required": false,
+        "value": "default"
+      }
+    },
+    "mappings": {
+      "Task_0v0jw9c": {
+        "inputs": {
+        },
+        "outputs": {
+        }
+      }
+    }
+  }
+}
