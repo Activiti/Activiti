@@ -125,19 +125,6 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
     variables.putAll(variablesFromExtensionFile);
 
-//    // copy process variables
-//    for (IOParameter ioParameter : callActivity.getInParameters()) {
-//      Object value = null;
-//      if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
-//        Expression expression = expressionManager.createExpression(ioParameter.getSourceExpression().trim());
-//        value = expression.getValue(execution);
-//
-//      } else {
-//        value = execution.getVariable(ioParameter.getSource());
-//      }
-//      variables.put(ioParameter.getTarget(), value);
-//    }
-
     if (!variables.isEmpty()) {
       initializeVariables(subProcessInstance, variables);
     }
@@ -156,20 +143,6 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     // only data. no control flow available on this execution.
       ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
 
-    // copy process variables
-//    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-//    CallActivity callActivity = (CallActivity) executionEntity.getCurrentFlowElement();
-//    for (IOParameter ioParameter : callActivity.getOutParameters()) {
-//      Object value = null;
-//      if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
-//        Expression expression = expressionManager.createExpression(ioParameter.getSourceExpression().trim());
-//        value = expression.getValue(subProcessInstance);
-//
-//      } else {
-//        value = subProcessInstance.getVariable(ioParameter.getSource());
-//      }
-//      execution.setVariable(ioParameter.getTarget(), value);
-//    }
       Map<String, Object> outboundVariables = calculateOutBoundVariables(execution, subProcessInstance.getVariables());
       if (outboundVariables != null) {
           execution.setVariables(outboundVariables);
