@@ -18,9 +18,7 @@ import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
  * Factory used by the {@link ExecutorPerTenantAsyncExecutor} async executor.
  * This factory will be called when a new {@link AsyncExecutor} for a tenant needs to be created
  * and can be used to create special implementations for specific tenants.
- * @deprecated we discourage the use of tenant aware interfaces/classes this will be removed in future versions
  */
-@Deprecated
 public interface TenantAwareAsyncExecutorFactory {
 
   /**

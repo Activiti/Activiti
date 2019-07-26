@@ -335,7 +335,11 @@ public class DefaultAsyncJobExecutor implements AsyncExecutor {
     resetExpiredJobsPageSize = processEngineConfiguration.getAsyncExecutorResetExpiredJobsPageSize();
 
     secondsToWaitOnShutdown = processEngineConfiguration.getAsyncExecutorSecondsToWaitOnShutdown();
+    
+    maxAsyncJobsDuePerAcquisition = processEngineConfiguration.getAsyncExecutorMaxAsyncJobsDuePerAcquisition();
+    maxTimerJobsPerAcquisition = processEngineConfiguration.getAsyncExecutorMaxTimerJobsPerAcquisition();
 
+    retryWaitTimeInMillis = processEngineConfiguration.getAsyncFailedJobWaitTime();
   }
 
   private void applyLockConfig(ProcessEngineConfigurationImpl processEngineConfiguration) {

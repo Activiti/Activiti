@@ -12,14 +12,10 @@
  */
 package org.activiti.engine.impl.calendar;
 
-import org.activiti.engine.api.internal.Internal;
-
 import java.util.Date;
 
-/**
- * @deprecated Calendar Functionally will be provided as a separate service/library
- */
-@Deprecated
+import org.activiti.engine.api.internal.Internal;
+
 @Internal
 public interface BusinessCalendar {
 

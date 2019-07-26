@@ -18,10 +18,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.api.internal.Internal;
 import org.activiti.engine.runtime.ClockReader;
 
-/**
- * @deprecated Calendar Functionally will be provided as a separate service/library
- */
-@Deprecated
 @Internal
 public class DurationBusinessCalendar extends BusinessCalendarImpl {
 

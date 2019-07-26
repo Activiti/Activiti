@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
 import javax.sql.DataSource;
 
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
@@ -41,6 +42,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -48,7 +51,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 @AutoConfigureAfter(name = {"org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
         "org.springframework.boot.autoconfigure.task.TaskExecutionAutoConfiguration"})
-@EnableConfigurationProperties(ActivitiProperties.class)
+@EnableConfigurationProperties({ActivitiProperties.class, AsyncExecutorProperties.class})
 public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoConfiguration {
 
     public static final String BEHAVIOR_FACTORY_MAPPING_CONFIGURER = "behaviorFactoryMappingConfigurer";
@@ -181,5 +184,35 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         return new DefaultActivityBehaviorFactoryMappingConfigurer(variablesMappingProvider,
                                                                    processVariablesInitiator);
     }
+    
+    @Bean
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public ProcessEngineConfigurationConfigurer asyncExecutorPropertiesConfigurer(AsyncExecutorProperties properties) {
+        return (configuration) -> {
+            configuration.setAsyncExecutorMessageQueueMode(properties.isMessageQueueMode());
+            configuration.setAsyncExecutorCorePoolSize(properties.getCorePoolSize());
+            configuration.setAsyncExecutorAsyncJobLockTimeInMillis(properties.getAsyncJobLockTimeInMillis());
+            configuration.setAsyncExecutorNumberOfRetries(properties.getNumberOfRetries());
+
+            configuration.setAsyncExecutorDefaultAsyncJobAcquireWaitTime(properties.getDefaultAsyncJobAcquireWaitTimeInMillis());
+            configuration.setAsyncExecutorDefaultTimerJobAcquireWaitTime(properties.getDefaultTimerJobAcquireWaitTimeInMillis());
+            configuration.setAsyncExecutorDefaultQueueSizeFullWaitTime(properties.getDefaultQueueSizeFullWaitTime());
+            
+            configuration.setAsyncExecutorMaxAsyncJobsDuePerAcquisition(properties.getMaxAsyncJobsDuePerAcquisition());
+            configuration.setAsyncExecutorMaxTimerJobsPerAcquisition(properties.getMaxTimerJobsPerAcquisition());
+            configuration.setAsyncExecutorMaxPoolSize(properties.getMaxPoolSize());
+            
+            configuration.setAsyncExecutorResetExpiredJobsInterval(properties.getResetExpiredJobsInterval());
+            configuration.setAsyncExecutorResetExpiredJobsPageSize(properties.getResetExpiredJobsPageSize());
+
+            configuration.setAsyncExecutorSecondsToWaitOnShutdown(properties.getSecondsToWaitOnShutdown());
+            configuration.setAsyncExecutorThreadKeepAliveTime(properties.getKeepAliveTime());
+            configuration.setAsyncExecutorTimerLockTimeInMillis(properties.getTimerLockTimeInMillis());
+            configuration.setAsyncExecutorThreadPoolQueueSize(properties.getQueueSize());
+
+            configuration.setAsyncFailedJobWaitTime(properties.getRetryWaitTimeInMillis());
+        };
+    }
+    
 }
 

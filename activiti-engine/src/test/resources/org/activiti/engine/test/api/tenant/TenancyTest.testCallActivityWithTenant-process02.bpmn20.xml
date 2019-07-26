@@ -3,7 +3,7 @@
   <process id="process2" name="Process 2" isExecutable="true">
     <startEvent id="startevent2" name="Start"></startEvent>
     <scriptTask id="scripttask1" name="Script Task" scriptFormat="groovy" activiti:autoStoreVariables="false">
-      <script>out:println "Send For  " + sendFor;</script>
+      <script>out:println "Send For";</script>
     </scriptTask>
     <sequenceFlow id="flow1" sourceRef="startevent2" targetRef="scripttask1"></sequenceFlow>
     <endEvent id="endevent1" name="End"></endEvent>
