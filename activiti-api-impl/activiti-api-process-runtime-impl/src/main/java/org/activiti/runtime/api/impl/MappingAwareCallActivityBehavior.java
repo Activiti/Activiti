@@ -26,6 +26,8 @@ import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 
+import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
+
 public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
 
     private VariablesMappingProvider mappingProvider;
@@ -63,8 +65,7 @@ public class MappingAwareCallActivityBehavior extends CallActivityBehavior {
     @Override
     protected Map<String, Object> calculateOutBoundVariables(DelegateExecution execution,
                                                              Map<String, Object> availableVariables) {
-
-        return mappingProvider.calculateOutPutVariables(execution,
+        return mappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                         availableVariables);
     }
 }

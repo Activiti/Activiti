@@ -61,7 +61,7 @@ public class ProcessRuntimeVariableMappingTest {
                         tuple("nickName",
                               "testName"),
                         tuple("out-unmapped-variable-matching-name",
-                              "outTest"),
+                              "default"),
                         tuple("output-unmapped-variable-with-non-matching-connector-output-name",
                               "default")
                 );

@@ -13,6 +13,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -104,7 +105,8 @@ public class VariablesMappingProviderTest {
         entityVariables.put("task_output_variable_name_1", "var-one");
 
         //when
-        Map<String,Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(execution, entityVariables);
+        Map<String,Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+                                                                                               entityVariables);
 
         //then
         assertThat(outPutVariables.get("process_variable_outputmap_1")).isEqualTo("var-one");
@@ -123,7 +125,8 @@ public class VariablesMappingProviderTest {
         entityVariables.put("non-mapped-output_variable_name_2", "var-two");
 
         //when
-        Map<String,Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(execution, entityVariables);
+        Map<String,Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+                                                                                               entityVariables);
 
         //then
         assertThat(outPutVariables).isEqualTo(entityVariables);
@@ -143,7 +146,8 @@ public class VariablesMappingProviderTest {
         entityVariables.put("non-mapped-output_variable_name_2", "var-two");
         
         //when
-        Map<String,Object> inputVariables = variablesMappingProvider.calculateOutPutVariables(execution, entityVariables);
+        Map<String,Object> inputVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+                                                                                              entityVariables);
 
         //then
         assertThat(inputVariables).isEmpty();

@@ -28,6 +28,7 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -82,7 +83,8 @@ public class MappingAwareCallActivityBehaviorTest {
         Map<String, Object> availableVariables = Collections.emptyMap();
         Map<String, Object> providerVariables = Collections.singletonMap("var",
                                                          "value");
-        given(mappingProvider.calculateOutPutVariables(execution, availableVariables))
+        given(mappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+                                                       availableVariables))
                 .willReturn(providerVariables);
 
         //when

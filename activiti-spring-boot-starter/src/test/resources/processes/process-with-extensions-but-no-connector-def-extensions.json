@@ -22,6 +22,24 @@
           "nameAsStaticValue": {
             "type": "static_value",
             "value": "Paul"
+          },
+          "age": {
+            "type": "variable",
+            "value": "age"
+          },
+          "name" : {
+            "type": "variable",
+            "value": "name"
+          }
+        },
+        "outputs": {
+          "name" : {
+            "type": "variable",
+            "value": "name"
+          },
+          "age" : {
+            "type": "variable",
+            "value": "age"
           }
         }
       }

@@ -24,21 +24,21 @@ import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.springframework.context.ApplicationContext;
+
+import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
 
 public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
     private final ApplicationContext applicationContext;
     private final IntegrationContextBuilder integrationContextBuilder;
-    private ConnectorActionDefinitionFinder connectorActionDefinitionFinder;
-    private OutboundVariablesProvider outboundVariablesProvider;
+    private VariablesMappingProvider outboundVariablesProvider;
 
     public DefaultServiceTaskBehavior(ApplicationContext applicationContext,
                                       IntegrationContextBuilder integrationContextBuilder,
-                                      ConnectorActionDefinitionFinder connectorActionDefinitionFinder,
-                                      OutboundVariablesProvider outboundVariablesProvider) {
+                                      VariablesMappingProvider outboundVariablesProvider) {
         this.applicationContext = applicationContext;
-        this.connectorActionDefinitionFinder = connectorActionDefinitionFinder;
         this.integrationContextBuilder = integrationContextBuilder;
         this.outboundVariablesProvider = outboundVariablesProvider;
     }
@@ -49,22 +49,13 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
      **/
     @Override
     public void execute(DelegateExecution execution) {
-        ActionDefinition actionDefinition = findRelatedActionDefinition(execution);
-
         Connector connector = getConnector(getImplementation(execution));
-        IntegrationContext integrationContext = connector.apply(integrationContextBuilder.from(execution,
-                                                                                    actionDefinition));
+        IntegrationContext integrationContext = connector.apply(integrationContextBuilder.from(execution));
 
-        execution.setVariables(outboundVariablesProvider.calculateVariables(integrationContext,
-                                                                            actionDefinition));
+        execution.setVariables(outboundVariablesProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+                                                                                  integrationContext.getOutBoundVariables()));
 
         leave(execution);
-    }
-
-    public ActionDefinition findRelatedActionDefinition(DelegateExecution execution) {
-        String implementation = getImplementation(execution);
-        Optional<ActionDefinition> actionDefinitionOptional = connectorActionDefinitionFinder.find(implementation);
-        return actionDefinitionOptional.orElse(null);
     }
 
     private String getImplementation(DelegateExecution execution) {
