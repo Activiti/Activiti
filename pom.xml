@@ -81,6 +81,18 @@
     <activiti.osgi.include.resource>{maven-resources}</activiti.osgi.include.resource>
     <activiti.osgi.embed />
   </properties>
+  
+  <distributionManagement>
+    <snapshotRepository>
+      <id>central-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>central-releases-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+  </distributionManagement>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
