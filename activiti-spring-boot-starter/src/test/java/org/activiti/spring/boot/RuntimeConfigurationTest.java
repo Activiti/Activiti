@@ -38,18 +38,18 @@ public class RuntimeConfigurationTest {
 
     @Test
     public void validatingConfigurationForUser() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername("salaboy");
+        UserDetails userDetails = userDetailsService.loadUserByUsername("user");
         assertThat(userDetails).isNotNull();
 
         assertThat(userDetails.getAuthorities()).hasSize(2);
 
-        List<String> userRoles = userGroupManager.getUserRoles("salaboy");
+        List<String> userRoles = userGroupManager.getUserRoles("user");
         assertThat(userRoles).isNotNull();
         assertThat(userRoles).hasSize(1);
         assertThat(userRoles.get(0)).isEqualTo("ACTIVITI_USER");
-        List<String> userGroups = userGroupManager.getUserGroups("salaboy");
+        List<String> userGroups = userGroupManager.getUserGroups("user");
         assertThat(userGroups).isNotNull();
         assertThat(userGroups).hasSize(1);
         assertThat(userGroups.get(0)).isEqualTo("activitiTeam");

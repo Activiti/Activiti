@@ -34,7 +34,7 @@ public class ProcessRuntimeEmptyConnectorDefinitionIT {
     @Test
     public void connectorDefinitionEmptyDir() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         processRuntime.start(ProcessPayloadBuilder.start()
                                      .withProcessDefinitionKey(CATEGORIZE_PROCESS)

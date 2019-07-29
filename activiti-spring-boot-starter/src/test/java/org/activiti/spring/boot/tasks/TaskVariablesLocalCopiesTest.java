@@ -56,7 +56,7 @@ public class TaskVariablesLocalCopiesTest {
 
     @Test
     public void shouldGetConfiguration() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         //when
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
 
@@ -66,7 +66,7 @@ public class TaskVariablesLocalCopiesTest {
 
     @Test
     public void shouldGetAvailableProcessDefinitionForTheGivenUser() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         //when
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
                                                                                                       50));
@@ -80,7 +80,7 @@ public class TaskVariablesLocalCopiesTest {
     @Test
     public void processInstanceVariablesCopiedIntoTasksByDefault() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Map<String,Object> startVariables = new HashMap<>();
         startVariables.put("start1","start1");
@@ -117,7 +117,7 @@ public class TaskVariablesLocalCopiesTest {
                         tuple("start2", "start2"));
 
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task1.getId()).build());
 
         //if one modifies, the other should not see the modification
@@ -139,7 +139,7 @@ public class TaskVariablesLocalCopiesTest {
                         tuple("start1", "start1"),
                         tuple("start2", "start2"));
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         //complete and change var again
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task1.getId()).withVariable("start1","modagainstart1").build());
 
@@ -163,7 +163,7 @@ public class TaskVariablesLocalCopiesTest {
     @Test
     public void testAdminTaskVariables() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Map<String,Object> startVariables = new HashMap<>();
         startVariables.put("start1","start1");
@@ -206,7 +206,7 @@ public class TaskVariablesLocalCopiesTest {
                         tuple("start2", "start2"));
 
    
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         //complete and change var again
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task1.getId()).build());
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task1.getId()).withVariable("start1","modagainstart1").build());

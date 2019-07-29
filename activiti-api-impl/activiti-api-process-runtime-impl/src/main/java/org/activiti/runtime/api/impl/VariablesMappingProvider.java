@@ -16,17 +16,14 @@
 
 package org.activiti.runtime.api.impl;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.model.*;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.spring.process.ProcessExtensionService;
-import org.activiti.spring.process.model.Mapping;
-import org.activiti.spring.process.model.ProcessExtensionModel;
-import org.activiti.spring.process.model.ProcessVariablesMapping;
-import org.activiti.spring.process.model.VariableDefinition;
 
 public class VariablesMappingProvider {
 
@@ -37,10 +34,12 @@ public class VariablesMappingProvider {
     }
 
     protected Optional<Object> calculateMappedValue(Mapping inputMapping,
-                                       DelegateExecution execution,
-                                       ProcessExtensionModel extensions) {
+                                                    DelegateExecution execution,
+                                                    ProcessExtensionModel extensions) {
         if (inputMapping != null) {
-            if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType()) || Mapping.SourceMappingType.STATIC_VALUE.equals(inputMapping.getType())) {
+            if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())
+//                    || Mapping.SourceMappingType.STATIC_VALUE.equals(inputMapping.getType())
+            ) {
                 return Optional.of(inputMapping.getValue());
             }
 
@@ -60,11 +59,11 @@ public class VariablesMappingProvider {
 
         ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
 
-        if(extensions.getExtensions().hasEmptyInputsMapping(execution.getCurrentActivityId())){
+        if (extensions.getExtensions().hasEmptyInputsMapping(execution.getCurrentActivityId())) {
             return Collections.emptyMap();
         }
 
-        if(extensions.getExtensions().hasNoMapping(execution.getCurrentActivityId())){
+        if (extensions.getExtensions().hasNoMapping(execution.getCurrentActivityId())) {
             return new HashMap<>(execution.getVariables());
         }
 
@@ -76,21 +75,28 @@ public class VariablesMappingProvider {
         Map<String, Object> inboundVariables = new HashMap<>();
 
         ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getCurrentActivityId());
-        Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
 
+        Map<String, Mapping> inputMappings = processVariablesMapping.getInputs();
         for (Map.Entry<String, Mapping> mapping : inputMappings.entrySet()) {
             Optional<Object> mappedValue = calculateMappedValue(mapping.getValue(),
-                                                execution,
-                                                extensions);
+                    execution,
+                    extensions);
             mappedValue.ifPresent(value -> inboundVariables.put(mapping.getKey(),
-                                                      value));
+                    value));
         }
 
+
+        ProcessConstantsMapping processConstantsMapping = extensions.getExtensions().getConstantForFlowElement(execution.getCurrentActivityId());
+        for (Map.Entry<String, ConstantDefinition> mapping : processConstantsMapping.entrySet()) {
+            inboundVariables.put(mapping.getKey(), mapping.getValue().getValue());
+        }
+
+        System.out.println("inboundVariables = " + inboundVariables);
         return inboundVariables;
     }
 
     protected Optional<Object> calculateOutPutMappedValue(Mapping mapping,
-                                             Map<String, Object> currentContextVariables) {
+                                                          Map<String, Object> currentContextVariables) {
         if (mapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(mapping.getType())) {
                 return Optional.of(mapping.getValue());
@@ -112,24 +118,24 @@ public class VariablesMappingProvider {
 
         ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
 
-        if(extensions.getExtensions().hasEmptyOutputsMapping(execution.getActivityId())){
+        if (extensions.getExtensions().hasEmptyOutputsMapping(execution.getActivityId())) {
             return Collections.emptyMap();
         }
 
-        if(extensions.getExtensions().hasNoMapping(execution.getActivityId())){
+        if (extensions.getExtensions().hasNoMapping(execution.getActivityId())) {
             return new HashMap<>(availableVariables);
         }
 
         if (!availableVariables.isEmpty()) {
             return calculateOutPutVariables(execution, extensions, availableVariables);
-        }else{
+        } else {
             return Collections.emptyMap();
         }
     }
 
     private Map<String, Object> calculateOutPutVariables(MappingExecutionContext execution,
                                                          ProcessExtensionModel extensions,
-                                                         Map<String, Object> availableVariables){
+                                                         Map<String, Object> availableVariables) {
         Map<String, Object> outboundVariables = new HashMap<>();
         ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getActivityId());
         Map<String, Mapping> outputMappings = processVariablesMapping.getOutputs();
@@ -141,9 +147,9 @@ public class VariablesMappingProvider {
             VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
 
             if (processVariableDefinition != null && calculateOutPutMappedValue(mapping.getValue(),
-                                                                                availableVariables).isPresent()) {
+                    availableVariables).isPresent()) {
                 outboundVariables.put(name, calculateOutPutMappedValue(mapping.getValue(),
-                                                                       availableVariables).get());
+                        availableVariables).get());
             }
         }
 

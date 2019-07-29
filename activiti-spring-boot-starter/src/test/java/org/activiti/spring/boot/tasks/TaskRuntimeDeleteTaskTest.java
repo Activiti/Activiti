@@ -86,10 +86,10 @@ public class TaskRuntimeDeleteTaskTest {
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
         // Claim a task created for a group
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
-        assertThat(claimedTask.getAssignee()).isEqualTo("salaboy");
+        assertThat(claimedTask.getAssignee()).isEqualTo("user");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
 

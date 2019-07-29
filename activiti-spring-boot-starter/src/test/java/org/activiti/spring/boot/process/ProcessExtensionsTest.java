@@ -48,7 +48,7 @@ public class ProcessExtensionsTest {
     @Test
     public void processInstanceHasInitialVariables() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
@@ -84,7 +84,7 @@ public class ProcessExtensionsTest {
     public void processInstanceHasValidInitialVariables() throws ParseException {
 
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
@@ -121,7 +121,7 @@ public class ProcessExtensionsTest {
 
     @Test
     public void processInstanceFailsWithoutRequiredVariables() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
@@ -137,7 +137,7 @@ public class ProcessExtensionsTest {
     @Test
     public void processInstanceFailsIfVariableTypeIncorrect() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 

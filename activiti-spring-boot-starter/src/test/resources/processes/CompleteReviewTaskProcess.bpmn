@@ -15,7 +15,7 @@
       <bpmn2:outgoing>SequenceFlow_00ryslt</bpmn2:outgoing>
     </bpmn2:userTask>
     <bpmn2:sequenceFlow id="SequenceFlow_1t6lqcg" sourceRef="Task_1on6ei6" targetRef="ExclusiveGateway_1an63e2" />
-    <bpmn2:userTask id="Task_1on6ei6" name="review-task" activiti:assignee="salaboy">
+    <bpmn2:userTask id="Task_1on6ei6" name="review-task" activiti:assignee="user">
       <bpmn2:incoming>SequenceFlow_00ryslt</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1t6lqcg</bpmn2:outgoing>
     </bpmn2:userTask>

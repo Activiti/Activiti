@@ -45,7 +45,7 @@ public class TaskRuntimeClaimTaskFromProcessTest {
     @Test
     public void claimTaskWithoutGroup() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         ProcessInstance twoTaskInstance = processRuntime.start(ProcessPayloadBuilder.start()

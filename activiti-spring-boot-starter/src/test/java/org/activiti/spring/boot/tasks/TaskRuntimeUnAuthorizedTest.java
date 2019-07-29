@@ -65,7 +65,7 @@ public class TaskRuntimeUnAuthorizedTest {
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
         // Claim should throw a NotFoundException due you are not a candidate
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         Throwable throwable = catchThrowable(() ->

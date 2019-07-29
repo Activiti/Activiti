@@ -60,17 +60,17 @@ public class RuntimeTestConfiguration {
     public UserDetailsService myUserDetailsService() {
         ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
 
-        List<GrantedAuthority> salaboyAuthorities = new ArrayList<>();
-        salaboyAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
-        salaboyAuthorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
+        List<GrantedAuthority> userAuthorities = new ArrayList<>();
+        userAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_USER"));
+        userAuthorities.add(new SimpleGrantedAuthority("GROUP_activitiTeam"));
 
-        extendedInMemoryUserDetailsManager.createUser(new User("salaboy",
-                                                               "password",
-                                                               salaboyAuthorities));
+//        extendedInMemoryUserDetailsManager.createUser(new User("user",
+//                                                               "password",
+//                                                               userAuthorities));
 
         extendedInMemoryUserDetailsManager.createUser(new User("user",
                                                                "password",
-                                                               salaboyAuthorities));
+                                                               userAuthorities));
 
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();

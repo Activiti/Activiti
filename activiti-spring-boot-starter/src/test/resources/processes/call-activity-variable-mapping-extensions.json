@@ -50,10 +50,6 @@
             "type": "value",
             "value": 5
           },
-          "input-static-value": {
-            "type": "static_value",
-            "value": "a static value"
-          },
           "input-not-existing-value": {
             "type": "variable",
             "value": "not-existing"
@@ -65,14 +61,19 @@
             "value" : "subprocess-out-var1"},
           "age": {
             "type": "variable",
-            "value" : "subprocess-out-var2"},
-          "from-subprocess-static-value": {
-            "type": "static_value",
-            "value": "output-unmapped-variable-with-non-matching-name-id"
+            "value": "subprocess-out-var2"
           },
           "not-existing": {
             "type": "variable",
-            "value" : "subprocess-out-var1"}
+            "value": "subprocess-out-var1"
+          }
+        }
+      }
+    },
+    "constants": {
+      "Task_0v0jw9c": {
+        "input-static-value": {
+          "value": "a static value"
         }
       }
     }

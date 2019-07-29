@@ -61,7 +61,7 @@ public class TaskRuntimeTaskForOtherTest {
         assertThat(task.getAssignee()).isNull();
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         // Other users beside the owner shouldn't see the task
         tasks = taskRuntime.tasks(Pageable.of(0,
                 50));

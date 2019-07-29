@@ -43,11 +43,11 @@ public class TaskRuntimeStandaloneTaskTest {
     @Test
     public void createStandaloneTaskForSalaboy() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Task standAloneTask = taskRuntime.create(TaskPayloadBuilder.create()
                 .withName("cure Skipper")
-                .withAssignee("salaboy")
+                .withAssignee("user")
                 .build());
 
         assertThat(RuntimeTestConfiguration.createdTasks).contains(standAloneTask.getId());
@@ -58,7 +58,7 @@ public class TaskRuntimeStandaloneTaskTest {
         assertThat(tasks.getContent()).hasSize(1);
         Task task = tasks.getContent().get(0);
 
-        assertThat(task.getAssignee()).isEqualTo("salaboy");
+        assertThat(task.getAssignee()).isEqualTo("user");
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
         assertThat(task.isStandalone()).isTrue();
 
@@ -81,15 +81,15 @@ public class TaskRuntimeStandaloneTaskTest {
     @Test
     public void shouldEmmitEventForStandAloneTaskDeletion() {
         //given
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Task firstTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("First task")
-                                                         .withAssignee("salaboy")
+                                                         .withAssignee("user")
                                                          .build());
         Task secondTask = taskRuntime.create(TaskPayloadBuilder.create()
                                                          .withName("Second task")
-                                                         .withAssignee("salaboy")
+                                                         .withAssignee("user")
                                                          .build());
 
         //when
@@ -150,11 +150,11 @@ public class TaskRuntimeStandaloneTaskTest {
     @Test
     public void createStandaloneTaskFailWithEmptyName() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         Throwable throwable = catchThrowable(() -> taskRuntime.create(TaskPayloadBuilder.create()
-                                                                      .withAssignee("salaboy")
+                                                                      .withAssignee("user")
                                                                       .build()));
 
         //then

@@ -17,7 +17,7 @@
 
         <sequenceFlow id="flow2" sourceRef="timer" targetRef="userTask"/>
 
-        <userTask id="userTask" name="User Task" activiti:candidateUsers="salaboy"/>
+        <userTask id="userTask" name="User Task" activiti:candidateUsers="user"/>
 
         <sequenceFlow id="flow3" sourceRef="userTask" targetRef="theEnd"/>
 

@@ -2,6 +2,7 @@ package org.activiti.spring.process.model;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,9 +27,15 @@ public class ExtensionTest {
     @Test
     public void hasEmptyInputsMappingShouldReturnFalseWhenInputsMapIsEmpty(){
         Extension extension = new Extension();
+
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
         mapping.put("elementId", processVariablesMapping);
         extension.setMappings(mapping);
+
+        //empty constants as well
+        Map<String, ProcessConstantsMapping> constants = new HashMap<>();
+        constants.put("elementId", new ProcessConstantsMapping());
+        extension.setConstants(constants);
 
         assertThat(extension.hasEmptyInputsMapping("elementId")).isTrue();
     }

@@ -17,7 +17,7 @@
     
     <sequenceFlow sourceRef="theStart" targetRef="task" />
       
-    <userTask id="task" name="User Task" activiti:candidateUsers="salaboy"></userTask>
+    <userTask id="task" name="User Task" activiti:candidateUsers="user"></userTask>
          
     <boundaryEvent attachedToRef="task" id="timer" cancelActivity="false">
     	<timerEventDefinition>

@@ -19,10 +19,6 @@
     "mappings": {
       "myServiceTask": {
         "inputs": {
-          "nameAsStaticValue": {
-            "type": "static_value",
-            "value": "Paul"
-          },
           "age": {
             "type": "variable",
             "value": "age"
@@ -41,6 +37,13 @@
             "type": "variable",
             "value": "age"
           }
+        }
+      }
+    },
+    "constants": {
+      "myServiceTask": {
+        "nameAsStaticValue": {
+          "value": "Paul"
         }
       }
     }

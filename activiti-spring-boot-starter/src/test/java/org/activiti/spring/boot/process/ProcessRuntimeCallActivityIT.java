@@ -47,7 +47,7 @@ public class ProcessRuntimeCallActivityIT {
     @Test
     public void testCheckSubProcessTaskWhenCallActivity (){
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         // After the process has started, the subProcess task should be active
         ProcessInstance processInstance = processRuntime.start(

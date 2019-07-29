@@ -104,7 +104,7 @@ public class HistoryConfigurationTest {
 
     @Test
     public void shouldRecordHistory() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
