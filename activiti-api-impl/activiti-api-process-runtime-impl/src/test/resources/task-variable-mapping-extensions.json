@@ -1,5 +1,5 @@
 {
-  "id":"taskVarMapping",
+  "id": "taskVarMapping",
   "extensions": {
     "properties": {
       "process-variable-unmapped-1-id": {
@@ -37,6 +37,10 @@
           "task_input_variable_name_1": {
             "type": "VARIABLE",
             "value": "process_variable_inputmap_1"
+          },
+          "task_input_variable_name_2": {
+            "type": "VALUE",
+            "value": "the value"
           }
         },
         "outputs": {
@@ -62,8 +66,8 @@
         },
         "process_constant_2_2": {
           "value": "constant_2_value"
+        }
+      }
     }
-  }
-}
   }
 }

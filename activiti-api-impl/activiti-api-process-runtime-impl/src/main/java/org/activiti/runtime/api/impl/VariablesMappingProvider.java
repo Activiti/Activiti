@@ -37,9 +37,7 @@ public class VariablesMappingProvider {
                                                     DelegateExecution execution,
                                                     ProcessExtensionModel extensions) {
         if (inputMapping != null) {
-            if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())
-//                    || Mapping.SourceMappingType.STATIC_VALUE.equals(inputMapping.getType())
-            ) {
+            if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())) {
                 return Optional.of(inputMapping.getValue());
             }
 
@@ -70,8 +68,8 @@ public class VariablesMappingProvider {
         return calculateInputVariables(execution, extensions);
     }
 
-    protected Map<String, Object> calculateInputVariables(DelegateExecution execution,
-                                                          ProcessExtensionModel extensions) {
+    private Map<String, Object> calculateInputVariables(DelegateExecution execution,
+                                                        ProcessExtensionModel extensions) {
         Map<String, Object> inboundVariables = new HashMap<>();
 
         ProcessVariablesMapping processVariablesMapping = extensions.getExtensions().getMappingForFlowElement(execution.getCurrentActivityId());
@@ -94,8 +92,8 @@ public class VariablesMappingProvider {
         return inboundVariables;
     }
 
-    protected Optional<Object> calculateOutPutMappedValue(Mapping mapping,
-                                                          Map<String, Object> currentContextVariables) {
+    private Optional<Object> calculateOutPutMappedValue(Mapping mapping,
+                                                        Map<String, Object> currentContextVariables) {
         if (mapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(mapping.getType())) {
                 return Optional.of(mapping.getValue());
