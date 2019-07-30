@@ -29,6 +29,7 @@ import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.ManualTask;
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.bpmn.model.ReceiveTask;
@@ -70,6 +71,7 @@ import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchMessageEventActiv
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchSignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowCompensationEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowMessageEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowNoneEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowSignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
@@ -549,6 +551,13 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                                                            boolean interrupting) {
         return new BoundaryMessageEventActivityBehavior(messageEventDefinition,
                                                         interrupting);
+    }
+
+    @Override
+    public IntermediateThrowMessageEventActivityBehavior createIntermediateThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
+                                                                                                            MessageEventDefinition messageEventDefinition,
+                                                                                                            Message message) {
+        return new IntermediateThrowMessageEventActivityBehavior(throwEvent, messageEventDefinition, message);
     }
     
 }
