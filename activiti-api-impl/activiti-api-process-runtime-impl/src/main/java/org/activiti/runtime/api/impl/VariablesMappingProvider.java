@@ -91,7 +91,6 @@ public class VariablesMappingProvider {
             inboundVariables.put(mapping.getKey(), mapping.getValue().getValue());
         }
 
-        System.out.println("inboundVariables = " + inboundVariables);
         return inboundVariables;
     }
 
