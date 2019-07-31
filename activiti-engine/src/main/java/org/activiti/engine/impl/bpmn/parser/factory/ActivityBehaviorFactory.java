@@ -81,6 +81,7 @@ import org.activiti.engine.impl.bpmn.behavior.ShellActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ThrowMessageEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
@@ -215,4 +216,8 @@ public interface ActivityBehaviorFactory {
   public abstract BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(BoundaryEvent boundaryEvent, MessageEventDefinition messageEventDefinition, boolean interrupting);
   
   public abstract BoundaryCompensateEventActivityBehavior createBoundaryCompensateEventActivityBehavior(BoundaryEvent boundaryEvent, CompensateEventDefinition compensateEventDefinition, boolean interrupting);
+
+  public abstract ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(EndEvent endEvent,
+                                                                                                  MessageEventDefinition messageEventDefinition,
+                                                                                                  Message message);
 }

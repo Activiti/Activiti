@@ -88,6 +88,7 @@ import org.activiti.engine.impl.bpmn.behavior.ShellActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ThrowMessageEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
@@ -395,11 +396,19 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
 
   @Override
   public IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
-                                                                                                           MessageEventDefinition messageEventDefinition,
-                                                                                                           Message message) {
+                                                                                               MessageEventDefinition messageEventDefinition,
+                                                                                               Message message) {
       return wrappedActivityBehaviorFactory.createThrowMessageEventActivityBehavior(throwEvent, 
                                                                                     messageEventDefinition, 
                                                                                     message);
+  }
+  @Override
+  public ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(EndEvent endEvent,
+                                                                                         MessageEventDefinition messageEventDefinition,
+                                                                                         Message message) {
+      return wrappedActivityBehaviorFactory.createThrowMessageEndEventActivityBehavior(endEvent, 
+                                                                                       messageEventDefinition, 
+                                                                                       message);
   }
   
   // Mock support //////////////////////////////////////////////////////

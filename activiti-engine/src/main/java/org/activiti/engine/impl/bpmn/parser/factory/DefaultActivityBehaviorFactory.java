@@ -94,6 +94,7 @@ import org.activiti.engine.impl.bpmn.behavior.ShellActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ThrowMessageEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ThrowMessageJavaDelegate;
 import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
@@ -570,6 +571,17 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                                  message);
     }
 
+    @Override
+    public ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(EndEvent endEvent,
+                                                                                           MessageEventDefinition messageEventDefinition,
+                                                                                           Message message) {
+        ThrowMessageJavaDelegate javaDelegate = createThrowMessageJavaDelegate(messageEventDefinition, 
+                                                                               message);
+        return new ThrowMessageEndEventActivityBehavior(javaDelegate,
+                                                        messageEventDefinition, 
+                                                        message);
+    }
+    
     @SuppressWarnings("unchecked")
     protected <R> R createThrowMessageJavaDelegate(MessageEventDefinition messageEventDefinition,
                                                    Message message) {
