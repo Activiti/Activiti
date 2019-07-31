@@ -12,7 +12,10 @@
  */
 package org.activiti.engine.impl.bpmn.parser.factory;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -24,6 +27,7 @@ import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.ExclusiveGateway;
+import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
@@ -60,6 +64,7 @@ import org.activiti.engine.impl.bpmn.behavior.BoundarySignalEventActivityBehavio
 import org.activiti.engine.impl.bpmn.behavior.BoundaryTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.DefaultThrowMessageJavaDelegate;
 import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventSubProcessErrorStartEventActivityBehavior;
@@ -89,6 +94,7 @@ import org.activiti.engine.impl.bpmn.behavior.ShellActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ThrowMessageJavaDelegate;
 import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
@@ -554,10 +560,34 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     }
 
     @Override
-    public IntermediateThrowMessageEventActivityBehavior createIntermediateThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
-                                                                                                            MessageEventDefinition messageEventDefinition,
-                                                                                                            Message message) {
-        return new IntermediateThrowMessageEventActivityBehavior(throwEvent, messageEventDefinition, message);
+    public IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
+                                                                                                 MessageEventDefinition messageEventDefinition,
+                                                                                                 Message message) {
+        ThrowMessageJavaDelegate javaDelegate = createThrowMessageJavaDelegate(messageEventDefinition, 
+                                                                               message);
+        return new IntermediateThrowMessageEventActivityBehavior(javaDelegate,
+                                                                 messageEventDefinition, 
+                                                                 message);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <R> R createThrowMessageJavaDelegate(MessageEventDefinition messageEventDefinition,
+                                                   Message message) {
+        String className = getAttributeValue(messageEventDefinition.getAttributes(),
+                                             "class").orElse(DefaultThrowMessageJavaDelegate.class.getName());
+        
+        return (R) ClassDelegate.defaultInstantiateDelegate(className, Collections.emptyList());
     }
     
+    
+    protected Optional<String> getAttributeValue(Map<String, List<ExtensionAttribute>> attributes, 
+                                                 String name) {
+        return Optional.ofNullable(attributes)
+                       .filter(it -> it.containsKey("activiti"))
+                       .map(it -> it.get("activiti"))
+                       .flatMap(it -> it.stream()
+                                        .filter(el -> name.equals(el.getName()))
+                                        .findAny())
+                       .map(ExtensionAttribute::getValue);
+    }
 }

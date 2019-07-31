@@ -53,10 +53,11 @@ public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnPars
     } else if (eventDefinition instanceof MessageEventDefinition) { 
         MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
         Message message = bpmnParse.getBpmnModel().getMessage(messageEventDefinition.getMessageRef());
-        intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowMessageEventActivityBehavior(intermediateEvent, 
-                                                                                                                                 messageEventDefinition, 
-                                                                                                                                 message));
         
+        intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory()
+                                               .createThrowMessageEventActivityBehavior(intermediateEvent, 
+                                                                                        messageEventDefinition, 
+                                                                                        message));
     } else if (eventDefinition == null) {
       intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowNoneEventActivityBehavior(intermediateEvent));
     } else {

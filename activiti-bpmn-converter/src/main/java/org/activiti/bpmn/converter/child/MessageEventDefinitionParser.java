@@ -12,12 +12,17 @@
  */
 package org.activiti.bpmn.converter.child;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
+import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,6 +44,21 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
     eventDefinition.setMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_MESSAGE_REF));
     eventDefinition.setMessageExpression(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MESSAGE_EXPRESSION));
 
+    List<ExtensionAttribute> attributes = new LinkedList<>();
+            
+    for(int i=0; i < xtr.getAttributeCount(); i++) {
+        if(ACTIVITI_EXTENSIONS_NAMESPACE.equals(xtr.getAttributeNamespace(i))) {
+            ExtensionAttribute attr = new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, xtr.getAttributeLocalName(i));
+            attr.setValue(xtr.getAttributeValue(i));
+            
+            attributes.add(attr);
+        }
+    }
+
+    if(!attributes.isEmpty()) {
+        eventDefinition.setAttributes(Collections.singletonMap(ACTIVITI_EXTENSIONS_PREFIX, attributes));
+    }
+    
     if (!StringUtils.isEmpty(eventDefinition.getMessageRef())) {
 
       int indexOfP = eventDefinition.getMessageRef().indexOf(':');

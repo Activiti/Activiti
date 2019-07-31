@@ -192,7 +192,9 @@ public interface ActivityBehaviorFactory {
 
   public abstract IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(ThrowEvent throwEvent, CompensateEventDefinition compensateEventDefinition);
 
-  public abstract IntermediateThrowMessageEventActivityBehavior createIntermediateThrowMessageEventActivityBehavior(ThrowEvent throwEvent, MessageEventDefinition messageEventDefinition, Message message);
+  public abstract IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent, 
+                                                                                                        MessageEventDefinition messageEventDefinition, 
+                                                                                                        Message message);
   
   public abstract NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(EndEvent endEvent);
 

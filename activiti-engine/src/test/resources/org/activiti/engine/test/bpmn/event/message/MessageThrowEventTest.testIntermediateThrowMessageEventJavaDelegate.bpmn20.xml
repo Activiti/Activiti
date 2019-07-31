@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="Definitions_09e0d2h" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
-  <bpmn:process id="testIntermediateThrowMessageEvent" isExecutable="true">
+  <bpmn:process id="testIntermediateThrowMessageEventJavaDelegate" isExecutable="true">
     <bpmn:startEvent id="theStart">
       <bpmn:outgoing>flow1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="flow1" sourceRef="theStart" targetRef="messageThrow" />
     <bpmn:intermediateThrowEvent id="messageThrow">
-      <bpmn:extensionElements>
-        <activiti:executionListener class="org.activiti.engine.test.bpmn.event.message.MessageThrowEventTest$MyExecutionListener" event="start" />
-      </bpmn:extensionElements>
       <bpmn:incoming>flow1</bpmn:incoming>
       <bpmn:outgoing>flow2</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_0a38u1h" activiti:class="MyMessageSender" />
+      <bpmn:messageEventDefinition messageRef="Message_0a38u1h" activiti:class="org.activiti.engine.test.bpmn.event.message.MessageThrowEventTest$MyJavaDelegate" />
     </bpmn:intermediateThrowEvent>
     <bpmn:sequenceFlow id="flow2" sourceRef="messageThrow" targetRef="theEnd" />
     <bpmn:endEvent id="theEnd">
@@ -20,7 +17,7 @@
   </bpmn:process>
   <bpmn:message id="Message_0a38u1h" name="bpmnMessage" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="testIntermediateThrowMessageEvent">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="testIntermediateThrowMessageEventJavaDelegate">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="theStart">
         <dc:Bounds x="179" y="81" width="36" height="36" />
       </bpmndi:BPMNShape>

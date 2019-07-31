@@ -394,10 +394,12 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   }
 
   @Override
-  public IntermediateThrowMessageEventActivityBehavior createIntermediateThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
+  public IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
                                                                                                            MessageEventDefinition messageEventDefinition,
                                                                                                            Message message) {
-      return wrappedActivityBehaviorFactory.createIntermediateThrowMessageEventActivityBehavior(throwEvent, messageEventDefinition, message);
+      return wrappedActivityBehaviorFactory.createThrowMessageEventActivityBehavior(throwEvent, 
+                                                                                    messageEventDefinition, 
+                                                                                    message);
   }
   
   // Mock support //////////////////////////////////////////////////////

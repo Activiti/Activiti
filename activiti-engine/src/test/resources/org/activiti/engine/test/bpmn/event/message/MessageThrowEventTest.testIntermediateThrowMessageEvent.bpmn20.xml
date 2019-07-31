@@ -11,7 +11,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>flow1</bpmn:incoming>
       <bpmn:outgoing>flow2</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_0a38u1h" activiti:class="MyMessageSender" />
+      <bpmn:messageEventDefinition messageRef="Message_0a38u1h" />
     </bpmn:intermediateThrowEvent>
     <bpmn:sequenceFlow id="flow2" sourceRef="messageThrow" targetRef="theEnd" />
     <bpmn:endEvent id="theEnd">
