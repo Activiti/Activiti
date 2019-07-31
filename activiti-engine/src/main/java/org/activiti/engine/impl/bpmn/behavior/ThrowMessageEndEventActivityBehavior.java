@@ -26,4 +26,12 @@ public class ThrowMessageEndEventActivityBehavior extends NoneEndEventActivityBe
         
         super.execute(execution);
     }
+
+    public MessageEventDefinition getMessageEventDefinition() {
+        return messageEventDefinition;
+    }
+
+    public Message getMessage() {
+        return message;
+    }
 }
