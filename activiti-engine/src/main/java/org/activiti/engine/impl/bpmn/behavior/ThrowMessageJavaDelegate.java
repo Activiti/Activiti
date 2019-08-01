@@ -5,6 +5,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 
 public interface ThrowMessageJavaDelegate {
 
-    void execute(DelegateExecution execution, Message message);
+    Object execute(DelegateExecution execution, Message message);
 
 }

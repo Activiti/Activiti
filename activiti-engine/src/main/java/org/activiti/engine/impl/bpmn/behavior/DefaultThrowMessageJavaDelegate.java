@@ -6,7 +6,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 public class DefaultThrowMessageJavaDelegate implements ThrowMessageJavaDelegate {
 
     @Override
-    public void execute(DelegateExecution execution, Message message) {
+    public Object execute(DelegateExecution execution, Message message) {
         // Nothing here
+        return null;
     }
 }

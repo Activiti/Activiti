@@ -23,9 +23,11 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
     public static class MyJavaDelegate implements ThrowMessageJavaDelegate {
 
         @Override
-        public void execute(DelegateExecution execution, Message message) {
+        public Object execute(DelegateExecution execution, Message message) {
             delegateExecuted = true;
             MessageThrowEventTest.message = message;
+            
+            return null;
         }
       }
     
