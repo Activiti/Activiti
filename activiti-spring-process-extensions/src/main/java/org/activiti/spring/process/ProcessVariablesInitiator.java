@@ -13,9 +13,11 @@
 
 package org.activiti.spring.process;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.activiti.bpmn.model.FlowElement;
@@ -84,7 +86,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     }
 
     private Map<String, Object> processVariables(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
-        Map<String, Object> newVarsMap = new HashMap<>(variables);
+        Map<String, Object> newVarsMap = new HashMap<>(Optional.ofNullable(variables).orElse(Collections.emptyMap()));
         variableDefinitionMap.forEach((k,v) -> {
             if (!newVarsMap.containsKey(v.getName()) && v.getValue() != null) {
                 newVarsMap.put(v.getName(), createDefaultVariableValue(v));
