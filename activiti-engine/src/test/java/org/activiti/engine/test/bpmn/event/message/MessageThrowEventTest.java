@@ -64,5 +64,30 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
       assertTrue(message.getName().equals("endMessage"));
       assertTrue(delegateExecuted);
     }         
+
+    @Deployment
+    public void testIntermediateThrowMessageEventExpression() throws Exception {
+      delegateExecuted = false;
+      ProcessInstance pi = runtimeService.createProcessInstanceBuilder()
+                                         .processDefinitionKey("testIntermediateThrowMessageEventExpression")
+                                         .businessKey("foo")
+                                         .start();
+      
+      assertProcessEnded(pi.getProcessInstanceId());
+      assertTrue(message.getName().equals("bpmnMessage-foo"));
+      assertTrue(delegateExecuted);
+    }
     
+    @Deployment
+    public void testThrowMessageEndEventExpression() throws Exception {
+      delegateExecuted = false;
+      ProcessInstance pi = runtimeService.createProcessInstanceBuilder()
+                                         .processDefinitionKey("testThrowMessageEndEventExpression")
+                                         .businessKey("bar")
+                                         .start();
+      
+      assertProcessEnded(pi.getProcessInstanceId());
+      assertTrue(message.getName().equals("endMessage-bar"));
+      assertTrue(delegateExecuted);
+    }         
 }
