@@ -37,7 +37,7 @@ public class VariablesMappingProviderTest {
 
         //given
         ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-mapping-extensions.json"), ProcessExtensionModel.class);
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-mapping-extensions.json"), ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
         given(execution.getVariable("process_variable_inputmap_1")).willReturn("new-input-value");
@@ -61,7 +61,7 @@ public class VariablesMappingProviderTest {
     public void calculateInputVariablesShouldPassAllVariablesWhenThereIsNoMapping() throws Exception{
         //given
         ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-no-mapping-extensions.json"), ProcessExtensionModel.class);
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-no-mapping-extensions.json"), ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
         Map<String,Object> variables = new HashMap<>();
@@ -81,7 +81,7 @@ public class VariablesMappingProviderTest {
 
         //given
         ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-empty-mapping-extensions.json"), ProcessExtensionModel.class);
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-empty-mapping-extensions.json"), ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
 
@@ -97,7 +97,7 @@ public class VariablesMappingProviderTest {
 
         //given
         ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-mapping-extensions.json"), ProcessExtensionModel.class);
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-mapping-extensions.json"), ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
 
@@ -116,7 +116,7 @@ public class VariablesMappingProviderTest {
     public void calculateOutputVariablesShouldPassAllVariablesWhenThereIsNoMapping() throws Exception{
         //given
         ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-no-mapping-extensions.json"), ProcessExtensionModel.class);
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-no-mapping-extensions.json"), ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
 
@@ -137,7 +137,7 @@ public class VariablesMappingProviderTest {
 
         //given
         ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/main/resources/task-variable-empty-mapping-extensions.json"), ProcessExtensionModel.class);
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-empty-mapping-extensions.json"), ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
 

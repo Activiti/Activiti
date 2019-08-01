@@ -80,7 +80,7 @@ public class TaskRuntimeSaveTaskTest {
                 .build());
 
         // Complete should fail with a different user
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         Throwable throwable = catchThrowable(() ->
@@ -95,7 +95,7 @@ public class TaskRuntimeSaveTaskTest {
     @Test()
     public void testSaveCompleteReviewOutcomeTasksProcessWithVariables() {
         // given
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Map<String,Object> startVariables = new HashMap<>();
         startVariables.put("name","");
@@ -121,7 +121,7 @@ public class TaskRuntimeSaveTaskTest {
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task1.getId()).build());
 
         // reject task
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Task task2 = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent().get(0);
 
@@ -142,7 +142,7 @@ public class TaskRuntimeSaveTaskTest {
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task3.getId()).build());
 
         // approve task
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Task task4 = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent().get(0);
 

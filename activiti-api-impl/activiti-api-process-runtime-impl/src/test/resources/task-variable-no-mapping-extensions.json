@@ -1,5 +1,5 @@
 {
-  "id":"taskVarMapping",
+  "id":"taskVariableNoMapping",
   "extensions": {
     "properties": {
       "process-variable-unmapped-1-id": {
@@ -24,21 +24,7 @@
         "value": "outputmap1Value"
       }
     },
-    "mappings": {
-      "simpleTask": {
-        "inputs": {
-          "task_input_variable_name_1": {
-            "type": "VARIABLE",
-            "value": "process_variable_inputmap_1"
-          }
-        },
-        "outputs": {
-          "process_variable_outputmap_1": {
-            "type": "VARIABLE",
-            "value": "task_output_variable_name_1"
-          }
-        }
-      }
-    }
+    "mappings": {},
+    "constants": {}
   }
 }

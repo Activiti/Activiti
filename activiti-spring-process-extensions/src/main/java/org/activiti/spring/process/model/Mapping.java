@@ -22,16 +22,6 @@ public class Mapping {
 
     private Object value;
 
-    public enum SourceMappingType {
-
-        VARIABLE,
-
-        VALUE,
-
-        STATIC_VALUE
-
-    }
-
     public SourceMappingType getType() {
         return type;
     }
@@ -46,5 +36,14 @@ public class Mapping {
 
     public void setValue(Object value) {
         this.value = value;
+    }
+
+    public enum SourceMappingType {
+
+        VARIABLE,
+
+        VALUE
+
+
     }
 }

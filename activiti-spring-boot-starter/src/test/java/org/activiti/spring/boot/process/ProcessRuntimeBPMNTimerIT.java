@@ -99,7 +99,7 @@ public class ProcessRuntimeBPMNTimerIT {
     @Test
     public void shouldGetTimerCanceledEventByProcessDelete() {
         // GIVEN
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                .withProcessDefinitionKey(PROCESS_TIMER_CANCELLED_EVENT)
@@ -130,7 +130,7 @@ public class ProcessRuntimeBPMNTimerIT {
     @Test
     public void shouldGetTimerFiredScheduledEventsForProcessWithTimer() throws Exception{
         //given
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Date startTime = new Date();
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
@@ -214,7 +214,7 @@ public class ProcessRuntimeBPMNTimerIT {
     @Test
     public void shouldGetTimerCanceledEventOnBoundaryEvent() {
         //given
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                .withProcessDefinitionKey(PROCESS_TIMER_CANCELLED_EVENT)

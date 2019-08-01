@@ -39,7 +39,7 @@ public class ProcessRuntimeConnectorIT {
 
     @Before
     public void setUp() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
     }
 
     @After

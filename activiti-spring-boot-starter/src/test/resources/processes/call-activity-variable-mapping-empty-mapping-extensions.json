@@ -32,6 +32,8 @@
       }
     },
     "mappings": {
+    },
+    "constants": {
     }
   }
 }

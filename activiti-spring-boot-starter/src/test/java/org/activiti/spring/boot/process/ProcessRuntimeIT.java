@@ -121,7 +121,7 @@ public class    ProcessRuntimeIT {
 
     @Test
     public void shouldGetConfiguration() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         //when
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
 
@@ -132,7 +132,7 @@ public class    ProcessRuntimeIT {
     @Test
     public void shouldGetAvailableProcessDefinitionForTheGivenUser() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         Page<ProcessDefinition> processDefinitionPage = processRuntime.processDefinitions(Pageable.of(0,
@@ -149,7 +149,7 @@ public class    ProcessRuntimeIT {
     @Test
     public void createProcessInstanceAndValidateHappyPath() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
@@ -171,7 +171,7 @@ public class    ProcessRuntimeIT {
     @Test
     public void createProcessInstanceAndValidateDiscardPath() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
@@ -193,7 +193,7 @@ public class    ProcessRuntimeIT {
 
     @Test
     public void shouldGetProcessDefinitionFromDefinitionKey() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         ProcessDefinition categorizeHumanProcess = processRuntime.processDefinition(CATEGORIZE_HUMAN_PROCESS);
@@ -207,7 +207,7 @@ public class    ProcessRuntimeIT {
     @Test
     public void getProcessInstances() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
@@ -357,7 +357,7 @@ public class    ProcessRuntimeIT {
     @Test
     public void deleteProcessInstance() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
@@ -403,7 +403,7 @@ public class    ProcessRuntimeIT {
 
     @Test()
     public void adminFailTest() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         //when
         Throwable throwable = catchThrowable(() -> processAdminRuntime.processInstance("fakeId"));
         //then
@@ -425,7 +425,7 @@ public class    ProcessRuntimeIT {
     @Test
     public void updateProcessInstance() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
@@ -560,7 +560,7 @@ public class    ProcessRuntimeIT {
     @Test
     public void getSubprocesses() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Page<ProcessInstance> processInstancePage;
         ProcessInstance parentProcess,subProcess;
@@ -614,7 +614,7 @@ public class    ProcessRuntimeIT {
 
     @Test
     public void signal() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         // when
         SignalPayload signalPayload = new SignalPayload("The Signal", null);

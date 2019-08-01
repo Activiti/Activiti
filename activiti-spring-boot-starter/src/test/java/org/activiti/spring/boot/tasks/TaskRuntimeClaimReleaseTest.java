@@ -58,10 +58,10 @@ public class TaskRuntimeClaimReleaseTest {
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
         // Claim and Release
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
-        assertThat(claimedTask.getAssignee()).isEqualTo("salaboy");
+        assertThat(claimedTask.getAssignee()).isEqualTo("user");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(claimedTask.getId()).build());
@@ -105,12 +105,12 @@ public class TaskRuntimeClaimReleaseTest {
         assertThat(standAloneTask.getAssignee()).isNull();
         assertThat(standAloneTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
 
         // Claim task
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(standAloneTask.getId()).build());
-        assertThat(claimedTask.getAssignee()).isEqualTo("salaboy");
+        assertThat(claimedTask.getAssignee()).isEqualTo("user");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         // UnAuthorized release, task is assigned not to you and hence not visible anymore

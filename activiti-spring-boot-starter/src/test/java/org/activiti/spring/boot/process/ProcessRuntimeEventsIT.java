@@ -54,7 +54,7 @@ public class ProcessRuntimeEventsIT {
     public void shouldGetSameProcessInstanceIfForAllSequenceFlowTakenEvents(){
 
         //given
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
@@ -72,7 +72,7 @@ public class ProcessRuntimeEventsIT {
     public void shouldGetSameProcessInstanceIfForAllVariableCreatedEvents(){
 
         //given
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
@@ -89,7 +89,7 @@ public class ProcessRuntimeEventsIT {
     @Test
     public void shouldGetJustOneVariableCreatedEvent(){
         //given
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()
@@ -106,7 +106,7 @@ public class ProcessRuntimeEventsIT {
     @Test
     public void shouldGetJustThreeVariableCreatedEvent(){
         //given
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         ProcessInstance categorizeProcess = processRuntime.start(ProcessPayloadBuilder.start()

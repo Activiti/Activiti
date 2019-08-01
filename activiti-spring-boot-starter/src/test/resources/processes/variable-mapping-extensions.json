@@ -1,6 +1,6 @@
 {
-  "id":"connectorVarMapping",
-  "name":"myProcess.bpmn",
+  "id": "connectorVarMapping",
+  "name": "myProcess.bpmn",
   "extensions": {
     "properties": {
       "age-id": {
@@ -66,19 +66,24 @@
           "input-variable-name-3": {
             "type": "value",
             "value": 5
-          },
-          "input-static-value": {
-            "type": "static_value",
-            "value": "a static value"
           }
         },
         "outputs": {
           "name": {
             "type": "variable",
-            "value" : "out-variable-name-1"},
+            "value": "out-variable-name-1"
+          },
           "age": {
             "type": "variable",
-            "value" : "out-variable-name-2"}
+            "value": "out-variable-name-2"
+          }
+        }
+      }
+    },
+    "constants": {
+      "serviceTask": {
+        "input-static-value": {
+          "value": "a static value"
         }
       }
     }

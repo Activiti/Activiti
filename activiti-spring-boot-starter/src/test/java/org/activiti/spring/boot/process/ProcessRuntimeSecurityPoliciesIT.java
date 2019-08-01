@@ -45,7 +45,7 @@ public class ProcessRuntimeSecurityPoliciesIT {
     @Test
     public void getRestrictedProcessDefs() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration(); //@TODO: I should get the security policies defined here.
         assertThat(configuration).isNotNull();

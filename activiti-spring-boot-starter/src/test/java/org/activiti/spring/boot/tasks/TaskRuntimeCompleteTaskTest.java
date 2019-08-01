@@ -102,7 +102,7 @@ public class TaskRuntimeCompleteTaskTest {
         assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
 
         // Complete should fail with a different user
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         Throwable throwable = catchThrowable(() ->
@@ -117,7 +117,7 @@ public class TaskRuntimeCompleteTaskTest {
     @Test
     public void completeProcessTaskAndCheckReturnedTaskAndVariables() {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         Map<String,Object> startVariables = new HashMap<>();
         startVariables.put("start1","start1");
@@ -165,7 +165,7 @@ public class TaskRuntimeCompleteTaskTest {
         .containsExactly(
                       TaskStatus.ASSIGNED,
                       task.getOwner(),
-                      "salaboy",
+                      "user",
                       task.getName(), 
                       task.getDescription(),
                       task.getCreatedDate(),

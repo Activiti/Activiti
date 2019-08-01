@@ -56,7 +56,7 @@ public class ProcessExtensionsJsonVarsTest {
     @Test
     public void processInstanceHasValidInitialVariables() throws ParseException, IOException {
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
@@ -138,7 +138,7 @@ public class ProcessExtensionsJsonVarsTest {
 
     @Test
     public void processInstanceFailsIfVariableTypeIncorrect() {
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
@@ -159,7 +159,7 @@ public class ProcessExtensionsJsonVarsTest {
     @Test
     public void processInstanceFailsIfVariableCannotBeSerializedAsJson(){
 
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 

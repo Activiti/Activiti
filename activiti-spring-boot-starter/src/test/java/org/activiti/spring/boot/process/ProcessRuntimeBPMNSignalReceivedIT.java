@@ -74,7 +74,7 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
 
         //In this test processWithSignalStart1 should be started
         //given
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
         Page<ProcessDefinition> processDefinitionPage = processRuntime
                 .processDefinitions(Pageable.of(0,
                                                 10),
@@ -110,7 +110,7 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
     public void shouldGetOneSignalReceivedEventPerWaitingSignalsForNonStartSignals() {
 
         //given
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         ProcessInstance boundarySignalProcInst1 = processRuntime.start(ProcessPayloadBuilder.start()
                                                                                .withProcessDefinitionKey(PROCESS_WITH_BOUNDARY_SIGNAL)
@@ -165,7 +165,7 @@ public class ProcessRuntimeBPMNSignalReceivedIT {
     public void shouldGetSignalReceivedEventWithVariables() {
 
         //given
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         //when
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()

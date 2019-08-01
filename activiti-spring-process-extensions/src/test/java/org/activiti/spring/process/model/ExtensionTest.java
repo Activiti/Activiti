@@ -1,11 +1,11 @@
 package org.activiti.spring.process.model;
 
-import java.util.Collections;
-import java.util.HashMap;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+
+import java.util.Collections;
+import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -24,8 +24,9 @@ public class ExtensionTest {
     }
 
     @Test
-    public void hasEmptyInputsMappingShouldReturnFalseWhenInputsMapIsEmpty(){
+    public void hasEmptyInputsMappingShouldReturnTrueWhenInputsMapIsEmpty() {
         Extension extension = new Extension();
+
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
         mapping.put("elementId", processVariablesMapping);
         extension.setMappings(mapping);
@@ -34,7 +35,7 @@ public class ExtensionTest {
     }
 
     @Test
-    public void hasEmptyOutputsMappingShouldReturnFalseWhenOutputsMapIsEmpty(){
+    public void hasEmptyOutputsMappingShouldReturnTrueWhenOutputsMapIsEmpty() {
         Extension extension = new Extension();
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
         mapping.put("elementId", processVariablesMapping);
@@ -44,13 +45,21 @@ public class ExtensionTest {
     }
 
     @Test
-    public void hasNoMappingShouldReturnFalseWhenThereIsMapping(){
+    public void hasMappingShouldReturnTrueWhenThereIsMapping() {
         Extension extension = new Extension();
+
         HashMap<String, ProcessVariablesMapping> mapping = new HashMap<>();
         mapping.put("elementId", processVariablesMapping);
         extension.setMappings(mapping);
 
-        assertThat(extension.hasNoMapping("elementId")).isFalse();
+        assertThat(extension.hasMapping("elementId")).isTrue();
+    }
+
+    @Test
+    public void hasMappingShouldReturnFalseWhenThereIsNoMapping() {
+        Extension extension = new Extension();
+
+        assertThat(extension.hasMapping("elementId")).isFalse();
     }
 
 }
