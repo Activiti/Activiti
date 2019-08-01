@@ -212,10 +212,7 @@ public class ActivitiEventBuilder {
     if (flowElement instanceof FlowNode) {
       FlowNode flowNode = (FlowNode) flowElement;
       newEvent.setActivityType(parseActivityType(flowNode));
-      Object behaviour = flowNode.getBehavior();
-      if (behaviour != null) {
-        newEvent.setBehaviorClass(behaviour.getClass().getCanonicalName());
-      }
+      newEvent.setBehaviorClass(parseActivityBehavior(flowNode));
     }
 
     return newEvent;
@@ -226,7 +223,15 @@ public class ActivitiEventBuilder {
     elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
     return elementType;
   }
-
+  
+  protected static String parseActivityBehavior(FlowNode flowNode) {
+    Object behaviour = flowNode.getBehavior();
+    if (behaviour != null) {
+        return(behaviour.getClass().getCanonicalName());
+    }
+    return null;
+  }
+  
   public static ActivitiActivityCancelledEvent createActivityCancelledEvent(String activityId, String activityName, String executionId, 
       String processInstanceId, String processDefinitionId, String activityType, Object cause) {
 
@@ -270,9 +275,33 @@ public class ActivitiEventBuilder {
     newEvent.setProcessDefinitionId(processDefinitionId);
     newEvent.setProcessInstanceId(processInstanceId);
     newEvent.setMessageName(messageName);
-    newEvent.setMessageData(payload);
+    newEvent.setMessageData(payload);  
     return newEvent;
   }
+  
+  public static ActivitiMessageEvent createMessageEvent(ActivitiEventType type, 
+                                                        DelegateExecution execution,
+                                                        String messageName, 
+                                                        Object payload) {
+    ActivitiMessageEventImpl newEvent = new ActivitiMessageEventImpl(type);
+    newEvent.setMessageName(messageName);
+    newEvent.setMessageData(payload);  
+    
+    if (execution != null) {
+        newEvent.setActivityId(execution.getCurrentActivityId());
+        newEvent.setExecutionId(execution.getId());
+        newEvent.setProcessDefinitionId(execution.getProcessDefinitionId());
+        newEvent.setProcessInstanceId(execution.getProcessInstanceId());
+        
+        if (execution.getCurrentFlowElement() instanceof FlowNode) {
+            FlowNode flowNode = (FlowNode) execution.getCurrentFlowElement();
+            newEvent.setActivityType(parseActivityType(flowNode));
+            newEvent.setBehaviorClass(parseActivityBehavior(flowNode));
+            newEvent.setActivityName(flowNode.getName());
+        }
+    }  
+    return newEvent;
+  } 
 
   public static ActivitiErrorEvent createErrorEvent(ActivitiEventType type, String activityId, String errorId, String errorCode,
       String executionId, String processInstanceId, String processDefinitionId) {

@@ -5,7 +5,7 @@
       <bpmn:outgoing>flow1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="flow1" sourceRef="theStart" targetRef="messageThrow" />
-    <bpmn:intermediateThrowEvent id="messageThrow">
+    <bpmn:intermediateThrowEvent id="messageThrow" name="Throw Message">
       <bpmn:incoming>flow1</bpmn:incoming>
       <bpmn:outgoing>flow2</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_0a38u1h" activiti:class="org.activiti.engine.test.bpmn.event.message.MessageThrowEventTest$MyJavaDelegate" />
@@ -27,6 +27,9 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateThrowEvent_1b132f6_di" bpmnElement="messageThrow">
         <dc:Bounds x="265" y="81" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="245" y="124" width="78" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1ks2on9_di" bpmnElement="flow2">
         <di:waypoint x="301" y="99" />

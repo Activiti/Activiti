@@ -4,7 +4,10 @@ import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 
 public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNodeActivityBehavior {
 
@@ -27,7 +30,17 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
         
         Object payload = execute(execution, executionMessage);
         
-        // TODO dispatch event
+        CommandContext commandContext = Context.getCommandContext();
+        
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            commandContext
+                .getProcessEngineConfiguration()
+                .getEventDispatcher()
+                .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_SENT, 
+                                                                       execution, 
+                                                                       executionMessage.getName(), 
+                                                                       payload));
+          }
         
         super.execute(execution);
     }
