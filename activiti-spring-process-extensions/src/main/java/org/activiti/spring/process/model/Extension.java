@@ -80,9 +80,7 @@ public class Extension {
 
     public boolean hasEmptyInputsMapping(String elementId) {
         ProcessVariablesMapping processVariablesMapping = mappings.get(elementId);
-        ProcessConstantsMapping processConstantsMapping = constants.get(elementId);
-        return (processVariablesMapping != null && processVariablesMapping.getInputs().size() == 0) &&
-                (processConstantsMapping != null && processConstantsMapping.size() == 0);
+        return processVariablesMapping != null && processVariablesMapping.getInputs().size() == 0;
     }
 
     public boolean hasEmptyOutputsMapping(String elementId) {
@@ -90,12 +88,8 @@ public class Extension {
         return processVariablesMapping != null && processVariablesMapping.getOutputs().size() == 0;
     }
 
-    public boolean hasNoMapping(String taskId) {
-        return mappings.get(taskId) == null && constants.get(taskId) == null;
-    }
-
-    public boolean hasNoConstant(String taskId) {
-        return constants.get(taskId) == null;
+    public boolean hasMapping(String taskId) {
+        return mappings.get(taskId) != null;
     }
 
 

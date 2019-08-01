@@ -61,7 +61,7 @@ public class VariablesMappingProvider {
             return Collections.emptyMap();
         }
 
-        if (extensions.getExtensions().hasNoMapping(execution.getCurrentActivityId())) {
+        if (!extensions.getExtensions().hasMapping(execution.getCurrentActivityId())) {
             return new HashMap<>(execution.getVariables());
         }
 
@@ -119,7 +119,7 @@ public class VariablesMappingProvider {
             return Collections.emptyMap();
         }
 
-        if (extensions.getExtensions().hasNoMapping(execution.getActivityId())) {
+        if (!extensions.getExtensions().hasMapping(execution.getActivityId())) {
             return new HashMap<>(availableVariables);
         }
 
