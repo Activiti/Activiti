@@ -16,10 +16,16 @@
 
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.awaitility.Awaitility.await;
+
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.builders.GetVariablesPayloadBuilder;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNTimerCancelledEvent;
 import org.activiti.api.process.model.events.BPMNTimerEvent;
@@ -47,9 +53,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.awaitility.Awaitility.await;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles(ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT)
@@ -58,6 +61,7 @@ public class ProcessRuntimeBPMNTimerIT {
     private static final String PROCESS_INTERMEDIATE_TIMER_EVENT = "intermediateTimerEventExample";
     private static final String PROCESS_TIMER_CANCELLED_EVENT = "testTimerCancelledEvent";
     public static final String PROCESS_RUNTIME_BPMN_TIMER_IT = "ProcessRuntimeBPMNTimerIT";
+    private static final String VARIABLE_MAPPING_PROCESS_START_TIME = "testTimerStartEvent";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -93,6 +97,7 @@ public class ProcessRuntimeBPMNTimerIT {
 
     @After
     public void tearDown() {
+        processEngineConfiguration.getClock().reset();
         processCleanUpUtil.cleanUpWithAdmin();
     }
 
@@ -270,6 +275,51 @@ public class ProcessRuntimeBPMNTimerIT {
                 );
     }
 
+    @Test
+    public void shouldExecuteProcessWithTimerStartExtension() {
+
+        securityUtil.logInAs("user");
+        
+        Date startTime = new Date();
+        
+        //when
+        Page<ProcessInstance> processInstances = processRuntime.processInstances(Pageable.of(0,
+                                                                                             50));
+        //then
+        assertThat(processInstances).isNotNull();
+        assertThat(processInstances.getContent()).isEmpty();
+            
+        //when shift 10 minutes
+        long waitTime = 600 * 1000;
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + waitTime));
+        
+        //then
+        await().untilAsserted(() -> {
+            
+            securityUtil.logInAs("user");
+            
+            Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
+                                                                                                    50));
+            //then
+            assertThat(processInstancePage).isNotNull();
+            assertThat(processInstancePage.getContent()).isNotEmpty();
+            
+            ProcessInstance process = processInstancePage.getContent().get(0);
+            assertThat(process.getProcessDefinitionKey()).isEqualTo(VARIABLE_MAPPING_PROCESS_START_TIME);                                                          
+            
+            List<VariableInstance> variables = processRuntime.variables(new GetVariablesPayloadBuilder()
+                    .withProcessInstance(process)
+                    .build());
+    
+            assertThat(variables).extracting(VariableInstance::getName,
+                    VariableInstance::getValue)
+                    .containsOnly(
+                            tuple("process_variable_name",
+                                  "value")
+                    );
+        });
+    }
+    
     public void clear() {
         listenerFired.clear();
         listenerScheduled.clear();
