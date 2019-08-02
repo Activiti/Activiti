@@ -62,7 +62,7 @@ public class ProcessVariablesInitiatorIT {
     static class ContextConfiguration {
 
         @Bean
-        ObjectMapper objectMapper() {
+        protected ObjectMapper objectMapper() {
             return OBJECT_MAPPER;
         }
     }
