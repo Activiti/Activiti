@@ -7,7 +7,13 @@
     <bpmn:sequenceFlow id="flow1" sourceRef="theStart" targetRef="theEnd" />
     <bpmn:endEvent id="theEnd" name="Throw Message">
       <bpmn:incoming>flow1</bpmn:incoming>
-      <bpmn:messageEventDefinition messageRef="Message_0a38u1h" activiti:class="org.activiti.engine.test.bpmn.event.message.MessageThrowEventTest$MyJavaDelegate" />
+      <bpmn:messageEventDefinition messageRef="Message_0a38u1h" activiti:class="org.activiti.engine.test.bpmn.event.message.MessageThrowEventTest$MyJavaDelegate">
+        <bpmn:extensionElements>
+          <activiti:field name="payload">
+            <activiti:string>payload</activiti:string>
+          </activiti:field>
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
     </bpmn:endEvent>
   </bpmn:process>
   <bpmn:message id="Message_0a38u1h" name="endMessage" />

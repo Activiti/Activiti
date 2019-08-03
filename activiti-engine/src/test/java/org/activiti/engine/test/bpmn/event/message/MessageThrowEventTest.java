@@ -3,7 +3,6 @@ package org.activiti.engine.test.bpmn.event.message;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.activiti.bpmn.model.Message;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -12,7 +11,8 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowMessageEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ThrowMessageEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ThrowMessageJavaDelegate;
+import org.activiti.engine.impl.delegate.ThrowMessage;
+import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -23,7 +23,7 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
 
     private static boolean listenerExecuted;
     private static boolean delegateExecuted;
-    private static Message message;
+    private static ThrowMessage message;
     
     private static List<ActivitiEvent> receivedEvents = new LinkedList<>();
 
@@ -33,14 +33,14 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
       }
     }
 
-    public static class MyJavaDelegate implements ThrowMessageJavaDelegate {
+    public static class MyJavaDelegate implements ThrowMessageDelegate {
 
         @Override
-        public Object execute(DelegateExecution execution, Message message) {
+        public boolean send(DelegateExecution execution, ThrowMessage message) {
             delegateExecuted = true;
             MessageThrowEventTest.message = message;
             
-            return "payload";
+            return true;
         }
       }
     
@@ -221,5 +221,33 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
       assertTrue(event.getExecutionId() != null);      
       
     }
+    
+    @Deployment
+    public void testIntermediateThrowMessageEventDelegateExpression() throws Exception {
+      delegateExecuted = false;
+      ProcessInstance pi = runtimeService.createProcessInstanceBuilder()
+                                         .processDefinitionKey("process")
+                                         .variable("foo", "payload")
+                                         .start();
+      
+      assertProcessEnded(pi.getProcessInstanceId());
+      assertTrue(message.getName().equals("bpmnMessage"));
+      assertTrue(delegateExecuted);
+
+      assertTrue(receivedEvents.size() > 0);
+      
+      ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+      
+      assertTrue(event.getActivityId().equals("messageThrow"));
+      assertTrue(event.getActivityType().equals("throwEvent"));
+      assertTrue(event.getActivityName().equals("Throw Message"));
+      assertTrue(event.getBehaviorClass().equals(IntermediateThrowMessageEventActivityBehavior.class.getName()));
+      assertTrue(event.getMessageName().equals("bpmnMessage"));
+      assertTrue(event.getMessageData().equals("payload"));
+      assertTrue(event.getProcessDefinitionId().equals(pi.getProcessDefinitionId()));
+      assertTrue(event.getProcessInstanceId().equals(pi.getId()));
+      assertTrue(event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT));
+      assertTrue(event.getExecutionId() != null);
+    }    
     
 }

@@ -19,6 +19,7 @@ import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FieldExtension;
+import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SendTask;
 import org.activiti.bpmn.model.ServiceTask;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +34,10 @@ public class FieldExtensionParser extends BaseChildElementParser {
   }
 
   public boolean accepts(BaseElement element) {
-    return ((element instanceof ActivitiListener) || (element instanceof ServiceTask) || (element instanceof SendTask));
+    return ((element instanceof ActivitiListener) 
+            || (element instanceof ServiceTask) 
+            || (element instanceof SendTask)
+            || (element instanceof MessageEventDefinition));
   }
 
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
@@ -75,8 +79,10 @@ public class FieldExtensionParser extends BaseChildElementParser {
       ((ActivitiListener) parentElement).getFieldExtensions().add(extension);
     } else if (parentElement instanceof ServiceTask) {
       ((ServiceTask) parentElement).getFieldExtensions().add(extension);
-    } else {
+    } else if (parentElement instanceof SendTask){
       ((SendTask) parentElement).getFieldExtensions().add(extension);
+    } else if (parentElement instanceof MessageEventDefinition){
+      ((MessageEventDefinition) parentElement).getFieldExtensions().add(extension);
     }
   }
 }

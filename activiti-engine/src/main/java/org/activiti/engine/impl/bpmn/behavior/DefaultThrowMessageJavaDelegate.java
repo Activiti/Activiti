@@ -1,13 +1,13 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
-import org.activiti.bpmn.model.Message;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.delegate.ThrowMessage;
+import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 
-public class DefaultThrowMessageJavaDelegate implements ThrowMessageJavaDelegate {
+public class DefaultThrowMessageJavaDelegate implements ThrowMessageDelegate {
 
     @Override
-    public Object execute(DelegateExecution execution, Message message) {
-        // Nothing here
-        return null;
+    public boolean send(DelegateExecution execution, ThrowMessage message) {
+        return true;
     }
 }

@@ -1,25 +1,31 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.List;
+
 import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
-import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
+import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 
 public class IntermediateThrowMessageEventActivityBehavior extends AbstractThrowMessageEventActivityBehavior {
 
     private static final long serialVersionUID = 1L;
     
-    private final ThrowMessageJavaDelegate delegate;
+    private final ThrowEvent throwEvent;
     
-    public IntermediateThrowMessageEventActivityBehavior(ThrowMessageJavaDelegate activityBehavior,
+    public IntermediateThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
+                                                         ThrowMessageDelegate delegate,
                                                          MessageEventDefinition messageEventDefinition,
-                                                         Message message) {
-        super(messageEventDefinition, message);
-        this.delegate = activityBehavior;
+                                                         Message message,
+                                                         List<FieldDeclaration> fieldDeclarations) {
+        super(delegate, messageEventDefinition, message, fieldDeclarations);
+        
+        this.throwEvent = throwEvent;
     }
 
-    @Override
-    public Object execute(DelegateExecution execution, Message message) {
-        
-        return delegate.execute(execution, message);
+    public ThrowEvent getThrowEvent() {
+        return throwEvent;
     }
+
 }

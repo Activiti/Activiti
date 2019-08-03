@@ -95,7 +95,6 @@ import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ThrowMessageEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ThrowMessageJavaDelegate;
 import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
@@ -105,6 +104,7 @@ import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.apache.commons.lang3.StringUtils;
 
@@ -564,22 +564,35 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     public IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
                                                                                                  MessageEventDefinition messageEventDefinition,
                                                                                                  Message message) {
-        ThrowMessageJavaDelegate javaDelegate = createThrowMessageJavaDelegate(messageEventDefinition, 
-                                                                               message);
-        return new IntermediateThrowMessageEventActivityBehavior(javaDelegate,
+        
+ 
+        List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(messageEventDefinition.getFieldExtensions());
+        
+        ThrowMessageDelegate javaDelegate = createThrowMessageJavaDelegate(messageEventDefinition, 
+                                                                           message);
+
+        return new IntermediateThrowMessageEventActivityBehavior(throwEvent,
+                                                                 javaDelegate,
                                                                  messageEventDefinition, 
-                                                                 message);
+                                                                 message,
+                                                                 fieldDeclarations);
+
     }
 
     @Override
     public ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(EndEvent endEvent,
                                                                                            MessageEventDefinition messageEventDefinition,
                                                                                            Message message) {
-        ThrowMessageJavaDelegate javaDelegate = createThrowMessageJavaDelegate(messageEventDefinition, 
-                                                                               message);
-        return new ThrowMessageEndEventActivityBehavior(javaDelegate,
+        ThrowMessageDelegate javaDelegate = createThrowMessageJavaDelegate(messageEventDefinition, 
+                                                                           message);
+
+        List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(messageEventDefinition.getFieldExtensions());
+        
+        return new ThrowMessageEndEventActivityBehavior(endEvent,
+                                                        javaDelegate,
                                                         messageEventDefinition, 
-                                                        message);
+                                                        message,
+                                                        fieldDeclarations);
     }
     
     @SuppressWarnings("unchecked")
