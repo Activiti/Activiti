@@ -98,7 +98,7 @@ public class ProcessRuntimeBPMNMessageIT {
     public void shoulEventsForProcessWithThrowMessage() throws Exception{
 
         
-        securityUtil.logInAs("salaboy");
+        securityUtil.logInAs("user");
 
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withProcessDefinitionKey(PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT)
