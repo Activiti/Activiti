@@ -10,8 +10,14 @@
       <bpmn:outgoing>flow2</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="Message_0a38u1h" activiti:class="org.activiti.engine.test.bpmn.event.message.MessageThrowEventTest$MyJavaDelegate">
         <bpmn:extensionElements>
-          <activiti:field name="payload">
+          <activiti:field name="foo">
             <activiti:expression>${foo}</activiti:expression>
+          </activiti:field>
+          <activiti:field name="businessKey">
+            <activiti:expression>${execution.processInstanceBusinessKey}</activiti:expression>
+          </activiti:field>
+          <activiti:field name="key">
+            <activiti:string>value</activiti:string>
           </activiti:field>
         </bpmn:extensionElements> 
       </bpmn:messageEventDefinition>

@@ -1,7 +1,10 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.AbstractMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
@@ -78,24 +81,33 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
 
     protected String getMessageName(DelegateExecution execution) {
         Expression expression = Context.getProcessEngineConfiguration()
-                .getExpressionManager()
-                .createExpression(message.getName());
+                                       .getExpressionManager()
+                                       .createExpression(message.getName());
 
         return expression.getValue(execution)
                          .toString();
         
     }
     
-    protected Optional<Object> getMessagePayload(DelegateExecution execution) {
+    protected Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
         // inject payload
-        return fieldDeclarations.stream()
-                                .filter(it -> "payload".equals(it.getName()))
-                                .map(FieldDeclaration::getValue)
-                                .map(it -> (Expression.class.isInstance(it)) 
-                                                 ? Expression.class.cast(it).getValue(execution) 
-                                                 : it)
-                                .findFirst();
+        return Optional.of(fieldDeclarations.stream()
+                                            .map(field -> applyFieldDeclaration(execution, field))
+                                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+                          ).filter(result -> !result.isEmpty());
+        
     }
+    
+    protected Map.Entry<String, Object> applyFieldDeclaration(DelegateExecution execution, FieldDeclaration field) {
+        return Optional.of(field)
+                       .map(FieldDeclaration::getValue)
+                       .map(value -> (Expression.class.isInstance(value)) 
+                                    ? Expression.class.cast(value).getValue(execution) 
+                                    : value)
+                       .map(value -> new AbstractMap.SimpleImmutableEntry<>(field.getName(), value))
+                       .get();
+    }
+    
     
     protected void dispatchEvent(DelegateExecution execution, ThrowMessage throwMessage) {
         CommandContext commandContext = Context.getCommandContext();

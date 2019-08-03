@@ -1,7 +1,10 @@
 package org.activiti.engine.test.bpmn.event.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -110,7 +113,7 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
       assertTrue(event.getActivityName().equals("Throw Message"));
       assertTrue(event.getBehaviorClass().equals(IntermediateThrowMessageEventActivityBehavior.class.getName()));
       assertTrue(event.getMessageName().equals("bpmnMessage"));
-      assertTrue(event.getMessageData().equals("payload"));
+      assertTrue(event.getMessageData() != null);
       assertTrue(event.getProcessDefinitionId().equals(pi.getProcessDefinitionId()));
       assertTrue(event.getProcessInstanceId().equals(pi.getId()));
       assertTrue(event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT));
@@ -157,7 +160,7 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
       assertTrue(event.getActivityName().equals("Throw Message"));
       assertTrue(event.getBehaviorClass().equals(ThrowMessageEndEventActivityBehavior.class.getName()));
       assertTrue(event.getMessageName().equals("endMessage"));
-      assertTrue(event.getMessageData().equals("payload"));
+      assertTrue(event.getMessageData() != null);
       assertTrue(event.getProcessDefinitionId().equals(pi.getProcessDefinitionId()));
       assertTrue(event.getProcessInstanceId().equals(pi.getId()));
       assertTrue(event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT));
@@ -186,7 +189,7 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
       assertTrue(event.getActivityName().equals("Throw Message"));
       assertTrue(event.getBehaviorClass().equals(IntermediateThrowMessageEventActivityBehavior.class.getName()));
       assertTrue(event.getMessageName().equals("bpmnMessage-foo"));
-      assertTrue(event.getMessageData().equals("payload"));
+      assertTrue(event.getMessageData() != null);
       assertTrue(event.getProcessDefinitionId().equals(pi.getProcessDefinitionId()));
       assertTrue(event.getProcessInstanceId().equals(pi.getId()));
       assertTrue(event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT));
@@ -214,7 +217,7 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
       assertTrue(event.getActivityName().equals("Throw Message"));
       assertTrue(event.getBehaviorClass().equals(ThrowMessageEndEventActivityBehavior.class.getName()));
       assertTrue(event.getMessageName().equals("endMessage-bar"));
-      assertTrue(event.getMessageData().equals("payload"));
+      assertTrue(event.getMessageData() != null);
       assertTrue(event.getProcessDefinitionId().equals(pi.getProcessDefinitionId()));
       assertTrue(event.getProcessInstanceId().equals(pi.getId()));
       assertTrue(event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT));
@@ -223,11 +226,12 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
     }
     
     @Deployment
-    public void testIntermediateThrowMessageEventDelegateExpression() throws Exception {
+    public void testIntermediateThrowMessageEventFieldExtensions() throws Exception {
       delegateExecuted = false;
       ProcessInstance pi = runtimeService.createProcessInstanceBuilder()
                                          .processDefinitionKey("process")
-                                         .variable("foo", "payload")
+                                         .variable("foo", "bar")
+                                         .businessKey("customerId")
                                          .start();
       
       assertProcessEnded(pi.getProcessInstanceId());
@@ -243,7 +247,10 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
       assertTrue(event.getActivityName().equals("Throw Message"));
       assertTrue(event.getBehaviorClass().equals(IntermediateThrowMessageEventActivityBehavior.class.getName()));
       assertTrue(event.getMessageName().equals("bpmnMessage"));
-      assertTrue(event.getMessageData().equals("payload"));
+      assertThat(message.getPayload()).as("should map payload from field extensions")
+                                      .isInstanceOf(Map.class)
+                                      .extracting("foo", "businessKey", "key")
+                                      .containsExactly("bar", "customerId", "value");
       assertTrue(event.getProcessDefinitionId().equals(pi.getProcessDefinitionId()));
       assertTrue(event.getProcessInstanceId().equals(pi.getId()));
       assertTrue(event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT));
