@@ -249,8 +249,8 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
       assertTrue(event.getMessageName().equals("bpmnMessage"));
       assertThat(message.getPayload()).as("should map payload from field extensions")
                                       .isInstanceOf(Map.class)
-                                      .extracting("foo", "businessKey", "key")
-                                      .containsExactly("bar", "customerId", "value");
+                                      .extracting("foo", "businessKey", "key", "bar")
+                                      .containsExactly("bar", "customerId", "value", null);
       assertTrue(event.getProcessDefinitionId().equals(pi.getProcessDefinitionId()));
       assertTrue(event.getProcessInstanceId().equals(pi.getId()));
       assertTrue(event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT));

@@ -1,10 +1,11 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
@@ -86,25 +87,32 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
 
         return expression.getValue(execution)
                          .toString();
-        
     }
     
     protected Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
-        // inject payload
-        return Optional.of(fieldDeclarations.stream()
-                                            .map(field -> applyFieldDeclaration(execution, field))
-                                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-                          ).filter(result -> !result.isEmpty());
+        Map<String, Object> payload = new LinkedHashMap<>();  
+                
+        fieldDeclarations.stream()
+                         .map(field -> applyFieldDeclaration(execution, 
+                                                             field))
+                         .forEach(entry -> payload.put(entry.getKey(), entry.getValue()));
         
+        return Optional.of(payload)
+                       .filter(map -> !map.isEmpty())
+                       .map(map -> Collections.unmodifiableMap(map));
     }
     
     protected Map.Entry<String, Object> applyFieldDeclaration(DelegateExecution execution, FieldDeclaration field) {
         return Optional.of(field)
-                       .map(FieldDeclaration::getValue)
-                       .map(value -> (Expression.class.isInstance(value)) 
-                                    ? Expression.class.cast(value).getValue(execution) 
-                                    : value)
-                       .map(value -> new AbstractMap.SimpleImmutableEntry<>(field.getName(), value))
+                       .map(f -> {
+                           Object value = Optional.ofNullable(f.getValue())
+                                                  .map(v -> (Expression.class.isInstance(v)) 
+                                                               ? Expression.class.cast(v).getValue(execution) 
+                                                               : v)
+                                                  .orElse(null);
+                           
+                           return new AbstractMap.SimpleImmutableEntry<>(field.getName(), value);
+                        })
                        .get();
     }
     

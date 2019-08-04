@@ -19,6 +19,9 @@
           <activiti:field name="key">
             <activiti:string>value</activiti:string>
           </activiti:field>
+          <activiti:field name="bar">
+            <activiti:expression>${null}</activiti:expression>
+          </activiti:field>
         </bpmn:extensionElements> 
       </bpmn:messageEventDefinition>
     </bpmn:intermediateThrowEvent>
