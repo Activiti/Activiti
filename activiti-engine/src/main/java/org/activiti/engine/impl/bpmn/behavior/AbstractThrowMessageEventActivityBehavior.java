@@ -54,9 +54,10 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
     public void execute(DelegateExecution execution) {
         ThrowMessage throwMessage = getThrowMessage(execution);
         
-        boolean result = send(execution, throwMessage);
+        boolean isSent = send(execution, throwMessage);
         
-        dispatchEvent(execution, throwMessage);
+        if(isSent)
+            dispatchEvent(execution, throwMessage);
         
         super.execute(execution);
     }
