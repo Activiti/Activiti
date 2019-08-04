@@ -1,8 +1,10 @@
 package org.activiti.engine.impl.delegate;
 
+import java.util.Optional;
+
 public class ThrowMessage {
     private final String name;
-    private Object payload;
+    private Optional<Object> payload;
 
     private ThrowMessage(Builder builder) {
         this.name = builder.name;
@@ -17,11 +19,11 @@ public class ThrowMessage {
         return name;
     }
     
-    public Object getPayload() {
+    public Optional<Object> getPayload() {
         return payload;
     }
 
-    public void setPayload(Object payload) {
+    public void setPayload(Optional<Object> payload) {
         this.payload = payload;
     }
 
@@ -50,7 +52,7 @@ public class ThrowMessage {
     public static final class Builder {
 
         private String name;
-        private Object payload;
+        private Optional<Object> payload;
 
         private Builder() {
         }
@@ -65,7 +67,7 @@ public class ThrowMessage {
             return this;
         }
 
-        public Builder payload(Object payload) {
+        public Builder payload(Optional<Object> payload) {
             this.payload = payload;
             return this;
         }

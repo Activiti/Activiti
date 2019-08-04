@@ -73,7 +73,7 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
     protected ThrowMessage getThrowMessage(DelegateExecution execution) {
         String name = getMessageName(execution);
         
-        Object payload = getMessagePayload(execution).orElse(null);
+        Optional<Object> payload = getMessagePayload(execution);
         
         return ThrowMessage.builder()
                            .name(name)
@@ -90,7 +90,7 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
                          .toString();
     }
     
-    protected Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
+    protected Optional<Object> getMessagePayload(DelegateExecution execution) {
         Map<String, Object> payload = new LinkedHashMap<>();  
                 
         fieldDeclarations.stream()
@@ -128,7 +128,8 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
                 .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_SENT, 
                                                                        execution, 
                                                                        throwMessage.getName(), 
-                                                                       throwMessage.getPayload()));
+                                                                       throwMessage.getPayload()
+                                                                                   .orElse(null)));
           }
         
     }
