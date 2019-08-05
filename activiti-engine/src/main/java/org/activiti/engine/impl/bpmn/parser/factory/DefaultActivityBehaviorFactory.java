@@ -64,7 +64,6 @@ import org.activiti.engine.impl.bpmn.behavior.BoundarySignalEventActivityBehavio
 import org.activiti.engine.impl.bpmn.behavior.BoundaryTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.DefaultThrowMessageJavaDelegate;
 import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventSubProcessErrorStartEventActivityBehavior;
@@ -104,8 +103,12 @@ import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.delegate.DefaultThrowMessageJavaDelegate;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
+import org.activiti.engine.impl.delegate.ThrowMessageDelegateExpression;
+import org.activiti.engine.impl.delegate.ThrowMessageJavaDelegate;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -565,14 +568,11 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                                                                  MessageEventDefinition messageEventDefinition,
                                                                                                  Message message) {
         
- 
+        ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
         List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(messageEventDefinition.getFieldExtensions());
         
-        ThrowMessageDelegate javaDelegate = createThrowMessageJavaDelegate(messageEventDefinition, 
-                                                                           message);
-
         return new IntermediateThrowMessageEventActivityBehavior(throwEvent,
-                                                                 javaDelegate,
+                                                                 throwMessageDelegate,
                                                                  messageEventDefinition, 
                                                                  message,
                                                                  fieldDeclarations);
@@ -583,27 +583,53 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     public ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(EndEvent endEvent,
                                                                                            MessageEventDefinition messageEventDefinition,
                                                                                            Message message) {
-        ThrowMessageDelegate javaDelegate = createThrowMessageJavaDelegate(messageEventDefinition, 
-                                                                           message);
-
+        
+        ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
         List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(messageEventDefinition.getFieldExtensions());
         
         return new ThrowMessageEndEventActivityBehavior(endEvent,
-                                                        javaDelegate,
+                                                        throwMessageDelegate,
                                                         messageEventDefinition, 
                                                         message,
                                                         fieldDeclarations);
     }
     
-    @SuppressWarnings("unchecked")
-    protected <R> R createThrowMessageJavaDelegate(MessageEventDefinition messageEventDefinition,
-                                                   Message message) {
-        String className = getAttributeValue(messageEventDefinition.getAttributes(),
-                                             "class").orElse(DefaultThrowMessageJavaDelegate.class.getName());
+    protected ThrowMessageDelegate createThrowMessageDelegate(MessageEventDefinition messageEventDefinition) {
+        Map<String, List<ExtensionAttribute>> attributes = messageEventDefinition.getAttributes();
         
-        return (R) ClassDelegate.defaultInstantiateDelegate(className, Collections.emptyList());
+        return checkClassDelegate(attributes).map(this::createThrowMessageJavaDelegate)
+                                             .map(Optional::of)
+                                             .orElseGet(() -> checkDelegateExpression(attributes)
+                                                                .map(this::createThrowMessageDelegateExpression))
+                                             .orElseGet(this::createDefaultThrowMessageDelegate);
     }
     
+    public ThrowMessageDelegate createThrowMessageJavaDelegate(String className) {
+        
+        Class<? extends ThrowMessageDelegate> clazz = ReflectUtil.loadClass(className)
+                                                                 .asSubclass(ThrowMessageDelegate.class);
+        
+        return new ThrowMessageJavaDelegate(clazz, Collections.emptyList());
+    }
+
+    public ThrowMessageDelegate createThrowMessageDelegateExpression(String delegateExpression) {
+        
+        Expression expression = expressionManager.createExpression(delegateExpression);        
+        
+        return new ThrowMessageDelegateExpression(expression, Collections.emptyList());
+    }
+    
+    public ThrowMessageDelegate createDefaultThrowMessageDelegate() {
+        return new DefaultThrowMessageJavaDelegate();
+    }    
+
+    protected Optional<String> checkClassDelegate(Map<String, List<ExtensionAttribute>> attributes ) {
+        return getAttributeValue(attributes, "class");
+    }
+
+    protected Optional<String> checkDelegateExpression(Map<String, List<ExtensionAttribute>> attributes ) {
+        return getAttributeValue(attributes, "delegateExpression");
+    }
     
     protected Optional<String> getAttributeValue(Map<String, List<ExtensionAttribute>> attributes, 
                                                  String name) {
@@ -614,5 +640,5 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                         .filter(el -> name.equals(el.getName()))
                                         .findAny())
                        .map(ExtensionAttribute::getValue);
-    }
+    }      
 }

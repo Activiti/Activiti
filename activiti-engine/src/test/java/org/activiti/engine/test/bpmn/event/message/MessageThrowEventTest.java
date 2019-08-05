@@ -16,13 +16,13 @@ import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowMessageEventActiv
 import org.activiti.engine.impl.bpmn.behavior.ThrowMessageEndEventActivityBehavior;
 import org.activiti.engine.impl.delegate.ThrowMessage;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.junit.After;
 import org.junit.Before;
 
-public class MessageThrowEventTest extends PluggableActivitiTestCase {
+public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
     private static boolean listenerExecuted;
     private static boolean delegateExecuted;
@@ -58,6 +58,11 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
             return false;
         }            
     };
+
+    public MessageThrowEventTest() {
+        super("/org/activiti/engine/test/bpmn/event/message/MessageThrowEventTest.activiti.cfg.xml");
+      }
+    
 
     @Before
     public void setUp() {
@@ -255,6 +260,42 @@ public class MessageThrowEventTest extends PluggableActivitiTestCase {
       assertTrue(event.getProcessInstanceId().equals(pi.getId()));
       assertTrue(event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT));
       assertTrue(event.getExecutionId() != null);
-    }    
+    }
     
+    @Deployment
+    public void testIntermediateThrowMessageEventDelegateExpression() throws Exception {
+      delegateExecuted = false;
+      ProcessInstance pi = runtimeService.createProcessInstanceBuilder()
+                                         .processDefinitionKey("process")
+                                         .variable("foo", "bar")
+                                         .businessKey("customerId")
+                                         .start();
+      
+      assertProcessEnded(pi.getProcessInstanceId());
+      assertThat(delegateExecuted).as("should execute delegate expression")
+                                  .isTrue();
+      
+      assertThat(message).isNotNull();
+      assertThat(message.getName()).isEqualTo("bpmnMessage");
+    }    
+
+    @Deployment
+    public void testThrowMessageEndEventDelegateExpression() throws Exception {
+      // given
+      delegateExecuted = false;
+      message = null;
+      
+      // when
+      ProcessInstance pi = runtimeService.startProcessInstanceByKey("process");
+      
+      // then
+      assertProcessEnded(pi.getProcessInstanceId());
+
+      assertThat(delegateExecuted).as("should execute delegate expression")
+                                  .isTrue();
+
+      assertThat(message).isNotNull();
+      assertThat(message.getName()).isEqualTo("endMessage");      
+      
+    }        
 }
