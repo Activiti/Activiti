@@ -85,10 +85,10 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
     
     public void testMyThrowMessageDelegateFactory() {
         assertThat(StandaloneProcessEngineConfiguration.class.cast(processEngine.getProcessEngineConfiguration())
-                   .getActivityBehaviorFactory())
-                   .as("should provide custom throw message delegate factory")
-                   .extracting("throwMessageDelegateFactory")
-                   .allSatisfy(MyThrowMessageDelegateFactory.class::isInstance);
+                                                             .getActivityBehaviorFactory())
+                                                             .as("should provide custom throw message delegate factory")
+                                                             .extracting("throwMessageDelegateFactory")
+                                                             .allSatisfy(MyThrowMessageDelegateFactory.class::isInstance);
     }
     
     @Deployment
