@@ -84,6 +84,9 @@
       "serviceTask": {
         "input-static-value": {
           "value": "a static value"
+        },
+        "integer-constant" : {
+          "value": 10
         }
       }
     }
