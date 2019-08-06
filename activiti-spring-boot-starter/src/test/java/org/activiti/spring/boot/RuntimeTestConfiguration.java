@@ -204,9 +204,11 @@ public class RuntimeTestConfiguration {
             String variableTwo = "input-variable-name-2";
             String variableThree = "input-variable-name-3";
             String staticValue = "input-static-value";
+            String integerConstant = "integer-constant";
 
             Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
             Integer offSet = (Integer) inBoundVariables.get(variableThree);
+            Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
 
             assertThat(inBoundVariables.entrySet())
                     .extracting(Map.Entry::getKey,
@@ -219,12 +221,14 @@ public class RuntimeTestConfiguration {
                             tuple(variableThree,
                                   5),
                             tuple(staticValue,
-                                  "a static value"));
+                                  "a static value"),
+                            tuple(integerConstant,
+                                  10));
             
             integrationContext.addOutBoundVariable("out-variable-name-1",
                                                    "outName");
             integrationContext.addOutBoundVariable("out-variable-name-2",
-                                                   currentAge + offSet);
+                                                   currentAge + offSet + integerConstantValue);
             integrationContext.addOutBoundVariable("out-unmapped-variable-matching-name",
                                                    "outTest");
             integrationContext.addOutBoundVariable("out-unmapped-variable-non-matching-name",

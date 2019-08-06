@@ -1,5 +1,7 @@
 package org.activiti.spring.boot.process;
 
+import java.util.List;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.GetVariablesPayloadBuilder;
@@ -14,10 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -51,7 +50,7 @@ public class ProcessRuntimeVariableMappingTest {
                 VariableInstance::getValue)
                 .containsOnly(
                         tuple("name", "outName"),
-                        tuple("age", 25),
+                        tuple("age", 35),
                         tuple("input-unmapped-variable-with-matching-name", "inTest"),
                         tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTest"),
                         tuple("nickName", "testName"),
