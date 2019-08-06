@@ -103,7 +103,6 @@ import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
-import org.activiti.engine.impl.delegate.DefaultThrowMessageJavaDelegate;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegateExpression;
 import org.activiti.engine.impl.delegate.ThrowMessageJavaDelegate;
@@ -597,15 +596,13 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     protected ThrowMessageDelegate createThrowMessageDelegate(MessageEventDefinition messageEventDefinition) {
         Map<String, List<ExtensionAttribute>> attributes = messageEventDefinition.getAttributes();
         
-        return checkClassDelegate(attributes).map(this::createThrowMessageJavaDelegate)
-                                             .map(Optional::of)
-                                             .orElseGet(() -> checkDelegateExpression(attributes)
-                                                                .map(this::createThrowMessageDelegateExpression))
-                                             .orElseGet(this::createDefaultThrowMessageDelegate);
+        return checkClassDelegate(attributes)
+                    .map(this::createThrowMessageJavaDelegate).map(Optional::of)
+                    .orElseGet(() -> checkDelegateExpression(attributes).map(this::createThrowMessageDelegateExpression))
+                    .orElseGet(this::createDefaultThrowMessageDelegate);
     }
     
     public ThrowMessageDelegate createThrowMessageJavaDelegate(String className) {
-        
         Class<? extends ThrowMessageDelegate> clazz = ReflectUtil.loadClass(className)
                                                                  .asSubclass(ThrowMessageDelegate.class);
         
@@ -613,15 +610,14 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     }
 
     public ThrowMessageDelegate createThrowMessageDelegateExpression(String delegateExpression) {
-        
         Expression expression = expressionManager.createExpression(delegateExpression);        
         
         return new ThrowMessageDelegateExpression(expression, Collections.emptyList());
     }
     
     public ThrowMessageDelegate createDefaultThrowMessageDelegate() {
-        return new DefaultThrowMessageJavaDelegate();
-    }    
+        return getThrowMessageDelegateFactory().create();
+    }
 
     protected Optional<String> checkClassDelegate(Map<String, List<ExtensionAttribute>> attributes ) {
         return getAttributeValue(attributes, "class");

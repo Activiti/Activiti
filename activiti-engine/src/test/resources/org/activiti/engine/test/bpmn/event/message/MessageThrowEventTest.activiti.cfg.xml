@@ -49,6 +49,8 @@
     <property name="history" value="full" />
     
     <property name="enableProcessDefinitionInfoCache" value="true" />
+    
+    <property name="activityBehaviorFactory" ref="activityBehaviorFactory" />
   </bean>
   
   <bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
@@ -56,6 +58,12 @@
     <property name="defaultTimerJobAcquireWaitTimeInMillis" value="1000" />
   </bean>
   
-  <bean id="throwMessageBean" class="org.activiti.engine.test.bpmn.event.message.MessageThrowEventTest$MyJavaDelegate"></bean>
+  <bean id="throwMessageBean" class="org.activiti.engine.test.bpmn.event.message.MessageThrowEventTest$MyJavaDelegate"/>
+
+  <bean id="activityBehaviorFactory" class="org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory">
+    <property name="throwMessageDelegateFactory" ref="throwMessageDelegateFactory" />
+  </bean>
+  
+  <bean id="throwMessageDelegateFactory" class="org.activiti.engine.test.bpmn.event.message.MessageThrowEventTest$MyThrowMessageDelegateFactory"/>
 
 </beans>

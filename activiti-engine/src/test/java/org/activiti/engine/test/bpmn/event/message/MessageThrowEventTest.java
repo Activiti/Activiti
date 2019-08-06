@@ -14,8 +14,10 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowMessageEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ThrowMessageEndEventActivityBehavior;
+import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.delegate.ThrowMessage;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
+import org.activiti.engine.impl.delegate.ThrowMessageDelegateFactory;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -29,6 +31,10 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
     private static ThrowMessage message;
     
     private static List<ActivitiEvent> receivedEvents = new LinkedList<>();
+    
+    public static class MyThrowMessageDelegateFactory implements ThrowMessageDelegateFactory {
+        
+    }
 
     public static class MyExecutionListener implements ExecutionListener {
       public void notify(DelegateExecution execution) {
@@ -75,6 +81,14 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
     @After
     public void tearDown() {
         runtimeService.removeEventListener(myListener);
+    }
+    
+    public void testMyThrowMessageDelegateFactory() {
+        assertThat(StandaloneProcessEngineConfiguration.class.cast(processEngine.getProcessEngineConfiguration())
+                   .getActivityBehaviorFactory())
+                   .as("should provide custom throw message delegate factory")
+                   .extracting("throwMessageDelegateFactory")
+                   .allSatisfy(MyThrowMessageDelegateFactory.class::isInstance);
     }
     
     @Deployment
@@ -297,5 +311,6 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
       assertThat(message).isNotNull();
       assertThat(message.getName()).isEqualTo("endMessage");      
       
-    }        
+    }
+   
 }
