@@ -16,14 +16,19 @@
 
 package org.activiti.runtime.api.impl;
 
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.spring.process.ProcessExtensionService;
-import org.activiti.spring.process.model.*;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.spring.process.ProcessExtensionService;
+import org.activiti.spring.process.model.ConstantDefinition;
+import org.activiti.spring.process.model.Mapping;
+import org.activiti.spring.process.model.ProcessConstantsMapping;
+import org.activiti.spring.process.model.ProcessExtensionModel;
+import org.activiti.spring.process.model.ProcessVariablesMapping;
+import org.activiti.spring.process.model.VariableDefinition;
 
 public class VariablesMappingProvider {
 
@@ -46,7 +51,7 @@ public class VariablesMappingProvider {
 
                 VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
                 if (processVariableDefinition != null) {
-                    return Optional.of(execution.getVariable(processVariableDefinition.getName()));
+                    return Optional.ofNullable(execution.getVariable(processVariableDefinition.getName()));
                 }
             }
         }
@@ -102,7 +107,7 @@ public class VariablesMappingProvider {
                     String name = mapping.getValue().toString();
 
                     return currentContextVariables != null ?
-                            Optional.of(currentContextVariables.get(name)) :
+                            Optional.ofNullable(currentContextVariables.get(name)) :
                             Optional.empty();
                 }
             }

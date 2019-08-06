@@ -50,6 +50,12 @@
         "type": "string",
         "required": false,
         "value": "default"
+      },
+      "property-with-no-default-value-id": {
+        "id": "property-with-no-default-value-id",
+        "name": "property-with-no-default-value-name",
+        "type": "string",
+        "required": false
       }
     },
     "mappings": {
@@ -66,6 +72,10 @@
           "input-variable-name-3": {
             "type": "value",
             "value": 5
+          },
+          "input-variable-name-4": {
+            "type": "variable",
+            "value": "property-with-no-default-value-name"
           }
         },
         "outputs": {

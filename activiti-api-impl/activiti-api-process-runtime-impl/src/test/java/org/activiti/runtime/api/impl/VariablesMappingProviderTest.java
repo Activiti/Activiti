@@ -1,5 +1,9 @@
 package org.activiti.runtime.api.impl;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
@@ -9,14 +13,10 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
 import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class VariablesMappingProviderTest {
@@ -41,12 +41,16 @@ public class VariablesMappingProviderTest {
 
         DelegateExecution execution = buildExecution(extensions);
         given(execution.getVariable("process_variable_inputmap_1")).willReturn("new-input-value");
+        given(execution.getVariable("property-with-no-default-value")).willReturn(null);
 
         //when
         Map<String,Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
         //then
         assertThat(inputVariables.get("task_input_variable_name_1")).isEqualTo("new-input-value");
+
+        //mapped with process variable that is null, so it should not be present
+        assertThat(inputVariables).doesNotContainKeys("task_input_variable_mapped_with_null_process_variable");
     }
 
     private DelegateExecution buildExecution(ProcessExtensionModel extensions) {
@@ -110,6 +114,9 @@ public class VariablesMappingProviderTest {
 
         //then
         assertThat(outPutVariables.get("process_variable_outputmap_1")).isEqualTo("var-one");
+
+        //mapped with a task variable that is not present, so it should not be present
+        assertThat(outPutVariables).doesNotContainKey("property-with-no-default-value");
     }
 
     @Test

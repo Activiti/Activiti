@@ -29,6 +29,12 @@
         "type": "string",
         "required": true,
         "value": "outputmap1Value"
+      },
+      "property-with-no-default-value-id": {
+        "id": "property-with-no-default-value-id",
+        "name": "property-with-no-default-value",
+        "type": "string",
+        "required": false
       }
     },
     "mappings": {
@@ -41,12 +47,20 @@
           "task_input_variable_name_2": {
             "type": "VALUE",
             "value": "the value"
+          },
+          "task_input_variable_mapped_with_null_process_variable": {
+            "type": "VARIABLE",
+            "value": "property-with-no-default-value"
           }
         },
         "outputs": {
           "process_variable_outputmap_1": {
             "type": "VARIABLE",
             "value": "task_output_variable_name_1"
+          },
+          "property-with-no-default-value": {
+            "type": "VARIABLE",
+            "value": "not-set-variable"
           }
         }
       }
