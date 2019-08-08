@@ -62,15 +62,37 @@ public class VariablesMappingProvider {
 
         ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
 
+        Map<String, Object> constants = calculateConstants(execution,
+                                                           extensions);
+
         if (extensions.getExtensions().hasEmptyInputsMapping(execution.getCurrentActivityId())) {
-            return Collections.emptyMap();
+            return constants;
         }
+
+        Map<String, Object> inboudVariables;
 
         if (!extensions.getExtensions().hasMapping(execution.getCurrentActivityId())) {
-            return new HashMap<>(execution.getVariables());
+            inboudVariables = execution.getVariables();
+            inboudVariables.putAll(constants);
+            return inboudVariables;
+
+        }else{
+            inboudVariables = calculateInputVariables(execution, extensions);
+            inboudVariables.putAll(constants);
+            return constants;
         }
 
-        return calculateInputVariables(execution, extensions);
+    }
+
+    private Map<String, Object> calculateConstants(DelegateExecution execution,
+                                                   ProcessExtensionModel extensions) {
+        Map<String, Object> constants = new HashMap<>();
+
+        ProcessConstantsMapping processConstantsMapping = extensions.getExtensions().getConstantForFlowElement(execution.getCurrentActivityId());
+        for (Map.Entry<String, ConstantDefinition> mapping : processConstantsMapping.entrySet()) {
+            constants.put(mapping.getKey(), mapping.getValue().getValue());
+        }
+        return constants;
     }
 
     private Map<String, Object> calculateInputVariables(DelegateExecution execution,
@@ -89,10 +111,10 @@ public class VariablesMappingProvider {
         }
 
 
-        ProcessConstantsMapping processConstantsMapping = extensions.getExtensions().getConstantForFlowElement(execution.getCurrentActivityId());
-        for (Map.Entry<String, ConstantDefinition> mapping : processConstantsMapping.entrySet()) {
-            inboundVariables.put(mapping.getKey(), mapping.getValue().getValue());
-        }
+//        ProcessConstantsMapping processConstantsMapping = extensions.getExtensions().getConstantForFlowElement(execution.getCurrentActivityId());
+//        for (Map.Entry<String, ConstantDefinition> mapping : processConstantsMapping.entrySet()) {
+//            inboundVariables.put(mapping.getKey(), mapping.getValue().getValue());
+//        }
 
         return inboundVariables;
     }
