@@ -381,8 +381,8 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     }
 
     if(!flowNode.getOutgoingFlows().isEmpty()){
-      for (SequenceFlow incomingSequence : flowNode.getOutgoingFlows()) {
-        writeOutgoingElementChild(xtw, incomingSequence);
+      for (SequenceFlow outgoingSequence : flowNode.getOutgoingFlows()) {
+        writeOutgoingElementChild(xtw, outgoingSequence);
       }
     }
   }
@@ -393,9 +393,9 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     xtw.writeEndElement();
   }
 
-  public static void writeOutgoingElementChild(XMLStreamWriter xtw, SequenceFlow incomingSequence) throws Exception {
+  public static void writeOutgoingElementChild(XMLStreamWriter xtw, SequenceFlow outgoingSequence) throws Exception {
     xtw.writeStartElement(ELEMENT_GATEWAY_OUTGOING);
-    xtw.writeCharacters(incomingSequence.getId());
+    xtw.writeCharacters(outgoingSequence.getId());
     xtw.writeEndElement();
   }
 
