@@ -62,8 +62,7 @@ public class VariablesMappingProvider {
 
         ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
 
-        Map<String, Object> constants = calculateConstants(execution,
-                                                           extensions);
+        Map<String, Object> constants = calculateConstants(execution, extensions);
 
         if (extensions.getExtensions().hasEmptyInputsMapping(execution.getCurrentActivityId())) {
             return constants;
@@ -73,15 +72,12 @@ public class VariablesMappingProvider {
 
         if (!extensions.getExtensions().hasMapping(execution.getCurrentActivityId())) {
             inboudVariables = execution.getVariables();
-            inboudVariables.putAll(constants);
-            return inboudVariables;
-
-        }else{
+        } else {
             inboudVariables = calculateInputVariables(execution, extensions);
-            inboudVariables.putAll(constants);
-            return constants;
         }
 
+        inboudVariables.putAll(constants);
+        return inboudVariables;
     }
 
     private Map<String, Object> calculateConstants(DelegateExecution execution,
