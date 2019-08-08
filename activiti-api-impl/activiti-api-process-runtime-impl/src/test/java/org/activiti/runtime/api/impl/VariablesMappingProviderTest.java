@@ -33,7 +33,7 @@ public class VariablesMappingProviderTest {
     }
 
     @Test
-    public void calculateInputVariablesShouldDoMappingWhenThereIsMappingSet() throws Exception{
+    public void calculateInputVariablesShouldDoMappingWhenThereIsMappingSet() throws Exception {
 
         //given
         ObjectMapper objectMapper = new ObjectMapper();
@@ -44,9 +44,8 @@ public class VariablesMappingProviderTest {
         given(execution.getVariable("property-with-no-default-value")).willReturn(null);
 
         //when
-        Map<String,Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
-        System.out.println("inputVariables = " + inputVariables);
         //then
         assertThat(inputVariables.get("task_input_variable_name_1")).isEqualTo("new-input-value");
 
@@ -63,26 +62,26 @@ public class VariablesMappingProviderTest {
     }
 
     @Test
-    public void calculateInputVariablesShouldPassAllVariablesWhenThereIsNoMapping() throws Exception{
+    public void calculateInputVariablesShouldPassAllVariablesWhenThereIsNoMapping() throws Exception {
         //given
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-no-mapping-extensions.json"), ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
-        Map<String,Object> variables = new HashMap<>();
+        Map<String, Object> variables = new HashMap<>();
         variables.put("var-one", "one");
         variables.put("var-two", 2);
         given(execution.getVariables()).willReturn(variables);
 
         //when
-        Map<String,Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
         //then
         assertThat(inputVariables).isEqualTo(variables);
     }
 
     @Test
-    public void calculateInputVariablesShouldNotPassAnyVariablesWhenTheMappingIsEmpty () throws Exception{
+    public void calculateInputVariablesShouldNotPassAnyVariablesWhenTheMappingIsEmpty() throws Exception {
 
         //given
         ObjectMapper objectMapper = new ObjectMapper();
@@ -91,14 +90,14 @@ public class VariablesMappingProviderTest {
         DelegateExecution execution = buildExecution(extensions);
 
         //when
-        Map<String,Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
         //then
         assertThat(inputVariables).isEmpty();
     }
 
     @Test
-    public void calculateInputVariablesShouldPassOnlyConstantsWhenTheMappingIsEmpty () throws Exception{
+    public void calculateInputVariablesShouldPassOnlyConstantsWhenTheMappingIsEmpty() throws Exception {
 
         //given
         ObjectMapper objectMapper = new ObjectMapper();
@@ -107,7 +106,7 @@ public class VariablesMappingProviderTest {
         DelegateExecution execution = buildExecution(extensions);
 
         //when
-        Map<String,Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
         //then
         assertThat(inputVariables).isNotEmpty();
@@ -122,7 +121,7 @@ public class VariablesMappingProviderTest {
     }
 
     @Test
-    public void calculateOutputVariablesShouldDoMappingWhenThereIsMappingSet() throws Exception{
+    public void calculateOutputVariablesShouldDoMappingWhenThereIsMappingSet() throws Exception {
 
         //given
         ObjectMapper objectMapper = new ObjectMapper();
@@ -130,12 +129,12 @@ public class VariablesMappingProviderTest {
 
         DelegateExecution execution = buildExecution(extensions);
 
-        Map<String,Object> entityVariables = new HashMap<>();
+        Map<String, Object> entityVariables = new HashMap<>();
         entityVariables.put("task_output_variable_name_1", "var-one");
 
         //when
-        Map<String,Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
-                                                                                               entityVariables);
+        Map<String, Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+                entityVariables);
 
         //then
         assertThat(outPutVariables.get("process_variable_outputmap_1")).isEqualTo("var-one");
@@ -145,27 +144,27 @@ public class VariablesMappingProviderTest {
     }
 
     @Test
-    public void calculateOutputVariablesShouldPassAllVariablesWhenThereIsNoMapping() throws Exception{
+    public void calculateOutputVariablesShouldPassAllVariablesWhenThereIsNoMapping() throws Exception {
         //given
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-no-mapping-extensions.json"), ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
 
-        Map<String,Object> entityVariables = new HashMap<>();
+        Map<String, Object> entityVariables = new HashMap<>();
         entityVariables.put("task_output_variable_name_1", "var-one");
         entityVariables.put("non-mapped-output_variable_name_2", "var-two");
 
         //when
-        Map<String,Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
-                                                                                               entityVariables);
+        Map<String, Object> outPutVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+                entityVariables);
 
         //then
         assertThat(outPutVariables).isEqualTo(entityVariables);
     }
 
     @Test
-    public void calculateOutputVariablesShouldNotPassAnyVariablesWhenTheMappingIsEmpty () throws Exception{
+    public void calculateOutputVariablesShouldNotPassAnyVariablesWhenTheMappingIsEmpty() throws Exception {
 
         //given
         ObjectMapper objectMapper = new ObjectMapper();
@@ -173,13 +172,13 @@ public class VariablesMappingProviderTest {
 
         DelegateExecution execution = buildExecution(extensions);
 
-        Map<String,Object> entityVariables = new HashMap<>();
+        Map<String, Object> entityVariables = new HashMap<>();
         entityVariables.put("task_output_variable_name_1", "var-one");
         entityVariables.put("non-mapped-output_variable_name_2", "var-two");
-        
+
         //when
-        Map<String,Object> inputVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
-                                                                                              entityVariables);
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+                entityVariables);
 
         //then
         assertThat(inputVariables).isEmpty();
