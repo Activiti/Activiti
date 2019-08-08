@@ -46,6 +46,7 @@ public class VariablesMappingProviderTest {
         //when
         Map<String,Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
+        System.out.println("inputVariables = " + inputVariables);
         //then
         assertThat(inputVariables.get("task_input_variable_name_1")).isEqualTo("new-input-value");
 
@@ -94,6 +95,30 @@ public class VariablesMappingProviderTest {
 
         //then
         assertThat(inputVariables).isEmpty();
+    }
+
+    @Test
+    public void calculateInputVariablesShouldPassOnlyConstantsWhenTheMappingIsEmpty () throws Exception{
+
+        //given
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-empty-mapping-with-constants-extensions.json"), ProcessExtensionModel.class);
+
+        DelegateExecution execution = buildExecution(extensions);
+
+        //when
+        Map<String,Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+
+        //then
+        assertThat(inputVariables).isNotEmpty();
+        assertThat(inputVariables.entrySet()).extracting(Map.Entry::getKey,
+                Map.Entry::getValue)
+                .containsOnly(
+                        tuple("process_constant_1_2", "constant_2_value"),
+                        tuple("process_constant_inputmap_2", "constant_value")
+                );
+
+
     }
 
     @Test

@@ -105,13 +105,6 @@ public class VariablesMappingProvider {
             mappedValue.ifPresent(value -> inboundVariables.put(mapping.getKey(),
                     value));
         }
-
-
-//        ProcessConstantsMapping processConstantsMapping = extensions.getExtensions().getConstantForFlowElement(execution.getCurrentActivityId());
-//        for (Map.Entry<String, ConstantDefinition> mapping : processConstantsMapping.entrySet()) {
-//            inboundVariables.put(mapping.getKey(), mapping.getValue().getValue());
-//        }
-
         return inboundVariables;
     }
 
