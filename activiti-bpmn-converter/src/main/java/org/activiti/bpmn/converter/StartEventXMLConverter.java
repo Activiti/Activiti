@@ -16,9 +16,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
-import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.alfresco.AlfrescoStartEvent;
 import org.apache.commons.lang3.StringUtils;
 
@@ -101,10 +99,12 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
     protected void writeAdditionalChildElements(BaseElement element,
                                                 BpmnModel model,
                                                 XMLStreamWriter xtw) throws Exception {
+        BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode)element, xtw);
         StartEvent startEvent = (StartEvent) element;
         writeEventDefinitions(startEvent,
                               startEvent.getEventDefinitions(),
                               model,
                               xtw);
     }
+
 }

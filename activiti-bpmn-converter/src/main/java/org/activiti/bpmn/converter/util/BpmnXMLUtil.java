@@ -14,37 +14,8 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
-import org.activiti.bpmn.converter.child.ActivitiEventListenerParser;
-import org.activiti.bpmn.converter.child.ActivitiFailedjobRetryParser;
-import org.activiti.bpmn.converter.child.ActivitiMapExceptionParser;
-import org.activiti.bpmn.converter.child.BaseChildElementParser;
-import org.activiti.bpmn.converter.child.CancelEventDefinitionParser;
-import org.activiti.bpmn.converter.child.CompensateEventDefinitionParser;
-import org.activiti.bpmn.converter.child.ConditionExpressionParser;
-import org.activiti.bpmn.converter.child.DataInputAssociationParser;
-import org.activiti.bpmn.converter.child.DataOutputAssociationParser;
-import org.activiti.bpmn.converter.child.DataStateParser;
-import org.activiti.bpmn.converter.child.DocumentationParser;
-import org.activiti.bpmn.converter.child.ErrorEventDefinitionParser;
-import org.activiti.bpmn.converter.child.ExecutionListenerParser;
-import org.activiti.bpmn.converter.child.FieldExtensionParser;
-import org.activiti.bpmn.converter.child.FlowNodeRefParser;
-import org.activiti.bpmn.converter.child.FormPropertyParser;
-import org.activiti.bpmn.converter.child.IOSpecificationParser;
-import org.activiti.bpmn.converter.child.MessageEventDefinitionParser;
-import org.activiti.bpmn.converter.child.MultiInstanceParser;
-import org.activiti.bpmn.converter.child.SignalEventDefinitionParser;
-import org.activiti.bpmn.converter.child.TaskListenerParser;
-import org.activiti.bpmn.converter.child.TerminateEventDefinitionParser;
-import org.activiti.bpmn.converter.child.TimeCycleParser;
-import org.activiti.bpmn.converter.child.TimeDateParser;
-import org.activiti.bpmn.converter.child.TimeDurationParser;
-import org.activiti.bpmn.converter.child.TimerEventDefinitionParser;
-import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.ExtensionAttribute;
-import org.activiti.bpmn.model.ExtensionElement;
-import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.converter.child.*;
+import org.activiti.bpmn.model.*;
 import org.apache.commons.lang3.StringUtils;
 
 public class BpmnXMLUtil implements BpmnXMLConstants {
@@ -400,6 +371,32 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       }
     }
     return false;
+  }
+
+  public static void writeIncomingAndOutgoingFlowElement(FlowNode flowNode, XMLStreamWriter xtw) throws Exception {
+    if(!flowNode.getIncomingFlows().isEmpty()) {
+      for (SequenceFlow incomingSequence : flowNode.getIncomingFlows()) {
+        writeIncomingElementChild(xtw, incomingSequence);
+      }
+    }
+
+    if(!flowNode.getOutgoingFlows().isEmpty()){
+      for (SequenceFlow outgoingSequence : flowNode.getOutgoingFlows()) {
+        writeOutgoingElementChild(xtw, outgoingSequence);
+      }
+    }
+  }
+
+  public static void writeIncomingElementChild(XMLStreamWriter xtw, SequenceFlow incomingSequence) throws Exception {
+    xtw.writeStartElement(ELEMENT_GATEWAY_INCOMING);
+    xtw.writeCharacters(incomingSequence.getId());
+    xtw.writeEndElement();
+  }
+
+  public static void writeOutgoingElementChild(XMLStreamWriter xtw, SequenceFlow outgoingSequence) throws Exception {
+    xtw.writeStartElement(ELEMENT_GATEWAY_OUTGOING);
+    xtw.writeCharacters(outgoingSequence.getId());
+    xtw.writeEndElement();
   }
 
   /**
