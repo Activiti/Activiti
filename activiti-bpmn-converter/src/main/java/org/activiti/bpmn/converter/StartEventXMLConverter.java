@@ -99,12 +99,12 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
     protected void writeAdditionalChildElements(BaseElement element,
                                                 BpmnModel model,
                                                 XMLStreamWriter xtw) throws Exception {
+        BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode)element, xtw);
         StartEvent startEvent = (StartEvent) element;
         writeEventDefinitions(startEvent,
                               startEvent.getEventDefinitions(),
                               model,
                               xtw);
-      BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode)element, xtw);
     }
 
 }
