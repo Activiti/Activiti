@@ -25,7 +25,7 @@ import javax.naming.NamingException;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.cfg.MailServerInfo;
+import org.activiti.engine.conf.MailServerInfo;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.spring.process.autoconfigure;
+package org.activiti.spring.process.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.spring.process.ProcessExtensionService;

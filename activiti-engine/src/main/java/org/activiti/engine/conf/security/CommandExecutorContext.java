@@ -10,15 +10,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.cfg.security;
+package org.activiti.engine.conf.security;
 
-import org.activiti.engine.impl.util.CommandExecutor;
+public class CommandExecutorContext {
 
-/**
+    private static CommandExecutorFactory shellCommandExecutorFactory;
 
- */
-public interface CommandExecutorFactory {
+    public static void setShellExecutorContextFactory(CommandExecutorFactory shellCommandExecutorFactory) {
+        CommandExecutorContext.shellCommandExecutorFactory = shellCommandExecutorFactory;
+    }
 
-    CommandExecutor createExecutor(ExecutorContext executorContext);
-
+    public static CommandExecutorFactory getShellCommandExecutorFactory() {
+        return shellCommandExecutorFactory;
+    }
 }

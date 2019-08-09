@@ -24,7 +24,7 @@ import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.cfg.ProcessEngineConfigurator;
+import org.activiti.engine.conf.ProcessEngineConfigurator;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;

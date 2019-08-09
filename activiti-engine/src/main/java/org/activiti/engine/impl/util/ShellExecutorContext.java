@@ -14,7 +14,7 @@ package org.activiti.engine.impl.util;
 
 import java.util.List;
 
-import org.activiti.engine.cfg.security.ExecutorContext;
+import org.activiti.engine.conf.security.ExecutorContext;
 
 /**
 
