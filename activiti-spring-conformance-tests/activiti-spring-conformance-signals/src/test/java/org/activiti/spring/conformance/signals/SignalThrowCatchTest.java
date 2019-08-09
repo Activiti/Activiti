@@ -232,7 +232,7 @@ public class SignalThrowCatchTest {
 
         assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
-                .containsExactly(
+                .containsExactlyInAnyOrder(
                         BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
                         VariableEvent.VariableEvents.VARIABLE_CREATED,
                         TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
