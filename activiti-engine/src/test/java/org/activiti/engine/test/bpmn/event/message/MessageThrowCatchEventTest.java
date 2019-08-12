@@ -132,7 +132,10 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                            .messageEventSubscriptionName(message.getName())
                                            .list()
                                            .forEach(s -> {
-                                               runtimeService.messageEventReceived(message.getName(), s.getId());
+                                               Map<String, Object> payload = message.getPayload()
+                                                                                    .orElse(null);
+                                               
+                                               runtimeService.messageEventReceived(message.getName(), s.getId(), payload);
 
                                                countDownLatch.countDown();
                                            });
@@ -242,6 +245,13 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
 
         assertProcessEnded(throwMsg.getProcessInstanceId());
         assertProcessEnded(catchMsg.getProcessInstanceId());
+        
+        HistoricProcessInstance startMsg = historyService.createHistoricProcessInstanceQuery()
+                .processDefinitionKey(CATCH_MESSAGE)
+                .includeProcessVariables()
+                .singleResult();
+
+        assertThat(startMsg.getProcessVariables()).containsEntry("foo", "bar");
         
         assertThat(receivedEvents).hasSize(3)
                                   .extracting("type",
