@@ -19,6 +19,8 @@ import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
+import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
@@ -36,11 +38,13 @@ import org.junit.Test;
 
 public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
 
+    private static final String START_MESSAGE = "startMessage";
     private static final String CATCH_MESSAGE = "catchMessage";
     private static final String THROW_MESSAGE = "throwMessage";
     private static final String TEST_MESSAGE = "testMessage";
     private static List<ActivitiEvent> receivedEvents = new LinkedList<>();
     private static Map<String, BlockingQueue<ThrowMessage>> messageQueueRegistry = new ConcurrentHashMap<>();
+    private static CountDownLatch startCountDownLatch = new CountDownLatch(1);
 
     public static class TestThrowMessageDelegateFactory implements ThrowMessageDelegateFactory {
 
@@ -93,7 +97,8 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
             BlockingQueue<ThrowMessage> messageQueue = messageQueueRegistry.computeIfAbsent(messageName,
                                                                                             MessageThrowCatchEventTest::createMessageQueue);
             Context.getTransactionContext()
-                   .addTransactionListener(TransactionState.COMMITTED, new HandleMessageTransactionListener(messageQueue));
+                   .addTransactionListener(TransactionState.COMMITTED, 
+                                           new HandleMessageTransactionListener(messageQueue));
         }
 
         @Override
@@ -131,6 +136,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
 
                                                countDownLatch.countDown();
                                            });
+                             
                          } catch (InterruptedException e) {
                              // TODO Auto-generated catch block
                              e.printStackTrace();
@@ -173,6 +179,32 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                         ActivitiEventType.ACTIVITY_MESSAGE_SENT,
                                         ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
                                         ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+        
+        newEventSubscriptionQuery().eventType("message")
+                                   .list()
+                                   .forEach(s -> {
+                                       BlockingQueue<ThrowMessage> messageQueue = messageQueueRegistry.computeIfAbsent(s.getEventName(),
+                                                                                                                       MessageThrowCatchEventTest::createMessageQueue);
+                                       new Thread(new Runnable() {
+
+                                           @Override
+                                           public void run() {
+                                               try {
+                                                   ThrowMessage throwMessage = messageQueue.take();
+
+                                                   ProcessInstance pi = runtimeService.startProcessInstanceByMessage(throwMessage.getName());
+                                                   
+                                                   startCountDownLatch.countDown();
+                                                   
+                                               } catch (InterruptedException e) {
+                                                   // TODO Auto-generated catch block
+                                                   e.printStackTrace();
+                                               }
+                                           }
+                                       }).start();
+                                       
+                                   });
+                                                                                            
     }
 
     @After
@@ -194,7 +226,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     @Deployment(
             resources = {"org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.throwMessage.bpmn20.xml", "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessage.bpmn20.xml"
             })
-    public void testThrowCatchMessageEvent() throws Exception {
+    public void testThrowCatchIntermediateMessageEvent() throws Exception {
         // given
         CountDownLatch countDownLatch = new CountDownLatch(1);
 
@@ -205,7 +237,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         ProcessInstance catchMsg = runtimeService.startProcessInstanceByKey(CATCH_MESSAGE);
         
         // then
-        countDownLatch.await(1, TimeUnit.SECONDS);
+        assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
 
         assertProcessEnded(throwMsg.getProcessInstanceId());
         assertProcessEnded(catchMsg.getProcessInstanceId());
@@ -218,4 +250,35 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                             tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
 
     }
+    
+    @Deployment(resources = {
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.throwMessage.bpmn20.xml", 
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.startMessage.bpmn20.xml"
+    })
+    public void testThrowCatchStartMessageEvent() throws Exception {
+        // when
+        ProcessInstance throwMsg = runtimeService.startProcessInstanceByKey(THROW_MESSAGE);
+        
+        // then
+        assertThat(startCountDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
+
+        HistoricProcessInstance startMsg = historyService.createHistoricProcessInstanceQuery()
+                                                         .processDefinitionKey(START_MESSAGE)
+                                                         .singleResult();
+
+        assertProcessEnded(throwMsg.getId());
+        assertProcessEnded(startMsg.getId());
+        
+        assertThat(receivedEvents).hasSize(2)
+                                  .extracting("type",
+                                              "messageName")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
+    }
+    
+    protected EventSubscriptionQueryImpl newEventSubscriptionQuery() {
+        return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
+      }
+    
+
 }
