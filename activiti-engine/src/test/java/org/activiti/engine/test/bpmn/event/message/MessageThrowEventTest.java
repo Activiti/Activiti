@@ -23,6 +23,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 
 public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
@@ -83,12 +84,15 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
         runtimeService.removeEventListener(myListener);
     }
     
+    @Test
     public void testMyThrowMessageDelegateFactory() {
         assertThat(StandaloneProcessEngineConfiguration.class.cast(processEngine.getProcessEngineConfiguration())
                                                              .getActivityBehaviorFactory())
                                                              .as("should provide custom throw message delegate factory")
                                                              .extracting("throwMessageDelegateFactory")
-                                                             .allSatisfy(MyThrowMessageDelegateFactory.class::isInstance);
+                                                             .allSatisfy(result -> {
+                                                                 assertThat(result).isInstanceOf(MyThrowMessageDelegateFactory.class);
+                                                             });
     }
     
     @Deployment
