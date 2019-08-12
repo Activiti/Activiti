@@ -1,10 +1,11 @@
 package org.activiti.engine.impl.delegate;
 
+import java.util.Map;
 import java.util.Optional;
 
 public class ThrowMessage {
     private final String name;
-    private Optional<Object> payload;
+    private Optional<Map<String, Object>> payload;
 
     private ThrowMessage(Builder builder) {
         this.name = builder.name;
@@ -19,11 +20,11 @@ public class ThrowMessage {
         return name;
     }
     
-    public Optional<Object> getPayload() {
+    public Optional<Map<String, Object>> getPayload() {
         return payload;
     }
 
-    public void setPayload(Optional<Object> payload) {
+    public void setPayload(Optional<Map<String, Object>> payload) {
         this.payload = payload;
     }
 
@@ -52,7 +53,7 @@ public class ThrowMessage {
     public static final class Builder {
 
         private String name;
-        private Optional<Object> payload;
+        private Optional<Map<String, Object>> payload;
 
         private Builder() {
         }
@@ -67,7 +68,7 @@ public class ThrowMessage {
             return this;
         }
 
-        public Builder payload(Optional<Object> payload) {
+        public Builder payload(Optional<Map<String, Object>> payload) {
             this.payload = payload;
             return this;
         }
