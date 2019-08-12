@@ -74,8 +74,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
             
             @Override
             public void execute(CommandContext commandContext) {
-                Queue<ThrowMessage> queue = messageQueueRegistry.computeIfAbsent(message.getName(),
-                                                                                 MessageThrowCatchEventTest::createMessageQueue);
+                Queue<ThrowMessage> queue = getMessageQueue(message.getName());
                 queue.offer(message);
             }
         }
@@ -94,8 +93,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
             String messageName = ActivitiMessageEvent.class.cast(event)
                                                            .getMessageName();
 
-            BlockingQueue<ThrowMessage> messageQueue = messageQueueRegistry.computeIfAbsent(messageName,
-                                                                                            MessageThrowCatchEventTest::createMessageQueue);
+            BlockingQueue<ThrowMessage> messageQueue = getMessageQueue(messageName);
             Context.getTransactionContext()
                    .addTransactionListener(TransactionState.COMMITTED, 
                                            new HandleMessageTransactionListener(messageQueue));
@@ -121,29 +119,25 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
             public void execute(CommandContext commandContext) {
                 RuntimeService runtimeService = commandContext.getProcessEngineConfiguration()
                                                               .getRuntimeService();
-                 new Thread(new Runnable() {
-                     
-                     @Override
-                     public void run() {
-                         try {
-                             ThrowMessage message = messageQueue.take();
-                             
-                             runtimeService.createExecutionQuery()
-                                           .messageEventSubscriptionName(message.getName())
-                                           .list()
-                                           .forEach(s -> {
-                                               Map<String, Object> payload = message.getPayload()
-                                                                                    .orElse(null);
-                                               
-                                               runtimeService.messageEventReceived(message.getName(), s.getId(), payload);
+                 new Thread(() -> {
+                     try {
+                         ThrowMessage message = messageQueue.take();
+                         
+                         runtimeService.createExecutionQuery()
+                                       .messageEventSubscriptionName(message.getName())
+                                       .list()
+                                       .forEach(s -> {
+                                           Map<String, Object> payload = message.getPayload()
+                                                                                .orElse(null);
+                                           
+                                           runtimeService.messageEventReceived(message.getName(), s.getId(), payload);
 
-                                               countDownLatch.countDown();
-                                           });
-                             
-                         } catch (InterruptedException e) {
-                             // TODO Auto-generated catch block
-                             e.printStackTrace();
-                         }
+                                           countDownLatch.countDown();
+                                       });
+                         
+                     } catch (InterruptedException e) {
+                         // TODO Auto-generated catch block
+                         e.printStackTrace();
                      }
                  }).start();
              }
@@ -186,27 +180,22 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         newEventSubscriptionQuery().eventType("message")
                                    .list()
                                    .forEach(s -> {
-                                       BlockingQueue<ThrowMessage> messageQueue = messageQueueRegistry.computeIfAbsent(s.getEventName(),
-                                                                                                                       MessageThrowCatchEventTest::createMessageQueue);
-                                       new Thread(new Runnable() {
-
-                                           @Override
-                                           public void run() {
-                                               try {
-                                                   ThrowMessage throwMessage = messageQueue.take();
-                                                   Map<String, Object> payload = throwMessage.getPayload()
-                                                                                             .orElse(null);
-                                                   
-                                                   String businessKey = throwMessage.getBusinessKey().orElse(null);
-                                                   
-                                                   runtimeService.startProcessInstanceByMessage(throwMessage.getName(), businessKey, payload);
-                                                   
-                                                   startCountDownLatch.countDown();
-                                                   
-                                               } catch (InterruptedException e) {
-                                                   // TODO Auto-generated catch block
-                                                   e.printStackTrace();
-                                               }
+                                       BlockingQueue<ThrowMessage> messageQueue = getMessageQueue(s.getEventName());
+                                       new Thread(() -> {
+                                           try {
+                                               ThrowMessage throwMessage = messageQueue.take();
+                                               Map<String, Object> payload = throwMessage.getPayload()
+                                                                                         .orElse(null);
+                                               
+                                               String businessKey = throwMessage.getBusinessKey().orElse(null);
+                                               
+                                               runtimeService.startProcessInstanceByMessage(throwMessage.getName(), businessKey, payload);
+                                               
+                                               startCountDownLatch.countDown();
+                                               
+                                           } catch (InterruptedException e) {
+                                               // TODO Auto-generated catch block
+                                               e.printStackTrace();
                                            }
                                        }).start();
                                    });
@@ -300,5 +289,9 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
       }
     
+    protected static BlockingQueue<ThrowMessage> getMessageQueue(String messageName) {
+        return messageQueueRegistry.computeIfAbsent(messageName,
+                                                    MessageThrowCatchEventTest::createMessageQueue);        
+    }
 
 }
