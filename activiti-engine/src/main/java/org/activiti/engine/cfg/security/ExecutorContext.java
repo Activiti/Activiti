@@ -10,15 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.conf.security;
+package org.activiti.engine.cfg.security;
 
-import org.activiti.engine.impl.util.CommandExecutor;
-
-/**
-
- */
-public interface CommandExecutorFactory {
-
-    CommandExecutor createExecutor(ExecutorContext executorContext);
-
+public interface ExecutorContext {
 }

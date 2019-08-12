@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.engine.conf;
+package org.activiti.engine.cfg;
 
 /**
 

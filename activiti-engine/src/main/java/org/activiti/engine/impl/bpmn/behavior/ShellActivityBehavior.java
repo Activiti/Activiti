@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.conf.security.CommandExecutorContext;
-import org.activiti.engine.conf.security.CommandExecutorFactory;
+import org.activiti.engine.cfg.security.CommandExecutorContext;
+import org.activiti.engine.cfg.security.CommandExecutorFactory;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.util.CommandExecutor;

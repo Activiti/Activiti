@@ -15,7 +15,7 @@
  */
 package org.activiti.spring.process.conf;
 
-import org.activiti.engine.conf.AbstractProcessEngineConfigurator;
+import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.springframework.context.annotation.Configuration;

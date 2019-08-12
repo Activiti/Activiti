@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
-import org.activiti.engine.conf.MailServerInfo;
+import org.activiti.engine.cfg.MailServerInfo;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;

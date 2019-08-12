@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.conf;
+package org.activiti.engine.cfg;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 

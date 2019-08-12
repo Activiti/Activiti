@@ -12,7 +12,7 @@
  */
 package org.activiti.engine.test.impl.logger;
 
-import org.activiti.engine.conf.AbstractProcessEngineConfigurator;
+import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
