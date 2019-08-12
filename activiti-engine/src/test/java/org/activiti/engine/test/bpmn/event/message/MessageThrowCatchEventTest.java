@@ -191,8 +191,10 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                            public void run() {
                                                try {
                                                    ThrowMessage throwMessage = messageQueue.take();
-
-                                                   ProcessInstance pi = runtimeService.startProcessInstanceByMessage(throwMessage.getName());
+                                                   Map<String, Object> payload = throwMessage.getPayload()
+                                                                                             .orElse(null);
+                                                   
+                                                   runtimeService.startProcessInstanceByMessage(throwMessage.getName(), payload);
                                                    
                                                    startCountDownLatch.countDown();
                                                    
@@ -202,7 +204,6 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                                }
                                            }
                                        }).start();
-                                       
                                    });
                                                                                             
     }
@@ -264,7 +265,10 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
 
         HistoricProcessInstance startMsg = historyService.createHistoricProcessInstanceQuery()
                                                          .processDefinitionKey(START_MESSAGE)
+                                                         .includeProcessVariables()
                                                          .singleResult();
+        
+        assertThat(startMsg.getProcessVariables()).containsEntry("foo", "bar");
 
         assertProcessEnded(throwMsg.getId());
         assertProcessEnded(startMsg.getId());
