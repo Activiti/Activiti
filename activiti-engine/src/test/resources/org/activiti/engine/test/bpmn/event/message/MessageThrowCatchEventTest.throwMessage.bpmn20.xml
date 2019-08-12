@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0upwuqa" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+  <bpmn:process id="throwMessage" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_0ns2b9f</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_0342dvb">
+      <bpmn:incoming>SequenceFlow_04dpavx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0ns2b9f" sourceRef="StartEvent_1" targetRef="IntermediateThrowEvent_simpleMessage" />
+    <bpmn:sequenceFlow id="SequenceFlow_04dpavx" sourceRef="IntermediateThrowEvent_simpleMessage" targetRef="EndEvent_0342dvb" />
+    <bpmn:intermediateThrowEvent id="IntermediateThrowEvent_simpleMessage">
+      <bpmn:incoming>SequenceFlow_0ns2b9f</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_04dpavx</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_0n5i3nz" />
+    </bpmn:intermediateThrowEvent>
+  </bpmn:process>
+  <bpmn:message id="Message_0n5i3nz" name="testMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="throwMessage">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="156" y="81" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0342dvb_di" bpmnElement="EndEvent_0342dvb">
+        <dc:Bounds x="394" y="81" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0ns2b9f_di" bpmnElement="SequenceFlow_0ns2b9f">
+        <di:waypoint x="192" y="99" />
+        <di:waypoint x="275" y="99" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_04dpavx_di" bpmnElement="SequenceFlow_04dpavx">
+        <di:waypoint x="311" y="99" />
+        <di:waypoint x="394" y="99" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_0uekhew_di" bpmnElement="IntermediateThrowEvent_simpleMessage">
+        <dc:Bounds x="275" y="81" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
