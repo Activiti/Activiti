@@ -307,4 +307,7 @@ public interface BpmnXMLConstants {
   public static final String MAP_EXCEPTION_ERRORCODE = "errorCode";
   public static final String MAP_EXCEPTION_ANDCHILDREN = "includeChildExceptions";
 
+  public static final String ELEMENT_GATEWAY_INCOMING = "incoming";
+  public static final String ELEMENT_GATEWAY_OUTGOING = "outgoing";
+
 }

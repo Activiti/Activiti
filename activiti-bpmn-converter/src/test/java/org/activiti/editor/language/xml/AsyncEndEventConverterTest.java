@@ -6,11 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.activiti.bpmn.model.ActivitiListener;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.EndEvent;
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.bpmn.model.*;
 import org.junit.Test;
 
 public class AsyncEndEventConverterTest extends AbstractConverterTest {
@@ -48,5 +44,9 @@ public class AsyncEndEventConverterTest extends AbstractConverterTest {
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()));
     assertEquals("org.test.TestClass", listener.getImplementation());
     assertEquals("start", listener.getEvent());
+
+    assertEquals(1, endEvent.getIncomingFlows().size());
+    SequenceFlow sequence = endEvent.getIncomingFlows().get(0);
+    assertEquals("sid-91C0F3A0-649F-462E-A1C1-1CE499FEDE3E", sequence.getId());
   }
 }
