@@ -83,7 +83,7 @@ public class ProcessInstanceHelper {
         processInstanceName, initialFlowElement, process, variables, transientVariables, startProcessInstance);
   }
 
-  public ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinition processDefinition, String messageName,
+  public ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinition processDefinition, String businessKey, String messageName,
       Map<String, Object> variables, Map<String, Object> transientVariables) {
 
     CommandContext commandContext = Context.getCommandContext();
@@ -117,7 +117,7 @@ public class ProcessInstanceHelper {
       throw new ActivitiException("No message start event found for process definition " + processDefinition.getId() + " and message name " + messageName);
     }
 
-    ProcessInstance processInstance = createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, initialFlowElement, process, variables, transientVariables, true);
+    ProcessInstance processInstance = createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, null, initialFlowElement, process, variables, transientVariables, true);
 
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();

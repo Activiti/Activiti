@@ -72,11 +72,13 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
     
     protected ThrowMessage getThrowMessage(DelegateExecution execution) {
         String name = getMessageName(execution);
+        Optional<String> businessKey = Optional.ofNullable(execution.getProcessInstanceBusinessKey());
         
         Optional<Map<String, Object>> payload = getMessagePayload(execution);
         
         return ThrowMessage.builder()
                            .name(name)
+                           .businessKey(businessKey)
                            .payload(payload)
                            .build();
     }

@@ -79,7 +79,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
     }
 
     ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-    ProcessInstance processInstance = processInstanceHelper.createAndStartProcessInstanceByMessage(processDefinition, messageName, processVariables, transientVariables);
+    ProcessInstance processInstance = processInstanceHelper.createAndStartProcessInstanceByMessage(processDefinition, businessKey, messageName, processVariables, transientVariables);
 
     return processInstance;
   }

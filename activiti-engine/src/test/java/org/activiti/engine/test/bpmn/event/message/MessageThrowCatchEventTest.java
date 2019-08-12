@@ -197,7 +197,9 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                                    Map<String, Object> payload = throwMessage.getPayload()
                                                                                              .orElse(null);
                                                    
-                                                   runtimeService.startProcessInstanceByMessage(throwMessage.getName(), payload);
+                                                   String businessKey = throwMessage.getBusinessKey().orElse(null);
+                                                   
+                                                   runtimeService.startProcessInstanceByMessage(throwMessage.getName(), businessKey, payload);
                                                    
                                                    startCountDownLatch.countDown();
                                                    
@@ -220,11 +222,11 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     public void testMyThrowMessageDelegateFactory() {
         assertThat(StandaloneProcessEngineConfiguration.class.cast(processEngine.getProcessEngineConfiguration())
                                                              .getActivityBehaviorFactory())
-                                                                                           .as("should provide custom throw message delegate factory")
-                                                                                           .extracting("throwMessageDelegateFactory")
-                                                                                           .allSatisfy(result -> {
-                                                                                               assertThat(result).isInstanceOf(TestThrowMessageDelegateFactory.class);
-                                                                                           });
+                                                             .as("should provide custom throw message delegate factory")
+                                                             .extracting("throwMessageDelegateFactory")
+                                                             .allSatisfy(result -> {
+                                                                 assertThat(result).isInstanceOf(TestThrowMessageDelegateFactory.class);
+                                                             });
     }
 
     @Deployment(
@@ -247,9 +249,9 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         assertProcessEnded(catchMsg.getProcessInstanceId());
         
         HistoricProcessInstance startMsg = historyService.createHistoricProcessInstanceQuery()
-                .processDefinitionKey(CATCH_MESSAGE)
-                .includeProcessVariables()
-                .singleResult();
+                                                         .processDefinitionKey(CATCH_MESSAGE)
+                                                         .includeProcessVariables()
+                                                         .singleResult();
 
         assertThat(startMsg.getProcessVariables()).containsEntry("foo", "bar");
         
@@ -268,7 +270,10 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     })
     public void testThrowCatchStartMessageEvent() throws Exception {
         // when
-        ProcessInstance throwMsg = runtimeService.startProcessInstanceByKey(THROW_MESSAGE);
+        ProcessInstance throwMsg = runtimeService.createProcessInstanceBuilder()
+                                                 .businessKey("foobar")
+                                                 .processDefinitionKey(THROW_MESSAGE)
+                                                 .start();
         
         // then
         assertThat(startCountDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
@@ -278,6 +283,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                                          .includeProcessVariables()
                                                          .singleResult();
         
+        assertThat(startMsg.getBusinessKey()).isEqualTo("foobar");
         assertThat(startMsg.getProcessVariables()).containsEntry("foo", "bar");
 
         assertProcessEnded(throwMsg.getId());
