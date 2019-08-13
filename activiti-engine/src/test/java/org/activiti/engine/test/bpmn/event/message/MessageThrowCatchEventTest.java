@@ -119,36 +119,33 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
             public void execute(CommandContext commandContext) {
                 RuntimeService runtimeService = commandContext.getProcessEngineConfiguration()
                                                               .getRuntimeService();
-                 new Thread(() -> {
-                     try {
-                         ThrowMessage message = messageQueue.take();
-                         
-                         runtimeService.createExecutionQuery()
-                                       .messageEventSubscriptionName(message.getName())
-                                       .list()
-                                       .forEach(s -> {
-                                           Map<String, Object> payload = message.getPayload()
-                                                                                .orElse(null);
-                                           
-                                           runtimeService.messageEventReceived(message.getName(), s.getId(), payload);
+                new Thread(() -> {
+                    try {
+                        ThrowMessage message = messageQueue.take();
 
-                                           countDownLatch.countDown();
-                                       });
-                         
-                     } catch (InterruptedException e) {
-                         // TODO Auto-generated catch block
-                         e.printStackTrace();
-                     }
-                 }).start();
+                        runtimeService.createExecutionQuery()
+                                      .messageEventSubscriptionName(message.getName())
+                                      .list()
+                                      .forEach(s -> {
+                                          Map<String, Object> payload = message.getPayload()
+                                                                               .orElse(null);
+
+                                          runtimeService.messageEventReceived(message.getName(),
+                                                                              s.getId(),
+                                                                              payload);
+                                          countDownLatch.countDown();
+                                      });
+
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }).start();
              }
 
          }
         
 
-    }
-
-    protected static BlockingQueue<ThrowMessage> createMessageQueue(String messageName) {
-        return new LinkedBlockingQueue<>();
     }
 
     private ActivitiEventListener myListener = new ActivitiEventListener() {
@@ -186,11 +183,13 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                                ThrowMessage throwMessage = messageQueue.take();
                                                Map<String, Object> payload = throwMessage.getPayload()
                                                                                          .orElse(null);
+
+                                               String businessKey = throwMessage.getBusinessKey()
+                                                                                .orElse(null);
                                                
-                                               String businessKey = throwMessage.getBusinessKey().orElse(null);
-                                               
-                                               runtimeService.startProcessInstanceByMessage(throwMessage.getName(), businessKey, payload);
-                                               
+                                               runtimeService.startProcessInstanceByMessage(throwMessage.getName(),
+                                                                                            businessKey,
+                                                                                            payload);
                                                startCountDownLatch.countDown();
                                                
                                            } catch (InterruptedException e) {
