@@ -18,7 +18,7 @@ notifications:
 before_script:
   - echo MAVEN_OPTS=-Xmx1536m > ~/.mavenrc
 
-install: mvn install -DskipTests
+install: mvn install:install
 
 jobs:
     include:
