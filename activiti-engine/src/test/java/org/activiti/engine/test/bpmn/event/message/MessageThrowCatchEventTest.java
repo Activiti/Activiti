@@ -45,7 +45,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     private static final String TEST_MESSAGE = "testMessage";
     private static List<ActivitiEvent> receivedEvents = new LinkedList<>();
     private static Map<String, BlockingQueue<ThrowMessage>> messageQueueRegistry = new ConcurrentHashMap<>();
-    private static CountDownLatch startCountDownLatch = new CountDownLatch(1);
+    private static CountDownLatch startCountDownLatch;
 
     public static class TestThrowMessageDelegateFactory implements ThrowMessageDelegateFactory {
 
@@ -169,7 +169,9 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     @Before
     public void setUp() {
         receivedEvents.clear();
-
+        
+        startCountDownLatch = new CountDownLatch(1);
+        
         runtimeService.addEventListener(myListener,
                                         ActivitiEventType.ACTIVITY_MESSAGE_SENT,
                                         ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
@@ -192,7 +194,6 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                                                                             businessKey,
                                                                                             payload);
                                                startCountDownLatch.countDown();
-                                               
                                            } catch (InterruptedException e) {
                                                // TODO Auto-generated catch block
                                                e.printStackTrace();
