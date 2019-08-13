@@ -336,7 +336,33 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                             tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
     }    
         
-    
+
+    @Deployment
+    public void testIntermediateThrowCatchMessageBoundary() throws Exception {
+        // given
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        runtimeService.addEventListener(new ThrowMessageListener(countDownLatch),
+                                        ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+        // when
+        ProcessInstance throwCatchMsg = runtimeService.createProcessInstanceBuilder()
+                                                 .businessKey("foobar")
+                                                 .processDefinitionKey("throwCatch")
+                                                 .start();
+        
+        // then
+        assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
+
+        assertProcessEnded(throwCatchMsg.getId());
+        
+        assertThat(receivedEvents).hasSize(3)
+                                  .extracting("type",
+                                              "messageName")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
+    }    
+            
     protected EventSubscriptionQueryImpl newEventSubscriptionQuery() {
         return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
       }
