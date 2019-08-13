@@ -38,6 +38,7 @@ import org.junit.Test;
 
 public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
 
+    private static final String END_MESSAGE = "endMessage";
     private static final String START_MESSAGE = "startMessage";
     private static final String CATCH_MESSAGE = "catchMessage";
     private static final String THROW_MESSAGE = "throwMessage";
@@ -283,6 +284,38 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                   .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE),
                                             tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
     }
+    
+    @Deployment(resources = {
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.endMessage.bpmn20.xml", 
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.startMessage.bpmn20.xml"
+    })
+    public void testThrowCatchEndMessageEvent() throws Exception {
+        // when
+        ProcessInstance throwMsg = runtimeService.createProcessInstanceBuilder()
+                                                 .businessKey("foobar")
+                                                 .processDefinitionKey(END_MESSAGE)
+                                                 .start();
+        
+        // then
+        assertThat(startCountDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
+
+        HistoricProcessInstance startMsg = historyService.createHistoricProcessInstanceQuery()
+                                                         .processDefinitionKey(START_MESSAGE)
+                                                         .includeProcessVariables()
+                                                         .singleResult();
+        
+        assertThat(startMsg.getBusinessKey()).isEqualTo("foobar");
+        assertThat(startMsg.getProcessVariables()).containsEntry("foo", "bar");
+
+        assertProcessEnded(throwMsg.getId());
+        assertProcessEnded(startMsg.getId());
+        
+        assertThat(receivedEvents).hasSize(2)
+                                  .extracting("type",
+                                              "messageName")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
+    }    
     
     @Deployment
     public void testIntermediateThrowCatchMessage() throws Exception {

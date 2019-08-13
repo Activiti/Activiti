@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:activiti="http://activiti.org/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_00210ge" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+  <bpmn:process id="endMessage" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_14numzz</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_14numzz" sourceRef="StartEvent_1" targetRef="EndEvent_0b0k771" />
+    <bpmn:endEvent id="EndEvent_0b0k771">
+      <bpmn:incoming>SequenceFlow_14numzz</bpmn:incoming>
+      <bpmn:messageEventDefinition messageRef="Message_1r41h6y">
+        <bpmn:extensionElements>
+          <activiti:field name="foo">
+            <activiti:string>bar</activiti:string>
+          </activiti:field>
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
+    </bpmn:endEvent>
+    <bpmn:textAnnotation id="TextAnnotation_0sivplt">
+      <bpmn:text>testMessage</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1p3orr7" sourceRef="EndEvent_0b0k771" targetRef="TextAnnotation_0sivplt" />
+  </bpmn:process>
+  <bpmn:message id="Message_1r41h6y" name="testMessage" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="endMessage">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="156" y="155" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_14numzz_di" bpmnElement="SequenceFlow_14numzz">
+        <di:waypoint x="192" y="173" />
+        <di:waypoint x="308" y="173" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_17l7umd_di" bpmnElement="EndEvent_0b0k771">
+        <dc:Bounds x="308" y="155" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0sivplt_di" bpmnElement="TextAnnotation_0sivplt">
+        <dc:Bounds x="344" y="75" width="100" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1p3orr7_di" bpmnElement="Association_1p3orr7">
+        <di:waypoint x="337" y="159" />
+        <di:waypoint x="382" y="105" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
