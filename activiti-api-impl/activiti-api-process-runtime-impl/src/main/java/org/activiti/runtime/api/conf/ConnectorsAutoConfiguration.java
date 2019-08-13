@@ -16,7 +16,6 @@
 
 package org.activiti.runtime.api.conf;
 
-import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
@@ -40,12 +39,12 @@ public class ConnectorsAutoConfiguration {
                                                                  IntegrationContextBuilder integrationContextBuilder,
                                                                  VariablesMappingProvider outboundVariablesProvider) {
         return new DefaultServiceTaskBehavior(applicationContext,
-                                              integrationContextBuilder,
-                                              outboundVariablesProvider);
+                integrationContextBuilder,
+                outboundVariablesProvider);
     }
 
     @Bean
-    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService){
+    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService) {
         return new VariablesMappingProvider(processExtensionService);
     }
 }

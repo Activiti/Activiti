@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,7 +47,6 @@ public class MappingAwareCallActivityBehaviorTest {
     public void setUp() {
         initMocks(this);
     }
-
 
     @Test
     public void calculateInboundVariablesShouldTakeIntoAccountMappingProviderAndProcessVariablesInitiator() {

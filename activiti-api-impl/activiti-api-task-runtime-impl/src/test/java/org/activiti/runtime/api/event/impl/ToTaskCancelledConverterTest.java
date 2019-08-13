@@ -16,8 +16,6 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Collections;
-
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
@@ -31,6 +29,8 @@ import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;

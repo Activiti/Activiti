@@ -41,5 +41,4 @@ public class APITaskCandidateUserConverterTest {
         assertThat(taskCandidateUser.getTaskId()).isNotEqualToIgnoringCase("taskId");
     }
 
-
 }

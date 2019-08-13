@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.conf.impl;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.task.runtime.conf.TaskRuntimeConfiguration;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
+
+import java.util.Collections;
+import java.util.List;
 
 public class TaskRuntimeConfigurationImpl implements TaskRuntimeConfiguration {
 

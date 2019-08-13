@@ -16,14 +16,14 @@
 
 package org.activiti.runtime.api.event.internal;
 
-import java.util.List;
-
 import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToProcessUpdatedConverter;
+
+import java.util.List;
 
 public class ProcessUpdatedListenerDelegate implements ActivitiEventListener {
 

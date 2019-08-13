@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
-
 import org.activiti.api.process.runtime.events.ProcessCreatedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
+
+import java.util.Optional;
 
 import static org.activiti.runtime.api.event.impl.ActivitiEntityEventHelper.isProcessInstanceEntity;
 

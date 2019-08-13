@@ -16,14 +16,14 @@
 
 package org.activiti.runtime.api.event.internal;
 
-import java.util.List;
-
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToActivityCancelledConverter;
+
+import java.util.List;
 
 public class ActivityCancelledListenerDelegate implements ActivitiEventListener {
 
@@ -42,7 +42,7 @@ public class ActivityCancelledListenerDelegate implements ActivitiEventListener 
         if (event instanceof ActivitiActivityEvent) {
             converter.from((ActivitiActivityEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (BPMNElementEventListener<BPMNActivityCancelledEvent> listener : processRuntimeEventListeners) {
+                        for ( BPMNElementEventListener<BPMNActivityCancelledEvent> listener : processRuntimeEventListeners ) {
                             listener.onEvent(convertedEvent);
                         }
                     });

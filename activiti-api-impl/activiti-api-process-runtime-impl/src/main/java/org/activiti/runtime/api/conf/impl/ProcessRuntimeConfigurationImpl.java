@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.conf.impl;
 
+import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
+import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.api.runtime.shared.events.VariableEventListener;
+
 import java.util.Collections;
 import java.util.List;
-
-import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
-import org.activiti.api.runtime.shared.events.VariableEventListener;
-import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 
 public class ProcessRuntimeConfigurationImpl implements ProcessRuntimeConfiguration {
 

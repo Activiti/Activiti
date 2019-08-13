@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.junit.Before;
@@ -117,7 +116,6 @@ public class VariablesMappingProviderTest {
                         tuple("process_constant_inputmap_2", "constant_value")
                 );
 
-
     }
 
     @Test
@@ -183,6 +181,5 @@ public class VariablesMappingProviderTest {
         //then
         assertThat(inputVariables).isEmpty();
     }
-
 
 }

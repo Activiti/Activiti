@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
-
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.event.impl.VariableUpdatedEventImpl;
-import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
+import org.activiti.engine.delegate.event.ActivitiVariableEvent;
+
+import java.util.Optional;
 
 public class ToVariableUpdatedConverter implements EventConverter<VariableUpdatedEvent, ActivitiVariableEvent> {
 

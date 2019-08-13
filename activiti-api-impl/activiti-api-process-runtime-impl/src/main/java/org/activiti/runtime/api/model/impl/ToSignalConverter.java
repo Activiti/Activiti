@@ -16,14 +16,14 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.activiti.api.process.model.BPMNSignal;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ToSignalConverter {
 

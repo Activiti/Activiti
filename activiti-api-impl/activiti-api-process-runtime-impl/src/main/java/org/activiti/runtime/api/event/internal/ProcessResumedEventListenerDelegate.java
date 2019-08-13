@@ -16,14 +16,14 @@
 
 package org.activiti.runtime.api.event.internal;
 
-import java.util.List;
-
 import org.activiti.api.process.runtime.events.ProcessResumedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToProcessResumedConverter;
+
+import java.util.List;
 
 public class ProcessResumedEventListenerDelegate implements ActivitiEventListener {
 
@@ -42,7 +42,7 @@ public class ProcessResumedEventListenerDelegate implements ActivitiEventListene
         if (event instanceof ActivitiEntityEvent) {
             processResumedConverter.from((ActivitiEntityEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (ProcessRuntimeEventListener<ProcessResumedEvent> listener : processRuntimeEventListeners) {
+                        for ( ProcessRuntimeEventListener<ProcessResumedEvent> listener : processRuntimeEventListeners ) {
                             listener.onEvent(convertedEvent);
                         }
                     });

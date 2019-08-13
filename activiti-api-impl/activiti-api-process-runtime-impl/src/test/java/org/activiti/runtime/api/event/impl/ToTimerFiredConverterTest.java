@@ -16,8 +16,6 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
-
 import org.activiti.api.process.model.events.BPMNTimerFiredEvent;
 import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
@@ -26,9 +24,11 @@ import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Assertions.*;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ToTimerFiredConverterTest {

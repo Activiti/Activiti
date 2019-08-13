@@ -110,7 +110,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     @Override
     public Page<ProcessDefinition> processDefinitions(Pageable pageable) {
         return processDefinitions(pageable,
-                                  ProcessPayloadBuilder.processDefinitions().build());
+                ProcessPayloadBuilder.processDefinitions().build());
     }
 
     @Override
@@ -131,7 +131,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             processDefinitionQuery.processDefinitionKeys(getProcessDefinitionsPayload.getProcessDefinitionKeys());
         }
         return new PageImpl<>(processDefinitionConverter.from(processDefinitionQuery.list()),
-                              Math.toIntExact(processDefinitionQuery.count()));
+                Math.toIntExact(processDefinitionQuery.count()));
     }
 
     @Override
@@ -144,8 +144,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             throw new NotFoundException("Unable to find process instance for the given id:'" + processInstanceId + "'");
         }
         if (!securityPoliciesManager.canRead(internalProcessInstance.getProcessDefinitionKey())) {
-            throw new ActivitiObjectNotFoundException("You cannot read the process instance with Id:'"
-                                                              + processInstanceId + "' due to security policies violation");
+            throw new ActivitiObjectNotFoundException("You cannot read the process instance with Id:'" + processInstanceId + "' due to security policies violation");
         }
         return processInstanceConverter.from(internalProcessInstance);
     }
@@ -153,7 +152,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     @Override
     public Page<ProcessInstance> processInstances(Pageable pageable) {
         return processInstances(pageable,
-                                ProcessPayloadBuilder.processInstances().build());
+                ProcessPayloadBuilder.processInstances().build());
     }
 
     @Override
@@ -169,8 +168,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (!securityKeysInPayload.getProcessDefinitionKeys().isEmpty()) {
             getProcessInstancesPayload.setProcessDefinitionKeys(securityKeysInPayload.getProcessDefinitionKeys());
         }
-        if (getProcessInstancesPayload.getProcessDefinitionKeys() != null &&
-                !getProcessInstancesPayload.getProcessDefinitionKeys().isEmpty()) {
+        if (getProcessInstancesPayload.getProcessDefinitionKeys() != null && !getProcessInstancesPayload.getProcessDefinitionKeys().isEmpty()) {
             internalQuery.processDefinitionKeys(getProcessInstancesPayload.getProcessDefinitionKeys());
         }
         if (getProcessInstancesPayload.getBusinessKey() != null &&
@@ -186,13 +184,13 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             internalQuery.active();
         }
 
-        if (getProcessInstancesPayload.getParentProcessInstanceId()!=null) {
+        if (getProcessInstancesPayload.getParentProcessInstanceId() != null) {
             internalQuery.superProcessInstanceId(getProcessInstancesPayload.getParentProcessInstanceId());
         }
-        
+
         return new PageImpl<>(processInstanceConverter.from(internalQuery.listPage(pageable.getStartIndex(),
-                                                                                   pageable.getMaxItems())),
-                              Math.toIntExact(internalQuery.count()));
+                pageable.getMaxItems())),
+                Math.toIntExact(internalQuery.count()));
     }
 
     @Override
@@ -216,13 +214,13 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             throw new ActivitiForbiddenException("Operation not permitted for " + processDefinition.getKey() + " due security policy violation");
         }
         return processInstanceConverter.from(runtimeService
-                                                     .createProcessInstanceBuilder()
-                                                     .processDefinitionId(startProcessPayload.getProcessDefinitionId())
-                                                     .processDefinitionKey(startProcessPayload.getProcessDefinitionKey())
-                                                     .businessKey(startProcessPayload.getBusinessKey())
-                                                     .variables(startProcessPayload.getVariables())
-                                                     .name(startProcessPayload.getName())
-                                                     .start());
+                .createProcessInstanceBuilder()
+                .processDefinitionId(startProcessPayload.getProcessDefinitionId())
+                .processDefinitionKey(startProcessPayload.getProcessDefinitionKey())
+                .businessKey(startProcessPayload.getBusinessKey())
+                .variables(startProcessPayload.getVariables())
+                .name(startProcessPayload.getName())
+                .start());
     }
 
     @Override
@@ -243,7 +241,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         }
         runtimeService.activateProcessInstanceById(resumeProcessPayload.getProcessInstanceId());
         return processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
-                                                     .processInstanceId(resumeProcessPayload.getProcessInstanceId()).singleResult());
+                .processInstanceId(resumeProcessPayload.getProcessInstanceId()).singleResult());
     }
 
     @Override
@@ -253,7 +251,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             throw new ActivitiForbiddenException("Operation not permitted for " + processInstance.getProcessDefinitionKey() + " due security policy violation");
         }
         runtimeService.deleteProcessInstance(deleteProcessPayload.getProcessInstanceId(),
-                                             deleteProcessPayload.getReason());
+                deleteProcessPayload.getReason());
         processInstance.setStatus(ProcessInstance.ProcessInstanceStatus.DELETED);
         return processInstance;
     }
@@ -276,7 +274,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             throw new ActivitiForbiddenException("Operation not permitted for " + processInstance.getProcessDefinitionKey() + " due security policy violation");
         }
         runtimeService.removeVariables(removeProcessVariablesPayload.getProcessInstanceId(),
-                                           removeProcessVariablesPayload.getVariableNames());
+                removeProcessVariablesPayload.getVariableNames());
 
     }
 
@@ -287,8 +285,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
             throw new ActivitiForbiddenException("Operation not permitted for " + processInstance.getProcessDefinitionKey() + " due security policy violation");
         }
         runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
-                                        setProcessVariablesPayload.getVariables());
-        
+                setProcessVariablesPayload.getVariables());
+
     }
 
     @Override
@@ -320,18 +318,19 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (!securityPoliciesManager.canWrite(processInstance.getProcessDefinitionKey())) {
             throw new ActivitiForbiddenException("Operation not permitted for " + processInstance.getProcessDefinitionKey() + " due security policy violation");
         }
-        
-        if (updateProcessPayload.getBusinessKey()!=null)
-            runtimeService.updateBusinessKey(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getBusinessKey());
-        if (updateProcessPayload.getName()!=null)
-            runtimeService.setProcessInstanceName(updateProcessPayload.getProcessInstanceId(),updateProcessPayload.getName());
-        
-        ProcessInstance updatedProcessInstance=processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
-                                                                             .processInstanceId(updateProcessPayload.getProcessInstanceId())
-                                                                             .singleResult());
-        
+
+        if (updateProcessPayload.getBusinessKey() != null) {
+            runtimeService.updateBusinessKey(updateProcessPayload.getProcessInstanceId(), updateProcessPayload.getBusinessKey());
+        }
+        if (updateProcessPayload.getName() != null) {
+            runtimeService.setProcessInstanceName(updateProcessPayload.getProcessInstanceId(), updateProcessPayload.getName());
+        }
+        ProcessInstance updatedProcessInstance = processInstanceConverter.from(runtimeService.createProcessInstanceQuery()
+                .processInstanceId(updateProcessPayload.getProcessInstanceId())
+                .singleResult());
+
         return updatedProcessInstance;
- 
+
     }
-    
+
 }

@@ -16,14 +16,14 @@
 
 package org.activiti.runtime.api.event.internal;
 
-import java.util.List;
-
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.runtime.api.event.impl.ToVariableUpdatedConverter;
+
+import java.util.List;
 
 public class VariableUpdatedListenerDelegate implements ActivitiEventListener {
 
@@ -42,8 +42,8 @@ public class VariableUpdatedListenerDelegate implements ActivitiEventListener {
         if (event instanceof ActivitiVariableEvent) {
             converter.from((ActivitiVariableEvent) event)
                     .ifPresent(convertedEvent -> {
-                        if(listeners != null) {
-                            for (VariableEventListener<VariableUpdatedEvent> listener : listeners) {
+                        if (listeners != null) {
+                            for ( VariableEventListener<VariableUpdatedEvent> listener : listeners ) {
                                 listener.onEvent(convertedEvent);
                             }
                         }
