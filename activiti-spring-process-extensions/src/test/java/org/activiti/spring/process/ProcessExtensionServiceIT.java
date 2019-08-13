@@ -5,8 +5,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.activiti.spring.process.autoconfigure.ProcessExtensionsAutoConfiguration;
-import org.activiti.spring.process.autoconfigure.ProcessExtensionsConfiguratorAutoConfiguration;
+import org.activiti.spring.process.conf.ProcessExtensionsAutoConfiguration;
+import org.activiti.spring.process.conf.ProcessExtensionsConfiguratorAutoConfiguration;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;

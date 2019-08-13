@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.spring.process.autoconfigure;
+package org.activiti.spring.process.conf;
 
 import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;

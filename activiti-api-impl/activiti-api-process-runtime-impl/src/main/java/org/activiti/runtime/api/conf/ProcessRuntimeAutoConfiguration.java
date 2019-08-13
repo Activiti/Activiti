@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.conf.activiti.runtime.api;
+package org.activiti.runtime.api.conf;
 
 import java.util.Collections;
 import java.util.List;

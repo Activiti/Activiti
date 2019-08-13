@@ -71,7 +71,7 @@ public class ProcessInstanceOperationsTest {
         ProcessInstance deletedProcessInstance = processRuntime.delete(ProcessPayloadBuilder.delete(processInstance.getId()));
         assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.DELETED);
 
-        assertThat(RuntimeTestConfiguration.collectedEvents).extracting(RuntimeEvent::getEventType).containsExactly(
+        assertThat(RuntimeTestConfiguration.collectedEvents).extracting(RuntimeEvent::getEventType).containsExactlyInAnyOrder(
                 TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
                 BPMNActivityEvent.ActivityEvents.ACTIVITY_CANCELLED,
                 ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED);

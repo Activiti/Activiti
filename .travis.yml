@@ -1,9 +1,12 @@
-language: java 
+language: java
 sudo: required
 services:
   - docker
 jdk:
   - openjdk11
+cache:
+  directories:
+    - $HOME/.m2
 notifications:
   webhooks:
     urls:
