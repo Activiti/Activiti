@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.1.15</version>
+    <version>7.1.26</version>
     <relativePath/>
   </parent>
   
@@ -20,10 +20,10 @@
   <inceptionYear>2018</inceptionYear>
 
   <properties>
-    <activiti-build.version>7.1.15</activiti-build.version>
-    <activiti-api.version>7.1.32</activiti-api.version>
-    <activiti-core-common.version>7.1.33</activiti-core-common.version> 
-    <activiti.version>7.1.57</activiti.version>
+    <activiti-build.version>7.1.26</activiti-build.version>
+    <activiti-api.version>7.1.40</activiti-api.version>
+    <activiti-core-common.version>7.1.36</activiti-core-common.version> 
+    <activiti.version>7.1.59</activiti.version>
   </properties>
 
   <organization>
