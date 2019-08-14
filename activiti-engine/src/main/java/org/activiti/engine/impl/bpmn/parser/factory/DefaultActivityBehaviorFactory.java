@@ -25,6 +25,7 @@ import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
+import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.ExtensionAttribute;
@@ -103,6 +104,7 @@ import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegateExpression;
 import org.activiti.engine.impl.delegate.ThrowMessageJavaDelegate;
@@ -568,13 +570,13 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                                                                  Message message) {
         
         ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
-        List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(messageEventDefinition.getFieldExtensions());
+        MessagePayloadMappingProvider mappingProvider = createMessagePayloadMappingProvider(throwEvent, messageEventDefinition);
         
         return new IntermediateThrowMessageEventActivityBehavior(throwEvent,
                                                                  throwMessageDelegate,
                                                                  messageEventDefinition, 
                                                                  message,
-                                                                 fieldDeclarations);
+                                                                 mappingProvider);
 
     }
 
@@ -584,13 +586,13 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                                                            Message message) {
         
         ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
-        List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(messageEventDefinition.getFieldExtensions());
+        MessagePayloadMappingProvider mappingProvider = createMessagePayloadMappingProvider(endEvent, messageEventDefinition);
         
         return new ThrowMessageEndEventActivityBehavior(endEvent,
                                                         throwMessageDelegate,
                                                         messageEventDefinition, 
                                                         message,
-                                                        fieldDeclarations);
+                                                        mappingProvider);
     }
     
     protected ThrowMessageDelegate createThrowMessageDelegate(MessageEventDefinition messageEventDefinition) {
@@ -618,7 +620,13 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     public ThrowMessageDelegate createDefaultThrowMessageDelegate() {
         return getThrowMessageDelegateFactory().create();
     }
-
+    
+    public MessagePayloadMappingProvider createMessagePayloadMappingProvider(Event bpmnEvent, MessageEventDefinition messageEventDefinition) {
+        return getMessagePayloadMappingProviderFactory().create(bpmnEvent, 
+                                                                messageEventDefinition,
+                                                                getExpressionManager());
+    }
+    
     protected Optional<String> checkClassDelegate(Map<String, List<ExtensionAttribute>> attributes ) {
         return getAttributeValue(attributes, "class");
     }
