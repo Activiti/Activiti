@@ -1,5 +1,8 @@
 language: java 
 sudo: required
+cache:
+  directories:
+  - $HOME/.m2
 services:
   - docker
 jdk:
