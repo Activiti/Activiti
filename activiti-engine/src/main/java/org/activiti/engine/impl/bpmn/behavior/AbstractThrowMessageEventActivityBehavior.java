@@ -1,9 +1,17 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.AbstractMap;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -13,8 +21,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.delegate.ThrowMessage;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
@@ -28,16 +36,16 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
     private final MessageEventDefinition messageEventDefinition;
     private final Message message;
     private final ThrowMessageDelegate delegate;
-    private final List<FieldDeclaration> fieldDeclarations;
+    private final MessagePayloadMappingProvider messagePayloadMappingProvider;
     
     public AbstractThrowMessageEventActivityBehavior(ThrowMessageDelegate delegate,
                                                      MessageEventDefinition messageEventDefinition,
                                                      Message message,
-                                                     List<FieldDeclaration> fieldDeclarations) {
+                                                     MessagePayloadMappingProvider messagePayloadMappingProvider) {
         this.messageEventDefinition = messageEventDefinition;
         this.message = message;
         this.delegate = delegate;
-        this.fieldDeclarations = fieldDeclarations;
+        this.messagePayloadMappingProvider = messagePayloadMappingProvider;
     }
     
     protected boolean send(DelegateExecution execution, ThrowMessage message) {
@@ -74,7 +82,7 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
         String name = getMessageName(execution);
         Optional<String> businessKey = Optional.ofNullable(execution.getProcessInstanceBusinessKey());
         
-        Optional<Map<String, Object>> payload = getMessagePayload(execution);
+        Optional<Map<String, Object>> payload = messagePayloadMappingProvider.getMessagePayload(execution);
         
         return ThrowMessage.builder()
                            .name(name)
@@ -91,34 +99,6 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
         return expression.getValue(execution)
                          .toString();
     }
-    
-    protected Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
-        Map<String, Object> payload = new LinkedHashMap<>();  
-                
-        fieldDeclarations.stream()
-                         .map(field -> applyFieldDeclaration(execution, 
-                                                             field))
-                         .forEach(entry -> payload.put(entry.getKey(), entry.getValue()));
-        
-        return Optional.of(payload)
-                       .filter(map -> !map.isEmpty())
-                       .map(map -> Collections.unmodifiableMap(map));
-    }
-    
-    protected Map.Entry<String, Object> applyFieldDeclaration(DelegateExecution execution, FieldDeclaration field) {
-        return Optional.of(field)
-                       .map(f -> {
-                           Object value = Optional.ofNullable(f.getValue())
-                                                  .map(v -> (Expression.class.isInstance(v)) 
-                                                               ? Expression.class.cast(v).getValue(execution) 
-                                                               : v)
-                                                  .orElse(null);
-                           
-                           return new AbstractMap.SimpleImmutableEntry<>(field.getName(), value);
-                        })
-                       .get();
-    }
-    
     
     protected void dispatchEvent(DelegateExecution execution, ThrowMessage throwMessage) {
         CommandContext commandContext = Context.getCommandContext();
