@@ -5,7 +5,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-spring-boot</artifactId>
     <relativePath>../</relativePath>
-    <version>5.23.0-RC1</version>
+    <version>5.23.0</version>
   </parent>
   <artifactId>activiti-spring-boot-samples</artifactId>
   <packaging>pom</packaging>
