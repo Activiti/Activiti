@@ -2,6 +2,8 @@ package org.activiti.runtime.api.impl;
 
 import java.util.Objects;
 
+import org.activiti.engine.delegate.DelegateExecution;
+
 public class MappingExecutionContext {
 
     private String processDefinitionId;
