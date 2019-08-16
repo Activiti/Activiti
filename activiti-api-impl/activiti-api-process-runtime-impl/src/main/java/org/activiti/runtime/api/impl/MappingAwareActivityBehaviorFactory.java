@@ -17,6 +17,11 @@ import java.util.List;
 
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
+import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
+import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 
 /**
