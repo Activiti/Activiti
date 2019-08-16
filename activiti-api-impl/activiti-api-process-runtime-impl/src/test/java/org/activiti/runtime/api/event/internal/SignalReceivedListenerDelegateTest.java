@@ -16,9 +16,6 @@
 
 package org.activiti.runtime.api.event.internal;
 
-import java.util.Arrays;
-import java.util.Optional;
-
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.runtime.event.impl.BPMNSignalReceivedEventImpl;
@@ -29,6 +26,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -37,7 +37,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class SignalReceivedListenerDelegateTest {
 
     private SignalReceivedListenerDelegate listenerDelegate;
-
 
     @Mock
     private BPMNElementEventListener<BPMNSignalReceivedEvent> firstListener;
@@ -70,7 +69,7 @@ public class SignalReceivedListenerDelegateTest {
     }
 
     @Test
-    public void FailOnExceptionShouldReturnFalse() {
+    public void failOnExceptionShouldReturnFalse() {
         assertThat(listenerDelegate.isFailOnException()).isFalse();
     }
 }

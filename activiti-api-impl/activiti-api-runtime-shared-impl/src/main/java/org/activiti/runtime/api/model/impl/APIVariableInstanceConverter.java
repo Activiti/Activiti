@@ -21,14 +21,14 @@ import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 
 public class APIVariableInstanceConverter
         extends ListConverter<org.activiti.engine.impl.persistence.entity.VariableInstance, VariableInstance>
-        implements ModelConverter <org.activiti.engine.impl.persistence.entity.VariableInstance, VariableInstance> {
+        implements ModelConverter<org.activiti.engine.impl.persistence.entity.VariableInstance, VariableInstance> {
 
     @Override
     public VariableInstance from(org.activiti.engine.impl.persistence.entity.VariableInstance internalVariableInstance) {
         VariableInstanceImpl<Object> variableInstance = new VariableInstanceImpl<>(internalVariableInstance.getName(),
-                                                                                         internalVariableInstance.getTypeName(),
-                                                                                         internalVariableInstance.getValue(),
-                                                                                         internalVariableInstance.getProcessInstanceId());
+                internalVariableInstance.getTypeName(),
+                internalVariableInstance.getValue(),
+                internalVariableInstance.getProcessInstanceId());
         variableInstance.setTaskId(internalVariableInstance.getTaskId());
         return variableInstance;
     }

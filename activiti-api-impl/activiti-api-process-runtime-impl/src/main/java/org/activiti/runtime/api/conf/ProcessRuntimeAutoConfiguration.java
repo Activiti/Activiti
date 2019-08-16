@@ -16,9 +16,6 @@
 
 package org.activiti.runtime.api.conf;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
@@ -103,12 +100,15 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Collections;
+import java.util.List;
+
 @Configuration
 @AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
 public class ProcessRuntimeAutoConfiguration {
-    
+
     /**
-     * Creates default SignalPayloadEventListener bean if no existing bean found in ApplicationContext
+     * Creates default SignalPayloadEventListener bean if no existing bean found in ApplicationContext.
      */
     @Bean
     @ConditionalOnMissingBean(SignalPayloadEventListener.class)
@@ -160,7 +160,6 @@ public class ProcessRuntimeAutoConfiguration {
     public APIProcessInstanceConverter apiProcessInstanceConverter() {
         return new APIProcessInstanceConverter();
     }
-
 
     @Bean
     public ProcessRuntimeConfiguration processRuntimeConfiguration(@Autowired(required = false) List<ProcessRuntimeEventListener<?>> processRuntimeEventListeners,
@@ -218,8 +217,8 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     public InitializingBean registerProcessUpdatedEventListenerDelegate(RuntimeService runtimeService,
-                                                                          @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> eventListeners,
-                                                                          ToProcessUpdatedConverter converter) {
+                                                                        @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessUpdatedEvent>> eventListeners,
+                                                                        ToProcessUpdatedConverter converter) {
         return () -> runtimeService.addEventListener(new ProcessUpdatedListenerDelegate(getInitializedListeners(eventListeners),
                         converter),
                 ActivitiEventType.ENTITY_UPDATED);
@@ -269,12 +268,12 @@ public class ProcessRuntimeAutoConfiguration {
     public ToActivityConverter activityConverter() {
         return new ToActivityConverter();
     }
-    
+
     @Bean
     public ToSignalConverter signalConverter() {
         return new ToSignalConverter();
     }
-    
+
     @Bean
     public BPMNTimerConverter bpmnTimerConveter() {
         return new BPMNTimerConverter();
@@ -306,16 +305,16 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToActivityCancelledConverter(activityConverter)),
                 ActivitiEventType.ACTIVITY_CANCELLED);
     }
-    
+
     @Bean
     public InitializingBean registerActivitySignaledListenerDelegate(RuntimeService runtimeService,
-                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNSignalReceivedEvent>> eventListeners,
-                                                                    ToSignalConverter signalConverter) {
+                                                                     @Autowired(required = false) List<BPMNElementEventListener<BPMNSignalReceivedEvent>> eventListeners,
+                                                                     ToSignalConverter signalConverter) {
         return () -> runtimeService.addEventListener(new SignalReceivedListenerDelegate(getInitializedListeners(eventListeners),
                         new ToSignalReceivedConverter(signalConverter)),
                 ActivitiEventType.ACTIVITY_SIGNALED);
     }
-    
+
     @Bean
     public InitializingBean registerTimerFiredListenerDelegate(RuntimeService runtimeService,
                                                                @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerFiredEvent>> eventListeners,
@@ -333,7 +332,7 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToTimerScheduledConverter(bpmnTimerConverter)),
                 ActivitiEventType.TIMER_SCHEDULED);
     }
-    
+
     @Bean
     public InitializingBean registerTimerCancelledListenerDelegate(RuntimeService runtimeService,
                                                                   @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerCancelledEvent>> eventListeners,
@@ -342,7 +341,7 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToTimerCancelledConverter(bpmnTimerConverter)),
                 ActivitiEventType.JOB_CANCELED);
     }
-    
+
     @Bean
     public InitializingBean registerTimerFailedListenerDelegate(RuntimeService runtimeService,
                                                                 @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerFailedEvent>> eventListeners,
@@ -351,7 +350,7 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToTimerFailedConverter(bpmnTimerConverter)),
                 ActivitiEventType.JOB_EXECUTION_FAILURE);
     }
-    
+
     @Bean
     public InitializingBean registerTimerExecutedListenerDelegate(RuntimeService runtimeService,
                                                                   @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerExecutedEvent>> eventListeners,
@@ -360,7 +359,7 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToTimerExecutedConverter(bpmnTimerConverter)),
                 ActivitiEventType.JOB_EXECUTION_SUCCESS);
     }
-    
+
     @Bean
     public InitializingBean registerTimerRetriesDecrementedListenerDelegate(RuntimeService runtimeService,
                                                                             @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerRetriesDecrementedEvent>> eventListeners,

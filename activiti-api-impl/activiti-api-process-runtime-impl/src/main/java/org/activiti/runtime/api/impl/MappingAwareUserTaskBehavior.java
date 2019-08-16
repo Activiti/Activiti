@@ -19,6 +19,7 @@ package org.activiti.runtime.api.impl;
 import java.util.Map;
 
 import org.activiti.bpmn.model.UserTask;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 
@@ -27,26 +28,23 @@ import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMapping
 public class MappingAwareUserTaskBehavior extends UserTaskActivityBehavior {
 
     private VariablesMappingProvider mappingProvider;
-  
+
     public MappingAwareUserTaskBehavior(UserTask userTask,
                                         VariablesMappingProvider mappingProvider) {
         super(userTask);
         this.mappingProvider = mappingProvider;
     }
 
- 
     @Override
     protected Map<String, Object> calculateInputVariables(DelegateExecution execution) {
         return mappingProvider.calculateInputVariables(execution);
     }
-    
+
     @Override
     protected Map<String, Object> calculateOutBoundVariables(DelegateExecution execution,
                                                              Map<String, Object> taskCompleteVariables) {
         return mappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
-                                                        taskCompleteVariables); 
+                                                        taskCompleteVariables);
     }
-    
-  
 
 }

@@ -16,16 +16,16 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-import org.activiti.api.task.model.impl.TaskImpl;
+
+import java.util.List;
+import java.util.Optional;
 
 public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEvent, ActivitiActivityCancelledEvent> {
 

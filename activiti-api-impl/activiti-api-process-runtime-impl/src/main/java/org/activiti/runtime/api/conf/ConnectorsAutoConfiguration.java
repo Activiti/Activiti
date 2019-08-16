@@ -40,12 +40,12 @@ public class ConnectorsAutoConfiguration {
                                                                  IntegrationContextBuilder integrationContextBuilder,
                                                                  VariablesMappingProvider outboundVariablesProvider) {
         return new DefaultServiceTaskBehavior(applicationContext,
-                                              integrationContextBuilder,
-                                              outboundVariablesProvider);
+                integrationContextBuilder,
+                outboundVariablesProvider);
     }
 
     @Bean
-    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService){
+    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService) {
         return new VariablesMappingProvider(processExtensionService);
     }
 }

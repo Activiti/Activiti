@@ -16,16 +16,16 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import java.util.Date;
-
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
+
+import java.util.Date;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Mock task builder
+ * Mock task builder.
  */
 public class MockTaskBuilder {
 

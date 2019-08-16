@@ -178,3 +178,12 @@ FAQ
         * with [Open Hub](https://www.openhub.net/p/activiti/contributors) which also has statistics
 
         * in [the GitHub web interface](https://github.com/activiti).
+
+# Development commands
+
+## Checkstyle
+To check if your code style respect all the rules:
+ 
+ ```bash
+ mvn checkstyle:check -DskipCheckstyle=false
+```

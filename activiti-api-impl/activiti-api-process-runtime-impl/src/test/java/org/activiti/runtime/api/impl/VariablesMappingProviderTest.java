@@ -117,7 +117,6 @@ public class VariablesMappingProviderTest {
                         tuple("process_constant_inputmap_2", "constant_value")
                 );
 
-
     }
 
     @Test
@@ -183,6 +182,5 @@ public class VariablesMappingProviderTest {
         //then
         assertThat(inputVariables).isEmpty();
     }
-
 
 }

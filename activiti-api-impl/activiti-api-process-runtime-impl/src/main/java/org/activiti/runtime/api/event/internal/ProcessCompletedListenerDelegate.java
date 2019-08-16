@@ -16,14 +16,14 @@
 
 package org.activiti.runtime.api.event.internal;
 
-import java.util.List;
-
+import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
+import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.runtime.api.event.impl.ToProcessCompletedConverter;
-import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+
+import java.util.List;
 
 public class ProcessCompletedListenerDelegate implements ActivitiEventListener {
 
@@ -42,7 +42,7 @@ public class ProcessCompletedListenerDelegate implements ActivitiEventListener {
         if (event instanceof ActivitiEntityEvent) {
             processCompletedConverter.from((ActivitiEntityEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (ProcessRuntimeEventListener<ProcessCompletedEvent> listener : processRuntimeEventListeners) {
+                        for ( ProcessRuntimeEventListener<ProcessCompletedEvent> listener : processRuntimeEventListeners ) {
                             listener.onEvent(convertedEvent);
                         }
                     });

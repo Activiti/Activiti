@@ -16,11 +16,11 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
-
 import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
-import org.activiti.engine.delegate.event.ActivitiCancelledEvent;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.engine.delegate.event.ActivitiCancelledEvent;
+
+import java.util.Optional;
 
 public class ToProcessCancelledConverter implements EventConverter<ProcessCancelledEvent, ActivitiCancelledEvent> {
 
@@ -29,8 +29,8 @@ public class ToProcessCancelledConverter implements EventConverter<ProcessCancel
         ProcessInstanceImpl processInstance = new ProcessInstanceImpl();
         processInstance.setId(internalEvent.getProcessInstanceId());
         processInstance.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
-        String cause = internalEvent.getCause() !=null? internalEvent.getCause().toString() : null;
+        String cause = internalEvent.getCause() != null ? internalEvent.getCause().toString() : null;
         return Optional.of(new ProcessCancelledImpl(processInstance,
-                                                    cause));
+                cause));
     }
 }

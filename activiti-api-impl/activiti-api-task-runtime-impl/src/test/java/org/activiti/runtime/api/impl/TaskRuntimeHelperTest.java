@@ -16,10 +16,6 @@
 
 package org.activiti.runtime.api.impl;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
@@ -34,15 +30,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TaskRuntimeHelperTest {
@@ -67,9 +63,9 @@ public class TaskRuntimeHelperTest {
     public void setUp() {
         initMocks(this);
         taskRuntimeHelper = spy(new TaskRuntimeHelper(taskService,
-                                                      taskConverter,
-                                                      securityManager,
-                                                      userGroupManager));
+                taskConverter,
+                securityManager,
+                userGroupManager));
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
     }
 
@@ -92,7 +88,7 @@ public class TaskRuntimeHelperTest {
 
         //when
         taskRuntimeHelper.applyUpdateTaskPayload(false,
-                                                 updateTaskPayload);
+                updateTaskPayload);
 
         //then
         verify(internalTask).setDescription("new description");
@@ -115,7 +111,7 @@ public class TaskRuntimeHelperTest {
         TaskQuery taskQuery = mock(TaskQuery.class);
         given(taskService.createTaskQuery()).willReturn(taskQuery);
         given(taskQuery.taskCandidateOrAssigned(any(),
-                                                any())).willReturn(taskQuery);
+                any())).willReturn(taskQuery);
         given(taskQuery.taskId("taskId")).willReturn(taskQuery);
 
         Task internalTask = mock(Task.class);
@@ -129,7 +125,7 @@ public class TaskRuntimeHelperTest {
 
         //when
         Throwable throwable = catchThrowable(() -> taskRuntimeHelper.applyUpdateTaskPayload(false,
-                                                                                            updateTaskPayload));
+                updateTaskPayload));
 
         //then
         assertThat(throwable)
@@ -140,11 +136,6 @@ public class TaskRuntimeHelperTest {
     @Test
     public void updateShouldBeAbleToUpdateDescriptionOnly() {
         //given
-        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder
-                .update()
-                .withTaskId("taskId")
-                .withDescription("new description")
-                .build();
         TaskImpl task = new TaskImpl();
         String assignee = AUTHENTICATED_USER;
         task.setAssignee(assignee);
@@ -164,9 +155,15 @@ public class TaskRuntimeHelperTest {
 
         when(taskConverter.from(any(Task.class))).thenReturn(task);
 
+        UpdateTaskPayload updateTaskPayload = TaskPayloadBuilder
+                .update()
+                .withTaskId("taskId")
+                .withDescription("new description")
+                .build();
+
         //when
         taskRuntimeHelper.applyUpdateTaskPayload(false,
-                                                 updateTaskPayload);
+                updateTaskPayload);
 
         //then
         verify(internalTask).getDescription();
@@ -183,7 +180,7 @@ public class TaskRuntimeHelperTest {
 
         TaskQuery taskQuery = mock(TaskQuery.class);
         given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER,
-                                                groups)).willReturn(taskQuery);
+                groups)).willReturn(taskQuery);
         given(taskQuery.taskId("taskId")).willReturn(taskQuery);
         Task internalTask = mock(Task.class);
         given(taskQuery.singleResult()).willReturn(internalTask);
@@ -206,7 +203,7 @@ public class TaskRuntimeHelperTest {
 
         TaskQuery taskQuery = mock(TaskQuery.class);
         given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER,
-                                                groups)).willReturn(taskQuery);
+                groups)).willReturn(taskQuery);
         given(taskQuery.taskId("taskId")).willReturn(taskQuery);
         given(taskQuery.singleResult()).willReturn(null);
 
@@ -214,7 +211,7 @@ public class TaskRuntimeHelperTest {
 
         //when
         Throwable thrown = catchThrowable(() ->
-                                                  taskRuntimeHelper.getInternalTaskWithChecks("taskId")
+                taskRuntimeHelper.getInternalTaskWithChecks("taskId")
         );
 
         //then
@@ -230,7 +227,7 @@ public class TaskRuntimeHelperTest {
 
         //when
         Throwable thrown = catchThrowable(() ->
-                                                  taskRuntimeHelper.getInternalTaskWithChecks("taskId")
+                taskRuntimeHelper.getInternalTaskWithChecks("taskId")
         );
 
         //then
@@ -238,6 +235,5 @@ public class TaskRuntimeHelperTest {
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("There is no authenticated user, we need a user authenticated to find tasks");
     }
-
 
 }

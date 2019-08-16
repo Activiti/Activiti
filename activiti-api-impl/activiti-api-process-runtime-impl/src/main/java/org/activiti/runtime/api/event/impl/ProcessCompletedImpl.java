@@ -16,9 +16,9 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
-import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.events.ProcessRuntimeEvent;
+import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.runtime.event.impl.RuntimeEventImpl;
 
 public class ProcessCompletedImpl extends RuntimeEventImpl<ProcessInstance, ProcessRuntimeEvent.ProcessEvents>

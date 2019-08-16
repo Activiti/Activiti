@@ -16,14 +16,17 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import java.util.Date;
-
 import org.activiti.api.task.model.Task;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 
-import static org.activiti.api.task.model.Task.TaskStatus.*;
+import java.util.Date;
+
+import static org.activiti.api.task.model.Task.TaskStatus.ASSIGNED;
+import static org.activiti.api.task.model.Task.TaskStatus.CANCELLED;
+import static org.activiti.api.task.model.Task.TaskStatus.SUSPENDED;
+import static org.activiti.api.task.model.Task.TaskStatus.CREATED;
 import static org.activiti.runtime.api.model.impl.MockTaskBuilder.taskBuilder;
 import static org.activiti.runtime.api.model.impl.MockTaskBuilder.taskEntityBuilder;
 import static org.assertj.core.api.Assertions.assertThat;

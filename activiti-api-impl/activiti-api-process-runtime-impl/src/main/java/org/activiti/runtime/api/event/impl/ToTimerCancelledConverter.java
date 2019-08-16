@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
-
 import org.activiti.api.process.model.events.BPMNTimerCancelledEvent;
 import org.activiti.api.runtime.event.impl.BPMNTimerCancelledEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
+
+import java.util.Optional;
 
 public class ToTimerCancelledConverter implements EventConverter<BPMNTimerCancelledEvent, ActivitiEvent> {
 

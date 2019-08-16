@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.runtime.api.model.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class ListConverter<SOURCE, TARGET> implements ModelConverter<SOURCE, TARGET> {
+public abstract class ListConverter<SourceT, TargetT> implements ModelConverter<SourceT, TargetT> {
 
-    public List<TARGET> from(Collection<SOURCE> sources) {
-        List<TARGET> targetElements = new ArrayList<>();
-        for (SOURCE sourceElement : sources) {
+    public List<TargetT> from(Collection<SourceT> sources) {
+        List<TargetT> targetElements = new ArrayList<>();
+        for (SourceT sourceElement : sources) {
             targetElements.add(from(sourceElement));
         }
         return targetElements;

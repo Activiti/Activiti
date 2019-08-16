@@ -50,7 +50,6 @@ public class MappingAwareCallActivityBehaviorTest {
         initMocks(this);
     }
 
-
     @Test
     public void calculateInboundVariablesShouldTakeIntoAccountMappingProviderAndProcessVariablesInitiator() {
         //given

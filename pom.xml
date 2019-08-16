@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.activiti.build</groupId> 
+    <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
     <version>7.1.26</version>
     <relativePath/>
@@ -42,6 +42,9 @@
     <subethasmtp-wiser.version>1.2</subethasmtp-wiser.version>
     <xmlgraphics-commons.version>2.2</xmlgraphics-commons.version>
     <groovy-all.version>2.5.4</groovy-all.version>
+
+    <checkstyle-maven-plugin.version>3.1.0</checkstyle-maven-plugin.version>
+    <skipCheckstyle>true</skipCheckstyle>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -289,7 +292,33 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${maven-surefire-plugin.version}</version></plugin>
+        <version>${maven-surefire-plugin.version}</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${checkstyle-maven-plugin.version}</version>
+        <executions>
+          <execution>
+            <phase>install</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <skip>${skipCheckstyle}</skip>
+          <sourceDirectories>
+            <sourceDirectory>activiti-api-impl</sourceDirectory>
+          </sourceDirectories>
+          <failOnViolation>true</failOnViolation>
+          <enableRulesSummary>false</enableRulesSummary>
+          <configLocation>./checkstyle-rules.xml</configLocation>
+        </configuration>
+      </plugin>
+
     </plugins>
-    </build>
-  </project>
+  </build>
+
+</project>

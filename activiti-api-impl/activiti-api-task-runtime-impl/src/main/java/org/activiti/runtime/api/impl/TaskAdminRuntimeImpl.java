@@ -16,9 +16,6 @@
 
 package org.activiti.runtime.api.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -48,15 +45,18 @@ import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @PreAuthorize("hasRole('ACTIVITI_ADMIN')")
 public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
 
     private final TaskService taskService;
 
     private final APITaskConverter taskConverter;
-    
+
     private final APIVariableInstanceConverter variableInstanceConverter;
-    
+
     private final TaskRuntimeHelper taskRuntimeHelper;
 
     private final SecurityManager securityManager;
@@ -69,7 +69,7 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         this.taskService = taskService;
         this.taskConverter = taskConverter;
         this.variableInstanceConverter = variableInstanceConverter;
-        this.taskRuntimeHelper=taskRuntimeHelper;
+        this.taskRuntimeHelper = taskRuntimeHelper;
         this.securityManager = securityManager;
     }
 
@@ -81,7 +81,7 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     @Override
     public Page<Task> tasks(Pageable pageable) {
         return tasks(pageable,
-                     TaskPayloadBuilder.tasks().build());
+                TaskPayloadBuilder.tasks().build());
     }
 
     @Override
@@ -97,11 +97,11 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         }
 
         List<Task> tasks = taskConverter.from(taskQuery.listPage(pageable.getStartIndex(),
-                                                                 pageable.getMaxItems()));
+                pageable.getMaxItems()));
         return new PageImpl<>(tasks,
-                              Math.toIntExact(taskQuery.count()));
+                Math.toIntExact(taskQuery.count()));
     }
-    
+
     @Override
     public Task update(UpdateTaskPayload updateTaskPayload) {
         return taskRuntimeHelper.applyUpdateTaskPayload(true, updateTaskPayload);
@@ -114,8 +114,8 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         Task task = task(deleteTaskPayload.getTaskId());
 
         TaskImpl deletedTaskData = new TaskImpl(task.getId(),
-                                                task.getName(),
-                                                Task.TaskStatus.CANCELLED);
+                task.getName(),
+                Task.TaskStatus.CANCELLED);
 
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
 
@@ -124,8 +124,8 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         }
 
         taskService.deleteTask(deleteTaskPayload.getTaskId(),
-                               deleteTaskPayload.getReason(),
-                               true);
+                deleteTaskPayload.getReason(),
+                true);
         return deletedTaskData;
     }
 
@@ -133,15 +133,15 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
     public List<VariableInstance> variables(GetTaskVariablesPayload getTaskVariablesPayload) {
         return variableInstanceConverter.from(taskRuntimeHelper.getInternalTaskVariables(getTaskVariablesPayload.getTaskId()).values());
     }
-    
+
     @Override
     public void createVariable(CreateTaskVariablePayload createTaskVariablePayload) {
-    	taskRuntimeHelper.createVariable(true, createTaskVariablePayload);
+        taskRuntimeHelper.createVariable(true, createTaskVariablePayload);
     }
-    
+
     @Override
     public void updateVariable(UpdateTaskVariablePayload updateTaskVariablePayload) {
-    	taskRuntimeHelper.updateVariable(true, updateTaskVariablePayload);
+        taskRuntimeHelper.updateVariable(true, updateTaskVariablePayload);
     }
 
     @Override
@@ -151,17 +151,17 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
             throw new IllegalStateException("Task with id: " + completeTaskPayload.getTaskId() + " cannot be completed because it cannot be found.");
         }
         TaskImpl competedTaskData = new TaskImpl(task.getId(),
-                                                 task.getName(),
-                                                 Task.TaskStatus.COMPLETED);
+                task.getName(),
+                Task.TaskStatus.COMPLETED);
         taskService.complete(completeTaskPayload.getTaskId(),
-                             completeTaskPayload.getVariables(),true);
+                completeTaskPayload.getVariables(), true);
         return competedTaskData;
     }
 
     @Override
     public Task claim(ClaimTaskPayload claimTaskPayload) {
         taskService.claim(claimTaskPayload.getTaskId(),
-                          claimTaskPayload.getAssignee());
+                claimTaskPayload.getAssignee());
 
         return task(claimTaskPayload.getTaskId());
     }
@@ -171,93 +171,93 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         taskService.unclaim(releaseTaskPayload.getTaskId());
         return task(releaseTaskPayload.getTaskId());
     }
-    
+
     @Override
     public Task assign(AssignTaskPayload assignTaskPayload) {
         //We need to release, claim for assigned task is not working!
         taskService.unclaim(assignTaskPayload.getTaskId());
-        
+
         //Now assign a new user
         taskService.claim(assignTaskPayload.getTaskId(),
-                          assignTaskPayload.getAssignee());
-        
+                assignTaskPayload.getAssignee());
+
         return task(assignTaskPayload.getTaskId());
     }
-    
+
     @Override
-    public void addCandidateUsers(CandidateUsersPayload candidateUsersPayload) {      
-       if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
-            for (String u : candidateUsersPayload.getCandidateUsers()) {
-                taskService.addCandidateUser(candidateUsersPayload.getTaskId(),
-                                             u);
-            }
-       }
-    }
-    
-    @Override
-    public void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload) {           
+    public void addCandidateUsers(CandidateUsersPayload candidateUsersPayload) {
         if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
-            for (String u : candidateUsersPayload.getCandidateUsers()) {
+            for ( String u : candidateUsersPayload.getCandidateUsers() ) {
+                taskService.addCandidateUser(candidateUsersPayload.getTaskId(),
+                        u);
+            }
+        }
+    }
+
+    @Override
+    public void deleteCandidateUsers(CandidateUsersPayload candidateUsersPayload) {
+        if (candidateUsersPayload.getCandidateUsers() != null && !candidateUsersPayload.getCandidateUsers().isEmpty()) {
+            for ( String u : candidateUsersPayload.getCandidateUsers() ) {
                 taskService.deleteCandidateUser(candidateUsersPayload.getTaskId(),
-                                                u);
+                        u);
             }
         }
     }
-    
+
     @Override
-    public void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {          
-       if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
-            for (String g : candidateGroupsPayload.getCandidateGroups()) {
-                taskService.addCandidateGroup(candidateGroupsPayload.getTaskId(),
-                                              g);
-            }
-       }
-    }
-    
-    @Override
-    public void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {    
+    public void addCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {
         if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
-            for (String g : candidateGroupsPayload.getCandidateGroups()) {
-                taskService.deleteCandidateGroup(candidateGroupsPayload.getTaskId(),
-                                                 g);
+            for ( String g : candidateGroupsPayload.getCandidateGroups() ) {
+                taskService.addCandidateGroup(candidateGroupsPayload.getTaskId(),
+                        g);
             }
         }
     }
-    
+
+    @Override
+    public void deleteCandidateGroups(CandidateGroupsPayload candidateGroupsPayload) {
+        if (candidateGroupsPayload.getCandidateGroups() != null && !candidateGroupsPayload.getCandidateGroups().isEmpty()) {
+            for ( String g : candidateGroupsPayload.getCandidateGroups() ) {
+                taskService.deleteCandidateGroup(candidateGroupsPayload.getTaskId(),
+                        g);
+            }
+        }
+    }
+
     @Override
     public List<String> userCandidates(String taskId) {
-        List<IdentityLink> identityLinks= getIdentityLinks(taskId);
+        List<IdentityLink> identityLinks = getIdentityLinks(taskId);
         List<String> userCandidates = new ArrayList<>();
-        if (identityLinks!=null) {
-            for (IdentityLink i : identityLinks) {
-                if (i.getUserId()!=null) {
-                    if (i.getType().equals(IdentityLinkType.CANDIDATE) ) {
+        if (identityLinks != null) {
+            for ( IdentityLink i : identityLinks ) {
+                if (i.getUserId() != null) {
+                    if (i.getType().equals(IdentityLinkType.CANDIDATE)) {
                         userCandidates.add(i.getUserId());
-                    } 
+                    }
                 }
             }
-            
+
         }
         return userCandidates;
     }
-    
+
     @Override
     public List<String> groupCandidates(String taskId) {
-        List<IdentityLink> identityLinks= getIdentityLinks(taskId);
+        List<IdentityLink> identityLinks = getIdentityLinks(taskId);
         List<String> groupCandidates = new ArrayList<>();
-        if (identityLinks!=null) {
-            for (IdentityLink i : identityLinks) {
-                if (i.getGroupId()!=null) {
-                    if (i.getType().equals(IdentityLinkType.CANDIDATE) ) {
+        if (identityLinks != null) {
+            for ( IdentityLink i : identityLinks ) {
+                if (i.getGroupId() != null) {
+                    if (i.getType().equals(IdentityLinkType.CANDIDATE)) {
                         groupCandidates.add(i.getGroupId());
-                    } 
+                    }
                 }
             }
 
         }
         return groupCandidates;
     }
-    
+
     private List<IdentityLink> getIdentityLinks(String taskId) {
         return taskService.getIdentityLinksForTask(taskId);
     }

@@ -16,9 +16,6 @@
 
 package org.activiti.runtime.api.event.internal;
 
-import java.util.Collections;
-import java.util.Optional;
-
 import org.activiti.api.process.model.events.BPMNTimerFailedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.runtime.event.impl.BPMNTimerFailedEventImpl;
@@ -28,8 +25,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import java.util.Collections;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TimerFailedListenerDelegateTest {

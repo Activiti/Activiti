@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
-
 import org.activiti.api.process.model.events.BPMNTimerFiredEvent;
 import org.activiti.api.runtime.event.impl.BPMNTimerFiredEventImpl;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
+
+import java.util.Optional;
 
 public class ToTimerFiredConverter implements EventConverter<BPMNTimerFiredEvent, ActivitiEvent> {
 

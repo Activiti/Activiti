@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
-
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
+
+import java.util.Optional;
 
 public class ToProcessCompletedConverter implements EventConverter<ProcessCompletedEvent, ActivitiEntityEvent> {
 

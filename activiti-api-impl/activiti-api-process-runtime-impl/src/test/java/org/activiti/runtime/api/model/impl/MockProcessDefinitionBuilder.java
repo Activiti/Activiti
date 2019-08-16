@@ -22,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Mock process definition builder
+ * Mock process definition builder.
  */
 public class MockProcessDefinitionBuilder {
 

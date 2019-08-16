@@ -52,27 +52,27 @@ public class IntegrationContextBuilder {
         integrationContext.setBusinessKey(execution.getProcessInstanceBusinessKey());
         integrationContext.setClientId(execution.getCurrentActivityId());
 
-        if(ExecutionEntity.class.isInstance(execution)) {
+        if (ExecutionEntity.class.isInstance(execution)) {
             ExecutionContext executionContext = new ExecutionContext(ExecutionEntity.class.cast(execution));
 
-            ExecutionEntity processInstance = executionContext.getProcessInstance(); 
+            ExecutionEntity processInstance = executionContext.getProcessInstance();
 
-            if(processInstance != null) {
+            if (processInstance != null) {
                 integrationContext.setParentProcessInstanceId(processInstance.getParentProcessInstanceId());
             }
-            
-            // Let's try to resolve process definition attributes  
+
+            // Let's try to resolve process definition attributes
             ProcessDefinition processDefinition = executionContext.getProcessDefinition();
 
-            if(processDefinition != null) {
+            if (processDefinition != null) {
                 integrationContext.setProcessDefinitionKey(processDefinition.getKey());
                 integrationContext.setProcessDefinitionVersion(processDefinition.getVersion());
             }
-            
+
         }
 
-        ServiceTask serviceTask = (ServiceTask)execution.getCurrentFlowElement();
-        if (serviceTask != null ) {
+        ServiceTask serviceTask = (ServiceTask) execution.getCurrentFlowElement();
+        if (serviceTask != null) {
             integrationContext.setConnectorType(serviceTask.getImplementation());
             integrationContext.setClientName(serviceTask.getName());
             integrationContext.setClientType(ServiceTask.class.getSimpleName());

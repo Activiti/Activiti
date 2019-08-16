@@ -16,14 +16,14 @@
 
 package org.activiti.runtime.api.event.internal;
 
-import java.util.List;
-
 import org.activiti.api.process.runtime.events.ProcessCreatedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCreatedEventConverter;
+
+import java.util.List;
 
 public class ProcessCreatedListenerDelegate implements ActivitiEventListener {
 
@@ -42,7 +42,7 @@ public class ProcessCreatedListenerDelegate implements ActivitiEventListener {
         if (event instanceof ActivitiEntityEvent) {
             entityCreatedEventConverter.from((ActivitiEntityEvent) event)
                     .ifPresent(convertedEvent -> {
-                        for (ProcessRuntimeEventListener<ProcessCreatedEvent> listener : listeners) {
+                        for ( ProcessRuntimeEventListener<ProcessCreatedEvent> listener : listeners ) {
                             listener.onEvent(convertedEvent);
                         }
                     });

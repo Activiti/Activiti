@@ -16,12 +16,9 @@
 
 package org.activiti.runtime.api.connector;
 
-import java.util.Optional;
-
 import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.api.process.runtime.connector.Connector;
 import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.core.common.model.connector.ActionDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
@@ -73,7 +70,6 @@ public class DefaultServiceTaskBehavior extends AbstractBpmnActivityBehavior {
 
     public boolean hasConnectorBean(DelegateExecution execution) {
         String implementation = getServiceTaskImplementation(execution);
-        return applicationContext.containsBean(implementation)
-                && applicationContext.getBean(implementation) instanceof Connector;
+        return applicationContext.containsBean(implementation) && applicationContext.getBean(implementation) instanceof Connector;
     }
 }

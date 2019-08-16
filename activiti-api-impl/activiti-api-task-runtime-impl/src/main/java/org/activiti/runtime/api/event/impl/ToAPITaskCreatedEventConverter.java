@@ -16,11 +16,11 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
-
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
+
+import java.util.Optional;
 
 public class ToAPITaskCreatedEventConverter implements EventConverter<TaskCreatedEvent, ActivitiEntityEvent> {
 

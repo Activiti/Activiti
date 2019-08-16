@@ -16,12 +16,12 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import java.util.Optional;
-
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.runtime.event.impl.BPMNSignalReceivedEventImpl;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.runtime.api.model.impl.ToSignalConverter;
+
+import java.util.Optional;
 
 public class ToSignalReceivedConverter implements EventConverter<BPMNSignalReceivedEvent, ActivitiSignalEvent> {
 
@@ -33,10 +33,10 @@ public class ToSignalReceivedConverter implements EventConverter<BPMNSignalRecei
 
     @Override
     public Optional<BPMNSignalReceivedEvent> from(ActivitiSignalEvent internalEvent) {
-    	BPMNSignalReceivedEventImpl event = new BPMNSignalReceivedEventImpl(toSignalConverter.from(internalEvent));
-    	event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+        BPMNSignalReceivedEventImpl event = new BPMNSignalReceivedEventImpl(toSignalConverter.from(internalEvent));
+        event.setProcessInstanceId(internalEvent.getProcessInstanceId());
         event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
         return Optional.of(event);
     }
-    
+
 }
