@@ -20,6 +20,9 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.UserTask;
 
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
+
 import static org.activiti.runtime.api.impl.MappingExecutionContext.buildMappingExecutionContext;
 
 public class MappingAwareUserTaskBehavior extends UserTaskActivityBehavior {
