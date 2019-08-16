@@ -146,7 +146,7 @@ The following command creates the unit test project:
 mvn archetype:generate \
 -DarchetypeGroupId=org.activiti \
 -DarchetypeArtifactId=activiti-archetype-unittest \
--DarchetypeVersion=5.23.0-SNAPSHOT \
+-DarchetypeVersion=5.23.0 \
 -DgroupId=org.myGroup \
 -DartifactId=myArtifact
 

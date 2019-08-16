@@ -1529,7 +1529,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, runtimeService.createProcessInstanceQuery().variableValueEquals(null).count());
   }
   
-  @Deployment(resources={
+  /*@Deployment(resources={
     "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testQueryEqualsIgnoreCase() {
     Map<String, Object> vars = new HashMap<String, Object>();
@@ -1596,7 +1596,7 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     } catch(ActivitiIllegalArgumentException ae) {
       assertEquals("name is null", ae.getMessage());
     }
-  }
+  }*/
   
   @Deployment(resources={"org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testQueryLikeIgnoreCase() {

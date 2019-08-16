@@ -25,6 +25,7 @@ import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -158,6 +159,7 @@ public class WSDLImporterTest {
   }
   
   @Test
+  @Ignore
   public void testImportInheritedElement() throws Exception {
     URL url = ReflectUtil.getResource("org/activiti/engine/impl/webservice/inherited-elements-in-types.wsdl");
     assertNotNull(url);

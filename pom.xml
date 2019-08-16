@@ -10,7 +10,7 @@
   </parent>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-root</artifactId>
-  <version>5.23.0-SNAPSHOT</version>
+  <version>5.23.0</version>
   <packaging>pom</packaging>
   <name>Activiti</name>
   <description>BPM and workflow engine</description>
@@ -45,6 +45,7 @@
     <maven-source-plugin.version>2.4</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.18.1</maven-surefire-plugin.version>
     <maven-war-plugin.version>2.6</maven-war-plugin.version>
+    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
     <!-- JVM params for test execution -->
     <argLine>-Duser.language=en</argLine>
     <!-- OSGi bundles properties -->
@@ -81,6 +82,18 @@
     <activiti.osgi.include.resource>{maven-resources}</activiti.osgi.include.resource>
     <activiti.osgi.embed />
   </properties>
+  
+  <distributionManagement>
+    <snapshotRepository>
+      <id>central-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>central-releases-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+  </distributionManagement>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -834,6 +847,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven-gpg-plugin.version}</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
