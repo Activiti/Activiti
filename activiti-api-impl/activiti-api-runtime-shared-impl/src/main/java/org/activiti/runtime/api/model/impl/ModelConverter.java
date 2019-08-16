@@ -34,9 +34,9 @@ package org.activiti.runtime.api.model.impl;
 import java.util.Collection;
 import java.util.List;
 
-public interface ModelConverter<SoruceT, TargetT> {
+public interface ModelConverter<SourceT, TargetT> {
 
-    TargetT from(SoruceT source);
+    TargetT from(SourceT source);
 
-    List<TargetT> from(Collection<SoruceT> sources);
+    List<TargetT> from(Collection<SourceT> sources);
 }
