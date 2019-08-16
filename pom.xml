@@ -45,6 +45,7 @@
 
     <checkstyle-maven-plugin.version>3.1.0</checkstyle-maven-plugin.version>
     <skipCheckstyle>true</skipCheckstyle>
+    <liquibase.version>3.7.0</liquibase.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -70,6 +71,11 @@
         <groupId>org.hibernate.javax.persistence</groupId>
         <artifactId>hibernate-jpa-2.1-api</artifactId>
         <version>${hibernate-jpa-2.1-api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-core</artifactId>
+        <version>${liquibase.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
