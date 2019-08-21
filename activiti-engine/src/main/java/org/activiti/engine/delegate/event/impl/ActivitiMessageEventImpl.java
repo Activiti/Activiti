@@ -47,10 +47,11 @@ public class ActivitiMessageEventImpl extends ActivitiActivityEventImpl implemen
     return messageData;
   }
 
-  public String getCorrelationKey() {
+  public String getMessageCorrelationKey() {
     return correlationKey;
   }
-  public void setCorrelationKey(String correlationKey) {
+
+  public void setMessageCorrelationKey(String correlationKey) {
       this.correlationKey = correlationKey;
   }
 }

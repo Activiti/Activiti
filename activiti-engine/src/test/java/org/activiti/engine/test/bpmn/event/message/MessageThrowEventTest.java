@@ -341,7 +341,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
       assertThat(event.getActivityName()).isEqualTo("Throw Message");
       assertThat(event.getBehaviorClass()).isEqualTo(IntermediateThrowMessageEventActivityBehavior.class.getName());
       assertThat(event.getMessageName()).isEqualTo("bpmnMessage");
-      assertThat(event.getCorrelationKey()).isEqualTo("bar");
+      assertThat(event.getMessageCorrelationKey()).isEqualTo("bar");
       assertThat(event.getMessageData()).isNull();
       assertThat(event.getProcessDefinitionId()).isEqualTo(pi.getProcessDefinitionId());
       assertThat(event.getProcessInstanceId()).isEqualTo(pi.getId());
@@ -372,7 +372,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
       assertThat(event.getBehaviorClass()).isEqualTo(ThrowMessageEndEventActivityBehavior.class.getName());
       assertThat(event.getMessageName()).isEqualTo("endMessage");
       assertThat(event.getMessageData()).isNull();
-      assertThat(event.getCorrelationKey()).isEqualTo("bar");
+      assertThat(event.getMessageCorrelationKey()).isEqualTo("bar");
       assertThat(event.getProcessDefinitionId()).isEqualTo(pi.getProcessDefinitionId());
       assertThat(event.getProcessInstanceId()).isEqualTo(pi.getId());
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_SENT);

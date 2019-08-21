@@ -112,7 +112,7 @@ public class ProcessRuntimeBPMNMessageIT {
                             event -> event.getProcessInstanceId(),
                             event -> ((ActivitiMessageEvent)event).getActivityType(),
                             event -> ((ActivitiMessageEvent)event).getMessageName(),
-                            event -> ((ActivitiMessageEvent)event).getCorrelationKey())
+                            event -> ((ActivitiMessageEvent)event).getMessageCorrelationKey(),
                 .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT,
                                       process.getProcessDefinitionId(),
                                       process.getId(),

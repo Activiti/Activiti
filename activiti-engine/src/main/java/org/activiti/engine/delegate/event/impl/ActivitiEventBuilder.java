@@ -286,7 +286,7 @@ public class ActivitiEventBuilder {
                                                         Object payload) {
     ActivitiMessageEventImpl newEvent = new ActivitiMessageEventImpl(type);
     newEvent.setMessageName(messageName);
-    newEvent.setCorrelationKey(correlationKey);
+    newEvent.setMessageCorrelationKey(correlationKey);
     newEvent.setMessageData(payload);  
     
     if (execution != null) {
