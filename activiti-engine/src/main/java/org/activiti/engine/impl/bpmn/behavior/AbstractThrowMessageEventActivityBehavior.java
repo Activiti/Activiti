@@ -27,7 +27,7 @@ import org.activiti.engine.impl.delegate.ThrowMessage;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
 import org.activiti.engine.impl.delegate.invocation.ThrowMessageDelegateInvocation;
-import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.el.ExpressionManager;
 
 public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNodeActivityBehavior {
 
@@ -37,15 +37,18 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
     private final Message message;
     private final ThrowMessageDelegate delegate;
     private final MessagePayloadMappingProvider messagePayloadMappingProvider;
+    private final ExpressionManager expressionManager;
     
     public AbstractThrowMessageEventActivityBehavior(ThrowMessageDelegate delegate,
                                                      MessageEventDefinition messageEventDefinition,
                                                      Message message,
-                                                     MessagePayloadMappingProvider messagePayloadMappingProvider) {
+                                                     MessagePayloadMappingProvider messagePayloadMappingProvider,
+                                                     ExpressionManager expressionManager) {
         this.messageEventDefinition = messageEventDefinition;
         this.message = message;
         this.delegate = delegate;
         this.messagePayloadMappingProvider = messagePayloadMappingProvider;
+        this.expressionManager = expressionManager;
     }
     
     protected boolean send(DelegateExecution execution, ThrowMessage message) {
@@ -94,9 +97,7 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
     }
 
     protected String getMessageName(DelegateExecution execution) {
-        Expression expression = Context.getProcessEngineConfiguration()
-                                       .getExpressionManager()
-                                       .createExpression(message.getName());
+        Expression expression = expressionManager.createExpression(message.getName());
 
         return expression.getValue(execution)
                          .toString();
@@ -105,31 +106,33 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
     protected Optional<String> getCorrelationKey(DelegateExecution execution) {
         return Optional.ofNullable(messageEventDefinition.getCorrelationKey())
                        .map(correlationKey -> {
-                           Expression expression = Context.getProcessEngineConfiguration()
-                                                          .getExpressionManager()
-                                                          .createExpression(messageEventDefinition.getCorrelationKey());
+                            Expression expression =expressionManager.createExpression(messageEventDefinition.getCorrelationKey());
 
                             return expression.getValue(execution)
                                              .toString();
-                           
                        });    
     }
     
     protected void dispatchEvent(DelegateExecution execution, ThrowMessage throwMessage) {
-        CommandContext commandContext = Context.getCommandContext();
-        
-        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            commandContext
-                .getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_SENT, 
-                                                                       execution, 
-                                                                       throwMessage.getName(), 
-                                                                       throwMessage.getCorrelationKey()
-                                                                                   .orElse(null),
-                                                                       throwMessage.getPayload()
-                                                                                   .orElse(null)));
-          }
-        
+        Optional.ofNullable(Context.getCommandContext())
+                .filter(commandContext -> commandContext.getProcessEngineConfiguration()
+                                                        .getEventDispatcher()
+                                                        .isEnabled())   
+                .ifPresent(commandContext -> {
+                    commandContext.getProcessEngineConfiguration()
+                                  .getEventDispatcher()
+                                  .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_SENT,
+                                                                                         execution,
+                                                                                         throwMessage.getName(),
+                                                                                         throwMessage.getCorrelationKey()
+                                                                                                     .orElse(null),
+                                                                                         throwMessage.getPayload()
+                                                                                                     .orElse(null)));
+                });
     }
+
+    public ExpressionManager getExpressionManager() {
+        return expressionManager;
+    }
+
 }

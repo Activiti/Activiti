@@ -576,7 +576,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                                  throwMessageDelegate,
                                                                  messageEventDefinition, 
                                                                  message,
-                                                                 mappingProvider);
+                                                                 mappingProvider,
+                                                                 getExpressionManager());
 
     }
 
@@ -592,7 +593,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                                                         throwMessageDelegate,
                                                         messageEventDefinition, 
                                                         message,
-                                                        mappingProvider);
+                                                        mappingProvider,
+                                                        getExpressionManager());
     }
     
     protected ThrowMessageDelegate createThrowMessageDelegate(MessageEventDefinition messageEventDefinition) {

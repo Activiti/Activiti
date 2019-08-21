@@ -17,6 +17,7 @@ import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
+import org.activiti.engine.impl.el.ExpressionManager;
 
 public class IntermediateThrowMessageEventActivityBehavior extends AbstractThrowMessageEventActivityBehavior {
 
@@ -28,8 +29,9 @@ public class IntermediateThrowMessageEventActivityBehavior extends AbstractThrow
                                                          ThrowMessageDelegate delegate,
                                                          MessageEventDefinition messageEventDefinition,
                                                          Message message,
-                                                         MessagePayloadMappingProvider messagePayloadMappingProvider) {
-        super(delegate, messageEventDefinition, message, messagePayloadMappingProvider);
+                                                         MessagePayloadMappingProvider messagePayloadMappingProvider,
+                                                         ExpressionManager expressionManager) {
+        super(delegate, messageEventDefinition, message, messagePayloadMappingProvider, expressionManager);
         
         this.throwEvent = throwEvent;
     }
