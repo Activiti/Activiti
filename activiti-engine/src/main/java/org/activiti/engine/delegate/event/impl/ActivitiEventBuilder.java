@@ -294,6 +294,7 @@ public class ActivitiEventBuilder {
         newEvent.setExecutionId(execution.getId());
         newEvent.setProcessDefinitionId(execution.getProcessDefinitionId());
         newEvent.setProcessInstanceId(execution.getProcessInstanceId());
+        newEvent.setMessageBusinessKey(execution.getProcessInstanceBusinessKey());
         
         if (execution.getCurrentFlowElement() instanceof FlowNode) {
             FlowNode flowNode = (FlowNode) execution.getCurrentFlowElement();

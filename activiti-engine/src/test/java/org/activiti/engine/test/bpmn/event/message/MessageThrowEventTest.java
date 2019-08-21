@@ -220,6 +220,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
       assertThat(event.getBehaviorClass()).isEqualTo(IntermediateThrowMessageEventActivityBehavior.class.getName());
       assertThat(event.getMessageName()).isEqualTo("bpmnMessage-foo");
       assertThat(event.getMessageData()).isNotNull();
+      assertThat(event.getMessageBusinessKey()).isEqualTo("foo");
       assertThat(event.getProcessDefinitionId()).isEqualTo(pi.getProcessDefinitionId());
       assertThat(event.getProcessInstanceId()).isEqualTo(pi.getId());
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_SENT);
@@ -247,6 +248,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
       assertThat(event.getBehaviorClass()).isEqualTo(ThrowMessageEndEventActivityBehavior.class.getName());
       assertThat(event.getMessageName()).isEqualTo("endMessage-bar");
       assertThat(event.getMessageData()).isNotNull();
+      assertThat(event.getMessageBusinessKey()).isEqualTo("bar");
       assertThat(event.getProcessDefinitionId()).isEqualTo(pi.getProcessDefinitionId());
       assertThat(event.getProcessInstanceId()).isEqualTo(pi.getId());
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_SENT);
@@ -275,6 +277,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
       assertThat(event.getActivityName()).isEqualTo("Throw Message");
       assertThat(event.getBehaviorClass()).isEqualTo(IntermediateThrowMessageEventActivityBehavior.class.getName());
       assertThat(event.getMessageName()).isEqualTo("bpmnMessage");
+      assertThat(event.getMessageBusinessKey()).isEqualTo("customerId");
       assertThat(event.getMessageData()).as("should map payload from field extensions")
                                         .isInstanceOf(Map.class)
                                         .extracting("foo", "businessKey", "key", "bar")
@@ -343,6 +346,7 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
       assertThat(event.getMessageName()).isEqualTo("bpmnMessage");
       assertThat(event.getMessageCorrelationKey()).isEqualTo("bar");
       assertThat(event.getMessageData()).isNull();
+      assertThat(event.getMessageBusinessKey()).isNull();
       assertThat(event.getProcessDefinitionId()).isEqualTo(pi.getProcessDefinitionId());
       assertThat(event.getProcessInstanceId()).isEqualTo(pi.getId());
       assertThat(event.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_SENT);

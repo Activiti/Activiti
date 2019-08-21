@@ -26,6 +26,7 @@ public class ActivitiMessageEventImpl extends ActivitiActivityEventImpl implemen
   protected String messageName;
   protected String correlationKey;
   protected Object messageData;
+  protected String businessKey;
 
   public ActivitiMessageEventImpl(ActivitiEventType type) {
     super(type);
@@ -54,4 +55,13 @@ public class ActivitiMessageEventImpl extends ActivitiActivityEventImpl implemen
   public void setMessageCorrelationKey(String correlationKey) {
       this.correlationKey = correlationKey;
   }
+
+  public String getMessageBusinessKey() {
+      return businessKey;
+  }
+
+  public void setMessageBusinessKey(String businessKey) {
+      this.businessKey = businessKey;
+  }
+  
 }

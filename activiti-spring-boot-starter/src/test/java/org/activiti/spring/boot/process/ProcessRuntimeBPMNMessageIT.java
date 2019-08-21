@@ -101,6 +101,7 @@ public class ProcessRuntimeBPMNMessageIT {
         securityUtil.logInAs("user");
 
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                                            .withBusinessKey("businessKey")
                                                                             .withProcessDefinitionKey(PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT)
                                                                             .build());
         
@@ -113,12 +114,14 @@ public class ProcessRuntimeBPMNMessageIT {
                             event -> ((ActivitiMessageEvent)event).getActivityType(),
                             event -> ((ActivitiMessageEvent)event).getMessageName(),
                             event -> ((ActivitiMessageEvent)event).getMessageCorrelationKey(),
+                            event -> ((ActivitiMessageEvent)event).getMessageBusinessKey())
                 .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
                                       "throwEvent",
                                       "Test Message",
-                                      "value"));
+                                      "value",
+                                      "businessKey"));
         
         assertThat(receivedEvents)
                 .filteredOn(event -> event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT))
