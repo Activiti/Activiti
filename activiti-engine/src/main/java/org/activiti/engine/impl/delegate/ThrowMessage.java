@@ -16,33 +16,25 @@ import java.util.Map;
 import java.util.Optional;
 
 public class ThrowMessage {
-    private final String name;
-    private Optional<Map<String, Object>> payload;
-    private Optional<String> businessKey;
+    private String name;
+    private Optional<Map<String, Object>> payload = Optional.empty();
+    private Optional<String> businessKey = Optional.empty();
+    private Optional<String> correlationKey = Optional.empty();
 
     private ThrowMessage(Builder builder) {
         this.name = builder.name;
         this.payload = builder.payload;
         this.businessKey = builder.businessKey;
+        this.correlationKey = builder.correlationKey;
+    }
+
+    ThrowMessage() {
     }
 
     public ThrowMessage(String name) {
         this.name = name;
     }
 
-    /**
-     * Creates a builder to build {@link ThrowMessage} and initialize it with the given object.
-     * @param throwMessage to initialize the builder with
-     * @return created builder
-     */
-    public static Builder builderFrom(ThrowMessage throwMessage) {
-        return new Builder(throwMessage);
-    }
-
-    public static Builder builder() {
-        return new Builder();
-    }
-    
     public String getName() {
         return name;
     }
@@ -51,71 +43,106 @@ public class ThrowMessage {
         return payload;
     }
 
-    public void setPayload(Optional<Map<String, Object>> payload) {
-        this.payload = payload;
-    }
-
     public Optional<String> getBusinessKey() {
         return businessKey;
     }
 
-    
-    public void setBusinessKey(Optional<String> businessKey) {
-        this.businessKey = businessKey;
+    public Optional<String> getCorrelationKey() {
+        return correlationKey;
     }
 
     /**
-     * Builder to build {@link ThrowMessage}.
+     * Creates builder to build {@link ThrowMessage}.
+     * @return created builder
      */
-    public static final class Builder {
+    public static INameStage builder() {
+        return new Builder();
+    }
 
-        private String name;
-        private Optional<Map<String, Object>> payload = Optional.empty();
-        private Optional<String> businessKey = Optional.empty();
-
-        public Builder() {
-        }
-
-        private Builder(ThrowMessage throwMessage) {
-            this.name = throwMessage.name;
-            this.payload = throwMessage.payload;
-            this.businessKey = throwMessage.businessKey;
-        }
+    /**
+     * Definition of a stage for staged builder.
+     */
+    public interface INameStage {
 
         /**
         * Builder method for name parameter.
         * @param name field to set
         * @return builder
         */
-        public Builder name(String name) {
-            this.name = name;
-            return this;
-        }
+        public IBuildStage name(String name);
+    }
+
+    /**
+     * Definition of a stage for staged builder.
+     */
+    public interface IBuildStage {
 
         /**
         * Builder method for payload parameter.
         * @param payload field to set
         * @return builder
         */
-        public Builder payload(Optional<Map<String, Object>> payload) {
-            this.payload = payload;
-            return this;
-        }
+        public IBuildStage payload(Optional<Map<String, Object>> payload);
 
         /**
         * Builder method for businessKey parameter.
         * @param businessKey field to set
         * @return builder
         */
-        public Builder businessKey(Optional<String> businessKey) {
-            this.businessKey = businessKey;
-            return this;
-        }
+        public IBuildStage businessKey(Optional<String> businessKey);
+
+        /**
+        * Builder method for correlationKey parameter.
+        * @param correlationKey field to set
+        * @return builder
+        */
+        public IBuildStage correlationKey(Optional<String> correlationKey);
 
         /**
         * Builder method of the builder.
         * @return built class
         */
+        public ThrowMessage build();
+    }
+
+    /**
+     * Builder to build {@link ThrowMessage}.
+     */
+    public static final class Builder implements INameStage, IBuildStage {
+
+        private String name;
+        private Optional<Map<String, Object>> payload = Optional.empty();
+        private Optional<String> businessKey = Optional.empty();
+        private Optional<String> correlationKey = Optional.empty();
+
+        private Builder() {
+        }
+
+        @Override
+        public IBuildStage name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        @Override
+        public IBuildStage payload(Optional<Map<String, Object>> payload) {
+            this.payload = payload;
+            return this;
+        }
+
+        @Override
+        public IBuildStage businessKey(Optional<String> businessKey) {
+            this.businessKey = businessKey;
+            return this;
+        }
+
+        @Override
+        public IBuildStage correlationKey(Optional<String> correlationKey) {
+            this.correlationKey = correlationKey;
+            return this;
+        }
+
+        @Override
         public ThrowMessage build() {
             return new ThrowMessage(this);
         }

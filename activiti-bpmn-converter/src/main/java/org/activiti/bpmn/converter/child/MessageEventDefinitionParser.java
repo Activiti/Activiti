@@ -43,6 +43,7 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
     BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
     eventDefinition.setMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_MESSAGE_REF));
     eventDefinition.setMessageExpression(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MESSAGE_EXPRESSION));
+    eventDefinition.setCorrelationKey(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MESSAGE_CORRELATION_KEY));
 
     List<ExtensionAttribute> attributes = new LinkedList<>();
             

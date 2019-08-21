@@ -24,6 +24,7 @@ import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 public class ActivitiMessageEventImpl extends ActivitiActivityEventImpl implements ActivitiMessageEvent {
 
   protected String messageName;
+  protected String correlationKey;
   protected Object messageData;
 
   public ActivitiMessageEventImpl(ActivitiEventType type) {
@@ -44,5 +45,12 @@ public class ActivitiMessageEventImpl extends ActivitiActivityEventImpl implemen
 
   public Object getMessageData() {
     return messageData;
+  }
+
+  public String getCorrelationKey() {
+    return correlationKey;
+  }
+  public void setCorrelationKey(String correlationKey) {
+      this.correlationKey = correlationKey;
   }
 }

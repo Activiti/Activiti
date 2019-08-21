@@ -85,6 +85,10 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
     @Before
     public void setUp() {
+        listenerExecuted = false;
+        delegateExecuted = false;
+        message = null;
+
         receivedEvents.clear();
 
         runtimeService.addEventListener(myListener, 
@@ -109,8 +113,6 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
     
     @Deployment
     public void testIntermediateThrowMessageEvent() throws Exception {
-      listenerExecuted = false;
-      
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("testIntermediateThrowMessageEvent");
       assertProcessEnded(pi.getProcessInstanceId());
       assertThat(listenerExecuted).isTrue();
@@ -133,7 +135,6 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
    
     @Deployment
     public void testIntermediateThrowMessageEventJavaDelegate() throws Exception {
-      delegateExecuted = false;
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("testIntermediateThrowMessageEventJavaDelegate");
       assertProcessEnded(pi.getProcessInstanceId());
       assertThat(message.getName()).isEqualTo("bpmnMessage");
@@ -157,7 +158,6 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
     @Deployment
     public void testThrowMessageEndEvent() throws Exception {
-      listenerExecuted = false;
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("testThrowMessageEndEvent");
       assertProcessEnded(pi.getProcessInstanceId());
       assertThat(listenerExecuted).isTrue();
@@ -179,7 +179,6 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
     
     @Deployment
     public void testThrowMessageEndEventJavaDelegate() throws Exception {
-      delegateExecuted = false;
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("testThrowMessageEndEventJavaDelegate");
       assertProcessEnded(pi.getProcessInstanceId());
       assertThat(message.getName()).isEqualTo("endMessage");
@@ -203,7 +202,6 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
 
     @Deployment
     public void testIntermediateThrowMessageEventExpression() throws Exception {
-      delegateExecuted = false;
       ProcessInstance pi = runtimeService.createProcessInstanceBuilder()
                                          .processDefinitionKey("testIntermediateThrowMessageEventExpression")
                                          .businessKey("foo")
@@ -230,7 +228,6 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
     
     @Deployment
     public void testThrowMessageEndEventExpression() throws Exception {
-      delegateExecuted = false;
       ProcessInstance pi = runtimeService.createProcessInstanceBuilder()
                                          .processDefinitionKey("testThrowMessageEndEventExpression")
                                          .businessKey("bar")
@@ -259,7 +256,6 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
     
     @Deployment
     public void testIntermediateThrowMessageEventFieldExtensions() throws Exception {
-      delegateExecuted = false;
       ProcessInstance pi = runtimeService.createProcessInstanceBuilder()
                                          .processDefinitionKey("process")
                                          .variable("foo", "bar")
@@ -291,7 +287,6 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
     
     @Deployment
     public void testIntermediateThrowMessageEventDelegateExpression() throws Exception {
-      delegateExecuted = false;
       ProcessInstance pi = runtimeService.createProcessInstanceBuilder()
                                          .processDefinitionKey("process")
                                          .variable("foo", "bar")
@@ -309,8 +304,6 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
     @Deployment
     public void testThrowMessageEndEventDelegateExpression() throws Exception {
       // given
-      delegateExecuted = false;
-      message = null;
       
       // when
       ProcessInstance pi = runtimeService.startProcessInstanceByKey("process");
@@ -325,5 +318,64 @@ public class MessageThrowEventTest extends ResourceActivitiTestCase {
       assertThat(message.getName()).isEqualTo("endMessage");      
       
     }
-   
+
+    @Deployment
+    public void testIntermediateThrowMessageEventCorrelationKeyExpression() throws Exception {
+      ProcessInstance pi = runtimeService.createProcessInstanceBuilder()
+                                         .variable("foo", "bar") 
+                                         .processDefinitionKey("process")
+                                         .start();
+      
+      assertProcessEnded(pi.getProcessInstanceId());
+      assertThat(listenerExecuted).isTrue();
+
+      assertThat(message.getCorrelationKey().isPresent()).isTrue();
+      assertThat(message.getCorrelationKey().get()).isEqualTo("bar");
+      
+      assertThat(receivedEvents).hasSize(1);
+      
+      ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+      
+      assertThat(event.getActivityId()).isEqualTo("messageThrow");
+      assertThat(event.getActivityType()).isEqualTo("throwEvent");
+      assertThat(event.getActivityName()).isEqualTo("Throw Message");
+      assertThat(event.getBehaviorClass()).isEqualTo(IntermediateThrowMessageEventActivityBehavior.class.getName());
+      assertThat(event.getMessageName()).isEqualTo("bpmnMessage");
+      assertThat(event.getCorrelationKey()).isEqualTo("bar");
+      assertThat(event.getMessageData()).isNull();
+      assertThat(event.getProcessDefinitionId()).isEqualTo(pi.getProcessDefinitionId());
+      assertThat(event.getProcessInstanceId()).isEqualTo(pi.getId());
+      assertThat(event.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_SENT);
+      assertThat(event.getExecutionId()).isNotNull();      
+    }    
+    
+    @Deployment
+    public void testThrowMessageEndEventCorrelationKeyExpression() throws Exception {
+      ProcessInstance pi = runtimeService.createProcessInstanceBuilder()
+                                         .variable("foo", "bar")
+                                         .processDefinitionKey("process")
+                                         .start();
+
+      assertProcessEnded(pi.getProcessInstanceId());
+      assertThat(listenerExecuted).isTrue();
+
+      assertThat(message.getCorrelationKey().isPresent()).isTrue();
+      assertThat(message.getCorrelationKey().get()).isEqualTo("bar");
+      
+      assertThat(receivedEvents).hasSize(1);
+      
+      ActivitiMessageEvent event = (ActivitiMessageEvent) receivedEvents.get(0);
+      
+      assertThat(event.getActivityId()).isEqualTo("theEnd");
+      assertThat(event.getActivityType()).isEqualTo("endEvent");
+      assertThat(event.getActivityName()).isEqualTo("Throw Message");
+      assertThat(event.getBehaviorClass()).isEqualTo(ThrowMessageEndEventActivityBehavior.class.getName());
+      assertThat(event.getMessageName()).isEqualTo("endMessage");
+      assertThat(event.getMessageData()).isNull();
+      assertThat(event.getCorrelationKey()).isEqualTo("bar");
+      assertThat(event.getProcessDefinitionId()).isEqualTo(pi.getProcessDefinitionId());
+      assertThat(event.getProcessInstanceId()).isEqualTo(pi.getId());
+      assertThat(event.getType()).isEqualTo(ActivitiEventType.ACTIVITY_MESSAGE_SENT);
+      assertThat(event.getExecutionId()).isNotNull();      
+    }    
 }

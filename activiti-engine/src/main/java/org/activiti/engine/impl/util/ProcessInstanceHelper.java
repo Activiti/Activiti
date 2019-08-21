@@ -124,6 +124,7 @@ public class ProcessInstanceHelper {
         eventDispatcher.dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, 
                                                                               DelegateExecution.class.cast(processInstance), 
                                                                               messageName, 
+                                                                              null,
                                                                               variables));
     }
     

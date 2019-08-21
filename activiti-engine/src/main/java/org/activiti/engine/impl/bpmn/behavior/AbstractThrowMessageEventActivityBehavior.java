@@ -80,12 +80,14 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
     
     protected ThrowMessage getThrowMessage(DelegateExecution execution) {
         String name = getMessageName(execution);
+        Optional<String> correlationKey = getCorrelationKey(execution);
         Optional<String> businessKey = Optional.ofNullable(execution.getProcessInstanceBusinessKey());
         
         Optional<Map<String, Object>> payload = messagePayloadMappingProvider.getMessagePayload(execution);
         
         return ThrowMessage.builder()
                            .name(name)
+                           .correlationKey(correlationKey)
                            .businessKey(businessKey)
                            .payload(payload)
                            .build();
@@ -99,6 +101,19 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
         return expression.getValue(execution)
                          .toString();
     }
+
+    protected Optional<String> getCorrelationKey(DelegateExecution execution) {
+        return Optional.ofNullable(messageEventDefinition.getCorrelationKey())
+                       .map(correlationKey -> {
+                           Expression expression = Context.getProcessEngineConfiguration()
+                                                          .getExpressionManager()
+                                                          .createExpression(messageEventDefinition.getCorrelationKey());
+
+                            return expression.getValue(execution)
+                                             .toString();
+                           
+                       });    
+    }
     
     protected void dispatchEvent(DelegateExecution execution, ThrowMessage throwMessage) {
         CommandContext commandContext = Context.getCommandContext();
@@ -110,6 +125,8 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
                 .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_SENT, 
                                                                        execution, 
                                                                        throwMessage.getName(), 
+                                                                       throwMessage.getCorrelationKey()
+                                                                                   .orElse(null),
                                                                        throwMessage.getPayload()
                                                                                    .orElse(null)));
           }

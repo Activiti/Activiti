@@ -25,8 +25,13 @@ public interface ActivitiMessageEvent extends ActivitiActivityEvent {
   public String getMessageName();
 
   /**
+   * @return the correlation key that was passed when sending the message. Returns null, if no correlation key was passed.
+   */
+  public String getCorrelationKey();
+  
+  /**
    * @return the payload that was passed when sending the message. Returns null, if no payload was passed.
    */
   public Object getMessageData();
-
+  
 }

@@ -282,9 +282,11 @@ public class ActivitiEventBuilder {
   public static ActivitiMessageEvent createMessageEvent(ActivitiEventType type, 
                                                         DelegateExecution execution,
                                                         String messageName, 
+                                                        String correlationKey, 
                                                         Object payload) {
     ActivitiMessageEventImpl newEvent = new ActivitiMessageEventImpl(type);
     newEvent.setMessageName(messageName);
+    newEvent.setCorrelationKey(correlationKey);
     newEvent.setMessageData(payload);  
     
     if (execution != null) {
