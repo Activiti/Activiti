@@ -101,22 +101,32 @@ public class ProcessRuntimeBPMNMessageIT {
         securityUtil.logInAs("user");
 
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
-                                                       .withProcessDefinitionKey(PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT)
-                                                       .build());
+                                                                            .withProcessDefinitionKey(PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT)
+                                                                            .build());
         
         assertThat(receivedEvents)
-        .filteredOn(event -> event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT))
-        .isNotEmpty()
-        .extracting(event -> event.getType(),
-                    event -> event.getProcessDefinitionId(),
-                    event -> event.getProcessInstanceId(),
-                    event -> ((ActivitiMessageEvent)event).getActivityType(),
-                    event -> ((ActivitiMessageEvent)event).getMessageName())
-        .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT,
-                              process.getProcessDefinitionId(),
-                              process.getId(),
-                              "throwEvent",
-                              "Test Message"));
+                .filteredOn(event -> event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT))
+                .isNotEmpty()
+                .extracting(event -> event.getType(),
+                            event -> event.getProcessDefinitionId(),
+                            event -> event.getProcessInstanceId(),
+                            event -> ((ActivitiMessageEvent)event).getActivityType(),
+                            event -> ((ActivitiMessageEvent)event).getMessageName(),
+                            event -> ((ActivitiMessageEvent)event).getCorrelationKey())
+                .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT,
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
+                                      "throwEvent",
+                                      "Test Message",
+                                      "value"));
+        
+        assertThat(receivedEvents)
+                .filteredOn(event -> event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT))
+                .extracting(event -> ((ActivitiMessageEvent)event).getMessageData())
+                .extracting("message_payload_variable")
+                .contains("value");
+                
+        
 
     }
 }
