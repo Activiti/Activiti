@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -21,6 +22,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
@@ -32,7 +34,7 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
 
   private static final long serialVersionUID = 1L;
 
-  protected MessageEventDefinition messageEventDefinition;
+  protected final MessageEventDefinition messageEventDefinition;
 
   public IntermediateCatchMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition) {
     this.messageEventDefinition = messageEventDefinition;
@@ -40,23 +42,22 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
 
   public void execute(DelegateExecution execution) {
     CommandContext commandContext = Context.getCommandContext();
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
     
-    String messageName = null;
-    if (StringUtils.isNotEmpty(messageEventDefinition.getMessageRef())) {
-      messageName = messageEventDefinition.getMessageRef();
-    } else {
-      Expression messageExpression = commandContext.getProcessEngineConfiguration().getExpressionManager()
-          .createExpression(messageEventDefinition.getMessageExpression());
-      messageName = messageExpression.getValue(execution).toString();
-    }
+    String messageName = getMessageName(execution);
+    Optional<String> correlationKey = getCorrelationKey(execution);
     
-    commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageName, executionEntity);
+    MessageEventSubscriptionEntity messageEvent = commandContext.getEventSubscriptionEntityManager()
+                                                                .insertMessageEvent(messageName, 
+                                                                                    ExecutionEntity.class.cast(execution));
+    correlationKey.ifPresent(messageEvent::setConfiguration);
     
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         commandContext.getProcessEngineConfiguration().getEventDispatcher()
-                .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, executionEntity.getActivityId(), messageName,
-                        null, executionEntity.getId(), executionEntity.getProcessInstanceId(), executionEntity.getProcessDefinitionId()));
+                .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                                                                       execution,
+                                                                       messageName,
+                                                                       correlationKey.orElse(null),
+                                                                       null));
       }
   }
 
@@ -75,14 +76,47 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
 
   protected ExecutionEntity deleteMessageEventSubScription(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    String messageName = getMessageName(execution);
+    
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-      if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {
+      if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageName)) {
 
         eventSubscriptionEntityManager.delete(eventSubscription);
       }
     }
     return executionEntity;
   }
+  
+  protected String getMessageName(DelegateExecution execution) {
+      Expression messageExpression = null;
+      
+      if (StringUtils.isNotEmpty(messageEventDefinition.getMessageRef())) {
+        messageExpression = getExpressionManager().createExpression(messageEventDefinition.getMessageRef());
+      } else {
+        messageExpression = getExpressionManager().createExpression(messageEventDefinition.getMessageExpression());
+      }
+      
+      return messageExpression.getValue(execution)
+                              .toString();
+
+  }
+  
+  protected Optional<String> getCorrelationKey(DelegateExecution execution) {
+      return Optional.ofNullable(messageEventDefinition.getCorrelationKey())
+                     .map(correlationKey -> {
+                          Expression expression = getExpressionManager().createExpression(messageEventDefinition.getCorrelationKey());
+
+                          return expression.getValue(execution)
+                                           .toString();
+                     });    
+  }
+  
+  protected ExpressionManager getExpressionManager() {
+      return Context.getCommandContext()
+                    .getProcessEngineConfiguration()
+                    .getExpressionManager();
+  }
+  
 }

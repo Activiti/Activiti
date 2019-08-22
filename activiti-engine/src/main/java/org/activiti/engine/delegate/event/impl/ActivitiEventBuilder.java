@@ -267,7 +267,7 @@ public class ActivitiEventBuilder {
     return newEvent;
   }
 
-  public static ActivitiMessageEvent createMessageEvent(ActivitiEventType type, String activityId, String messageName, Object payload, String executionId, String processInstanceId,
+  public static ActivitiMessageEvent createMessageEvent(ActivitiEventType type, String activityId, String messageName, String correlationKey, Object payload, String executionId, String processInstanceId,
       String processDefinitionId) {
     ActivitiMessageEventImpl newEvent = new ActivitiMessageEventImpl(type);
     newEvent.setActivityId(activityId);
@@ -276,6 +276,7 @@ public class ActivitiEventBuilder {
     newEvent.setProcessInstanceId(processInstanceId);
     newEvent.setMessageName(messageName);
     newEvent.setMessageData(payload);  
+    newEvent.setMessageCorrelationKey(correlationKey);
     return newEvent;
   }
   

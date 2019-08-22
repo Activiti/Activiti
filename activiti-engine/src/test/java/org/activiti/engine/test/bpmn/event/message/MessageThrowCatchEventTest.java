@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,7 +57,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     private static final String THROW_MESSAGE = "throwMessage";
     private static final String TEST_MESSAGE = "testMessage";
     private static List<ActivitiEvent> receivedEvents = new LinkedList<>();
-    private static Map<String, BlockingQueue<ThrowMessage>> messageQueueRegistry = new ConcurrentHashMap<>();
+    private static Map<SubscriptionKey, BlockingQueue<ThrowMessage>> messageQueueRegistry = new ConcurrentHashMap<>();
     private static CountDownLatch startCountDownLatch;
 
     public static class TestThrowMessageDelegateFactory implements ThrowMessageDelegateFactory {
@@ -87,7 +88,10 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
             
             @Override
             public void execute(CommandContext commandContext) {
-                Queue<ThrowMessage> queue = getMessageQueue(message.getName());
+                SubscriptionKey key = new SubscriptionKey(message.getName(), 
+                                                          message.getCorrelationKey().orElse(null));
+                
+                Queue<ThrowMessage> queue = getMessageQueue(key);
                 queue.offer(message);
             }
         }
@@ -103,10 +107,12 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
 
         @Override
         public void onEvent(ActivitiEvent event) {
-            String messageName = ActivitiMessageEvent.class.cast(event)
-                                                           .getMessageName();
+            ActivitiMessageEvent message = ActivitiMessageEvent.class.cast(event);
 
-            BlockingQueue<ThrowMessage> messageQueue = getMessageQueue(messageName);
+            SubscriptionKey key = new SubscriptionKey(message.getMessageName(), 
+                                                      message.getMessageCorrelationKey());
+            
+            BlockingQueue<ThrowMessage> messageQueue = getMessageQueue(key);
             Context.getTransactionContext()
                    .addTransactionListener(TransactionState.COMMITTED, 
                                            new HandleMessageTransactionListener(messageQueue));
@@ -191,8 +197,10 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         
         newEventSubscriptionQuery().eventType("message")
                                    .list()
-                                   .forEach(s -> {
-                                       BlockingQueue<ThrowMessage> messageQueue = getMessageQueue(s.getEventName());
+                                   .forEach(subscription -> {
+                                       SubscriptionKey key = new SubscriptionKey(subscription.getEventName(), null);
+                                       
+                                       BlockingQueue<ThrowMessage> messageQueue = getMessageQueue(key);
                                        new Thread(() -> {
                                            try {
                                                ThrowMessage throwMessage = messageQueue.take();
@@ -231,9 +239,10 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                                              });
     }
 
-    @Deployment(
-            resources = {"org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.throwMessage.bpmn20.xml", "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessage.bpmn20.xml"
-            })
+    @Deployment(resources = {
+        "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.throwMessage.bpmn20.xml", 
+        "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessage.bpmn20.xml"
+    })
     public void testThrowCatchIntermediateMessageEvent() throws Exception {
         // given
         CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -259,10 +268,11 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         
         assertThat(receivedEvents).hasSize(3)
                                   .extracting("type",
-                                              "messageName")
-                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, null),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, null),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE, null));
 
     }
     
@@ -293,9 +303,10 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         
         assertThat(receivedEvents).hasSize(2)
                                   .extracting("type",
-                                              "messageName")
-                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, null),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE, null));
     }
     
     @Deployment(resources = {
@@ -325,9 +336,10 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         
         assertThat(receivedEvents).hasSize(2)
                                   .extracting("type",
-                                              "messageName")
-                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, null),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE, null));
     }    
     
     @Deployment
@@ -339,7 +351,6 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                         ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
         // when
         ProcessInstance throwCatchMsg = runtimeService.createProcessInstanceBuilder()
-                                                 .businessKey("foobar")
                                                  .processDefinitionKey("throwCatch")
                                                  .start();
         
@@ -354,6 +365,63 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                   .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE),
                                             tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE),
                                             tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
+    }
+
+    @Deployment
+    public void testIntermediateThrowCatchMessageCorrelationKey() throws Exception {
+        // given
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        runtimeService.addEventListener(new ThrowMessageListener(countDownLatch),
+                                        ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+        // when
+        ProcessInstance throwCatchMsg = runtimeService.createProcessInstanceBuilder()
+                                                 .variable("foo", 1)
+                                                 .variable("bar", 1)
+                                                 .processDefinitionKey("throwCatch")
+                                                 .start();
+        
+        // then
+        assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
+
+        assertProcessEnded(throwCatchMsg.getId());
+        
+        assertThat(receivedEvents).hasSize(3)
+                                  .extracting("type",
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE, "1"));
+    }
+
+    @Deployment(resources = "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.testIntermediateThrowCatchMessageCorrelationKey.bpmn20.xml")
+    public void testIntermediateThrowCatchMessageNonMatchingCorrelationKey() throws Exception {
+        // given
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        runtimeService.addEventListener(new ThrowMessageListener(countDownLatch),
+                                        ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+        // when
+        ProcessInstance throwCatchMsg = runtimeService.createProcessInstanceBuilder()
+                                                      .variable("foo", 1)
+                                                      .variable("bar", 2)
+                                                      .processDefinitionKey("throwCatch")
+                                                      .start();
+        // then
+        assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isFalse();
+
+        assertThat(processEngine.getRuntimeService()
+                                .createProcessInstanceQuery()
+                                .processInstanceId(throwCatchMsg.getId())
+                                .singleResult()).isNotNull();
+        
+        assertThat(receivedEvents).hasSize(2)
+                                  .extracting("type",
+                                              "messageName",
+                                              "correlationKey")
+                                  .containsExactly(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, "1"),
+                                                   tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, "2"));
     }
     
     @Deployment
@@ -376,12 +444,74 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         
         assertThat(receivedEvents).hasSize(3)
                                   .extracting("type",
-                                              "messageName")
-                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, null),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, null),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE, null));
     }    
+    
+    @Deployment(resources = "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.testIntermediateThrowCatchMessageParallelCorrelationKey.bpmn20.xml")
+    public void testIntermediateThrowCatchMessageParallelNonMatchingCorrelationKey() throws Exception {
+        // given
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        runtimeService.addEventListener(new ThrowMessageListener(countDownLatch),
+                                        ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+        // when
+        ProcessInstance throwCatchMsg = runtimeService.createProcessInstanceBuilder()
+                                                 .businessKey("foobar")
+                                                 .variable("foo", 1)
+                                                 .variable("bar", 2)
+                                                 .processDefinitionKey("throwCatch")
+                                                 .start();
         
+        // then
+        assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isFalse();
+
+        assertThat(processEngine.getRuntimeService()
+                                .createProcessInstanceQuery()
+                                .processInstanceId(throwCatchMsg.getId())
+                                .singleResult())
+                                .isNotNull();
+        
+        assertThat(receivedEvents).hasSize(2)
+                                  .extracting("type",
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, "2"));
+    }        
+
+    @Deployment
+    public void testIntermediateThrowCatchMessageParallelCorrelationKey() throws Exception {
+        // given
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        runtimeService.addEventListener(new ThrowMessageListener(countDownLatch),
+                                        ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+        // when
+        ProcessInstance throwCatchMsg = runtimeService.createProcessInstanceBuilder()
+                                                 .businessKey("foobar")
+                                                 .variable("foo", 1)
+                                                 .variable("bar", 1)
+                                                 .processDefinitionKey("throwCatch")
+                                                 .start();
+        
+        // then
+        assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
+
+        assertProcessEnded(throwCatchMsg.getId());
+        
+        assertThat(receivedEvents).hasSize(3)
+                                  .extracting("type",
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE, "1"));
+    }    
+    
 
     @Deployment
     public void testIntermediateThrowCatchMessageBoundary() throws Exception {
@@ -403,11 +533,41 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         
         assertThat(receivedEvents).hasSize(3)
                                   .extracting("type",
-                                              "messageName")
-                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, null),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, null),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE, null));
     }
+    
+    @Deployment
+    public void testIntermediateThrowCatchMessageBoundaryCorrelationKey() throws Exception {
+        // given
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        runtimeService.addEventListener(new ThrowMessageListener(countDownLatch),
+                                        ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+        // when
+        ProcessInstance throwCatchMsg = runtimeService.createProcessInstanceBuilder()
+                                                 .businessKey("foobar")
+                                                 .variable("foo", 1)
+                                                 .variable("bar", 1)
+                                                 .processDefinitionKey("throwCatch")
+                                                 .start();
+        
+        // then
+        assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
+
+        assertProcessEnded(throwCatchMsg.getId());
+        
+        assertThat(receivedEvents).hasSize(3)
+                                  .extracting("type",
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE, "1"));
+    }    
     
     @Deployment
     public void testIntermediateThrowCatchMessageBoundarySubprocess() throws Exception {
@@ -429,23 +589,173 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         
         assertThat(receivedEvents).hasSize(3)
                                   .extracting("type",
-                                              "messageName")
-                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE));
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, null),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, null),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE, null));
     }        
-            
+
+    @Deployment
+    public void testIntermediateThrowCatchMessageBoundarySubprocessCorrelationKey() throws Exception {
+        // given
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        runtimeService.addEventListener(new ThrowMessageListener(countDownLatch),
+                                        ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+        // when
+        ProcessInstance throwCatchMsg = runtimeService.createProcessInstanceBuilder()
+                                                 .businessKey("foobar")
+                                                 .variable("foo", 1)
+                                                 .variable("bar", 1)
+                                                 .processDefinitionKey("throwCatch")
+                                                 .start();
+        
+        // then
+        assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
+
+        assertProcessEnded(throwCatchMsg.getId());
+        
+        assertThat(receivedEvents).hasSize(3)
+                                  .extracting("type",
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE, "1"));
+    }        
+    
+    @Deployment(resources = "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.testIntermediateThrowCatchMessageBoundarySubprocessCorrelationKey.bpmn20.xml")
+    public void testIntermediateThrowCatchMessageBoundarySubprocessNonMatchingCorrelationKey() throws Exception {
+        // given
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        runtimeService.addEventListener(new ThrowMessageListener(countDownLatch),
+                                        ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+        // when
+        ProcessInstance throwCatchMsg = runtimeService.createProcessInstanceBuilder()
+                                                 .businessKey("foobar")
+                                                 .variable("foo", 1)
+                                                 .variable("bar", 2)
+                                                 .processDefinitionKey("throwCatch")
+                                                 .start();
+        
+        // then
+        assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isFalse();
+
+        assertThat(processEngine.getRuntimeService()
+                                .createProcessInstanceQuery()
+                                .processInstanceId(throwCatchMsg.getId())
+                                .singleResult())
+                                .isNotNull();
+        
+        assertThat(receivedEvents).hasSize(2)
+                                  .extracting("type",
+                                              "messageName",
+                                              "correlationKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, "2"));
+    }        
+    
+    
+    @Deployment(resources = {
+        "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.throwMessageCorrelationKey.bpmn20.xml", 
+        "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessageCorrelationKey.bpmn20.xml"
+    })
+    public void testThrowCatchIntermediateMessageEventCorrelationKey() throws Exception {
+        // given
+        CountDownLatch countDownLatch = new CountDownLatch(1);
+
+        runtimeService.addEventListener(new ThrowMessageListener(countDownLatch),
+                                        ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+        // when
+        ProcessInstance throwMsg = runtimeService.createProcessInstanceBuilder()
+                                                 .processDefinitionKey(THROW_MESSAGE)
+                                                 .businessKey("businessKey1")
+                                                 .variable("customerId", "2")
+                                                 .variable("invoiceId", "1")
+                                                 .start();
+        
+        ProcessInstance catchMsg = runtimeService.createProcessInstanceBuilder()
+                                                 .processDefinitionKey(CATCH_MESSAGE)
+                                                 .businessKey("businessKey2")
+                                                 .variable("customerId", "2")
+                                                 .variable("invoiceId", "1")
+                                                 .start();
+        
+        // then
+        assertThat(countDownLatch.await(1, TimeUnit.SECONDS)).isTrue();
+
+        assertProcessEnded(throwMsg.getProcessInstanceId());
+        assertProcessEnded(catchMsg.getProcessInstanceId());
+        
+        HistoricProcessInstance startMsg = historyService.createHistoricProcessInstanceQuery()
+                                                         .processDefinitionKey(CATCH_MESSAGE)
+                                                         .includeProcessVariables()
+                                                         .singleResult();
+
+        assertThat(startMsg.getProcessVariables()).containsEntry("foo", "bar");
+        
+        assertThat(receivedEvents).hasSize(3)
+                                  .extracting("type",
+                                              "messageName",
+                                              "correlationKey",
+                                              "businessKey")
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, "newInvoice-1", "2", "businessKey1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, "newInvoice-1", "2", "businessKey2"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, "newInvoice-1", "2", "businessKey2"));
+
+    }
+    
+    
     protected EventSubscriptionQueryImpl newEventSubscriptionQuery() {
         return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
       }
     
-    protected static BlockingQueue<ThrowMessage> getMessageQueue(String messageName) {
-        return messageQueueRegistry.computeIfAbsent(messageName,
+    protected static BlockingQueue<ThrowMessage> getMessageQueue(SubscriptionKey key) {
+        return messageQueueRegistry.computeIfAbsent(key,
                                                     MessageThrowCatchEventTest::createMessageQueue);        
     }
 
-    protected static BlockingQueue<ThrowMessage> createMessageQueue(String messageName) {
+    protected static BlockingQueue<ThrowMessage> createMessageQueue(SubscriptionKey key) {
         return new LinkedBlockingQueue<>();
+    }
+    
+    static class SubscriptionKey {
+        private final String messageName;
+        private final String correlationKey;
+
+        public SubscriptionKey(String messageName, String correlationKey) {
+            this.messageName = messageName;
+            this.correlationKey = correlationKey;
+        }
+        
+        public String getMessageName() {
+            return messageName;
+        }
+        
+        public String getCorrelationKey() {
+            return correlationKey;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(correlationKey, messageName);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            SubscriptionKey other = (SubscriptionKey) obj;
+            return Objects.equals(correlationKey, other.correlationKey) && Objects.equals(messageName,
+                                                                                          other.messageName);
+        }
+        
     }
     
 }

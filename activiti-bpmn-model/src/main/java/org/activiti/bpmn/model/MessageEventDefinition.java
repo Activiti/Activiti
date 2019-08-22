@@ -64,5 +64,6 @@ public class MessageEventDefinition extends EventDefinition {
     setMessageRef(otherDefinition.getMessageRef());
     setMessageExpression(otherDefinition.getMessageExpression());
     setFieldExtensions(otherDefinition.getFieldExtensions());
+    setCorrelationKey(otherDefinition.getCorrelationKey());
   }
 }

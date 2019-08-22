@@ -227,9 +227,11 @@ public class ProcessInstanceHelper {
         
         for (MessageEventSubscriptionEntity messageEventSubscription : messageEventSubscriptions) {
             commandContext.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, messageEventSubscription.getActivityId(),
-                            messageEventSubscription.getEventName(), null, messageEventSubscription.getExecution().getId(),
-                            messageEventSubscription.getProcessInstanceId(), messageEventSubscription.getProcessDefinitionId()));
+                    .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                                                                           messageEventSubscription.getExecution(),
+                                                                           messageEventSubscription.getEventName(),
+                                                                           null,
+                                                                           null));
           }
     }
   }
