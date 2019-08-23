@@ -29,6 +29,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -64,6 +65,8 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     private static Map<SubscriptionKey, Optional<String>> messageExecutionRegistry = new ConcurrentHashMap<>();
     private static CountDownLatch startCountDownLatch;
     private static AtomicReference<CountDownLatch> waitingCountDownLatchRef = new AtomicReference<>();
+
+    private ActivitiEventListener catchMessageListener = new CatchMessageListener(waitingCountDownLatchRef);
 
     public MessageThrowCatchEventTest() {
         super("/org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.activiti.cfg.xml");
@@ -197,8 +200,6 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         }
     };
     
-    private ActivitiEventListener catchMessageListener = new CatchMessageListener(waitingCountDownLatchRef);
-
     @Before
     public void setUp() throws Exception {
         super.setUp();
@@ -772,7 +773,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         messageExecutionRegistry.compute(key, (k, v) -> {
             
             if(messageExecutionRegistry.containsKey(k)) {
-                throw new RuntimeException("Duplicate key " + k + " for executionId " + executionId);  
+                throw new ActivitiException("Duplicate key " + k + " for executionId " + executionId);  
             }
             
             return executionId; 
