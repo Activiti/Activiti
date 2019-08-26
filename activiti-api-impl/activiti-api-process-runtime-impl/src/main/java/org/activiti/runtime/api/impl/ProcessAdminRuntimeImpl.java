@@ -16,12 +16,15 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.List;
+
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
+import org.activiti.api.process.model.payloads.MessagePayload;
 import org.activiti.api.process.model.payloads.RemoveProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.ResumeProcessPayload;
 import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
@@ -43,8 +46,6 @@ import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @PreAuthorize("hasRole('ACTIVITI_ADMIN')")
 public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
@@ -237,6 +238,16 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     public void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload) {
         runtimeService.removeVariables(removeProcessVariablesPayload.getProcessInstanceId(),
                 removeProcessVariablesPayload.getVariableNames());
+    }
+
+    @Override
+    public void receive(MessagePayload messagePayload) {
+        throw new UnsupportedOperationException("method not yet implemented");
+    }
+
+    @Override
+    public void start(MessagePayload messagePayload) {
+        throw new UnsupportedOperationException("method not yet implemented");
     }
 
 }
