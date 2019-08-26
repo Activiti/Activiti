@@ -22,6 +22,7 @@ import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
+import org.activiti.api.process.model.payloads.MessagePayload;
 import org.activiti.api.process.model.payloads.RemoveProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.ResumeProcessPayload;
 import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
@@ -108,5 +109,8 @@ public interface ProcessAdminRuntime {
     void setVariables(SetProcessVariablesPayload setProcessVariablesPayload);
 
     void removeVariables(RemoveProcessVariablesPayload removeProcessVariablesPayload);
+
+    void receive(MessagePayload messagePayload);
     
+    void start(MessagePayload messagePayload);
 }

@@ -27,6 +27,7 @@ import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 import org.activiti.api.process.model.payloads.GetVariablesPayload;
+import org.activiti.api.process.model.payloads.MessagePayload;
 import org.activiti.api.process.model.payloads.RemoveProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.ResumeProcessPayload;
 import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
@@ -124,5 +125,7 @@ public interface ProcessRuntime {
 
     void setVariables(SetProcessVariablesPayload setProcessVariablesPayload); // review if we need to return set variables
     
-
+    void receive(MessagePayload messagePayload);
+    
+    void start(MessagePayload messagePayload);
 }
