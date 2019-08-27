@@ -96,6 +96,12 @@
       <if test="tenantId == null">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
       </if>        
+      <if test="correlationKey != null">
+        and RES.CONFIGURATION_ = #{correlationKey}
+      </if>  
+      <if test="correlationKey == null">
+        and (RES.CONFIGURATION_ = '' or RES.CONFIGURATION_ is null)
+      </if>        
     </where>
   </sql>
   

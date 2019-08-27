@@ -35,6 +35,7 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
   protected String processInstanceId;
   protected String activityId;
   protected String tenantId;
+  protected String correlationKey;
 
   public EventSubscriptionQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -100,6 +101,12 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
     this.tenantId = tenantId;
     return this;
   }
+  
+  public EventSubscriptionQueryImpl correlationKey(String correlationKey) {
+      this.correlationKey = correlationKey;
+      return this;
+    }
+  
 
   public EventSubscriptionQueryImpl orderByCreated() {
     return orderBy(EventSubscriptionQueryProperty.CREATED);
@@ -144,5 +151,10 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
   public String getActivityId() {
     return activityId;
   }
+  
+  public String getCorrelationKey() {
+      return correlationKey;
+    }
+  
 
 }
