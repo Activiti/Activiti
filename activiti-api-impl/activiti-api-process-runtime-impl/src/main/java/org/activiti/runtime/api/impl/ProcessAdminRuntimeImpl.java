@@ -17,6 +17,7 @@
 package org.activiti.runtime.api.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
@@ -242,13 +243,18 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     }
 
     @Override
+    @Transactional
     public void receive(ReceiveMessagePayload messagePayload) {
-        throw new UnsupportedOperationException("method not yet implemented");
+        eventPublisher.publishEvent(messagePayload);
     }
 
     @Override
     public ProcessInstance start(StartMessagePayload messagePayload) {
-        throw new UnsupportedOperationException("method not yet implemented");
+        String messageName = messagePayload.getName();
+        String businessKey = messagePayload.getBusinessKey();
+        Map<String, Object> variables = messagePayload.getVariables();
+        
+        runtimeService.startProcessInstanceByMessage(messageName, businessKey, variables);
     }
 
 }
