@@ -24,11 +24,12 @@ import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
-import org.activiti.api.process.model.payloads.MessagePayload;
+import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 import org.activiti.api.process.model.payloads.RemoveProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.ResumeProcessPayload;
 import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.SignalPayload;
+import org.activiti.api.process.model.payloads.StartMessagePayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.SuspendProcessPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
@@ -241,12 +242,12 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     }
 
     @Override
-    public void receive(MessagePayload messagePayload) {
+    public void receive(ReceiveMessagePayload messagePayload) {
         throw new UnsupportedOperationException("method not yet implemented");
     }
 
     @Override
-    public void start(MessagePayload messagePayload) {
+    public void start(StartMessagePayload messagePayload) {
         throw new UnsupportedOperationException("method not yet implemented");
     }
 
