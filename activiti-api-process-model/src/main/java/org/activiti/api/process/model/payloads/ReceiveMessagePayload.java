@@ -1,3 +1,18 @@
+/*
+ * Copyright 2018 Alfresco, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.api.process.model.payloads;
 
 import java.util.LinkedHashMap;
@@ -7,27 +22,27 @@ import java.util.UUID;
 
 import org.activiti.api.model.shared.Payload;
 
-public class MessagePayload implements Payload {
+public class ReceiveMessagePayload implements Payload {
 
     private final String id;
     private String name;
     private String correlationKey; 
-    private String businessKey;
     private Map<String, Object> variables = new LinkedHashMap<>();
 
-    public MessagePayload() {
+    public ReceiveMessagePayload() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public MessagePayload(String name, 
-                          String correlationKey,
-                          String businessKey,
-                          Map<String, Object> variables) {
+    public ReceiveMessagePayload(String name,
+                                 String correlationKey,
+                                 Map<String, Object> variables) {
         this();
 
         Objects.requireNonNull(name, "name must not be null");
-        
+
         this.name = name;
+        this.correlationKey = correlationKey;
+        this.variables = variables;
     }
 
     @Override
@@ -43,17 +58,13 @@ public class MessagePayload implements Payload {
         return correlationKey;
     }
 
-    public String getBusinessKey() {
-        return businessKey;
-    }
-
     public Map<String, Object> getVariables() {
         return variables;
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(businessKey, correlationKey, id, name, variables);
+        return Objects.hash(id, name, correlationKey, variables);
     }
 
     @Override
@@ -64,9 +75,8 @@ public class MessagePayload implements Payload {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        MessagePayload other = (MessagePayload) obj;
-        return Objects.equals(businessKey, other.businessKey) 
-                && Objects.equals(correlationKey, other.correlationKey) 
+        ReceiveMessagePayload other = (ReceiveMessagePayload) obj;
+        return Objects.equals(correlationKey, other.correlationKey) 
                 && Objects.equals(id, other.id) 
                 && Objects.equals(name, other.name) 
                 && Objects.equals(variables, other.variables);
@@ -75,14 +85,12 @@ public class MessagePayload implements Payload {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("MessagePayload [id=");
+        builder.append("ReceiveMessagePayload [id=");
         builder.append(id);
         builder.append(", name=");
         builder.append(name);
         builder.append(", correlationKey=");
         builder.append(correlationKey);
-        builder.append(", businessKey=");
-        builder.append(businessKey);
         builder.append(", variables=");
         builder.append(variables);
         builder.append("]");
