@@ -18,14 +18,15 @@ package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.builders.MessagePayloadBuilder;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.delegate.event.ActivitiActivityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -44,6 +45,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeBPMNMessageIT {
+
+    private static final String TEST_MESSAGE = "testMessage";
+
+    private static final String START_MESSAGE = "startMessage";
 
     private static final String PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT = "intermediateThrowMessageEvent";
 
@@ -69,7 +74,7 @@ public class ProcessRuntimeBPMNMessageIT {
         runtimeService.addEventListener(new ActivitiEventListener() {  
             
             boolean isEventToAdd(ActivitiEvent event) {
-                if (event instanceof ActivitiActivityEvent) return true;     
+                if (event instanceof ActivitiMessageEvent) return true;     
                 return false;
             }
             
@@ -95,41 +100,65 @@ public class ProcessRuntimeBPMNMessageIT {
     }
 
     @Test
-    public void shoulEventsForProcessWithThrowMessage() throws Exception{
+    public void shouldEmitEventsForProcessWithThrowMessage() throws Exception{
 
-        
         securityUtil.logInAs("user");
 
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withBusinessKey("businessKey")
                                                                             .withProcessDefinitionKey(PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT)
                                                                             .build());
-        
         assertThat(receivedEvents)
-                .filteredOn(event -> event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT))
                 .isNotEmpty()
-                .extracting(event -> event.getType(),
-                            event -> event.getProcessDefinitionId(),
-                            event -> event.getProcessInstanceId(),
-                            event -> ((ActivitiMessageEvent)event).getActivityType(),
-                            event -> ((ActivitiMessageEvent)event).getMessageName(),
-                            event -> ((ActivitiMessageEvent)event).getMessageCorrelationKey(),
-                            event -> ((ActivitiMessageEvent)event).getMessageBusinessKey())
+                .extracting("type", 
+                            "processDefinitionId",
+                            "processInstanceId",
+                            "activityType",
+                            "messageName",
+                            "messageCorrelationKey",
+                            "messageBusinessKey",
+                            "messageData")
                 .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
                                       "throwEvent",
                                       "Test Message",
                                       "value",
-                                      "businessKey"));
-        
-        assertThat(receivedEvents)
-                .filteredOn(event -> event.getType().equals(ActivitiEventType.ACTIVITY_MESSAGE_SENT))
-                .extracting(event -> ((ActivitiMessageEvent)event).getMessageData())
-                .extracting("message_payload_variable")
-                .contains("value");
-                
-        
-
+                                      "businessKey",
+                                      Collections.singletonMap("message_payload_variable", 
+                                                               "value")));
     }
+    
+    @Test
+    public void shouldStartProcessByMessage() throws Exception {
+        // given
+        securityUtil.logInAs("user");
+
+        // when
+        ProcessInstance process = processRuntime.start(MessagePayloadBuilder.start(TEST_MESSAGE)
+                                                                            .withBusinessKey("businessKey")
+                                                                            .withVariable("key", "value")
+                                                                            .build());
+        // then
+        assertThat(receivedEvents)
+                .isNotEmpty()
+                .extracting("type", 
+                            "processDefinitionId",
+                            "processInstanceId",
+                            "activityType",
+                            "messageName",
+                            "messageCorrelationKey",
+                            "messageBusinessKey",
+                            "messageData")
+                .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
+                                      "startEvent",  
+                                      "testMessage",
+                                      null,
+                                      process.getBusinessKey(),
+                                      Collections.singletonMap("key", 
+                                                               "value")));
+    }
+    
 }

@@ -120,9 +120,13 @@ public class ProcessInstanceHelper {
     ProcessInstance processInstance = createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, null, initialFlowElement, process, variables, transientVariables, true);
 
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        DelegateExecution execution = DelegateExecution.class.cast(processInstance)
+                                                             .getExecutions()
+                                                             .get(0); // TODO review this assumption 
+        // TODO review the event emit order
         ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
         eventDispatcher.dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, 
-                                                                              DelegateExecution.class.cast(processInstance), 
+                                                                              execution,
                                                                               messageName, 
                                                                               null,
                                                                               variables));

@@ -254,7 +254,10 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         String businessKey = messagePayload.getBusinessKey();
         Map<String, Object> variables = messagePayload.getVariables();
         
-        runtimeService.startProcessInstanceByMessage(messageName, businessKey, variables);
+        ProcessInstance processInstance = processInstanceConverter.from(runtimeService.startProcessInstanceByMessage(messageName,
+                                                                                                                     businessKey,
+                                                                                                                     variables));
+        return processInstance;
     }
 
 }
