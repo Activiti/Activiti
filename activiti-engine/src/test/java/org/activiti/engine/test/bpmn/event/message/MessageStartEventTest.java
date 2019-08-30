@@ -14,6 +14,7 @@
 package org.activiti.engine.test.bpmn.event.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -208,7 +209,7 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
   }
   
   @Deployment(resources = "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
-  public void testMessageStartEventDispatchActivitiEventsOrder() {
+  public void testMessageStartEventDispatchActivitiMessageReceivedBeforeProcessStarted() {
 
     // given 
     List<ActivitiEvent> events = new ArrayList<>();  
@@ -225,14 +226,29 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     });
 
     // when
-    runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
+    ProcessInstance process = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
+    
+    String executionId = runtimeService.createExecutionQuery()
+                                       .processInstanceId(process.getId())
+                                       .onlyChildExecutions()
+                                       .singleResult()
+                                       .getId();
 
     // then ACTIVITY_MESSAGE_RECEIVED should be fired before PROCESS_STARTED
     assertThat(events)
                 .filteredOn(event -> event.getType() == ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED 
                                         || event.getType() == ActivitiEventType.PROCESS_STARTED)
-                .extracting(ActivitiEvent::getType)
-                .containsExactly(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
-                                 ActivitiEventType.PROCESS_STARTED);
+                .extracting("type",
+                            "processDefinitionId",
+                            "processInstanceId",
+                            "executionId")
+                .containsExactly(tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                       process.getProcessDefinitionId(),
+                                       process.getId(),
+                                       executionId),
+                                 tuple(ActivitiEventType.PROCESS_STARTED,
+                                       process.getProcessDefinitionId(),
+                                       process.getId(),
+                                       executionId));
   }
 }
