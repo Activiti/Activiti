@@ -16,16 +16,17 @@
 
 package org.activiti.runtime.api;
 
+import static org.mockito.Mockito.mock;
+
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-
-import static org.mockito.Mockito.mock;
 
 @SpringBootApplication
 public class ProcessRuntimeTestApp {
@@ -42,6 +43,11 @@ public class ProcessRuntimeTestApp {
     @Bean
     public RuntimeService runtimeService() {
         return mock(RuntimeService.class);
+    }
+    
+    @Bean
+    public ManagementService managementService() {
+        return mock(ManagementService.class);
     }
 
     @Bean

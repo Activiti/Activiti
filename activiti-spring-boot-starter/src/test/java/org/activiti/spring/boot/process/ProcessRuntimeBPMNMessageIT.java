@@ -46,6 +46,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeBPMNMessageIT {
 
+    private static final String END_MESSAGE = "endMessage";
+
     private static final String CATCH_MESSAGE = "catchMessage";
 
     private static final String TEST_MESSAGE = "testMessage";
@@ -217,7 +219,7 @@ public class ProcessRuntimeBPMNMessageIT {
 
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withBusinessKey("businessKey")
-                                                       .withProcessDefinitionKey("endMessage")
+                                                       .withProcessDefinitionKey(END_MESSAGE)
                                                        .build());
         
         // when
