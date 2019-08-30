@@ -122,7 +122,7 @@ public class ProcessRuntimeAutoConfiguration {
      * Creates default MessagePayloadEventListener bean if no existing bean found in ApplicationContext.
      */
     @Bean
-    @ConditionalOnMissingBean(SignalPayloadEventListener.class)
+    @ConditionalOnMissingBean(MessagePayloadEventListener.class)
     public MessagePayloadEventListener messagePayloadEventListener(RuntimeService runtimeService,
                                                                    ManagementService managementService) {
         return new RuntimeMessagePayloadEventListener(runtimeService,

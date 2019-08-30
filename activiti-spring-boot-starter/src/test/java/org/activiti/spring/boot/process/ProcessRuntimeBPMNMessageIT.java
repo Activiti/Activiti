@@ -46,6 +46,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeBPMNMessageIT {
 
+    private static final String CATCH_MESSAGE = "catchMessage";
+
     private static final String TEST_MESSAGE = "testMessage";
 
     private static final String START_MESSAGE = "startMessage";
@@ -160,5 +162,52 @@ public class ProcessRuntimeBPMNMessageIT {
                                       Collections.singletonMap("key", 
                                                                "value")));
     }
+    
+    @Test
+    public void shouldReceiveMessageWithCorrelationKey() throws Exception {
+        // given
+        securityUtil.logInAs("user");
+
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                       .withBusinessKey("businessKey")
+                                                       .withVariable("correlationKey", "foo")
+                                                       .withProcessDefinitionKey(CATCH_MESSAGE)
+                                                       .build());
+        
+        // when
+        processRuntime.receive(MessagePayloadBuilder.receive(TEST_MESSAGE)
+                                                    .withVariable("key", "value")
+                                                    .withCorrelationKey("foo")
+                                                    .build());
+        // then
+        assertThat(receivedEvents)
+                .isNotEmpty()
+                .extracting("type", 
+                            "processDefinitionId",
+                            "processInstanceId",
+                            "activityType",
+                            "messageName",
+                            "messageCorrelationKey",
+                            "messageBusinessKey",
+                            "messageData")
+                .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
+                                      "intermediateCatchEvent",  
+                                      "testMessage",
+                                      "foo",
+                                      process.getBusinessKey(),
+                                      null),
+                          Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
+                                      "intermediateCatchEvent",  
+                                      "testMessage",
+                                      "foo",
+                                      process.getBusinessKey(),
+                                      Collections.singletonMap("key", 
+                                                               "value")));
+    }
+    
     
 }
