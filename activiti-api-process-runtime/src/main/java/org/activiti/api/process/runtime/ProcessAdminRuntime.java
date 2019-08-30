@@ -113,5 +113,5 @@ public interface ProcessAdminRuntime {
 
     void receive(ReceiveMessagePayload messagePayload);
     
-    void start(StartMessagePayload messagePayload);
+    ProcessInstance start(StartMessagePayload messagePayload);
 }
