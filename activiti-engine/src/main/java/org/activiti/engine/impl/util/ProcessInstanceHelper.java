@@ -120,13 +120,16 @@ public class ProcessInstanceHelper {
       throw new ActivitiException("No message start event found for process definition " + processDefinition.getId() + " and message name " + messageName);
     }
 
-    ProcessInstance processInstance = createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, null, initialFlowElement, process, variables, transientVariables, true);
+    // Create process instance with executions but defer to start process after dispatching ACTIVITY_MESSAGE_RECEIVED
+    ProcessInstance processInstance = createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, null, initialFlowElement, process, variables, transientVariables, false);
 
+    // Dispatch message received event
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        // There will always be one child execution created        
         DelegateExecution execution = DelegateExecution.class.cast(processInstance)
                                                              .getExecutions()
-                                                             .get(0); // TODO review this assumption 
-        // TODO review the event emit order
+                                                             .get(0); 
+        
         ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
         eventDispatcher.dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, 
                                                                               execution,
@@ -134,6 +137,9 @@ public class ProcessInstanceHelper {
                                                                               null,
                                                                               variables));
     }
+    
+    // Finally start the process 
+    startProcessInstance(ExecutionEntity.class.cast(processInstance), commandContext, variables);
     
     return processInstance;
   }

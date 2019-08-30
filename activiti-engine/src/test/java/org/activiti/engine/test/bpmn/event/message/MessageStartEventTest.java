@@ -13,9 +13,15 @@
 
 package org.activiti.engine.test.bpmn.event.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -200,5 +206,33 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     assertProcessEnded(processInstance.getId());
   }
+  
+  @Deployment(resources = "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+  public void testMessageStartEventDispatchActivitiEventsOrder() {
 
+    // given 
+    List<ActivitiEvent> events = new ArrayList<>();  
+      
+    runtimeService.addEventListener(new ActivitiEventListener() {
+        @Override
+        public void onEvent(ActivitiEvent event) {
+            events.add(event);
+        }
+        @Override
+        public boolean isFailOnException() {
+            return false;
+        }
+    });
+
+    // when
+    runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
+
+    // then ACTIVITY_MESSAGE_RECEIVED should be fired before PROCESS_STARTED
+    assertThat(events)
+                .filteredOn(event -> event.getType() == ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED 
+                                        || event.getType() == ActivitiEventType.PROCESS_STARTED)
+                .extracting(ActivitiEvent::getType)
+                .containsExactly(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                 ActivitiEventType.PROCESS_STARTED);
+  }
 }
