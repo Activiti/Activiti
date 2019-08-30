@@ -210,4 +210,35 @@ public class ProcessRuntimeBPMNMessageIT {
     }
     
     
+    @Test
+    public void shouldThrowEndMessage() throws Exception {
+        // given
+        securityUtil.logInAs("user");
+
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                       .withBusinessKey("businessKey")
+                                                       .withProcessDefinitionKey("endMessage")
+                                                       .build());
+        
+        // when
+        // then
+        assertThat(receivedEvents).isNotEmpty()
+                                  .extracting("type",
+                                              "processDefinitionId",
+                                              "processInstanceId",
+                                              "activityType",
+                                              "messageName",
+                                              "messageCorrelationKey",
+                                              "messageBusinessKey",
+                                              "messageData")
+                                  .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "endEvent",
+                                                        "testMessage",
+                                                        null,
+                                                        process.getBusinessKey(),
+                                                        null));
+    }    
+    
 }
