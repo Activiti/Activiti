@@ -20,10 +20,13 @@ public class LiquibaseAutoConfiguration {
                                      ActivitiProperties activitiProperties) {
         SpringLiquibase liquibase = new SpringLiquibase();
         liquibase.setDataSource(dataSource);
-        liquibase.setChangeLog("classpath:config/liquibase/master.xml");
+        liquibase.setChangeLog(liquibaseProperties.getChangeLog());
         liquibase.setContexts(liquibaseProperties.getContexts());
         liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
         liquibase.setDropFirst(liquibaseProperties.isDropFirst());
+        liquibase.setDatabaseChangeLogLockTable(liquibaseProperties.getDatabaseChangeLogLockTable());
+        liquibase.setDatabaseChangeLogLockTable(liquibaseProperties.getDatabaseChangeLogTable());
+
         if (!activitiProperties.isUseLiquibase()) {
             liquibase.setShouldRun(false);
         } else {
