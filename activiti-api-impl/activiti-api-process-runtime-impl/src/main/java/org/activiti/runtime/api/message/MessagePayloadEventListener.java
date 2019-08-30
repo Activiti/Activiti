@@ -16,11 +16,11 @@
 
 package org.activiti.runtime.api.message;
 
-import org.activiti.api.process.model.payloads.MessagePayload;
+import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 
 /**
  * MessagePayloadEventListener handler interface.
  */
 public interface MessagePayloadEventListener {
-    public void receiveMessage(MessagePayload messagePayload);
+    public void receiveMessage(ReceiveMessagePayload messagePayload);
 }

@@ -18,7 +18,7 @@ package org.activiti.runtime.api.impl;
 
 import java.util.Map;
 
-import org.activiti.api.process.model.payloads.MessagePayload;
+import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
@@ -48,13 +48,13 @@ public class RuntimeMessagePayloadEventListener implements MessagePayloadEventLi
 
     @Override
     @EventListener
-    public void receiveMessage(MessagePayload messagePayload) {
+    public void receiveMessage(ReceiveMessagePayload messagePayload) {
         String messageName = messagePayload.getName();
-        String correlationKey = messagePayload.getConfiguration();
+        String correlationKey = messagePayload.getCorrelationKey();
                 
         EventSubscriptionEntity subscription = managementService.executeCommand(new FindMessageEventSubscription(messageName,
                                                                                                                  correlationKey));
-        if(subscription != null) {
+        if (subscription != null) {
             Map<String, Object> variables = messagePayload.getVariables();
             String executionId = subscription.getExecutionId();
             
@@ -72,7 +72,6 @@ public class RuntimeMessagePayloadEventListener implements MessagePayloadEventLi
         private final String correlationKey;
 
         public FindMessageEventSubscription(String messageName, String correlationKey) {
-            super();
             this.messageName = messageName;
             this.correlationKey = correlationKey;
         }
