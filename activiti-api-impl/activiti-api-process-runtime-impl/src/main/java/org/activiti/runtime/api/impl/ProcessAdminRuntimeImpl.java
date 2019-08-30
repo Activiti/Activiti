@@ -247,7 +247,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     }
 
     @Override
-    public void start(StartMessagePayload messagePayload) {
+    public ProcessInstance start(StartMessagePayload messagePayload) {
         throw new UnsupportedOperationException("method not yet implemented");
     }
 
