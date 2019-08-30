@@ -30,13 +30,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessErrorEventsIT {
 
     private static final String ERROR_BOUNDARY_EVENT_SUBPROCESS = "errorBoundaryEventSubProcess";
-    
+    private static final String ERROR_START_EVENT_SUBPROCESS = "errorStartEventSubProcess";
+
     @Autowired
     private ProcessRuntime processRuntime;
     
@@ -174,6 +174,141 @@ public class ProcessErrorEventsIT {
                               processInstance.getId(),
                               "endEvent",
                               "errorEnd")
+                  );
+        
+        //check ACTIVITY_ERROR_RECEIVED event
+        ActivitiErrorEvent e = (ActivitiErrorEvent)receivedEvents
+                                                   .stream()
+                                                   .filter(event -> event instanceof ActivitiErrorEvent)
+                                                   .findAny()
+                                                   .orElse(null);
+        assertNotNull(e);
+        assertThat(e.getErrorCode()).isEqualTo("123");
+        assertThat(e.getErrorId()).isEqualTo("errorId");    
+    }
+    
+    @Test
+    public void testErrorStartEventsSubProcess(){
+
+        //given
+        securityUtil.logInAs("user");
+
+        //when
+        ProcessInstance processInstance = processRuntime.start(
+                ProcessPayloadBuilder
+                        .start()
+                        .withProcessDefinitionKey(ERROR_START_EVENT_SUBPROCESS)
+                        .build());
+        
+        //then
+        assertNotNull(processInstance);
+        
+        //Error-handling should end the process
+        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
+                50),
+                ProcessPayloadBuilder
+                        .processInstances().withProcessDefinitionKey(ERROR_START_EVENT_SUBPROCESS)
+                        .build());
+
+        assertThat(processInstancePage).isNotNull();
+        assertThat(processInstancePage.getContent()).hasSize(0);
+         
+        //check events
+        assertThat(receivedEvents).isNotEmpty();
+        
+        Collection<ActivitiEvent> events = receivedEvents
+                                            .stream()
+                                            .filter(event -> event instanceof ActivitiActivityEvent)
+                                            .collect(Collectors.toList());  
+        
+        assertThat(events)
+        .filteredOn(event -> event instanceof ActivitiActivityEvent)
+        .extracting(event -> event.getType(),
+                    event -> event.getProcessDefinitionId(),
+                    event -> event.getProcessInstanceId(),
+                    event -> ((ActivitiActivityEvent)event).getActivityType(),
+                    event -> ((ActivitiActivityEvent)event).getActivityId()
+                    )
+        .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "startEvent",
+                              "theStart"),
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_COMPLETED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "startEvent",
+                              "theStart"),
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "subProcess",
+                              "subProcess"), 
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "startEvent",
+                              "subStart"),      
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_COMPLETED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "startEvent",
+                              "subStart"),
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "endEvent",
+                              "subEnd"),  
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_ERROR_RECEIVED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              null,
+                              "subStart1"),  
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "startEvent",
+                              "subStart1"),      
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "manualTask",
+                              "task"), 
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_COMPLETED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "manualTask",
+                              "task"),      
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "endEvent",
+                              "subEnd1"),  
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_COMPLETED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "endEvent",
+                              "subEnd1"),  
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_COMPLETED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "eventSubProcess",
+                              "errorStartSubProcess"),
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_COMPLETED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "subProcess",
+                              "subProcess"),
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "endEvent",
+                              "theEnd"),
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_COMPLETED,
+                              processInstance.getProcessDefinitionId(),
+                              processInstance.getId(),
+                              "endEvent",
+                              "theEnd")
                   );
         
         //check ACTIVITY_ERROR_RECEIVED event
