@@ -46,6 +46,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessRuntimeBPMNMessageIT {
 
+    private static final String BOUNDARY_MESSAGE = "boundaryMessage";
+
     private static final String END_MESSAGE = "endMessage";
 
     private static final String CATCH_MESSAGE = "catchMessage";
@@ -104,7 +106,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }
 
     @Test
-    public void shouldEmitEventsForProcessWithThrowMessage() throws Exception{
+    public void shouldThrowIntermediateMessageEvent() throws Exception{
 
         securityUtil.logInAs("user");
 
@@ -166,7 +168,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }
     
     @Test
-    public void shouldReceiveMessageWithCorrelationKey() throws Exception {
+    public void shouldReceiveCatchMessageWithCorrelationKey() throws Exception {
         // given
         securityUtil.logInAs("user");
 
@@ -213,7 +215,7 @@ public class ProcessRuntimeBPMNMessageIT {
     
     
     @Test
-    public void shouldThrowEndMessage() throws Exception {
+    public void shouldThrowEndMessageEvent() throws Exception {
         // given
         securityUtil.logInAs("user");
 
@@ -242,5 +244,52 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         process.getBusinessKey(),
                                                         null));
     }    
+    
+    @Test
+    public void shouldReceiveBoundaryMessageWithCorrelationKey() throws Exception {
+        // given
+        securityUtil.logInAs("user");
+
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                       .withBusinessKey("businessKey")
+                                                       .withVariable("correlationKey", "foo")
+                                                       .withProcessDefinitionKey(BOUNDARY_MESSAGE)
+                                                       .build());
+        
+        // when
+        processRuntime.receive(MessagePayloadBuilder.receive(TEST_MESSAGE)
+                                                    .withVariable("key", "value")
+                                                    .withCorrelationKey("foo")
+                                                    .build());
+        // then
+        assertThat(receivedEvents)
+                .isNotEmpty()
+                .extracting("type", 
+                            "processDefinitionId",
+                            "processInstanceId",
+                            "activityType",
+                            "messageName",
+                            "messageCorrelationKey",
+                            "messageBusinessKey",
+                            "messageData")
+                .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
+                                      "boundaryEvent",  
+                                      "testMessage",
+                                      "foo",
+                                      process.getBusinessKey(),
+                                      null),
+                          Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
+                                      "boundaryEvent",  
+                                      "testMessage",
+                                      "foo",
+                                      process.getBusinessKey(),
+                                      Collections.singletonMap("key", 
+                                                               "value")));
+    }
+    
     
 }
