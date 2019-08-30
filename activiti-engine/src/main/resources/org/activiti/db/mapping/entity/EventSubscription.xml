@@ -96,13 +96,10 @@
       <if test="tenantId == null">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
       </if>        
-      <if test="correlationKey != null">
-        and RES.CONFIGURATION_ = #{correlationKey}
+      <if test="configuration != null">
+        and RES.CONFIGURATION_ = #{configuration}
       </if>  
-      <if test="correlationKey == null">
-        and (RES.CONFIGURATION_ = '' or RES.CONFIGURATION_ is null)
-      </if>        
-    </where>
+     </where>
   </sql>
   
   <select id="selectMessageEventSubscriptionsByProcessInstanceAndEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">

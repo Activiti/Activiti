@@ -46,6 +46,7 @@ import org.activiti.engine.impl.delegate.ThrowMessage;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegateFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -759,10 +760,34 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
 
     }
     
+    @Deployment(resources = {
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessageCorrelationKey.bpmn20.xml"
+        })
+    public void testMessageEventSubscriptionQueryWithCorrelationKey() {
+
+        // given
+        runtimeService.createProcessInstanceBuilder()
+                      .processDefinitionKey(CATCH_MESSAGE)
+                      .businessKey("businessKey2")
+                      .variable("customerId", "2")
+                      .variable("invoiceId", "1")
+                      .start();
+        // when
+        EventSubscriptionEntity subscription = newEventSubscriptionQuery().eventType("message")
+                                                                          .eventName("newInvoice-1")
+                                                                          .configuration("2")
+                                                                          .singleResult();
+        // then
+        assertThat(subscription).isNotNull();
+        assertThat(subscription).extracting("eventName",
+                                            "configuration")
+                                .containsExactly("newInvoice-1", 
+                                                 "2");
+    }
     
     protected EventSubscriptionQueryImpl newEventSubscriptionQuery() {
         return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
-      }
+    }
     
     protected static BlockingQueue<ThrowMessage> getThrowMessageQueue(SubscriptionKey key) {
         return messageQueueRegistry.computeIfAbsent(key,

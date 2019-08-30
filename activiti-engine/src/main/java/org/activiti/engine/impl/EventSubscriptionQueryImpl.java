@@ -35,7 +35,7 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
   protected String processInstanceId;
   protected String activityId;
   protected String tenantId;
-  protected String correlationKey;
+  protected String configuration;
 
   public EventSubscriptionQueryImpl(CommandContext commandContext) {
     super(commandContext);
@@ -102,8 +102,8 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
     return this;
   }
   
-  public EventSubscriptionQueryImpl correlationKey(String correlationKey) {
-      this.correlationKey = correlationKey;
+  public EventSubscriptionQueryImpl configuration(String configuration) {
+      this.configuration = configuration;
       return this;
     }
   
@@ -152,8 +152,8 @@ public class EventSubscriptionQueryImpl extends AbstractQuery<EventSubscriptionQ
     return activityId;
   }
   
-  public String getCorrelationKey() {
-      return correlationKey;
+  public String getConfiguration() {
+      return configuration;
     }
   
 

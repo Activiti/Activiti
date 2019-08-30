@@ -50,7 +50,7 @@ public class RuntimeMessagePayloadEventListener implements MessagePayloadEventLi
     @EventListener
     public void receiveMessage(MessagePayload messagePayload) {
         String messageName = messagePayload.getName();
-        String correlationKey = messagePayload.getCorrelationKey();
+        String correlationKey = messagePayload.getConfiguration();
                 
         EventSubscriptionEntity subscription = managementService.executeCommand(new FindMessageEventSubscription(messageName,
                                                                                                                  correlationKey));
@@ -80,7 +80,7 @@ public class RuntimeMessagePayloadEventListener implements MessagePayloadEventLi
         public EventSubscriptionEntity execute(CommandContext commandContext) {
             return new EventSubscriptionQueryImpl(commandContext).eventType("message")
                                                                  .eventName(messageName)
-                                                                 .correlationKey(correlationKey)
+                                                                 .configuration(correlationKey)
                                                                  .singleResult();
         }
     }
