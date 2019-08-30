@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
@@ -28,10 +29,12 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
@@ -213,8 +216,16 @@ public class ProcessInstanceHelper {
                 ExecutionEntity messageExecution = commandContext.getExecutionEntityManager().createChildExecution(processInstance);
                 messageExecution.setCurrentFlowElement(startEvent);
                 messageExecution.setEventScope(true);
-                messageEventSubscriptions
-                .add(commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition.getMessageRef(), messageExecution));
+                
+                MessageEventSubscriptionEntity subscription = commandContext.getEventSubscriptionEntityManager()
+                                                                            .insertMessageEvent(messageEventDefinition.getMessageRef(),
+                                                                                                messageExecution);                
+                Optional<String> correlationKey = getCorrelationKey(commandContext, 
+                                                                    messageEventDefinition, 
+                                                                    messageExecution);
+                correlationKey.ifPresent(subscription::setConfiguration);
+                
+                messageEventSubscriptions.add(subscription);
               }
             }
           }
@@ -234,7 +245,7 @@ public class ProcessInstanceHelper {
                     .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
                                                                            messageEventSubscription.getExecution(),
                                                                            messageEventSubscription.getEventName(),
-                                                                           null,
+                                                                           messageEventSubscription.getConfiguration(),
                                                                            null));
           }
     }
@@ -250,4 +261,20 @@ public class ProcessInstanceHelper {
     }
     return variablesMap;
   }
+  
+  protected Optional<String> getCorrelationKey(CommandContext commandContext,
+                                               MessageEventDefinition messageEventDefinition,
+                                               DelegateExecution execution) {
+      ExpressionManager expressionManager = commandContext.getProcessEngineConfiguration()
+                                                          .getExpressionManager();
+      
+      return Optional.ofNullable(messageEventDefinition.getCorrelationKey())
+                     .map(correlationKey -> {
+                          Expression expression = expressionManager.createExpression(messageEventDefinition.getCorrelationKey());
+
+                          return expression.getValue(execution)
+                                           .toString();
+                     });    
+  }
+  
 }

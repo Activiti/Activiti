@@ -384,5 +384,49 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         process.getBusinessKey(),
                                                         Collections.singletonMap("key",
                                                                                  "value")));
-    } 
+    }
+    
+    @Test
+    public void shouldReceiveEventSubprocessMessageWithCorrelationKey() throws Exception {
+        // given
+        securityUtil.logInAs("user");
+
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                                            .withBusinessKey("businessKey")
+                                                                            .withVariable("correlationKey", "foo")
+                                                                            .withProcessDefinitionKey("eventSubprocessMessage")
+                                                                            .build());
+        // when
+        processRuntime.receive(MessagePayloadBuilder.receive(TEST_MESSAGE)
+                                                    .withVariable("key", "value")
+                                                    .withCorrelationKey("foo")
+                                                    .build());
+        // then
+        assertThat(receivedEvents).isNotEmpty()
+                                  .extracting("type",
+                                              "processDefinitionId",
+                                              "processInstanceId",
+                                              "activityType",
+                                              "messageName",
+                                              "messageCorrelationKey",
+                                              "messageBusinessKey",
+                                              "messageData")
+                                  .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "startEvent",
+                                                        "testMessage",
+                                                        "foo",
+                                                        process.getBusinessKey(),
+                                                        null),
+                                            Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "startEvent",
+                                                        "testMessage",
+                                                        "foo",
+                                                        process.getBusinessKey(),
+                                                        Collections.singletonMap("key",
+                                                                                 "value")));
+    }     
 }
