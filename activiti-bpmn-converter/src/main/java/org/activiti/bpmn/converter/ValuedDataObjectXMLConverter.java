@@ -21,10 +21,6 @@ import org.activiti.bpmn.model.StringDataObject;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.apache.commons.lang3.StringUtils;
 
-/**
-
-
- */
 public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
 
   private final Pattern xmlChars = Pattern.compile("[<>&]");

@@ -15,8 +15,9 @@ public class ActivitiFailedjobRetryParser extends BaseChildElementParser {
 
   @Override
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (!(parentElement instanceof Activity))
-      return;
+    if (!(parentElement instanceof Activity)) {
+        return;
+    }
     String cycle = xtr.getElementText();
     if (cycle == null || cycle.isEmpty()) {
       return;

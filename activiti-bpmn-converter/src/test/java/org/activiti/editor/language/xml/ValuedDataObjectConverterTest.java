@@ -20,9 +20,6 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.junit.Test;
 
-/**
- * @see https://activiti.atlassian.net/browse/ACT-1847
- */
 public class ValuedDataObjectConverterTest extends AbstractConverterTest {
 
   @Test

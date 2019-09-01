@@ -14,25 +14,24 @@ import org.activiti.bpmn.model.TimerEventDefinition;
 import org.junit.Test;
 
 public class TimerDefinitionConverterTest extends AbstractConverterTest {
-  
+
   @Test
   public void convertXMLToModel() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
-  
+
   protected String getResource() {
     return "timerCalendarDefinition.bpmn";
   }
-  
+
   private void validateModel(BpmnModel model) {
     IntermediateCatchEvent timer = (IntermediateCatchEvent) model.getMainProcess().getFlowElement("timer");
     assertNotNull(timer);

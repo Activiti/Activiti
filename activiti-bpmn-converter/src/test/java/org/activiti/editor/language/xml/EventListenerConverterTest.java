@@ -10,11 +10,6 @@ import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Process;
 import org.junit.Test;
 
-/**
- * Test for ACT-1657
- * 
-
- */
 public class EventListenerConverterTest extends AbstractConverterTest {
 
   @Test

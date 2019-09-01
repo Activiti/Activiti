@@ -10,6 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.bpmn.converter.child;
 
 import javax.xml.stream.XMLStreamReader;
@@ -20,9 +21,6 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
- */
 public abstract class BaseChildElementParser implements BpmnXMLConstants {
 
   protected static final Logger LOGGER = LoggerFactory.getLogger(BaseChildElementParser.class);

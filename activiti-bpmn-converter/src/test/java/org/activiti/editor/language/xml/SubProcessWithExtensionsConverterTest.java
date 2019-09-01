@@ -19,9 +19,6 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.junit.Test;
 
-/**
- * @see <a href="https://activiti.atlassian.net/browse/ACT-2055">https://activiti.atlassian.net/browse/ACT-2055</a>
- */
 public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest {
 
   protected static final String YOURCO_EXTENSIONS_NAMESPACE = "http://yourco/bpmn";
@@ -176,11 +173,11 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
     return null;
   }
 
-  protected Map<String, String> getSubprocessAttributes(BaseElement bObj) {
+  protected Map<String, String> getSubprocessAttributes(BaseElement baseElement) {
     Map<String, String> attributes = null;
 
-    if (null != bObj) {
-      List<ExtensionElement> attributesExtension = bObj.getExtensionElements().get(ELEMENT_ATTRIBUTES);
+    if (null != baseElement) {
+      List<ExtensionElement> attributesExtension = baseElement.getExtensionElements().get(ELEMENT_ATTRIBUTES);
 
       if (null != attributesExtension && !attributesExtension.isEmpty()) {
         attributes = new HashMap<String, String>();
@@ -194,8 +191,8 @@ public class SubProcessWithExtensionsConverterTest extends AbstractConverterTest
     return attributes;
   }
 
-  protected Localization getLocalization(BaseElement bObj) {
-    List<ExtensionElement> i18lnExtension = bObj.getExtensionElements().get(ELEMENT_I18LN_LOCALIZATION);
+  protected Localization getLocalization(BaseElement baseElement) {
+    List<ExtensionElement> i18lnExtension = baseElement.getExtensionElements().get(ELEMENT_I18LN_LOCALIZATION);
 
     if (!i18lnExtension.isEmpty()) {
       Map<String, List<ExtensionAttribute>> extensionAttributes = i18lnExtension.get(0).getAttributes();

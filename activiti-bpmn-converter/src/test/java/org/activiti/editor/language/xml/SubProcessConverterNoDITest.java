@@ -28,7 +28,6 @@ public class SubProcessConverterNoDITest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
 
   protected String getResource() {
