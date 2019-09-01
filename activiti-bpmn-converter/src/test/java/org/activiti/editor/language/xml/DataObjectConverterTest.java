@@ -16,9 +16,6 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.junit.Test;
 
-/**
- * @see <a href="https://activiti.atlassian.net/browse/ACT-1847">https://activiti.atlassian.net/browse/ACT-1847</a>
- */
 public class DataObjectConverterTest extends AbstractConverterTest {
 
   @Test
@@ -32,7 +29,6 @@ public class DataObjectConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
 
   protected String getResource() {

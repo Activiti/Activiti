@@ -33,7 +33,6 @@ public class SubProcessConverterAutoLayoutTest extends AbstractConverterTest {
 
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
 
   protected String getResource() {

@@ -16,19 +16,18 @@ public class AsyncEndEventConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
+
   @Test
   public void convertModelToXML() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
-  
+
   protected String getResource() {
     return "asyncendeventmodel.bpmn";
   }
-  
+
   private void validateModel(BpmnModel model) {
     FlowElement flowElement = model.getMainProcess().getFlowElement("endEvent");
     assertNotNull(flowElement);
@@ -37,7 +36,7 @@ public class AsyncEndEventConverterTest extends AbstractConverterTest {
     EndEvent endEvent = (EndEvent) flowElement;
     assertEquals("endEvent", endEvent.getId());
     assertTrue(endEvent.isAsynchronous());
-    
+
     List<ActivitiListener> listeners = endEvent.getExecutionListeners();
     assertEquals(1, listeners.size());
     ActivitiListener listener = listeners.get(0);

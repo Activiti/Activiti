@@ -311,6 +311,7 @@
           <skip>${skipCheckstyle}</skip>
           <sourceDirectories>
             <sourceDirectory>activiti-api-impl</sourceDirectory>
+            <sourceDirectory>activiti-bpmn-converter</sourceDirectory>
           </sourceDirectories>
           <failOnViolation>true</failOnViolation>
           <enableRulesSummary>false</enableRulesSummary>

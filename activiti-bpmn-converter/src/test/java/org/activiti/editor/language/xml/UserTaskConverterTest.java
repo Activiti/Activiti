@@ -28,7 +28,6 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
-    deployProcess(parsedModel);
   }
 
   protected String getResource() {
@@ -47,7 +46,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertEquals("testKey", userTask.getFormKey());
     assertEquals("40", userTask.getPriority());
     assertEquals("2012-11-01", userTask.getDueDate());
-    
+
     assertEquals("customCalendarName", userTask.getBusinessCalendarName());
 
     assertEquals("kermit", userTask.getAssignee());

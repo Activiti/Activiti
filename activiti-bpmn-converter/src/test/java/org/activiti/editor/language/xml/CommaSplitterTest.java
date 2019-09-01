@@ -8,10 +8,6 @@ import java.util.List;
 import org.activiti.bpmn.converter.util.CommaSplitter;
 import org.junit.Test;
 
-/**
-
- */
-
 public class CommaSplitterTest {
 
   @Test

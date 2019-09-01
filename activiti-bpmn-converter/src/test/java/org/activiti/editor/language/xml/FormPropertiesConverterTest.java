@@ -24,15 +24,15 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
   }
-  
-  @Test 
+
+  @Test
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readXMLFile();
     validateModel(bpmnModel);
     bpmnModel = exportAndReadXMLFile(bpmnModel);
     validateModel(bpmnModel);
   }
-  
+
   protected String getResource() {
     return "formPropertiesProcess.bpmn";
   }
@@ -100,7 +100,6 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
   }
 
   private void checkFormPropertyFormValues(List<Map<String, Object>> formValues) {
-    List<Map<String, Object>> expectedFormValues = new ArrayList<Map<String,Object>>();
     Map<String, Object> formValue1 = new HashMap<String, Object>();
     formValue1.put("id", "value1");
     formValue1.put("name", "Value 1");
@@ -115,6 +114,8 @@ public class FormPropertiesConverterTest extends AbstractConverterTest {
     Map<String, Object> formValue4 = new HashMap<String, Object>();
     formValue4.put("id", "value4");
     formValue4.put("name", "Value 4");
+
+    List<Map<String, Object>> expectedFormValues = new ArrayList<Map<String,Object>>();
 
     expectedFormValues.add(formValue1);
     expectedFormValues.add(formValue2);

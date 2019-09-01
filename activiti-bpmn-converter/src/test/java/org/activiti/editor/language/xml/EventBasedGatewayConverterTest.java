@@ -13,11 +13,6 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.ImplementationType;
 import org.junit.Test;
 
-/**
- * Test for ACT-1657
- * 
-
- */
 public class EventBasedGatewayConverterTest extends AbstractConverterTest {
 
   @Test
