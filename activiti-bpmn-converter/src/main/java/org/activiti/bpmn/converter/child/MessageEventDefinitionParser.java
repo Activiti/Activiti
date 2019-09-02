@@ -13,7 +13,6 @@
 package org.activiti.bpmn.converter.child;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamReader;
@@ -45,16 +44,7 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
     eventDefinition.setMessageExpression(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MESSAGE_EXPRESSION));
     eventDefinition.setCorrelationKey(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_MESSAGE_CORRELATION_KEY));
 
-    List<ExtensionAttribute> attributes = new LinkedList<>();
-            
-    for(int i=0; i < xtr.getAttributeCount(); i++) {
-        if(ACTIVITI_EXTENSIONS_NAMESPACE.equals(xtr.getAttributeNamespace(i))) {
-            ExtensionAttribute attr = new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, xtr.getAttributeLocalName(i));
-            attr.setValue(xtr.getAttributeValue(i));
-            
-            attributes.add(attr);
-        }
-    }
+    List<ExtensionAttribute> attributes = parseExtensionAttributes(xtr, parentElement, model);
 
     if(!attributes.isEmpty()) {
         eventDefinition.setAttributes(Collections.singletonMap(ACTIVITI_EXTENSIONS_PREFIX, attributes));
