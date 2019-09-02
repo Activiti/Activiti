@@ -66,8 +66,9 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
         
         boolean isSent = send(execution, throwMessage);
         
-        if(isSent)
+        if(isSent) {
             dispatchEvent(execution, throwMessage);
+        }
         
         super.execute(execution);
     }
