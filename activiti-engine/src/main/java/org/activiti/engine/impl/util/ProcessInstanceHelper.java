@@ -131,11 +131,10 @@ public class ProcessInstanceHelper {
                                                              .get(0); 
         
         ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
-        eventDispatcher.dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, 
-                                                                              execution,
-                                                                              messageName, 
-                                                                              null,
-                                                                              variables));
+        eventDispatcher.dispatchEvent(ActivitiEventBuilder.createMessageReceivedEvent(execution,
+                                                                                      messageName, 
+                                                                                      null,
+                                                                                      variables));
     }
     
     // Finally start the process 
@@ -248,11 +247,9 @@ public class ProcessInstanceHelper {
         
         for (MessageEventSubscriptionEntity messageEventSubscription : messageEventSubscriptions) {
             commandContext.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
-                                                                           messageEventSubscription.getExecution(),
-                                                                           messageEventSubscription.getEventName(),
-                                                                           messageEventSubscription.getConfiguration(),
-                                                                           null));
+                    .dispatchEvent(ActivitiEventBuilder.createMessageWaitingEvent(messageEventSubscription.getExecution(),
+                                                                                  messageEventSubscription.getEventName(),
+                                                                                  messageEventSubscription.getConfiguration()));
           }
     }
   }

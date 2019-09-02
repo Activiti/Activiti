@@ -19,7 +19,6 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -50,20 +49,20 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     
     String messageName = getMessageName(execution);
-    Optional<String> correlationKey = getCorrelationKey(execution);
     
     MessageEventSubscriptionEntity messageEvent = commandContext.getEventSubscriptionEntityManager()
                                                                 .insertMessageEvent(messageName, 
                                                                                     executionEntity);
+    Optional<String> correlationKey = getCorrelationKey(execution);
+    
     correlationKey.ifPresent(messageEvent::setConfiguration);
     
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        
         commandContext.getProcessEngineConfiguration().getEventDispatcher()
-                .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, 
-                                                                       executionEntity, 
-                                                                       messageName,
-                                                                       correlationKey.orElse(null), 
-                                                                       null));
+                .dispatchEvent(ActivitiEventBuilder.createMessageWaitingEvent(executionEntity, 
+                                                                              messageName,
+                                                                              correlationKey.orElse(null)));
     }
   }
 

@@ -266,12 +266,44 @@ public class ActivitiEventBuilder {
     newEvent.setSignalData(signalData);
     return newEvent;
   }
+  
+  public static ActivitiMessageEvent createMessageReceivedEvent(DelegateExecution execution,
+                                                                String messageName, 
+                                                                String correlationKey, 
+                                                                Object payload) {
+    return createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, 
+                              execution, 
+                              messageName, 
+                              correlationKey, 
+                              payload);  
+  } 
 
-  public static ActivitiMessageEvent createMessageEvent(ActivitiEventType type, 
-                                                        DelegateExecution execution,
-                                                        String messageName, 
-                                                        String correlationKey, 
-                                                        Object payload) {
+  public static ActivitiMessageEvent createMessageWaitingEvent(DelegateExecution execution,
+                                                               String messageName,
+                                                               String correlationKey) {
+    return createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                              execution,
+                              messageName,
+                              correlationKey,
+                              null);
+  }
+
+  public static ActivitiMessageEvent createMessageSentEvent(DelegateExecution execution,
+                                                            String messageName,
+                                                            String correlationKey,
+                                                            Object payload) {
+    return createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_SENT,
+                              execution,
+                              messageName,
+                              correlationKey,
+                              payload);
+  }  
+  
+  private static ActivitiMessageEvent createMessageEvent(ActivitiEventType type, 
+                                                         DelegateExecution execution,
+                                                         String messageName, 
+                                                         String correlationKey, 
+                                                         Object payload) {
     ActivitiMessageEventImpl newEvent = new ActivitiMessageEventImpl(type);
     newEvent.setMessageName(messageName);
     newEvent.setMessageCorrelationKey(correlationKey);
