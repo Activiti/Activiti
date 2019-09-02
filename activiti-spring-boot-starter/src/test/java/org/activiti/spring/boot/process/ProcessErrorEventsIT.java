@@ -84,7 +84,7 @@ public class ProcessErrorEventsIT {
     }
 
     @Test
-    public void testErrorBoundaryEventsSubProcess(){
+    public void should_CatchSubProcessBoundaryErrorEvent_When_ErrorEndEvenThrown(){
 
         //given
         securityUtil.logInAs("user");
@@ -189,8 +189,8 @@ public class ProcessErrorEventsIT {
     }
     
     @Test
-    public void testErrorStartEventsSubProcess(){
-
+    public void should_StartSubProcess_When_ErrorEndEvenThrown(){
+     
         //given
         securityUtil.logInAs("user");
 
@@ -324,8 +324,8 @@ public class ProcessErrorEventsIT {
     }
     
     @Test
-    public void testErrorBoundaryEventsCallActivity(){
-
+    public void should_CatchCallActivityBoundaryErrorEvent_When_ErrorEndEvenThrown(){
+        
         //given
         securityUtil.logInAs("user");
 
