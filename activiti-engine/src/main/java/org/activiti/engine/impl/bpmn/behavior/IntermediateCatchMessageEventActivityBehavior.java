@@ -18,7 +18,6 @@ import java.util.Optional;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.context.Context;
@@ -44,20 +43,19 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
     CommandContext commandContext = Context.getCommandContext();
     
     String messageName = getMessageName(execution);
-    Optional<String> correlationKey = getCorrelationKey(execution);
     
     MessageEventSubscriptionEntity messageEvent = commandContext.getEventSubscriptionEntityManager()
                                                                 .insertMessageEvent(messageName, 
                                                                                     ExecutionEntity.class.cast(execution));
+    Optional<String> correlationKey = getCorrelationKey(execution);
+
     correlationKey.ifPresent(messageEvent::setConfiguration);
     
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         commandContext.getProcessEngineConfiguration().getEventDispatcher()
-                .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
-                                                                       execution,
-                                                                       messageName,
-                                                                       correlationKey.orElse(null),
-                                                                       null));
+                .dispatchEvent(ActivitiEventBuilder.createMessageWaitingEvent(execution,
+                                                                              messageName,
+                                                                              correlationKey.orElse(null)));
       }
   }
 

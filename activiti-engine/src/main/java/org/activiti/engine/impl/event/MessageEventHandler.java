@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.event;
 
-import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
@@ -43,7 +42,10 @@ public class MessageEventHandler extends AbstractEventHandler {
           .getProcessEngineConfiguration()
           .getEventDispatcher()
           .dispatchEvent(
-              ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, execution, messageName, correlationKey, payload));
+              ActivitiEventBuilder.createMessageReceivedEvent(execution, 
+                                                              messageName, 
+                                                              correlationKey, 
+                                                              payload));
     }
 
     super.handleEvent(eventSubscription, payload, commandContext);

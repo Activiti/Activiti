@@ -19,7 +19,6 @@ import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
@@ -119,15 +118,18 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
                                                         .getEventDispatcher()
                                                         .isEnabled())   
                 .ifPresent(commandContext -> {
+                    String messageName = throwMessage.getName();
+                    String correlationKey = throwMessage.getCorrelationKey()
+                                                        .orElse(null);
+                    Object payload = throwMessage.getPayload()
+                                                 .orElse(null);
+                    
                     commandContext.getProcessEngineConfiguration()
                                   .getEventDispatcher()
-                                  .dispatchEvent(ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_SENT,
-                                                                                         execution,
-                                                                                         throwMessage.getName(),
-                                                                                         throwMessage.getCorrelationKey()
-                                                                                                     .orElse(null),
-                                                                                         throwMessage.getPayload()
-                                                                                                     .orElse(null)));
+                                  .dispatchEvent(ActivitiEventBuilder.createMessageSentEvent(execution,
+                                                                                             messageName,
+                                                                                             correlationKey,
+                                                                                             payload));
                 });
     }
 
