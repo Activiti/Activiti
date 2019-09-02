@@ -351,7 +351,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     }
 
     @Override
-    public void start(StartMessagePayload messagePayload) {
+    public ProcessInstance start(StartMessagePayload messagePayload) {
         throw new UnsupportedOperationException("method not yet implemented");
     }
 
