@@ -128,7 +128,7 @@ public enum ActivitiEventType {
    */
   ACTIVITY_COMPENSATE,
   /**
-   * A boundary, intermediate or end throw message event.
+   * A message has been sent via message intermediate throw or message end event
    */
   ACTIVITY_MESSAGE_SENT,
   /**
