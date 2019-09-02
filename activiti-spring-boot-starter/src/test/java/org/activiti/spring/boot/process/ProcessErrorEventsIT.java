@@ -36,6 +36,7 @@ public class ProcessErrorEventsIT {
 
     private static final String ERROR_BOUNDARY_EVENT_SUBPROCESS = "errorBoundaryEventSubProcess";
     private static final String ERROR_START_EVENT_SUBPROCESS = "errorStartEventSubProcess";
+    private static final String ERROR_BOUNDARY_EVENT_CALLACTIVITY = "catchErrorOnCallActivity";  
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -321,5 +322,88 @@ public class ProcessErrorEventsIT {
         assertThat(e.getErrorCode()).isEqualTo("123");
         assertThat(e.getErrorId()).isEqualTo("errorId");    
     }
+    
+    @Test
+    public void testErrorBoundaryEventsCallActivity(){
+
+        //given
+        securityUtil.logInAs("user");
+
+        //when
+        ProcessInstance processInstance = processRuntime.start(
+                ProcessPayloadBuilder
+                        .start()
+                        .withProcessDefinitionKey(ERROR_BOUNDARY_EVENT_CALLACTIVITY)
+                        .build());
+        
+        //then
+        assertNotNull(processInstance);
+        
+        //Error-handling should end the process
+        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
+                50),
+                ProcessPayloadBuilder
+                        .processInstances().withProcessDefinitionKey(ERROR_START_EVENT_SUBPROCESS)
+                        .build());
+
+        assertThat(processInstancePage).isNotNull();
+        assertThat(processInstancePage.getContent()).hasSize(0);
+         
+        //check events
+        assertThat(receivedEvents).isNotEmpty();
+        
+        Collection<ActivitiEvent> events = receivedEvents
+                                            .stream()
+                                            .filter(event -> event instanceof ActivitiActivityEvent)
+                                            .collect(Collectors.toList());  
+        
+        assertThat(events)
+        .filteredOn(event -> event instanceof ActivitiActivityEvent)
+        .extracting(event -> event.getType(),
+                    event -> ((ActivitiActivityEvent)event).getActivityType(),
+                    event -> ((ActivitiActivityEvent)event).getActivityId()
+                    )
+        .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              "startEvent",
+                              "theStart"),
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_COMPLETED,
+                              "startEvent",
+                              "theStart"),
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              "callActivity",
+                              "callSubProcess"), 
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              "startEvent",
+                              "subStart"),      
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_COMPLETED,
+                              "startEvent",
+                              "subStart"),
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              "endEvent",
+                              "subEnd"),  
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_ERROR_RECEIVED,
+                              null,
+                              "catchError"),  
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_COMPLETED,
+                              "boundaryEvent",
+                              "catchError"),      
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_STARTED,
+                              "endEvent",
+                              "errorEnd"),
+                  Tuple.tuple(ActivitiEventType.ACTIVITY_COMPLETED,
+                              "endEvent",
+                              "errorEnd")
+                  );
+        
+        //check ACTIVITY_ERROR_RECEIVED event
+        ActivitiErrorEvent e = (ActivitiErrorEvent)receivedEvents
+                                                   .stream()
+                                                   .filter(event -> event instanceof ActivitiErrorEvent)
+                                                   .findAny()
+                                                   .orElse(null);
+        assertNotNull(e);
+        assertThat(e.getErrorCode()).isEqualTo("123");
+        assertThat(e.getErrorId()).isEqualTo("errorId");    
+    }  
 
 }
