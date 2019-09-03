@@ -124,18 +124,7 @@ public class ProcessInstanceHelper {
     ProcessInstance processInstance = createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, null, initialFlowElement, process, variables, transientVariables, false);
 
     // Dispatch message received event
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        // There will always be one child execution created        
-        DelegateExecution execution = DelegateExecution.class.cast(processInstance)
-                                                             .getExecutions()
-                                                             .get(0); 
-        
-        ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
-        eventDispatcher.dispatchEvent(ActivitiEventBuilder.createMessageReceivedEvent(execution,
-                                                                                      messageName, 
-                                                                                      null,
-                                                                                      variables));
-    }
+    dispatchStartMessageReceivedEvent(processInstance, messageName, variables);
     
     // Finally start the process 
     startProcessInstance(ExecutionEntity.class.cast(processInstance), commandContext, variables);
@@ -279,5 +268,26 @@ public class ProcessInstanceHelper {
                                            .toString();
                      });    
   }
+
+  protected void dispatchStartMessageReceivedEvent(ProcessInstance processInstance,
+                                                   String messageName,
+                                                   Map<String, Object> variables) {
+        // Dispatch message received event
+        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            
+            // There will always be one child execution created        
+            DelegateExecution execution = DelegateExecution.class.cast(processInstance)
+                                                                 .getExecutions()
+                                                                 .get(0);
+
+            ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration()
+                                                             .getEventDispatcher();
+            
+            eventDispatcher.dispatchEvent(ActivitiEventBuilder.createMessageReceivedEvent(execution,
+                                                                                          messageName,
+                                                                                          null,
+                                                                                          variables));
+        }
+    }
   
 }
