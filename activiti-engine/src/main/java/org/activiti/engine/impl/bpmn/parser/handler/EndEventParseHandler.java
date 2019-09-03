@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
@@ -62,6 +63,12 @@ public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEv
                                                                               .cast(eventDefinition);
         Message message = bpmnParse.getBpmnModel()
                                    .getMessage(messageEventDefinition.getMessageRef());
+        
+        BpmnModel bpmnModel = bpmnParse.getBpmnModel();
+        if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
+          messageEventDefinition.setMessageRef(message.getName());
+          messageEventDefinition.setExtensionElements(message.getExtensionElements());
+        }
           
         endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory()
                                       .createThrowMessageEndEventActivityBehavior(endEvent, 

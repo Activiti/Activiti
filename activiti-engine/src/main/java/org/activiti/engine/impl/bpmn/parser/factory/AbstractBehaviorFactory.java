@@ -33,6 +33,7 @@ public abstract class AbstractBehaviorFactory {
   protected ExpressionManager expressionManager;
   private ThrowMessageDelegateFactory throwMessageDelegateFactory = new ThrowMessageDelegateFactory() { };
   private MessagePayloadMappingProviderFactory messagePayloadMappingProviderFactory = new BpmnMessagePayloadMappingProviderFactory();
+  private MessageExecutionContextFactory messageExecutionContextFactory = new DefaultMessageExecutionContextFactory();
 
   public List<FieldDeclaration> createFieldDeclarations(List<FieldExtension> fieldList) {
     List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
@@ -73,5 +74,15 @@ public abstract class AbstractBehaviorFactory {
   public void setMessagePayloadMappingProviderFactory(MessagePayloadMappingProviderFactory messagePayloadMappingProviderFactory) {
     this.messagePayloadMappingProviderFactory = messagePayloadMappingProviderFactory;
   }
+
+
+public MessageExecutionContextFactory getMessageExecutionContextFactory() {
+    return messageExecutionContextFactory;
+}
+
+
+public void setMessageExecutionContextFactory(MessageExecutionContextFactory messageExecutionContextFactory) {
+    this.messageExecutionContextFactory = messageExecutionContextFactory;
+}
 
 }

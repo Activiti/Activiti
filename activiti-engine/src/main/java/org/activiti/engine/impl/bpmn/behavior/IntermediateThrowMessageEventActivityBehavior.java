@@ -12,12 +12,10 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
-import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
+import org.activiti.engine.impl.bpmn.parser.factory.MessageExecutionContext;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
-import org.activiti.engine.impl.el.ExpressionManager;
 
 public class IntermediateThrowMessageEventActivityBehavior extends AbstractThrowMessageEventActivityBehavior {
 
@@ -26,12 +24,10 @@ public class IntermediateThrowMessageEventActivityBehavior extends AbstractThrow
     private final ThrowEvent throwEvent;
     
     public IntermediateThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
-                                                         ThrowMessageDelegate delegate,
                                                          MessageEventDefinition messageEventDefinition,
-                                                         Message message,
-                                                         MessagePayloadMappingProvider messagePayloadMappingProvider,
-                                                         ExpressionManager expressionManager) {
-        super(delegate, messageEventDefinition, message, messagePayloadMappingProvider, expressionManager);
+                                                         ThrowMessageDelegate delegate,
+                                                         MessageExecutionContext messageExecutionContext) {
+        super(messageEventDefinition, delegate, messageExecutionContext);
         
         this.throwEvent = throwEvent;
     }

@@ -15,39 +15,30 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.Map;
 import java.util.Optional;
 
-import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.bpmn.parser.factory.MessageExecutionContext;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.delegate.ThrowMessage;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
 import org.activiti.engine.impl.delegate.invocation.ThrowMessageDelegateInvocation;
-import org.activiti.engine.impl.el.ExpressionManager;
 
 public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNodeActivityBehavior {
 
     private static final long serialVersionUID = 1L;
     
     private final MessageEventDefinition messageEventDefinition;
-    private final Message message;
     private final ThrowMessageDelegate delegate;
-    private final MessagePayloadMappingProvider messagePayloadMappingProvider;
-    private final ExpressionManager expressionManager;
+    private final MessageExecutionContext messageExecutionContext;
     
-    public AbstractThrowMessageEventActivityBehavior(ThrowMessageDelegate delegate,
-                                                     MessageEventDefinition messageEventDefinition,
-                                                     Message message,
-                                                     MessagePayloadMappingProvider messagePayloadMappingProvider,
-                                                     ExpressionManager expressionManager) {
+    public AbstractThrowMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition,
+                                                     ThrowMessageDelegate delegate,
+                                                     MessageExecutionContext messageExecutionContext) {
         this.messageEventDefinition = messageEventDefinition;
-        this.message = message;
         this.delegate = delegate;
-        this.messagePayloadMappingProvider = messagePayloadMappingProvider;
-        this.expressionManager = expressionManager;
+        this.messageExecutionContext = messageExecutionContext;
     }
     
     protected boolean send(DelegateExecution execution, ThrowMessage message) {
@@ -77,16 +68,11 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
         return messageEventDefinition;
     }
     
-    public Message getMessage() {
-        return message;
-    }
-    
     protected ThrowMessage getThrowMessage(DelegateExecution execution) {
-        String name = getMessageName(execution);
-        Optional<String> correlationKey = getCorrelationKey(execution);
+        String name = messageExecutionContext.getMessageName(execution);
+        Optional<String> correlationKey = messageExecutionContext.getCorrelationKey(execution);
         Optional<String> businessKey = Optional.ofNullable(execution.getProcessInstanceBusinessKey());
-        
-        Optional<Map<String, Object>> payload = messagePayloadMappingProvider.getMessagePayload(execution);
+        Optional<Map<String, Object>> payload = messageExecutionContext.getMessagePayload(execution);
         
         return ThrowMessage.builder()
                            .name(name)
@@ -96,23 +82,6 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
                            .build();
     }
 
-    protected String getMessageName(DelegateExecution execution) {
-        Expression expression = expressionManager.createExpression(message.getName());
-
-        return expression.getValue(execution)
-                         .toString();
-    }
-
-    protected Optional<String> getCorrelationKey(DelegateExecution execution) {
-        return Optional.ofNullable(messageEventDefinition.getCorrelationKey())
-                       .map(correlationKey -> {
-                            Expression expression =expressionManager.createExpression(messageEventDefinition.getCorrelationKey());
-
-                            return expression.getValue(execution)
-                                             .toString();
-                       });    
-    }
-    
     protected void dispatchEvent(DelegateExecution execution, ThrowMessage throwMessage) {
         Optional.ofNullable(Context.getCommandContext())
                 .filter(commandContext -> commandContext.getProcessEngineConfiguration()
@@ -134,8 +103,11 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
                 });
     }
 
-    public ExpressionManager getExpressionManager() {
-        return expressionManager;
+    public ThrowMessageDelegate getDelegate() {
+        return delegate;
     }
-
+    
+    public MessageExecutionContext getMessageExecutionContext() {
+        return messageExecutionContext;
+    }
 }

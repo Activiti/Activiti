@@ -17,37 +17,38 @@ import java.util.Optional;
 
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.DeleteReason;
+import org.activiti.engine.impl.bpmn.parser.factory.MessageExecutionContext;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
-import org.apache.commons.lang3.StringUtils;
 
 public class IntermediateCatchMessageEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
   protected final MessageEventDefinition messageEventDefinition;
+  protected final MessageExecutionContext messageExecutionContext;
 
-  public IntermediateCatchMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition) {
+  public IntermediateCatchMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition,
+                                                       MessageExecutionContext messageExecutionContext) {
     this.messageEventDefinition = messageEventDefinition;
+    this.messageExecutionContext = messageExecutionContext;
   }
 
   public void execute(DelegateExecution execution) {
     CommandContext commandContext = Context.getCommandContext();
     
-    String messageName = getMessageName(execution);
+    String messageName = messageExecutionContext.getMessageName(execution);
     
     MessageEventSubscriptionEntity messageEvent = commandContext.getEventSubscriptionEntityManager()
                                                                 .insertMessageEvent(messageName, 
                                                                                     ExecutionEntity.class.cast(execution));
-    Optional<String> correlationKey = getCorrelationKey(execution);
+    Optional<String> correlationKey = messageExecutionContext.getCorrelationKey(execution);
 
     correlationKey.ifPresent(messageEvent::setConfiguration);
     
@@ -74,47 +75,25 @@ public class IntermediateCatchMessageEventActivityBehavior extends IntermediateC
 
   protected ExecutionEntity deleteMessageEventSubScription(DelegateExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    String messageName = getMessageName(execution);
+    String messageName = messageExecutionContext.getMessageName(execution);
     
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
+      // TODO use correlation key condition
       if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageName)) {
-
         eventSubscriptionEntityManager.delete(eventSubscription);
       }
     }
     return executionEntity;
   }
-  
-  protected String getMessageName(DelegateExecution execution) {
-      Expression messageExpression = null;
-      
-      if (StringUtils.isNotEmpty(messageEventDefinition.getMessageRef())) {
-        messageExpression = getExpressionManager().createExpression(messageEventDefinition.getMessageRef());
-      } else {
-        messageExpression = getExpressionManager().createExpression(messageEventDefinition.getMessageExpression());
-      }
-      
-      return messageExpression.getValue(execution)
-                              .toString();
 
+  public MessageEventDefinition getMessageEventDefinition() {
+    return messageEventDefinition;
   }
-  
-  protected Optional<String> getCorrelationKey(DelegateExecution execution) {
-      return Optional.ofNullable(messageEventDefinition.getCorrelationKey())
-                     .map(correlationKey -> {
-                          Expression expression = getExpressionManager().createExpression(messageEventDefinition.getCorrelationKey());
 
-                          return expression.getValue(execution)
-                                           .toString();
-                     });    
-  }
-  
-  protected ExpressionManager getExpressionManager() {
-      return Context.getCommandContext()
-                    .getProcessEngineConfiguration()
-                    .getExpressionManager();
+  public MessageExecutionContext getMessageExecutionContext() {
+    return messageExecutionContext;
   }
   
 }
