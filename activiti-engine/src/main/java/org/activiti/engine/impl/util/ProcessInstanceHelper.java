@@ -121,13 +121,18 @@ public class ProcessInstanceHelper {
     }
 
     // Create process instance with executions but defer to start process after dispatching ACTIVITY_MESSAGE_RECEIVED
-    ProcessInstance processInstance = createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, null, initialFlowElement, process, variables, transientVariables, false);
-
+    ExecutionEntity processInstance = createProcessInstanceWithInitialFlowElement(processDefinition,
+                                                                                  businessKey,
+                                                                                  null,
+                                                                                  initialFlowElement,
+                                                                                  process,
+                                                                                  variables,
+                                                                                  transientVariables);
     // Dispatch message received event
     dispatchStartMessageReceivedEvent(processInstance, messageName, variables);
     
     // Finally start the process 
-    startProcessInstance(ExecutionEntity.class.cast(processInstance), commandContext, variables);
+    startProcessInstance(processInstance, commandContext, variables);
     
     return processInstance;
   }
@@ -136,50 +141,16 @@ public class ProcessInstanceHelper {
       String businessKey, String processInstanceName, FlowElement initialFlowElement,
       Process process, Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
 
-    CommandContext commandContext = Context.getCommandContext();
-
-    // Create the process instance
-    String initiatorVariableName = null;
-    if (initialFlowElement instanceof StartEvent) {
-      initiatorVariableName = ((StartEvent) initialFlowElement).getInitiator();
-    }
-
-    ExecutionEntity processInstance = commandContext.getExecutionEntityManager()
-    		.createProcessInstanceExecution(processDefinition, businessKey, processDefinition.getTenantId(), initiatorVariableName);
-
-    commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
-
-    processInstance.setVariables(processDataObjects(process.getDataObjects()));
-
-    // Set the variables passed into the start command
-    if (variables != null) {
-      for (String varName : variables.keySet()) {
-        processInstance.setVariable(varName, variables.get(varName));
-      }
-    }
-    if (transientVariables != null) {
-      for (String varName : transientVariables.keySet()) {
-        processInstance.setTransientVariable(varName, transientVariables.get(varName));
-      }
-    }
-
-    // Set processInstance name
-    if (processInstanceName != null) {
-      processInstance.setName(processInstanceName);
-      commandContext.getHistoryManager().recordProcessInstanceNameChange(processInstance.getId(), processInstanceName);
-    }
-
-    // Fire events
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher()
-        .dispatchEvent(ActivitiEventBuilder.createEntityWithVariablesEvent(ActivitiEventType.ENTITY_INITIALIZED, processInstance, variables, false));
-    }
-
-    // Create the first execution that will visit all the process definition elements
-    ExecutionEntity execution = commandContext.getExecutionEntityManager().createChildExecution(processInstance);
-    execution.setCurrentFlowElement(initialFlowElement);
-    
+        ExecutionEntity processInstance = createProcessInstanceWithInitialFlowElement(processDefinition,
+                                                                                      businessKey,
+                                                                                      processInstanceName,
+                                                                                      initialFlowElement,
+                                                                                      process,
+                                                                                      variables,
+                                                                                      transientVariables);
     if (startProcessInstance) {
+        CommandContext commandContext = Context.getCommandContext(); 
+        
         startProcessInstance(processInstance, commandContext, variables);
       }
 
@@ -269,16 +240,78 @@ public class ProcessInstanceHelper {
                      });    
   }
 
-  protected void dispatchStartMessageReceivedEvent(ProcessInstance processInstance,
+    protected ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
+                                                                       String businessKey,
+                                                                       String processInstanceName,
+                                                                       FlowElement initialFlowElement,
+                                                                       Process process,
+                                                                       Map<String, Object> variables,
+                                                                       Map<String, Object> transientVariables) {
+        CommandContext commandContext = Context.getCommandContext();
+
+        // Create the process instance
+        String initiatorVariableName = null;
+        if (initialFlowElement instanceof StartEvent) {
+            initiatorVariableName = ((StartEvent) initialFlowElement).getInitiator();
+        }
+
+        ExecutionEntity processInstance = commandContext.getExecutionEntityManager()
+                                                        .createProcessInstanceExecution(processDefinition,
+                                                                                        businessKey,
+                                                                                        processDefinition.getTenantId(),
+                                                                                        initiatorVariableName);
+
+        commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
+
+        processInstance.setVariables(processDataObjects(process.getDataObjects()));
+
+        // Set the variables passed into the start command
+        if (variables != null) {
+            for (String varName : variables.keySet()) {
+
+                processInstance.setVariable(varName, variables.get(varName));
+            }
+        }
+        if (transientVariables != null) {
+            for (String varName : transientVariables.keySet()) {
+                processInstance.setTransientVariable(varName, transientVariables.get(varName));
+            }
+        }
+
+        // Set processInstance name
+        if (processInstanceName != null) {
+            processInstance.setName(processInstanceName);
+            commandContext.getHistoryManager()
+                          .recordProcessInstanceNameChange(processInstance.getId(), processInstanceName);
+        }
+
+        // Fire events
+        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            Context.getProcessEngineConfiguration()
+                   .getEventDispatcher()
+                   .dispatchEvent(ActivitiEventBuilder.createEntityWithVariablesEvent(ActivitiEventType.ENTITY_INITIALIZED,
+                                                                                      processInstance,
+                                                                                      variables,
+                                                                                      false));
+        }
+
+        // Create the first execution that will visit all the process definition elements
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().createChildExecution(processInstance);
+        execution.setCurrentFlowElement(initialFlowElement);
+
+        return processInstance;
+
+    }
+
+    protected void dispatchStartMessageReceivedEvent(ExecutionEntity processInstance,
                                                    String messageName,
                                                    Map<String, Object> variables) {
         // Dispatch message received event
         if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             
             // There will always be one child execution created        
-            DelegateExecution execution = DelegateExecution.class.cast(processInstance)
-                                                                 .getExecutions()
-                                                                 .get(0);
+            DelegateExecution execution = processInstance.getExecutions()
+                                                         .get(0);
 
             ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration()
                                                              .getEventDispatcher();
