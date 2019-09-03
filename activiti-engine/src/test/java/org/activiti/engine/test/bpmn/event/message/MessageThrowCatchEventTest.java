@@ -222,42 +222,8 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                         ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
         
         // Initialize existing message event subscriptions, i.e. start and catch messages
-        newEventSubscriptionQuery().eventType("message")
-                                   .list()
-                                   .stream()
-                                   .forEach(subscription -> {
-                                       Optional<String> correlationKey = Optional.of(subscription)
-                                                                                 .filter(it -> it.getProcessInstanceId() != null)
-                                                                                 .map(it -> it.getConfiguration()); // <- correlationKey
-                                       
-                                       SubscriptionKey key = new SubscriptionKey(subscription.getEventName(), 
-                                                                                 correlationKey);
-                                       
-                                       BlockingQueue<ThrowMessage> messageQueue = registerSubscription(key, correlationKey);
-                                       
-                                       // TODO: Use reactive
-                                       new Thread(() -> {
-                                           try {
-                                               ThrowMessage throwMessage = messageQueue.take();
-                                               
-                                               String messageName = throwMessage.getName();
-                                               
-                                               Map<String, Object> payload = throwMessage.getPayload()
-                                                                                         .orElse(null);
-
-                                               String businessKey = throwMessage.getBusinessKey()
-                                                                                .orElse(null);
-                                               
-                                               runtimeService.startProcessInstanceByMessage(messageName,
-                                                                                            businessKey,
-                                                                                            payload);
-                                               startCountDownLatch.countDown();
-                                           } catch (InterruptedException e) {
-                                               log.error(e.getMessage(), e);
-                                           }
-                                       }).start();
-                                   });
-                                                                                            
+        initExistingMessageSubscriptions();
+        
     }
 
     @After
@@ -811,6 +777,45 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
     }    
     protected static BlockingQueue<ThrowMessage> createMessageQueue(SubscriptionKey key) {
         return new LinkedBlockingQueue<>();
+    }
+    
+    private void initExistingMessageSubscriptions() {
+        // Initialize existing message event subscriptions, i.e. start and catch messages
+        newEventSubscriptionQuery().eventType("message")
+                                   .list()
+                                   .stream()
+                                   .forEach(subscription -> {
+                                       Optional<String> correlationKey = Optional.of(subscription)
+                                                                                 .filter(it -> it.getProcessInstanceId() != null)
+                                                                                 .map(it -> it.getConfiguration()); // <- correlationKey
+                                       
+                                       SubscriptionKey key = new SubscriptionKey(subscription.getEventName(), 
+                                                                                 correlationKey);
+                                       
+                                       BlockingQueue<ThrowMessage> messageQueue = registerSubscription(key, correlationKey);
+                                       
+                                       // TODO: Use reactive
+                                       new Thread(() -> {
+                                           try {
+                                               ThrowMessage throwMessage = messageQueue.take();
+                                               
+                                               String messageName = throwMessage.getName();
+                                               
+                                               Map<String, Object> payload = throwMessage.getPayload()
+                                                                                         .orElse(null);
+
+                                               String businessKey = throwMessage.getBusinessKey()
+                                                                                .orElse(null);
+                                               
+                                               runtimeService.startProcessInstanceByMessage(messageName,
+                                                                                            businessKey,
+                                                                                            payload);
+                                               startCountDownLatch.countDown();
+                                           } catch (InterruptedException e) {
+                                               log.error(e.getMessage(), e);
+                                           }
+                                       }).start();
+                                   });        
     }
     
     static class SubscriptionKey {
