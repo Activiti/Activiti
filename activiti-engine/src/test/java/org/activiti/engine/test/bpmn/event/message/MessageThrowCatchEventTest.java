@@ -179,7 +179,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                                 .countDown();                        
                         
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        log.error(e.getMessage(), e);
                     } finally {
                         removeSubscription(key);
                     }
@@ -253,8 +253,7 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                                                                             payload);
                                                startCountDownLatch.countDown();
                                            } catch (InterruptedException e) {
-                                               // TODO Auto-generated catch block
-                                               e.printStackTrace();
+                                               log.error(e.getMessage(), e);
                                            }
                                        }).start();
                                    });
