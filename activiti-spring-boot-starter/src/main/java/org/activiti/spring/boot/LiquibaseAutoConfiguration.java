@@ -25,7 +25,7 @@ public class LiquibaseAutoConfiguration {
         liquibase.setDefaultSchema(liquibaseProperties.getDefaultSchema());
         liquibase.setDropFirst(liquibaseProperties.isDropFirst());
         liquibase.setDatabaseChangeLogLockTable(liquibaseProperties.getDatabaseChangeLogLockTable());
-        liquibase.setDatabaseChangeLogLockTable(liquibaseProperties.getDatabaseChangeLogTable());
+        liquibase.setDatabaseChangeLogTable(liquibaseProperties.getDatabaseChangeLogTable());
 
         if (!activitiProperties.isUseLiquibase()) {
             liquibase.setShouldRun(false);
