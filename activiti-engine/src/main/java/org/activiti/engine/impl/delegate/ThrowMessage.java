@@ -21,7 +21,7 @@ public class ThrowMessage {
     private Optional<String> businessKey = Optional.empty();
     private Optional<String> correlationKey = Optional.empty();
 
-    private ThrowMessage(Builder builder) {
+    private ThrowMessage(ThrowMessagBuilder builder) {
         this.name = builder.name;
         this.payload = builder.payload;
         this.businessKey = builder.businessKey;
@@ -56,7 +56,7 @@ public class ThrowMessage {
      * @return created builder
      */
     public static INameStage builder() {
-        return new Builder();
+        return new ThrowMessagBuilder();
     }
 
     /**
@@ -108,14 +108,14 @@ public class ThrowMessage {
     /**
      * Builder to build {@link ThrowMessage}.
      */
-    public static final class Builder implements INameStage, IBuildStage {
+    public static final class ThrowMessagBuilder implements INameStage, IBuildStage {
 
         private String name;
         private Optional<Map<String, Object>> payload = Optional.empty();
         private Optional<String> businessKey = Optional.empty();
         private Optional<String> correlationKey = Optional.empty();
 
-        private Builder() {
+        private ThrowMessagBuilder() {
         }
 
         @Override
