@@ -18,16 +18,14 @@ import java.util.Optional;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.bpmn.parser.factory.MessageExecutionContext;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
-import org.apache.commons.lang3.StringUtils;
 
 /**
 
@@ -36,11 +34,14 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
 
   private static final long serialVersionUID = 1L;
 
-  protected MessageEventDefinition messageEventDefinition;
+  private final MessageEventDefinition messageEventDefinition;
+  private final MessageExecutionContext messageExecutionContext;
 
-  public BoundaryMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition, boolean interrupting) {
+  public BoundaryMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition, boolean interrupting,
+                                              MessageExecutionContext messageExecutionContext) {
     super(interrupting);
     this.messageEventDefinition = messageEventDefinition;
+    this.messageExecutionContext = messageExecutionContext;
   }
 
   @Override
@@ -48,12 +49,12 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
     CommandContext commandContext = Context.getCommandContext();
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     
-    String messageName = getMessageName(execution);
+    String messageName = messageExecutionContext.getMessageName(execution);
     
     MessageEventSubscriptionEntity messageEvent = commandContext.getEventSubscriptionEntityManager()
                                                                 .insertMessageEvent(messageName, 
                                                                                     executionEntity);
-    Optional<String> correlationKey = getCorrelationKey(execution);
+    Optional<String> correlationKey = messageExecutionContext.getCorrelationKey(execution);
     
     correlationKey.ifPresent(messageEvent::setConfiguration);
     
@@ -70,11 +71,12 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
   public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
-    String messageName = getMessageName(execution);
+    String messageName = messageExecutionContext.getMessageName(execution);
 
     if (boundaryEvent.isCancelActivity()) {
       EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
       List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
+      // TODO add correlationKey condition
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
         if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageName)) {
 
@@ -85,35 +87,13 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
 
     super.trigger(executionEntity, triggerName, triggerData);
   }
-  
-  protected String getMessageName(DelegateExecution execution) {
-      Expression messageExpression = null;
-      
-      if (StringUtils.isNotEmpty(messageEventDefinition.getMessageRef())) {
-        messageExpression = getExpressionManager().createExpression(messageEventDefinition.getMessageRef());
-      } else {
-        messageExpression = getExpressionManager().createExpression(messageEventDefinition.getMessageExpression());
-      }
-      
-      return messageExpression.getValue(execution)
-                              .toString();
 
+  public MessageEventDefinition getMessageEventDefinition() {
+    return messageEventDefinition;
   }
-  
-  protected Optional<String> getCorrelationKey(DelegateExecution execution) {
-      return Optional.ofNullable(messageEventDefinition.getCorrelationKey())
-                     .map(correlationKey -> {
-                          Expression expression = getExpressionManager().createExpression(messageEventDefinition.getCorrelationKey());
 
-                          return expression.getValue(execution)
-                                           .toString();
-                     });    
+  public MessageExecutionContext getMessageExecutionContext() {
+    return messageExecutionContext;
   }
-  
-  protected ExpressionManager getExpressionManager() {
-      return Context.getCommandContext()
-                    .getProcessEngineConfiguration()
-                    .getExpressionManager();
-  }  
   
 }

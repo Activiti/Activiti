@@ -411,7 +411,11 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     public EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent,
                                                                                                                    MessageEventDefinition messageEventDefinition) {
-        return new EventSubProcessMessageStartEventActivityBehavior(messageEventDefinition);
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(startEvent, 
+                                                                                        messageEventDefinition);
+
+        return new EventSubProcessMessageStartEventActivityBehavior(messageEventDefinition,
+                                                                    messageExecutionContext);
     }
 
     public AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess) {
@@ -457,7 +461,10 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     public IntermediateCatchMessageEventActivityBehavior createIntermediateCatchMessageEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent,
                                                                                                              MessageEventDefinition messageEventDefinition) {
-        return new IntermediateCatchMessageEventActivityBehavior(messageEventDefinition);
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(intermediateCatchEvent, 
+                                                                                        messageEventDefinition);
+        return new IntermediateCatchMessageEventActivityBehavior(messageEventDefinition,
+                                                                 messageExecutionContext);
     }
 
     public IntermediateCatchTimerEventActivityBehavior createIntermediateCatchTimerEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent,
@@ -560,41 +567,37 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     public BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(BoundaryEvent boundaryEvent,
                                                                                            MessageEventDefinition messageEventDefinition,
                                                                                            boolean interrupting) {
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(boundaryEvent, 
+                                                                                        messageEventDefinition);
         return new BoundaryMessageEventActivityBehavior(messageEventDefinition,
-                                                        interrupting);
+                                                        interrupting,
+                                                        messageExecutionContext);
     }
 
     @Override
     public IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
                                                                                                  MessageEventDefinition messageEventDefinition,
                                                                                                  Message message) {
-        
         ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
-        MessagePayloadMappingProvider mappingProvider = createMessagePayloadMappingProvider(throwEvent, messageEventDefinition);
-        
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(throwEvent, 
+                                                                                        messageEventDefinition);
         return new IntermediateThrowMessageEventActivityBehavior(throwEvent,
-                                                                 throwMessageDelegate,
                                                                  messageEventDefinition, 
-                                                                 message,
-                                                                 mappingProvider,
-                                                                 getExpressionManager());
-
+                                                                 throwMessageDelegate,
+                                                                 messageExecutionContext);
     }
 
     @Override
     public ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(EndEvent endEvent,
                                                                                            MessageEventDefinition messageEventDefinition,
                                                                                            Message message) {
-        
         ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
-        MessagePayloadMappingProvider mappingProvider = createMessagePayloadMappingProvider(endEvent, messageEventDefinition);
-        
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(endEvent, 
+                                                                                        messageEventDefinition);
         return new ThrowMessageEndEventActivityBehavior(endEvent,
+                                                        messageEventDefinition,
                                                         throwMessageDelegate,
-                                                        messageEventDefinition, 
-                                                        message,
-                                                        mappingProvider,
-                                                        getExpressionManager());
+                                                        messageExecutionContext);
     }
     
     protected ThrowMessageDelegate createThrowMessageDelegate(MessageEventDefinition messageEventDefinition) {
@@ -604,6 +607,15 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
                     .map(this::createThrowMessageJavaDelegate).map(Optional::of)
                     .orElseGet(() -> checkDelegateExpression(attributes).map(this::createThrowMessageDelegateExpression))
                     .orElseGet(this::createDefaultThrowMessageDelegate);
+    }
+    
+    public MessageExecutionContext createMessageExecutionContext(Event bpmnEvent, 
+                                                                 MessageEventDefinition messageEventDefinition) {
+        MessagePayloadMappingProvider mappingProvider = createMessagePayloadMappingProvider(bpmnEvent, 
+                                                                                            messageEventDefinition);
+        return getMessageExecutionContextFactory().create(messageEventDefinition,
+                                                          mappingProvider,
+                                                          expressionManager);
     }
     
     public ThrowMessageDelegate createThrowMessageJavaDelegate(String className) {
@@ -623,7 +635,8 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
         return getThrowMessageDelegateFactory().create();
     }
     
-    public MessagePayloadMappingProvider createMessagePayloadMappingProvider(Event bpmnEvent, MessageEventDefinition messageEventDefinition) {
+    public MessagePayloadMappingProvider createMessagePayloadMappingProvider(Event bpmnEvent, 
+                                                                             MessageEventDefinition messageEventDefinition) {
         return getMessagePayloadMappingProviderFactory().create(bpmnEvent, 
                                                                 messageEventDefinition,
                                                                 getExpressionManager());
