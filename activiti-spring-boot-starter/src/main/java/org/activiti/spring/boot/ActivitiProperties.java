@@ -46,7 +46,6 @@ public class ActivitiProperties {
     private String deploymentMode = "default";
     private boolean serializePOJOsInVariablesToJson = true;
     private String javaClassFieldForJackson = JsonTypeInfo.Id.CLASS.getDefaultPropertyName();
-    private boolean useLiquibase = false;
 
     public boolean isAsyncExecutorActivate() {
         return asyncExecutorActivate;
@@ -234,11 +233,4 @@ public class ActivitiProperties {
         this.javaClassFieldForJackson = javaClassFieldForJackson;
     }
 
-    public boolean isUseLiquibase() {
-        return useLiquibase;
-    }
-
-    public void setUseLiquibase(boolean useLiquibase) {
-        this.useLiquibase = useLiquibase;
-    }
 }
