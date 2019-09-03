@@ -14,13 +14,6 @@
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="drop-create" />
 
-	<!-- Test logger -->
-	<!-- <property name="configurators">
-		<list>
-			<bean class="org.activiti.engine.test.impl.logger.ProcessExecutionLoggerConfigurator" />
-		</list>
-	</property> -->
-
     <!-- job executor configurations -->
     <property name="asyncExecutor" ref="asyncExecutor" />
     <property name="asyncExecutorActivate" value="false" />
