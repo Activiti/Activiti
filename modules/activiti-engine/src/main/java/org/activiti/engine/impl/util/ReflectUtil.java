@@ -38,7 +38,22 @@ public abstract class ReflectUtil {
 
   private static final Pattern GETTER_PATTERN = Pattern.compile("(get|is)[A-Z].*");
   private static final Pattern SETTER_PATTERN = Pattern.compile("set[A-Z].*");
+  private static final String[] PRIMITIVE_NAMES = new String[] { "boolean",
+          "byte", "char", "double", "float", "int", "long", "short", "void" };
 
+  private static final Class<?>[] PRIMITIVES = new Class[] { boolean.class,
+          byte.class, char.class, double.class, float.class, int.class,
+          long.class, short.class, Void.TYPE };
+
+  private static Class<?> forNamePrimitive(String name) {
+    if (name.length() <= 8) {
+      int p = Arrays.binarySearch(PRIMITIVE_NAMES, name);
+      if (p >= 0) {
+        return PRIMITIVES[p];
+      }
+    }
+    return null;
+  }
   public static ClassLoader getClassLoader() {
     ClassLoader loader = getCustomClassLoader();
     if(loader == null) {
@@ -49,6 +64,12 @@ public abstract class ReflectUtil {
   
   public static Class<?> loadClass(String className) {
    Class<?> clazz = null;
+
+   clazz = forNamePrimitive(className);
+   if(clazz!=null){
+     return clazz;
+   }
+
    ClassLoader classLoader = getCustomClassLoader();
    
    // First exception in chain of classloaders will be used as cause when no class is found in any of them
