@@ -16,6 +16,7 @@
 
 package org.activiti.api.process.model.builders;
 
+import org.activiti.api.process.model.payloads.MessageEventPayload;
 import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 import org.activiti.api.process.model.payloads.StartMessagePayload;
 
@@ -25,15 +26,24 @@ public class MessagePayloadBuilder {
         return new StartMessagePayloadBuilder().withName(name);
     }
     
-    public static StartMessagePayloadBuilder from(StartMessagePayload messagePayload) {
-        return StartMessagePayloadBuilder.from(messagePayload);
+    public static StartMessagePayloadBuilder from(StartMessagePayload startMessagePayload) {
+        return StartMessagePayloadBuilder.from(startMessagePayload);
     }
     
     public static ReceiveMessagePayloadBuilder receive(String name) {
         return new ReceiveMessagePayloadBuilder().withName(name);
     }
 
-    public static ReceiveMessagePayloadBuilder from(ReceiveMessagePayload messagePayload) {
-        return ReceiveMessagePayloadBuilder.from(messagePayload);
+    public static ReceiveMessagePayloadBuilder from(ReceiveMessagePayload receiveMessagePayload) {
+        return ReceiveMessagePayloadBuilder.from(receiveMessagePayload);
     }
+    
+    public static MessageEventPayloadBuilder event(String name) {
+        return new MessageEventPayloadBuilder().withName(name);
+    }
+    
+    public static MessageEventPayloadBuilder from(MessageEventPayload messageEventPayload) {
+        return MessageEventPayloadBuilder.from(messageEventPayload);
+    }
+    
 }

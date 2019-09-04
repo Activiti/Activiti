@@ -25,32 +25,37 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activiti.api.process.model.BPMNActivity;
-import org.activiti.api.process.model.IntegrationContext;
-import org.activiti.api.process.model.ProcessDefinition;
-import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.BPMNMessage;
 import org.activiti.api.process.model.BPMNSequenceFlow;
 import org.activiti.api.process.model.BPMNSignal;
 import org.activiti.api.process.model.BPMNTimer;
+import org.activiti.api.process.model.IntegrationContext;
+import org.activiti.api.process.model.ProcessDefinition;
+import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.payloads.DeleteProcessPayload;
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
 import org.activiti.api.process.model.payloads.GetVariablesPayload;
+import org.activiti.api.process.model.payloads.MessageEventPayload;
+import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 import org.activiti.api.process.model.payloads.RemoveProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.ResumeProcessPayload;
 import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
 import org.activiti.api.process.model.payloads.SignalPayload;
+import org.activiti.api.process.model.payloads.StartMessagePayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.api.process.model.payloads.SuspendProcessPayload;
 import org.activiti.api.process.model.payloads.TimerPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.model.results.ProcessInstanceResult;
 import org.activiti.api.runtime.model.impl.BPMNActivityImpl;
-import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
-import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
-import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
+import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
 import org.activiti.api.runtime.model.impl.BPMNSequenceFlowImpl;
 import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
 import org.activiti.api.runtime.model.impl.BPMNTimerImpl;
+import org.activiti.api.runtime.model.impl.IntegrationContextImpl;
+import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
+import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -90,6 +95,8 @@ public class ProcessModelAutoConfiguration {
         					BPMNSignalImpl.class);
         resolver.addMapping(BPMNTimer.class,
                             BPMNTimerImpl.class);
+        resolver.addMapping(BPMNMessage.class,
+                            BPMNMessageImpl.class);
 
         module.registerSubtypes(new NamedType(ProcessInstanceResult.class,
                                               ProcessInstanceResult.class.getSimpleName()));
@@ -118,6 +125,12 @@ public class ProcessModelAutoConfiguration {
                                               ResumeProcessPayload.class.getSimpleName()));
         module.registerSubtypes(new NamedType(UpdateProcessPayload.class,
                                               UpdateProcessPayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(StartMessagePayload.class,
+                                              StartMessagePayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(ReceiveMessagePayload.class,
+                                              ReceiveMessagePayload.class.getSimpleName()));
+        module.registerSubtypes(new NamedType(MessageEventPayload.class,
+                                              MessageEventPayload.class.getSimpleName()));
         module.setAbstractTypes(resolver);
         return module;
     }
