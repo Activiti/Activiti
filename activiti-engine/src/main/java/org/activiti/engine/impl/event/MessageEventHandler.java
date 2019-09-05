@@ -23,32 +23,40 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class MessageEventHandler extends AbstractEventHandler {
 
-  public final static String EVENT_HANDLER_TYPE = "message";
+    public final static String EVENT_HANDLER_TYPE = "message";
 
-  public String getEventHandlerType() {
-    return EVENT_HANDLER_TYPE;
-  }
+    private final EventSubscriptionPayloadMappingProvider messageEventVariableMappingProvider;
 
-  @Override
-  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
-    // As stated in the ActivitiEventType java-doc, the message-event is
-    // thrown before the actual message has been sent
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      ExecutionEntity execution = eventSubscription.getExecution();
-      String messageName = eventSubscription.getEventName();
-      String correlationKey = eventSubscription.getConfiguration();
-        
-      commandContext
-          .getProcessEngineConfiguration()
-          .getEventDispatcher()
-          .dispatchEvent(
-              ActivitiEventBuilder.createMessageReceivedEvent(execution, 
-                                                              messageName, 
-                                                              correlationKey, 
-                                                              payload));
+    public MessageEventHandler(EventSubscriptionPayloadMappingProvider messageEventVariableMappingProvider) {
+        this.messageEventVariableMappingProvider = messageEventVariableMappingProvider;
     }
 
-    super.handleEvent(eventSubscription, payload, commandContext);
-  }
+    public String getEventHandlerType() {
+        return EVENT_HANDLER_TYPE;
+    }
+
+    @Override
+    public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
+        // As stated in the ActivitiEventType java-doc, the message-event is
+        // thrown before the actual message has been sent
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            ExecutionEntity execution = eventSubscription.getExecution();
+            String messageName = eventSubscription.getEventName();
+            String correlationKey = eventSubscription.getConfiguration();
+
+            commandContext.getProcessEngineConfiguration()
+                          .getEventDispatcher()
+                          .dispatchEvent(
+                                         ActivitiEventBuilder.createMessageReceivedEvent(execution,
+                                                                                         messageName,
+                                                                                         correlationKey,
+                                                                                         payload));
+        }
+
+        Object variables = messageEventVariableMappingProvider.apply(payload,
+                                                                     eventSubscription);
+
+        super.handleEvent(eventSubscription, variables, commandContext);
+    }
 
 }
