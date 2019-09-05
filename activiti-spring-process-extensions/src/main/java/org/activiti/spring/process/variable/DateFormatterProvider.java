@@ -16,27 +16,21 @@
 package org.activiti.spring.process.variable;
 
 import java.text.MessageFormat;
-import java.time.DateTimeException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Date;
 
-import org.springframework.beans.factory.annotation.Value;
-
 public class DateFormatterProvider  {
    
-    @Value("${spring.activiti.date-format-pattern.date-format-pattern:yyyy-MM-dd[['T'][ ]HH:mm:ss[.SSS'Z']]}")
     private String dateFormatPattern;
     
     private ZoneId zoneId = ZoneOffset.UTC;
  
-    public DateFormatterProvider() {
+    public DateFormatterProvider(String dateFormatPattern) {
+        this.dateFormatPattern = dateFormatPattern;
     }
-    
+
     public ZoneId getZoneId() {
         return zoneId;
     }
@@ -49,7 +43,7 @@ public class DateFormatterProvider  {
         this.dateFormatPattern = dateFormatPattern;
     }
  
-    public Date convert2Date(String value) throws DateTimeException { 
+    public Date parse(String value) throws DateTimeException {
         DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder()
                                                       .appendPattern(getDateFormatPattern())
                                                       .toFormatter()
@@ -66,9 +60,9 @@ public class DateFormatterProvider  {
         }
     }    
     
-    public Date convert2Date(Object value) throws DateTimeException {
+    public Date toDate(Object value) {
         if (value instanceof String) {
-            return convert2Date(String.valueOf(value));
+            return parse((String) value);
         }
 
         if (value instanceof Date) {
@@ -79,6 +73,6 @@ public class DateFormatterProvider  {
             return new Date((long)value);                       
         }
  
-        throw new DateTimeException(MessageFormat.format("Error parsing date/time variable: {0}",value));
+        throw new DateTimeException(MessageFormat.format("Error while parsing date. Type: {0}, value: {1}", value.getClass().getName(), value));
     }    
 }

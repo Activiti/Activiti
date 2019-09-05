@@ -37,7 +37,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-
 @Configuration
 public class ProcessExtensionsAutoConfiguration {
 
@@ -78,14 +77,14 @@ public class ProcessExtensionsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DateFormatterProvider dateFormatterProvider() {
-        return new DateFormatterProvider();
+    public DateFormatterProvider dateFormatterProvider(@Value("${spring.activiti.date-format-pattern:yyyy-MM-dd[['T'][ ]HH:mm:ss[.SSS'Z']]}")
+                                                                       String dateFormatPattern) {
+        return new DateFormatterProvider(dateFormatPattern);
     }
 
     @Bean
-    public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper,
-                                                     DateFormatterProvider dateFormatterProvider){
-
+    public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper, 
+                                                     DateFormatterProvider dateFormatterProvider) {
         Map<String, VariableType> variableTypeMap = new HashMap<>();
         variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
         variableTypeMap.put("string", new JavaObjectVariableType(String.class));
@@ -97,12 +96,12 @@ public class ProcessExtensionsAutoConfiguration {
     }
 
     @Bean
-    public VariableValidationService variableValidationService(Map<String, VariableType> variableTypeMap){
+    public VariableValidationService variableValidationService(Map<String, VariableType> variableTypeMap) {
         return new VariableValidationService(variableTypeMap);
     }
 
     @Bean
-    public VariableParsingService variableParsingService(Map<String, VariableType> variableTypeMap){
+    public VariableParsingService variableParsingService(Map<String, VariableType> variableTypeMap) {
         return new VariableParsingService(variableTypeMap);
     }
 }

@@ -16,14 +16,6 @@
 
 package org.activiti.spring.boot.tasks;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -49,6 +41,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -88,8 +88,8 @@ public class TaskRuntimeVariableMappingIT {
                                                                .withProcessDefinitionKey(TASK_VAR_MAPPING)
                                                                .build());
 
-        Date date = dateFormatterProvider.convert2Date("2019-09-01");
-        Date datetime = dateFormatterProvider.convert2Date("2019-09-01T10:20:30.000Z");
+        Date date = dateFormatterProvider.parse("2019-09-01");
+        Date datetime = dateFormatterProvider.parse("2019-09-01T10:20:30.000Z");
         
         Task task = checkTasks(process.getId());
 
