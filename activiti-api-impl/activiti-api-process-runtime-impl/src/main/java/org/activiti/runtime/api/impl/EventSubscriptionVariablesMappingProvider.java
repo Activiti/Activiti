@@ -28,7 +28,7 @@ public class EventSubscriptionVariablesMappingProvider implements EventSubscript
     
     @Override
     public Object apply(Object payload, EventSubscriptionEntity subscription) {
-        if(Map.class.isInstance(payload)) {
+        if (Map.class.isInstance(payload)) {
             MappingExecutionContext context = new MappingExecutionContext(subscription.getExecution());
             Map<String, Object> variables = (Map<String, Object>) payload; 
             
