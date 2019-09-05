@@ -25,6 +25,7 @@ import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListe
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
+import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
@@ -180,9 +181,11 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     @Bean(name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
     @ConditionalOnMissingBean (name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
     public DefaultActivityBehaviorFactoryMappingConfigurer defaultActivityBehaviorFactoryMappingConfigurer(VariablesMappingProvider variablesMappingProvider,
-                                                                                                           ProcessVariablesInitiator processVariablesInitiator) {
+                                                                                                           ProcessVariablesInitiator processVariablesInitiator,
+                                                                                                           EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider) {
         return new DefaultActivityBehaviorFactoryMappingConfigurer(variablesMappingProvider,
-                                                                   processVariablesInitiator);
+                                                                   processVariablesInitiator,
+                                                                   eventSubscriptionPayloadMappingProvider);
     }
     
     @Bean

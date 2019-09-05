@@ -48,6 +48,7 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.runtime.api.conf.impl.ProcessRuntimeConfigurationImpl;
 import org.activiti.runtime.api.event.impl.BPMNTimerConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCreatedEventConverter;
@@ -86,10 +87,12 @@ import org.activiti.runtime.api.event.internal.TimerFailedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerFiredListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerRetriesDecrementedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerScheduledListenerDelegate;
+import org.activiti.runtime.api.impl.EventSubscriptionVariablesMappingProvider;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.RuntimeMessagePayloadEventListener;
 import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
+import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.runtime.api.message.MessagePayloadEventListener;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
@@ -128,6 +131,12 @@ public class ProcessRuntimeAutoConfiguration {
         return new RuntimeMessagePayloadEventListener(runtimeService,
                                                       managementService);
     }    
+    
+    @Bean
+    @ConditionalOnMissingBean(EventSubscriptionPayloadMappingProvider.class)
+    public EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider(VariablesMappingProvider variablesMappingProvider) {
+        return new EventSubscriptionVariablesMappingProvider(variablesMappingProvider);
+    }
 
     @Bean
     @ConditionalOnMissingBean

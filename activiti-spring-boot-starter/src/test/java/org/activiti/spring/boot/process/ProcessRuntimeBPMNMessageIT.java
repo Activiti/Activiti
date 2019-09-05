@@ -17,11 +17,13 @@
 package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.MessagePayloadBuilder;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -61,6 +63,8 @@ public class ProcessRuntimeBPMNMessageIT {
     private static final String START_MESSAGE = "startMessage";
 
     private static final String PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT = "intermediateThrowMessageEvent";
+
+    private static final String CATCH_MESSAGE_PAYLOAD = "catchMessagePayload";
 
     @Autowired
     private ProcessRuntime processRuntime;
@@ -138,6 +142,64 @@ public class ProcessRuntimeBPMNMessageIT {
                                       Collections.singletonMap("message_payload_variable", 
                                                                "value")));
     }
+
+    @Test
+    public void shouldReceiveCatchMessageWithCorrelationKeyAndMappedPayload() throws Exception {
+        // given
+        securityUtil.logInAs("user");
+
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                       .withBusinessKey("businessKey")
+                                                       .withVariable("correlationKey", "foo")
+                                                       .withVariable("process_variable_name", "")
+                                                       .withProcessDefinitionKey(CATCH_MESSAGE_PAYLOAD)
+                                                       .build());
+        
+        // when
+        processRuntime.receive(MessagePayloadBuilder.receive(TEST_MESSAGE)
+                                                    .withVariable("message_variable_name", "value")
+                                                    .withCorrelationKey("foo")
+                                                    .build());
+        // then
+        assertThat(receivedEvents)
+                .isNotEmpty()
+                .extracting("type", 
+                            "processDefinitionId",
+                            "processInstanceId",
+                            "activityType",
+                            "messageName",
+                            "messageCorrelationKey",
+                            "messageBusinessKey",
+                            "messageData")
+                .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
+                                      "intermediateCatchEvent",  
+                                      "testMessage",
+                                      "foo",
+                                      process.getBusinessKey(),
+                                      null),
+                          Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
+                                      "intermediateCatchEvent",  
+                                      "testMessage",
+                                      "foo",
+                                      process.getBusinessKey(),
+                                      Collections.singletonMap("message_variable_name", 
+                                                               "value")));
+        
+        // and 
+        List<VariableInstance> variables = processRuntime.variables(ProcessPayloadBuilder.variables()
+                                                         .withProcessInstanceId(process.getId())
+                                                         .build());
+        
+        assertThat(variables).extracting(VariableInstance::getName,
+                                         VariableInstance::getValue)
+                             .contains(tuple("process_variable_name","value"));   
+        
+    }
+        
     
     @Test
     public void shouldStartProcessByMessage() throws Exception {
