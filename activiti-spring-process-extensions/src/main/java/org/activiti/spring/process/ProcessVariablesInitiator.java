@@ -23,9 +23,9 @@ import java.util.Set;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
@@ -75,16 +75,30 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         return processedVariables;
     }
 
-
     @Override
-    public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition, String businessKey, String processInstanceName, FlowElement initialFlowElement, Process process, Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
+    protected ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
+                                                                          String businessKey,
+                                                                          String processInstanceName,
+                                                                          FlowElement initialFlowElement,
+                                                                          Process process,
+                                                                          Map<String, Object> variables,
+                                                                          Map<String, Object> transientVariables) {
+        Map<String, Object> processVariables = variables;
+        
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
-            Map<String, Object> processedVariables = calculateVariablesFromExtensionFile(processDefinition, variables);
-            return super.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process, processedVariables, transientVariables, startProcessInstance);
+            processVariables = calculateVariablesFromExtensionFile(processDefinition,
+                                                                   variables);
         }
-        return super.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process, variables, transientVariables, startProcessInstance);
-    }
-
+        
+        return super.createProcessInstanceWithInitialFlowElement(processDefinition,
+                                                                 businessKey,
+                                                                 processInstanceName,
+                                                                 initialFlowElement,
+                                                                 process,
+                                                                 processVariables,
+                                                                 transientVariables);
+    }    
+    
     private Map<String, Object> processVariables(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
         Map<String, Object> newVarsMap = new HashMap<>(Optional.ofNullable(variables).orElse(Collections.emptyMap()));
         variableDefinitionMap.forEach((k,v) -> {
@@ -122,5 +136,4 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         });
         return mismatchedVars;
     }
-
 }

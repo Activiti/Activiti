@@ -17,8 +17,9 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 public interface EventSubscriptionPayloadMappingProvider {
     
-    default Object apply(Object payload, EventSubscriptionEntity eventSubscription) {
-        return payload;
+    @SuppressWarnings("unchecked")
+    default <T> T apply(Object payload, EventSubscriptionEntity eventSubscription) {
+        return (T) payload;
     }
 
 }

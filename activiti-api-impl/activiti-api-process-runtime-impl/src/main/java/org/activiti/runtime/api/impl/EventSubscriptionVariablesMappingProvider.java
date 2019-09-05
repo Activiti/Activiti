@@ -26,15 +26,16 @@ public class EventSubscriptionVariablesMappingProvider implements EventSubscript
         this.variablesMappingProvider = variablesMappingProvider;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
-    public Object apply(Object payload, EventSubscriptionEntity subscription) {
+    public <T> T apply(Object payload, EventSubscriptionEntity eventSubscription) {
         if (Map.class.isInstance(payload)) {
-            MappingExecutionContext context = new MappingExecutionContext(subscription.getExecution());
-            Map<String, Object> variables = (Map<String, Object>) payload; 
+            MappingExecutionContext context = new MappingExecutionContext(eventSubscription.getProcessDefinitionId(),
+                                                                          eventSubscription.getActivityId());
             
-            return variablesMappingProvider.calculateOutPutVariables(context, variables);
+            return (T) variablesMappingProvider.calculateOutPutVariables(context, (Map<String, Object>) payload);
         } else {
-            return payload;
+            return EventSubscriptionPayloadMappingProvider.super.apply(payload, eventSubscription);
         }
     }
     

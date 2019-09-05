@@ -60,7 +60,7 @@ public class ProcessRuntimeBPMNMessageIT {
 
     private static final String TEST_MESSAGE = "testMessage";
 
-    private static final String START_MESSAGE = "startMessage";
+    private static final String START_MESSAGE_PAYLOAD = "startMessagePayload";
 
     private static final String PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT = "intermediateThrowMessageEvent";
 
@@ -199,7 +199,48 @@ public class ProcessRuntimeBPMNMessageIT {
                              .contains(tuple("process_variable_name","value"));   
         
     }
+
+    @Test
+    public void shouldStartProcessByMessageWithMappedPayload() throws Exception {
+        // given
+        securityUtil.logInAs("user");
+
+        // when
+        ProcessInstance process = processRuntime.start(MessagePayloadBuilder.start(START_MESSAGE_PAYLOAD)
+                                                                            .withBusinessKey("businessKey")
+                                                                            .withVariable("message_variable_name", "value")
+                                                                            .build());
+        // then
+        assertThat(receivedEvents).isNotEmpty()
+                                  .extracting("type",
+                                              "processDefinitionId",
+                                              "processInstanceId",
+                                              "activityType",
+                                              "messageName",
+                                              "messageCorrelationKey",
+                                              "messageBusinessKey",
+                                              "messageData")
+                                  .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "startEvent",
+                                                        "startMessagePayload",
+                                                        null,
+                                                        process.getBusinessKey(),
+                                                        Collections.singletonMap("message_variable_name",
+                                                                                 "value")));
         
+        // and 
+        List<VariableInstance> variables = processRuntime.variables(ProcessPayloadBuilder.variables()
+                                                         .withProcessInstanceId(process.getId())
+                                                         .build());
+        
+        assertThat(variables).extracting(VariableInstance::getName,
+                                         VariableInstance::getValue)
+                             .contains(tuple("process_variable_name","value"));   
+        
+    }
+    
     
     @Test
     public void shouldStartProcessByMessage() throws Exception {

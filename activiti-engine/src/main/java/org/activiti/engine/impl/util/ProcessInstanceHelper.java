@@ -87,7 +87,7 @@ public class ProcessInstanceHelper {
   }
 
   public ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinition processDefinition, String businessKey, String messageName,
-      Map<String, Object> variables, Map<String, Object> transientVariables) {
+      Map<String, Object> messageVariables, Map<String, Object> transientVariables, MessageEventSubscriptionEntity eventSubscription) {
 
     CommandContext commandContext = Context.getCommandContext();
 
@@ -120,19 +120,25 @@ public class ProcessInstanceHelper {
       throw new ActivitiException("No message start event found for process definition " + processDefinition.getId() + " and message name " + messageName);
     }
 
+    // Map message payload variables before creating process instance
+    Map<String, Object> processVariables = commandContext.getProcessEngineConfiguration()
+                                                         .getEventSubscriptionPayloadMappingProvider()
+                                                         .apply(messageVariables, 
+                                                                eventSubscription);
+    
     // Create process instance with executions but defer to start process after dispatching ACTIVITY_MESSAGE_RECEIVED
     ExecutionEntity processInstance = createProcessInstanceWithInitialFlowElement(processDefinition,
                                                                                   businessKey,
                                                                                   null,
                                                                                   initialFlowElement,
                                                                                   process,
-                                                                                  variables,
+                                                                                  processVariables,
                                                                                   transientVariables);
     // Dispatch message received event
-    dispatchStartMessageReceivedEvent(processInstance, messageName, variables);
+    dispatchStartMessageReceivedEvent(processInstance, messageName, messageVariables);
     
     // Finally start the process 
-    startProcessInstance(processInstance, commandContext, variables);
+    startProcessInstance(processInstance, commandContext, processVariables);
     
     return processInstance;
   }
