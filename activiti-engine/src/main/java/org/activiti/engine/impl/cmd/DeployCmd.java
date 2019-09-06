@@ -83,13 +83,10 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
     if(commandContext.getDeploymentEntityManager().findLatestDeploymentByName(deployment.getName())!= null){
         deployment.setVersion(commandContext.getDeploymentEntityManager().findLatestDeploymentByName(deployment.getName()).getVersion() + 1);
-//        commandContext.getDeploymentEntityManager().update(deployment);
     }else{
         deployment.setVersion(1);
     }
-
-//      deployment.setVersion(1);
-
+    
     // Save the data
     commandContext.getDeploymentEntityManager().insert(deployment);
 
