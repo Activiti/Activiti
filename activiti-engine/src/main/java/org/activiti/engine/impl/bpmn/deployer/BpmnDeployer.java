@@ -168,15 +168,10 @@ public class BpmnDeployer implements Deployer {
                                                       Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions) {
         CommandContext commandContext = Context.getCommandContext();
 
+
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
-            int version = 1;
 
-            ProcessDefinitionEntity latest = mapNewToOldProcessDefinitions.get(processDefinition);
-            if (latest != null) {
-                version = latest.getVersion() + 1;
-            }
-
-            processDefinition.setVersion(version);
+            processDefinition.setVersion(parsedDeployment.getDeployment().getVersion());
             processDefinition.setId(getIdForNewProcessDefinition(processDefinition));
 
             if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
