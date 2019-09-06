@@ -78,8 +78,8 @@ public class BpmnDeployer implements Deployer {
         if (deployment.isNew()) {
             Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapOfNewProcessDefinitionToPreviousVersion =
                     getPreviousVersionsOfProcessDefinitions(parsedDeployment);
-            setProcessDefinitionVersionsAndIds(parsedDeployment,
-                                               mapOfNewProcessDefinitionToPreviousVersion);
+            setProcessDefinitionVersionsAndIds(parsedDeployment);
+            setProcessDefinitionAppVersion(parsedDeployment);
             persistProcessDefinitionsAndAuthorizations(parsedDeployment);
             updateTimersAndEvents(parsedDeployment,
                                   mapOfNewProcessDefinitionToPreviousVersion);
@@ -137,6 +137,14 @@ public class BpmnDeployer implements Deployer {
             processDefinition.setDiagramResourceName(diagramResourceName);
         }
     }
+    protected void setProcessDefinitionAppVersion(ParsedDeployment parsedDeployment){
+
+        Integer version = parsedDeployment.getDeployment().getVersion();
+
+        for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()){
+            processDefinition.setAppVersion(version);
+        }
+    }
 
     /**
      * Constructs a map from new ProcessDefinitionEntities to the previous version by key and tenant.
@@ -164,14 +172,14 @@ public class BpmnDeployer implements Deployer {
      * an older version for a process definition, then the version is set to that older entity's
      * version plus one; otherwise it is set to 1.  Also dispatches an ENTITY_CREATED event.
      */
-    protected void setProcessDefinitionVersionsAndIds(ParsedDeployment parsedDeployment,
-                                                      Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions) {
+    protected void setProcessDefinitionVersionsAndIds(ParsedDeployment parsedDeployment) {
         CommandContext commandContext = Context.getCommandContext();
 
+        Integer version = parsedDeployment.getDeployment().getVersion();
 
         for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
 
-            processDefinition.setVersion(parsedDeployment.getDeployment().getVersion());
+            processDefinition.setVersion(version);
             processDefinition.setId(getIdForNewProcessDefinition(processDefinition));
 
             if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {

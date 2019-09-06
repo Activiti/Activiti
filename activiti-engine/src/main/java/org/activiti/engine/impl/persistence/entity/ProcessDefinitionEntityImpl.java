@@ -47,6 +47,7 @@ public class ProcessDefinitionEntityImpl extends AbstractEntity implements Proce
   protected boolean isIdentityLinksInitialized;
   protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
   protected IOSpecification ioSpecification;
+  protected Integer appVersion;
 
   // Backwards compatibility
   protected String engineVersion;
@@ -216,6 +217,14 @@ public class ProcessDefinitionEntityImpl extends AbstractEntity implements Proce
   
   public String toString() {
     return "ProcessDefinitionEntity[" + id + "]";
+  }
+
+  public Integer getAppVersion(){
+      return this.appVersion;
+  }
+
+  public void setAppVersion(Integer appVersion){
+      this.appVersion = appVersion;
   }
 
 }
