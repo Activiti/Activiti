@@ -38,6 +38,7 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   protected Map<String, ResourceEntity> resources;
   protected Date deploymentTime;
   protected boolean isNew;
+  protected Integer version;
 
   // Backwards compatibility
   protected String engineVersion;
@@ -166,6 +167,14 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
 
   public void setEngineVersion(String engineVersion) {
     this.engineVersion = engineVersion;
+  }
+
+  public Integer getVersion(){
+      return version;
+  }
+
+  public void setVersion(Integer version){
+      this.version = version;
   }
 
   // common methods //////////////////////////////////////////////////////////
