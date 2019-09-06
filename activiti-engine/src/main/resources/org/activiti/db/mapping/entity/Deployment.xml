@@ -7,8 +7,8 @@
   <!-- DEPLOYMENT INSERT -->
   
   <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
-    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_, ENGINE_VERSION_)
-    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{key, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP}, #{engineVersion, jdbcType=VARCHAR})
+    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_, ENGINE_VERSION_, VERSION_)
+    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{key, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP}, #{engineVersion, jdbcType=VARCHAR}, #{version, jdbcType=INTEGER})
   </insert>
 
   <insert id="bulkInsertDeployment" parameterType="java.util.List">
@@ -20,7 +20,8 @@
          #{deployment.category, jdbcType=VARCHAR},
          #{deployment.key, jdbcType=VARCHAR},
          #{deployment.tenantId, jdbcType=VARCHAR},
-         #{deployment.deploymentTime, jdbcType=TIMESTAMP})
+         #{deployment.deploymentTime, jdbcType=TIMESTAMP}),
+         #{version, jdbcType=INTEGER}
       </foreach>
   </insert>
 
@@ -33,7 +34,8 @@
            #{deployment.category, jdbcType=VARCHAR},
            #{deployment.key, jdbcType=VARCHAR},
            #{deployment.tenantId, jdbcType=VARCHAR},
-           #{deployment.deploymentTime, jdbcType=TIMESTAMP})
+           #{deployment.deploymentTime, jdbcType=TIMESTAMP}),
+           #{version, jdbcType=INTEGER}
       </foreach>
     SELECT * FROM dual
   </insert>
@@ -44,7 +46,8 @@
     update ${prefix}ACT_RE_DEPLOYMENT set
       CATEGORY_ = #{category, jdbcType=VARCHAR},
       KEY_ = #{key, jdbcType=VARCHAR},
-      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR},
+      VERSION_ = #{version, jdbcType=INTEGER}
     where ID_ = #{id, jdbcType=VARCHAR}
   </update>
   
@@ -64,6 +67,7 @@
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
     <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="VARCHAR" />
+    <result property="version" column="VERSION_" jdbcType="INTEGER" />
   </resultMap>
 
   <!-- DEPLOYMENT SELECT -->
