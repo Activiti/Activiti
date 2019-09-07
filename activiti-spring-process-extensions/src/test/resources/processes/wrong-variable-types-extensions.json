@@ -1,6 +1,5 @@
 {
-  "id":"connectorVarMapping",
-  "name":"myProcess.bpmn",
+  "id":"connectorVarMappingWrongVariableType",
   "extensions": {
     "properties": {
       "age-id": {
