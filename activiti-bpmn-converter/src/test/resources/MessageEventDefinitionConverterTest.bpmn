@@ -9,12 +9,14 @@
     <bpmn:participant id="Participant_07xhfx6" processRef="startMessageEventSubprocess" />
     <bpmn:participant id="Participant_0sro5q0" processRef="startMessageProcess" />
     <bpmn:participant id="Participant_0nteap9" processRef="boundaryCatchSubrocess" />
+    <bpmn:participant id="Participant_0mtat8r" processRef="intermediateCatchMessageExpressionProcess" />
     <bpmn:messageFlow id="MessageFlow_1jzt5b6" sourceRef="IntermediateThrowEvent" targetRef="intermediateCatchEvent" />
     <bpmn:messageFlow id="MessageFlow_0hqoly2" sourceRef="EndEvent_0jpp84v" targetRef="intermediateCatchEvent" />
     <bpmn:messageFlow id="MessageFlow_04x2yx9" sourceRef="EndEvent_0jpp84v" targetRef="BoundaryEvent_05lvrhj" />
     <bpmn:messageFlow id="MessageFlow_1h69myg" sourceRef="IntermediateThrowEvent" targetRef="StartEvent_0br2ok3" />
     <bpmn:messageFlow id="MessageFlow_0pjiy45" sourceRef="EndEvent_0jpp84v" targetRef="StartEvent_0d5q67m" />
     <bpmn:messageFlow id="MessageFlow_1t82r37" sourceRef="EndEvent_1upe6lc" targetRef="BoundaryEvent_0wrfoqw" />
+    <bpmn:messageFlow id="MessageFlow_04ma9ot" sourceRef="EndEvent_1kptcch" targetRef="IntermediateCatchEvent_095woej" />
   </bpmn:collaboration>
   <bpmn:process id="intermediateCatchProcess" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
@@ -97,14 +99,15 @@
       <bpmn:outgoing>SequenceFlow_0rcahsa</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0rcahsa" sourceRef="StartEvent_00zy25x" targetRef="Task_13v9w3j" />
-    <bpmn:endEvent id="EndEvent_1kptcch">
-      <bpmn:incoming>SequenceFlow_0dfk044</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0dfk044" sourceRef="Task_13v9w3j" targetRef="EndEvent_1kptcch" />
     <bpmn:userTask id="Task_13v9w3j" name="Task">
       <bpmn:incoming>SequenceFlow_0rcahsa</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0dfk044</bpmn:outgoing>
     </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_1kptcch">
+      <bpmn:incoming>SequenceFlow_0dfk044</bpmn:incoming>
+      <bpmn:messageEventDefinition messageRef="Message_1" />
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmn:process id="startMessageProcess" isExecutable="true">
     <bpmn:sequenceFlow id="SequenceFlow_0lf6d4r" sourceRef="StartEvent_0d5q67m" targetRef="EndEvent_0earbi6" />
@@ -147,6 +150,21 @@
       <bpmn:incoming>SequenceFlow_0xjr70t</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0yoie86</bpmn:outgoing>
     </bpmn:exclusiveGateway>
+  </bpmn:process>
+  <bpmn:process id="intermediateCatchMessageExpressionProcess" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_0iyn8y3">
+      <bpmn:outgoing>SequenceFlow_054hom6</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_1dwfuxf">
+      <bpmn:incoming>SequenceFlow_1jvbd83</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="IntermediateCatchEvent_095woej">
+      <bpmn:incoming>SequenceFlow_054hom6</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1jvbd83</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_01s1004" activiti:correlationKey="${correlationId}" activiti:messageExpression="catchMessage" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1jvbd83" sourceRef="IntermediateCatchEvent_095woej" targetRef="EndEvent_1dwfuxf" />
+    <bpmn:sequenceFlow id="SequenceFlow_054hom6" sourceRef="StartEvent_0iyn8y3" targetRef="IntermediateCatchEvent_095woej" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0nstryt">
@@ -261,9 +279,6 @@
         <di:waypoint x="250" y="940" />
         <di:waypoint x="300" y="940" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="EndEvent_1kptcch_di" bpmnElement="EndEvent_1kptcch">
-        <dc:Bounds x="450" y="922" width="36" height="36" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0dfk044_di" bpmnElement="SequenceFlow_0dfk044">
         <di:waypoint x="400" y="940" />
         <di:waypoint x="450" y="940" />
@@ -355,6 +370,34 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_139gp3m_di" bpmnElement="EndEvent_1upe6lc">
         <dc:Bounds x="380" y="626" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_0mtat8r_di" bpmnElement="Participant_0mtat8r" isHorizontal="true">
+        <dc:Bounds x="585" y="735" width="318" height="131" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_0iyn8y3_di" bpmnElement="StartEvent_0iyn8y3">
+        <dc:Bounds x="649" y="786" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1dwfuxf_di" bpmnElement="EndEvent_1dwfuxf">
+        <dc:Bounds x="819" y="786" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_095woej_di" bpmnElement="IntermediateCatchEvent_095woej">
+        <dc:Bounds x="730" y="786" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1jvbd83_di" bpmnElement="SequenceFlow_1jvbd83">
+        <di:waypoint x="766" y="804" />
+        <di:waypoint x="819" y="804" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_054hom6_di" bpmnElement="SequenceFlow_054hom6">
+        <di:waypoint x="685" y="804" />
+        <di:waypoint x="730" y="804" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_04ma9ot_di" bpmnElement="MessageFlow_04ma9ot">
+        <di:waypoint x="486" y="940" />
+        <di:waypoint x="748" y="940" />
+        <di:waypoint x="748" y="822" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0tetzwq_di" bpmnElement="EndEvent_1kptcch">
+        <dc:Bounds x="450" y="922" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -80,6 +80,13 @@ public class MessageEventDefinitionConverterTest extends AbstractConverterTest {
                                            .flatExtracting("eventDefinitions")
                                            .extracting("messageRef", "correlationKey")
                                            .contains(tuple("Message_1", "${correlationId}"));
+
+        assertThat(model.getProcessById("intermediateCatchMessageExpressionProcess")
+                        .getFlowElements()).filteredOn(IntermediateCatchEvent.class::isInstance)
+                                           .flatExtracting("eventDefinitions")
+                                           .extracting("messageRef", "messageExpression", "correlationKey")
+                                           .contains(tuple(null, "catchMessage", "${correlationId}"));
+        
     }
 
     protected String getResource() {

@@ -484,6 +484,14 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
                          ATTRIBUTE_MESSAGE_CORRELATION_KEY, 
                          messageDefinition.getCorrelationKey());
     }
+    
+    if (StringUtils.isNotEmpty(messageDefinition.getMessageExpression())) {
+        xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, 
+                           ACTIVITI_EXTENSIONS_NAMESPACE, 
+                           ATTRIBUTE_MESSAGE_EXPRESSION, 
+                           messageDefinition.getMessageExpression());
+      }    
+    
     boolean didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(messageDefinition, false, xtw);
     if (didWriteExtensionStartElement) {
       xtw.writeEndElement();
