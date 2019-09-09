@@ -84,12 +84,12 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                                                                           Map<String, Object> variables,
                                                                           Map<String, Object> transientVariables) {
         Map<String, Object> processVariables = variables;
-        
+
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
             processVariables = calculateVariablesFromExtensionFile(processDefinition,
                                                                    variables);
         }
-        
+
         return super.createProcessInstanceWithInitialFlowElement(processDefinition,
                                                                  businessKey,
                                                                  processInstanceName,
@@ -97,8 +97,8 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                                                                  process,
                                                                  processVariables,
                                                                  transientVariables);
-    }    
-    
+    }
+
     private Map<String, Object> processVariables(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
         Map<String, Object> newVarsMap = new HashMap<>(Optional.ofNullable(variables).orElse(Collections.emptyMap()));
         variableDefinitionMap.forEach((k,v) -> {

@@ -14,6 +14,7 @@
 package org.activiti.spring.process.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.spring.process.ProcessExtensionResourceReader;
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
@@ -69,6 +70,12 @@ public class ProcessExtensionsAutoConfiguration {
     }
 
     @Bean
+    public ProcessExtensionResourceReader processExtensionResourceReader(ObjectMapper objectMapper,
+                                                                         Map<String, VariableType> variableTypeMap) {
+        return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
+    }
+
+    @Bean
     InitializingBean initRepositoryServiceForProcessExtensionService(RepositoryService repositoryService,
                                                                      ProcessExtensionService processExtensionService){
         return () -> processExtensionService.setRepositoryService(repositoryService);
@@ -83,7 +90,7 @@ public class ProcessExtensionsAutoConfiguration {
     }
 
     @Bean
-    public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper, 
+    public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper,
                                                      DateFormatterProvider dateFormatterProvider) {
         Map<String, VariableType> variableTypeMap = new HashMap<>();
         variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
