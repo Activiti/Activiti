@@ -753,11 +753,13 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
         ProcessInstance throwMessage = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(THROW_MESSAGE2)
                                                      .businessKey("bk1")
+                                                     .variable("invoiceId", 1)
                                                      .variable("correlationId", 1)
                                                      .start();
 
         ProcessInstance catchMessage = runtimeService.createProcessInstanceBuilder()
                                                      .processDefinitionKey(CATCH_MESSAGE)
+                                                     .variable("invoiceId", 1)
                                                      .businessKey("bk2")
                                                      .variable("correlationId", 1)
                                                      .start();
@@ -772,9 +774,9 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                               "messageName",
                                               "businessKey",
                                               "correlationKey")
-                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, TEST_MESSAGE, "bk1", "1"),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, TEST_MESSAGE, "bk2", "1"),
-                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, TEST_MESSAGE, "bk2", "1"));
+                                  .contains(tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT, "testMessage-1", "bk1", "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING, "testMessage-1", "bk2", "1"),
+                                            tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, "testMessage-1", "bk2", "1"));
     }
     
     @Deployment(resources = "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.testIntermediateThrowCatchMessageBoundarySubprocessCorrelationKey.bpmn20.xml")

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="Definitions_0ob3ryo" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
-  <bpmn:message id="Message_1jgcwrm" name="testMessage" />
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="Definitions_0ob3ryo" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta">
+  <bpmn:message id="Message_1jgcwrm" name="testMessage-${invoiceId}" />
   <bpmn:collaboration id="Collaboration_1rgq5ic">
     <bpmn:participant id="Participant_18uz8sr" name="Catch" processRef="catchMessage" />
     <bpmn:participant id="Participant_0grcoq3" name="Throw" processRef="throwMessage" />
-    <bpmn:messageFlow id="MessageFlow_14937pj" name="testMessage" sourceRef="IntermediateThrowEvent_1t0j2ax" targetRef="IntermediateThrowEvent_05o3ilf" />
+    <bpmn:messageFlow id="MessageFlow_14937pj" name="testMessage-${invoiceId}" sourceRef="IntermediateThrowEvent_1t0j2ax" targetRef="IntermediateThrowEvent_05o3ilf" />
   </bpmn:collaboration>
   <bpmn:process id="catchMessage" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1">
@@ -98,7 +98,7 @@
         <di:waypoint x="348" y="637" />
         <di:waypoint x="348" y="384" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="359" y="501" width="62" height="14" />
+          <dc:Bounds x="367" y="493" width="66" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="TextAnnotation_1oll2x8_di" bpmnElement="TextAnnotation_1oll2x8">

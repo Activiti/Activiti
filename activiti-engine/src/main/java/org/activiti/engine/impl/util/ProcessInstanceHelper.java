@@ -188,8 +188,12 @@ public class ProcessInstanceHelper {
                 messageExecution.setCurrentFlowElement(startEvent);
                 messageExecution.setEventScope(true);
                 
+                String messageName = getMessageName(commandContext, 
+                                                    messageEventDefinition, 
+                                                    messageExecution);
+                
                 MessageEventSubscriptionEntity subscription = commandContext.getEventSubscriptionEntityManager()
-                                                                            .insertMessageEvent(messageEventDefinition.getMessageRef(),
+                                                                            .insertMessageEvent(messageName,
                                                                                                 messageExecution);                
                 Optional<String> correlationKey = getCorrelationKey(commandContext, 
                                                                     messageEventDefinition, 
@@ -245,6 +249,24 @@ public class ProcessInstanceHelper {
                                            .toString();
                      });    
   }
+  
+  protected String getMessageName(CommandContext commandContext,
+                                  MessageEventDefinition messageEventDefinition,
+                                  DelegateExecution execution) {
+      ExpressionManager expressionManager = commandContext.getProcessEngineConfiguration()
+                                                          .getExpressionManager();
+      
+      
+      String messageName = Optional.ofNullable(messageEventDefinition.getMessageRef())
+                                   .orElse(messageEventDefinition.getMessageExpression());
+      
+      Expression expression = expressionManager.createExpression(messageName);
+
+      return expression.getValue(execution)
+                       .toString();
+
+  }
+  
 
     protected ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
                                                                        String businessKey,
