@@ -17,10 +17,13 @@
 package org.activiti.runtime.api.message;
 
 import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
+import org.springframework.context.event.EventListener;
 
 /**
  * MessagePayloadEventListener handler interface.
  */
-public interface MessagePayloadEventListener {
+public interface ReceiveMessagePayloadEventListener {
+    
+    @EventListener
     public void receiveMessage(ReceiveMessagePayload messagePayload);
 }

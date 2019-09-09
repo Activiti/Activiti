@@ -90,10 +90,10 @@ import org.activiti.runtime.api.event.internal.TimerScheduledListenerDelegate;
 import org.activiti.runtime.api.impl.EventSubscriptionVariablesMappingProvider;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
-import org.activiti.runtime.api.impl.RuntimeMessagePayloadEventListener;
+import org.activiti.runtime.api.impl.RuntimeReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
-import org.activiti.runtime.api.message.MessagePayloadEventListener;
+import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
@@ -125,11 +125,11 @@ public class ProcessRuntimeAutoConfiguration {
      * Creates default MessagePayloadEventListener bean if no existing bean found in ApplicationContext.
      */
     @Bean
-    @ConditionalOnMissingBean(MessagePayloadEventListener.class)
-    public MessagePayloadEventListener messagePayloadEventListener(RuntimeService runtimeService,
-                                                                   ManagementService managementService) {
-        return new RuntimeMessagePayloadEventListener(runtimeService,
-                                                      managementService);
+    @ConditionalOnMissingBean(ReceiveMessagePayloadEventListener.class)
+    public ReceiveMessagePayloadEventListener receiveMessagePayloadEventListener(RuntimeService runtimeService,
+                                                                                 ManagementService managementService) {
+        return new RuntimeReceiveMessagePayloadEventListener(runtimeService,
+                                                             managementService);
     }    
     
     @Bean

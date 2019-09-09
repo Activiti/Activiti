@@ -26,28 +26,26 @@ import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
-import org.activiti.runtime.api.message.MessagePayloadEventListener;
-import org.springframework.context.event.EventListener;
+import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
 
 /**
  * Default implementation of SignalPayloadEventListener that delegates 
  * Spring SignalPayload event into embedded RuntimeService.  
  * 
  */
-public class RuntimeMessagePayloadEventListener implements MessagePayloadEventListener {
+public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessagePayloadEventListener {
     
     private final RuntimeService runtimeService;
 
     private final ManagementService managementService;
     
-    public RuntimeMessagePayloadEventListener(RuntimeService runtimeService,
-                                              ManagementService managementService) {
+    public RuntimeReceiveMessagePayloadEventListener(RuntimeService runtimeService,
+                                                     ManagementService managementService) {
         this.runtimeService = runtimeService;
         this.managementService = managementService;
     }
 
     @Override
-    @EventListener
     public void receiveMessage(ReceiveMessagePayload messagePayload) {
         String messageName = messagePayload.getName();
         String correlationKey = messagePayload.getCorrelationKey();
