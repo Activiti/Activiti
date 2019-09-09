@@ -16,6 +16,12 @@
 
 package org.activiti.spring.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.Map;
@@ -23,6 +29,7 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.conf.ProcessExtensionsAutoConfiguration;
 import org.activiti.spring.process.conf.ProcessExtensionsConfiguratorAutoConfiguration;
@@ -38,11 +45,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessVariablesInitiatorIT {
@@ -57,6 +59,9 @@ public class ProcessVariablesInitiatorIT {
     @MockBean
     private ProcessExtensionService processExtensionService;
 
+    @MockBean
+    private RepositoryService repositoryService;
+    
     @Configuration
     @Import({ProcessExtensionsAutoConfiguration.class, ProcessExtensionsConfiguratorAutoConfiguration.class})
     static class ContextConfiguration {

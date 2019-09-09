@@ -25,6 +25,7 @@ import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.ManualTask;
+import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.bpmn.model.ReceiveTask;
@@ -62,6 +63,7 @@ import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchMessageEventActiv
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchSignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowCompensationEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowMessageEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowNoneEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowSignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
@@ -79,6 +81,7 @@ import org.activiti.engine.impl.bpmn.behavior.ShellActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ThrowMessageEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
@@ -190,6 +193,10 @@ public interface ActivityBehaviorFactory {
 
   public abstract IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(ThrowEvent throwEvent, CompensateEventDefinition compensateEventDefinition);
 
+  public abstract IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent, 
+                                                                                                        MessageEventDefinition messageEventDefinition, 
+                                                                                                        Message message);
+  
   public abstract NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(EndEvent endEvent);
 
   public abstract ErrorEndEventActivityBehavior createErrorEndEventActivityBehavior(EndEvent endEvent, ErrorEventDefinition errorEventDefinition);
@@ -209,4 +216,8 @@ public interface ActivityBehaviorFactory {
   public abstract BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(BoundaryEvent boundaryEvent, MessageEventDefinition messageEventDefinition, boolean interrupting);
   
   public abstract BoundaryCompensateEventActivityBehavior createBoundaryCompensateEventActivityBehavior(BoundaryEvent boundaryEvent, CompensateEventDefinition compensateEventDefinition, boolean interrupting);
+
+  public abstract ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(EndEvent endEvent,
+                                                                                                  MessageEventDefinition messageEventDefinition,
+                                                                                                  Message message);
 }

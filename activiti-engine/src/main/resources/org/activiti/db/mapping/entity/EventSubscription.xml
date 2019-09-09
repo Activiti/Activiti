@@ -96,7 +96,10 @@
       <if test="tenantId == null">
         and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
       </if>        
-    </where>
+      <if test="configuration != null">
+        and RES.CONFIGURATION_ = #{configuration}
+      </if>  
+     </where>
   </sql>
   
   <select id="selectMessageEventSubscriptionsByProcessInstanceAndEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">

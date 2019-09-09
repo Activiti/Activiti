@@ -127,7 +127,10 @@ public enum ActivitiEventType {
    * An activity is about to be executed as a compensation for another activity. The event targets the activity that is about to be executed for compensation.
    */
   ACTIVITY_COMPENSATE,
-  
+  /**
+   * A message has been sent via message intermediate throw or message end event
+   */
+  ACTIVITY_MESSAGE_SENT,
   /**
    * A boundary, intermediate, or subprocess start message catching event has started and it is waiting for message.
    */

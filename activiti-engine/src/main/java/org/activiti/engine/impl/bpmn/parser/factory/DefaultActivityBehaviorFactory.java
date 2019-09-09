@@ -12,7 +12,10 @@
  */
 package org.activiti.engine.impl.bpmn.parser.factory;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -22,13 +25,16 @@ import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
+import org.activiti.bpmn.model.Event;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.ExclusiveGateway;
+import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.FieldExtension;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.ManualTask;
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.bpmn.model.ReceiveTask;
@@ -70,6 +76,7 @@ import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchMessageEventActiv
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchSignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowCompensationEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowMessageEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowNoneEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowSignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
@@ -87,6 +94,7 @@ import org.activiti.engine.impl.bpmn.behavior.ShellActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.ThrowMessageEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
@@ -96,7 +104,12 @@ import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
+import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
+import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
+import org.activiti.engine.impl.delegate.ThrowMessageDelegateExpression;
+import org.activiti.engine.impl.delegate.ThrowMessageJavaDelegate;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -398,7 +411,11 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     public EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent,
                                                                                                                    MessageEventDefinition messageEventDefinition) {
-        return new EventSubProcessMessageStartEventActivityBehavior(messageEventDefinition);
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(startEvent, 
+                                                                                        messageEventDefinition);
+
+        return new EventSubProcessMessageStartEventActivityBehavior(messageEventDefinition,
+                                                                    messageExecutionContext);
     }
 
     public AdhocSubProcessActivityBehavior createAdhocSubprocessActivityBehavior(SubProcess subProcess) {
@@ -444,7 +461,10 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     public IntermediateCatchMessageEventActivityBehavior createIntermediateCatchMessageEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent,
                                                                                                              MessageEventDefinition messageEventDefinition) {
-        return new IntermediateCatchMessageEventActivityBehavior(messageEventDefinition);
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(intermediateCatchEvent, 
+                                                                                        messageEventDefinition);
+        return new IntermediateCatchMessageEventActivityBehavior(messageEventDefinition,
+                                                                 messageExecutionContext);
     }
 
     public IntermediateCatchTimerEventActivityBehavior createIntermediateCatchTimerEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent,
@@ -547,8 +567,97 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     public BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(BoundaryEvent boundaryEvent,
                                                                                            MessageEventDefinition messageEventDefinition,
                                                                                            boolean interrupting) {
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(boundaryEvent, 
+                                                                                        messageEventDefinition);
         return new BoundaryMessageEventActivityBehavior(messageEventDefinition,
-                                                        interrupting);
+                                                        interrupting,
+                                                        messageExecutionContext);
+    }
+
+    @Override
+    public IntermediateThrowMessageEventActivityBehavior createThrowMessageEventActivityBehavior(ThrowEvent throwEvent,
+                                                                                                 MessageEventDefinition messageEventDefinition,
+                                                                                                 Message message) {
+        ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(throwEvent, 
+                                                                                        messageEventDefinition);
+        return new IntermediateThrowMessageEventActivityBehavior(throwEvent,
+                                                                 messageEventDefinition, 
+                                                                 throwMessageDelegate,
+                                                                 messageExecutionContext);
+    }
+
+    @Override
+    public ThrowMessageEndEventActivityBehavior createThrowMessageEndEventActivityBehavior(EndEvent endEvent,
+                                                                                           MessageEventDefinition messageEventDefinition,
+                                                                                           Message message) {
+        ThrowMessageDelegate throwMessageDelegate = createThrowMessageDelegate(messageEventDefinition);
+        MessageExecutionContext messageExecutionContext = createMessageExecutionContext(endEvent, 
+                                                                                        messageEventDefinition);
+        return new ThrowMessageEndEventActivityBehavior(endEvent,
+                                                        messageEventDefinition,
+                                                        throwMessageDelegate,
+                                                        messageExecutionContext);
     }
     
+    protected ThrowMessageDelegate createThrowMessageDelegate(MessageEventDefinition messageEventDefinition) {
+        Map<String, List<ExtensionAttribute>> attributes = messageEventDefinition.getAttributes();
+        
+        return checkClassDelegate(attributes)
+                    .map(this::createThrowMessageJavaDelegate).map(Optional::of)
+                    .orElseGet(() -> checkDelegateExpression(attributes).map(this::createThrowMessageDelegateExpression))
+                    .orElseGet(this::createDefaultThrowMessageDelegate);
+    }
+    
+    public MessageExecutionContext createMessageExecutionContext(Event bpmnEvent, 
+                                                                 MessageEventDefinition messageEventDefinition) {
+        MessagePayloadMappingProvider mappingProvider = createMessagePayloadMappingProvider(bpmnEvent, 
+                                                                                            messageEventDefinition);
+        return getMessageExecutionContextFactory().create(messageEventDefinition,
+                                                          mappingProvider,
+                                                          expressionManager);
+    }
+    
+    public ThrowMessageDelegate createThrowMessageJavaDelegate(String className) {
+        Class<? extends ThrowMessageDelegate> clazz = ReflectUtil.loadClass(className)
+                                                                 .asSubclass(ThrowMessageDelegate.class);
+        
+        return new ThrowMessageJavaDelegate(clazz, Collections.emptyList());
+    }
+
+    public ThrowMessageDelegate createThrowMessageDelegateExpression(String delegateExpression) {
+        Expression expression = expressionManager.createExpression(delegateExpression);        
+        
+        return new ThrowMessageDelegateExpression(expression, Collections.emptyList());
+    }
+    
+    public ThrowMessageDelegate createDefaultThrowMessageDelegate() {
+        return getThrowMessageDelegateFactory().create();
+    }
+    
+    public MessagePayloadMappingProvider createMessagePayloadMappingProvider(Event bpmnEvent, 
+                                                                             MessageEventDefinition messageEventDefinition) {
+        return getMessagePayloadMappingProviderFactory().create(bpmnEvent, 
+                                                                messageEventDefinition,
+                                                                getExpressionManager());
+    }
+    
+    protected Optional<String> checkClassDelegate(Map<String, List<ExtensionAttribute>> attributes ) {
+        return getAttributeValue(attributes, "class");
+    }
+
+    protected Optional<String> checkDelegateExpression(Map<String, List<ExtensionAttribute>> attributes ) {
+        return getAttributeValue(attributes, "delegateExpression");
+    }
+    
+    protected Optional<String> getAttributeValue(Map<String, List<ExtensionAttribute>> attributes, 
+                                                 String name) {
+        return Optional.ofNullable(attributes)
+                       .filter(it -> it.containsKey("activiti"))
+                       .map(it -> it.get("activiti"))
+                       .flatMap(it -> it.stream()
+                                        .filter(el -> name.equals(el.getName()))
+                                        .findAny())
+                       .map(ExtensionAttribute::getValue);
+    }      
 }

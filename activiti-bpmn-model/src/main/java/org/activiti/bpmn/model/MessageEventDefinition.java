@@ -12,11 +12,23 @@
  */
 package org.activiti.bpmn.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MessageEventDefinition extends EventDefinition {
 
   protected String messageRef;
   protected String messageExpression;
-
+  protected String correlationKey;
+  protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
+  
+  public List<FieldExtension> getFieldExtensions() {
+    return fieldExtensions;
+  }
+  public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
+    this.fieldExtensions = fieldExtensions;
+  }
+  
   public String getMessageRef() {
     return messageRef;
   }
@@ -33,6 +45,14 @@ public class MessageEventDefinition extends EventDefinition {
     this.messageExpression = messageExpression;
   }
 
+  public String getCorrelationKey() {
+      return correlationKey;
+  }
+
+  public void setCorrelationKey(String correlationKey) {
+      this.correlationKey = correlationKey;
+  }
+
   public MessageEventDefinition clone() {
     MessageEventDefinition clone = new MessageEventDefinition();
     clone.setValues(this);
@@ -43,5 +63,7 @@ public class MessageEventDefinition extends EventDefinition {
     super.setValues(otherDefinition);
     setMessageRef(otherDefinition.getMessageRef());
     setMessageExpression(otherDefinition.getMessageExpression());
+    setFieldExtensions(otherDefinition.getFieldExtensions());
+    setCorrelationKey(otherDefinition.getCorrelationKey());
   }
 }

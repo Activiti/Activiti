@@ -34,6 +34,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import javax.xml.namespace.QName;
@@ -129,6 +130,7 @@ import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.event.CompensationEventHandler;
 import org.activiti.engine.impl.event.EventHandler;
+import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.event.SignalEventHandler;
 import org.activiti.engine.impl.event.logger.EventLogger;
@@ -426,7 +428,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected TaskEntityManager taskEntityManager;
   protected VariableInstanceEntityManager variableInstanceEntityManager;
   private IntegrationContextManager integrationContextManager;
-
+  private EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider = 
+                                                              new EventSubscriptionPayloadMappingProvider() {};
   // History Manager
 
   protected HistoryManager historyManager;
@@ -2011,7 +2014,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       CompensationEventHandler compensationEventHandler = new CompensationEventHandler();
       eventHandlers.put(compensationEventHandler.getEventHandlerType(), compensationEventHandler);
 
-      MessageEventHandler messageEventHandler = new MessageEventHandler();
+      MessageEventHandler messageEventHandler = new MessageEventHandler(eventSubscriptionPayloadMappingProvider);
       eventHandlers.put(messageEventHandler.getEventHandlerType(), messageEventHandler);
 
     }
@@ -3652,6 +3655,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   public ProcessEngineConfigurationImpl setAsyncExecutorMessageQueueMode(boolean asyncExecutorMessageQueueMode) {
     this.asyncExecutorMessageQueueMode = asyncExecutorMessageQueueMode;
     return this;
+  }
+
+  public EventSubscriptionPayloadMappingProvider getEventSubscriptionPayloadMappingProvider() {
+    return eventSubscriptionPayloadMappingProvider;
+  }
+
+  public void setEventSubscriptionPayloadMappingProvider(EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider) {
+    this.eventSubscriptionPayloadMappingProvider = eventSubscriptionPayloadMappingProvider;
   }
 
 }

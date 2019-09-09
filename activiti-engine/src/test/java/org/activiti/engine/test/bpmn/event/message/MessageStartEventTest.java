@@ -13,9 +13,16 @@
 
 package org.activiti.engine.test.bpmn.event.message;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -200,5 +207,48 @@ public class MessageStartEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     assertProcessEnded(processInstance.getId());
   }
+  
+  @Deployment(resources = "org/activiti/engine/test/bpmn/event/message/MessageStartEventTest.testSingleMessageStartEvent.bpmn20.xml")
+  public void testMessageStartEventDispatchActivitiMessageReceivedBeforeProcessStarted() {
 
+    // given 
+    List<ActivitiEvent> events = new ArrayList<>();  
+      
+    runtimeService.addEventListener(new ActivitiEventListener() {
+        @Override
+        public void onEvent(ActivitiEvent event) {
+            events.add(event);
+        }
+        @Override
+        public boolean isFailOnException() {
+            return false;
+        }
+    });
+
+    // when
+    ProcessInstance process = runtimeService.startProcessInstanceByMessage("newInvoiceMessage");
+    
+    String executionId = runtimeService.createExecutionQuery()
+                                       .processInstanceId(process.getId())
+                                       .onlyChildExecutions()
+                                       .singleResult()
+                                       .getId();
+
+    // then ACTIVITY_MESSAGE_RECEIVED should be fired before PROCESS_STARTED
+    assertThat(events)
+                .filteredOn(event -> event.getType() == ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED 
+                                        || event.getType() == ActivitiEventType.PROCESS_STARTED)
+                .extracting("type",
+                            "processDefinitionId",
+                            "processInstanceId",
+                            "executionId")
+                .containsExactly(tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                       process.getProcessDefinitionId(),
+                                       process.getId(),
+                                       executionId),
+                                 tuple(ActivitiEventType.PROCESS_STARTED,
+                                       process.getProcessDefinitionId(),
+                                       process.getId(),
+                                       executionId));
+  }
 }

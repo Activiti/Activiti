@@ -16,6 +16,9 @@
 
 package org.activiti.runtime.api.conf;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
@@ -41,10 +44,11 @@ import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.runtime.api.conf.CommonRuntimeAutoConfiguration;
+import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.runtime.api.conf.impl.ProcessRuntimeConfigurationImpl;
 import org.activiti.runtime.api.event.impl.BPMNTimerConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCreatedEventConverter;
@@ -83,9 +87,13 @@ import org.activiti.runtime.api.event.internal.TimerFailedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerFiredListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerRetriesDecrementedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerScheduledListenerDelegate;
+import org.activiti.runtime.api.impl.EventSubscriptionVariablesMappingProvider;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
+import org.activiti.runtime.api.impl.RuntimeReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
+import org.activiti.runtime.api.impl.VariablesMappingProvider;
+import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
@@ -100,9 +108,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Collections;
-import java.util.List;
-
 @Configuration
 @AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
 public class ProcessRuntimeAutoConfiguration {
@@ -114,6 +119,23 @@ public class ProcessRuntimeAutoConfiguration {
     @ConditionalOnMissingBean(SignalPayloadEventListener.class)
     public SignalPayloadEventListener signalPayloadEventListener(RuntimeService runtimeService) {
         return new RuntimeSignalPayloadEventListener(runtimeService);
+    }
+    
+    /**
+     * Creates default MessagePayloadEventListener bean if no existing bean found in ApplicationContext.
+     */
+    @Bean
+    @ConditionalOnMissingBean(ReceiveMessagePayloadEventListener.class)
+    public ReceiveMessagePayloadEventListener receiveMessagePayloadEventListener(RuntimeService runtimeService,
+                                                                                 ManagementService managementService) {
+        return new RuntimeReceiveMessagePayloadEventListener(runtimeService,
+                                                             managementService);
+    }    
+    
+    @Bean
+    @ConditionalOnMissingBean(EventSubscriptionPayloadMappingProvider.class)
+    public EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider(VariablesMappingProvider variablesMappingProvider) {
+        return new EventSubscriptionVariablesMappingProvider(variablesMappingProvider);
     }
 
     @Bean

@@ -66,6 +66,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_CANCEL_REMAINING_INSTANCES = "cancelRemainingInstances";
   public static final String ELEMENT_COMPLETION_CONDITION = "completionCondition";
   public static final String ATTRIBUTE_MESSAGE_EXPRESSION = "messageExpression";
+  public static final String ATTRIBUTE_MESSAGE_CORRELATION_KEY = "correlationKey";
   public static final String ATTRIBUTE_SIGNAL_EXPRESSION = "signalExpression";
 
   public static final String ELEMENT_DATA_STATE = "dataState";

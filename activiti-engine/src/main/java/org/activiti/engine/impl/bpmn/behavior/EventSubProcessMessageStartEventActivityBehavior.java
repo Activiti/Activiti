@@ -25,6 +25,7 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.history.DeleteReason;
+import org.activiti.engine.impl.bpmn.parser.factory.MessageExecutionContext;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
@@ -42,10 +43,13 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
 
   private static final long serialVersionUID = 1L;
   
-  protected MessageEventDefinition messageEventDefinition;
+  protected final MessageEventDefinition messageEventDefinition;
+  protected final MessageExecutionContext messageExecutionContext;
   
-  public EventSubProcessMessageStartEventActivityBehavior(MessageEventDefinition messageEventDefinition) {
+  public EventSubProcessMessageStartEventActivityBehavior(MessageEventDefinition messageEventDefinition,
+                                                          MessageExecutionContext messageExecutionContext) {
     this.messageEventDefinition = messageEventDefinition;
+    this.messageExecutionContext = messageExecutionContext;
   }
 
   public void execute(DelegateExecution execution) {
@@ -77,11 +81,14 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
         }
       }
     }
+
+    // Should we use triggerName and triggerData, because message name expression can change?
+    String messageName = messageExecutionContext.getMessageName(execution);
     
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-      if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {
+      if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageName)) {
 
         eventSubscriptionEntityManager.delete(eventSubscription);
       }

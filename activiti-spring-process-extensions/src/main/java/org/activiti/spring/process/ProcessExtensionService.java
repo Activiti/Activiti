@@ -16,16 +16,17 @@ package org.activiti.spring.process;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
@@ -41,8 +42,9 @@ public class ProcessExtensionService {
     private ResourcePatternResolver resourceLoader;
     private Map<String, VariableType> variableTypeMap;
     private Map<String, ProcessExtensionModel> processExtensionModelMap;
-    private Map<String, String> procDefIdToKey = new HashMap<>();
+    private Map<String, String> procDefIdToKey = new ConcurrentHashMap<>();
     private static final ProcessExtensionModel EMPTY_EXTENSIONS = new ProcessExtensionModel();
+    private RepositoryService repositoryService;
 
     public ProcessExtensionService(String processExtensionsRoot, String processExtensionsSuffix,
                                    ObjectMapper objectMapper, ResourcePatternResolver resourceLoader,
@@ -122,12 +124,23 @@ public class ProcessExtensionService {
     }
 
     public ProcessExtensionModel getExtensionsForId(String processDefinitionId) {
-        return getProcessExtensionModelForKey(procDefIdToKey.get(processDefinitionId));
+        return getProcessExtensionModelForKey(procDefIdToKey.getOrDefault(processDefinitionId,
+                                                                          getProcessDefinionKey(processDefinitionId)));
+    }
+    
+    private String getProcessDefinionKey(String processDefinitionId) {
+        return Optional.ofNullable(repositoryService.getProcessDefinition(processDefinitionId))
+                       .map(it -> it.getKey())
+                       .orElse(null);
     }
 
     private Map<String, ProcessExtensionModel> convertToMap(List<ProcessExtensionModel> processExtensionModelList){
         return processExtensionModelList.stream()
                 .collect(Collectors.toMap(ProcessExtensionModel::getId,
                         Function.identity()));
+    }
+
+    public void setRepositoryService(RepositoryService repositoryService) {
+        this.repositoryService = repositoryService;
     }
 }
