@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.activiti.build</groupId>
     <artifactId>activiti-parent</artifactId>
-    <version>7.1.27</version>
+    <version>7.1.28</version>
     <relativePath/>
   </parent>
   <groupId>org.activiti.core.common</groupId>
@@ -16,8 +16,8 @@
   <description>Activiti Core :: Common</description>
   <url>http://activiti.org</url>
   <properties>
-    <activiti-build.version>7.1.27</activiti-build.version>
-    <activiti-api.version>7.1.45</activiti-api.version>
+    <activiti-build.version>7.1.28</activiti-build.version>
+    <activiti-api.version>7.1.46</activiti-api.version>
     <activiti-core-common.version>${project.version}</activiti-core-common.version>
     <commons-io.version>2.6</commons-io.version>
   </properties>
