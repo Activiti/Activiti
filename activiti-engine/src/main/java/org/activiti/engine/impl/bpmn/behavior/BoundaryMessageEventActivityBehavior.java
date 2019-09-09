@@ -71,12 +71,12 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
   public void trigger(DelegateExecution execution, String triggerName, Object triggerData) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
+    // Should we use triggerName and triggerData, because message name expression can change?
     String messageName = messageExecutionContext.getMessageName(execution);
 
     if (boundaryEvent.isCancelActivity()) {
       EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
       List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
-      // TODO add correlationKey condition
       for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
         if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageName)) {
 

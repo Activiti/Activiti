@@ -81,13 +81,13 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
         }
       }
     }
-    
+
+    // Should we use triggerName and triggerData, because message name expression can change?
     String messageName = messageExecutionContext.getMessageName(execution);
     
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-      // TODO add correlationKey condition  
       if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageName)) {
 
         eventSubscriptionEntityManager.delete(eventSubscription);
