@@ -32,61 +32,55 @@ public class DateFormatterProviderTest {
 
     @Test
     public void should_returnDate_when_stringRepresentsADate() {
-        //given
+
         String dateStr = "1970-01-01";
 
-        //when
         Date date = provider.toDate(dateStr);
 
-        //then
+        assertThat(date).hasYear(1970);
+        assertThat(date).hasMonth(1);
+        assertThat(date).hasDayOfMonth(1);
         assertThat(date).hasTime(0);
     }
 
     @Test
     public void should_returnDate_when_stringRepresentsADateWithTimeInformation() {
-        //given
+
         String dateStr = "1970-01-01T01:01:01.001Z";
         //calculate number of milliseconds after 1970-01-01T00:00:00.000Z
         long time = Duration.ofHours(1).toMillis() + Duration.ofMinutes(1).toMillis() + Duration.ofSeconds(1).toMillis() + 1;
 
-        //when
         Date date = provider.toDate(dateStr);
 
-        //then
         assertThat(date).hasTime(time);
     }
 
     @Test
     public void should_throwException_when_stringIsNotADate() {
-        //given
+        
         String dateStr = "this is not a date";
 
-        //when
         assertThatExceptionOfType(DateTimeParseException.class)
                 .isThrownBy(() -> provider.parse(dateStr));
     }
 
     @Test
     public void should_returnDate_when_longIsProvided() {
-        //given
+
         long time = 1000;
 
-        //when
         Date date = provider.toDate(time);
 
-        //then
         assertThat(date).hasTime(time);
     }
 
     @Test
     public void should_returnDate_when_dateIsProvided() {
-        //given
+        
         Date initialDate = new Date(1000);
 
-        //when
         Date date = provider.toDate(initialDate);
 
-        //then
         assertThat(date).isEqualTo(initialDate);
     }
 
