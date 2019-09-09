@@ -46,14 +46,11 @@ public class ProcessExtensionServiceIT {
 
     @Test
     public void canReadExtension() throws IOException {
-        Map<String, ProcessExtensionModel> models = processExtensionService.readProcessExtensions();
-        assertThat(models).isNotEmpty();
-        assertThat(models.values())
-                .extracting(ProcessExtensionModel::getId)
-                .contains("initialVarsProcess");
+        ProcessExtensionModel model = processExtensionService.getExtensionsForId("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
+//        assertThat(model.getId())
+//                .contains("initialVarsProcess");
 
-        ProcessExtensionModel initialVarsProcessModel = models.values().stream().filter(model -> model.getId().equals("initialVarsProcess")).findFirst().orElse(null);
-        assertThat(initialVarsProcessModel).isNotNull();
-        assertThat(initialVarsProcessModel.getExtensions().getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
+        assertThat(model).isNotNull();
+        assertThat(model.getExtensions().getProperties()).containsKey("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
     }
 }

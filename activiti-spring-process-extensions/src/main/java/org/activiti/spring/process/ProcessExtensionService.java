@@ -34,6 +34,7 @@ public class ProcessExtensionService {
     private DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader;
     private ProcessExtensionResourceReader processExtensionReader;
     private RepositoryService repositoryService;
+    private Map<String, String> procDefIdToKey = new HashMap<>();
 
     private static final ProcessExtensionModel EMPTY_EXTENSIONS = new ProcessExtensionModel();
 
@@ -65,6 +66,10 @@ public class ProcessExtensionService {
         return processExtensionModelMap;
     }
 
+
+    public void cache(ProcessDefinition processDefinition) {
+        procDefIdToKey.put(processDefinition.getId(), processDefinition.getKey());
+    }
 
     public boolean hasExtensionsFor(ProcessDefinition processDefinition) {
         return !EMPTY_EXTENSIONS.equals(getExtensionsFor(processDefinition));

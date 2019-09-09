@@ -14,6 +14,7 @@
 package org.activiti.spring.process.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.RepositoryService;
 import org.activiti.spring.process.ProcessExtensionResourceReader;
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.process.ProcessExtensionService;
@@ -29,14 +30,19 @@ import org.activiti.spring.process.variable.types.VariableType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.activiti.spring.resources.DeploymentResourceLoader;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 import java.io.IOException;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 
 @Configuration
 public class ProcessExtensionsAutoConfiguration {
@@ -46,33 +52,29 @@ public class ProcessExtensionsAutoConfiguration {
                                                                VariableParsingService variableParsingService,
                                                                VariableValidationService variableValidationService) {
         return new ProcessVariablesInitiator(processExtensionService,
-                                             variableParsingService,
-                                             variableValidationService);
+                variableParsingService,
+                variableValidationService);
     }
 
-    @Bean
-    public Map<String, ProcessExtensionModel> processExtensionsMap(ProcessExtensionService processExtensionService) throws IOException {
-        return processExtensionService.readProcessExtensions();
-
-    }
 
     @Bean
-    public ProcessExtensionService processExtensionService(@Value("${activiti.process.extensions.dir:classpath:/processes/}") String processExtensionsRoot,
-                                                            @Value("${activiti.process.extensions.suffix:**-extensions.json}") String processExtensionsSuffix,
-                                                            ObjectMapper objectMapper,
-                                                            ResourcePatternResolver resourceLoader,
-                                                            Map<String, VariableType> variableTypeMap) {
-        return new ProcessExtensionService(processExtensionsRoot,
-                                           processExtensionsSuffix,
-                                           objectMapper,
-                                           resourceLoader,
-                                           variableTypeMap);
+    public DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader(RepositoryService repositoryService) {
+        return new DeploymentResourceLoader<>(repositoryService);
     }
 
     @Bean
     public ProcessExtensionResourceReader processExtensionResourceReader(ObjectMapper objectMapper,
                                                                          Map<String, VariableType> variableTypeMap) {
         return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
+    }
+
+    @Bean
+    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
+                                                           RepositoryService repositoryService) {
+        return new ProcessExtensionService(
+                new DeploymentResourceLoader<>(repositoryService),
+                processExtensionResourceReader,
+                repositoryService);
     }
 
     @Bean
