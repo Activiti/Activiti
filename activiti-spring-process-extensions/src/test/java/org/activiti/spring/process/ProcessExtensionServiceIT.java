@@ -47,13 +47,8 @@ public class ProcessExtensionServiceIT {
     private ProcessExtensionService processExtensionService;
 
     @Test
-    @Ignore
     public void canReadExtension() throws IOException {
-
-        boolean hasExtensionsFor = processExtensionService.hasExtensionsFor("initialVarsProcess");
-
-        System.out.println("hasExtensionsFor = " + hasExtensionsFor);
-        ProcessExtensionModel model = processExtensionService.getExtensionsForId("initialVarsProcess");
+        ProcessExtensionModel model = processExtensionService.getExtensionsForId("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
 //        assertThat(model.getId())
 //                .contains("initialVarsProcess");
 

@@ -14,6 +14,7 @@
 package org.activiti.spring.process.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.RepositoryService;
 import org.activiti.spring.process.ProcessExtensionResourceReader;
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
@@ -94,6 +95,15 @@ public class ProcessExtensionsAutoConfiguration {
     public ProcessExtensionResourceReader processExtensionResourceReader(ObjectMapper objectMapper,
                                                                          Map<String, VariableType> variableTypeMap) {
         return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
+    }
+
+    @Bean
+    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
+                                                           RepositoryService repositoryService) {
+        return new ProcessExtensionService(
+                new DeploymentResourceLoader<>(repositoryService),
+                processExtensionResourceReader,
+                repositoryService);
     }
 
     @Bean
