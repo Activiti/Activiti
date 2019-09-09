@@ -20,19 +20,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.process.model.BPMNMessage;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.MessagePayloadBuilder;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.events.BPMNMessageEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.delegate.event.ActivitiEvent;
-import org.activiti.engine.delegate.event.ActivitiEventListener;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiMessageEvent;
+import org.activiti.spring.boot.MessageTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.assertj.core.groups.Tuple;
@@ -70,47 +67,21 @@ public class ProcessRuntimeBPMNMessageIT {
     private ProcessRuntime processRuntime;
     
     @Autowired
-    private RuntimeService runtimeService;
-
-    @Autowired
     private SecurityUtil securityUtil;
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
     
-    private List<ActivitiEvent> receivedEvents = new LinkedList<>();
-
     @Before
     public void setUp() {
-        receivedEvents.clear();
+        MessageTestConfiguration.messageEvents.clear();
         
-        //given
-        runtimeService.addEventListener(new ActivitiEventListener() {  
-            
-            boolean isEventToAdd(ActivitiEvent event) {
-                if (event instanceof ActivitiMessageEvent) return true;     
-                return false;
-            }
-            
-            @Override
-            public void onEvent(ActivitiEvent event) {
-                if (isEventToAdd(event)) {
-                    receivedEvents.add(event);   
-                }     
-            }
-
-            @Override
-            public boolean isFailOnException() {
-                // TODO Auto-generated method stub
-                return false;
-            }            
-        }); 
     }
 
     @After
     public void tearDown() {
         processCleanUpUtil.cleanUpWithAdmin();
-        receivedEvents.clear();
+        MessageTestConfiguration.messageEvents.clear();
     }
 
     @Test
@@ -122,20 +93,23 @@ public class ProcessRuntimeBPMNMessageIT {
                                                                             .withBusinessKey("businessKey")
                                                                             .withProcessDefinitionKey(PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT)
                                                                             .build());
-        assertThat(receivedEvents)
+        assertThat(MessageTestConfiguration.messageEvents)
                 .isNotEmpty()
-                .extracting("type", 
-                            "processDefinitionId",
-                            "processInstanceId",
-                            "activityType",
-                            "messageName",
-                            "messageCorrelationKey",
-                            "messageBusinessKey",
-                            "messageData")
-                .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT,
+                .extracting(BPMNMessageEvent::getEventType,
+                            BPMNMessageEvent::getProcessDefinitionId,
+                            BPMNMessageEvent::getProcessInstanceId,
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables()  
+                )
+                .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_SENT,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
-                                      "throwEvent",
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
                                       "Test Message",
                                       "value",
                                       "businessKey",
@@ -161,28 +135,31 @@ public class ProcessRuntimeBPMNMessageIT {
                                                     .withCorrelationKey("foo")
                                                     .build());
         // then
-        assertThat(receivedEvents)
+        assertThat(MessageTestConfiguration.messageEvents)
                 .isNotEmpty()
-                .extracting("type", 
-                            "processDefinitionId",
-                            "processInstanceId",
-                            "activityType",
-                            "messageName",
-                            "messageCorrelationKey",
-                            "messageBusinessKey",
-                            "messageData")
-                .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                .extracting(BPMNMessageEvent::getEventType,
+                            BPMNMessageEvent::getProcessDefinitionId,
+                            BPMNMessageEvent::getProcessInstanceId,
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
-                                      "intermediateCatchEvent",  
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
                                       "testMessage",
                                       "foo",
                                       process.getBusinessKey(),
                                       null),
-                          Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                          Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
-                                      "intermediateCatchEvent",  
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
                                       "testMessage",
                                       "foo",
                                       process.getBusinessKey(),
@@ -211,19 +188,21 @@ public class ProcessRuntimeBPMNMessageIT {
                                                                             .withVariable("message_variable_name", "value")
                                                                             .build());
         // then
-        assertThat(receivedEvents).isNotEmpty()
-                                  .extracting("type",
-                                              "processDefinitionId",
-                                              "processInstanceId",
-                                              "activityType",
-                                              "messageName",
-                                              "messageCorrelationKey",
-                                              "messageBusinessKey",
-                                              "messageData")
-                                  .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                                  .extracting(BPMNMessageEvent::getEventType,
+                                              BPMNMessageEvent::getProcessDefinitionId,
+                                              BPMNMessageEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                                  .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
-                                                        "startEvent",
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
                                                         "startMessagePayload",
                                                         null,
                                                         process.getBusinessKey(),
@@ -240,8 +219,7 @@ public class ProcessRuntimeBPMNMessageIT {
                              .contains(tuple("process_variable_name","value"));   
         
     }
-    
-    
+     
     @Test
     public void shouldStartProcessByMessage() throws Exception {
         // given
@@ -253,27 +231,29 @@ public class ProcessRuntimeBPMNMessageIT {
                                                                             .withVariable("key", "value")
                                                                             .build());
         // then
-        assertThat(receivedEvents)
+        assertThat(MessageTestConfiguration.messageEvents)
                 .isNotEmpty()
-                .extracting("type", 
-                            "processDefinitionId",
-                            "processInstanceId",
-                            "activityType",
-                            "messageName",
-                            "messageCorrelationKey",
-                            "messageBusinessKey",
-                            "messageData")
-                .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                .extracting(BPMNMessageEvent::getEventType,
+                            BPMNMessageEvent::getProcessDefinitionId,
+                            BPMNMessageEvent::getProcessInstanceId,
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
-                                      "startEvent",  
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
                                       "testMessage",
                                       null,
                                       process.getBusinessKey(),
                                       Collections.singletonMap("key", 
                                                                "value")));
     }
-    
+      
     @Test
     public void shouldReceiveCatchMessageWithCorrelationKey() throws Exception {
         // given
@@ -291,36 +271,38 @@ public class ProcessRuntimeBPMNMessageIT {
                                                     .withCorrelationKey("foo")
                                                     .build());
         // then
-        assertThat(receivedEvents)
+        assertThat(MessageTestConfiguration.messageEvents)
                 .isNotEmpty()
-                .extracting("type", 
-                            "processDefinitionId",
-                            "processInstanceId",
-                            "activityType",
-                            "messageName",
-                            "messageCorrelationKey",
-                            "messageBusinessKey",
-                            "messageData")
-                .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                .extracting(BPMNMessageEvent::getEventType,
+                            BPMNMessageEvent::getProcessDefinitionId,
+                            BPMNMessageEvent::getProcessInstanceId,
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
-                                      "intermediateCatchEvent",  
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
                                       "testMessage",
                                       "foo",
                                       process.getBusinessKey(),
                                       null),
-                          Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                          Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
-                                      "intermediateCatchEvent",  
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
                                       "testMessage",
                                       "foo",
                                       process.getBusinessKey(),
                                       Collections.singletonMap("key", 
                                                                "value")));
     }
-    
-    
+      
     @Test
     public void shouldThrowEndMessageEvent() throws Exception {
         // given
@@ -333,25 +315,27 @@ public class ProcessRuntimeBPMNMessageIT {
         
         // when
         // then
-        assertThat(receivedEvents).isNotEmpty()
-                                  .extracting("type",
-                                              "processDefinitionId",
-                                              "processInstanceId",
-                                              "activityType",
-                                              "messageName",
-                                              "messageCorrelationKey",
-                                              "messageBusinessKey",
-                                              "messageData")
-                                  .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_SENT,
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                                  .extracting(BPMNMessageEvent::getEventType,
+                                              BPMNMessageEvent::getProcessDefinitionId,
+                                              BPMNMessageEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                                  .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_SENT,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
-                                                        "endEvent",
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
                                                         "testMessage",
                                                         null,
                                                         process.getBusinessKey(),
                                                         null));
     }    
-    
+     
     @Test
     public void shouldReceiveBoundaryMessageWithCorrelationKey() throws Exception {
         // given
@@ -369,35 +353,38 @@ public class ProcessRuntimeBPMNMessageIT {
                                                     .withCorrelationKey("foo")
                                                     .build());
         // then
-        assertThat(receivedEvents)
+        assertThat(MessageTestConfiguration.messageEvents)
                 .isNotEmpty()
-                .extracting("type", 
-                            "processDefinitionId",
-                            "processInstanceId",
-                            "activityType",
-                            "messageName",
-                            "messageCorrelationKey",
-                            "messageBusinessKey",
-                            "messageData")
-                .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                .extracting(BPMNMessageEvent::getEventType,
+                            BPMNMessageEvent::getProcessDefinitionId,
+                            BPMNMessageEvent::getProcessInstanceId,
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
+                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
-                                      "boundaryEvent",  
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
                                       "testMessage",
                                       "foo",
                                       process.getBusinessKey(),
                                       null),
-                          Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                          Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
-                                      "boundaryEvent",  
+                                      process.getProcessDefinitionId(),
+                                      process.getId(),
                                       "testMessage",
                                       "foo",
                                       process.getBusinessKey(),
                                       Collections.singletonMap("key", 
                                                                "value")));
     }
-    
+  
     @Test
     public void shouldReceiveSubprocessMessageWithCorrelationKey() throws Exception {
         // given
@@ -415,28 +402,31 @@ public class ProcessRuntimeBPMNMessageIT {
                                                     .withCorrelationKey("foo")
                                                     .build());
         // then
-        assertThat(receivedEvents)
+        assertThat(MessageTestConfiguration.messageEvents)
                                   .isNotEmpty()
-                                  .extracting("type",
-                                              "processDefinitionId",
-                                              "processInstanceId",
-                                              "activityType",
-                                              "messageName",
-                                              "messageCorrelationKey",
-                                              "messageBusinessKey",
-                                              "messageData")
-                                  .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+                                  .extracting(BPMNMessageEvent::getEventType,
+                                              BPMNMessageEvent::getProcessDefinitionId,
+                                              BPMNMessageEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                                  .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
-                                                        "boundaryEvent",
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
                                                         "testMessage",
                                                         "foo",
                                                         process.getBusinessKey(),
                                                         null),
-                                            Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                            Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
-                                                        "boundaryEvent",
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
                                                         "testMessage",
                                                         "foo",
                                                         process.getBusinessKey(),
@@ -461,34 +451,37 @@ public class ProcessRuntimeBPMNMessageIT {
                                                     .withCorrelationKey("foo")
                                                     .build());
         // then
-        assertThat(receivedEvents).isNotEmpty()
-                                  .extracting("type",
-                                              "processDefinitionId",
-                                              "processInstanceId",
-                                              "activityType",
-                                              "messageName",
-                                              "messageCorrelationKey",
-                                              "messageBusinessKey",
-                                              "messageData")
-                                  .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                                  .extracting(BPMNMessageEvent::getEventType,
+                                              BPMNMessageEvent::getProcessDefinitionId,
+                                              BPMNMessageEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                                  .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
-                                                        "intermediateCatchEvent",
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
                                                         "testMessage",
                                                         "foo",
                                                         process.getBusinessKey(),
                                                         null),
-                                            Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                            Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
-                                                        "intermediateCatchEvent",
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
                                                         "testMessage",
                                                         "foo",
                                                         process.getBusinessKey(),
                                                         Collections.singletonMap("key",
                                                                                  "value")));
     }
-    
+     
     @Test
     public void shouldReceiveEventSubprocessMessageWithCorrelationKey() throws Exception {
         // given
@@ -505,31 +498,35 @@ public class ProcessRuntimeBPMNMessageIT {
                                                     .withCorrelationKey("foo")
                                                     .build());
         // then
-        assertThat(receivedEvents).isNotEmpty()
-                                  .extracting("type",
-                                              "processDefinitionId",
-                                              "processInstanceId",
-                                              "activityType",
-                                              "messageName",
-                                              "messageCorrelationKey",
-                                              "messageBusinessKey",
-                                              "messageData")
-                                  .contains(Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_WAITING,
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                                  .extracting(BPMNMessageEvent::getEventType,
+                                              BPMNMessageEvent::getProcessDefinitionId,
+                                              BPMNMessageEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
+                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                                  .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
-                                                        "startEvent",
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
                                                         "testMessage",
                                                         "foo",
                                                         process.getBusinessKey(),
                                                         null),
-                                            Tuple.tuple(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED,
+                                            Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
-                                                        "startEvent",
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
                                                         "testMessage",
                                                         "foo",
                                                         process.getBusinessKey(),
                                                         Collections.singletonMap("key",
                                                                                  "value")));
-    }     
+    }  
+ 
 }
