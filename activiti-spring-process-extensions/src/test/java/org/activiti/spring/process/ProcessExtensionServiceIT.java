@@ -38,6 +38,8 @@ public class ProcessExtensionServiceIT {
             return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
                     false);
         }
+
+
     }
 
     @MockBean
@@ -48,7 +50,7 @@ public class ProcessExtensionServiceIT {
 
     @Test
     public void canReadExtension() throws IOException {
-        ProcessExtensionModel model = processExtensionService.getExtensionsForId("d440ff7b-0ac8-4a97-b163-51a6ec49faa1");
+        ProcessExtensionModel model = processExtensionService.getExtensionsForId("initialVarsProcess");
 //        assertThat(model.getId())
 //                .contains("initialVarsProcess");
 
