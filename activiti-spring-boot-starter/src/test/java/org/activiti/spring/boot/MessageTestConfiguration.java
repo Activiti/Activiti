@@ -1,7 +1,7 @@
 package org.activiti.spring.boot;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.activiti.api.process.model.events.BPMNMessageEvent;
 import org.activiti.api.process.model.events.BPMNMessageReceivedEvent;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MessageTestConfiguration {
 
-    public static Set<BPMNMessageEvent> messageEvents = new HashSet<>();
+    public static List<BPMNMessageEvent> messageEvents = new ArrayList<BPMNMessageEvent>();
 
     @Bean
     public BPMNElementEventListener<BPMNMessageSentEvent> messageSentEventListener() {
