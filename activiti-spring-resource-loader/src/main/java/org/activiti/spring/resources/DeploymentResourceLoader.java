@@ -32,6 +32,9 @@ public class DeploymentResourceLoader<T> {
 
     private Map<String, List<T>> loadedResources = new HashMap<>();
 
+    public DeploymentResourceLoader() {
+    }
+
     public List<T> loadResourcesForDeployment(String deploymentId, ResourceReader<T> resourceLoaderDescriptor) {
         List<T> resources = loadedResources.get(deploymentId);
         if (resources != null) {
