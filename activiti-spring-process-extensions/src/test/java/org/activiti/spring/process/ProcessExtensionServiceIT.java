@@ -41,6 +41,9 @@ public class ProcessExtensionServiceIT {
                     false);
         }
 
+        @MockBean
+        protected RepositoryService repositoryService;
+
 
     }
 
