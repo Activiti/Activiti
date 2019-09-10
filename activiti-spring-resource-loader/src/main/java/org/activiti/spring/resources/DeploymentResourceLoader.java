@@ -32,8 +32,7 @@ public class DeploymentResourceLoader<T> {
 
     private Map<String, List<T>> loadedResources = new HashMap<>();
 
-    public DeploymentResourceLoader(RepositoryService repositoryService) {
-        this.repositoryService = repositoryService;
+    public DeploymentResourceLoader() {
     }
 
     public List<T> loadResourcesForDeployment(String deploymentId, ResourceReader<T> resourceLoaderDescriptor) {
@@ -76,5 +75,9 @@ public class DeploymentResourceLoader<T> {
             }
         }
         return resources;
+    }
+
+    public void setRepositoryService(RepositoryService repositoryService) {
+        this.repositoryService = repositoryService;
     }
 }

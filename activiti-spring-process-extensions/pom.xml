@@ -63,5 +63,9 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-spring-resource-loader</artifactId>
+      </dependency>
     </dependencies>
 </project>

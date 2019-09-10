@@ -58,8 +58,8 @@ public class ProcessExtensionsAutoConfiguration {
 
 
     @Bean
-    public DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader(RepositoryService repositoryService) {
-        return new DeploymentResourceLoader<>(repositoryService);
+    public DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader() {
+        return new DeploymentResourceLoader<>();
     }
 
     @Bean
@@ -70,25 +70,29 @@ public class ProcessExtensionsAutoConfiguration {
 
     @Bean
     public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
-                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader,
-                                                           RepositoryService repositoryService) {
+                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader) {
         return new ProcessExtensionService(
                 deploymentResourceLoader,
-                processExtensionResourceReader,
-                repositoryService);
+                processExtensionResourceReader);
     }
 
     @Bean
     InitializingBean initRepositoryServiceForProcessExtensionService(RepositoryService repositoryService,
-                                                                     ProcessExtensionService processExtensionService){
+                                                                     ProcessExtensionService processExtensionService) {
         return () -> processExtensionService.setRepositoryService(repositoryService);
+    }
+
+    @Bean
+    InitializingBean initRepositoryServiceForDeploymentResourceLoader(RepositoryService repositoryService,
+                                                                      DeploymentResourceLoader deploymentResourceLoader) {
+        return () -> deploymentResourceLoader.setRepositoryService(repositoryService);
     }
 
 
     @Bean
     @ConditionalOnMissingBean
     public DateFormatterProvider dateFormatterProvider(@Value("${spring.activiti.date-format-pattern:yyyy-MM-dd[['T'][ ]HH:mm:ss[.SSS'Z']]}")
-                                                                       String dateFormatPattern) {
+                                                               String dateFormatPattern) {
         return new DateFormatterProvider(dateFormatPattern);
     }
 
