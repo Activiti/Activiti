@@ -37,9 +37,6 @@ public class DateFormatterProviderTest {
 
         Date date = provider.toDate(dateStr);
 
-        assertThat(date).hasYear(1970);
-        assertThat(date).hasMonth(1);
-        assertThat(date).hasDayOfMonth(1);
         assertThat(date).hasTime(0);
     }
 
