@@ -70,6 +70,9 @@ public class ProcessVariablesInitiatorIT {
         protected ObjectMapper objectMapper() {
             return OBJECT_MAPPER;
         }
+
+
+
     }
 
     @Before
