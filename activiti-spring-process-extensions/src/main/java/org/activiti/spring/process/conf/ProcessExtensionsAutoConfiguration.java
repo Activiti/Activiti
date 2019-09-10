@@ -58,7 +58,7 @@ public class ProcessExtensionsAutoConfiguration {
 
 
     @Bean
-    public DeploymentResourceLoader<ProcessExtensionModel> processExtensionLoader(RepositoryService repositoryService) {
+    public DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader(RepositoryService repositoryService) {
         return new DeploymentResourceLoader<>(repositoryService);
     }
 
@@ -70,9 +70,10 @@ public class ProcessExtensionsAutoConfiguration {
 
     @Bean
     public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
+                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader,
                                                            RepositoryService repositoryService) {
         return new ProcessExtensionService(
-                new DeploymentResourceLoader<>(repositoryService),
+                deploymentResourceLoader,
                 processExtensionResourceReader,
                 repositoryService);
     }
