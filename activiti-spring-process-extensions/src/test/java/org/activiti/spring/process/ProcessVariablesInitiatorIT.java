@@ -71,6 +71,8 @@ public class ProcessVariablesInitiatorIT {
             return OBJECT_MAPPER;
         }
 
+        @MockBean
+        protected RepositoryService repositoryService;
 
 
     }
