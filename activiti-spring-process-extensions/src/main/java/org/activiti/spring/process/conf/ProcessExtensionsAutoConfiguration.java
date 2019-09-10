@@ -62,33 +62,8 @@ public class ProcessExtensionsAutoConfiguration {
 
 
     @Bean
-    public DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader() {
-        return new DeploymentResourceLoader<>();
-    }
-
-    @Bean
-    public ProcessExtensionResourceReader processExtensionResourceReader(ObjectMapper objectMapper,
-                                                                         Map<String, VariableType> variableTypeMap) {
-        return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
-    }
-
-
-    @Bean
-    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
-                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader) {
-        return new ProcessExtensionService(
-                deploymentResourceLoader,
-                processExtensionResourceReader);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinderDescriptor(
-            @Value("${activiti.process.extensions.dir:classpath:**/processes/}") String locationPrefix,
-            @Value("${activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix) {
-        return new ProcessExtensionResourceFinderDescriptor(true,
-                locationPrefix,
-                locationSuffix);
+    public DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader(RepositoryService repositoryService) {
+        return new DeploymentResourceLoader<>(repositoryService);
     }
 
     @Bean
@@ -99,16 +74,17 @@ public class ProcessExtensionsAutoConfiguration {
 
     @Bean
     public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
+                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader,
                                                            RepositoryService repositoryService) {
         return new ProcessExtensionService(
-                new DeploymentResourceLoader<>(repositoryService),
+                deploymentResourceLoader,
                 processExtensionResourceReader,
                 repositoryService);
     }
 
     @Bean
     InitializingBean initRepositoryServiceForProcessExtensionService(RepositoryService repositoryService,
-                                                                     ProcessExtensionService processExtensionService) {
+                                                                     ProcessExtensionService processExtensionService){
         return () -> processExtensionService.setRepositoryService(repositoryService);
     }
 
@@ -122,7 +98,7 @@ public class ProcessExtensionsAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public DateFormatterProvider dateFormatterProvider(@Value("${spring.activiti.date-format-pattern:yyyy-MM-dd[['T'][ ]HH:mm:ss[.SSS'Z']]}")
-                                                               String dateFormatPattern) {
+                                                                       String dateFormatPattern) {
         return new DateFormatterProvider(dateFormatPattern);
     }
 
