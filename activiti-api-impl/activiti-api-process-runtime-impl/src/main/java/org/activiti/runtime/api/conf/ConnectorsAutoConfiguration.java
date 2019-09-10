@@ -31,8 +31,8 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public IntegrationContextBuilder integrationContextBuilder(ProcessExtensionService processExtensionService) {
-        return new IntegrationContextBuilder(new VariablesMappingProvider(processExtensionService));
+    public IntegrationContextBuilder integrationContextBuilder(VariablesMappingProvider variablesMappingProvider) {
+        return new IntegrationContextBuilder(variablesMappingProvider);
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
