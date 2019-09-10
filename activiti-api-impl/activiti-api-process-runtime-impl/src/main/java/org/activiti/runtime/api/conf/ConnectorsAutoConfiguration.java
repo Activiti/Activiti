@@ -30,8 +30,8 @@ import org.springframework.context.annotation.Configuration;
 public class ConnectorsAutoConfiguration {
 
     @Bean
-    public IntegrationContextBuilder integrationContextBuilder(ProcessExtensionService processExtensionService) {
-        return new IntegrationContextBuilder(new VariablesMappingProvider(processExtensionService));
+    public IntegrationContextBuilder integrationContextBuilder(VariablesMappingProvider variablesMappingProvider) {
+        return new IntegrationContextBuilder(variablesMappingProvider);
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
