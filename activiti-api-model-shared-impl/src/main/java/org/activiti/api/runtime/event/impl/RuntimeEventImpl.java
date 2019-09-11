@@ -16,6 +16,7 @@
 
 package org.activiti.api.runtime.event.impl;
 
+import java.util.Objects;
 import java.util.UUID;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
@@ -122,9 +123,63 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> 
 
     @Override
     public String toString() {
-        return "id='" + id + '\'' +
-                ", timestamp=" + timestamp +
-                ", entity=" + entity;
+        StringBuilder builder = new StringBuilder();
+        builder.append("RuntimeEventImpl [id=")
+               .append(id)
+               .append(", timestamp=")
+               .append(timestamp)
+               .append(", processInstanceId=")
+               .append(processInstanceId)
+               .append(", processDefinitionId=")
+               .append(processDefinitionId)
+               .append(", processDefinitionKey=")
+               .append(processDefinitionKey)
+               .append(", processDefinitionVersion=")
+               .append(processDefinitionVersion)
+               .append(", businessKey=")
+               .append(businessKey)
+               .append(", parentProcessInstanceId=")
+               .append(parentProcessInstanceId)
+               .append(", entity=")
+               .append(entity)
+               .append("]");
+        return builder.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(businessKey,
+                            entity,
+                            id,
+                            parentProcessInstanceId,
+                            processDefinitionId,
+                            processDefinitionKey,
+                            processDefinitionVersion,
+                            processInstanceId,
+                            timestamp);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        RuntimeEventImpl other = (RuntimeEventImpl) obj;
+        return Objects.equals(businessKey, other.businessKey) 
+                && Objects.equals(entity, other.entity)
+                && Objects.equals(id, other.id) 
+                && Objects.equals(parentProcessInstanceId, other.parentProcessInstanceId) 
+                && Objects.equals(processDefinitionId, other.processDefinitionId) 
+                && Objects.equals(processDefinitionKey, other.processDefinitionKey) 
+                && Objects.equals(processDefinitionVersion, other.processDefinitionVersion) 
+                && Objects.equals(processInstanceId, other.processInstanceId) 
+                && Objects.equals(timestamp, other.timestamp);
     }
 
 }
