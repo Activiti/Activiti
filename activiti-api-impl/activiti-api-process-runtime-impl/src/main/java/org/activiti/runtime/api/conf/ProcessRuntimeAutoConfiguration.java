@@ -22,6 +22,9 @@ import java.util.List;
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
+import org.activiti.api.process.model.events.BPMNMessageReceivedEvent;
+import org.activiti.api.process.model.events.BPMNMessageSentEvent;
+import org.activiti.api.process.model.events.BPMNMessageWaitingEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
 import org.activiti.api.process.model.events.BPMNTimerCancelledEvent;
@@ -50,12 +53,16 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.runtime.api.conf.impl.ProcessRuntimeConfigurationImpl;
+import org.activiti.runtime.api.event.impl.BPMNMessageConverter;
 import org.activiti.runtime.api.event.impl.BPMNTimerConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCreatedEventConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessStartedEventConverter;
 import org.activiti.runtime.api.event.impl.ToActivityCancelledConverter;
 import org.activiti.runtime.api.event.impl.ToActivityCompletedConverter;
 import org.activiti.runtime.api.event.impl.ToActivityStartedConverter;
+import org.activiti.runtime.api.event.impl.ToMessageReceivedConverter;
+import org.activiti.runtime.api.event.impl.ToMessageSentConverter;
+import org.activiti.runtime.api.event.impl.ToMessageWaitingConverter;
 import org.activiti.runtime.api.event.impl.ToProcessCancelledConverter;
 import org.activiti.runtime.api.event.impl.ToProcessCompletedConverter;
 import org.activiti.runtime.api.event.impl.ToProcessResumedConverter;
@@ -72,6 +79,9 @@ import org.activiti.runtime.api.event.impl.ToTimerScheduledConverter;
 import org.activiti.runtime.api.event.internal.ActivityCancelledListenerDelegate;
 import org.activiti.runtime.api.event.internal.ActivityCompletedListenerDelegate;
 import org.activiti.runtime.api.event.internal.ActivityStartedListenerDelegate;
+import org.activiti.runtime.api.event.internal.MessageReceivedListenerDelegate;
+import org.activiti.runtime.api.event.internal.MessageSentListenerDelegate;
+import org.activiti.runtime.api.event.internal.MessageWaitingListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessCancelledListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessCompletedListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessCreatedListenerDelegate;
@@ -300,6 +310,11 @@ public class ProcessRuntimeAutoConfiguration {
     public BPMNTimerConverter bpmnTimerConveter() {
         return new BPMNTimerConverter();
     }
+    
+    @Bean
+    public BPMNMessageConverter bpmnMessageConveter() {
+        return new BPMNMessageConverter();
+    }
 
     @Bean
     public InitializingBean registerActivityStartedListenerDelegate(RuntimeService runtimeService,
@@ -391,6 +406,33 @@ public class ProcessRuntimeAutoConfiguration {
                 ActivitiEventType.JOB_RETRIES_DECREMENTED);
     }
 
+    @Bean
+    public InitializingBean registerMessageSentListenerDelegate(RuntimeService runtimeService,
+                                                                @Autowired(required = false) List<BPMNElementEventListener<BPMNMessageSentEvent>> eventListeners,
+                                                                BPMNMessageConverter bpmnMessageConverter) {
+        return () -> runtimeService.addEventListener(new MessageSentListenerDelegate(getInitializedListeners(eventListeners),
+                        new ToMessageSentConverter(bpmnMessageConverter)),
+                ActivitiEventType.ACTIVITY_MESSAGE_SENT);
+    }
+    
+    @Bean
+    public InitializingBean registerMessageReceivedListenerDelegate(RuntimeService runtimeService,
+                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNMessageReceivedEvent>> eventListeners,
+                                                                    BPMNMessageConverter bpmnMessageConverter) {
+        return () -> runtimeService.addEventListener(new MessageReceivedListenerDelegate(getInitializedListeners(eventListeners),
+                        new ToMessageReceivedConverter(bpmnMessageConverter)),
+                ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+    }
+    
+    @Bean
+    public InitializingBean registerMessageWaitingListenerDelegate(RuntimeService runtimeService,
+                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNMessageWaitingEvent>> eventListeners,
+                                                                    BPMNMessageConverter bpmnMessageConverter) {
+        return () -> runtimeService.addEventListener(new MessageWaitingListenerDelegate(getInitializedListeners(eventListeners),
+                        new ToMessageWaitingConverter(bpmnMessageConverter)),
+                ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
+    }
+    
     @Bean
     public InitializingBean registerSequenceFlowTakenListenerDelegate(RuntimeService runtimeService,
                                                                       @Autowired(required = false) List<BPMNElementEventListener<BPMNSequenceFlowTakenEvent>> eventListeners) {
