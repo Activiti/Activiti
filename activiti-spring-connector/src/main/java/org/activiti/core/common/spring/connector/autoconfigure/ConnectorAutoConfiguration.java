@@ -35,7 +35,6 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 @ComponentScan(basePackages = "org.activiti.core.common.spring.connector")
 public class ConnectorAutoConfiguration {
 
-
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnMissingClass(value = "org.springframework.http.converter.json.Jackson2ObjectMapperBuilder")
