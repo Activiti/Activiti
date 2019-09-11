@@ -24,6 +24,20 @@
         "type": "string",
         "required": true,
         "value": "outputmap1Value"
+      },
+      "process-variable-date-id": {
+        "id": "process-variable-date-id",
+        "name": "process-variable-date",
+        "type": "date",
+        "required": true,
+        "value": "2019-09-01"
+      },
+      "process-variable-datetime-id": {
+        "id": "process-variable-datetime-id",
+        "name": "process-variable-datetime",
+        "type": "date",
+        "required": true,
+        "value": "2019-09-01T10:20:30.000Z"
       }
     },
   "mappings": {
@@ -32,12 +46,28 @@
         "task_input_variable_name_1": {
           "type": "variable",
           "value": "process_variable_inputmap_1"
+        },
+        "task-variable-date": {
+          "type": "variable",
+          "value": "process-variable-date"
+        },
+        "task-variable-datetime": {
+          "type": "variable",
+          "value": "process-variable-datetime"
         }
       },
       "outputs": {
         "process_variable_outputmap_1": {
           "type": "variable",
           "value": "task_output_variable_name_1"
+        },
+        "process-variable-date": {
+          "type": "variable",
+          "value": "task-variable-date"
+        },
+        "process-variable-datetime": {
+          "type": "variable",
+          "value": "task-variable-datetime"
         }
       }
     }

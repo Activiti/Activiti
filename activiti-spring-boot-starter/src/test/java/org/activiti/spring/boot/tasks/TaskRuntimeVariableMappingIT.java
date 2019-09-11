@@ -16,13 +16,6 @@
 
 package org.activiti.spring.boot.tasks;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -38,6 +31,7 @@ import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
+import org.activiti.spring.process.variable.DateFormatterProvider;
 import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -47,6 +41,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -69,6 +71,9 @@ public class TaskRuntimeVariableMappingIT {
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
+    
+    @Autowired
+    private DateFormatterProvider dateFormatterProvider;
 
     @After
     public void cleanUp() {
@@ -83,6 +88,9 @@ public class TaskRuntimeVariableMappingIT {
                                                                .withProcessDefinitionKey(TASK_VAR_MAPPING)
                                                                .build());
 
+        Date date = dateFormatterProvider.parse("2019-09-01");
+        Date datetime = dateFormatterProvider.parse("2019-09-01T10:20:30.000Z");
+        
         Task task = checkTasks(process.getId());
 
         assertThat(task.getName()).isEqualTo("testSimpleTask");
@@ -94,13 +102,24 @@ public class TaskRuntimeVariableMappingIT {
         assertThat(procVariables)
                 .isNotNull()
                 .extracting(VariableInstance::getName,
+                            VariableInstance::getType,
                             VariableInstance::getValue)
                 .containsOnly(tuple("process_variable_unmapped_1",
+                                    "string",
                                     "unmapped1Value"),
                               tuple("process_variable_inputmap_1",
+                                    "string",
                                     "inputmap1Value"),
                               tuple("process_variable_outputmap_1",
-                                    "outputmap1Value"));
+                                    "string",
+                                    "outputmap1Value"),
+                              tuple("process-variable-date",
+                                    "date",
+                                    date),
+                              tuple("process-variable-datetime",
+                                    "date",
+                                    datetime)
+                              );
 
         List<VariableInstance> taskVariables = taskRuntime.variables(TaskPayloadBuilder
                                                                              .variables()
@@ -109,9 +128,18 @@ public class TaskRuntimeVariableMappingIT {
         assertThat(taskVariables)
                 .isNotNull()
                 .extracting(VariableInstance::getName,
+                            VariableInstance::getType,
                             VariableInstance::getValue)
                 .containsOnly(tuple("task_input_variable_name_1",
-                                    "inputmap1Value"));
+                                    "string",
+                                    "inputmap1Value"),
+                              tuple("task-variable-date",
+                                    "date",
+                                    date),
+                              tuple("task-variable-datetime",
+                                    "date",
+                                    datetime)
+                              );
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("task_input_variable_name_1",
@@ -136,7 +164,11 @@ public class TaskRuntimeVariableMappingIT {
                         tuple("process_variable_inputmap_1",
                               "inputmap1Value"),
                         tuple("process_variable_outputmap_1",
-                              "outputTaskValue")
+                              "outputTaskValue"),
+                        tuple("process-variable-date",
+                              date),
+                        tuple("process-variable-datetime",
+                              datetime)
 
                 );
 
