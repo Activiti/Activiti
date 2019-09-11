@@ -16,14 +16,10 @@
 
 package org.activiti.spring.boot.process;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-
 import java.util.Collections;
 import java.util.List;
 
 import org.activiti.api.model.shared.model.VariableInstance;
-import org.activiti.api.process.model.BPMNMessage;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.MessagePayloadBuilder;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -40,6 +36,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import static org.assertj.core.api.Assertions.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -85,7 +83,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }
 
     @Test
-    public void shouldThrowIntermediateMessageEvent() throws Exception{
+    public void shouldThrowIntermediateMessageEvent() {
 
         securityUtil.logInAs("user");
 
@@ -100,10 +98,10 @@ public class ProcessRuntimeBPMNMessageIT {
                             BPMNMessageEvent::getProcessInstanceId,
                             event -> event.getEntity().getProcessDefinitionId(),
                             event -> event.getEntity().getProcessInstanceId(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables()  
+                            event -> event.getEntity().getMessagePayload().getName(),
+                            event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                            event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                            event -> event.getEntity().getMessagePayload().getVariables()
                 )
                 .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_SENT,
                                       process.getProcessDefinitionId(),
@@ -118,7 +116,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }
 
     @Test
-    public void shouldReceiveCatchMessageWithCorrelationKeyAndMappedPayload() throws Exception {
+    public void shouldReceiveCatchMessageWithCorrelationKeyAndMappedPayload() {
         // given
         securityUtil.logInAs("user");
 
@@ -142,10 +140,10 @@ public class ProcessRuntimeBPMNMessageIT {
                             BPMNMessageEvent::getProcessInstanceId,
                             event -> event.getEntity().getProcessDefinitionId(),
                             event -> event.getEntity().getProcessInstanceId(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                            event -> event.getEntity().getMessagePayload().getName(),
+                            event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                            event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                            event -> event.getEntity().getMessagePayload().getVariables())
                 .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
@@ -178,7 +176,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }
 
     @Test
-    public void shouldStartProcessByMessageWithMappedPayload() throws Exception {
+    public void shouldStartProcessByMessageWithMappedPayload() {
         // given
         securityUtil.logInAs("user");
 
@@ -194,10 +192,10 @@ public class ProcessRuntimeBPMNMessageIT {
                                               BPMNMessageEvent::getProcessInstanceId,
                                               event -> event.getEntity().getProcessDefinitionId(),
                                               event -> event.getEntity().getProcessInstanceId(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                                              event -> event.getEntity().getMessagePayload().getName(),
+                                              event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                                              event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                                              event -> event.getEntity().getMessagePayload().getVariables())
                                   .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
@@ -221,7 +219,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }
      
     @Test
-    public void shouldStartProcessByMessage() throws Exception {
+    public void shouldStartProcessByMessage() {
         // given
         securityUtil.logInAs("user");
 
@@ -238,10 +236,10 @@ public class ProcessRuntimeBPMNMessageIT {
                             BPMNMessageEvent::getProcessInstanceId,
                             event -> event.getEntity().getProcessDefinitionId(),
                             event -> event.getEntity().getProcessInstanceId(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                            event -> event.getEntity().getMessagePayload().getName(),
+                            event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                            event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                            event -> event.getEntity().getMessagePayload().getVariables())
                 .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
@@ -255,7 +253,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }
       
     @Test
-    public void shouldReceiveCatchMessageWithCorrelationKey() throws Exception {
+    public void shouldReceiveCatchMessageWithCorrelationKey() {
         // given
         securityUtil.logInAs("user");
 
@@ -278,10 +276,10 @@ public class ProcessRuntimeBPMNMessageIT {
                             BPMNMessageEvent::getProcessInstanceId,
                             event -> event.getEntity().getProcessDefinitionId(),
                             event -> event.getEntity().getProcessInstanceId(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                            event -> event.getEntity().getMessagePayload().getName(),
+                            event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                            event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                            event -> event.getEntity().getMessagePayload().getVariables())
                 .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
@@ -304,7 +302,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }
       
     @Test
-    public void shouldThrowEndMessageEvent() throws Exception {
+    public void shouldThrowEndMessageEvent() {
         // given
         securityUtil.logInAs("user");
 
@@ -321,10 +319,10 @@ public class ProcessRuntimeBPMNMessageIT {
                                               BPMNMessageEvent::getProcessInstanceId,
                                               event -> event.getEntity().getProcessDefinitionId(),
                                               event -> event.getEntity().getProcessInstanceId(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                                              event -> event.getEntity().getMessagePayload().getName(),
+                                              event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                                              event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                                              event -> event.getEntity().getMessagePayload().getVariables())
                                   .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_SENT,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
@@ -337,7 +335,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }    
      
     @Test
-    public void shouldReceiveBoundaryMessageWithCorrelationKey() throws Exception {
+    public void shouldReceiveBoundaryMessageWithCorrelationKey() {
         // given
         securityUtil.logInAs("user");
 
@@ -360,10 +358,10 @@ public class ProcessRuntimeBPMNMessageIT {
                             BPMNMessageEvent::getProcessInstanceId,
                             event -> event.getEntity().getProcessDefinitionId(),
                             event -> event.getEntity().getProcessInstanceId(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
-                            event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                            event -> event.getEntity().getMessagePayload().getName(),
+                            event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                            event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                            event -> event.getEntity().getMessagePayload().getVariables())
                 .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                       process.getProcessDefinitionId(),
                                       process.getId(),
@@ -386,7 +384,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }
   
     @Test
-    public void shouldReceiveSubprocessMessageWithCorrelationKey() throws Exception {
+    public void shouldReceiveSubprocessMessageWithCorrelationKey() {
         // given
         securityUtil.logInAs("user");
 
@@ -409,10 +407,10 @@ public class ProcessRuntimeBPMNMessageIT {
                                               BPMNMessageEvent::getProcessInstanceId,
                                               event -> event.getEntity().getProcessDefinitionId(),
                                               event -> event.getEntity().getProcessInstanceId(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                                              event -> event.getEntity().getMessagePayload().getName(),
+                                              event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                                              event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                                              event -> event.getEntity().getMessagePayload().getVariables())
                                   .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
@@ -435,7 +433,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }
 
     @Test
-    public void shouldReceiveEventGatewayMessageWithCorrelationKey() throws Exception {
+    public void shouldReceiveEventGatewayMessageWithCorrelationKey() {
         // given
         securityUtil.logInAs("user");
 
@@ -457,10 +455,10 @@ public class ProcessRuntimeBPMNMessageIT {
                                               BPMNMessageEvent::getProcessInstanceId,
                                               event -> event.getEntity().getProcessDefinitionId(),
                                               event -> event.getEntity().getProcessInstanceId(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                                              event -> event.getEntity().getMessagePayload().getName(),
+                                              event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                                              event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                                              event -> event.getEntity().getMessagePayload().getVariables())
                                   .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),
@@ -483,7 +481,7 @@ public class ProcessRuntimeBPMNMessageIT {
     }
      
     @Test
-    public void shouldReceiveEventSubprocessMessageWithCorrelationKey() throws Exception {
+    public void shouldReceiveEventSubprocessMessageWithCorrelationKey() {
         // given
         securityUtil.logInAs("user");
 
@@ -504,10 +502,10 @@ public class ProcessRuntimeBPMNMessageIT {
                                               BPMNMessageEvent::getProcessInstanceId,
                                               event -> event.getEntity().getProcessDefinitionId(),
                                               event -> event.getEntity().getProcessInstanceId(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getName(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getCorrelationKey(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getBusinessKey(),
-                                              event -> ((BPMNMessage)(event.getEntity())).getMessagePayload().getVariables())
+                                              event -> event.getEntity().getMessagePayload().getName(),
+                                              event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                                              event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                                              event -> event.getEntity().getMessagePayload().getVariables())
                                   .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
                                                         process.getProcessDefinitionId(),
                                                         process.getId(),

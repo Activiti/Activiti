@@ -20,10 +20,9 @@ import java.util.Optional;
 
 import org.activiti.api.process.model.events.BPMNMessageSentEvent;
 import org.activiti.api.runtime.event.impl.BPMNMessageSentEventImpl;
-import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 
-public class ToMessageSentConverter implements EventConverter<BPMNMessageSentEvent, ActivitiEvent> {
+public class ToMessageSentConverter implements EventConverter<BPMNMessageSentEvent, ActivitiMessageEvent> {
 
     private BPMNMessageConverter bpmnMessageConverter;
 
@@ -32,13 +31,10 @@ public class ToMessageSentConverter implements EventConverter<BPMNMessageSentEve
     }
 
     @Override
-    public Optional<BPMNMessageSentEvent> from(ActivitiEvent internalEvent) {
-        BPMNMessageSentEventImpl event = null;
-        if (bpmnMessageConverter.isMessageRelatedEvent(internalEvent)) {
-            event = new BPMNMessageSentEventImpl(bpmnMessageConverter.convertToBPMNMessage((ActivitiMessageEvent) internalEvent));
-            event.setProcessInstanceId(internalEvent.getProcessInstanceId());
-            event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
-        }
-        return Optional.ofNullable(event);
+    public Optional<BPMNMessageSentEvent> from(ActivitiMessageEvent internalEvent) {
+        BPMNMessageSentEventImpl event = new BPMNMessageSentEventImpl(bpmnMessageConverter.convertToBPMNMessage(internalEvent));
+        event.setProcessInstanceId(internalEvent.getProcessInstanceId());
+        event.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
+        return Optional.of(event);
     }
 }

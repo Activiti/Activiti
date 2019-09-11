@@ -22,6 +22,7 @@ import org.activiti.api.process.model.events.BPMNMessageSentEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
+import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 import org.activiti.runtime.api.event.impl.ToMessageSentConverter;
 
 public class MessageSentListenerDelegate implements ActivitiEventListener {
@@ -38,12 +39,14 @@ public class MessageSentListenerDelegate implements ActivitiEventListener {
 
     @Override
     public void onEvent(ActivitiEvent event) {
-        converter.from(event)
-                .ifPresent(convertedEvent -> {
-                    for (BPMNElementEventListener<BPMNMessageSentEvent> listener : processRuntimeEventListeners) {
-                        listener.onEvent(convertedEvent);
-                    }
-                });
+        if (event instanceof ActivitiMessageEvent) {
+            converter.from((ActivitiMessageEvent) event)
+                    .ifPresent(convertedEvent -> {
+                        for (BPMNElementEventListener<BPMNMessageSentEvent> listener : processRuntimeEventListeners) {
+                            listener.onEvent(convertedEvent);
+                        }
+                    });
+        }
     }
 
     @Override

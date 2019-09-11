@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.activiti.api.process.model.payloads.MessageEventPayload;
 import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
-import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 
 public class BPMNMessageConverter {
@@ -40,7 +39,4 @@ public class BPMNMessageConverter {
         return bpmnMessage;
     }
 
-    public boolean isMessageRelatedEvent(ActivitiEvent event) {
-        return (event instanceof ActivitiMessageEvent);
-    }
 }
