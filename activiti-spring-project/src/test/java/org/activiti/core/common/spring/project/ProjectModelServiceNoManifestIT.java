@@ -24,6 +24,9 @@ public class ProjectModelServiceNoManifestIT {
     @Test
     public void should_ThrowException_When_NoManifestPresent() throws IOException {
 
+        //given
+        assertThat(projectModelService.hasProjectManifest()).isFalse();
+
         //when
         Throwable thrown = catchThrowable(() -> projectModelService.loadProjectManifest());
 

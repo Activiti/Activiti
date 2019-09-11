@@ -24,6 +24,8 @@ public class ProjectModelServiceIT {
     @Test
     public void should_RetrieveManifest_When_Called() throws IOException {
 
+        assertThat(projectModelService.hasProjectManifest()).isTrue();
+
         ProjectManifest projectModel = projectModelService.loadProjectManifest();
 
         assertThat(projectModel.getCreatedBy()).isEqualTo("superadminuser");

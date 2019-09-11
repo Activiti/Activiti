@@ -30,11 +30,11 @@ public class ProjectModelService {
         this.resourceLoader = resourceLoader;
     }
 
-    private Optional<Resource> retrieveResource() throws IOException {
+    private Optional<Resource> retrieveResource() {
 
-        Resource resource = resourceLoader.getResource(path);
+        Resource resource = resourceLoader.getResource(path + applicationName + ".json");
         if (resource.exists()) {
-            return Optional.of(resourceLoader.getResource(path + applicationName + ".json"));
+            return Optional.of(resource);
         } else {
             return Optional.empty();
         }
@@ -51,5 +51,9 @@ public class ProjectModelService {
         return read(resourceOptional
                             .orElseThrow(() -> new FileNotFoundException("'" + applicationName + ".json' manifest not found."))
                             .getInputStream());
+    }
+
+    public boolean hasProjectManifest(){
+        return retrieveResource().isPresent();
     }
 }
