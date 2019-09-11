@@ -16,24 +16,18 @@
 
 package org.activiti.runtime.api.event.impl;
 
+import org.activiti.api.process.model.payloads.MessageEventPayload;
+import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
+import org.activiti.engine.delegate.event.ActivitiMessageEvent;
+import org.junit.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
-
-import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
-import org.activiti.engine.delegate.event.ActivitiMessageEvent;
-import org.junit.Before;
-import org.junit.Test;
 
 public class BPMNMessageConverterTest {
 
     private BPMNMessageConverter bpmnMessageConverter = new BPMNMessageConverter();
-
-    @Before
-    public void setUp() {
-        initMocks(this);
-    }
 
     @Test
     public void convertShouldReturnBPMNMessage() {
@@ -52,13 +46,13 @@ public class BPMNMessageConverterTest {
         assertThat(bpmnMessage.getProcessInstanceId()).isEqualTo("procInstId");
         assertThat(bpmnMessage.getProcessDefinitionId()).isEqualTo("procDefId");
         assertThat(bpmnMessage.getMessagePayload())
-        .isNotNull()
-        .extracting("name",
-                    "businessKey",
-                    "correlationKey")
-        .contains("messageName",
-                  "businessKey",
-                  "correlationKey");
+                .isNotNull()
+                .extracting(MessageEventPayload::getName,
+                            MessageEventPayload::getBusinessKey,
+                            MessageEventPayload::getCorrelationKey)
+                .contains("messageName",
+                          "businessKey",
+                          "correlationKey");
     }
 
 }
