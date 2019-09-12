@@ -19,6 +19,10 @@
       <artifactId>activiti-api-runtime-shared</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.activiti.core.common</groupId>
+      <artifactId>activiti-project-model</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-bpmn-converter</artifactId>
     </dependency>
