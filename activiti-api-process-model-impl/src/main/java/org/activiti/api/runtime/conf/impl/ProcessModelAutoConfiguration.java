@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.module.SimpleAbstractTypeResolver;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.activiti.api.process.model.BPMNActivity;
+import org.activiti.api.process.model.BPMNError;
 import org.activiti.api.process.model.BPMNMessage;
 import org.activiti.api.process.model.BPMNSequenceFlow;
 import org.activiti.api.process.model.BPMNSignal;
@@ -49,6 +50,7 @@ import org.activiti.api.process.model.payloads.TimerPayload;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
 import org.activiti.api.process.model.results.ProcessInstanceResult;
 import org.activiti.api.runtime.model.impl.BPMNActivityImpl;
+import org.activiti.api.runtime.model.impl.BPMNErrorImpl;
 import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
 import org.activiti.api.runtime.model.impl.BPMNSequenceFlowImpl;
 import org.activiti.api.runtime.model.impl.BPMNSignalImpl;
@@ -97,6 +99,8 @@ public class ProcessModelAutoConfiguration {
                             BPMNTimerImpl.class);
         resolver.addMapping(BPMNMessage.class,
                             BPMNMessageImpl.class);
+        resolver.addMapping(BPMNError.class,
+                            BPMNErrorImpl.class);
 
         module.registerSubtypes(new NamedType(ProcessInstanceResult.class,
                                               ProcessInstanceResult.class.getSimpleName()));
