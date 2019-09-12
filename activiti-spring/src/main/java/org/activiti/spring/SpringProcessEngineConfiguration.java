@@ -188,22 +188,13 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
    * @return the deployment strategy to use for the mode. Never <code>null</code>
    */
   protected AutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
-    AutoDeploymentStrategy result = new DefaultAutoDeploymentStrategy();
-//    for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
-//      if (strategy.handlesMode(mode)) {
-//        result = strategy;
-//        break;
-//      }
-//    }
-
+    AutoDeploymentStrategy result = deploymentStrategies.get(DefaultAutoDeploymentStrategy.class.getName());
     for(Map.Entry<String, AutoDeploymentStrategy> entry : deploymentStrategies.entrySet()){
         if(entry.getValue().handlesMode(mode)){
             result = entry.getValue();
             break;
         }
     }
-
-
     return result;
   }
 
