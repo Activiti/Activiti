@@ -20,9 +20,11 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import org.activiti.core.common.spring.project.ProjectModelService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
@@ -37,8 +39,10 @@ import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -70,10 +74,12 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             SpringAsyncExecutor springAsyncExecutor,
             ActivitiProperties activitiProperties,
             ProcessDefinitionResourceFinder processDefinitionResourceFinder,
+            ProjectModelService projectModelService,
             @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
             @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators) throws IOException {
 
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration();
+        conf.setProjecManifest(projectModelService);
         conf.setConfigurators(processEngineConfigurators);
         configureProcessDefinitionResources(processDefinitionResourceFinder,
                                             conf);

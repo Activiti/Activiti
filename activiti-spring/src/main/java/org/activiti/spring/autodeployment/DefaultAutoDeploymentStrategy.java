@@ -13,8 +13,12 @@
 
 package org.activiti.spring.autodeployment;
 
+import java.io.IOException;
+
+import org.activiti.core.common.spring.project.ProjectModelService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 
 /**
@@ -29,13 +33,25 @@ public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrateg
    */
   public static final String DEPLOYMENT_MODE = "default";
 
-  @Override
+  private ProjectModelService projectModelService;
+
+//  public DefaultAutoDeploymentStrategy(ProjectModelService projectModelService) {
+//      this.projectModelService = projectModelService;
+//  }
+
+    public void setProjectModelService(ProjectModelService projectModelService) {
+        this.projectModelService = projectModelService;
+    }
+
+    @Override
   protected String getDeploymentMode() {
     return DEPLOYMENT_MODE;
   }
 
   @Override
-  public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {
+  public void deployResources(final String deploymentNameHint,
+                              final Resource[] resources,
+                              final RepositoryService repositoryService) {
 
     // Create a single deployment for all resources using the name hint as
     // the
@@ -47,6 +63,15 @@ public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrateg
 
       deploymentBuilder.addInputStream(resourceName,
                                        resource);
+    }
+
+    if(projectModelService.hasProjectManifest()){
+        try {
+            deploymentBuilder.setProjectManifest(projectModelService.loadProjectManifest());
+
+        }catch (IOException e){
+            System.out.println("Manifest of application not found. Project release version will not be set for deployment.");
+        }
     }
 
     deploymentBuilder.deploy();

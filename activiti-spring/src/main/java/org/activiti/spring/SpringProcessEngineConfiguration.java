@@ -13,6 +13,7 @@
 
 package org.activiti.spring;
 
+import org.activiti.core.common.spring.project.ProjectModelService;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -37,8 +38,8 @@ import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
 
@@ -54,15 +55,21 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   protected String deploymentMode = "default";
   protected ApplicationContext applicationContext;
   protected Integer transactionSynchronizationAdapterOrder = null;
-  private Collection<AutoDeploymentStrategy> deploymentStrategies = new ArrayList<AutoDeploymentStrategy>();
+  private Map<String, AutoDeploymentStrategy> deploymentStrategies = new HashMap<>();
 
   public SpringProcessEngineConfiguration() {
     this.transactionsExternallyManaged = true;
-    deploymentStrategies.add(new DefaultAutoDeploymentStrategy());
-    deploymentStrategies.add(new SingleResourceAutoDeploymentStrategy());
-    deploymentStrategies.add(new ResourceParentFolderAutoDeploymentStrategy());
-    deploymentStrategies.add(new FailOnNoProcessAutoDeploymentStrategy());
-    deploymentStrategies.add(new NeverFailAutoDeploymentStrategy());
+    deploymentStrategies.put(DefaultAutoDeploymentStrategy.class.getName(), new DefaultAutoDeploymentStrategy());
+    deploymentStrategies.put(SingleResourceAutoDeploymentStrategy.class.getName(), new SingleResourceAutoDeploymentStrategy());
+    deploymentStrategies.put(ResourceParentFolderAutoDeploymentStrategy.class.getName(), new ResourceParentFolderAutoDeploymentStrategy());
+    deploymentStrategies.put(FailOnNoProcessAutoDeploymentStrategy.class.getName(),new FailOnNoProcessAutoDeploymentStrategy());
+    deploymentStrategies.put(NeverFailAutoDeploymentStrategy.class.getName(),new NeverFailAutoDeploymentStrategy());
+  }
+
+  public void setProjecManifest(ProjectModelService projectModelService){
+      DefaultAutoDeploymentStrategy newDefaultAutoDeploymentStrategy = (DefaultAutoDeploymentStrategy) deploymentStrategies.get(DefaultAutoDeploymentStrategy.class.getName());
+      newDefaultAutoDeploymentStrategy.setProjectModelService(projectModelService);
+      deploymentStrategies.put(DefaultAutoDeploymentStrategy.class.getName(),newDefaultAutoDeploymentStrategy);
   }
 
   @Override
@@ -182,12 +189,21 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
    */
   protected AutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
     AutoDeploymentStrategy result = new DefaultAutoDeploymentStrategy();
-    for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
-      if (strategy.handlesMode(mode)) {
-        result = strategy;
-        break;
-      }
+//    for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
+//      if (strategy.handlesMode(mode)) {
+//        result = strategy;
+//        break;
+//      }
+//    }
+
+    for(Map.Entry<String, AutoDeploymentStrategy> entry : deploymentStrategies.entrySet()){
+        if(entry.getValue().handlesMode(mode)){
+            result = entry.getValue();
+            break;
+        }
     }
+
+
     return result;
   }
 
