@@ -66,7 +66,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     deploymentStrategies.put(NeverFailAutoDeploymentStrategy.class.getName(),new NeverFailAutoDeploymentStrategy());
   }
 
-  public void setProjecManifest(ProjectModelService projectModelService){
+  public void setProjectModelService(ProjectModelService projectModelService){
       DefaultAutoDeploymentStrategy newDefaultAutoDeploymentStrategy = (DefaultAutoDeploymentStrategy) deploymentStrategies.get(DefaultAutoDeploymentStrategy.class.getName());
       newDefaultAutoDeploymentStrategy.setProjectModelService(projectModelService);
       deploymentStrategies.put(DefaultAutoDeploymentStrategy.class.getName(),newDefaultAutoDeploymentStrategy);
