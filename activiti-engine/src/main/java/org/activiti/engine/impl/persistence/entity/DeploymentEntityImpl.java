@@ -39,8 +39,9 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
   protected Date deploymentTime;
   protected boolean isNew;
   protected Integer version;
+  private String projectReleaseVersion;
 
-  // Backwards compatibility
+    // Backwards compatibility
   protected String engineVersion;
   
   /**
@@ -175,6 +176,14 @@ public class DeploymentEntityImpl extends AbstractEntityNoRevision implements De
 
   public void setVersion(Integer version){
       this.version = version;
+  }
+
+  public String getProjectReleaseVersion() {
+      return projectReleaseVersion;
+  }
+
+  public void setProjectReleaseVersion(String projectReleaseVersion) {
+      this.projectReleaseVersion = projectReleaseVersion;
   }
 
   // common methods //////////////////////////////////////////////////////////

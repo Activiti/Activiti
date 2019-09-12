@@ -7,8 +7,8 @@
   <!-- DEPLOYMENT INSERT -->
   
   <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntityImpl">
-    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_, ENGINE_VERSION_, VERSION_)
-    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{key, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP}, #{engineVersion, jdbcType=VARCHAR}, #{version, jdbcType=INTEGER})
+    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, KEY_, TENANT_ID_, DEPLOY_TIME_, ENGINE_VERSION_, VERSION_, PROJECT_RELEASE_VERSION_)
+    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{key, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP}, #{engineVersion, jdbcType=VARCHAR}, #{version, jdbcType=INTEGER}, #{projectReleaseVersion, jdbcType=VARCHAR})
   </insert>
 
   <insert id="bulkInsertDeployment" parameterType="java.util.List">
@@ -21,7 +21,8 @@
          #{deployment.key, jdbcType=VARCHAR},
          #{deployment.tenantId, jdbcType=VARCHAR},
          #{deployment.deploymentTime, jdbcType=TIMESTAMP}),
-         #{version, jdbcType=INTEGER}
+         #{version, jdbcType=INTEGER},
+         #{projectReleaseVersion, jdbcType=VARCHAR}
       </foreach>
   </insert>
 
@@ -35,7 +36,8 @@
            #{deployment.key, jdbcType=VARCHAR},
            #{deployment.tenantId, jdbcType=VARCHAR},
            #{deployment.deploymentTime, jdbcType=TIMESTAMP}),
-           #{version, jdbcType=INTEGER}
+           #{version, jdbcType=INTEGER},
+           #{projectReleaseVersion, jdbcType=VARCHAR}
       </foreach>
     SELECT * FROM dual
   </insert>
@@ -68,6 +70,7 @@
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
     <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="VARCHAR" />
     <result property="version" column="VERSION_" jdbcType="INTEGER" />
+    <result property="projectReleaseVersion" column="PROJECT_RELEASE_VERSION_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- DEPLOYMENT SELECT -->

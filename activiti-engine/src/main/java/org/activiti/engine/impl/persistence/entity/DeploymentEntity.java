@@ -59,4 +59,8 @@ public interface DeploymentEntity extends Deployment, Entity {
 
   void setVersion(Integer version);
 
+  String getProjectReleaseVersion();
+
+  void setProjectReleaseVersion(String projectReleaseVersion);
+
 }
