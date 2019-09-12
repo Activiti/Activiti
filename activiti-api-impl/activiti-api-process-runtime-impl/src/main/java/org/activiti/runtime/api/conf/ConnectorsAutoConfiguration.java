@@ -30,6 +30,7 @@ import org.springframework.context.annotation.Configuration;
 public class ConnectorsAutoConfiguration {
 
     @Bean
+    @ConditionalOnMissingBean
     public IntegrationContextBuilder integrationContextBuilder(ProcessExtensionService processExtensionService) {
         return new IntegrationContextBuilder(new VariablesMappingProvider(processExtensionService));
     }
@@ -45,6 +46,7 @@ public class ConnectorsAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService) {
         return new VariablesMappingProvider(processExtensionService);
     }
