@@ -64,7 +64,7 @@ public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrateg
                                        resource);
     }
 
-    if(projectModelService.hasProjectManifest()){
+    if (projectModelService != null && projectModelService.hasProjectManifest()) {
         try {
             deploymentBuilder.setProjectManifest(projectModelService.loadProjectManifest());
 

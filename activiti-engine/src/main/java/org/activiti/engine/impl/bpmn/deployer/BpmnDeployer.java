@@ -78,7 +78,8 @@ public class BpmnDeployer implements Deployer {
         if (deployment.isNew()) {
             Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapOfNewProcessDefinitionToPreviousVersion =
                     getPreviousVersionsOfProcessDefinitions(parsedDeployment);
-            setProcessDefinitionVersionsAndIds(parsedDeployment);
+            setProcessDefinitionVersionsAndIds(parsedDeployment,
+                                               mapOfNewProcessDefinitionToPreviousVersion);
             setProcessDefinitionAppVersion(parsedDeployment);
             persistProcessDefinitionsAndAuthorizations(parsedDeployment);
             updateTimersAndEvents(parsedDeployment,
@@ -172,21 +173,42 @@ public class BpmnDeployer implements Deployer {
      * an older version for a process definition, then the version is set to that older entity's
      * version plus one; otherwise it is set to 1.  Also dispatches an ENTITY_CREATED event.
      */
-    protected void setProcessDefinitionVersionsAndIds(ParsedDeployment parsedDeployment) {
+    protected void setProcessDefinitionVersionsAndIds(ParsedDeployment parsedDeployment,
+                                                      Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions) {
         CommandContext commandContext = Context.getCommandContext();
 
-        Integer version = parsedDeployment.getDeployment().getVersion();
+        if(parsedDeployment.getDeployment().getProjectReleaseVersion() != null){
+            Integer version = parsedDeployment.getDeployment().getVersion();
+            for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+                processDefinition.setVersion(version);
+                processDefinition.setId(getIdForNewProcessDefinition(processDefinition));
 
-        for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+                if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+                    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED,
+                                                                                                                                             processDefinition));
+                }
+            }
+        }else{
 
-            processDefinition.setVersion(version);
-            processDefinition.setId(getIdForNewProcessDefinition(processDefinition));
+            for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+                int version = 1;
 
-            if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED,
-                                                                                                                                         processDefinition));
+                ProcessDefinitionEntity latest = mapNewToOldProcessDefinitions.get(processDefinition);
+                if (latest != null) {
+                    version = latest.getVersion() + 1;
+                }
+
+                processDefinition.setVersion(version);
+                processDefinition.setId(getIdForNewProcessDefinition(processDefinition));
+
+                if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+                    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED,
+                                                                                                                                             processDefinition));
+                }
             }
         }
+
+
     }
 
     /**
