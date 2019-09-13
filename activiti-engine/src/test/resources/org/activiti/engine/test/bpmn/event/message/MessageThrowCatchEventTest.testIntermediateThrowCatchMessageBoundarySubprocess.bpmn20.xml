@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0d2gar5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0d2gar5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta">
   <bpmn:message id="Message_0ywj5uj" name="testMessage" />
   <bpmn:collaboration id="Collaboration_13wirnz">
     <bpmn:participant id="Participant_1deaimg" name="Catch" processRef="catchMessage" />
@@ -29,7 +29,7 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="SequenceFlow_1v56ulj" sourceRef="StartEvent_1aikbhj" targetRef="Task_02epwt5" />
       <bpmn:sequenceFlow id="SequenceFlow_17dio4j" sourceRef="Task_02epwt5" targetRef="EndEvent_0ct5co3" />
-      <bpmn:userTask id="Task_02epwt5" name="Task">
+      <bpmn:userTask id="Task_02epwt5" name="User Task">
         <bpmn:incoming>SequenceFlow_1v56ulj</bpmn:incoming>
         <bpmn:outgoing>SequenceFlow_17dio4j</bpmn:outgoing>
       </bpmn:userTask>
