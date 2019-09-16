@@ -25,6 +25,10 @@ import org.activiti.api.process.model.events.BPMNErrorReceivedEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.GetTasksPayloadBuilder;
+import org.activiti.api.task.model.payloads.GetTasksPayload;
+import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.process.listener.DummyBPMNErrorReceivedListener;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
@@ -49,6 +53,9 @@ public class ProcessRuntimeBPMNErrorReceivedIT {
     private ProcessRuntime processRuntime;
     
     @Autowired
+    private TaskRuntime taskRuntime;
+    
+    @Autowired
     private SecurityUtil securityUtil;
 
     @Autowired
@@ -71,30 +78,18 @@ public class ProcessRuntimeBPMNErrorReceivedIT {
     @Test
     public void should_CatchSubProcessBoundaryErrorEvent_When_ErrorEndEvenThrown(){
 
-        //given
         securityUtil.logInAs("user");
 
-        //when
         ProcessInstance processInstance = processRuntime.start(
                 ProcessPayloadBuilder
                         .start()
                         .withProcessDefinitionKey(ERROR_BOUNDARY_EVENT_SUBPROCESS)
                         .build());
-        
-        //then
+
         assertNotNull(processInstance);
         
-        //Error-handling should end the process
-        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
-                50),
-                ProcessPayloadBuilder
-                        .processInstances().withProcessDefinitionKey(ERROR_BOUNDARY_EVENT_SUBPROCESS)
-                        .build());
-
-        assertThat(processInstancePage).isNotNull();
-        assertThat(processInstancePage.getContent()).hasSize(0);
+        checkProcessAndTask(processInstance.getId(), "Task");
          
-        //check events
         assertThat(listener.getErrorReceivedEvents())
         .isNotEmpty()
         .extracting(BPMNErrorReceivedEvent::getEventType,
@@ -124,31 +119,17 @@ public class ProcessRuntimeBPMNErrorReceivedIT {
 
     @Test
     public void should_StartSubProcess_When_ErrorEndEvenThrown(){
-     
-        //given
+
         securityUtil.logInAs("user");
 
-        //when
         ProcessInstance processInstance = processRuntime.start(
                 ProcessPayloadBuilder
                         .start()
                         .withProcessDefinitionKey(ERROR_START_EVENT_SUBPROCESS)
                         .build());
-        
-        //then
-        assertNotNull(processInstance);
-        
-        //Error-handling should end the process
-        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
-                50),
-                ProcessPayloadBuilder
-                        .processInstances().withProcessDefinitionKey(ERROR_START_EVENT_SUBPROCESS)
-                        .build());
 
-        assertThat(processInstancePage).isNotNull();
-        assertThat(processInstancePage.getContent()).hasSize(0);
-         
-        //check events
+        assertNotNull(processInstance);
+
         assertThat(listener.getErrorReceivedEvents())
         .isNotEmpty()
         .extracting(BPMNErrorReceivedEvent::getEventType,
@@ -179,30 +160,18 @@ public class ProcessRuntimeBPMNErrorReceivedIT {
     @Test
     public void should_CatchCallActivityBoundaryErrorEvent_When_ErrorEndEvenThrown(){
         
-        //given
         securityUtil.logInAs("user");
 
-        //when
         ProcessInstance processInstance = processRuntime.start(
                 ProcessPayloadBuilder
                         .start()
                         .withProcessDefinitionKey(ERROR_BOUNDARY_EVENT_CALLACTIVITY)
                         .build());
         
-        //then
         assertNotNull(processInstance);
         
-        //Error-handling should end the process
-        Page<ProcessInstance> processInstancePage = processRuntime.processInstances(Pageable.of(0,
-                50),
-                ProcessPayloadBuilder
-                        .processInstances().withProcessDefinitionKey(ERROR_START_EVENT_SUBPROCESS)
-                        .build());
+        checkProcessAndTask(processInstance.getId(), "Task");
 
-        assertThat(processInstancePage).isNotNull();
-        assertThat(processInstancePage.getContent()).hasSize(0);
-         
-        //check events
         assertThat(listener.getErrorReceivedEvents())
         .isNotEmpty()
         .extracting(BPMNErrorReceivedEvent::getEventType,
@@ -228,4 +197,26 @@ public class ProcessRuntimeBPMNErrorReceivedIT {
                               "123"
         )); 
     }  
+    
+    private void checkProcessAndTask(String processInstanceId, String taskName) {
+
+        ProcessInstance processInstance = processRuntime.processInstance(processInstanceId);
+        assertThat(processInstance).isNotNull();
+        
+        checkTask(processInstanceId, taskName);     
+    }
+    
+    private void checkTask(String processInstanceId, String taskName) {
+
+        GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder()
+                                                .withProcessInstanceId(processInstanceId)
+                                                .build();
+        
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                                                         50),
+                                             getTasksPayload);
+
+        assertThat(tasks.getContent()).hasSize(1);
+        assertThat(tasks.getContent().get(0).getName()).isEqualTo(taskName);       
+    }
 }

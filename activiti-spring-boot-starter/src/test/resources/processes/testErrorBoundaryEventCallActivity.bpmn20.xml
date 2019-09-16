@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1ghajzs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="Definitions_1ghajzs" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
   <bpmn:error id="errorId" name="errorName" errorCode="123" />
   <bpmn:process id="catchErrorOnCallActivity" isExecutable="true">
     <bpmn:startEvent id="theStart">
@@ -15,13 +15,18 @@
     <bpmn:sequenceFlow id="flow1" sourceRef="theStart" targetRef="callSubProcess" />
     <bpmn:sequenceFlow id="flow2" sourceRef="callSubProcess" targetRef="theEnd" />
     <bpmn:boundaryEvent id="catchError" attachedToRef="callSubProcess">
-      <bpmn:outgoing>SequenceFlow_0hp8406</bpmn:outgoing>
+      <bpmn:outgoing>flow3</bpmn:outgoing>
       <bpmn:errorEventDefinition errorRef="errorId" />
     </bpmn:boundaryEvent>
     <bpmn:endEvent id="errorEnd">
-      <bpmn:incoming>SequenceFlow_0hp8406</bpmn:incoming>
+      <bpmn:incoming>flow4</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_0hp8406" sourceRef="catchError" targetRef="errorEnd" />
+    <bpmn:sequenceFlow id="flow4" sourceRef="errorTask" targetRef="errorEnd" />
+    <bpmn:sequenceFlow id="flow3" sourceRef="catchError" targetRef="errorTask" />
+    <bpmn:userTask id="errorTask" name="Task" activiti:candidateUsers="user">
+      <bpmn:incoming>flow3</bpmn:incoming>
+      <bpmn:outgoing>flow4</bpmn:outgoing>
+    </bpmn:userTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="catchErrorOnCallActivity">
@@ -46,12 +51,19 @@
         <dc:Bounds x="402" y="143" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_0ynnmwh_di" bpmnElement="errorEnd">
-        <dc:Bounds x="402" y="212" width="36" height="36" />
+        <dc:Bounds x="540" y="223" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0hp8406_di" bpmnElement="SequenceFlow_0hp8406">
-        <di:waypoint x="420" y="179" />
-        <di:waypoint x="420" y="212" />
+      <bpmndi:BPMNEdge id="SequenceFlow_1uuu95k_di" bpmnElement="flow4">
+        <di:waypoint x="470" y="241" />
+        <di:waypoint x="540" y="241" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ur9uqa_di" bpmnElement="flow3">
+        <di:waypoint x="420" y="179" />
+        <di:waypoint x="420" y="201" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="UserTask_1enacex_di" bpmnElement="errorTask">
+        <dc:Bounds x="370" y="201" width="100" height="80" />
+      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
