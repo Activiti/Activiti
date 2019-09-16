@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1m1koea" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:activiti="http://activiti.org/bpmn" id="Definitions_1m1koea" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta.3">
   <bpmn:error id="errorId" name="errorName" errorCode="123" />
   <bpmn:process id="errorStartEventSubProcess" name="errorStartEventSubProcess" isExecutable="true">
     <bpmn:startEvent id="theStart">
@@ -26,7 +26,7 @@
         </bpmn:endEvent>
         <bpmn:sequenceFlow id="flow3" sourceRef="subStart1" targetRef="userTask" />
         <bpmn:sequenceFlow id="flow4" sourceRef="userTask" targetRef="subEnd1" />
-        <bpmn:userTask id="userTask" name="Task">
+        <bpmn:userTask id="userTask" name="Task" activiti:candidateUsers="user">
           <bpmn:incoming>flow3</bpmn:incoming>
           <bpmn:outgoing>flow4</bpmn:outgoing>
         </bpmn:userTask>

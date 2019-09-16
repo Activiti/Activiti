@@ -129,7 +129,9 @@ public class ProcessRuntimeBPMNErrorReceivedIT {
                         .build());
 
         assertNotNull(processInstance);
-
+        
+        checkProcessAndTask(processInstance.getId(), "Task");
+        
         assertThat(listener.getErrorReceivedEvents())
         .isNotEmpty()
         .extracting(BPMNErrorReceivedEvent::getEventType,
@@ -219,4 +221,5 @@ public class ProcessRuntimeBPMNErrorReceivedIT {
         assertThat(tasks.getContent()).hasSize(1);
         assertThat(tasks.getContent().get(0).getName()).isEqualTo(taskName);       
     }
+   
 }
