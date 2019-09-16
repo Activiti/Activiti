@@ -29,11 +29,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
-
+import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.springframework.boot.test.context.TestComponent;
 
+@TestComponent
 public class TaskBaseRuntime {
 
     @Autowired
@@ -41,6 +43,9 @@ public class TaskBaseRuntime {
 
     @Autowired
     private ProcessRuntime processRuntime;
+
+    @Autowired
+    private SecurityUtil securityUtil;
 
     public List<Task> getTasksByProcessInstanceId(String processInstanceId) {
         List<Task> taskList = taskRuntime.tasks(
@@ -59,7 +64,6 @@ public class TaskBaseRuntime {
     }
 
     public void completeTask(String taskId, Map<String, Object> variables) {
-
         Task completeTask = taskRuntime
                 .complete(TaskPayloadBuilder.complete().withTaskId(taskId).withVariables(variables).build());
         assertThat(completeTask).isNotNull();
@@ -67,6 +71,7 @@ public class TaskBaseRuntime {
     }
 
     public ProcessInstance startProcessWithProcessDefinitionKey(String processDefinitionKey) {
+        securityUtil.logInAs("user");
         return processRuntime.start(ProcessPayloadBuilder.start()
         .withProcessDefinitionKey(processDefinitionKey)
         .build());

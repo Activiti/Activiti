@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.task.model.Task;
-import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.junit.After;
 import org.junit.FixMethodOrder;
@@ -38,12 +37,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ContextConfiguration
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class TaskRuntimeTerminateEndEventTest extends TaskBaseRuntime {
+public class TaskRuntimeTerminateEndEventTest {
 
     private static final String TASK_PROCESS_TERMINATE_EVENT = "ProcessTerminateEvent";
 
     @Autowired
-    private SecurityUtil securityUtil;
+    private TaskBaseRuntime taskBaseRuntime;
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
@@ -54,18 +53,17 @@ public class TaskRuntimeTerminateEndEventTest extends TaskBaseRuntime {
 
     @Test
     public void processTerminateEventWithParallelTasks() {
-        securityUtil.logInAs("user");
-        ProcessInstance process = this.startProcessWithProcessDefinitionKey(TASK_PROCESS_TERMINATE_EVENT);
+        ProcessInstance process = taskBaseRuntime.startProcessWithProcessDefinitionKey(TASK_PROCESS_TERMINATE_EVENT);
 
-        List<Task> taskList = this.getTasksByProcessInstanceId(process.getId());
+        List<Task> taskList = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
         assertThat(taskList).isNotEmpty();
         assertThat(taskList.size()).isEqualTo(2);
 
         Task task1 = taskList.get(0);
 
-        this.completeTask(task1.getId());
+        taskBaseRuntime.completeTask(task1.getId());
 
-        List<Task> taskAfterCompleted = this.getTasksByProcessInstanceId(process.getId());
+        List<Task> taskAfterCompleted = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
         assertThat(taskAfterCompleted).isEmpty();
         assertThat(taskAfterCompleted.size()).isEqualTo(0);
     }
