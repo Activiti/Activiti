@@ -235,7 +235,7 @@ public class ProcessRuntimeBPMNTimerIT {
                                                      .tasks()
                                                      .withProcessInstanceId(processInstance.getId())
                                                      .build());
-        assertThat(tasks.getContent().size()).isEqualTo(1);
+        assertThat(tasks.getContent()).hasSize(1);
 
         Task task = tasks.getContent().get(0);
         taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());

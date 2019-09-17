@@ -217,7 +217,7 @@ public class TaskRuntimeVariableMappingIT {
     private Task checkTasks(String processInstanceId) {
         List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstanceId);
         assertThat(tasks).isNotEmpty();
-        assertThat(tasks.size()).isEqualTo(1);
+        assertThat(tasks).hasSize(1);
         return tasks.get(0);
     }
 
@@ -227,7 +227,7 @@ public class TaskRuntimeVariableMappingIT {
 
         List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
         assertThat(tasks).isNotEmpty();
-        assertThat(tasks.size()).isEqualTo(1);
+        assertThat(tasks).hasSize(1);
 
         Task task = tasks.get(0);
         assertThat(task.getName()).isEqualTo("testSimpleTask");

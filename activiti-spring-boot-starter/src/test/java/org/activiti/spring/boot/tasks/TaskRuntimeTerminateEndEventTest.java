@@ -68,7 +68,7 @@ public class TaskRuntimeTerminateEndEventTest {
 
         List<Task> taskAfterCompleted = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
         assertThat(taskAfterCompleted).isEmpty();
-        assertThat(taskAfterCompleted.size()).isEqualTo(0);
+        assertThat(taskAfterCompleted).hasSize(2);
     }
 
 }
