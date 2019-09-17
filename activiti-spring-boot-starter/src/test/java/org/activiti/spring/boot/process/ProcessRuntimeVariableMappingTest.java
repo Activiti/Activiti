@@ -4,11 +4,6 @@ import java.util.List;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
-import org.activiti.api.process.model.builders.GetVariablesPayloadBuilder;
-import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
-import org.activiti.api.process.model.payloads.DeleteProcessPayload;
-import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,23 +23,13 @@ public class ProcessRuntimeVariableMappingTest {
     private static final String VARIABLE_MAPPING_PROCESS = "connectorVarMapping";
 
     @Autowired
-    private ProcessRuntime processRuntime;
-
-    @Autowired
-    private SecurityUtil securityUtil;
+    private ProcessBaseRuntime processBaseRuntime;
 
     @Test
     public void shouldMapVariables() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(VARIABLE_MAPPING_PROCESS);
 
-        securityUtil.logInAs("user");
-
-        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey(VARIABLE_MAPPING_PROCESS)
-                .build());
-
-        List<VariableInstance> variables = processRuntime.variables(new GetVariablesPayloadBuilder()
-                .withProcessInstance(processInstance)
-                .build());
+        List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
         assertThat(variables).extracting(VariableInstance::getName,
                 VariableInstance::getValue)
@@ -58,7 +43,6 @@ public class ProcessRuntimeVariableMappingTest {
                         tuple("output-unmapped-variable-with-non-matching-connector-output-name", "default")
                 );
 
-        processRuntime.delete(new DeleteProcessPayload(processInstance.getId(),
-                "done"));
+        processBaseRuntime.delete(processInstance.getId(),"done");
     }
 }

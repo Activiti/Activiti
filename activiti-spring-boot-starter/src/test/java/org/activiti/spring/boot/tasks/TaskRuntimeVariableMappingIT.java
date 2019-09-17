@@ -18,17 +18,8 @@ package org.activiti.spring.boot.tasks;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
-import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
-import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.api.runtime.shared.query.Page;
-import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.Task.TaskStatus;
-import org.activiti.api.task.model.builders.GetTasksPayloadBuilder;
-import org.activiti.api.task.model.builders.TaskPayloadBuilder;
-import org.activiti.api.task.model.payloads.GetTasksPayload;
-import org.activiti.api.task.runtime.TaskRuntime;
-import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.process.ProcessBaseRuntime;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.activiti.spring.process.variable.DateFormatterProvider;
@@ -61,17 +52,15 @@ public class TaskRuntimeVariableMappingIT {
     private static final String TASK_EMPTY_VAR_MAPPING = "taskVariableEmptyMapping";
 
     @Autowired
-    private TaskRuntime taskRuntime;
+    private TaskBaseRuntime taskBaseRuntime;
     @Autowired
-    private ProcessRuntime processRuntime;
-    @Autowired
-    private SecurityUtil securityUtil;
+    private ProcessBaseRuntime processBaseRuntime;
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
-    
+
     @Autowired
     private DateFormatterProvider dateFormatterProvider;
 
@@ -83,22 +72,16 @@ public class TaskRuntimeVariableMappingIT {
 
     @Test
     public void processTaskVarMapping() {
-        securityUtil.logInAs("garth");
-        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
-                                                               .withProcessDefinitionKey(TASK_VAR_MAPPING)
-                                                               .build());
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_VAR_MAPPING);
 
         Date date = dateFormatterProvider.parse("2019-09-01");
         Date datetime = dateFormatterProvider.parse("2019-09-01T10:20:30.000Z");
-        
-        Task task = checkTasks(process.getId());
+
+        Task task = checkTasks(processInstance.getId());
 
         assertThat(task.getName()).isEqualTo("testSimpleTask");
 
-        List<VariableInstance> procVariables = processRuntime.variables(ProcessPayloadBuilder
-                                                                                .variables()
-                                                                                .withProcessInstanceId(process.getId())
-                                                                                .build());
+        List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
         assertThat(procVariables)
                 .isNotNull()
                 .extracting(VariableInstance::getName,
@@ -121,10 +104,8 @@ public class TaskRuntimeVariableMappingIT {
                                     datetime)
                               );
 
-        List<VariableInstance> taskVariables = taskRuntime.variables(TaskPayloadBuilder
-                                                                             .variables()
-                                                                             .withTaskId(task.getId())
-                                                                             .build());
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
+
         assertThat(taskVariables)
                 .isNotNull()
                 .extracting(VariableInstance::getName,
@@ -147,13 +128,9 @@ public class TaskRuntimeVariableMappingIT {
         variables.put("task_output_variable_name_1",
                       "outputTaskValue"); //This should be set to 'process_variable_outputmap_1'
 
-        completeTask(task.getId(),
-                     variables);
+        taskBaseRuntime.completeTask(task.getId(), variables);
 
-        procVariables = processRuntime.variables(ProcessPayloadBuilder
-                                                         .variables()
-                                                         .withProcessInstanceId(process.getId())
-                                                         .build());
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
         assertThat(procVariables)
                 .isNotNull()
                 .extracting(VariableInstance::getName,
@@ -171,38 +148,18 @@ public class TaskRuntimeVariableMappingIT {
                               datetime)
 
                 );
-
-        processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
-    }
-
-    private void completeTask(String taskId,
-                              Map<String, Object> variables) {
-
-        Task completeTask = taskRuntime.complete(TaskPayloadBuilder
-                                                         .complete()
-                                                         .withTaskId(taskId)
-                                                         .withVariables(variables)
-                                                         .build());
-        assertThat(completeTask).isNotNull();
-        assertThat(completeTask.getStatus()).isEqualTo(TaskStatus.COMPLETED);
+        processBaseRuntime.delete(processInstance.getId());
     }
 
     @Test
     public void allVariablesShouldBePassedWhenThereIsNoMapping() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_VAR_NO_MAPPING);
 
-        securityUtil.logInAs("garth");
-        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
-                                                               .withProcessDefinitionKey(TASK_VAR_NO_MAPPING)
-                                                               .build());
-
-        Task task = checkTasks(process.getId());
+        Task task = checkTasks(processInstance.getId());
 
         assertThat(task.getName()).isEqualTo("testSimpleTask");
 
-        List<VariableInstance> procVariables = processRuntime.variables(ProcessPayloadBuilder
-                                                                                .variables()
-                                                                                .withProcessInstanceId(process.getId())
-                                                                                .build());
+        List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
         assertThat(procVariables)
                 .isNotNull()
@@ -215,10 +172,7 @@ public class TaskRuntimeVariableMappingIT {
                               tuple("process_variable_outputmap_1",
                                     "outputmap1Value"));
 
-        List<VariableInstance> taskVariables = taskRuntime.variables(TaskPayloadBuilder
-                                                                             .variables()
-                                                                             .withTaskId(task.getId())
-                                                                             .build());
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
 
         assertThat(taskVariables)
                 .isNotNull()
@@ -237,13 +191,9 @@ public class TaskRuntimeVariableMappingIT {
         variables.put("task_output_variable_name_1",
                       "outputTaskValue");
 
-        completeTask(task.getId(),
-                     variables);
+        taskBaseRuntime.completeTask(task.getId(), variables);
 
-        procVariables = processRuntime.variables(ProcessPayloadBuilder
-                                                         .variables()
-                                                         .withProcessInstanceId(process.getId())
-                                                         .build());
+        procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
         assertThat(procVariables)
                 .isNotNull()
                 .extracting(VariableInstance::getName,
@@ -261,36 +211,28 @@ public class TaskRuntimeVariableMappingIT {
                               "outputTaskValue")
                         //since there is no mapping for outputs either, all the variables are passed
                 );
-
-        processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
+        processBaseRuntime.delete(processInstance.getId());
     }
 
     private Task checkTasks(String processInstanceId) {
-        GetTasksPayload getTasksPayload = new GetTasksPayloadBuilder().withProcessInstanceId(processInstanceId).build();
-        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
-                                                         50),
-                                             getTasksPayload);
-
-        assertThat(tasks.getContent()).hasSize(1);
-        return tasks.getContent().get(0);
+        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstanceId);
+        assertThat(tasks).isNotEmpty();
+        assertThat(tasks).hasSize(1);
+        return tasks.get(0);
     }
 
     @Test
     public void taskShouldHaveNoVariablesWhenMappingIsEmpty() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_EMPTY_VAR_MAPPING);
 
-        securityUtil.logInAs("garth");
-        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
-                                                               .withProcessDefinitionKey(TASK_EMPTY_VAR_MAPPING)
-                                                               .build());
+        List<Task> tasks = taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId());
+        assertThat(tasks).isNotEmpty();
+        assertThat(tasks).hasSize(1);
 
-        Task task = checkTasks(process.getId());
-
+        Task task = tasks.get(0);
         assertThat(task.getName()).isEqualTo("testSimpleTask");
 
-        List<VariableInstance> procVariables = processRuntime.variables(ProcessPayloadBuilder
-                                                                                .variables()
-                                                                                .withProcessInstanceId(process.getId())
-                                                                                .build());
+        List<VariableInstance> procVariables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
         assertThat(procVariables)
                 .isNotNull()
@@ -303,10 +245,7 @@ public class TaskRuntimeVariableMappingIT {
                               tuple("process_variable_outputmap_1",
                                     "outputmap1Value"));
 
-        List<VariableInstance> taskVariables = taskRuntime.variables(TaskPayloadBuilder
-                                                                             .variables()
-                                                                             .withTaskId(task.getId())
-                                                                             .build());
+        List<VariableInstance> taskVariables = taskBaseRuntime.getTasksVariablesByTaskId(task.getId());
 
         assertThat(taskVariables)
                 .isEmpty();
@@ -317,8 +256,7 @@ public class TaskRuntimeVariableMappingIT {
         variables.put("task_output_variable_name_1",
                       "outputTaskValue");
 
-        completeTask(task.getId(),
-                     variables);
+        taskBaseRuntime.completeTask(task.getId(), variables);
 
         assertThat(procVariables)
                 .isNotNull()
@@ -331,6 +269,6 @@ public class TaskRuntimeVariableMappingIT {
                               tuple("process_variable_outputmap_1",
                                     "outputmap1Value"));
 
-        processRuntime.delete(ProcessPayloadBuilder.delete().withProcessInstance(process).build());
+        processBaseRuntime.delete(processInstance.getId());
     }
 }
