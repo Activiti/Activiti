@@ -18,7 +18,6 @@ package org.activiti.spring.boot.tasks;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Collections;
@@ -29,10 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
-import org.activiti.spring.boot.security.util.SecurityUtil;
-import org.activiti.api.process.model.ProcessInstance;
-import org.activiti.api.process.runtime.ProcessRuntime;
-import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.model.shared.model.VariableInstance;
 import org.springframework.boot.test.context.TestComponent;
 
 @TestComponent
@@ -40,12 +36,6 @@ public class TaskBaseRuntime {
 
     @Autowired
     private TaskRuntime taskRuntime;
-
-    @Autowired
-    private ProcessRuntime processRuntime;
-
-    @Autowired
-    private SecurityUtil securityUtil;
 
     public List<Task> getTasksByProcessInstanceId(String processInstanceId) {
         List<Task> taskList = taskRuntime.tasks(
@@ -59,6 +49,10 @@ public class TaskBaseRuntime {
         return taskList;
     }
 
+    public List<VariableInstance> getTasksVariablesByTaskId(String taskId) {
+        return taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(taskId).build());
+    }
+
     public void completeTask(String taskId) {
         this.completeTask(taskId, Collections.<String, Object>emptyMap());
     }
@@ -68,13 +62,6 @@ public class TaskBaseRuntime {
                 .complete(TaskPayloadBuilder.complete().withTaskId(taskId).withVariables(variables).build());
         assertThat(completeTask).isNotNull();
         assertThat(completeTask.getStatus()).isEqualTo(TaskStatus.COMPLETED);
-    }
-
-    public ProcessInstance startProcessWithProcessDefinitionKey(String processDefinitionKey) {
-        securityUtil.logInAs("user");
-        return processRuntime.start(ProcessPayloadBuilder.start()
-        .withProcessDefinitionKey(processDefinitionKey)
-        .build());
     }
 
 }

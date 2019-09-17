@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.task.model.Task;
+import org.activiti.spring.boot.process.ProcessBaseRuntime;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
 import org.junit.After;
 import org.junit.FixMethodOrder;
@@ -44,6 +45,8 @@ public class TaskRuntimeTerminateEndEventTest {
     @Autowired
     private TaskBaseRuntime taskBaseRuntime;
     @Autowired
+    private ProcessBaseRuntime processBaseRuntime;
+    @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
 
     @After
@@ -53,7 +56,7 @@ public class TaskRuntimeTerminateEndEventTest {
 
     @Test
     public void processTerminateEventWithParallelTasks() {
-        ProcessInstance process = taskBaseRuntime.startProcessWithProcessDefinitionKey(TASK_PROCESS_TERMINATE_EVENT);
+        ProcessInstance process = processBaseRuntime.startProcessWithProcessDefinitionKey(TASK_PROCESS_TERMINATE_EVENT);
 
         List<Task> taskList = taskBaseRuntime.getTasksByProcessInstanceId(process.getId());
         assertThat(taskList).isNotEmpty();
