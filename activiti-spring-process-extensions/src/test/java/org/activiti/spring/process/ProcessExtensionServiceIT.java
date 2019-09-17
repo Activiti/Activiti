@@ -5,6 +5,8 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.spring.process.conf.ProcessExtensionsAutoConfiguration;
@@ -35,17 +37,12 @@ public class ProcessExtensionServiceIT {
         @Bean
         ObjectMapper objectMapper() {
             return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                                                false);
+                    false);
         }
 
-        @MockBean
-        protected RepositoryService repositoryService;
 
 
     }
-
-    @MockBean
-    private RepositoryService repositoryService;
 
     @Autowired
     private ProcessExtensionService processExtensionService;
