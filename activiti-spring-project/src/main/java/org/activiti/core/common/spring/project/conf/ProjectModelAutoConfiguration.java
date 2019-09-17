@@ -20,7 +20,7 @@ public class ProjectModelAutoConfiguration {
     }
 
     @Bean
-    public ProjectModelService projectModelService(@Value("${application.manifest.file.path:classpath:/default-app.json}") String absolutePath,
+    public ProjectModelService projectModelService(@Value("${project.manifest.file.path:classpath:/default-app.json}") String absolutePath,
                                                    ObjectMapper objectMapper,
                                                    ResourcePatternResolver resourceLoader) {
         return new ProjectModelService(absolutePath,
