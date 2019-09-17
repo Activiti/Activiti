@@ -20,12 +20,10 @@ public class ProjectModelAutoConfiguration {
     }
 
     @Bean
-    public ProjectModelService projectModelService(@Value("${application.manifest.file.path:classpath:/}") String path,
-                                                   @Value("${activiti.cloud.application.name:default-app}") String applicationName,
+    public ProjectModelService projectModelService(@Value("${application.manifest.file.path:classpath:/default-app.json}") String absolutePath,
                                                    ObjectMapper objectMapper,
                                                    ResourcePatternResolver resourceLoader) {
-        return new ProjectModelService(path,
-                                       applicationName,
+        return new ProjectModelService(absolutePath,
                                        objectMapper,
                                        resourceLoader);
     }

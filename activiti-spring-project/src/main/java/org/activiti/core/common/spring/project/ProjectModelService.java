@@ -12,27 +12,23 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 
 public class ProjectModelService {
 
-    private String path;
-
-    private String applicationName;
+    private String projectManifestFilePath;
 
     private final ObjectMapper objectMapper;
 
     private ResourcePatternResolver resourceLoader;
 
     public ProjectModelService(String path,
-                               String applicationName,
                                ObjectMapper objectMapper,
                                ResourcePatternResolver resourceLoader) {
-        this.path = path;
-        this.applicationName = applicationName;
+        this.projectManifestFilePath = path;
         this.objectMapper = objectMapper;
         this.resourceLoader = resourceLoader;
     }
 
     private Optional<Resource> retrieveResource() {
 
-        Resource resource = resourceLoader.getResource(path + applicationName + ".json");
+        Resource resource = resourceLoader.getResource(projectManifestFilePath);
         if (resource.exists()) {
             return Optional.of(resource);
         } else {
@@ -49,7 +45,7 @@ public class ProjectModelService {
         Optional<Resource> resourceOptional = retrieveResource();
 
         return read(resourceOptional
-                            .orElseThrow(() -> new FileNotFoundException("'" + applicationName + ".json' manifest not found."))
+                            .orElseThrow(() -> new FileNotFoundException("'" + projectManifestFilePath + "' manifest not found."))
                             .getInputStream());
     }
 
