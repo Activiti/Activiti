@@ -69,12 +69,25 @@ public class ProcessExtensionsAutoConfiguration {
     }
 
     @Bean
-    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
-                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader) {
-        return new ProcessExtensionService(
-                deploymentResourceLoader,
-                processExtensionResourceReader);
+    public ProcessExtensionService processExtensionService(@Value("${activiti.process.extensions.dir:classpath:/processes/}") String processExtensionsRoot,
+                                                           @Value("${activiti.process.extensions.suffix:**-extensions.json}") String processExtensionsSuffix,
+                                                           ObjectMapper objectMapper,
+                                                           ResourcePatternResolver resourceLoader,
+                                                           Map<String, VariableType> variableTypeMap) {
+        return new ProcessExtensionService(processExtensionsRoot,
+                processExtensionsSuffix,
+                objectMapper,
+                resourceLoader,
+                variableTypeMap);
     }
+
+//    @Bean
+//    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
+//                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader) {
+//        return new ProcessExtensionService(
+//                deploymentResourceLoader,
+//                processExtensionResourceReader);
+//    }
 
     @Bean
     InitializingBean initRepositoryServiceForProcessExtensionService(RepositoryService repositoryService,
