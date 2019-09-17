@@ -46,4 +46,6 @@ public interface Deployment {
 
   Integer getVersion();
 
+  String getProjectReleaseVersion();
+
 }
