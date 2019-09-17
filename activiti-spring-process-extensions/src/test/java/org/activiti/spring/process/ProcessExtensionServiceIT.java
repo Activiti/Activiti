@@ -41,14 +41,9 @@ public class ProcessExtensionServiceIT {
                     false);
         }
 
-        @MockBean
-        protected RepositoryService repositoryService;
 
 
     }
-
-    @MockBean
-    private RepositoryService repositoryService;
 
     @Autowired
     private ProcessExtensionService processExtensionService;
