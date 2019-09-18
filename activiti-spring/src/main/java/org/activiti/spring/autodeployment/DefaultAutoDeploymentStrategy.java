@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,56 +24,41 @@ import org.springframework.core.io.Resource;
 
 /**
  * Default implementation of {@link AutoDeploymentStrategy} that groups all {@link Resource}s into a single deployment. This implementation is equivalent to the previously used implementation.
- * 
-
  */
 public class DefaultAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 
-  /**
-   * The deployment mode this strategy handles.
-   */
-  public static final String DEPLOYMENT_MODE = "default";
+    /**
+     * The deployment mode this strategy handles.
+     */
+    public static final String DEPLOYMENT_MODE = "default";
 
-  private ProjectModelService projectModelService;
-
-  private static final Logger logger = LoggerFactory.getLogger(DefaultAutoDeploymentStrategy.class);
-
-  public void setProjectModelService(ProjectModelService projectModelService) {
-      this.projectModelService = projectModelService;
-  }
+    public DefaultAutoDeploymentStrategy(ProjectModelService projectModelService) {
+        super(projectModelService);
+    }
 
     @Override
-  protected String getDeploymentMode() {
-    return DEPLOYMENT_MODE;
-  }
-
-  @Override
-  public void deployResources(final String deploymentNameHint,
-                              final Resource[] resources,
-                              final RepositoryService repositoryService) {
-
-    // Create a single deployment for all resources using the name hint as
-    // the
-    // literal name
-    final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentNameHint);
-
-    for (final Resource resource : resources) {
-      final String resourceName = determineResourceName(resource);
-
-      deploymentBuilder.addInputStream(resourceName,
-                                       resource);
+    protected String getDeploymentMode() {
+        return DEPLOYMENT_MODE;
     }
 
-    if (projectModelService != null && projectModelService.hasProjectManifest()) {
-        try {
-            deploymentBuilder.setProjectManifest(projectModelService.loadProjectManifest());
+    @Override
+    public void deployResources(final String deploymentNameHint,
+                                final Resource[] resources,
+                                final RepositoryService repositoryService) {
 
-        }catch (IOException e){
-            logger.warn("Manifest of application not found. Project release version will not be set for deployment.");
+        // Create a single deployment for all resources using the name hint as
+        // the
+        // literal name
+
+        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentNameHint);
+
+        for (final Resource resource : resources) {
+            final String resourceName = determineResourceName(resource);
+
+            deploymentBuilder.addInputStream(resourceName,
+                                             resource);
         }
+
+        loadProjectManifest(deploymentBuilder).deploy();
     }
-
-    deploymentBuilder.deploy();
-
-  }
 }

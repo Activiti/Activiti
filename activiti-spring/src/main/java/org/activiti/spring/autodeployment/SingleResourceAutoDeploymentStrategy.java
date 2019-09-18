@@ -13,8 +13,13 @@
 
 package org.activiti.spring.autodeployment;
 
+import java.io.IOException;
+
+import org.activiti.core.common.spring.project.ProjectModelService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 /**
@@ -29,7 +34,11 @@ public class SingleResourceAutoDeploymentStrategy extends AbstractAutoDeployment
    */
   public static final String DEPLOYMENT_MODE = "single-resource";
 
-  @Override
+  public SingleResourceAutoDeploymentStrategy(ProjectModelService projectModelService) {
+      super(projectModelService);
+  }
+
+    @Override
   protected String getDeploymentMode() {
     return DEPLOYMENT_MODE;
   }
@@ -48,7 +57,8 @@ public class SingleResourceAutoDeploymentStrategy extends AbstractAutoDeployment
       deploymentBuilder.addInputStream(resourceName,
                                        resource);
 
-      deploymentBuilder.deploy();
+      loadProjectManifest(deploymentBuilder).deploy();
+
     }
   }
 

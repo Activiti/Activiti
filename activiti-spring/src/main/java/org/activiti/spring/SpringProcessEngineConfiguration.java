@@ -38,6 +38,8 @@ import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,21 +57,21 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   protected String deploymentMode = "default";
   protected ApplicationContext applicationContext;
   protected Integer transactionSynchronizationAdapterOrder = null;
-  private Map<String, AutoDeploymentStrategy> deploymentStrategies = new HashMap<>();
+  private Collection<AutoDeploymentStrategy> deploymentStrategies = new ArrayList<>();
+  private DefaultAutoDeploymentStrategy defaultAutoDeploymentStrategy;
 
-  public SpringProcessEngineConfiguration() {
-    this.transactionsExternallyManaged = true;
-    deploymentStrategies.put(DefaultAutoDeploymentStrategy.class.getName(), new DefaultAutoDeploymentStrategy());
-    deploymentStrategies.put(SingleResourceAutoDeploymentStrategy.class.getName(), new SingleResourceAutoDeploymentStrategy());
-    deploymentStrategies.put(ResourceParentFolderAutoDeploymentStrategy.class.getName(), new ResourceParentFolderAutoDeploymentStrategy());
-    deploymentStrategies.put(FailOnNoProcessAutoDeploymentStrategy.class.getName(),new FailOnNoProcessAutoDeploymentStrategy());
-    deploymentStrategies.put(NeverFailAutoDeploymentStrategy.class.getName(),new NeverFailAutoDeploymentStrategy());
-  }
+    public SpringProcessEngineConfiguration() {
+        this(null);
+    }
 
-  public void setProjectModelService(ProjectModelService projectModelService){
-      DefaultAutoDeploymentStrategy newDefaultAutoDeploymentStrategy = (DefaultAutoDeploymentStrategy) deploymentStrategies.get(DefaultAutoDeploymentStrategy.class.getName());
-      newDefaultAutoDeploymentStrategy.setProjectModelService(projectModelService);
-      deploymentStrategies.put(DefaultAutoDeploymentStrategy.class.getName(),newDefaultAutoDeploymentStrategy);
+    public SpringProcessEngineConfiguration(ProjectModelService projectModelService) {
+      this.transactionsExternallyManaged = true;
+      defaultAutoDeploymentStrategy = new DefaultAutoDeploymentStrategy(projectModelService);
+      deploymentStrategies.add(defaultAutoDeploymentStrategy);
+      deploymentStrategies.add(new SingleResourceAutoDeploymentStrategy(projectModelService));
+      deploymentStrategies.add(new ResourceParentFolderAutoDeploymentStrategy(projectModelService));
+      deploymentStrategies.add(new FailOnNoProcessAutoDeploymentStrategy(projectModelService));
+      deploymentStrategies.add(new NeverFailAutoDeploymentStrategy(projectModelService));
   }
 
   @Override
@@ -188,14 +190,14 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
    * @return the deployment strategy to use for the mode. Never <code>null</code>
    */
   protected AutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
-    AutoDeploymentStrategy result = deploymentStrategies.get(DefaultAutoDeploymentStrategy.class.getName());
-    for(Map.Entry<String, AutoDeploymentStrategy> entry : deploymentStrategies.entrySet()){
-        if(entry.getValue().handlesMode(mode)){
-            result = entry.getValue();
-            break;
-        }
-    }
-    return result;
+      AutoDeploymentStrategy result = defaultAutoDeploymentStrategy;
+      for (final AutoDeploymentStrategy strategy : deploymentStrategies) {
+          if (strategy.handlesMode(mode)) {
+              result = strategy;
+              break;
+          }
+      }
+      return result;
   }
 
 }

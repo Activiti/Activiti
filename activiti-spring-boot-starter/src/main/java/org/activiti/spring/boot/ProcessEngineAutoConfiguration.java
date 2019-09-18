@@ -75,8 +75,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
             @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators) throws IOException {
 
-        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration();
-        conf.setProjectModelService(projectModelService);
+        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(projectModelService);
         conf.setConfigurators(processEngineConfigurators);
         configureProcessDefinitionResources(processDefinitionResourceFinder,
                                             conf);

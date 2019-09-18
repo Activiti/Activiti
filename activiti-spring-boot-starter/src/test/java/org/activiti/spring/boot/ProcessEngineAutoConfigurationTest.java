@@ -16,6 +16,7 @@
 
 package org.activiti.spring.boot;
 
+import org.activiti.core.common.spring.project.ProjectModelService;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
 import org.activiti.validation.ProcessValidator;
@@ -33,6 +34,8 @@ public class ProcessEngineAutoConfigurationTest {
     @InjectMocks
     private ProcessEngineAutoConfiguration processEngineAutoConfiguration;
 
+    private ProjectModelService projectModelServiceMock;
+
     @Before
     public void setUp() {
         initMocks(this);
@@ -43,7 +46,7 @@ public class ProcessEngineAutoConfigurationTest {
         //given
         ActivitiProperties activitiProperties = new ActivitiProperties();
         activitiProperties.setAsyncExecutorActivate(false);
-        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration();
+        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(projectModelServiceMock);
 
         //when
         processEngineAutoConfiguration.addAsyncPropertyValidator(activitiProperties,
@@ -65,7 +68,7 @@ public class ProcessEngineAutoConfigurationTest {
         //given
         ActivitiProperties activitiProperties = new ActivitiProperties();
         activitiProperties.setAsyncExecutorActivate(true);
-        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration();
+        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(projectModelServiceMock);
 
         //when
         processEngineAutoConfiguration.addAsyncPropertyValidator(activitiProperties,

@@ -18,8 +18,10 @@ import java.util.List;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.core.common.spring.project.ProjectModelService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.util.io.InputStreamSource;
+import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.validation.ValidationError;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -36,6 +38,12 @@ import org.springframework.core.io.Resource;
 public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentStrategy {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(AbstractAutoDeploymentStrategy.class);
+
+    private ProjectModelService projectModelService;
+
+    public AbstractAutoDeploymentStrategy(ProjectModelService projectModelService) {
+        this.projectModelService = projectModelService;
+    }
 
     /**
      * Gets the deployment mode this strategy handles.
@@ -110,5 +118,16 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
             return false;
         }
         return true;
+    }
+
+    protected DeploymentBuilder loadProjectManifest(DeploymentBuilder deploymentBuilder) {
+        if (projectModelService != null && projectModelService.hasProjectManifest()) {
+            try {
+                deploymentBuilder.setProjectManifest(projectModelService.loadProjectManifest());
+            } catch (IOException e) {
+                LOGGER.warn("Manifest of application not found. Project release version will not be set for deployment.");
+            }
+        }
+        return deploymentBuilder;
     }
 }

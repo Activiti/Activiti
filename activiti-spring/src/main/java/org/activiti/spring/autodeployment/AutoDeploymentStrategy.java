@@ -13,6 +13,7 @@
 
 package org.activiti.spring.autodeployment;
 
+import org.activiti.core.common.spring.project.ProjectModelService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.api.internal.Internal;
 import org.springframework.core.io.Resource;

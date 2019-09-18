@@ -15,6 +15,7 @@ package org.activiti.spring.impl.test;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.activiti.core.common.spring.project.ProjectModelService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.test.AbstractActivitiTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
