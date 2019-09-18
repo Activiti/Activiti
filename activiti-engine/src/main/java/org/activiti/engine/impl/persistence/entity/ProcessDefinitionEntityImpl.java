@@ -219,12 +219,4 @@ public class ProcessDefinitionEntityImpl extends AbstractEntity implements Proce
     return "ProcessDefinitionEntity[" + id + "]";
   }
 
-  public Integer getAppVersion(){
-      return this.appVersion;
-  }
-
-  public void setAppVersion(Integer appVersion){
-      this.appVersion = appVersion;
-  }
-
 }

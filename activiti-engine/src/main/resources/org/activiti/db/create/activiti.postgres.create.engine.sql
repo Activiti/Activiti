@@ -183,7 +183,6 @@ create table ACT_RE_PROCDEF (
     SUSPENSION_STATE_ integer,
     TENANT_ID_ varchar(255) default '',
     ENGINE_VERSION_ varchar(255),
-    APP_VERSION_ integer,
     primary key (ID_)
 );
 

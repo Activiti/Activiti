@@ -80,7 +80,6 @@ public class BpmnDeployer implements Deployer {
                     getPreviousVersionsOfProcessDefinitions(parsedDeployment);
             setProcessDefinitionVersionsAndIds(parsedDeployment,
                                                mapOfNewProcessDefinitionToPreviousVersion);
-            setProcessDefinitionAppVersion(parsedDeployment);
             persistProcessDefinitionsAndAuthorizations(parsedDeployment);
             updateTimersAndEvents(parsedDeployment,
                                   mapOfNewProcessDefinitionToPreviousVersion);
@@ -136,14 +135,6 @@ public class BpmnDeployer implements Deployer {
             String diagramResourceName = ResourceNameUtil.getProcessDiagramResourceNameFromDeployment(processDefinition,
                                                                                                       resources);
             processDefinition.setDiagramResourceName(diagramResourceName);
-        }
-    }
-    protected void setProcessDefinitionAppVersion(ParsedDeployment parsedDeployment){
-
-        Integer version = parsedDeployment.getDeployment().getVersion();
-
-        for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()){
-            processDefinition.setAppVersion(version);
         }
     }
 
