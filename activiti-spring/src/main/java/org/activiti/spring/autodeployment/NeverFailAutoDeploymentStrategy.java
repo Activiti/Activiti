@@ -1,7 +1,5 @@
 package org.activiti.spring.autodeployment;
 
-import java.io.IOException;
-
 import org.activiti.core.common.spring.project.ProjectModelService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;

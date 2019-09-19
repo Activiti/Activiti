@@ -25,8 +25,9 @@ import org.assertj.core.api.Condition;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ProcessEngineAutoConfigurationTest {
@@ -34,6 +35,7 @@ public class ProcessEngineAutoConfigurationTest {
     @InjectMocks
     private ProcessEngineAutoConfiguration processEngineAutoConfiguration;
 
+    @Mock
     private ProjectModelService projectModelServiceMock;
 
     @Before
