@@ -14,59 +14,50 @@
  * limitations under the License.
  */
 
-package org.activiti.spring.process;
+package org.activiti.spring.boot;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.springframework.core.io.Resource;
 
-public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderDescriptor {
-
-    private boolean checkResources;
-    private String locationPrefix;
-    private List<String> locationSuffixes;
-
-    public ProcessExtensionResourceFinderDescriptor(boolean checkResources,
-                                                    String locationPrefix,
-                                                    String locationSuffix) {
-
-        this.checkResources = checkResources;
-        this.locationPrefix = locationPrefix;
-        locationSuffixes = new ArrayList<>();
-        locationSuffixes.add(locationSuffix);
+public class ProcessDefinitionResourceFinderDescriptor implements ResourceFinderDescriptor {
+    
+    private ActivitiProperties activitiProperties;
+    
+    public ProcessDefinitionResourceFinderDescriptor(ActivitiProperties activitiProperties) {
+       this.activitiProperties = activitiProperties;
     }
 
     @Override
     public List<String> getLocationSuffixes() {
-        return locationSuffixes;
+        return activitiProperties.getProcessDefinitionLocationSuffixes();
     }
 
     @Override
     public String getLocationPrefix() {
-        return locationPrefix;
+        return activitiProperties.getProcessDefinitionLocationPrefix();
     }
 
     @Override
     public boolean shouldLookUpResources() {
-        return checkResources;
+        return activitiProperties.isCheckProcessDefinitions();
     }
 
     @Override
     public String getMsgForEmptyResources() {
-        return "No process extensions were found for auto-deployment in the location";
+        return "No process definitions were found for auto-deployment in the location `" + getLocationPrefix() + "`";
     }
 
     @Override
-    public String getMsgForResourcesFound(List<String> processExtensionFiles) {
-        return "The following process extension files will be deployed: " + processExtensionFiles;
+    public String getMsgForResourcesFound(List<String> foundProcessResources) {
+        return "The following process definition files will be deployed: " + foundProcessResources;
     }
-
+    
     @Override
     public void validate(List<Resource> resources) {
-
+        
     }
-
-
+  
+   
 }
