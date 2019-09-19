@@ -93,7 +93,7 @@ public class ProcessVariablesInitiatorIT {
 
             //when
             Map<String, Object> variables = processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
-                    null);
+                                                                                                          null);
 
             //then
             assertThat(variables)

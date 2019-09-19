@@ -43,6 +43,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                                      VariableParsingService variableParsingService,
                                      VariableValidationService variableValidationService) {
         this.processExtensionService = processExtensionService;
+
         this.variableParsingService = variableParsingService;
         this.variableValidationService = variableValidationService;
     }
@@ -57,19 +58,19 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 //            processExtensionService.cache(processDefinition);
             Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions().getProperties();
             processedVariables = processVariables(variables,
-                                                                      variableDefinitionMap);
+                    variableDefinitionMap);
 
             Set<String> missingRequiredVars = checkRequiredVariables(processedVariables,
-                                                                     variableDefinitionMap);
+                    variableDefinitionMap);
             if (!missingRequiredVars.isEmpty()) {
                 throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' without required variables - " + String.join(", ",
-                                                                                                                                                   missingRequiredVars));
+                        missingRequiredVars));
             }
             Set<String> varsWithMismatchedTypes = validateVariablesAgainstDefinitions(processedVariables,
-                                                                                      variableDefinitionMap);
+                    variableDefinitionMap);
             if (!varsWithMismatchedTypes.isEmpty()) {
                 throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' as variables fail type validation - " + String.join(", ",
-                                                                                                                                                          varsWithMismatchedTypes));
+                        varsWithMismatchedTypes));
             }
         }
 
