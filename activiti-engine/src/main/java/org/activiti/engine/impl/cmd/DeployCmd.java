@@ -53,6 +53,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
       setProjectReleaseVersion(deployment);
+      deployment.setVersion(1);
 
       if (deploymentBuilder.isDuplicateFilterEnabled()) {
 
@@ -76,15 +77,17 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         existingDeployment = (DeploymentEntity) existingDeployments.get(0);
       }
 
-      if ((existingDeployment != null) && !deploymentsDiffer(deployment, existingDeployment)) {
-        return existingDeployment;
-      }
+          if (existingDeployment != null) {
+              if (!deploymentsDiffer(deployment,
+                                     existingDeployment)) {
+                  return existingDeployment;
+              } else {
+                  deployment.setVersion(existingDeployment.getVersion() + 1);
+              }
+          }
     }
 
     deployment.setNew(true);
-
-    setDeploymentVersion(commandContext,
-                           deployment);
 
       // Save the data
     commandContext.getDeploymentEntityManager().insert(deployment);
@@ -115,15 +118,6 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     private void setProjectReleaseVersion(DeploymentEntity deployment) {
         if (deploymentBuilder.hasProjectManifestSet()) {
             deployment.setProjectReleaseVersion(deploymentBuilder.getProjectManifest().getVersion());
-        }
-    }
-
-    private void setDeploymentVersion(CommandContext commandContext,
-                                      DeploymentEntity deployment) {
-        if(commandContext.getDeploymentEntityManager().findLatestDeploymentByName(deployment.getName())!= null){
-            deployment.setVersion(commandContext.getDeploymentEntityManager().findLatestDeploymentByName(deployment.getName()).getVersion() + 1);
-        }else{
-            deployment.setVersion(1);
         }
     }
 

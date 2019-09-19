@@ -27,6 +27,7 @@ public class ApplicationUpgradeIT {
 
         Deployment deployment1 = repositoryService.createDeployment()
                 .setProjectManifest(projectManifest)
+                .enableDuplicateFiltering()
                 .name("deploymentName")
                 .deploy();
 
@@ -37,6 +38,7 @@ public class ApplicationUpgradeIT {
 
         Deployment deployment2 = repositoryService.createDeployment()
                 .setProjectManifest(projectManifest)
+                .enableDuplicateFiltering()
                 .name("deploymentName")
                 .deploy();
 
