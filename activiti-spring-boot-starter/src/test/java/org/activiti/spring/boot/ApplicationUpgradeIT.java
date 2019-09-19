@@ -3,38 +3,23 @@ package org.activiti.spring.boot;
 import org.activiti.core.common.project.model.ProjectManifest;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ApplicationUpgradeIT {
 
-    private static ConfigurableApplicationContext rbCtx1;
-
-    @BeforeClass
-    public static void setUp() {
-        rbCtx1 = new SpringApplicationBuilder(Application.class).properties("server.port=8081")
-                .run();
-    }
-
-    @AfterClass
-    public static void tearDown() {
-        rbCtx1.close();
-    }
-
-    @Test
-    public void contextLoads() {
-        assertThat(rbCtx1).isNotNull();
-    }
+    @Autowired
+    private RepositoryService repositoryService;
 
     @Test
     public void should_UpdateDeploymentVersion_When_ManifestIsPresent() {
-
-        RepositoryService repositoryService = rbCtx1.getBean(RepositoryService.class);
 
         ProjectManifest projectManifest = new ProjectManifest();
         projectManifest.setVersion("7");
