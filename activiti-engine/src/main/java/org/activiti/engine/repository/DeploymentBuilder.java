@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.zip.ZipInputStream;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.core.common.project.model.ProjectManifest;
 import org.activiti.engine.api.internal.Internal;
 import org.springframework.core.io.Resource;
 
@@ -47,6 +48,8 @@ public interface DeploymentBuilder {
   DeploymentBuilder addZipInputStream(ZipInputStream zipInputStream);
 
   DeploymentBuilder addBpmnModel(String resourceName, BpmnModel bpmnModel);
+
+  DeploymentBuilder setProjectManifest(ProjectManifest projectManifest);
 
   /**
    * If called, no XML schema validation against the BPMN 2.0 XSD.

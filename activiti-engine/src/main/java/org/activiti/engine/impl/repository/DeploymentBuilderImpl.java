@@ -24,6 +24,7 @@ import java.util.zip.ZipInputStream;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.core.common.project.model.ProjectManifest;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
@@ -55,6 +56,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   protected boolean isDuplicateFilterEnabled;
   protected Date processDefinitionsActivationDate;
   protected Map<String, Object> deploymentProperties = new HashMap<>();
+  private ProjectManifest projectManifest;
 
   public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
     this(repositoryService,
@@ -80,6 +82,19 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     resource.setBytes(bytes);
     deployment.addResource(resource);
     return this;
+  }
+
+  public DeploymentBuilder setProjectManifest(ProjectManifest projectManifest) {
+      this.projectManifest = projectManifest;
+      return this;
+  }
+
+  public ProjectManifest getProjectManifest(){
+      return this.projectManifest;
+  }
+
+  public boolean hasProjectManifestSet(){
+      return this.projectManifest != null;
   }
 
   @Override

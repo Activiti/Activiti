@@ -44,4 +44,8 @@ public interface Deployment {
 
   String getTenantId();
 
+  Integer getVersion();
+
+  String getProjectReleaseVersion();
+
 }

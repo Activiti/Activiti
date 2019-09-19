@@ -168,22 +168,38 @@ public class BpmnDeployer implements Deployer {
                                                       Map<ProcessDefinitionEntity, ProcessDefinitionEntity> mapNewToOldProcessDefinitions) {
         CommandContext commandContext = Context.getCommandContext();
 
-        for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
-            int version = 1;
+        if(parsedDeployment.getDeployment().getProjectReleaseVersion() != null){
+            Integer version = parsedDeployment.getDeployment().getVersion();
+            for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+                processDefinition.setVersion(version);
+                processDefinition.setId(getIdForNewProcessDefinition(processDefinition));
 
-            ProcessDefinitionEntity latest = mapNewToOldProcessDefinitions.get(processDefinition);
-            if (latest != null) {
-                version = latest.getVersion() + 1;
+                if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+                    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED,
+                                                                                                                                             processDefinition));
+                }
             }
+        }else{
 
-            processDefinition.setVersion(version);
-            processDefinition.setId(getIdForNewProcessDefinition(processDefinition));
+            for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+                int version = 1;
 
-            if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED,
-                                                                                                                                         processDefinition));
+                ProcessDefinitionEntity latest = mapNewToOldProcessDefinitions.get(processDefinition);
+                if (latest != null) {
+                    version = latest.getVersion() + 1;
+                }
+
+                processDefinition.setVersion(version);
+                processDefinition.setId(getIdForNewProcessDefinition(processDefinition));
+
+                if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+                    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED,
+                                                                                                                                             processDefinition));
+                }
             }
         }
+
+
     }
 
     /**

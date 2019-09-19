@@ -52,7 +52,10 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
     deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
 
-    if (deploymentBuilder.isDuplicateFilterEnabled()) {
+      setProjectReleaseVersion(deployment);
+      deployment.setVersion(1);
+
+      if (deploymentBuilder.isDuplicateFilterEnabled()) {
 
       List<Deployment> existingDeployments = new ArrayList<Deployment>();
       if (deployment.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())) {
@@ -74,14 +77,19 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
         existingDeployment = (DeploymentEntity) existingDeployments.get(0);
       }
 
-      if ((existingDeployment != null) && !deploymentsDiffer(deployment, existingDeployment)) {
-        return existingDeployment;
-      }
+          if (existingDeployment != null) {
+              if (!deploymentsDiffer(deployment,
+                                     existingDeployment)) {
+                  return existingDeployment;
+              } else {
+                  deployment.setVersion(existingDeployment.getVersion() + 1);
+              }
+          }
     }
 
     deployment.setNew(true);
 
-    // Save the data
+      // Save the data
     commandContext.getDeploymentEntityManager().insert(deployment);
 
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
@@ -107,32 +115,47 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     return deployment;
   }
 
-  protected boolean deploymentsDiffer(DeploymentEntity deployment, DeploymentEntity saved) {
-
-    if (deployment.getResources() == null || saved.getResources() == null) {
-      return true;
-    }
-
-    Map<String, ResourceEntity> resources = deployment.getResources();
-    Map<String, ResourceEntity> savedResources = saved.getResources();
-
-    for (String resourceName : resources.keySet()) {
-      ResourceEntity savedResource = savedResources.get(resourceName);
-
-      if (savedResource == null)
-        return true;
-
-      if (!savedResource.isGenerated()) {
-        ResourceEntity resource = resources.get(resourceName);
-
-        byte[] bytes = resource.getBytes();
-        byte[] savedBytes = savedResource.getBytes();
-        if (!Arrays.equals(bytes, savedBytes)) {
-          return true;
+    private void setProjectReleaseVersion(DeploymentEntity deployment) {
+        if (deploymentBuilder.hasProjectManifestSet()) {
+            deployment.setProjectReleaseVersion(deploymentBuilder.getProjectManifest().getVersion());
         }
-      }
     }
-    return false;
+
+    protected boolean deploymentsDiffer(DeploymentEntity deployment,
+                                        DeploymentEntity saved) {
+
+        if (deploymentBuilder.hasProjectManifestSet()) {
+
+            return !deployment.getProjectReleaseVersion().equals(saved.getProjectReleaseVersion());
+        } else {
+
+            if (deployment.getResources() == null || saved.getResources() == null) {
+                return true;
+            }
+
+            Map<String, ResourceEntity> resources = deployment.getResources();
+            Map<String, ResourceEntity> savedResources = saved.getResources();
+
+            for (String resourceName : resources.keySet()) {
+                ResourceEntity savedResource = savedResources.get(resourceName);
+
+                if (savedResource == null) {
+                    return true;
+                }
+
+                if (!savedResource.isGenerated()) {
+                    ResourceEntity resource = resources.get(resourceName);
+
+                    byte[] bytes = resource.getBytes();
+                    byte[] savedBytes = savedResource.getBytes();
+                    if (!Arrays.equals(bytes,
+                                       savedBytes)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
   }
 
   protected void scheduleProcessDefinitionActivation(CommandContext commandContext, DeploymentEntity deployment) {

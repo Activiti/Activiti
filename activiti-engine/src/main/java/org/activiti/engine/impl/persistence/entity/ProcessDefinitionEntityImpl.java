@@ -48,7 +48,7 @@ public class ProcessDefinitionEntityImpl extends AbstractEntity implements Proce
   protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
   protected IOSpecification ioSpecification;
 
-  // Backwards compatibility
+    // Backwards compatibility
   protected String engineVersion;
   
   public Object getPersistentState() {

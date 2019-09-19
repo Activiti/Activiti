@@ -20,8 +20,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.activiti.core.common.spring.project.ProjectModelService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.DeploymentBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 /**
@@ -38,6 +41,10 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
   public static final String DEPLOYMENT_MODE = "resource-parent-folder";
 
   private static final String DEPLOYMENT_NAME_PATTERN = "%s.%s";
+
+  public ResourceParentFolderAutoDeploymentStrategy(ProjectModelService projectModelService) {
+      super(projectModelService);
+  }
 
   @Override
   protected String getDeploymentMode() {
@@ -56,7 +63,7 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
 
       final String deploymentName = determineDeploymentName(deploymentNameHint, group.getKey());
 
-      final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);
+      DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);
 
       for (final Resource resource : group.getValue()) {
         final String resourceName = determineResourceName(resource);
@@ -64,7 +71,8 @@ public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDepl
         deploymentBuilder.addInputStream(resourceName,
                                          resource);
       }
-      deploymentBuilder.deploy();
+
+      loadProjectManifest(deploymentBuilder).deploy();
     }
 
   }

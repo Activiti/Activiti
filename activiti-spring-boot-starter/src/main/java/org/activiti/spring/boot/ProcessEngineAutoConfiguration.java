@@ -23,6 +23,7 @@ import javax.sql.DataSource;
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import org.activiti.core.common.spring.project.ProjectModelService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
@@ -70,10 +71,11 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             SpringAsyncExecutor springAsyncExecutor,
             ActivitiProperties activitiProperties,
             ProcessDefinitionResourceFinder processDefinitionResourceFinder,
+            ProjectModelService projectModelService,
             @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
             @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators) throws IOException {
 
-        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration();
+        SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(projectModelService);
         conf.setConfigurators(processEngineConfigurators);
         configureProcessDefinitionResources(processDefinitionResourceFinder,
                                             conf);

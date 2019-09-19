@@ -55,4 +55,12 @@ public interface DeploymentEntity extends Deployment, Entity {
 
   void setEngineVersion(String engineVersion);
 
+  Integer getVersion();
+
+  void setVersion(Integer version);
+
+  String getProjectReleaseVersion();
+
+  void setProjectReleaseVersion(String projectReleaseVersion);
+
 }
