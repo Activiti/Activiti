@@ -15,6 +15,7 @@ package org.activiti.spring.process.conf;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.RepositoryService;
+import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
 import org.activiti.spring.process.ProcessExtensionResourceReader;
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.process.ProcessExtensionService;
@@ -27,6 +28,7 @@ import org.activiti.spring.process.variable.types.DateVariableType;
 import org.activiti.spring.process.variable.types.JavaObjectVariableType;
 import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.VariableType;
+import org.activiti.spring.resources.ResourceFinder;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -68,26 +70,24 @@ public class ProcessExtensionsAutoConfiguration {
         return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
     }
 
+
     @Bean
-    public ProcessExtensionService processExtensionService(@Value("${activiti.process.extensions.dir:classpath:/processes/}") String processExtensionsRoot,
-                                                           @Value("${activiti.process.extensions.suffix:**-extensions.json}") String processExtensionsSuffix,
-                                                           ObjectMapper objectMapper,
-                                                           ResourcePatternResolver resourceLoader,
-                                                           Map<String, VariableType> variableTypeMap) {
-        return new ProcessExtensionService(processExtensionsRoot,
-                processExtensionsSuffix,
-                objectMapper,
-                resourceLoader,
-                variableTypeMap);
+    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
+                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader) {
+        return new ProcessExtensionService(
+                deploymentResourceLoader,
+                processExtensionResourceReader);
     }
 
-//    @Bean
-//    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
-//                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader) {
-//        return new ProcessExtensionService(
-//                deploymentResourceLoader,
-//                processExtensionResourceReader);
-//    }
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinderDescriptor(
+            @Value("${activiti.process.extensions.dir:classpath:**/processes/}") String locationPrefix,
+            @Value("${activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix) {
+        return new ProcessExtensionResourceFinderDescriptor(true,
+                locationPrefix,
+                locationSuffix);
+    }
 
     @Bean
     InitializingBean initRepositoryServiceForProcessExtensionService(RepositoryService repositoryService,
