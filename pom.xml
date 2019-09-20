@@ -21,7 +21,7 @@
     <activiti-core-common.version>${project.version}</activiti-core-common.version>
     <commons-io.version>2.6</commons-io.version>
   </properties>
-  
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -50,11 +50,11 @@
     <dependency>
       <groupId>org.activiti.api</groupId>
       <artifactId>activiti-api-dependencies</artifactId>
-      <version>${activiti-api.version}</version>       
+      <version>${activiti-api.version}</version>
       <type>pom</type>
     </dependency>
   </dependencies>
-    
+
   <modules>
     <module>activiti-core-common-dependencies-tests</module>
     <module>activiti-core-common-dependencies</module>
@@ -64,6 +64,7 @@
     <module>activiti-spring-connector</module>
     <module>activiti-connector-model</module>
     <module>activiti-spring-application</module>
+    <module>activiti-spring-resource-finder</module>
     <module>activiti-core-test</module>
     <module>activiti-project-model</module>
     <module>activiti-spring-project</module>

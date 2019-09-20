@@ -11,6 +11,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>activiti-spring-project</artifactId>
+  <name>Activiti :: Spring Project</name>
 
   <dependencies>
 
