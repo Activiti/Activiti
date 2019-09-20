@@ -305,6 +305,7 @@ public class ActivitiEventBuilder {
     newEvent.setMessageName(messageName);
     newEvent.setMessageCorrelationKey(correlationKey);
     newEvent.setMessageData(payload);  
+    newEvent.setMessageBusinessKey(execution.getProcessInstanceBusinessKey());
 
     applyExecution(newEvent, execution);
     
