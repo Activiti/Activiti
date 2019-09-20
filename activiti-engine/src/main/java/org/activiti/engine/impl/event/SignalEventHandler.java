@@ -16,6 +16,7 @@ package org.activiti.engine.impl.event;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
@@ -45,7 +46,11 @@ public class SignalEventHandler extends AbstractEventHandler {
   public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
     if (eventSubscription.getExecutionId() != null) {
       
-      dispatchSignalEvent(eventSubscription, payload, commandContext);
+      ActivitiSignalEvent signalEvent = ActivitiEventBuilder.createActivitiySignalledEvent(eventSubscription.getExecution(),
+                                                                                         eventSubscription.getEventName(),
+                                                                                         payload);
+    
+      dispatchSignalEvent(signalEvent, commandContext);
         
       super.handleEvent(eventSubscription, payload, commandContext);
 
@@ -85,7 +90,13 @@ public class SignalEventHandler extends AbstractEventHandler {
                                                                                                           process,
                                                                                                           variables,
                                                                                                           null);
-      dispatchSignalEvent(eventSubscription, payload, commandContext);
+
+      DelegateExecution execution = executionEntity.getExecutions()
+                                                   .get(0);
+      ActivitiSignalEvent signalEvent = ActivitiEventBuilder.createActivitiySignalledEvent(execution,
+                                                                                           eventSubscription.getEventName(),
+                                                                                           payload);
+      dispatchSignalEvent(signalEvent, commandContext);
       
       processInstanceHelper.startProcessInstance(executionEntity, 
                                                  commandContext, 
@@ -95,13 +106,10 @@ public class SignalEventHandler extends AbstractEventHandler {
     }
   }
   
-  protected void dispatchSignalEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
+  protected void dispatchSignalEvent(ActivitiSignalEvent signalEvent, CommandContext commandContext) {
     if (commandContext.getProcessEngineConfiguration()
                       .getEventDispatcher()
                       .isEnabled()) {
-      ActivitiSignalEvent signalEvent = ActivitiEventBuilder.createActivitiySignalledEvent(eventSubscription.getExecution(),
-                                                                                           eventSubscription.getEventName(),
-                                                                                           payload);
       Context.getProcessEngineConfiguration().getEventDispatcher()
                                              .dispatchEvent(signalEvent);
     }
