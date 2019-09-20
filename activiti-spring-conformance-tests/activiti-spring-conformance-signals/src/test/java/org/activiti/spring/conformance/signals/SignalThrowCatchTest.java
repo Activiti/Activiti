@@ -1,5 +1,8 @@
 package org.activiti.spring.conformance.signals;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.event.VariableEvent;
 import org.activiti.api.process.model.BPMNActivity;
@@ -26,9 +29,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -270,8 +270,8 @@ public class SignalThrowCatchTest {
         assertThat(RuntimeTestConfiguration.collectedEvents)
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
-                        BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
+                        BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
                         VariableEvent.VariableEvents.VARIABLE_CREATED,
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
