@@ -13,13 +13,6 @@
 
 package org.activiti.spring.process;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
@@ -30,6 +23,13 @@ import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
@@ -76,7 +76,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
     }
 
     @Override
-    protected ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
+    public ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
                                                                           String businessKey,
                                                                           String processInstanceName,
                                                                           FlowElement initialFlowElement,
