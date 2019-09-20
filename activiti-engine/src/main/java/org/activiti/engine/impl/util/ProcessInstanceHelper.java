@@ -12,13 +12,6 @@
  */
 package org.activiti.engine.impl.util;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.EventSubProcess;
@@ -41,6 +34,13 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
 
@@ -142,7 +142,7 @@ public class ProcessInstanceHelper {
     
     return processInstance;
   }
-
+  
   public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
       String businessKey, String processInstanceName, FlowElement initialFlowElement,
       Process process, Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
@@ -268,7 +268,7 @@ public class ProcessInstanceHelper {
   }
   
 
-    protected ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
+    public ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
                                                                        String businessKey,
                                                                        String processInstanceName,
                                                                        FlowElement initialFlowElement,

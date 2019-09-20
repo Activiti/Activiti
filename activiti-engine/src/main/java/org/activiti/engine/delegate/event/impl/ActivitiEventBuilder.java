@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.delegate.event.impl;
 
-import java.util.Map;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -39,6 +37,8 @@ import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.Task;
+
+import java.util.Map;
 
 /**
  * Builder class used to create {@link ActivitiEvent} implementations.
@@ -254,19 +254,16 @@ public class ActivitiEventBuilder {
     newEvent.setCause(cause);
     return newEvent;
   }
-
-  public static ActivitiSignalEvent createSignalEvent(ActivitiEventType type, String activityId, String signalName, Object signalData, String executionId, String processInstanceId,
-      String processDefinitionId) {
-    ActivitiSignalEventImpl newEvent = new ActivitiSignalEventImpl(type);
-    newEvent.setActivityId(activityId);
-    newEvent.setExecutionId(executionId);
-    newEvent.setProcessDefinitionId(processDefinitionId);
-    newEvent.setProcessInstanceId(processInstanceId);
-    newEvent.setSignalName(signalName);
-    newEvent.setSignalData(signalData);
-    return newEvent;
-  }
   
+  public static ActivitiSignalEvent createActivitiySignalledEvent(DelegateExecution execution,
+                                                                  String signalName, 
+                                                                  Object payload) {
+    return  createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED,
+                              execution,
+                              signalName,
+                              payload);
+  }    
+
   public static ActivitiMessageEvent createMessageReceivedEvent(DelegateExecution execution,
                                                                 String messageName, 
                                                                 String correlationKey, 
@@ -297,7 +294,7 @@ public class ActivitiEventBuilder {
                               messageName,
                               correlationKey,
                               payload);
-  }  
+  }
   
   private static ActivitiMessageEvent createMessageEvent(ActivitiEventType type, 
                                                          DelegateExecution execution,
@@ -308,21 +305,10 @@ public class ActivitiEventBuilder {
     newEvent.setMessageName(messageName);
     newEvent.setMessageCorrelationKey(correlationKey);
     newEvent.setMessageData(payload);  
+    newEvent.setMessageBusinessKey(execution.getProcessInstanceBusinessKey());
+
+    applyExecution(newEvent, execution);
     
-    if (execution != null) {
-        newEvent.setActivityId(execution.getCurrentActivityId());
-        newEvent.setExecutionId(execution.getId());
-        newEvent.setProcessDefinitionId(execution.getProcessDefinitionId());
-        newEvent.setProcessInstanceId(execution.getProcessInstanceId());
-        newEvent.setMessageBusinessKey(execution.getProcessInstanceBusinessKey());
-        
-        if (execution.getCurrentFlowElement() instanceof FlowNode) {
-            FlowNode flowNode = (FlowNode) execution.getCurrentFlowElement();
-            newEvent.setActivityType(parseActivityType(flowNode));
-            newEvent.setBehaviorClass(parseActivityBehavior(flowNode));
-            newEvent.setActivityName(flowNode.getName());
-        }
-    }  
     return newEvent;
   } 
 
@@ -391,4 +377,35 @@ public class ActivitiEventBuilder {
       }
     }
   }
+  
+  private static ActivitiSignalEvent createSignalEvent(ActivitiEventType type,
+                                                       DelegateExecution execution,
+                                                       String signalName,
+                                                       Object payload) {
+     ActivitiSignalEventImpl newEvent = new ActivitiSignalEventImpl(type);
+     newEvent.setSignalName(signalName);
+     newEvent.setSignalData(payload);  
+     
+     applyExecution(newEvent, execution);
+     
+     return newEvent;
+  }  
+  
+  private static void applyExecution(ActivitiActivityEventImpl newEvent, 
+                                     DelegateExecution execution) {
+    if (execution != null) {
+      newEvent.setActivityId(execution.getCurrentActivityId());
+      newEvent.setExecutionId(execution.getId());
+      newEvent.setProcessDefinitionId(execution.getProcessDefinitionId());
+      newEvent.setProcessInstanceId(execution.getProcessInstanceId());
+      
+      if (execution.getCurrentFlowElement() instanceof FlowNode) {
+          FlowNode flowNode = (FlowNode) execution.getCurrentFlowElement();
+          newEvent.setActivityType(parseActivityType(flowNode));
+          newEvent.setBehaviorClass(parseActivityBehavior(flowNode));
+          newEvent.setActivityName(flowNode.getName());
+      }
+    }  
+  }
+  
 }

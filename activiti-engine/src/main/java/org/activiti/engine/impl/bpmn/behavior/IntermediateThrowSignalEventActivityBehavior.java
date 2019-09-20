@@ -13,20 +13,20 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.List;
-
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
@@ -78,17 +78,12 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
         }
 
         for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
-            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-                    ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED,
-                                                           signalEventSubscriptionEntity.getActivityId(),
-                                                           eventSubscriptionName,
-                                                           null,
-                                                           signalEventSubscriptionEntity.getExecutionId(),
-                                                           signalEventSubscriptionEntity.getProcessInstanceId(),
-                                                           signalEventSubscriptionEntity.getProcessDefinitionId()));
-
+            Map<String, Object> signalVariables = Optional.ofNullable(execution.getVariables())
+                                                          .filter(it -> !it.isEmpty())
+                                                          .orElse(null);
+            
             eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity,
-                                                         execution.getVariables(),
+                                                         signalVariables,
                                                          signalEventDefinition.isAsync());
         }
 

@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.cmd;
 
-import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -52,8 +51,9 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
     }
 
     Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, execution.getCurrentActivityId(), null,
-            null, execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId()));
+        ActivitiEventBuilder.createActivitiySignalledEvent(execution,
+                                                           null,
+                                                           null));
 
     Context.getAgenda().planTriggerExecutionOperation(execution);
     return null;
