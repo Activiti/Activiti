@@ -34,8 +34,6 @@ import org.springframework.util.ResourceUtils;
 
 /**
  * Abstract base class for implementations of {@link AutoDeploymentStrategy}.
- *
- *
  */
 public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentStrategy {
 
