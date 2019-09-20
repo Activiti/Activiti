@@ -45,6 +45,7 @@
 
     <checkstyle-maven-plugin.version>3.1.0</checkstyle-maven-plugin.version>
     <skipCheckstyle>true</skipCheckstyle>
+    <testcontainers.version>1.12.1</testcontainers.version>
   </properties>
   <dependencyManagement>
     <dependencies>
