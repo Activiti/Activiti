@@ -258,10 +258,10 @@ public class ActivitiEventBuilder {
   public static ActivitiSignalEvent createActivitiySignalledEvent(DelegateExecution execution,
                                                                   String signalName, 
                                                                   Object payload) {
-    return  createSingalEvent(ActivitiEventType.ACTIVITY_SIGNALED, 
-                               execution, 
-                               signalName, 
-                               payload); 
+    return  createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED,
+                              execution,
+                              signalName,
+                              payload);
   }    
 
   public static ActivitiMessageEvent createMessageReceivedEvent(DelegateExecution execution,
@@ -378,9 +378,9 @@ public class ActivitiEventBuilder {
     }
   }
   
-  private static ActivitiSignalEvent createSingalEvent(ActivitiEventType type, 
+  private static ActivitiSignalEvent createSignalEvent(ActivitiEventType type,
                                                        DelegateExecution execution,
-                                                       String signalName, 
+                                                       String signalName,
                                                        Object payload) {
      ActivitiSignalEventImpl newEvent = new ActivitiSignalEventImpl(type);
      newEvent.setSignalName(signalName);
