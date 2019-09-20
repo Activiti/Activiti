@@ -86,43 +86,47 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
 
         String resourceName = determineResourceName(resource);
 
-        if (resourceName.endsWith(".json")) return true;
+        if (isProcessDefinitionResource(resourceName)) {
+            try {
+                BpmnXMLConverter converter = new BpmnXMLConverter();
+                BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(resource.getInputStream()), true,
+                        false);
+                List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
+                if (validationErrors != null && !validationErrors.isEmpty()) {
+                    StringBuilder warningBuilder = new StringBuilder();
+                    StringBuilder errorBuilder = new StringBuilder();
 
-        try {
-            BpmnXMLConverter converter = new BpmnXMLConverter();
-            BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(resource.getInputStream()), true,
-                    false);
-            List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
-            if (validationErrors != null && !validationErrors.isEmpty()) {
-                StringBuilder warningBuilder = new StringBuilder();
-                StringBuilder errorBuilder = new StringBuilder();
+                    for (ValidationError error : validationErrors) {
+                        if (error.isWarning()) {
+                            warningBuilder.append(error.toString());
+                            warningBuilder.append("\n");
+                        } else {
+                            errorBuilder.append(error.toString());
+                            errorBuilder.append("\n");
+                        }
 
-                for (ValidationError error : validationErrors) {
-                    if (error.isWarning()) {
-                        warningBuilder.append(error.toString());
-                        warningBuilder.append("\n");
-                    } else {
-                        errorBuilder.append(error.toString());
-                        errorBuilder.append("\n");
-                    }
+                        // Write out warnings (if any)
+                        if (warningBuilder.length() > 0) {
+                            LOGGER.warn("Following warnings encountered during process validation: "
+                                    + warningBuilder.toString());
+                        }
 
-                    // Write out warnings (if any)
-                    if (warningBuilder.length() > 0) {
-                        LOGGER.warn("Following warnings encountered during process validation: "
-                                + warningBuilder.toString());
-                    }
-
-                    if (errorBuilder.length() > 0) {
-                        LOGGER.error("Errors while parsing:\n" + errorBuilder.toString());
-                        return false;
+                        if (errorBuilder.length() > 0) {
+                            LOGGER.error("Errors while parsing:\n" + errorBuilder.toString());
+                            return false;
+                        }
                     }
                 }
+            } catch (Exception e) {
+                LOGGER.error("Error parsing XML", e);
+                return false;
             }
-        } catch (Exception e) {
-            LOGGER.error("Error parsing XML", e);
-            return false;
         }
         return true;
+    }
+
+    private boolean isProcessDefinitionResource(String resource) {
+        return resource.endsWith(".bpmn20.xml") || resource.endsWith(".bpmn");
     }
 
     protected DeploymentBuilder loadProjectManifest(DeploymentBuilder deploymentBuilder) {
