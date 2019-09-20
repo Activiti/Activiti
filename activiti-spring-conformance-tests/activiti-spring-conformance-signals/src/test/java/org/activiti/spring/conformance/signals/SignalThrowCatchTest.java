@@ -271,8 +271,8 @@ public class SignalThrowCatchTest {
                 .extracting(RuntimeEvent::getEventType)
                 .containsExactly(
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED,
-                        BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
                         VariableEvent.VariableEvents.VARIABLE_CREATED,
+                        BPMNSignalEvent.SignalEvents.SIGNAL_RECEIVED,
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED,
                         BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED,
                         BPMNSequenceFlowTakenEvent.SequenceFlowEvents.SEQUENCE_FLOW_TAKEN,
@@ -281,7 +281,7 @@ public class SignalThrowCatchTest {
                         ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED
                 );
 
-        BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(0);
+        BPMNSignalReceivedEvent event = (BPMNSignalReceivedEvent) RuntimeTestConfiguration.collectedEvents.get(2);
 
         assertThat(event.getEntity()).isNotNull();
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
