@@ -13,13 +13,10 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.List;
-
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -27,6 +24,8 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManage
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.List;
 
 public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
@@ -79,13 +78,9 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
 
         for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
             Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-                    ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED,
-                                                           signalEventSubscriptionEntity.getActivityId(),
-                                                           eventSubscriptionName,
-                                                           null,
-                                                           signalEventSubscriptionEntity.getExecutionId(),
-                                                           signalEventSubscriptionEntity.getProcessInstanceId(),
-                                                           signalEventSubscriptionEntity.getProcessDefinitionId()));
+                    ActivitiEventBuilder.createActivitiySignalledEvent(signalEventSubscriptionEntity.getExecution(),
+                                                                       eventSubscriptionName,
+                                                                       null));
 
             eventSubscriptionEntityManager.eventReceived(signalEventSubscriptionEntity,
                                                          execution.getVariables(),

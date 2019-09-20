@@ -12,13 +12,6 @@
  */
 package org.activiti.engine.impl.util;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.EventSubProcess;
@@ -36,11 +29,19 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
 
@@ -142,6 +143,68 @@ public class ProcessInstanceHelper {
     
     return processInstance;
   }
+  
+  public ProcessInstance createAndStartProcessInstanceBySignal(ProcessDefinition processDefinition, 
+                                                               String businessKey, 
+                                                               String processInstanceName,
+                                                               String signalName,
+                                                               Map<String, Object> signalVariables, 
+                                                               Map<String, Object> transientVariables, 
+                                                               EventSubscriptionEntity eventSubscription) {
+
+      CommandContext commandContext = Context.getCommandContext();
+    
+      // Do not start process a process instance if the process definition is suspended
+      if (ProcessDefinitionUtil.isProcessDefinitionSuspended(processDefinition.getId())) {
+        throw new ActivitiException("Cannot start process instance. Process definition " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
+      }
+    
+      // Get model from cache
+      Process process = ProcessDefinitionUtil.getProcess(processDefinition.getId());
+      if (process == null) {
+        throw new ActivitiException("Cannot start process instance. Process model " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") could not be found");
+      }
+    
+      FlowElement initialFlowElement = null;
+      for (FlowElement flowElement : process.getFlowElements()) {
+        if (flowElement instanceof StartEvent) {
+          StartEvent startEvent = (StartEvent) flowElement;
+          if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions()) && startEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
+    
+            MessageEventDefinition messageEventDefinition = (MessageEventDefinition) startEvent.getEventDefinitions().get(0);
+            if (messageEventDefinition.getMessageRef().equals(signalName)) {
+              initialFlowElement = flowElement;
+              break;
+            }
+          }
+        }
+      }
+      if (initialFlowElement == null) {
+        throw new ActivitiException("No message start event found for process definition " + processDefinition.getId() + " and message name " + signalName);
+      }
+    
+      // Map message payload variables before creating process instance
+      Map<String, Object> processVariables = commandContext.getProcessEngineConfiguration()
+                                                           .getEventSubscriptionPayloadMappingProvider()
+                                                           .apply(signalVariables, 
+                                                                  eventSubscription);
+      
+      // Create process instance with executions but defer to start process after dispatching ACTIVITY_MESSAGE_RECEIVED
+      ExecutionEntity processInstance = createProcessInstanceWithInitialFlowElement(processDefinition,
+                                                                                    businessKey,
+                                                                                    null,
+                                                                                    initialFlowElement,
+                                                                                    process,
+                                                                                    processVariables,
+                                                                                    transientVariables);
+      // Dispatch message received event
+      dispatchStartMessageReceivedEvent(processInstance, signalName, signalVariables);
+      
+      // Finally start the process 
+      startProcessInstance(processInstance, commandContext, processVariables);
+      
+      return processInstance;
+    }  
 
   public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
       String businessKey, String processInstanceName, FlowElement initialFlowElement,
@@ -268,7 +331,7 @@ public class ProcessInstanceHelper {
   }
   
 
-    protected ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
+    public ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
                                                                        String businessKey,
                                                                        String processInstanceName,
                                                                        FlowElement initialFlowElement,

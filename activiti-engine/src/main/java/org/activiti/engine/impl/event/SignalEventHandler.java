@@ -13,16 +13,20 @@
 
 package org.activiti.engine.impl.event;
 
-import java.util.Map;
-
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.delegate.event.ActivitiSignalEvent;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.impl.util.ProcessInstanceHelper;
 import org.activiti.engine.repository.ProcessDefinition;
+
+import java.util.Map;
 
 /**
 
@@ -41,6 +45,8 @@ public class SignalEventHandler extends AbstractEventHandler {
   public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
     if (eventSubscription.getExecutionId() != null) {
       
+      dispatchSignalEvent(eventSubscription, payload, commandContext);
+        
       super.handleEvent(eventSubscription, payload, commandContext);
 
     } else if (eventSubscription.getProcessDefinitionId() != null) {
@@ -68,12 +74,37 @@ public class SignalEventHandler extends AbstractEventHandler {
       if (payload instanceof Map) {
         variables = (Map<String, Object>) payload;
       }
-      ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration().getProcessInstanceHelper();
-      processInstanceHelper.createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, flowElement, process, variables, null, true);
       
+      ProcessInstanceHelper processInstanceHelper = commandContext.getProcessEngineConfiguration()
+                                                                  .getProcessInstanceHelper();
+      
+      ExecutionEntity executionEntity = processInstanceHelper.createProcessInstanceWithInitialFlowElement(processDefinition,
+                                                                                                          null,
+                                                                                                          null,
+                                                                                                          flowElement,
+                                                                                                          process,
+                                                                                                          variables,
+                                                                                                          null);
+      dispatchSignalEvent(eventSubscription, payload, commandContext);
+      
+      processInstanceHelper.startProcessInstance(executionEntity, 
+                                                 commandContext, 
+                                                 variables);
     } else {
       throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
     }
   }
-
+  
+  protected void dispatchSignalEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
+    if (commandContext.getProcessEngineConfiguration()
+                      .getEventDispatcher()
+                      .isEnabled()) {
+      ActivitiSignalEvent signalEvent = ActivitiEventBuilder.createActivitiySignalledEvent(eventSubscription.getExecution(),
+                                                                                           eventSubscription.getEventName(),
+                                                                                           payload);
+      Context.getProcessEngineConfiguration().getEventDispatcher()
+                                             .dispatchEvent(signalEvent);
+    }
+  }
+  
 }
