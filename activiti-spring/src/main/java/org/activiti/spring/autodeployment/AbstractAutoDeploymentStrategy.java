@@ -34,8 +34,6 @@ import org.springframework.util.ResourceUtils;
 
 /**
  * Abstract base class for implementations of {@link AutoDeploymentStrategy}.
- *
- *
  */
 public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentStrategy {
 
@@ -88,17 +86,19 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
 
         String resourceName = determineResourceName(resource);
 
+        if (resourceName.endsWith(".json")) return true;
+
         try {
             BpmnXMLConverter converter = new BpmnXMLConverter();
             BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(resource.getInputStream()), true,
                     false);
             List<ValidationError> validationErrors = repositoryService.validateProcess(bpmnModel);
-            if ( validationErrors != null && !validationErrors.isEmpty() ) {
+            if (validationErrors != null && !validationErrors.isEmpty()) {
                 StringBuilder warningBuilder = new StringBuilder();
                 StringBuilder errorBuilder = new StringBuilder();
 
                 for (ValidationError error : validationErrors) {
-                    if ( error.isWarning() ) {
+                    if (error.isWarning()) {
                         warningBuilder.append(error.toString());
                         warningBuilder.append("\n");
                     } else {
@@ -107,18 +107,18 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
                     }
 
                     // Write out warnings (if any)
-                    if ( warningBuilder.length() > 0 ) {
+                    if (warningBuilder.length() > 0) {
                         LOGGER.warn("Following warnings encountered during process validation: "
                                 + warningBuilder.toString());
                     }
 
-                    if ( errorBuilder.length() > 0 ) {
+                    if (errorBuilder.length() > 0) {
                         LOGGER.error("Errors while parsing:\n" + errorBuilder.toString());
                         return false;
                     }
                 }
             }
-        } catch ( Exception e ) {
+        } catch (Exception e) {
             LOGGER.error("Error parsing XML", e);
             return false;
         }
