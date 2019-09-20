@@ -46,11 +46,10 @@ public class SignalEventHandler extends AbstractEventHandler {
   public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
     if (eventSubscription.getExecutionId() != null) {
       
-      ActivitiSignalEvent signalEvent = ActivitiEventBuilder.createActivitiySignalledEvent(eventSubscription.getExecution(),
-                                                                                         eventSubscription.getEventName(),
-                                                                                         payload);
-    
-      dispatchSignalEvent(signalEvent, commandContext);
+      dispatchActivitySignalledEvent(eventSubscription.getExecution(),
+                                     eventSubscription.getEventName(),
+                                     payload,
+                                     commandContext);
         
       super.handleEvent(eventSubscription, payload, commandContext);
 
@@ -90,13 +89,12 @@ public class SignalEventHandler extends AbstractEventHandler {
                                                                                                           process,
                                                                                                           variables,
                                                                                                           null);
-
       DelegateExecution execution = executionEntity.getExecutions()
                                                    .get(0);
-      ActivitiSignalEvent signalEvent = ActivitiEventBuilder.createActivitiySignalledEvent(execution,
-                                                                                           eventSubscription.getEventName(),
-                                                                                           payload);
-      dispatchSignalEvent(signalEvent, commandContext);
+      dispatchActivitySignalledEvent(execution, 
+                                     eventSubscription.getEventName(),
+                                     payload,
+                                     commandContext);
       
       processInstanceHelper.startProcessInstance(executionEntity, 
                                                  commandContext, 
@@ -106,10 +104,18 @@ public class SignalEventHandler extends AbstractEventHandler {
     }
   }
   
-  protected void dispatchSignalEvent(ActivitiSignalEvent signalEvent, CommandContext commandContext) {
+  protected void dispatchActivitySignalledEvent(DelegateExecution execution, 
+                                     String signalName, 
+                                     Object payload,
+                                     CommandContext commandContext) {
     if (commandContext.getProcessEngineConfiguration()
                       .getEventDispatcher()
                       .isEnabled()) {
+        
+      ActivitiSignalEvent signalEvent = ActivitiEventBuilder.createActivitiySignalledEvent(execution,
+                                                                                           signalName,
+                                                                                           payload);
+        
       Context.getProcessEngineConfiguration().getEventDispatcher()
                                              .dispatchEvent(signalEvent);
     }
