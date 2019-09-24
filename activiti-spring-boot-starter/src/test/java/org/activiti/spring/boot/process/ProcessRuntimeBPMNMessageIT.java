@@ -16,8 +16,8 @@
 
 package org.activiti.spring.boot.process;
 
-import java.util.Collections;
-import java.util.List;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
@@ -25,6 +25,11 @@ import org.activiti.api.process.model.builders.MessagePayloadBuilder;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNMessageEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.runtime.shared.query.Page;
+import org.activiti.api.runtime.shared.query.Pageable;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.spring.boot.MessageTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
@@ -37,7 +42,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.*;
+import java.util.Collections;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -63,6 +69,9 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Autowired
     private ProcessRuntime processRuntime;
+
+    @Autowired
+    private TaskRuntime taskRuntime;
     
     @Autowired
     private SecurityUtil securityUtil;
@@ -527,4 +536,152 @@ public class ProcessRuntimeBPMNMessageIT {
                                                                                  "value")));
     }  
  
+    @Test
+    public void shouldTestCatchMessageExpressionWithVariableMappingExtensions() {
+        // given
+        securityUtil.logInAs("user");
+
+        // when
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                                            .withBusinessKey("businessKey")
+                                                                            .withProcessDefinitionKey("testCatchMessageExpression")
+                                                                            .build());
+
+        // then
+        List<VariableInstance> variables = processRuntime.variables(ProcessPayloadBuilder.variables()
+                                                                                         .withProcessInstance(process)
+                                                                                         .build());
+
+        assertThat(variables).extracting(VariableInstance::getName,
+                                         VariableInstance::getValue)
+                             .containsOnly(tuple("intermediate_var", ""),
+                                           tuple("inter_message_var", "check2"));
+        
+        // when
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0, 2),
+                                             TaskPayloadBuilder.tasks()
+                                                               .withProcessInstanceId(process.getId())
+                                                               .build());
+        // then
+        assertThat(tasks.getContent()).hasSize(1);
+        
+        String taskId = tasks.getContent()
+                             .get(0)
+                             .getId();
+
+        // when
+        taskRuntime.complete(TaskPayloadBuilder.complete()
+                                               .withTaskId(taskId)
+                                               .withVariable("Text0739ze", "foo")
+                                               .build());
+
+        // then
+        variables = processRuntime.variables(ProcessPayloadBuilder.variables()
+                                             .withProcessInstance(process)
+                                             .build());
+        
+        assertThat(variables).extracting(VariableInstance::getName,
+                                         VariableInstance::getValue)
+                             .containsOnly(tuple("intermediate_var", "foo"),
+                                           tuple("inter_message_var", "check2"));
+        
+        // when
+        processRuntime.receive(MessagePayloadBuilder.receive("intermediate-catch-message-check2")
+                                                    .withCorrelationKey("foo")
+                                                    .build());
+
+        // then
+        tasks = taskRuntime.tasks(Pageable.of(0, 2),
+                                  TaskPayloadBuilder.tasks()
+                                                    .withProcessInstanceId(process.getId())
+                                                    .build());
+
+        assertThat(tasks.getContent()).hasSize(1);
+        
+        taskId = tasks.getContent()
+                      .get(0)
+                      .getId();
+
+        // then
+        taskRuntime.complete(TaskPayloadBuilder.complete()
+                                               .withTaskId(taskId)
+                                               .build());
+        
+        // then
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                                  .extracting(BPMNMessageEvent::getEventType,
+                                              BPMNMessageEvent::getProcessDefinitionId,
+                                              BPMNMessageEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> event.getEntity().getMessagePayload().getName(),
+                                              event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                                              event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                                              event -> event.getEntity().getMessagePayload().getVariables())
+                                  .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "intermediate-catch-message-check2",
+                                                        "foo",
+                                                        process.getBusinessKey(),
+                                                        null),
+                                            Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "intermediate-catch-message-check2",
+                                                        "foo",
+                                                        process.getBusinessKey(),
+                                                        null));
+    }
+    
+    @Test
+    public void shouldTestBoundaryMessageExpression() {
+        // given
+        securityUtil.logInAs("user");
+
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                                            .withVariable("correlationKey", "correlationId")
+                                                                            .withProcessDefinitionKey("testBoundaryMessageExpression")
+                                                                            .build());
+        // when
+        processRuntime.receive(MessagePayloadBuilder.receive("int-boundary-message")
+                                                    .withCorrelationKey("correlationId")
+                                                    .build());
+
+        // then
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                                  .extracting(BPMNMessageEvent::getEventType,
+                                              BPMNMessageEvent::getProcessDefinitionId,
+                                              BPMNMessageEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> event.getEntity().getMessagePayload().getName(),
+                                              event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                                              event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                                              event -> event.getEntity().getMessagePayload().getVariables())
+                                  .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "int-boundary-message",
+                                                        "correlationId",
+                                                        process.getBusinessKey(),
+                                                        null),
+                                            Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "int-boundary-message",
+                                                        "correlationId",
+                                                        process.getBusinessKey(),
+                                                        null));
+    }  
+    
+    
 }
