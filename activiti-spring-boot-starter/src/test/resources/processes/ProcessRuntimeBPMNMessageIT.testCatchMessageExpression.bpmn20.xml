@@ -22,7 +22,7 @@
     <sequenceFlow id="SequenceFlow_131qt29" sourceRef="Task_0jmo194" targetRef="IntermediateThrowEvent_0jatjzg" />
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_process-009a0f73-8b81-4bfe-b506-074fbcafd856">
-    <bpmndi:BPMNPlane id="BPMNPlane_process-009a0f73-8b81-4bfe-b506-074fbcafd856" bpmnElement="process-009a0f73-8b81-4bfe-b506-074fbcafd856">
+    <bpmndi:BPMNPlane id="BPMNPlane_process-009a0f73-8b81-4bfe-b506-074fbcafd856" bpmnElement="testCatchMessageExpression">
       <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
         <omgdc:Bounds x="174" y="103" width="36" height="36" />
       </bpmndi:BPMNShape>
