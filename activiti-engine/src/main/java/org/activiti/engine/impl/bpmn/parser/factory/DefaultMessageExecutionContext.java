@@ -12,13 +12,14 @@
  */
 package org.activiti.engine.impl.bpmn.parser.factory;
 
-import java.util.Map;
-import java.util.Optional;
-
 import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
 import org.activiti.engine.impl.el.ExpressionManager;
+
+import java.util.Map;
+import java.util.Optional;
 
 public class DefaultMessageExecutionContext implements MessageExecutionContext {
     private final ExpressionManager expressionManager;
@@ -64,10 +65,10 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
     
     protected String evaluateExpression(String expression, 
                                         DelegateExecution execution) {
-        return expressionManager.createExpression(expression)
-                                .getValue(execution)
-                                .toString();
+        return Optional.ofNullable(expressionManager.createExpression(expression))
+                       .map(it -> it.getValue(execution))
+                       .map(Object::toString)
+                       .orElseThrow(() -> new ActivitiIllegalArgumentException("Expression '" + expression + "' is null"));
     }
-    
 
 }
