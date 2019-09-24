@@ -17,6 +17,7 @@
 package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
 import org.activiti.api.model.shared.model.VariableInstance;
@@ -30,6 +31,7 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.spring.boot.MessageTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
@@ -683,5 +685,46 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         null));
     }  
     
+
+    @Test
+    public void shouldTestBoundaryMessageExpressionWithNotMatchingCorrelationKey() {
+        // given
+        securityUtil.logInAs("user");
+
+        processRuntime.start(ProcessPayloadBuilder.start()
+                                                  .withVariable("correlationKey", "correlationId")
+                                                  .withProcessDefinitionKey("testBoundaryMessageExpression")
+                                                  .build());
+        // when
+        Throwable thrown = catchThrowable(() -> {
+            processRuntime.receive(MessagePayloadBuilder.receive("int-boundary-message")
+                                                        .withCorrelationKey(null)
+                                                        .build());
+        });
+
+        // then
+        assertThat(thrown).isInstanceOf(ActivitiObjectNotFoundException.class);
+    }
+
+    @Test
+    public void shouldTestBoundaryMessageExpressionWithNotFoundMessageEventSubscription() {
+        // given
+        securityUtil.logInAs("user");
+
+        processRuntime.start(ProcessPayloadBuilder.start()
+                                                  .withVariable("correlationKey", "correlationId")
+                                                  .withProcessDefinitionKey("testBoundaryMessageExpression")
+                                                  .build());
+        
+        // when
+        Throwable thrown = catchThrowable(() -> {
+        processRuntime.receive(MessagePayloadBuilder.receive("non-found-boundary-message")
+                                                    .withCorrelationKey("correlationId")
+                                                    .build());
+        });        
+
+        // then
+        assertThat(thrown).isInstanceOf(ActivitiObjectNotFoundException.class);
+    }  
     
 }
