@@ -12,17 +12,17 @@
  */
 package org.activiti.engine.impl.bpmn.parser.factory;
 
-import java.util.Map;
-import java.util.Optional;
-
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.delegate.ThrowMessage;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
 public interface MessageExecutionContext {
     
     String getMessageName(DelegateExecution execution);
     
-    Optional<String> getCorrelationKey(DelegateExecution execution);
+    ThrowMessage createThrowMessage(DelegateExecution execution);
     
-    Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution);
-    
+    MessageEventSubscriptionEntity createMessageEventSubscription(CommandContext commandContext,
+                                                                  DelegateExecution execution);
 }

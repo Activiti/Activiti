@@ -16,7 +16,17 @@ import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.delegate.MessagePayloadMappingProvider;
+import org.activiti.engine.impl.delegate.ThrowMessage;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import java.util.Map;
 import java.util.Optional;
@@ -41,7 +51,6 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
                                   execution);
     }
 
-    @Override
     public Optional<String> getCorrelationKey(DelegateExecution execution) {
         return Optional.ofNullable(messageEventDefinition.getCorrelationKey())
                        .map(correlationKey -> {
@@ -50,9 +59,44 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
                        });
     }
     
-    @Override
+    
+    
     public Optional<Map<String, Object>> getMessagePayload(DelegateExecution execution) {
         return messagePayloadMappingProvider.getMessagePayload(execution);
+    }
+    
+    @Override
+    public ThrowMessage createThrowMessage(DelegateExecution execution) {
+        String name = getMessageName(execution);
+        Optional<String> correlationKey = getCorrelationKey(execution);
+        Optional<String> businessKey = Optional.ofNullable(execution.getProcessInstanceBusinessKey());
+        Optional<Map<String, Object>> payload = getMessagePayload(execution);
+        
+        return ThrowMessage.builder()
+                           .name(name)
+                           .correlationKey(correlationKey)
+                           .businessKey(businessKey)
+                           .payload(payload)
+                           .build();
+    }    
+    
+    @Override
+    public MessageEventSubscriptionEntity createMessageEventSubscription(CommandContext commandContext,
+                                                                         DelegateExecution execution) {
+        
+        String messageName = getMessageName(execution);
+        Optional<String> correlationKey = getCorrelationKey(execution); 
+
+        correlationKey.ifPresent(key -> assertNoExistingDuplicateEventSubscriptions(messageName,
+                                                                                    key,
+                                                                                    commandContext));
+        
+        MessageEventSubscriptionEntity messageEvent = commandContext.getEventSubscriptionEntityManager()
+                                                                    .insertMessageEvent(messageName,
+                                                                                        ExecutionEntity.class.cast(execution));
+        correlationKey.ifPresent(messageEvent::setConfiguration);
+        
+        return messageEvent;
     }
 
     public ExpressionManager getExpressionManager() {
@@ -70,5 +114,23 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
                        .map(Object::toString)
                        .orElseThrow(() -> new ActivitiIllegalArgumentException("Expression '" + expression + "' is null"));
     }
+    
+    protected void assertNoExistingDuplicateEventSubscriptions(String messageName,
+                                                               String correlationKey,
+                                                               CommandContext commandContext) {
 
+        List<EventSubscriptionEntity> existing = commandContext.getEventSubscriptionEntityManager()
+                                                               .findEventSubscriptionsByName("message",
+                                                                                             messageName,
+                                                                                             null);
+        existing.stream()
+                .filter(subscription -> Objects.equals(subscription.getConfiguration(),
+                                                       correlationKey))
+                .findFirst()
+                .ifPresent(subscription -> {
+                    throw new ActivitiIllegalArgumentException("Duplicate message subscription '" + subscription.getEventName() + 
+                                                               "' with correlation key '" + subscription.getConfiguration() + "'");
+                });
+
+    }
 }
