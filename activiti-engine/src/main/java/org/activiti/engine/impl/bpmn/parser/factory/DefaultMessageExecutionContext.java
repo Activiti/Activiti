@@ -28,6 +28,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import java.util.Map;
+import java.util.Optional;
+
 public class DefaultMessageExecutionContext implements MessageExecutionContext {
     private final ExpressionManager expressionManager;
     private final MessagePayloadMappingProvider messagePayloadMappingProvider;
@@ -106,9 +109,10 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
     
     protected String evaluateExpression(String expression, 
                                         DelegateExecution execution) {
-        return expressionManager.createExpression(expression)
-                                .getValue(execution)
-                                .toString();
+        return Optional.ofNullable(expressionManager.createExpression(expression))
+                       .map(it -> it.getValue(execution))
+                       .map(Object::toString)
+                       .orElseThrow(() -> new ActivitiIllegalArgumentException("Expression '" + expression + "' is null"));
     }
     
     protected void assertNoExistingDuplicateEventSubscriptions(String messageName,
@@ -129,5 +133,4 @@ public class DefaultMessageExecutionContext implements MessageExecutionContext {
                 });
 
     }
-
 }
