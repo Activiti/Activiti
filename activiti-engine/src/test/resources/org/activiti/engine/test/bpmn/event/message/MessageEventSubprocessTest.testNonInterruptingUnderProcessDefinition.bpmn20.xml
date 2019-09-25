@@ -14,7 +14,7 @@
 		<endEvent id="theEnd" />
 
 		<subProcess triggeredByEvent="true">
-			<startEvent id="eventProcessStart" isInterrupting="false">
+			<startEvent id="eventProcessStart" activiti:isInterrupting="false">
 				<messageEventDefinition messageRef="messageId" />
 			</startEvent>
 			<sequenceFlow sourceRef="eventProcessStart" targetRef="eventSubProcessTask" />
