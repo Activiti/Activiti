@@ -13,6 +13,10 @@
 
 package org.activiti.engine.test.bpmn.event.message;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -21,9 +25,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
 
@@ -78,13 +81,12 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
   public void testSingleIntermediateMessageExpressionEventWithNullExpressionShouldFail() {
     Map<String, Object> variableMap = new HashMap<String, Object>();
     variableMap.put("myMessageName", null);
-    
-    try {
-      ProcessInstance pi = runtimeService.startProcessInstanceByKey("process", variableMap);
-      fail("Excpected ActivitiIllegalArgumentException");  
-    } catch(ActivitiIllegalArgumentException error) {
-      // success 
-    }
+
+      Throwable throwable = catchThrowable(() -> runtimeService.startProcessInstanceByKey("process",
+                                                                                        variableMap));
+      assertThat(throwable)
+              .isInstanceOf(ActivitiIllegalArgumentException.class)
+              .hasMessage("Expression '${myMessageName}' is null");
   }
   
   @Deployment
