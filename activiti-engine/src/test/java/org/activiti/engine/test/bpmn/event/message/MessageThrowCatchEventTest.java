@@ -13,23 +13,12 @@
 package org.activiti.engine.test.bpmn.event.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.api.Assertions.tuple;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -53,6 +42,19 @@ import org.activiti.engine.test.Deployment;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
 
@@ -886,6 +888,31 @@ public class MessageThrowCatchEventTest extends ResourceActivitiTestCase {
                                             "configuration")
                                 .containsExactly("newInvoice-1", 
                                                  "2");
+    }
+    
+    @Deployment(resources = {
+            "org/activiti/engine/test/bpmn/event/message/MessageThrowCatchEventTest.catchMessageCorrelationKey.bpmn20.xml"
+        })
+    public void testMessageEventSubscriptionWithSameCorrelationKeyFails() {
+
+        // given
+        runtimeService.createProcessInstanceBuilder()
+                      .processDefinitionKey(CATCH_MESSAGE)
+                      .businessKey("businessKey2")
+                      .variable("customerId", "2")
+                      .variable("invoiceId", "1")
+                      .start();
+        
+        // when
+        Throwable exception = catchThrowable(() -> runtimeService.createProcessInstanceBuilder()
+                                                                 .processDefinitionKey(CATCH_MESSAGE)
+                                                                 .businessKey("businessKey2")
+                                                                 .variable("customerId", "2")
+                                                                 .variable("invoiceId", "1")
+                                                                 .start());
+        
+        // then
+        assertThat(exception).isInstanceOf(ActivitiIllegalArgumentException.class);
     }
     
     protected EventSubscriptionQueryImpl newEventSubscriptionQuery() {

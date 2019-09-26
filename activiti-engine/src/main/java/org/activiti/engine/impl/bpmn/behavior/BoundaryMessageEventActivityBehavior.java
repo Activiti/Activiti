@@ -12,9 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.List;
-import java.util.Optional;
-
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -26,6 +23,8 @@ import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
+
+import java.util.List;
 
 /**
 
@@ -49,21 +48,14 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
     CommandContext commandContext = Context.getCommandContext();
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     
-    String messageName = messageExecutionContext.getMessageName(execution);
-    
-    MessageEventSubscriptionEntity messageEvent = commandContext.getEventSubscriptionEntityManager()
-                                                                .insertMessageEvent(messageName, 
-                                                                                    executionEntity);
-    Optional<String> correlationKey = messageExecutionContext.getCorrelationKey(execution);
-    
-    correlationKey.ifPresent(messageEvent::setConfiguration);
-    
+    MessageEventSubscriptionEntity messageEvent = messageExecutionContext.createMessageEventSubscription(commandContext, 
+                                                                                                         executionEntity);
     if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         
         commandContext.getProcessEngineConfiguration().getEventDispatcher()
                 .dispatchEvent(ActivitiEventBuilder.createMessageWaitingEvent(executionEntity, 
-                                                                              messageName,
-                                                                              correlationKey.orElse(null)));
+                                                                              messageEvent.getEventName(),
+                                                                              messageEvent.getConfiguration()));
     }
   }
 

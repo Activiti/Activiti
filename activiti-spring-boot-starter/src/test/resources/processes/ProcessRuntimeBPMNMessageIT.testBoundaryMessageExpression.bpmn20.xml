@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Activiti Modeler" exporterVersion="3.0.0-beta" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <message id="Message_0b88veq" name="int-boundary-message" />
+  <process id="testBoundaryMessageExpression" name="testBoundaryMessageExpression" isExecutable="true">
+    <startEvent id="StartEvent_1">
+      <outgoing>SequenceFlow_1bbm2b0</outgoing>
+    </startEvent>
+    <sequenceFlow id="SequenceFlow_1bbm2b0" sourceRef="StartEvent_1" targetRef="Task_1is7525" />
+    <userTask id="Task_1is7525" name="int-boundary-task" activiti:assignee="hruser">
+      <incoming>SequenceFlow_1bbm2b0</incoming>
+    </userTask>
+    <boundaryEvent id="BoundaryEvent_1pnwbke" attachedToRef="Task_1is7525">
+      <messageEventDefinition activiti:messageExpression="int-boundary-message" activiti:correlationKey="${correlationKey}"/>
+    </boundaryEvent>
+    <sequenceFlow id="SequenceFlow_0m55u7d" sourceRef="BoundaryEvent_1pnwbke" targetRef="EndEvent_1i4w9nk" />
+    <endEvent id="EndEvent_1i4w9nk">
+      <incoming>SequenceFlow_0m55u7d</incoming>
+    </endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_process-b55fe468-63ba-4675-9a37-328a4571eb44">
+    <bpmndi:BPMNPlane id="BPMNPlane_process-b55fe468-63ba-4675-9a37-328a4571eb44" bpmnElement="testBoundaryMessageExpression">
+      <bpmndi:BPMNShape id="BPMNShape_StartEvent_1" bpmnElement="StartEvent_1">
+        <omgdc:Bounds x="164" y="103" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Task_1is7525" bpmnElement="Task_1is7525">
+        <omgdc:Bounds x="289" y="81" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_BoundaryEvent_1pnwbke" bpmnElement="BoundaryEvent_1pnwbke">
+        <omgdc:Bounds x="327" y="143" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_EndEvent_1i4w9nk" bpmnElement="EndEvent_1i4w9nk">
+        <omgdc:Bounds x="437" y="223" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_1bbm2b0" bpmnElement="SequenceFlow_1bbm2b0">
+        <omgdi:waypoint x="200" y="121" />
+        <omgdi:waypoint x="289" y="121" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_0m55u7d" bpmnElement="SequenceFlow_0m55u7d">
+        <omgdi:waypoint x="345" y="179" />
+        <omgdi:waypoint x="345" y="241" />
+        <omgdi:waypoint x="437" y="241" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

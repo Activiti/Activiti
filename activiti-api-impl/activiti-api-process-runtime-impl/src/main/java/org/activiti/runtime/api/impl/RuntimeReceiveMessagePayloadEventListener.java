@@ -16,8 +16,6 @@
 
 package org.activiti.runtime.api.impl;
 
-import java.util.Map;
-
 import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ManagementService;
@@ -27,6 +25,9 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
+
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Default implementation of SignalPayloadEventListener that delegates 
@@ -52,7 +53,7 @@ public class RuntimeReceiveMessagePayloadEventListener implements ReceiveMessage
                 
         EventSubscriptionEntity subscription = managementService.executeCommand(new FindMessageEventSubscription(messageName,
                                                                                                                  correlationKey));
-        if (subscription != null) {
+        if (subscription != null && Objects.equals(correlationKey, subscription.getConfiguration())) {
             Map<String, Object> variables = messagePayload.getVariables();
             String executionId = subscription.getExecutionId();
             

@@ -17,12 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
 
@@ -73,6 +77,18 @@ public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
   }
 
+  @Deployment(resources = "org/activiti/engine/test/bpmn/event/message/MessageIntermediateEventTest.testSingleIntermediateMessageExpressionEvent.bpmn20.xml")
+  public void testSingleIntermediateMessageExpressionEventWithNullExpressionShouldFail() {
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    variableMap.put("myMessageName", null);
+
+      Throwable throwable = catchThrowable(() -> runtimeService.startProcessInstanceByKey("process",
+                                                                                        variableMap));
+      assertThat(throwable)
+              .isInstanceOf(ActivitiIllegalArgumentException.class)
+              .hasMessage("Expression '${myMessageName}' is null");
+  }
+  
   @Deployment
   public void testConcurrentIntermediateMessageEvent() {
 

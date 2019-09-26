@@ -12,9 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Map;
-import java.util.Optional;
-
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -24,6 +21,8 @@ import org.activiti.engine.impl.delegate.ThrowMessage;
 import org.activiti.engine.impl.delegate.ThrowMessageDelegate;
 import org.activiti.engine.impl.delegate.invocation.DelegateInvocation;
 import org.activiti.engine.impl.delegate.invocation.ThrowMessageDelegateInvocation;
+
+import java.util.Optional;
 
 public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNodeActivityBehavior {
 
@@ -69,17 +68,7 @@ public abstract class AbstractThrowMessageEventActivityBehavior extends FlowNode
     }
     
     protected ThrowMessage getThrowMessage(DelegateExecution execution) {
-        String name = messageExecutionContext.getMessageName(execution);
-        Optional<String> correlationKey = messageExecutionContext.getCorrelationKey(execution);
-        Optional<String> businessKey = Optional.ofNullable(execution.getProcessInstanceBusinessKey());
-        Optional<Map<String, Object>> payload = messageExecutionContext.getMessagePayload(execution);
-        
-        return ThrowMessage.builder()
-                           .name(name)
-                           .correlationKey(correlationKey)
-                           .businessKey(businessKey)
-                           .payload(payload)
-                           .build();
+        return messageExecutionContext.createThrowMessage(execution);
     }
 
     protected void dispatchEvent(DelegateExecution execution, ThrowMessage throwMessage) {
