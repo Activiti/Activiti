@@ -12,13 +12,16 @@
  */
 package org.activiti.bpmn.converter;
 
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.stream.XMLStreamWriter;
-
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
-import org.activiti.bpmn.model.*;
+import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.alfresco.AlfrescoStartEvent;
 import org.apache.commons.lang3.StringUtils;
+
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 public class StartEventXMLConverter extends BaseBpmnXMLConverter {
 
@@ -49,7 +52,7 @@ public class StartEventXMLConverter extends BaseBpmnXMLConverter {
         startEvent.setInitiator(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
                                                       ATTRIBUTE_EVENT_START_INITIATOR));
         boolean interrupting = true;
-        String interruptingAttribute = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE,
+        String interruptingAttribute = xtr.getAttributeValue(null,
                                                              ATTRIBUTE_EVENT_START_INTERRUPTING);
         if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(interruptingAttribute)) {
             interrupting = false;

@@ -1,9 +1,5 @@
 package org.activiti.engine.impl.agenda;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CompensateEventDefinition;
@@ -29,6 +25,10 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * This operations ends an execution and follows the typical BPMN rules to continue the process (if possible).
@@ -382,7 +382,7 @@ public class EndExecutionOperation extends AbstractOperation {
         boolean allEventScopeExecutions = true;
         List<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
         for (ExecutionEntity childExecution : executions) {
-            if (childExecution.isEventScope()) {
+            if (childExecution.isEventScope() && childExecution.getExecutions().size() == 0) {
                 executionEntityManager.deleteExecutionAndRelatedData(childExecution,
                                                                      null,
                                                                      false);

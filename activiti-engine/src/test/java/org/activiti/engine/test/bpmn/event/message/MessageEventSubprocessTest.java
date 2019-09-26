@@ -70,15 +70,18 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
   }
 
   @Deployment
-  public void FAILING_testNonInterruptingUnderProcessDefinition() {
+  public void testNonInterruptingUnderProcessDefinition() {
 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
 
     // the process instance must have a message event subscription:
-    Execution execution = runtimeService.createExecutionQuery().executionId(processInstance.getId()).messageEventSubscriptionName("newMessage").singleResult();
+    Execution execution = runtimeService.createExecutionQuery()
+                                        .processInstanceId(processInstance.getId())
+                                        .messageEventSubscriptionName("newMessage")
+                                        .singleResult();
     assertNotNull(execution);
     assertEquals(1, createEventSubscriptionQuery().count());
-    assertEquals(1, runtimeService.createExecutionQuery().count());
+    assertEquals(3, runtimeService.createExecutionQuery().count());
 
     // if we trigger the usertask, the process terminates and the event
     // subscription is removed:
@@ -91,15 +94,21 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
     // ###################### now we start a new instance but this time we
     // trigger the event subprocess:
     processInstance = runtimeService.startProcessInstanceByKey("process");
-    runtimeService.messageEventReceived("newMessage", processInstance.getId());
+    
+    execution = runtimeService.createExecutionQuery()
+                              .processInstanceId(processInstance.getId())
+                              .messageEventSubscriptionName("newMessage")
+                              .singleResult();
+    
+    runtimeService.messageEventReceived("newMessage", execution.getId());
 
     assertEquals(2, taskService.createTaskQuery().count());
 
     // now let's first complete the task in the main flow:
     task = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
     taskService.complete(task.getId());
-    // we still have 2 executions:
-    assertEquals(2, runtimeService.createExecutionQuery().count());
+    // we still have 3 executions:
+    assertEquals(3, runtimeService.createExecutionQuery().count());
 
     // now let's complete the task in the event subprocess
     task = taskService.createTaskQuery().taskDefinitionKey("eventSubProcessTask").singleResult();
@@ -110,19 +119,25 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
     // #################### again, the other way around:
 
     processInstance = runtimeService.startProcessInstanceByKey("process");
-    runtimeService.messageEventReceived("newMessage", processInstance.getId());
+    execution = runtimeService.createExecutionQuery()
+                              .processInstanceId(processInstance.getId())
+                              .messageEventSubscriptionName("newMessage")
+                              .singleResult();
+    
+    runtimeService.messageEventReceived("newMessage", execution.getId());
 
     assertEquals(2, taskService.createTaskQuery().count());
 
     task = taskService.createTaskQuery().taskDefinitionKey("eventSubProcessTask").singleResult();
     taskService.complete(task.getId());
-    // we still have 1 execution:
+    // we still have task executions:
     assertEquals(2, runtimeService.createExecutionQuery().count());
 
     task = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
     taskService.complete(task.getId());
     // done!
     assertEquals(0, runtimeService.createExecutionQuery().count());
+    
   }
 
   private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
