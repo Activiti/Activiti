@@ -10,6 +10,7 @@ RELEASE_ARTIFACT := $(GROUP_ID):$(ARTIFACT_ID)
 updatebot/push: 
 	@echo doing updatebot push $(RELEASE_VERSION)
 	updatebot push --ref $(RELEASE_VERSION)
+	updatebot push-version --kind  make  ACTIVITI_CORE_DEPENDENCIES_VERSION $(RELEASE_VERSION)
 
 updatebot/push-version: 
 	@echo Resolving push versions for artifacts........
