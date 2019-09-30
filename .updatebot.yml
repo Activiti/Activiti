@@ -20,6 +20,6 @@ github:
       branch: develop
       useSinglePullRequest: true
     - name: activiti-cloud-full-chart
-      branch: develop
+      branch: master
       useSinglePullRequest: true
       
