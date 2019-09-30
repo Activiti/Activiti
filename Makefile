@@ -10,7 +10,7 @@ RELEASE_ARTIFACT := $(GROUP_ID):$(ARTIFACT_ID)
 updatebot/push: 
 	@echo doing updatebot push $(RELEASE_VERSION)
 	updatebot push --ref $(RELEASE_VERSION)
-	updatebot push-version --kind  make  ACTIVITI_CORE_DEPENDENCIES_VERSION $(RELEASE_VERSION)
+
 
 updatebot/push-version: 
 	@echo Resolving push versions for artifacts........
@@ -24,6 +24,7 @@ updatebot/push-version:
 		org.activiti.api:activiti-api-dependencies $(ACTIVITI_API_VERSION) \
 		org.activiti.core.common:activiti-core-common-dependencies $(ACTIVITI_CORE_COMMON_VERSION) \
 		org.activiti.build:activiti-parent $(ACTIVITI_BUILD_VERSION)
+	updatebot push-version --kind  make  ACTIVITI_CORE_DEPENDENCIES_VERSION $(RELEASE_VERSION)	
 
 updatebot/update:
 	@echo doing updatebot update $(RELEASE_VERSION)
