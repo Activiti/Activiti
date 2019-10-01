@@ -18,6 +18,7 @@ import org.activiti.api.process.runtime.events.ProcessSuspendedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
+import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.runtime.events.TaskAssignedEvent;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.api.task.runtime.events.TaskCompletedEvent;
@@ -26,10 +27,12 @@ import org.activiti.api.task.runtime.events.TaskSuspendedEvent;
 import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskEventListener;
 import org.activiti.core.common.spring.identity.ExtendedInMemoryUserDetailsManager;
+import org.activiti.spring.conformance.util.security.SecurityUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,7 +42,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
+@TestConfiguration
 public class RuntimeTestConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeTestConfiguration.class);
@@ -47,6 +50,14 @@ public class RuntimeTestConfiguration {
     public static List<RuntimeEvent> collectedEvents = new ArrayList<>();
 
     @Bean
+    @ConditionalOnMissingBean
+    public SecurityUtil securityUtil(UserDetailsService userDetailsService,
+                                     SecurityManager securityManager) {
+        return new SecurityUtil(userDetailsService, securityManager);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     public UserDetailsService myUserDetailsService() {
         ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
 
