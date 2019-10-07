@@ -1,23 +1,21 @@
 package org.activiti.core.common.spring.security.policies;
 
+import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
+import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
+import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import org.activiti.api.runtime.shared.security.SecurityManager;
+import org.activiti.core.common.spring.security.policies.conf.SecurityPoliciesProperties;
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.api.runtime.shared.identity.UserGroupManager;
-import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
-import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
-import org.activiti.api.runtime.shared.security.SecurityManager;
-import org.activiti.core.common.spring.security.policies.conf.SecurityPoliciesProperties;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-@Component
 public class ProcessSecurityPoliciesManagerImpl extends BaseSecurityPoliciesManagerImpl implements ProcessSecurityPoliciesManager{
 
-    private final SecurityPoliciesProcessDefinitionRestrictionApplier processDefinitionRestrictionApplier;
+    private final SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier;
 
-    private final SecurityPoliciesProcessInstanceRestrictionApplier processInstanceRestrictionApplier;
+    private final SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier;
 
     @Value("${spring.application.name:application}")
     private String applicationName;
@@ -25,8 +23,8 @@ public class ProcessSecurityPoliciesManagerImpl extends BaseSecurityPoliciesMana
     public ProcessSecurityPoliciesManagerImpl(UserGroupManager userGroupManager,
                                               SecurityManager securityManager,
                                               SecurityPoliciesProperties securityPoliciesProperties,
-                                              SecurityPoliciesProcessDefinitionRestrictionApplier processDefinitionRestrictionApplier,
-                                              SecurityPoliciesProcessInstanceRestrictionApplier processInstanceRestrictionApplier) {
+                                              SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier,
+                                              SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier) {
         super(userGroupManager, securityManager, securityPoliciesProperties);
         this.processDefinitionRestrictionApplier = processDefinitionRestrictionApplier;
         this.processInstanceRestrictionApplier = processInstanceRestrictionApplier;

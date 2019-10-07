@@ -16,10 +16,6 @@
       <artifactId>activiti-api-runtime-shared</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-beans</artifactId>
     </dependency>
@@ -28,14 +24,23 @@
       <artifactId>spring-context</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-security</artifactId>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-core</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <!-- Optional -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <optional>true</optional>
+    </dependency>
+    
+    <!-- Test -->    
     <dependency>
       <groupId>org.activiti.core.common</groupId>
       <artifactId>activiti-spring-identity</artifactId>

@@ -16,14 +16,12 @@
 
 package org.activiti.core.common.spring.security.policies;
 
+import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
+
 import java.util.Set;
 import java.util.UUID;
 
-import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
-import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
-import org.springframework.stereotype.Component;
-
-@Component
 public class SecurityPoliciesProcessInstanceRestrictionApplier implements SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> {
 
     @Override

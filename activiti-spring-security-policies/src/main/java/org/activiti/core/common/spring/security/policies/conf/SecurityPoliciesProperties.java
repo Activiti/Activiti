@@ -1,18 +1,13 @@
 package org.activiti.core.common.spring.security.policies.conf;
 
 import org.activiti.core.common.spring.security.policies.SecurityPolicy;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
 @ConfigurationProperties("activiti.security")
-@Component
-public class SecurityPoliciesProperties implements InitializingBean {
+public class SecurityPoliciesProperties {
 
     private List<SecurityPolicy> policies = new ArrayList<>();
 
@@ -27,8 +22,4 @@ public class SecurityPoliciesProperties implements InitializingBean {
         return wildcard;
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        // do nothing
-    }
 }

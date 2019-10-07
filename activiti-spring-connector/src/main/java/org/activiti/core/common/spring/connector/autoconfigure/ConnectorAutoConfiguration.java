@@ -16,10 +16,6 @@
 
 package org.activiti.core.common.spring.connector.autoconfigure;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.core.common.model.connector.ConnectorDefinition;
 import org.activiti.core.common.spring.connector.ConnectorDefinitionService;
@@ -27,12 +23,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
 @Configuration
-@ComponentScan(basePackages = "org.activiti.core.common.spring.connector")
 public class ConnectorAutoConfiguration {
 
     @Bean
@@ -43,11 +41,13 @@ public class ConnectorAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public ConnectorDefinitionService connectorDefinitionService(@Value("${activiti.connectors.dir:classpath:/connectors/}") String connectorRoot, ObjectMapper objectMapper, ResourcePatternResolver resourceLoader) {
         return new ConnectorDefinitionService(connectorRoot, objectMapper, resourceLoader);
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public List<ConnectorDefinition> connectorDefinitions(ConnectorDefinitionService connectorDefinitionService) throws IOException {
         List<ConnectorDefinition> connectorDefinitions = connectorDefinitionService.get();
         return connectorDefinitions == null? Collections.emptyList() : connectorDefinitions;

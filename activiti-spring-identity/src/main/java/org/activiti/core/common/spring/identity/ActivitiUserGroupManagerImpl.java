@@ -1,14 +1,12 @@
 package org.activiti.core.common.spring.identity;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
 
-@Component
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class ActivitiUserGroupManagerImpl implements UserGroupManager {
 
     private final UserDetailsService userDetailsService;
