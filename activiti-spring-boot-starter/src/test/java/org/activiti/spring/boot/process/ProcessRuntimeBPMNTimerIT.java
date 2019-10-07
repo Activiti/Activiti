@@ -20,9 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.awaitility.Awaitility.await;
 
-import java.util.Date;
-import java.util.List;
-
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.events.BPMNTimerCancelledEvent;
@@ -47,12 +44,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.util.Date;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ActiveProfiles(ProcessRuntimeBPMNTimerIT.PROCESS_RUNTIME_BPMN_TIMER_IT)
+@Import({TimerTestConfigurator.class,
+         DummyBPMNTimerFiredListener.class, 
+         DummyBPMNTimerScheduledListener.class, 
+         DummyBPMNTimerCancelledListener.class,
+         DummyBPMNTimerExecutedListener.class})
 public class ProcessRuntimeBPMNTimerIT {
 
     private static final String PROCESS_INTERMEDIATE_TIMER_EVENT = "intermediateTimerEventExample";

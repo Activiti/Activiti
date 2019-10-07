@@ -15,9 +15,7 @@ package org.activiti.spring.boot;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.spring.boot.actuate.endpoint.ProcessEngineEndpoint;
 import org.springframework.boot.actuate.autoconfigure.endpoint.condition.ConditionalOnEnabledEndpoint;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
@@ -26,8 +24,6 @@ import org.springframework.context.annotation.Configuration;
  * as required.
  */
 @Configuration
-@ComponentScan("org.activiti")
-
 public class EndpointAutoConfiguration {
 
     @Bean
