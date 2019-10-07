@@ -1,0 +1,13 @@
+{
+  "id":"connectorVarMappingWrongVariableType",
+  "extensions": {
+    "properties": {
+      "age-id": {
+        "id": "age-id",
+        "name": "age",
+        "type": "wrong-variable-type",
+        "value": 20
+      }
+    }
+  }
+}

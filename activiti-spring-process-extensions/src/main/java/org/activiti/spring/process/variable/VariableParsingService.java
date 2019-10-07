@@ -26,7 +26,12 @@ public class VariableParsingService {
 
         if(variableDefinition.getType()!=null) {
             VariableType type = variableTypeMap.get(variableDefinition.getType());
-
+            if(type==null){
+				throw new ActivitiException(
+						"Unknown type '" + variableDefinition.getType() + "' of variable with identifier '"
+								+ variableDefinition.getId() + "' and name '" + variableDefinition.getName()
+								+ "'. Available types: " + String.join(", ", variableTypeMap.keySet()));
+            }
             return type.parseFromValue(variableDefinition.getValue());
         }
 

@@ -152,7 +152,7 @@ public class ProcessVariablesInitiatorIT {
     }
 
     @Test
-    public void calculateVariablesFromExtensionFileShouldThrowExceptionWhenProvidedValueHasNotTheSameTypeAsInTheDefinition() throws Exception {
+    public void calculateVariablesFromExtensionFileShouldThrowExceptionWhenProvidedValuee34TheSameTypeAsInTheDefinition() throws Exception {
         //given
         try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("processes/initial-vars-extensions.json")) {
             ProcessExtensionModel extension = OBJECT_MAPPER.readValue(inputStream,
@@ -173,5 +173,29 @@ public class ProcessVariablesInitiatorIT {
                     .hasMessageContaining("Can't start process")
                     .hasMessageContaining("as variables fail type validation - age");
         }
+    }
+    
+    @Test
+    public void validateVariablesTypeFromExtensionFileShouldThrowExceptionWhenDefinedWrongTypeInTheDefinition() throws Exception {
+    	//given
+    	try (InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream("processes/wrong-variable-types-extensions.json")) {
+            ProcessExtensionModel extension = OBJECT_MAPPER.readValue(inputStream,
+                    ProcessExtensionModel.class);
+    		
+    		ProcessDefinition processDefinition = mock(ProcessDefinition.class);
+    		given(processExtensionService.getExtensionsFor(processDefinition)).willReturn(extension);
+    		given(processExtensionService.hasExtensionsFor(processDefinition)).willReturn(true);
+    		
+    		//when
+    		Throwable thrownException = catchThrowable(() -> processVariablesInitiator.calculateVariablesFromExtensionFile(processDefinition,
+    				Collections.emptyMap())
+    				);
+    		
+    		//then
+    		assertThat(thrownException)
+    		.isInstanceOf(ActivitiException.class)
+    		.hasMessageContaining("Unknown type")
+    		.hasMessageContaining("wrong-variable-type");
+    	}
     }
 }
