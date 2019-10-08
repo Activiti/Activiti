@@ -46,6 +46,7 @@ import org.activiti.bpmn.converter.export.BPMNDIExport;
 import org.activiti.bpmn.converter.export.CollaborationExport;
 import org.activiti.bpmn.converter.export.DataStoreExport;
 import org.activiti.bpmn.converter.export.DefinitionsRootExport;
+import org.activiti.bpmn.converter.export.ErrorExport;
 import org.activiti.bpmn.converter.export.MultiInstanceExport;
 import org.activiti.bpmn.converter.export.ProcessExport;
 import org.activiti.bpmn.converter.export.SignalAndMessageDefinitionExport;
@@ -79,6 +80,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DateDataObject;
 import org.activiti.bpmn.model.DoubleDataObject;
+import org.activiti.bpmn.model.Error;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
@@ -338,7 +340,9 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         } else if (ELEMENT_ERROR.equals(xtr.getLocalName())) {
 
           if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
-            model.addError(xtr.getAttributeValue(null, ATTRIBUTE_ID), xtr.getAttributeValue(null, ATTRIBUTE_ERROR_CODE));
+            model.addError(xtr.getAttributeValue(null, ATTRIBUTE_ID),
+                                     xtr.getAttributeValue(null, ATTRIBUTE_NAME),
+                                     xtr.getAttributeValue(null, ATTRIBUTE_ERROR_CODE));
           }
 
         } else if (ELEMENT_IMPORT.equals(xtr.getLocalName())) {
@@ -536,7 +540,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         // end process element
         xtw.writeEndElement();
       }
-
+      ErrorExport.writeError(model, xtw);
       BPMNDIExport.writeBPMNDI(model, xtw);
 
       // end definitions root element

@@ -3,7 +3,7 @@
     xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:activiti="http://activiti.org/bpmn" xmlns:cell="http://khaos.eu/cell">
 
-    <error id="error" name="error"></error>
+    <error id="error" name="error" errorCode="450"></error>
     <process id="testBatchDeleteOfTask">
 
         <startEvent id="start"></startEvent>

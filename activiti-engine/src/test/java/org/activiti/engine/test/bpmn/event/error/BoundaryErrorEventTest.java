@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,6 +26,9 @@ import org.activiti.engine.impl.util.JvmUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
+import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Java6Assertions.catchThrowable;
+
 /**
 
 
@@ -47,21 +50,39 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   }
 
   public void testThrowErrorWithEmptyErrorCode() {
-    try {
-      repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithEmptyErrorCode.bpmn20.xml").deploy();
-      fail("ActivitiException expected");
-    } catch (ActivitiException re) {
-    }
+    Throwable throwable = catchThrowable(() -> repositoryService
+            .createDeployment()
+            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithEmptyErrorCode.bpmn20.xml")
+            .deploy());
+    assertThat(throwable).isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("activiti-error-missing-error-code");
   }
 
-  @Deployment
+  public void testThrowErrorWithoutErrorCode() {
+    Throwable throwable = catchThrowable(() -> repositoryService
+            .createDeployment()
+            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testThrowErrorWithoutErrorCode.bpmn20.xml")
+            .deploy());
+    assertThat(throwable).isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("activiti-error-missing-error-code");
+  }
+
   public void testCatchErrorOnEmbeddedSubprocessWithEmptyErrorCode() {
-    testCatchErrorOnEmbeddedSubprocess();
+    Throwable throwable = catchThrowable(() -> repositoryService
+            .createDeployment()
+            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnEmbeddedSubprocessWithEmptyErrorCode.bpmn20.xml")
+            .deploy());
+    assertThat(throwable).isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("activiti-error-missing-error-code");
   }
 
-  @Deployment
   public void testCatchErrorOnEmbeddedSubprocessWithoutErrorCode() {
-    testCatchErrorOnEmbeddedSubprocess();
+    Throwable throwable = catchThrowable(() -> repositoryService
+            .createDeployment()
+            .addClasspathResource("org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnEmbeddedSubprocessWithoutErrorCode.bpmn20.xml")
+            .deploy());
+    assertThat(throwable).isInstanceOf(ActivitiException.class)
+            .hasMessageContaining("activiti-error-missing-error-code");
   }
 
   @Deployment

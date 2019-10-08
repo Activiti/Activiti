@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@ public class BpmnModel {
   protected List<Signal> signals = new ArrayList<Signal>();
   protected Map<String, MessageFlow> messageFlowMap = new LinkedHashMap<String, MessageFlow>();
   protected Map<String, Message> messageMap = new LinkedHashMap<String, Message>();
-  protected Map<String, String> errorMap = new LinkedHashMap<String, String>();
+  protected Map<String, Error> errorMap = new LinkedHashMap<String, Error>();
   protected Map<String, ItemDefinition> itemDefinitionMap = new LinkedHashMap<String, ItemDefinition>();
   protected Map<String, DataStore> dataStoreMap = new LinkedHashMap<String, DataStore>();
   protected List<Pool> pools = new ArrayList<Pool>();
@@ -304,17 +304,17 @@ public class BpmnModel {
       resources.addAll(resourceList);
     }
   }
-    
+
   public void addResource(Resource resource) {
     if (resource != null) {
       resources.add(resource);
     }
   }
-    
+
   public boolean containsResourceId(String resourceId) {
     return getResource(resourceId) != null;
   }
-    
+
   public Resource getResource(String id) {
     for (Resource resource : resources) {
       if (id.equals(resource.getId())) {
@@ -414,23 +414,25 @@ public class BpmnModel {
     return messageMap.containsKey(messageId);
   }
 
-  public Map<String, String> getErrors() {
-    return errorMap;
+  public Map<String, Error> getErrors() {
+      return errorMap;
   }
 
-  public void setErrors(Map<String, String> errorMap) {
+  public void setErrors(Map<String, Error> errorMap) {
     this.errorMap = errorMap;
   }
 
-  public void addError(String errorRef, String errorCode) {
+  public void addError(String errorRef,
+                       String errorName,
+                       String errorCode) {
     if (StringUtils.isNotEmpty(errorRef)) {
-      errorMap.put(errorRef, errorCode);
+      errorMap.put(errorRef, new Error(errorRef, errorName, errorCode));
     }
   }
 
-  public boolean containsErrorRef(String errorRef) {
-    return errorMap.containsKey(errorRef);
-  }
+    public boolean containsErrorRef(String errorRef) {
+      return errorMap.containsKey(errorRef);
+    }
 
   public Map<String, ItemDefinition> getItemDefinitions() {
     return itemDefinitionMap;
