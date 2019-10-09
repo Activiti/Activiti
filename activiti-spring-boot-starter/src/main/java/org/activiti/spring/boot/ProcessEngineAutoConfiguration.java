@@ -27,6 +27,7 @@ import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
 import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
+import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.resources.ResourceFinder;
 import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.activiti.validation.ProcessValidatorImpl;
@@ -46,10 +47,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.sql.DataSource;
 
