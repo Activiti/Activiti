@@ -10,7 +10,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.spring.boot;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import javax.sql.DataSource;
 
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
@@ -43,13 +52,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import java.io.IOException;
-import java.util.*;
-
-import javax.sql.DataSource;
 
 @Configuration
 @AutoConfigureAfter(name = {"org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration",
@@ -73,7 +76,6 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             ActivitiProperties activitiProperties,
             ResourceFinder resourceFinder,
             List<ResourceFinderDescriptor> resourceFinderDescriptors,
-            ProcessDefinitionResourceFinder processDefinitionResourceFinder,
             ProjectModelService projectModelService,
             @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
             @Autowired(required = false) List<ProcessEngineConfigurator> processEngineConfigurators) throws IOException {
@@ -150,9 +152,8 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             resources.addAll(resourceFinder.discoverResources(resourceFinderDescriptor));
         }
 
-        conf.setDeploymentResources(resources.toArray(new Resource[resources.size()]));
+        conf.setDeploymentResources(resources.toArray(new Resource[0]));
     }
-
 
     protected void addAsyncPropertyValidator(ActivitiProperties activitiProperties,
                                            SpringProcessEngineConfiguration conf) {
@@ -167,22 +168,6 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                 conf.getProcessValidator().getValidatorSets().add(springBootStarterValidatorSet);
             }
         }
-    }
-
-    private void configureProcessDefinitionResources(ProcessDefinitionResourceFinder processDefinitionResourceFinder,
-                                                     SpringProcessEngineConfiguration conf) throws IOException {
-        List<Resource> procDefResources = processDefinitionResourceFinder.discoverProcessDefinitionResources();
-        if (!procDefResources.isEmpty()) {
-            conf.setDeploymentResources(procDefResources.toArray(new Resource[0]));
-        }
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public ProcessDefinitionResourceFinder processDefinitionResourceFinder(ActivitiProperties activitiProperties,
-                                                                           ResourcePatternResolver resourcePatternResolver) {
-        return new ProcessDefinitionResourceFinder(activitiProperties,
-                                                   resourcePatternResolver);
     }
 
     @Bean
@@ -200,7 +185,6 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                 locationPrefix,
                 locationSuffix);
     }
-
 
     @Bean
     @ConditionalOnMissingBean

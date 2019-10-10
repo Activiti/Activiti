@@ -29,8 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.ResourcePatternUtils;
-import org.springframework.util.ResourceUtils;
 
 /**
  * Abstract base class for implementations of {@link AutoDeploymentStrategy}.
