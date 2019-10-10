@@ -26,7 +26,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-    
+
       <!-- Activiti Modules for managed dependencies -->
       <dependency>
         <groupId>org.activiti</groupId>
@@ -106,6 +106,11 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-process-validation</artifactId>
+        <version>${activiti.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-spring-resource-loader</artifactId>
         <version>${activiti.version}</version>
       </dependency>
       <dependency>

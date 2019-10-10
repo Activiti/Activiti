@@ -29,11 +29,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ContextResource;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourcePatternUtils;
+import org.springframework.util.ResourceUtils;
 
 /**
  * Abstract base class for implementations of {@link AutoDeploymentStrategy}.
- * 
- * 
  */
 public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentStrategy {
 
@@ -47,7 +47,7 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
 
     /**
      * Gets the deployment mode this strategy handles.
-     * 
+     *
      * @return the name of the deployment mode
      */
     protected abstract String getDeploymentMode();
@@ -59,12 +59,12 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
 
     /**
      * Determines the name to be used for the provided resource.
-     * 
+     *
      * @param resource the resource to get the name for
      * @return the name of the resource
      */
     protected String determineResourceName(final Resource resource) {
-        String resourceName = null;
+        String resourceName;
 
         if (resource instanceof ContextResource) {
             resourceName = ((ContextResource) resource).getPathWithinContext();
@@ -83,6 +83,10 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
     }
 
     protected boolean validateModel(Resource resource, final RepositoryService repositoryService) {
+
+        String resourceName = determineResourceName(resource);
+
+        if (isProcessDefinitionResource(resourceName)) {
         try {
             BpmnXMLConverter converter = new BpmnXMLConverter();
             BpmnModel bpmnModel = converter.convertToBpmnModel(new InputStreamSource(resource.getInputStream()), true,
@@ -117,7 +121,12 @@ public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentSt
             LOGGER.error("Error parsing XML", e);
             return false;
         }
+        }
         return true;
+    }
+
+    private boolean isProcessDefinitionResource(String resource) {
+        return resource.endsWith(".bpmn20.xml") || resource.endsWith(".bpmn");
     }
 
     protected DeploymentBuilder loadProjectManifest(DeploymentBuilder deploymentBuilder) {

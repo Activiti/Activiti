@@ -26,10 +26,14 @@ import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
+import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
 import org.activiti.spring.process.ProcessVariablesInitiator;
+import org.activiti.spring.resources.ResourceFinder;
+import org.activiti.spring.resources.ResourceFinderDescriptor;
 import org.activiti.validation.ProcessValidatorImpl;
 import org.activiti.validation.validator.ValidatorSet;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -43,10 +47,7 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import javax.sql.DataSource;
 
@@ -70,6 +71,8 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             PlatformTransactionManager transactionManager,
             SpringAsyncExecutor springAsyncExecutor,
             ActivitiProperties activitiProperties,
+            ResourceFinder resourceFinder,
+            List<ResourceFinderDescriptor> resourceFinderDescriptors,
             ProcessDefinitionResourceFinder processDefinitionResourceFinder,
             ProjectModelService projectModelService,
             @Autowired(required = false) List<ProcessEngineConfigurationConfigurer> processEngineConfigurationConfigurers,
@@ -77,8 +80,10 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
 
         SpringProcessEngineConfiguration conf = new SpringProcessEngineConfiguration(projectModelService);
         conf.setConfigurators(processEngineConfigurators);
-        configureProcessDefinitionResources(processDefinitionResourceFinder,
-                                            conf);
+
+
+        configureResources(resourceFinder, resourceFinderDescriptors, conf);
+
         conf.setDataSource(dataSource);
         conf.setTransactionManager(transactionManager);
 
@@ -136,6 +141,19 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         return conf;
     }
 
+    private void configureResources(ResourceFinder resourceFinder,
+                                    List<ResourceFinderDescriptor> resourceFinderDescriptors,
+                                    SpringProcessEngineConfiguration conf) throws IOException {
+
+        List<Resource> resources = new ArrayList<>();
+        for (ResourceFinderDescriptor resourceFinderDescriptor : resourceFinderDescriptors) {
+            resources.addAll(resourceFinder.discoverResources(resourceFinderDescriptor));
+        }
+
+        conf.setDeploymentResources(resources.toArray(new Resource[resources.size()]));
+    }
+
+
     protected void addAsyncPropertyValidator(ActivitiProperties activitiProperties,
                                            SpringProcessEngineConfiguration conf) {
         if (!activitiProperties.isAsyncExecutorActivate()) {
@@ -169,6 +187,23 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
 
     @Bean
     @ConditionalOnMissingBean
+    public ProcessDefinitionResourceFinderDescriptor processDefinitionResourceFinderDescriptor(ActivitiProperties activitiProperties) {
+        return new ProcessDefinitionResourceFinderDescriptor(activitiProperties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinderDescriptor(ActivitiProperties activitiProperties,
+                                                                                             @Value("${activiti.process.extensions.dir:classpath:**/processes/}") String locationPrefix,
+                                                                                             @Value("${activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix) {
+        return new ProcessExtensionResourceFinderDescriptor(activitiProperties.isCheckProcessDefinitions(),
+                locationPrefix,
+                locationSuffix);
+    }
+
+
+    @Bean
+    @ConditionalOnMissingBean
     public ProcessDeployedEventProducer processDeployedEventProducer(RepositoryService repositoryService,
                                                                      APIProcessDefinitionConverter converter,
                                                                      @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners,
@@ -189,7 +224,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                                                                    processVariablesInitiator,
                                                                    eventSubscriptionPayloadMappingProvider);
     }
-    
+
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public ProcessEngineConfigurationConfigurer asyncExecutorPropertiesConfigurer(AsyncExecutorProperties properties) {
@@ -202,11 +237,11 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             configuration.setAsyncExecutorDefaultAsyncJobAcquireWaitTime(properties.getDefaultAsyncJobAcquireWaitTimeInMillis());
             configuration.setAsyncExecutorDefaultTimerJobAcquireWaitTime(properties.getDefaultTimerJobAcquireWaitTimeInMillis());
             configuration.setAsyncExecutorDefaultQueueSizeFullWaitTime(properties.getDefaultQueueSizeFullWaitTime());
-            
+
             configuration.setAsyncExecutorMaxAsyncJobsDuePerAcquisition(properties.getMaxAsyncJobsDuePerAcquisition());
             configuration.setAsyncExecutorMaxTimerJobsPerAcquisition(properties.getMaxTimerJobsPerAcquisition());
             configuration.setAsyncExecutorMaxPoolSize(properties.getMaxPoolSize());
-            
+
             configuration.setAsyncExecutorResetExpiredJobsInterval(properties.getResetExpiredJobsInterval());
             configuration.setAsyncExecutorResetExpiredJobsPageSize(properties.getResetExpiredJobsPageSize());
 
@@ -218,6 +253,6 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
             configuration.setAsyncFailedJobWaitTime(properties.getRetryWaitTimeInMillis());
         };
     }
-    
+
 }
 

@@ -54,7 +54,7 @@ public class ProcessVariablesInitiatorIT {
 
     @MockBean
     private RepositoryService repositoryService;
-    
+
     @Before
     public void setUp() {
         initMocks(this);

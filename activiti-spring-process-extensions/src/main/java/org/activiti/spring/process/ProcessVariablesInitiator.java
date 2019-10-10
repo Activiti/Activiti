@@ -33,7 +33,7 @@ import java.util.Set;
 
 public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
-    private final ProcessExtensionService processExtensionService;
+    private ProcessExtensionService processExtensionService;
 
     private final VariableParsingService variableParsingService;
 
@@ -53,7 +53,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
             ProcessExtensionModel processExtensionModel = processExtensionService.getExtensionsFor(processDefinition);
 
-            processExtensionService.cache(processDefinition);
+//            processExtensionService.cache(processDefinition);
             Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions().getProperties();
             processedVariables = processVariables(variables,
                                                                       variableDefinitionMap);
@@ -84,12 +84,12 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                                                                           Map<String, Object> variables,
                                                                           Map<String, Object> transientVariables) {
         Map<String, Object> processVariables = variables;
-        
+
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
             processVariables = calculateVariablesFromExtensionFile(processDefinition,
                                                                    variables);
         }
-        
+
         return super.createProcessInstanceWithInitialFlowElement(processDefinition,
                                                                  businessKey,
                                                                  processInstanceName,
@@ -97,8 +97,8 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
                                                                  process,
                                                                  processVariables,
                                                                  transientVariables);
-    }    
-    
+    }
+
     private Map<String, Object> processVariables(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
         Map<String, Object> newVarsMap = new HashMap<>(Optional.ofNullable(variables).orElse(Collections.emptyMap()));
         variableDefinitionMap.forEach((k,v) -> {
