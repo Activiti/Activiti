@@ -501,7 +501,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
   protected void writeErrorDefinition(Event parentEvent, ErrorEventDefinition errorDefinition, XMLStreamWriter xtw) throws Exception {
     xtw.writeStartElement(ELEMENT_EVENT_ERRORDEFINITION);
-    writeDefaultAttribute(ATTRIBUTE_ERROR_REF, errorDefinition.getErrorCode(), xtw);
+    writeDefaultAttribute(ATTRIBUTE_ERROR_REF, errorDefinition.getErrorRef(), xtw);
     boolean didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(errorDefinition, false, xtw);
     if (didWriteExtensionStartElement) {
       xtw.writeEndElement();

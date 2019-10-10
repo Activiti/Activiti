@@ -36,8 +36,8 @@ public class ErrorEventDefinitionParser extends BaseChildElementParser {
         ErrorEventDefinition eventDefinition = new ErrorEventDefinition();
         BpmnXMLUtil.addXMLLocation(eventDefinition,
                                    xtr);
-        eventDefinition.setErrorCode(xtr.getAttributeValue(null,
-                                                           "errorRef"));
+        eventDefinition.setErrorRef(xtr.getAttributeValue(null,
+                                                          ATTRIBUTE_ERROR_REF));
 
         BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_ERRORDEFINITION,
                                        eventDefinition,

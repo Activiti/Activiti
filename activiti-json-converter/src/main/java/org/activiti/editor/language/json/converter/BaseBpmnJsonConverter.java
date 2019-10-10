@@ -560,9 +560,9 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
             EventDefinition eventDefinition = eventDefinitions.get(0);
             if (eventDefinition instanceof ErrorEventDefinition) {
                 ErrorEventDefinition errorDefinition = (ErrorEventDefinition) eventDefinition;
-                if (StringUtils.isNotEmpty(errorDefinition.getErrorCode())) {
+                if (StringUtils.isNotEmpty(errorDefinition.getErrorRef())) {
                     propertiesNode.put(PROPERTY_ERRORREF,
-                                       errorDefinition.getErrorCode());
+                                       errorDefinition.getErrorRef());
                 }
             } else if (eventDefinition instanceof SignalEventDefinition) {
                 SignalEventDefinition signalDefinition = (SignalEventDefinition) eventDefinition;
@@ -723,7 +723,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants,
         String errorRef = getPropertyValueAsString(PROPERTY_ERRORREF,
                                                    objectNode);
         ErrorEventDefinition eventDefinition = new ErrorEventDefinition();
-        eventDefinition.setErrorCode(errorRef);
+        eventDefinition.setErrorRef(errorRef);
         event.getEventDefinitions().add(eventDefinition);
     }
 
