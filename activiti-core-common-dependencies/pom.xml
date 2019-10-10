@@ -90,6 +90,11 @@
         <artifactId>activiti-spring-project</artifactId>
         <version>${activiti-core-common.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.activiti.core.common</groupId>
+        <artifactId>activiti-common-util</artifactId>
+        <version>${activiti-core-common.version}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 </project>
