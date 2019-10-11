@@ -23,7 +23,7 @@
     <activiti-build.version>7.1.28</activiti-build.version>
     <activiti-api.version>7.1.49</activiti-api.version>
     <activiti-core-common.version>7.1.55</activiti-core-common.version> 
-    <activiti.version>7.1.93</activiti.version>
+    <activiti.version>7.1.94</activiti.version>
   </properties>
 
   <organization>
