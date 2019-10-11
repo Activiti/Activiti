@@ -23,8 +23,7 @@ updatebot/push-version:
 		org.activiti.dependencies:activiti-dependencies $(RELEASE_VERSION) \
 		org.activiti.api:activiti-api-dependencies $(ACTIVITI_API_VERSION) \
 		org.activiti.core.common:activiti-core-common-dependencies $(ACTIVITI_CORE_COMMON_VERSION) \
-		org.activiti.build:activiti-parent $(ACTIVITI_BUILD_VERSION)
-	updatebot push-version --kind  make  ACTIVITI_CORE_DEPENDENCIES_VERSION $(RELEASE_VERSION)	
+		org.activiti.build:activiti-parent $(ACTIVITI_BUILD_VERSION)	
 
 updatebot/update:
 	@echo doing updatebot update $(RELEASE_VERSION)
