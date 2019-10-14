@@ -14,14 +14,14 @@ package org.activiti.bpmn.model;
 
 public class ErrorEventDefinition extends EventDefinition {
 
-  protected String errorCode;
+  protected String errorRef;
 
-  public String getErrorCode() {
-    return errorCode;
+  public String getErrorRef() {
+    return errorRef;
   }
 
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
+  public void setErrorRef(String errorRef) {
+    this.errorRef = errorRef;
   }
 
   public ErrorEventDefinition clone() {
@@ -32,6 +32,6 @@ public class ErrorEventDefinition extends EventDefinition {
 
   public void setValues(ErrorEventDefinition otherDefinition) {
     super.setValues(otherDefinition);
-    setErrorCode(otherDefinition.getErrorCode());
+    setErrorRef(otherDefinition.getErrorRef());
   }
 }

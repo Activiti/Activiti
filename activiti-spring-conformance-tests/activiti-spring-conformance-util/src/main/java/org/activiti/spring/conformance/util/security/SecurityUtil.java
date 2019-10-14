@@ -1,31 +1,32 @@
 package org.activiti.spring.conformance.util.security;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@Component
 public class SecurityUtil {
 
     private Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    @Autowired
-    private SecurityManager securityManager;
+    private final SecurityManager securityManager;
+    
+    public SecurityUtil(UserDetailsService userDetailsService,
+                        SecurityManager securityManager) {
+        this.userDetailsService = userDetailsService;
+        this.securityManager = securityManager;
+    }
 
     public void logInAs(String username) {
 

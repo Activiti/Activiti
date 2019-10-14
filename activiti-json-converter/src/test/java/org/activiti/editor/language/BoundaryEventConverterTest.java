@@ -37,7 +37,7 @@ public class BoundaryEventConverterTest extends AbstractConverterTest {
     BoundaryEvent errorElement = (BoundaryEvent) model.getMainProcess().getFlowElement("errorEvent", true);
     ErrorEventDefinition errorEvent = (ErrorEventDefinition) extractEventDefinition(errorElement);
     assertTrue(errorElement.isCancelActivity()); // always true
-    assertEquals("errorRef", errorEvent.getErrorCode());
+    assertEquals("errorRef", errorEvent.getErrorRef());
     assertEquals("sid-F21E9F4D-EA19-44DF-B1D3-14663A809CAE", errorElement.getAttachedToRefId());
 
     BoundaryEvent signalElement = (BoundaryEvent) model.getMainProcess().getFlowElement("signalEvent", true);

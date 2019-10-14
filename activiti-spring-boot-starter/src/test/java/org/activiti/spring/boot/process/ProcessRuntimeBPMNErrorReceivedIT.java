@@ -39,10 +39,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Import(DummyBPMNErrorReceivedListener.class)
 public class ProcessRuntimeBPMNErrorReceivedIT {
 
     private static final String ERROR_BOUNDARY_EVENT_SUBPROCESS = "errorBoundaryEventSubProcess";

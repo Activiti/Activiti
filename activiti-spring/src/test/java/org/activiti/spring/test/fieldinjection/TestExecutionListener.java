@@ -12,13 +12,13 @@
  */
 package org.activiti.spring.test.fieldinjection;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateHelper;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
 

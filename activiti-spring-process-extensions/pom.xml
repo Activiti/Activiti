@@ -28,6 +28,10 @@
             <groupId>org.activiti.core.common</groupId>
             <artifactId>activiti-connector-model</artifactId>
         </dependency>
+    	<dependency>
+     		<groupId>org.activiti.core.common</groupId>
+      		<artifactId>activiti-common-util</artifactId>
+    	</dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
@@ -37,10 +41,6 @@
             <artifactId>spring-context</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
@@ -48,6 +48,15 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
         </dependency>
+
+        <!-- Optional -->
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-autoconfigure</artifactId>
+          <optional>true</optional>
+        </dependency>
+        
+        <!-- Test -->    
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

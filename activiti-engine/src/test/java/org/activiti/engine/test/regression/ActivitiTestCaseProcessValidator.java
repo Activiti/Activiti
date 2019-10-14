@@ -2,8 +2,10 @@ package org.activiti.engine.test.regression;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.Error;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.ServiceTask;
@@ -18,21 +20,19 @@ public class ActivitiTestCaseProcessValidator implements ProcessValidator {
 
   @Override
   public List<ValidationError> validate(BpmnModel bpmnModel) {
-    List<ValidationError> errorList = new ArrayList<ValidationError>();
     CustomParseValidator customParseValidator = new CustomParseValidator();
 
     for (Process process : bpmnModel.getProcesses()) {
       customParseValidator.executeParse(bpmnModel, process);
     }
-
-    for (String errorRef : bpmnModel.getErrors().keySet()) {
-      ValidationError error = new ValidationError();
-      error.setValidatorSetName("Manual BPMN parse validator");
-      error.setProblem(errorRef);
-      error.setActivityId(bpmnModel.getErrors().get(errorRef));
-      errorList.add(error);
-    }
-    return errorList;
+    return bpmnModel.getErrors().values().stream()
+           .map(bpmnError -> {
+             ValidationError error = new ValidationError();
+             error.setValidatorSetName("Manual BPMN parse validator");
+             error.setProblem(bpmnError.getId());
+             error.setActivityId(bpmnError.getId());
+             return error;
+           }).collect(Collectors.toList());
   }
 
   @Override
@@ -53,7 +53,9 @@ public class ActivitiTestCaseProcessValidator implements ProcessValidator {
 
     void validateAsyncAttribute(ServiceTask serviceTask, BpmnModel bpmnModel, FlowElement flowElement) {
       if (!serviceTask.isAsynchronous()) {
-        bpmnModel.addError("Please set value of 'activiti:async'" + "attribute as true for task:" + serviceTask.getName(), flowElement.getId());
+        bpmnModel.addError("Please set value of 'activiti:async'" + "attribute as true for task:" + serviceTask.getName(),
+                           "error-" + serviceTask.getName(),
+                           flowElement.getId());
       }
     }
   }

@@ -16,13 +16,21 @@
 
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.task.model.Task;
+import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.spring.boot.test.util.TaskCleanUpUtil;
-import org.activiti.spring.process.variable.DateFormatterProvider;
 import org.junit.After;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -32,14 +40,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)

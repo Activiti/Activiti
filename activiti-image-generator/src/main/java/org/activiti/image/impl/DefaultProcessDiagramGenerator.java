@@ -16,13 +16,6 @@
 
 package org.activiti.image.impl;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.Association;
@@ -66,18 +59,23 @@ import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.TextAnnotation;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
-import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.Transaction;
+import org.activiti.bpmn.model.UserTask;
 import org.activiti.image.ProcessDiagramGenerator;
-import org.activiti.image.exception.ActivitiInterchangeInfoNotFoundException;
 import org.activiti.image.exception.ActivitiImageException;
-import org.springframework.stereotype.Component;
+import org.activiti.image.exception.ActivitiInterchangeInfoNotFoundException;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class to generate an svg based the diagram interchange information in a
  * BPMN 2.0 process.
  */
-@Component
 public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
     private static final String DEFAULT_ACTIVITY_FONT_NAME = "Arial";

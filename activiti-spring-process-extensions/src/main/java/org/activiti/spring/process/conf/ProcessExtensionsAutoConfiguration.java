@@ -13,12 +13,17 @@
 
 package org.activiti.spring.process.conf;
 
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.RepositoryService;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.process.model.ProcessExtensionModel;
-import org.activiti.spring.process.variable.DateFormatterProvider;
 import org.activiti.spring.process.variable.VariableParsingService;
 import org.activiti.spring.process.variable.VariableValidationService;
 import org.activiti.spring.process.variable.types.DateVariableType;
@@ -27,15 +32,9 @@ import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.VariableType;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.ResourcePatternResolver;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Configuration
 public class ProcessExtensionsAutoConfiguration {
@@ -72,14 +71,6 @@ public class ProcessExtensionsAutoConfiguration {
     InitializingBean initRepositoryServiceForProcessExtensionService(RepositoryService repositoryService,
                                                                      ProcessExtensionService processExtensionService){
         return () -> processExtensionService.setRepositoryService(repositoryService);
-    }
-
-
-    @Bean
-    @ConditionalOnMissingBean
-    public DateFormatterProvider dateFormatterProvider(@Value("${spring.activiti.date-format-pattern:yyyy-MM-dd[['T'][ ]HH:mm:ss[.SSS'Z']]}")
-                                                                       String dateFormatPattern) {
-        return new DateFormatterProvider(dateFormatPattern);
     }
 
     @Bean

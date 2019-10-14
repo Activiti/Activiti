@@ -23,23 +23,23 @@ public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
-  protected String errorCode;
+  protected String errorRef;
 
-  public ErrorEndEventActivityBehavior(String errorCode) {
-    this.errorCode = errorCode;
+  public ErrorEndEventActivityBehavior(String errorRef) {
+    this.errorRef = errorRef;
   }
 
   @Override
   public void execute(DelegateExecution execution) {
-    ErrorPropagation.propagateError(errorCode, execution);
+    ErrorPropagation.propagateError(errorRef, execution);
   }
 
-  public String getErrorCode() {
-    return errorCode;
+  public String getErrorRef() {
+    return errorRef;
   }
 
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
+  public void setErrorRef(String errorRef) {
+    this.errorRef = errorRef;
   }
 
 }
