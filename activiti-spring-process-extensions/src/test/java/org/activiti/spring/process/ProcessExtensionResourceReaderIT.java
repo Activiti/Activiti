@@ -18,20 +18,13 @@ package org.activiti.spring.process;
 
 import java.io.InputStream;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.RepositoryService;
-import org.activiti.spring.process.conf.ProcessExtensionsAutoConfiguration;
-import org.activiti.spring.process.conf.ProcessExtensionsConfiguratorAutoConfiguration;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,19 +33,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class ProcessExtensionResourceReaderIT {
 
-    @Configuration
-    @Import({ProcessExtensionsAutoConfiguration.class, ProcessExtensionsConfiguratorAutoConfiguration.class})
-    static class ContextConfiguration {
-
-        @Bean
-        protected ObjectMapper objectMapper() {
-            return new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                                                false);
-        }
-
-        @MockBean
-        protected RepositoryService repositoryService;
-    }
+    @MockBean
+    private RepositoryService repositoryService;
 
     @Autowired
     private ProcessExtensionResourceReader reader;
