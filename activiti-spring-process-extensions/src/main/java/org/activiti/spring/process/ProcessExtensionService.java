@@ -13,8 +13,9 @@
 
 package org.activiti.spring.process;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,6 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.resources.DeploymentResourceLoader;
-import org.springframework.core.io.Resource;
 
 public class ProcessExtensionService {
 
@@ -58,7 +58,6 @@ public class ProcessExtensionService {
         return processExtensionModelMap;
     }
 
-
     public boolean hasExtensionsFor(ProcessDefinition processDefinition) {
         return !EMPTY_EXTENSIONS.equals(getExtensionsFor(processDefinition));
     }
@@ -76,7 +75,7 @@ public class ProcessExtensionService {
             processExtensionModel = processExtensionModelMap.get(processDefinition.getKey());
     }
 
-        return processExtensionModel != null? processExtensionModel : EMPTY_EXTENSIONS;
+        return processExtensionModel != null ? processExtensionModel : EMPTY_EXTENSIONS;
     }
 
     public ProcessExtensionModel getExtensionsForId(String processDefinitionId) {
