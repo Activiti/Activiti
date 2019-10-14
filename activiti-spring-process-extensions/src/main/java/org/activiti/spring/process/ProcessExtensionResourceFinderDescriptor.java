@@ -55,7 +55,7 @@ public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderD
 
     @Override
     public String getMsgForEmptyResources() {
-        return "No process extensions were found for auto-deployment in the location";
+        return "No process extensions were found for auto-deployment in the location '" + locationPrefix + "'";
     }
 
     @Override
@@ -67,6 +67,5 @@ public class ProcessExtensionResourceFinderDescriptor implements ResourceFinderD
     public void validate(List<Resource> resources) {
 
     }
-
 
 }
