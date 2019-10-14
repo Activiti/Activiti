@@ -59,10 +59,13 @@ public class VariablesMappingProvider {
     }
 
     public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
+        
+        ActivitExpressionParser parser = new ActivitExpressionParser(execution);
+        
 
         ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
 
-        Map<String, Object> constants = calculateConstants(execution, extensions);
+        Map<String, Object> constants = parser.resolveExpressionsMap(calculateConstants(execution, extensions));
 
         if (extensions.getExtensions().hasEmptyInputsMapping(execution.getCurrentActivityId())) {
             return constants;
@@ -75,7 +78,7 @@ public class VariablesMappingProvider {
         } else {
             inboudVariables = calculateInputVariables(execution, extensions);
         }
-
+        inboudVariables = parser.resolveExpressionsMap(inboudVariables);
         inboudVariables.putAll(constants);
         return inboudVariables;
     }
