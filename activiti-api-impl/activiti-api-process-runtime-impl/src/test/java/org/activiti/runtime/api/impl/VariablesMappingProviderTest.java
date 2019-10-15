@@ -285,7 +285,7 @@ public class VariablesMappingProviderTest {
     
     @Test
     public void should_returnExpressionInConstants_when_expresionRefersToNonExistingVariable() throws Exception {
-      //given
+        //given
         ObjectMapper objectMapper = new ObjectMapper();
         ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-mapping-with-constants-and-bad-expressions-extensions.json"),
                                                                   ProcessExtensionModel.class);
@@ -308,25 +308,22 @@ public class VariablesMappingProviderTest {
                                     "value_with_${unexisting_variable}"));
     }
 
-
     @Test
     public void should_substituteVariables_when_expresionRefersToJsonVariableAttribute() throws Exception {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-no-mapping-extensions.json"),
-                                                                  ProcessExtensionModel.class);
-
-        DelegateExecution execution = buildExecution(extensions);
-        Map<String, Object> variables = new HashMap<>();
-        
         Map<String, Object> complexObject = new HashMap<>();
         complexObject.put("attr1","attribute_1");
         complexObject.put("attr2","attribute_2");
         
+        Map<String, Object> variables = new HashMap<>();
         variables.put("var_one",complexObject);
         variables.put("var_two",
                       "variable_${var_one.attr1}_resolved");
         
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-no-mapping-extensions.json"),
+                                                                  ProcessExtensionModel.class);
+        DelegateExecution execution = buildExecution(extensions);
         ExpressionResolverHelper.initContext(execution,
                                              variables);
 
@@ -346,30 +343,28 @@ public class VariablesMappingProviderTest {
     @Test
     public void should_substituteJsonAttributes_when_attributesAreExpressionsReferedToExistingVariables() throws Exception {
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-no-mapping-extensions.json"),
-                                                                  ProcessExtensionModel.class);
-
-        DelegateExecution execution = buildExecution(extensions);
-        Map<String, Object> variables = new HashMap<>();
-        
         Map<String, Object> complexObject = new HashMap<>();
         complexObject.put("attr1","${var_one}");
         complexObject.put("attr2","${var_two}");
         
+        Map<String, Object> variables = new HashMap<>();
         variables.put("var_one",
                       "one");
         variables.put("var_two",
                       "two");
         variables.put("var_three",complexObject);
         
+        ObjectMapper objectMapper = new ObjectMapper();
+        ProcessExtensionModel extensions = objectMapper.readValue(new File("src/test/resources/task-variable-no-mapping-extensions.json"),
+                                                                  ProcessExtensionModel.class);
+        DelegateExecution execution = buildExecution(extensions);
+        ExpressionResolverHelper.initContext(execution,
+                                             variables);
+
         Map<String, Object> resolvedComplexObject = new HashMap<>();
         resolvedComplexObject.put("attr1","one");
         resolvedComplexObject.put("attr2","two");
         
-        ExpressionResolverHelper.initContext(execution,
-                                             variables);
-
         //when
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
