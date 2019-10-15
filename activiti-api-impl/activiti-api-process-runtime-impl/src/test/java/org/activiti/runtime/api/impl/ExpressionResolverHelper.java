@@ -190,14 +190,15 @@ public class ExpressionResolverHelper {
 
             @Override
             public String getTypeName() {
-                if (value instanceof String)
+                if (value instanceof String) {
                     return "string";
-                else if(value instanceof Integer)
+                } else if (value instanceof Integer) {
                     return "integer";
-                else if(value instanceof Boolean)
+                } else if (value instanceof Boolean) {
                     return "boolean";
-                else
+                } else {
                     return "json";
+                }
             }
 
             @Override
