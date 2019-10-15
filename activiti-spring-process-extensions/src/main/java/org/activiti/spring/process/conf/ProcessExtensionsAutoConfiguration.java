@@ -42,6 +42,7 @@ import org.springframework.context.annotation.Configuration;
 public class ProcessExtensionsAutoConfiguration {
 
     @Bean
+    @ConditionalOnMissingBean
     public ProcessVariablesInitiator processVariablesInitiator(ProcessExtensionService processExtensionService,
                                                                VariableParsingService variableParsingService,
                                                                VariableValidationService variableValidationService) {
@@ -51,17 +52,20 @@ public class ProcessExtensionsAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader() {
         return new DeploymentResourceLoader<>();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public ProcessExtensionResourceReader processExtensionResourceReader(ObjectMapper objectMapper,
                                                             Map<String, VariableType> variableTypeMap) {
         return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
                                                            DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader) {
         return new ProcessExtensionService(
@@ -92,6 +96,7 @@ public class ProcessExtensionsAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean(name = "variableTypeMap")
     public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper,
                                                      DateFormatterProvider dateFormatterProvider) {
         Map<String, VariableType> variableTypeMap = new HashMap<>();
