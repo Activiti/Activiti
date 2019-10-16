@@ -81,7 +81,6 @@ public class ProcessExtensionService {
     public ProcessExtensionModel getExtensionsForId(String processDefinitionId) {
         ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
 
-        System.out.println("processDefinition = " + processDefinition);
         ProcessExtensionModel processExtensionModel = getExtensionsFor(processDefinition);
         return processExtensionModel != null ? processExtensionModel : EMPTY_EXTENSIONS;
     }
