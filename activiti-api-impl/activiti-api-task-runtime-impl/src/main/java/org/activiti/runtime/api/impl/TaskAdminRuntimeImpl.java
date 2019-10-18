@@ -16,6 +16,9 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -44,9 +47,6 @@ import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @PreAuthorize("hasRole('ACTIVITI_ADMIN')")
 public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
@@ -150,6 +150,9 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
         if (task == null) {
             throw new IllegalStateException("Task with id: " + completeTaskPayload.getTaskId() + " cannot be completed because it cannot be found.");
         }
+        
+        taskRuntimeHelper.validateVariableNames(completeTaskPayload.getVariables());
+        
         TaskImpl competedTaskData = new TaskImpl(task.getId(),
                 task.getName(),
                 Task.TaskStatus.COMPLETED);

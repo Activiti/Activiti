@@ -58,13 +58,17 @@ public class TaskRuntimeHelperTest {
 
     @Mock
     private APITaskConverter taskConverter;
+    
+    @Mock
+    private VariableNameValidator variableNameValidator;
 
     @Before
     public void setUp() {
         initMocks(this);
         taskRuntimeHelper = spy(new TaskRuntimeHelper(taskService,
                 taskConverter,
-                securityManager));
+                securityManager,
+                variableNameValidator));
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
     }
 
