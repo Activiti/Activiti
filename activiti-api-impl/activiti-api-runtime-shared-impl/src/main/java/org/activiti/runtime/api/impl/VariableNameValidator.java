@@ -24,7 +24,7 @@ public class VariableNameValidator {
     
     public Set<String> validateVariables(Map<String, Object> variables) {
         Set<String> mismatchedVars = new HashSet<>();
-        if (variables!=null && !variables.isEmpty()) {
+        if (variables != null && !variables.isEmpty()) {
             for (Map.Entry<String, Object> variable : variables.entrySet()) {
                 if (!validate(variable.getKey())) {
                     mismatchedVars.add(variable.getKey());

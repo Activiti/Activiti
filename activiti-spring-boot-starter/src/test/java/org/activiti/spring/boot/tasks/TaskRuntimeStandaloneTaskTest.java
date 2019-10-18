@@ -227,4 +227,53 @@ public class TaskRuntimeStandaloneTaskTest {
         
     }
 
+    @Test
+    public void shouldThrowException_when_setWrongVariableName() {
+
+        securityUtil.logInAs("user");
+        
+        Task task = taskRuntime.create(TaskPayloadBuilder.create()
+                                                 .withName("name")
+                                                 .withAssignee("user")
+                                                 .build());
+
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                                                         50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        
+        Throwable throwable = catchThrowable(() -> taskRuntime.createVariable(TaskPayloadBuilder.createVariable()
+                                                                              .withTaskId(task.getId())
+                                                                              .withVariable("!wrong_name", "value")
+                                                                              .build()));
+
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class);
+        
+    }
+    
+    @Test
+    public void shouldThrowException_when_updateWrongVariableName() {
+
+        securityUtil.logInAs("user");
+        
+        Task task = taskRuntime.create(TaskPayloadBuilder.create()
+                                                 .withName("name")
+                                                 .withAssignee("user")
+                                                 .build());
+
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                                                         50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        
+        Throwable throwable = catchThrowable(() -> taskRuntime.updateVariable(TaskPayloadBuilder.updateVariable()
+                                                                              .withTaskId(task.getId())
+                                                                              .withVariable("!wrong_name", "value")
+                                                                              .build()));
+
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class);
+        
+    }
 }
