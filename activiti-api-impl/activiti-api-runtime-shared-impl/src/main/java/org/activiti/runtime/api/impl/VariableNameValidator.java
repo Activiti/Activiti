@@ -11,7 +11,7 @@ public class VariableNameValidator {
     
     public static String regexPattern = "(?i)[a-z][a-z0-9_]*";
     
-    public boolean validate(String name){
+    public boolean validate(String name) { 
         
         if (StringUtils.hasLength(name)) {           
             if (Pattern.compile(regexPattern).matcher(name).matches()) {
@@ -24,12 +24,12 @@ public class VariableNameValidator {
     
     public Set<String> validateVariables(Map<String, Object> variables) {
         Set<String> mismatchedVars = new HashSet<>();
-        if (!variables.isEmpty()) {
+        if (variables!=null && !variables.isEmpty()) {
             for (Map.Entry<String, Object> variable : variables.entrySet()) {
-                if(!validate(variable.getKey())){
+                if (!validate(variable.getKey())) {
                     mismatchedVars.add(variable.getKey());
                 }
-            };     
+            }   
         }
         
         return mismatchedVars;
