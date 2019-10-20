@@ -25,7 +25,6 @@ import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.common.util.DateFormatterProvider;
 
-
 public class TaskVariablesPayloadValidator {
    
     private final DateFormatterProvider dateFormatterProvider;
@@ -75,7 +74,7 @@ public class TaskVariablesPayloadValidator {
         return updateTaskVariablePayload;
     }
     
-    public Map<String, Object> handlePayloadVariables(Map<String, Object> variables){
+    public Map<String, Object> handlePayloadVariables(Map<String, Object> variables) {
         if (variables != null) {
             Set<String> mismatchedVars = variableNameValidator.validateVariables(variables); 
             
