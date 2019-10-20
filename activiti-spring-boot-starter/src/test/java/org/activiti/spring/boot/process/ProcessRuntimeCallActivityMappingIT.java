@@ -1,5 +1,12 @@
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -16,13 +23,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -77,23 +77,23 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(subProcVariables).extracting(VariableInstance::getName,
                 VariableInstance::getValue)
                 .containsOnly(
-                        tuple("subprocess-input-var1", "inName"),
-                        tuple("subprocess-input-var2", 20),
-                        tuple("subprocess-input-var3", 5),
-                        tuple("input-static-value", "a static value"),
-                        tuple("subprocess-out-var1", "outValue"),
-                        tuple("subprocess-out-var2", 222),
-                        tuple("subprocess-static-value", "static some value"),
-                        tuple("var-not-exist-in-subprocess-extension-file", 20)
+                        tuple("subprocess_input_var1", "inName"),
+                        tuple("subprocess_input_var2", 20),
+                        tuple("subprocess_input_var3", 5),
+                        tuple("input_static_value", "a static value"),
+                        tuple("subprocess_out_var1", "outValue"),
+                        tuple("subprocess_out_var2", 222),
+                        tuple("subprocess_static_value", "static some value"),
+                        tuple("var_not_exist_in_subprocess_extension_file", 20)
 
                 );
 
         assertThat("my-task-call-activity").isEqualTo(task.getName());
 
         Map<String, Object> variablesForTask = new HashMap<>();
-        variablesForTask.put("input-variable-name-1", "fromSubprocessName");
-        variablesForTask.put("input-variable-name-2", 39);
-        variablesForTask.put("out-variable-name-1", 176);
+        variablesForTask.put("input_variable_name_1", "fromSubprocessName");
+        variablesForTask.put("input_variable_name_2", 39);
+        variablesForTask.put("out_variable_name_1", 176);
 
         completeTask(task.getId(), variablesForTask);
 
@@ -107,8 +107,8 @@ public class ProcessRuntimeCallActivityMappingIT {
                 .containsOnly(
                         tuple("name", "outValue"),
                         tuple("age", 222),
-                        tuple("output-unmapped-variable-with-non-matching-connector-output-name", "default"),
-                        tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTest")
+                        tuple("output_unmapped_variable_with_non_matching_connector_output_name", "default"),
+                        tuple("input_unmapped_variable_with_non_matching_connector_input_name", "inTest")
                 );
 
         cleanUp();
@@ -141,33 +141,33 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(subProcVariables).extracting(VariableInstance::getName,
                 VariableInstance::getValue)
                 .containsOnly(
-                        tuple("output-unmapped-variable-with-non-matching-connector-output-name",
+                        tuple("output_unmapped_variable_with_non_matching_connector_output_name",
                                 "default"),
-                        tuple("input-unmapped-variable-with-non-matching-connector-input-name",
+                        tuple("input_unmapped_variable_with_non_matching_connector_input_name",
                                 "inTest"),
                         tuple("name",
                                 "inName"),
                         tuple("age",
                                 20),
-                        tuple("subprocess-input-var2",
+                        tuple("subprocess_input_var2",
                                 2),
-                        tuple("subprocess-input-var3",
+                        tuple("subprocess_input_var3",
                                 3),
-                        tuple("subprocess-out-var2",
+                        tuple("subprocess_out_var2",
                                 222),
-                        tuple("subprocess-out-var1",
+                        tuple("subprocess_out_var1",
                                 "outValue"),
 
-                        tuple("subprocess-input-var1",
+                        tuple("subprocess_input_var1",
                                 "value1"),
-                        tuple("subprocess-static-value",
+                        tuple("subprocess_static_value",
                                 "static some value")
                 );
 
         assertThat("my-task-call-activity").isEqualTo(task.getName());
 
         Map<String, Object> variablesForTask = new HashMap<>();
-        variablesForTask.put("input-variable-name-1",
+        variablesForTask.put("input_variable_name_1",
                 "fromSubprocessName");
 
         completeTask(task.getId(),
@@ -180,28 +180,28 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(parentVariablesAfterComnplete).extracting(VariableInstance::getName,
                 VariableInstance::getValue)
                 .containsOnly(
-                        tuple("output-unmapped-variable-with-non-matching-connector-output-name",
+                        tuple("output_unmapped_variable_with_non_matching_connector_output_name",
                                 "default"),
-                        tuple("input-unmapped-variable-with-non-matching-connector-input-name",
+                        tuple("input_unmapped_variable_with_non_matching_connector_input_name",
                                 "inTest"),
                         tuple("name",
                                 "inName"),
                         tuple("age",
                                 20),
-                        tuple("subprocess-input-var2",
+                        tuple("subprocess_input_var2",
                                 2),
-                        tuple("subprocess-input-var3",
+                        tuple("subprocess_input_var3",
                                 3),
-                        tuple("subprocess-out-var2",
+                        tuple("subprocess_out_var2",
                                 222),
-                        tuple("subprocess-out-var1",
+                        tuple("subprocess_out_var1",
                                 "outValue"),
 
-                        tuple("subprocess-input-var1",
+                        tuple("subprocess_input_var1",
                                 "value1"),
-                        tuple("subprocess-static-value",
+                        tuple("subprocess_static_value",
                                 "static some value"),
-                        tuple("input-variable-name-1",
+                        tuple("input_variable_name_1",
                                 "fromSubprocessName")
                 );
     }
@@ -271,25 +271,25 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(subProcVariables).extracting(VariableInstance::getName,
                 VariableInstance::getValue)
                 .containsOnly(
-                        tuple("subprocess-input-var2",
+                        tuple("subprocess_input_var2",
                                 2),
-                        tuple("subprocess-input-var3",
+                        tuple("subprocess_input_var3",
                                 3),
-                        tuple("subprocess-out-var2",
+                        tuple("subprocess_out_var2",
                                 222),
-                        tuple("subprocess-out-var1",
+                        tuple("subprocess_out_var1",
                                 "outValue"),
 
-                        tuple("subprocess-input-var1",
+                        tuple("subprocess_input_var1",
                                 "value1"),
-                        tuple("subprocess-static-value",
+                        tuple("subprocess_static_value",
                                 "static some value")
                 );
 
         assertThat("my-task-call-activity").isEqualTo(task.getName());
 
         Map<String, Object> variablesForTask = new HashMap<>();
-        variablesForTask.put("input-variable-name-1",
+        variablesForTask.put("input_variable_name_1",
                 "fromSubprocessName");
 
         completeTask(task.getId(),
@@ -301,9 +301,9 @@ public class ProcessRuntimeCallActivityMappingIT {
         assertThat(parentVariablesAfterComnplete).extracting(VariableInstance::getName,
                 VariableInstance::getValue)
                 .containsOnly(
-                        tuple("output-unmapped-variable-with-non-matching-connector-output-name",
+                        tuple("output_unmapped_variable_with_non_matching_connector_output_name",
                                 "default"),
-                        tuple("input-unmapped-variable-with-non-matching-connector-input-name",
+                        tuple("input_unmapped_variable_with_non_matching_connector_input_name",
                                 "inTest"),
                         tuple("name",
                                 "inName"),

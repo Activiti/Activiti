@@ -16,6 +16,13 @@
 
 package org.activiti.runtime.api.impl;
 
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.payloads.UpdateProcessPayload;
@@ -28,13 +35,6 @@ import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ProcessRuntimeImplTest {
 
@@ -60,6 +60,7 @@ public class ProcessRuntimeImplTest {
                 runtimeService,
                 securityPoliciesManager,
                 processInstanceConverter,
+                null,
                 null,
                 null,
                 null));
