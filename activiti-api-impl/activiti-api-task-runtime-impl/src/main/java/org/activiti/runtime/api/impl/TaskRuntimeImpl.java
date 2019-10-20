@@ -154,8 +154,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
             throw new IllegalStateException("You cannot complete the task if you are not assigned to it");
         }
         
-        taskRuntimeHelper.validateVariableNames(completeTaskPayload.getVariables());
-
+        taskRuntimeHelper.handleCompleteTaskPayload(completeTaskPayload);
+                
         taskService.complete(completeTaskPayload.getTaskId(),
                 completeTaskPayload.getVariables(), true);
 
@@ -451,7 +451,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public void save(SaveTaskPayload saveTaskPayload) {
         taskRuntimeHelper.assertHasAccessToTask(saveTaskPayload.getTaskId());
 
-        taskRuntimeHelper.validateVariableNames(saveTaskPayload.getVariables());
+        taskRuntimeHelper.handleSaveTaskPayload(saveTaskPayload);
         
         taskService.setVariablesLocal(saveTaskPayload.getTaskId(),
                 saveTaskPayload.getVariables());

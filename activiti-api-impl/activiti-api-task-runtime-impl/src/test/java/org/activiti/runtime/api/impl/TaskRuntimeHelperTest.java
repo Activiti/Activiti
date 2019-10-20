@@ -60,7 +60,7 @@ public class TaskRuntimeHelperTest {
     private APITaskConverter taskConverter;
     
     @Mock
-    private VariableNameValidator variableNameValidator;
+    private TaskVariablesPayloadValidator taskVariablesValidator;
 
     @Before
     public void setUp() {

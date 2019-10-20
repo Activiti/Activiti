@@ -36,6 +36,7 @@ import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.TaskSuspendedEvent;
 import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
+import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -65,6 +66,7 @@ import org.activiti.runtime.api.event.internal.TaskUpdatedListenerDelegate;
 import org.activiti.runtime.api.impl.TaskAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.TaskRuntimeHelper;
 import org.activiti.runtime.api.impl.TaskRuntimeImpl;
+import org.activiti.runtime.api.impl.TaskVariablesPayloadValidator;
 import org.activiti.runtime.api.impl.VariableNameValidator;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
@@ -73,7 +75,6 @@ import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -128,6 +129,15 @@ public class TaskRuntimeAutoConfiguration {
     @Bean
     public APITaskConverter apiTaskConverter() {
         return new APITaskConverter(
+        );
+    }
+    
+    @Bean
+    public TaskVariablesPayloadValidator taskVariablesValidator(DateFormatterProvider dateFormatterProvider,
+                                                                VariableNameValidator variableNameValidator) {
+        return new TaskVariablesPayloadValidator(
+                             dateFormatterProvider,
+                             variableNameValidator
         );
     }
 
@@ -278,9 +288,4 @@ public class TaskRuntimeAutoConfiguration {
                                                      ActivitiEventType.ENTITY_DELETED);
     }
     
-    @Bean
-    @ConditionalOnMissingBean
-    public VariableNameValidator variableNameValidator() {
-        return new VariableNameValidator();
-    }
 }

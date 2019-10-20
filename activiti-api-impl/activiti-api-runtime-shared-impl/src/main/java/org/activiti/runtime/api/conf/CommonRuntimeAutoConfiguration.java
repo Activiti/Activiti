@@ -16,6 +16,9 @@
 
 package org.activiti.runtime.api.conf;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.model.shared.event.VariableUpdatedEvent;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
@@ -25,14 +28,12 @@ import org.activiti.runtime.api.event.impl.ToVariableCreatedConverter;
 import org.activiti.runtime.api.event.impl.ToVariableUpdatedConverter;
 import org.activiti.runtime.api.event.internal.VariableCreatedListenerDelegate;
 import org.activiti.runtime.api.event.internal.VariableUpdatedListenerDelegate;
+import org.activiti.runtime.api.impl.VariableNameValidator;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Collections;
-import java.util.List;
 
 @Configuration
 public class CommonRuntimeAutoConfiguration {
@@ -56,6 +57,11 @@ public class CommonRuntimeAutoConfiguration {
     public InitializingBean registerVariableUpdatedListenerDelegate(RuntimeService runtimeService,
                                                                     @Autowired(required = false) List<VariableEventListener<VariableUpdatedEvent>> listeners) {
         return () -> runtimeService.addEventListener(new VariableUpdatedListenerDelegate(getInitializedListeners(listeners), new ToVariableUpdatedConverter()), ActivitiEventType.VARIABLE_UPDATED);
+    }
+    
+    @Bean
+    public VariableNameValidator variableNameValidator() {
+        return new VariableNameValidator();
     }
 
 }

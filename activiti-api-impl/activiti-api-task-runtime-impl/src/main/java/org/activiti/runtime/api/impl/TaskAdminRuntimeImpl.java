@@ -151,7 +151,7 @@ public class TaskAdminRuntimeImpl implements TaskAdminRuntime {
             throw new IllegalStateException("Task with id: " + completeTaskPayload.getTaskId() + " cannot be completed because it cannot be found.");
         }
         
-        taskRuntimeHelper.validateVariableNames(completeTaskPayload.getVariables());
+        taskRuntimeHelper.handleCompleteTaskPayload(completeTaskPayload);
         
         TaskImpl competedTaskData = new TaskImpl(task.getId(),
                 task.getName(),

@@ -82,6 +82,9 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
-
+    	<dependency>
+     		<groupId>org.activiti.core.common</groupId>
+      		<artifactId>activiti-common-util</artifactId>
+    	</dependency>
     </dependencies>
 </project>
