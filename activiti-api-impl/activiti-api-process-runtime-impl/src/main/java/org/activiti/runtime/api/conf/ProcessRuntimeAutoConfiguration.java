@@ -215,8 +215,6 @@ public class ProcessRuntimeAutoConfiguration {
                                                     variableNameValidator);
     }
     
-    
-
     @Bean
     @ConditionalOnMissingBean
     public APIProcessInstanceConverter apiProcessInstanceConverter() {
