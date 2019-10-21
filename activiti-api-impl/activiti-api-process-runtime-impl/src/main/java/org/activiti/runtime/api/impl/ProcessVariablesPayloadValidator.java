@@ -24,7 +24,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.activiti.api.process.model.payloads.ReceiveMessagePayload;
 import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
+import org.activiti.api.process.model.payloads.SignalPayload;
 import org.activiti.api.process.model.payloads.StartMessagePayload;
 import org.activiti.api.process.model.payloads.StartProcessPayload;
 import org.activiti.common.util.DateFormatterProvider;
@@ -167,6 +169,20 @@ public class ProcessVariablesPayloadValidator  {
                                                   String processDefinitionKey) {
         
        checkPayloadVariables(startMessagePayload.getVariables(),
+                             processDefinitionKey);
+    }
+   
+    public void checkReceiveMessagePayloadVariables(ReceiveMessagePayload receiveMessagePayload,
+                                                    String processDefinitionKey) {
+        
+       checkPayloadVariables(receiveMessagePayload.getVariables(),
+                             processDefinitionKey);
+    }
+    
+    public void checkSignalPayloadVariables(SignalPayload signalPayload,
+                                            String processDefinitionKey) {
+        
+       checkPayloadVariables(signalPayload.getVariables(),
                              processDefinitionKey);
     }
 }

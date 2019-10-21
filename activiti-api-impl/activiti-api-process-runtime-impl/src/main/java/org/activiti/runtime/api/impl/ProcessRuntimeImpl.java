@@ -316,6 +316,11 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     @Transactional
     public void signal(SignalPayload signalPayload) {
         //@TODO: define security policies for signalling
+        
+        //@TODO: how to check variables against process extension file, we need processDefinitionKey
+        processVariablesValidator.checkSignalPayloadVariables(signalPayload, 
+                                                              null);    
+        
         eventPublisher.publishEvent(signalPayload);
     }
 
@@ -359,6 +364,10 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     @Override
     @Transactional
     public void receive(ReceiveMessagePayload messagePayload) {
+        //@TODO: Check here, how to set processDefinitionKey
+        processVariablesValidator.checkReceiveMessagePayloadVariables(messagePayload, 
+                                                                      null);     
+        
         eventPublisher.publishEvent(messagePayload);
     }
 
@@ -368,9 +377,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         String businessKey = messagePayload.getBusinessKey();
         Map<String, Object> variables = messagePayload.getVariables();
         
-        //Check here, how to set processDefinitionKey
+        //@TODO: Check here, how to set processDefinitionKey
         processVariablesValidator.checkStartMessagePayloadVariables(messagePayload, 
-                                                                    null);    
+                                                                    null);      
         
         ProcessInstance processInstance = processInstanceConverter.from(runtimeService.startProcessInstanceByMessage(messageName,
                                                                                                                      businessKey,
