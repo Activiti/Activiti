@@ -103,6 +103,10 @@ public class ProcessVariablesPayloadValidator  {
     
     private void checkPayloadVariables(Map<String, Object> variablePayloadMap,
                                        String processDefinitionKey) {
+        
+        if (variablePayloadMap == null ) {
+            return;
+        }
    
         final String errorVariableName = "Variable has not a valid name: {0}";
         final String errorVariableType = "Variables fail type validation: {0}";
