@@ -28,7 +28,7 @@ import org.junit.Test;
 
 public class DateFormatterProviderTest {
 
-    private DateFormatterProvider provider = new DateFormatterProvider("yyyy-MM-dd[['T'][ ]HH:mm:ss[.SSS'Z']]");
+    private DateFormatterProvider provider = new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]");
 
     @Test
     public void should_returnDate_when_stringRepresentsADate() {
