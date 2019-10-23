@@ -75,7 +75,11 @@ public class CallActivityXMLConverter extends BaseBpmnXMLConverter {
     if (callActivity.isInheritBusinessKey()) {
       writeQualifiedAttribute(ATTRIBUTE_CALL_ACTIVITY_INHERIT_BUSINESS_KEY, "true", xtw);
     }
-    xtw.writeAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_CALL_ACTIVITY_INHERITVARIABLES, String.valueOf(callActivity.isInheritVariables()));
+    if  (callActivity.isInheritVariables()) {
+        xtw.writeAttribute(ACTIVITI_EXTENSIONS_NAMESPACE,
+                           ATTRIBUTE_CALL_ACTIVITY_INHERITVARIABLES,
+                           String.valueOf(callActivity.isInheritVariables()));
+    }
   }
 
   @Override
