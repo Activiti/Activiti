@@ -83,15 +83,20 @@ public class TaskVariablesPayloadValidator {
                                                                                                  mismatchedVars));
                       
             }        
-     
-            variables.entrySet()
-                    .stream()
-                    .filter(stringObjectEntry -> stringObjectEntry.getValue() instanceof String)
-                    .forEach(stringObjectEntry ->
-                                handleAsDate((String) stringObjectEntry.getValue()).ifPresent(stringObjectEntry::setValue));
+            handleStringVariablesAsDates(variables);  
         }
-        return variables;
         
+        return variables;
+    }
+    
+    private void handleStringVariablesAsDates(Map<String, Object> variables) {
+        if (variables != null) {
+            variables.entrySet()
+            .stream()
+            .filter(stringObjectEntry -> stringObjectEntry.getValue() instanceof String)
+            .forEach(stringObjectEntry ->
+                        handleAsDate((String) stringObjectEntry.getValue()).ifPresent(stringObjectEntry::setValue));
+        }
     }
     
 }
