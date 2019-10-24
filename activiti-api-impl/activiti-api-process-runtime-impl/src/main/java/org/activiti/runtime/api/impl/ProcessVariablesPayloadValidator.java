@@ -163,9 +163,9 @@ public class ProcessVariablesPayloadValidator  {
     }
  
     public void checkStartProcessPayloadVariables(StartProcessPayload startProcessPayload,
-                                                  String processDefinitionKey) {
-       //Do not check variable types here, because it will be made in ProcessVariablesInitiator later        
-       checkPayloadVariables(startProcessPayload.getVariables(),
+                                                  String processDefinitionKey) {     
+       
+        checkPayloadVariables(startProcessPayload.getVariables(),
                              processDefinitionKey);
     }
     
