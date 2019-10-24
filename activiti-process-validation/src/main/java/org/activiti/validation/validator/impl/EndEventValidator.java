@@ -32,7 +32,7 @@ public class EndEventValidator extends ProcessLevelValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<EndEvent> endEvents = process.findFlowElementsOfType(EndEvent.class);
+    List<EndEvent> endEvents = process.findBaseElementsOfType(EndEvent.class);
     for (EndEvent endEvent : endEvents) {
       if (endEvent.getEventDefinitions() != null && !endEvent.getEventDefinitions().isEmpty()) {
 

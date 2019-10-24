@@ -32,10 +32,10 @@ public class EventSubprocessValidator extends ProcessLevelValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<EventSubProcess> eventSubprocesses = process.findFlowElementsOfType(EventSubProcess.class);
+    List<EventSubProcess> eventSubprocesses = process.findBaseElementsOfType(EventSubProcess.class);
     for (EventSubProcess eventSubprocess : eventSubprocesses) {
 
-      List<StartEvent> startEvents = process.findFlowElementsInSubProcessOfType(eventSubprocess, StartEvent.class);
+      List<StartEvent> startEvents = process.findBaseElementsInSubProcessOfType(eventSubprocess, StartEvent.class);
       for (StartEvent startEvent : startEvents) {
         if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
           EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);

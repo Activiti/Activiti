@@ -171,7 +171,7 @@ public class BpmnModel {
 
     if (foundFlowElement == null) {
       for (Process process : processes) {
-        for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
+        for (FlowElement flowElement : process.findBaseElementsOfType(SubProcess.class)) {
           foundFlowElement = getFlowElementInSubProcess(id, (SubProcess) flowElement);
           if (foundFlowElement != null) {
             break;
@@ -212,7 +212,7 @@ public class BpmnModel {
 
     if (foundArtifact == null) {
       for (Process process : processes) {
-        for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
+        for (FlowElement flowElement : process.findBaseElementsOfType(SubProcess.class)) {
           foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
           if (foundArtifact != null) {
             break;

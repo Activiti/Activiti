@@ -749,7 +749,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
         // Draw activities and their sequence-flows
         for (Process process : bpmnModel.getProcesses()) {
-            for (FlowNode flowNode : process.findFlowElementsOfType(FlowNode.class)) {
+            for (FlowNode flowNode : process.findBaseElementsOfType(FlowNode.class)) {
                 drawActivity(processDiagramCanvas,
                              bpmnModel,
                              flowNode,
@@ -767,7 +767,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
                              artifact);
             }
 
-            List<SubProcess> subProcesses = process.findFlowElementsOfType(SubProcess.class,
+            List<SubProcess> subProcesses = process.findBaseElementsOfType(SubProcess.class,
                                                                            true);
             if (subProcesses != null) {
                 for (SubProcess subProcess : subProcesses) {

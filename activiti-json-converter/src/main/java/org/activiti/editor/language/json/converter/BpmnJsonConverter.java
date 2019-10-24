@@ -770,7 +770,7 @@ public class BpmnJsonConverter implements EditorJsonConstants,
         // sequence flows are now all on root level
         Map<String, SubProcess> subShapesMap = new HashMap<String, SubProcess>();
         for (Process process : bpmnModel.getProcesses()) {
-            for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
+            for (FlowElement flowElement : process.findBaseElementsOfType(SubProcess.class)) {
                 SubProcess subProcess = (SubProcess) flowElement;
                 fillSubShapes(subShapesMap,
                               subProcess);
@@ -778,7 +778,7 @@ public class BpmnJsonConverter implements EditorJsonConstants,
 
             if (subShapesMap.size() > 0) {
                 List<String> removeSubFlowsList = new ArrayList<String>();
-                for (FlowElement flowElement : process.findFlowElementsOfType(SequenceFlow.class)) {
+                for (FlowElement flowElement : process.findBaseElementsOfType(SequenceFlow.class)) {
                     SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
                     if (subShapesMap.containsKey(sequenceFlow.getSourceRef())) {
                         SubProcess subProcess = subShapesMap.get(sequenceFlow.getSourceRef());

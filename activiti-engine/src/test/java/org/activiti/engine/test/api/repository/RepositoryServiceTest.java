@@ -333,7 +333,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
 
     // Test the flow
     org.activiti.bpmn.model.Process process = bpmnModel.getProcesses().get(0);
-    List<StartEvent> startEvents = process.findFlowElementsOfType(StartEvent.class);
+    List<StartEvent> startEvents = process.findBaseElementsOfType(StartEvent.class);
     assertEquals(1, startEvents.size());
     StartEvent startEvent = startEvents.get(0);
     assertEquals(1, startEvent.getOutgoingFlows().size());

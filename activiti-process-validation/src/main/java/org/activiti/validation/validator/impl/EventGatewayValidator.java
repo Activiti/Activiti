@@ -31,7 +31,7 @@ public class EventGatewayValidator extends ProcessLevelValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<EventGateway> eventGateways = process.findFlowElementsOfType(EventGateway.class);
+    List<EventGateway> eventGateways = process.findBaseElementsOfType(EventGateway.class);
     for (EventGateway eventGateway : eventGateways) {
       for (SequenceFlow sequenceFlow : eventGateway.getOutgoingFlows()) {
         FlowElement flowElement = process.getFlowElement(sequenceFlow.getTargetRef(), true);

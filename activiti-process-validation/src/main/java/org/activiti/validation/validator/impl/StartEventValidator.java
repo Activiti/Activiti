@@ -33,7 +33,7 @@ public class StartEventValidator extends ProcessLevelValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<StartEvent> startEvents = process.findFlowElementsOfType(StartEvent.class, false);
+    List<StartEvent> startEvents = process.findBaseElementsOfType(StartEvent.class, false);
     validateEventDefinitionTypes(startEvents, process, errors);
     validateMultipleStartEvents(startEvents, process, errors);
   }

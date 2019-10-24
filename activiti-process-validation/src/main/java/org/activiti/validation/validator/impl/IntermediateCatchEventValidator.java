@@ -32,7 +32,7 @@ public class IntermediateCatchEventValidator extends ProcessLevelValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<IntermediateCatchEvent> intermediateCatchEvents = process.findFlowElementsOfType(IntermediateCatchEvent.class);
+    List<IntermediateCatchEvent> intermediateCatchEvents = process.findBaseElementsOfType(IntermediateCatchEvent.class);
     for (IntermediateCatchEvent intermediateCatchEvent : intermediateCatchEvents) {
       EventDefinition eventDefinition = null;
       if (!intermediateCatchEvent.getEventDefinitions().isEmpty()) {

@@ -31,7 +31,7 @@ public class SendTaskValidator extends ExternalInvocationTaskValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<SendTask> sendTasks = process.findFlowElementsOfType(SendTask.class);
+    List<SendTask> sendTasks = process.findBaseElementsOfType(SendTask.class);
     for (SendTask sendTask : sendTasks) {
 
       // Verify implementation

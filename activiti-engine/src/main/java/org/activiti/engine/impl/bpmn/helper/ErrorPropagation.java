@@ -211,7 +211,7 @@ public class ErrorPropagation {
 
     String compareErrorCode = retrieveErrorCode(bpmnModel, errorRef);
 
-    List<EventSubProcess> subProcesses = process.findFlowElementsOfType(EventSubProcess.class, true);
+    List<EventSubProcess> subProcesses = process.findBaseElementsOfType(EventSubProcess.class, true);
     for (EventSubProcess eventSubProcess : subProcesses) {
       for (FlowElement flowElement : eventSubProcess.getFlowElements()) {
         if (flowElement instanceof StartEvent) {
@@ -230,7 +230,7 @@ public class ErrorPropagation {
       }
     }
 
-    List<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
+    List<BoundaryEvent> boundaryEvents = process.findBaseElementsOfType(BoundaryEvent.class, true);
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
       if (boundaryEvent.getAttachedToRefId() != null && CollectionUtil.isNotEmpty(boundaryEvent.getEventDefinitions()) && boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
 

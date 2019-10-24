@@ -29,7 +29,7 @@ public class UserTaskValidator extends ProcessLevelValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<UserTask> userTasks = process.findFlowElementsOfType(UserTask.class);
+    List<UserTask> userTasks = process.findBaseElementsOfType(UserTask.class);
     for (UserTask userTask : userTasks) {
       if (userTask.getTaskListeners() != null) {
         for (ActivitiListener listener : userTask.getTaskListeners()) {

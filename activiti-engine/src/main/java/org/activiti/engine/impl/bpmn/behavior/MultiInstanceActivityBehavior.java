@@ -139,7 +139,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
     // This could be cached or could be done at parsing time
     List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
-    Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
+    Collection<BoundaryEvent> boundaryEvents = process.findBaseElementsOfType(BoundaryEvent.class, true);
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
       if (boundaryEvent.getAttachedToRefId() != null && boundaryEvent.getAttachedToRefId().equals(flowElement.getId())) {
         results.add(boundaryEvent);

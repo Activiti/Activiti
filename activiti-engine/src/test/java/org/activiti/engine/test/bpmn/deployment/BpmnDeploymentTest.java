@@ -188,7 +188,7 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
 
     assertEquals("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.bpmn20.xml", processDefinition.getResourceName());
     BpmnModel processModel = repositoryService.getBpmnModel(processDefinition.getId());
-    List<StartEvent> startEvents = processModel.getMainProcess().findFlowElementsOfType(StartEvent.class);
+    List<StartEvent> startEvents = processModel.getMainProcess().findBaseElementsOfType(StartEvent.class);
     assertEquals(1, startEvents.size());
     assertEquals("someFormKey", startEvents.get(0).getFormKey());
 
