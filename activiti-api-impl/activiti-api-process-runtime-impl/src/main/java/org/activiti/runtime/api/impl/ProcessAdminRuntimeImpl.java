@@ -208,7 +208,6 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     @Transactional
     public void signal(SignalPayload signalPayload) {
-        //@TODO: how to check variables against process extension file, we need processDefinitionKey
         processVariablesValidator.checkSignalPayloadVariables(signalPayload, 
                                                               null);     
         
@@ -261,7 +260,6 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     @Transactional
     public void receive(ReceiveMessagePayload messagePayload) {
-        //@TODO: Check here, how to set processDefinitionKey
         processVariablesValidator.checkReceiveMessagePayloadVariables(messagePayload, 
                                                                       null); 
         eventPublisher.publishEvent(messagePayload);
@@ -273,7 +271,6 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         String businessKey = messagePayload.getBusinessKey();
         Map<String, Object> variables = messagePayload.getVariables();
         
-        //@TODO: Check here, how to set processDefinitionKey
         processVariablesValidator.checkStartMessagePayloadVariables(messagePayload, 
                                                                     null);    
         
