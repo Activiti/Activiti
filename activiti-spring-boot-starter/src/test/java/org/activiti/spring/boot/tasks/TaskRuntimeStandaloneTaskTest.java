@@ -172,7 +172,7 @@ public class TaskRuntimeStandaloneTaskTest {
     }
     
     @Test
-    public void shouldThrowExceptionOnTaskSave_when_wrongVariableName() {
+    public void should_throwExceptionOnTaskSave_when_charactersNotAllowedInVariableName() {
 
         securityUtil.logInAs("user");
         
@@ -200,7 +200,7 @@ public class TaskRuntimeStandaloneTaskTest {
     }
     
     @Test
-    public void shouldThrowExceptionOnTaskComplete_when_wrongVariableName() {
+    public void should_throwExceptionOnTaskComplete_when_charactersNotAllowedInVariableName() {
 
         securityUtil.logInAs("user");
         
@@ -228,7 +228,7 @@ public class TaskRuntimeStandaloneTaskTest {
     }
 
     @Test
-    public void shouldThrowException_when_setWrongVariableName() {
+    public void should_throwExceptionOnCreateVariable_when_charactersNotAllowedInVariableName() {
 
         securityUtil.logInAs("user");
         
@@ -253,7 +253,7 @@ public class TaskRuntimeStandaloneTaskTest {
     }
     
     @Test
-    public void shouldThrowException_when_updateWrongVariableName() {
+    public void shouldThrowExceptionOnUpdateVariable_when_charactersNotAllowedInVariableName() {
 
         securityUtil.logInAs("user");
         
