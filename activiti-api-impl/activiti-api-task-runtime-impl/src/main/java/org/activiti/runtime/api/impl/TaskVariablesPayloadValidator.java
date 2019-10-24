@@ -45,12 +45,18 @@ public class TaskVariablesPayloadValidator {
         }
     }
     
-    public CreateTaskVariablePayload handleCreateTaskVariablePayload(CreateTaskVariablePayload createTaskVariablePayload) {
-        String name = createTaskVariablePayload.getName();
-
+    private void checkNotValidCharactersInVariableName(String name,
+                                                        String errorMsg) {
+        
         if (!variableNameValidator.validate(name)) {
-            throw new IllegalStateException("Variable has not a valid name: " + (name != null ? name : "null" ));
+            throw new IllegalStateException(errorMsg + (name != null ? name : "null" ));
         }
+    }
+    
+    public CreateTaskVariablePayload handleCreateTaskVariablePayload(CreateTaskVariablePayload createTaskVariablePayload) {
+
+        checkNotValidCharactersInVariableName(createTaskVariablePayload.getName(),
+                                               "Variable has not a valid name: ");
                 
         Object value = createTaskVariablePayload.getValue();
         if (value instanceof String) {
@@ -60,11 +66,9 @@ public class TaskVariablesPayloadValidator {
     }
     
     public UpdateTaskVariablePayload handleUpdateTaskVariablePayload(UpdateTaskVariablePayload updateTaskVariablePayload) {
-        String name = updateTaskVariablePayload.getName();
 
-        if (!variableNameValidator.validate(name)) {
-            throw new IllegalStateException("You cannot update a variable with not a valid name: " + (name != null ? name : "null" ));
-        }
+        checkNotValidCharactersInVariableName(updateTaskVariablePayload.getName(),
+                                               "You cannot update a variable with not a valid name: ");
         
         Object value = updateTaskVariablePayload.getValue();
         
