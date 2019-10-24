@@ -253,7 +253,7 @@ public class TaskRuntimeStandaloneTaskTest {
     }
     
     @Test
-    public void shouldThrowExceptionOnUpdateVariable_when_charactersNotAllowedInVariableName() {
+    public void should_throwExceptionOnUpdateVariable_when_charactersNotAllowedInVariableName() {
 
         securityUtil.logInAs("user");
         
