@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '7.0.0.0', 1);
+values ('schema.version', '7.1.0.0', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(7.0.0.0)', 1);
+values ('schema.history', 'create(7.1.0.0)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -32,6 +32,8 @@ create table ACT_RE_DEPLOYMENT (
     TENANT_ID_ varchar(255) default '',
     DEPLOY_TIME_ timestamp,
     ENGINE_VERSION_ varchar(255),
+    VERSION_ integer,
+    PROJECT_RELEASE_VERSION_ varchar(255),
     primary key (ID_)
 );
 
