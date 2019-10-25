@@ -33,9 +33,12 @@ import org.activiti.spring.process.model.VariableDefinition;
 public class VariablesMappingProvider {
 
     private ProcessExtensionService processExtensionService;
+    
+    private ExpressionResolver expressionResolver;
 
-    public VariablesMappingProvider(ProcessExtensionService processExtensionService) {
+    public VariablesMappingProvider(ProcessExtensionService processExtensionService, ExpressionResolver expressionResolver) {
         this.processExtensionService = processExtensionService;
+        this.expressionResolver = expressionResolver;
     }
 
     protected Optional<Object> calculateMappedValue(Mapping inputMapping,
@@ -43,7 +46,7 @@ public class VariablesMappingProvider {
                                                     ProcessExtensionModel extensions) {
         if (inputMapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())) {
-                return Optional.of(inputMapping.getValue());
+                return Optional.of(expressionResolver.resolveExpressions(execution, inputMapping.getValue()));
             }
 
             if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
@@ -60,12 +63,9 @@ public class VariablesMappingProvider {
 
     public Map<String, Object> calculateInputVariables(DelegateExecution execution) {
         
-        ActivitExpressionParser parser = new ActivitExpressionParser(execution);
-        
-
         ProcessExtensionModel extensions = processExtensionService.getExtensionsForId(execution.getProcessDefinitionId());
 
-        Map<String, Object> constants = parser.resolveExpressionsMap(calculateConstants(execution, extensions));
+        Map<String, Object> constants = calculateConstants(execution, extensions);
 
         if (extensions.getExtensions().hasEmptyInputsMapping(execution.getCurrentActivityId())) {
             return constants;
@@ -78,7 +78,7 @@ public class VariablesMappingProvider {
         } else {
             inboudVariables = calculateInputVariables(execution, extensions);
         }
-        inboudVariables = parser.resolveExpressionsMap(inboudVariables);
+        
         inboudVariables.putAll(constants);
         return inboudVariables;
     }

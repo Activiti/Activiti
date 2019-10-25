@@ -14,7 +14,7 @@
         "name": "process_variable_inputmap_1",
         "type": "string",
         "required": true,
-        "value": "inputmap1Value"
+        "value": "new-input-value"
       },
       "process-variable-inputmap-2-id": {
         "id": "process-variable-inputmap-2-id",

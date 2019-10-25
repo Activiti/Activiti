@@ -247,4 +247,45 @@ public class RuntimeTestConfiguration {
             return integrationContext;
         };
     }
+    
+    @Bean(name = "Variable Mapping Expression Connector.variableMappingExpressionActionName")
+    public Connector variableMappingExpressionActionName() {
+        return integrationContext -> {
+            Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
+
+            String variableOne = "input-variable-name-1";
+            String variableTwo = "input-variable-name-2";
+            String expressionValue = "input-variable-expression";
+            String staticValue = "input-static-value";
+            String integerConstant = "integer-constant";
+
+            Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
+            Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
+
+            assertThat(inBoundVariables.entrySet())
+                    .extracting(Map.Entry::getKey,
+                                Map.Entry::getValue)
+                    .containsOnly(
+                            tuple(variableOne,
+                                  "inName"),
+                            tuple(variableTwo,
+                                  20),
+                            tuple(expressionValue,
+                                  "expressionResolved"),
+                            tuple(staticValue,
+                                  "a static value"),
+                            tuple(integerConstant,
+                                  10));
+            
+            integrationContext.addOutBoundVariable("out-variable-name-1",
+                                                   "outName");
+            integrationContext.addOutBoundVariable("out-variable-name-2",
+                                                   currentAge + integerConstantValue);
+            integrationContext.addOutBoundVariable("out-unmapped-variable-matching-name",
+                                                   "outTest");
+            integrationContext.addOutBoundVariable("out-unmapped-variable-non-matching-name",
+                                                   "outTest");
+            return integrationContext;
+        };
+    }
 }

@@ -1,0 +1,104 @@
+{
+  "id": "connectorVarMappingExpression",
+  "name": "myProcess.bpmn",
+  "extensions": {
+    "properties": {
+      "age-id": {
+        "id": "age-id",
+        "name": "age",
+        "type": "integer",
+        "value": 20
+      },
+      "name-id": {
+        "id": "name-id",
+        "name": "name",
+        "type": "string",
+        "required": true,
+        "value": "inName"
+      },
+      "value-to-resolve-id": {
+        "id": "value-to-resolve-id",
+        "name": "valueToResolve",
+        "type": "string",
+        "required": false,
+        "value": "expressionResolved"
+      },
+      "input-unmapped-variable-with-matching-name-id": {
+        "id": "input-unmapped-variable-with-matching-name-id",
+        "name": "input-unmapped-variable-with-matching-name",
+        "type": "string",
+        "required": false,
+        "value": "inTestExpression"
+      },
+      "input-unmapped-variable-with-non-matching-name-id": {
+        "id": "input-unmapped-variable-with-non-matching-connector-input-name-id",
+        "name": "input-unmapped-variable-with-non-matching-connector-input-name",
+        "type": "string",
+        "required": false,
+        "value": "inTestExpression"
+      },
+      "out-unmapped-variable-matching-name-id": {
+        "id": "out-unmapped-variable-matching-name-id",
+        "name": "out-unmapped-variable-matching-name",
+        "type": "string",
+        "required": false,
+        "value": "defaultExpression"
+      },
+      "output-unmapped-variable-with-non-matching-name-id": {
+        "id": "output-unmapped-variable-with-non-matching-name-id",
+        "name": "output-unmapped-variable-with-non-matching-connector-output-name",
+        "type": "string",
+        "required": false,
+        "value": "defaultExpression"
+      },
+      "property-with-no-default-value-id": {
+        "id": "property-with-no-default-value-id",
+        "name": "property-with-no-default-value-name",
+        "type": "string",
+        "required": false
+      }
+    },
+    "mappings": {
+      "serviceTask": {
+        "inputs": {
+          "input-variable-name-1": {
+            "type": "variable",
+            "value": "name"
+          },
+          "input-variable-name-2": {
+            "type": "variable",
+            "value": "age"
+          },
+          "input-variable-expression": {
+            "type": "value",
+            "value": "${valueToResolve}"
+          },
+          "input-variable-name-4": {
+            "type": "variable",
+            "value": "property-with-no-default-value-name"
+          }
+        },
+        "outputs": {
+          "name": {
+            "type": "variable",
+            "value": "out-variable-name-1"
+          },
+          "age": {
+            "type": "variable",
+            "value": "out-variable-name-2"
+          }
+        }
+      }
+    },
+    "constants": {
+      "serviceTask": {
+        "input-static-value": {
+          "value": "a static value"
+        },
+        "integer-constant" : {
+          "value": 10
+        }
+      }
+    }
+  }
+}
