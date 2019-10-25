@@ -10,7 +10,8 @@
     <relativePath>../activiti-core-dependencies</relativePath>
   </parent>
 
-  ActivitiVersion  <name>Activiti :: BPMN Model</name>
+  <artifactId>activiti-bpmn-model</artifactId>
+  <name>Activiti :: BPMN Model</name>
 
   <dependencies>
     <dependency>
