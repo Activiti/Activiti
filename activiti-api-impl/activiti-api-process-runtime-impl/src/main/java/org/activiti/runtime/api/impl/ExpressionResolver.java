@@ -76,5 +76,4 @@ public class ExpressionResolver {
         return Context.getProcessEngineConfiguration().getExpressionManager();
     }
 
-    
 }
