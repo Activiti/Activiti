@@ -18,7 +18,6 @@ package org.activiti.runtime.api.impl;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.NotFoundException;
-import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.runtime.shared.security.SecurityManager;
@@ -64,21 +63,17 @@ public class TaskRuntimeImpl implements TaskRuntime {
 
     private final TaskRuntimeConfiguration configuration;
 
-    private final UserGroupManager userGroupManager;
-
     private final SecurityManager securityManager;
 
     private final TaskRuntimeHelper taskRuntimeHelper;
 
     public TaskRuntimeImpl(TaskService taskService,
-                           UserGroupManager userGroupManager,
                            SecurityManager securityManager,
                            APITaskConverter taskConverter,
                            APIVariableInstanceConverter variableInstanceConverter,
                            TaskRuntimeConfiguration configuration,
                            TaskRuntimeHelper taskRuntimeHelper) {
         this.taskService = taskService;
-        this.userGroupManager = userGroupManager;
         this.securityManager = securityManager;
         this.taskConverter = taskConverter;
         this.variableInstanceConverter = variableInstanceConverter;
@@ -100,7 +95,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public Page<Task> tasks(Pageable pageable) {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
-            List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+            List<String> userGroups = securityManager.getAuthenticatedUserGroups();
             return tasks(pageable,
                     TaskPayloadBuilder.tasks().withAssignee(authenticatedUserId).withGroups(userGroups).build());
         }
@@ -116,7 +111,7 @@ public class TaskRuntimeImpl implements TaskRuntime {
         }
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
-            List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+            List<String> userGroups = securityManager.getAuthenticatedUserGroups();
             getTasksPayload.setAssigneeId(authenticatedUserId);
             getTasksPayload.setGroups(userGroups);
         } else {
@@ -438,8 +433,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
     private List<IdentityLink> getIdentityLinks(String taskId) {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         if (authenticatedUserId != null && !authenticatedUserId.isEmpty()) {
-            List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
-            List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+            List<String> userRoles = securityManager.getAuthenticatedUserRoles();
+            List<String> userGroups = securityManager.getAuthenticatedUserGroups();
             org.activiti.engine.task.Task internalTask = taskService.createTaskQuery().taskCandidateOrAssigned(authenticatedUserId,
                     userGroups).taskId(taskId).singleResult();
             if (internalTask == null) {

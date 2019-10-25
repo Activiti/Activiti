@@ -16,8 +16,18 @@
 
 package org.activiti.runtime.api.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.api.runtime.shared.NotFoundException;
-import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.model.impl.TaskImpl;
@@ -34,13 +44,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 public class TaskRuntimeHelperTest {
 
     private static final String AUTHENTICATED_USER = "user";
@@ -49,9 +52,6 @@ public class TaskRuntimeHelperTest {
 
     @Mock
     private SecurityManager securityManager;
-
-    @Mock
-    private UserGroupManager userGroupManager;
 
     @Mock
     private TaskService taskService;
@@ -64,8 +64,7 @@ public class TaskRuntimeHelperTest {
         initMocks(this);
         taskRuntimeHelper = spy(new TaskRuntimeHelper(taskService,
                 taskConverter,
-                securityManager,
-                userGroupManager));
+                securityManager));
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
     }
 
@@ -176,7 +175,7 @@ public class TaskRuntimeHelperTest {
     public void getInternalTaskWithChecksShouldReturnMatchinTaskFromTaskQuery() {
         //given
         List<String> groups = Collections.singletonList("doctor");
-        given(userGroupManager.getUserGroups(AUTHENTICATED_USER)).willReturn(groups);
+        given(securityManager.getAuthenticatedUserGroups()).willReturn(groups);
 
         TaskQuery taskQuery = mock(TaskQuery.class);
         given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER,
@@ -199,7 +198,7 @@ public class TaskRuntimeHelperTest {
     public void getInternalTaskWithChecksShouldThrowNotFoundExceptionWhenNoTaskIsFound() {
         //given
         List<String> groups = Collections.singletonList("doctor");
-        given(userGroupManager.getUserGroups(AUTHENTICATED_USER)).willReturn(groups);
+        given(securityManager.getAuthenticatedUserGroups()).willReturn(groups);
 
         TaskQuery taskQuery = mock(TaskQuery.class);
         given(taskQuery.taskCandidateOrAssigned(AUTHENTICATED_USER,

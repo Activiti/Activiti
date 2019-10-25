@@ -17,7 +17,6 @@
 package org.activiti.runtime.api.conf;
 
 import org.activiti.api.runtime.shared.events.VariableEventListener;
-import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
 import org.activiti.api.task.runtime.TaskRuntime;
@@ -82,7 +81,6 @@ public class TaskRuntimeAutoConfiguration {
 
     @Bean
     public TaskRuntime taskRuntime(TaskService taskService,
-                                   UserGroupManager userGroupManager,
                                    SecurityManager securityManager,
                                    APITaskConverter taskConverter,
                                    APIVariableInstanceConverter variableInstanceConverter,
@@ -90,7 +88,6 @@ public class TaskRuntimeAutoConfiguration {
                                    TaskRuntimeHelper taskRuntimeHelper
                                    ) {
         return new TaskRuntimeImpl(taskService,
-                                   userGroupManager,
                                    securityManager,
                                    taskConverter,
                                    variableInstanceConverter,
@@ -116,13 +113,11 @@ public class TaskRuntimeAutoConfiguration {
     @Bean
     public TaskRuntimeHelper taskRuntimeHelper(TaskService taskService,
                                                APITaskConverter taskConverter,
-                                               SecurityManager securityManager,
-                                               UserGroupManager userGroupManager) {
+                                               SecurityManager securityManager) {
         return new TaskRuntimeHelper(
                              taskService,
                              taskConverter,
-                             securityManager,
-                             userGroupManager
+                             securityManager
         );
     }
 

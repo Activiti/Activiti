@@ -1,7 +1,6 @@
 package org.activiti.runtime.api.impl;
 
 import org.activiti.api.runtime.shared.NotFoundException;
-import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
@@ -18,16 +17,13 @@ import java.util.Objects;
 public class TaskRuntimeHelper {
     private final TaskService taskService;
     private final SecurityManager securityManager;
-    private final UserGroupManager userGroupManager;
     private final APITaskConverter taskConverter;
 
     public TaskRuntimeHelper(TaskService taskService,
                              APITaskConverter taskConverter,
-                             SecurityManager securityManager,
-                             UserGroupManager userGroupManager) {
+                             SecurityManager securityManager) {
         this.taskService = taskService;
         this.securityManager = securityManager;
-        this.userGroupManager = userGroupManager;
         this.taskConverter = taskConverter;
     }
 
@@ -166,10 +162,10 @@ public class TaskRuntimeHelper {
     public org.activiti.engine.task.Task getInternalTaskWithChecks(String taskId) {
         String authenticatedUserId = getAuthenticatedUser();
 
-        if (authenticatedUserId != null && !authenticatedUserId.isEmpty() && userGroupManager != null) {
+        if (authenticatedUserId != null && !authenticatedUserId.isEmpty() && securityManager != null) {
 
-            List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
-            List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+            List<String> userRoles = securityManager.getAuthenticatedUserRoles();
+            List<String> userGroups = securityManager.getAuthenticatedUserGroups();
             org.activiti.engine.task.Task task = taskService.createTaskQuery().taskCandidateOrAssigned(authenticatedUserId,
                     userGroups).taskId(taskId).singleResult();
             if (task == null) {
