@@ -1,5 +1,8 @@
 package org.activiti.core.common.spring.security.policies;
 
+import org.activiti.api.runtime.shared.security.SecurityManager;
+import org.activiti.core.common.spring.security.policies.conf.SecurityPoliciesProperties;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,22 +10,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.api.runtime.shared.identity.UserGroupManager;
-import org.activiti.api.runtime.shared.security.SecurityManager;
-import org.activiti.core.common.spring.security.policies.conf.SecurityPoliciesProperties;
-
 public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPoliciesManager {
-
-    protected UserGroupManager userGroupManager;
 
     protected SecurityManager securityManager;
 
     protected SecurityPoliciesProperties securityPoliciesProperties;
 
-    public BaseSecurityPoliciesManagerImpl(UserGroupManager userGroupManager,
-                                           SecurityManager securityManager,
+    public BaseSecurityPoliciesManagerImpl(SecurityManager securityManager,
                                            SecurityPoliciesProperties securityPoliciesProperties) {
-        this.userGroupManager = userGroupManager;
         this.securityManager = securityManager;
         this.securityPoliciesProperties = securityPoliciesProperties;
     }
@@ -35,14 +30,13 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
     public Map<String, Set<String>> getAllowedKeys(SecurityPolicyAccess... securityPoliciesAccess) {
 
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
-        List<String> userRoles = userGroupManager.getUserRoles(authenticatedUserId);
         List<SecurityPolicy> policies = securityPoliciesProperties.getPolicies();
         Map<String, Set<String>> definitionKeysAllowedByPolicy = new HashMap<>();
 
         List<String> groups = null;
 
-        if (userGroupManager != null && authenticatedUserId != null) {
-            groups = userGroupManager.getUserGroups(authenticatedUserId);
+        if (authenticatedUserId != null) {
+            groups = securityManager.getAuthenticatedUserGroups();
         }
         for (SecurityPolicy ssp : policies) {
             definitionKeysAllowedByPolicy.computeIfAbsent(ssp.getServiceName(),
@@ -113,7 +107,7 @@ public abstract class BaseSecurityPoliciesManagerImpl implements SecurityPolicie
         }
 
         // If you are an admin you can see everything , @TODO: make it more flexible
-        if (userGroupManager.getUserRoles(securityManager.getAuthenticatedUserId()).contains("ACTIVITI_ADMIN")) {
+        if (securityManager.getAuthenticatedUserRoles().contains("ACTIVITI_ADMIN")) {
             return true;
         }
 

@@ -1,10 +1,8 @@
 package org.activiti.core.common.spring.security.policies;
 
-import org.activiti.api.runtime.shared.identity.UserGroupManager;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.runtime.shared.security.SecurityManager;
-import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
-import org.activiti.core.common.spring.security.policies.SecurityPolicy;
-import org.activiti.core.common.spring.security.policies.SecurityPolicyAccess;
 import org.activiti.core.common.spring.security.policies.conf.SecurityPoliciesProperties;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,8 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -35,9 +31,6 @@ public class SecurityPoliciesServiceIT {
 
     @Autowired
     private SecurityManager securityManager;
-
-    @Autowired
-    private UserGroupManager userGroupManager;
 
     @Test
     public void basicParsingTest() {
@@ -108,7 +101,7 @@ public class SecurityPoliciesServiceIT {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("salaboy");
 
-        List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+        List<String> userGroups = securityManager.getAuthenticatedUserGroups();
         assertThat(userGroups).hasSize(2);
         assertThat(userGroups).contains("developers", "activitiTeam");
 
@@ -131,7 +124,7 @@ public class SecurityPoliciesServiceIT {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");
 
-        List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+        List<String> userGroups = securityManager.getAuthenticatedUserGroups();
         assertThat(userGroups).hasSize(1);
         assertThat(userGroups).contains("doctor");
 
@@ -149,7 +142,7 @@ public class SecurityPoliciesServiceIT {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");
 
-        List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+        List<String> userGroups = securityManager.getAuthenticatedUserGroups();
         assertThat(userGroups).hasSize(1);
         assertThat(userGroups).contains("doctor");
 
@@ -170,7 +163,7 @@ public class SecurityPoliciesServiceIT {
         String authenticatedUserId = securityManager.getAuthenticatedUserId();
         assertThat(authenticatedUserId).isEqualTo("garth");
 
-        List<String> userGroups = userGroupManager.getUserGroups(authenticatedUserId);
+        List<String> userGroups = securityManager.getAuthenticatedUserGroups();
         assertThat(userGroups).hasSize(1);
         assertThat(userGroups).contains("doctor");
 

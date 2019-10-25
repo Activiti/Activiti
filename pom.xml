@@ -16,7 +16,7 @@
   <url>http://activiti.org</url>
   <properties>
     <activiti-build.version>7.1.28</activiti-build.version>
-    <activiti-api.version>7.1.49</activiti-api.version>
+    <activiti-api.version>7.1.50</activiti-api.version>
     <activiti-core-common.version>${project.version}</activiti-core-common.version>
     <commons-io.version>2.6</commons-io.version>
   </properties>

@@ -2,7 +2,6 @@ package org.activiti.core.common.spring.security.policies;
 
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
-import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.core.common.spring.security.policies.conf.SecurityPoliciesProperties;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,12 +19,11 @@ public class ProcessSecurityPoliciesManagerImpl extends BaseSecurityPoliciesMana
     @Value("${spring.application.name:application}")
     private String applicationName;
 
-    public ProcessSecurityPoliciesManagerImpl(UserGroupManager userGroupManager,
-                                              SecurityManager securityManager,
+    public ProcessSecurityPoliciesManagerImpl(SecurityManager securityManager,
                                               SecurityPoliciesProperties securityPoliciesProperties,
                                               SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier,
                                               SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier) {
-        super(userGroupManager, securityManager, securityPoliciesProperties);
+        super(securityManager, securityPoliciesProperties);
         this.processDefinitionRestrictionApplier = processDefinitionRestrictionApplier;
         this.processInstanceRestrictionApplier = processInstanceRestrictionApplier;
     }

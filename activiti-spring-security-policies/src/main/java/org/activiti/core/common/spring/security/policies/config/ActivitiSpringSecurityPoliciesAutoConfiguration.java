@@ -2,7 +2,6 @@ package org.activiti.core.common.spring.security.policies.config;
 
 import org.activiti.api.process.model.payloads.GetProcessDefinitionsPayload;
 import org.activiti.api.process.model.payloads.GetProcessInstancesPayload;
-import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManagerImpl;
@@ -21,13 +20,11 @@ public class ActivitiSpringSecurityPoliciesAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessSecurityPoliciesManager processSecurityPoliciesManager(UserGroupManager userGroupManager,
-                                                                         SecurityManager securityManager,
+    public ProcessSecurityPoliciesManager processSecurityPoliciesManager(SecurityManager securityManager,
                                                                          SecurityPoliciesProperties securityPoliciesProperties,
                                                                          SecurityPoliciesRestrictionApplier<GetProcessDefinitionsPayload> processDefinitionRestrictionApplier,
                                                                          SecurityPoliciesRestrictionApplier<GetProcessInstancesPayload> processInstanceRestrictionApplier) {
-        return new ProcessSecurityPoliciesManagerImpl(userGroupManager, 
-                                                      securityManager, 
+        return new ProcessSecurityPoliciesManagerImpl(securityManager, 
                                                       securityPoliciesProperties, 
                                                       processDefinitionRestrictionApplier, 
                                                       processInstanceRestrictionApplier);

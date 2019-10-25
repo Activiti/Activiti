@@ -27,3 +27,4 @@ target
 .updatebot-repos/**
 
 *.versionsBackup
+.sts4-cache
