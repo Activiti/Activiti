@@ -4,6 +4,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
@@ -12,6 +13,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.invocation.DefaultDelegateInterceptor;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
+import org.activiti.spring.process.model.ProcessExtensionModel;
+import org.activiti.spring.process.model.VariableDefinition;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -26,10 +29,12 @@ public class ExpressionResolverHelper {
     }
 
     public static DelegateExecution initContext(DelegateExecution execution,
-                                                Map<String, Object> variables)
+                                                ProcessExtensionModel extensions)
             throws JsonParseException, JsonMappingException, IOException {
         initializeExpressionResolver();
-
+        
+        Map<String, Object> variables = converstToStringObjectMap(extensions.getExtensions().getProperties());
+        
         given(execution.getVariables()).willReturn(variables);
         given(execution.getVariablesLocal()).willReturn(variables);
         for (String key : variables.keySet()) {
@@ -37,8 +42,17 @@ public class ExpressionResolverHelper {
             VariableInstance var = getVariableInstance(key,
                                                        variables.get(key));
             given(execution.getVariableInstance(key)).willReturn(var);
+            given(execution.getVariable(key)).willReturn(variables.get(key));
         }
         return execution;
+    }
+
+    public static Map<String, Object> converstToStringObjectMap(Map<String, VariableDefinition> sourceMap) {
+        Map<String, Object> result = new HashMap<>();
+        sourceMap.forEach((key,
+                value) -> result.put(value.getName(),
+                                     value.getValue()));
+        return result;
     }
 
     private static VariableInstance getVariableInstance(String key,

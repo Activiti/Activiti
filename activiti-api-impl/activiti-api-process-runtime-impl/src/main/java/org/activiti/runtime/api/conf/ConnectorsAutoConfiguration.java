@@ -19,6 +19,7 @@ package org.activiti.runtime.api.conf;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
+import org.activiti.runtime.api.impl.ExpressionResolver;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -31,8 +32,20 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+<<<<<<< HEAD
     public IntegrationContextBuilder integrationContextBuilder(VariablesMappingProvider variablesMappingProvider) {
         return new IntegrationContextBuilder(variablesMappingProvider);
+=======
+    public ExpressionResolver expressionResolver() {
+        return new ExpressionResolver();
+    }
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public IntegrationContextBuilder integrationContextBuilder(ProcessExtensionService processExtensionService,
+                                                               ExpressionResolver expressionResolver) {
+        return new IntegrationContextBuilder(new VariablesMappingProvider(processExtensionService, expressionResolver));
+>>>>>>> AAE-23 Expressions are only resolved in input mapping values
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
@@ -47,7 +60,8 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService) {
-        return new VariablesMappingProvider(processExtensionService);
+    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService,
+                                                             ExpressionResolver expressionResolver) {
+        return new VariablesMappingProvider(processExtensionService, expressionResolver);
     }
 }

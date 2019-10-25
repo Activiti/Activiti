@@ -22,6 +22,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class ProcessRuntimeVariableMappingTest {
 
     private static final String VARIABLE_MAPPING_PROCESS = "connectorVarMapping";
+    
+    private static final String VARIABLE_MAPPING_EXPRESSION_PROCESS = "connectorVarMappingExpression";
 
     @Autowired
     private ProcessBaseRuntime processBaseRuntime;
@@ -42,6 +44,27 @@ public class ProcessRuntimeVariableMappingTest {
                         tuple("nickName", "testName"),
                         tuple("out_unmapped_variable_matching_name", "default"),
                         tuple("output_unmapped_variable_with_non_matching_connector_output_name", "default")
+                );
+
+        processBaseRuntime.delete(processInstance.getId(),"done");
+    }
+    
+    @Test
+    public void should_resolveExpression_when_expressionIsInInputMappingValue() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(VARIABLE_MAPPING_EXPRESSION_PROCESS);
+
+        List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
+
+        assertThat(variables).extracting(VariableInstance::getName,
+                VariableInstance::getValue)
+                .containsOnly(
+                        tuple("name", "outName"),
+                        tuple("age", 30),
+                        tuple("input-unmapped-variable-with-matching-name", "inTestExpression"),
+                        tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTestExpression"),
+                        tuple("valueToResolve", "expressionResolved"),
+                        tuple("out-unmapped-variable-matching-name", "defaultExpression"),
+                        tuple("output-unmapped-variable-with-non-matching-connector-output-name", "defaultExpression")
                 );
 
         processBaseRuntime.delete(processInstance.getId(),"done");
