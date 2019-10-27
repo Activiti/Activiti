@@ -27,6 +27,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
@@ -39,10 +43,6 @@ import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 public class TaskRuntimeHelperTest {
 
@@ -58,13 +58,17 @@ public class TaskRuntimeHelperTest {
 
     @Mock
     private APITaskConverter taskConverter;
+    
+    @Mock
+    private TaskVariablesPayloadValidator taskVariablesValidator;
 
     @Before
     public void setUp() {
         initMocks(this);
         taskRuntimeHelper = spy(new TaskRuntimeHelper(taskService,
                 taskConverter,
-                securityManager));
+                securityManager,
+                taskVariablesValidator));
         when(securityManager.getAuthenticatedUserId()).thenReturn(AUTHENTICATED_USER);
     }
 

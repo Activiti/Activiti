@@ -3,6 +3,8 @@ package org.activiti.spring.boot.process;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.util.List;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.junit.Test;
@@ -11,8 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -37,11 +37,11 @@ public class ProcessRuntimeVariableMappingTest {
                 .containsOnly(
                         tuple("name", "outName"),
                         tuple("age", 35),
-                        tuple("input-unmapped-variable-with-matching-name", "inTest"),
-                        tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTest"),
+                        tuple("input_unmapped_variable_with_matching_name", "inTest"),
+                        tuple("input_unmapped_variable_with_non_matching_connector_input_name", "inTest"),
                         tuple("nickName", "testName"),
-                        tuple("out-unmapped-variable-matching-name", "default"),
-                        tuple("output-unmapped-variable-with-non-matching-connector-output-name", "default")
+                        tuple("out_unmapped_variable_matching_name", "default"),
+                        tuple("output_unmapped_variable_with_non_matching_connector_output_name", "default")
                 );
 
         processBaseRuntime.delete(processInstance.getId(),"done");

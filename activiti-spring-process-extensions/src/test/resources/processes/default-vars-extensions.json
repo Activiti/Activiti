@@ -24,7 +24,7 @@
             },
             "379dc1a1-481d-4617-a027-ef39fdadf555": {
                 "id": "379dc1a1-481d-4617-a027-ef39fdadf555",
-                "name": "json-var",
+                "name": "jsonvar",
                 "type": "json",
                 "required": false,
                 "value": {
@@ -33,7 +33,7 @@
             },
             "379dc1a1-481d-4617-a027-ef39fdadf6666": {
                 "id": "379dc1a1-481d-4617-a027-ef39fdadf6666",
-                "name": "file-var",
+                "name": "filevar",
                 "type": "file",
                 "required": false,
                 "value": {}

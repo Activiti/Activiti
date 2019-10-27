@@ -1,5 +1,10 @@
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+
 import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -15,6 +20,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
+import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
@@ -31,12 +37,9 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class    ProcessRuntimeIT {
+public class ProcessRuntimeIT {
 
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
     private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
@@ -45,7 +48,6 @@ public class    ProcessRuntimeIT {
     private static final String SUB_PROCESS = "subProcess";
     private static final String SUPER_PROCESS = "superProcess";
     
-
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -72,6 +74,9 @@ public class    ProcessRuntimeIT {
 
     @Autowired
     private APIVariableInstanceConverter variableInstanceConverter;
+    
+    @Autowired
+    ProcessVariablesPayloadValidator processVariablesValidator;
 
     @Autowired
     private ProcessRuntimeConfiguration configuration;
@@ -104,13 +109,15 @@ public class    ProcessRuntimeIT {
                                                      processInstanceConverter,
                                                      variableInstanceConverter,
                                                      configuration,
-                                                     eventPublisher));
+                                                     eventPublisher,
+                                                     processVariablesValidator));
 
         processAdminRuntimeMock = spy(new ProcessAdminRuntimeImpl(repositoryService,
-                                                              processDefinitionConverter,
-                                                              runtimeService,
-                                                              processInstanceConverter,
-                                                              eventPublisher));
+                                                     processDefinitionConverter,
+                                                     runtimeService,
+                                                     processInstanceConverter,
+                                                     eventPublisher,
+                                                     processVariablesValidator));
 
         //Reset test variables
         RuntimeTestConfiguration.processImageConnectorExecuted = false;

@@ -25,7 +25,7 @@
       },
       "input-unmapped-variable-name-id": {
         "id": "input-unmapped-variable-name-id",
-        "name": "input-unmapped-variable-name",
+        "name": "input_unmapped_variable_name",
         "type": "string",
         "required": false,
         "value": "inTest"
@@ -50,10 +50,10 @@
         "outputs": {
           "name": {
             "type": "variable",
-            "value" : "out-variable-name-1"},
+            "value" : "out_variable_name_1"},
           "age": {
             "type": "variable",
-            "value" : "out-variable-name-2"}
+            "value" : "out_variable_name_2"}
         }
       }
     }

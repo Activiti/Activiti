@@ -1,30 +1,35 @@
 package org.activiti.runtime.api.impl;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.payloads.CompleteTaskPayload;
 import org.activiti.api.task.model.payloads.CreateTaskVariablePayload;
+import org.activiti.api.task.model.payloads.SaveTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskPayload;
 import org.activiti.api.task.model.payloads.UpdateTaskVariablePayload;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 public class TaskRuntimeHelper {
     private final TaskService taskService;
     private final SecurityManager securityManager;
     private final APITaskConverter taskConverter;
+    private final TaskVariablesPayloadValidator taskVariablesValidator;
 
     public TaskRuntimeHelper(TaskService taskService,
                              APITaskConverter taskConverter,
-                             SecurityManager securityManager) {
+                             SecurityManager securityManager,
+                             TaskVariablesPayloadValidator taskVariablesValidator) {
         this.taskService = taskService;
         this.securityManager = securityManager;
         this.taskConverter = taskConverter;
+        this.taskVariablesValidator = taskVariablesValidator;
     }
 
     public Task applyUpdateTaskPayload(boolean isAdmin, UpdateTaskPayload updateTaskPayload) {
@@ -202,11 +207,9 @@ public class TaskRuntimeHelper {
         if (!isAdmin) {
             assertCanModifyTask(getInternalTask(createTaskVariablePayload.getTaskId()));
         }
-
-        if (createTaskVariablePayload.getName() == null || createTaskVariablePayload.getName().isEmpty()) {
-            throw new IllegalStateException("You cannot create a variable without name");
-        }
-
+        
+        taskVariablesValidator.handleCreateTaskVariablePayload(createTaskVariablePayload);
+        
         assertVariableDoesNotExist(createTaskVariablePayload);
 
         taskService.setVariableLocal(createTaskVariablePayload.getTaskId(),
@@ -228,17 +231,15 @@ public class TaskRuntimeHelper {
             assertCanModifyTask(getInternalTask(updateTaskVariablePayload.getTaskId()));
         }
 
-        if (updateTaskVariablePayload.getName() == null || updateTaskVariablePayload.getName().isEmpty()) {
-            throw new IllegalStateException("You cannot update a variable without name");
-        }
-
+        taskVariablesValidator.handleUpdateTaskVariablePayload(updateTaskVariablePayload);
+  
         assertVariableExists(updateTaskVariablePayload);
 
         taskService.setVariableLocal(updateTaskVariablePayload.getTaskId(),
                 updateTaskVariablePayload.getName(),
                 updateTaskVariablePayload.getValue());
     }
-
+    
     private void assertVariableExists(UpdateTaskVariablePayload updateTaskVariablePayload) {
         Map<String, VariableInstance> variables = taskService.getVariableInstancesLocal(updateTaskVariablePayload.getTaskId());
 
@@ -250,4 +251,19 @@ public class TaskRuntimeHelper {
             throw new IllegalStateException("Variable does not exist");
         }
     }
+    
+    public void handleCompleteTaskPayload(CompleteTaskPayload completeTaskPayload) {
+        
+        completeTaskPayload.setVariables(taskVariablesValidator
+                                         .handlePayloadVariables(completeTaskPayload.getVariables()));
+       
+    }
+    
+    public void handleSaveTaskPayload(SaveTaskPayload saveTaskPayload) {
+        
+        saveTaskPayload.setVariables(taskVariablesValidator
+                                     .handlePayloadVariables(saveTaskPayload.getVariables()));
+       
+    }
+
 }

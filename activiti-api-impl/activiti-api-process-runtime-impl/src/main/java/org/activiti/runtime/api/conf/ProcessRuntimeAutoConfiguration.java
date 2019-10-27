@@ -16,6 +16,10 @@
 
 package org.activiti.runtime.api.conf;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
 import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
 import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
@@ -44,6 +48,7 @@ import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
+import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
@@ -101,8 +106,10 @@ import org.activiti.runtime.api.event.internal.TimerScheduledListenerDelegate;
 import org.activiti.runtime.api.impl.EventSubscriptionVariablesMappingProvider;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
+import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
 import org.activiti.runtime.api.impl.RuntimeReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
+import org.activiti.runtime.api.impl.VariableNameValidator;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
@@ -111,6 +118,8 @@ import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 import org.activiti.runtime.api.model.impl.ToSignalConverter;
 import org.activiti.runtime.api.signal.SignalPayloadEventListener;
+import org.activiti.spring.process.model.ProcessExtensionModel;
+import org.activiti.spring.process.variable.VariableValidationService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -118,9 +127,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Collections;
-import java.util.List;
 
 @Configuration
 @AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
@@ -161,7 +167,8 @@ public class ProcessRuntimeAutoConfiguration {
                                          APIProcessInstanceConverter processInstanceConverter,
                                          APIVariableInstanceConverter variableInstanceConverter,
                                          ProcessRuntimeConfiguration processRuntimeConfiguration,
-                                         ApplicationEventPublisher eventPublisher) {
+                                         ApplicationEventPublisher eventPublisher,
+                                         ProcessVariablesPayloadValidator processVariablesValidator) {
         return new ProcessRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
@@ -169,7 +176,8 @@ public class ProcessRuntimeAutoConfiguration {
                 processInstanceConverter,
                 variableInstanceConverter,
                 processRuntimeConfiguration,
-                eventPublisher);
+                eventPublisher,
+                processVariablesValidator);
     }
 
     @Bean
@@ -178,12 +186,14 @@ public class ProcessRuntimeAutoConfiguration {
                                                    APIProcessDefinitionConverter processDefinitionConverter,
                                                    RuntimeService runtimeService,
                                                    APIProcessInstanceConverter processInstanceConverter,
-                                                   ApplicationEventPublisher eventPublisher) {
+                                                   ApplicationEventPublisher eventPublisher,
+                                                   ProcessVariablesPayloadValidator processVariablesValidator) {
         return new ProcessAdminRuntimeImpl(repositoryService,
                 processDefinitionConverter,
                 runtimeService,
                 processInstanceConverter,
-                eventPublisher
+                eventPublisher,
+                processVariablesValidator
         );
     }
 
@@ -192,7 +202,19 @@ public class ProcessRuntimeAutoConfiguration {
     public APIProcessDefinitionConverter apiProcessDefinitionConverter(RepositoryService repositoryService) {
         return new APIProcessDefinitionConverter(repositoryService);
     }
-
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessVariablesPayloadValidator processVariablesValidator(DateFormatterProvider dateFormatterProvider,
+                                                                      Map<String, ProcessExtensionModel> processExtensionModelMap,
+                                                                      VariableValidationService variableValidationService,
+                                                                      VariableNameValidator variableNameValidator) {
+        return new ProcessVariablesPayloadValidator(dateFormatterProvider,
+                                                    processExtensionModelMap,
+                                                    variableValidationService,
+                                                    variableNameValidator);
+    }
+    
     @Bean
     @ConditionalOnMissingBean
     public APIProcessInstanceConverter apiProcessInstanceConverter() {

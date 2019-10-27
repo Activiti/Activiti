@@ -16,6 +16,9 @@
 
 package org.activiti.runtime.api.conf;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.api.task.runtime.TaskAdminRuntime;
@@ -33,6 +36,7 @@ import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.TaskSuspendedEvent;
 import org.activiti.api.task.runtime.events.TaskUpdatedEvent;
 import org.activiti.api.task.runtime.events.listener.TaskRuntimeEventListener;
+import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -62,6 +66,8 @@ import org.activiti.runtime.api.event.internal.TaskUpdatedListenerDelegate;
 import org.activiti.runtime.api.impl.TaskAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.TaskRuntimeHelper;
 import org.activiti.runtime.api.impl.TaskRuntimeImpl;
+import org.activiti.runtime.api.impl.TaskVariablesPayloadValidator;
+import org.activiti.runtime.api.impl.VariableNameValidator;
 import org.activiti.runtime.api.model.impl.APITaskCandidateGroupConverter;
 import org.activiti.runtime.api.model.impl.APITaskCandidateUserConverter;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
@@ -71,9 +77,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Collections;
-import java.util.List;
 
 @Configuration
 @AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
@@ -113,17 +116,28 @@ public class TaskRuntimeAutoConfiguration {
     @Bean
     public TaskRuntimeHelper taskRuntimeHelper(TaskService taskService,
                                                APITaskConverter taskConverter,
-                                               SecurityManager securityManager) {
+                                               SecurityManager securityManager,
+                                               TaskVariablesPayloadValidator taskVariablesValidator) {
         return new TaskRuntimeHelper(
                              taskService,
                              taskConverter,
-                             securityManager
+                             securityManager,
+                             taskVariablesValidator
         );
     }
 
     @Bean
     public APITaskConverter apiTaskConverter() {
         return new APITaskConverter(
+        );
+    }
+    
+    @Bean
+    public TaskVariablesPayloadValidator taskVariablesValidator(DateFormatterProvider dateFormatterProvider,
+                                                                VariableNameValidator variableNameValidator) {
+        return new TaskVariablesPayloadValidator(
+                             dateFormatterProvider,
+                             variableNameValidator
         );
     }
 
@@ -273,4 +287,5 @@ public class TaskRuntimeAutoConfiguration {
                                                                                                    new ToTaskCandidateGroupRemovedConverter(taskCandidateGroupConverter)),
                                                      ActivitiEventType.ENTITY_DELETED);
     }
+    
 }

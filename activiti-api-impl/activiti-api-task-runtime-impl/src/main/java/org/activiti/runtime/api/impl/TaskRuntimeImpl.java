@@ -16,6 +16,10 @@
 
 package org.activiti.runtime.api.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
@@ -47,10 +51,6 @@ import org.activiti.runtime.api.model.impl.APITaskConverter;
 import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.query.impl.PageImpl;
 import org.springframework.security.access.prepost.PreAuthorize;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @PreAuthorize("hasRole('ACTIVITI_USER')")
 public class TaskRuntimeImpl implements TaskRuntime {
@@ -153,7 +153,9 @@ public class TaskRuntimeImpl implements TaskRuntime {
         if (!task.getAssignee().equals(authenticatedUserId)) {
             throw new IllegalStateException("You cannot complete the task if you are not assigned to it");
         }
-
+        
+        taskRuntimeHelper.handleCompleteTaskPayload(completeTaskPayload);
+                
         taskService.complete(completeTaskPayload.getTaskId(),
                 completeTaskPayload.getVariables(), true);
 
@@ -449,6 +451,8 @@ public class TaskRuntimeImpl implements TaskRuntime {
     public void save(SaveTaskPayload saveTaskPayload) {
         taskRuntimeHelper.assertHasAccessToTask(saveTaskPayload.getTaskId());
 
+        taskRuntimeHelper.handleSaveTaskPayload(saveTaskPayload);
+        
         taskService.setVariablesLocal(saveTaskPayload.getTaskId(),
                 saveTaskPayload.getVariables());
     }

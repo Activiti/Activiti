@@ -3,6 +3,12 @@ package org.activiti.spring.boot;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.connector.Connector;
@@ -30,12 +36,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Configuration
 @Import({ProcessCleanUpUtil.class, 
@@ -130,7 +130,7 @@ public class RuntimeTestConfiguration {
             boolean expectedValue = (Boolean) inBoundVariables.get("expectedKey");
             integrationContext.addOutBoundVariable("approved",
                                                    expectedValue);
-            assertThat(((String) inBoundVariables.get("input-variable-name-1"))).isEqualTo("input-variable-name-1");
+            assertThat(((String) inBoundVariables.get("input_variable_name_1"))).isEqualTo("input-variable-name-1");
             return integrationContext;
         };
     }
@@ -145,7 +145,7 @@ public class RuntimeTestConfiguration {
             boolean expectedValue = (Boolean) inBoundVariables.get("expectedKey");
             integrationContext.addOutBoundVariable("approved",
                                                    expectedValue);
-            assertThat(((String) inBoundVariables.get("input-variable-name-2"))).isEqualTo("input-variable-name-2");
+            assertThat(((String) inBoundVariables.get("input_variable_name_2"))).isEqualTo("input-variable-name-2");
             return integrationContext;
         };
     }
@@ -211,11 +211,11 @@ public class RuntimeTestConfiguration {
         return integrationContext -> {
             Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
 
-            String variableOne = "input-variable-name-1";
-            String variableTwo = "input-variable-name-2";
-            String variableThree = "input-variable-name-3";
-            String staticValue = "input-static-value";
-            String integerConstant = "integer-constant";
+            String variableOne = "input_variable_name_1";
+            String variableTwo = "input_variable_name_2";
+            String variableThree = "input_variable_name_3";
+            String staticValue = "input_static_value";
+            String integerConstant = "integer_constant";
 
             Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
             Integer offSet = (Integer) inBoundVariables.get(variableThree);
@@ -236,13 +236,13 @@ public class RuntimeTestConfiguration {
                             tuple(integerConstant,
                                   10));
             
-            integrationContext.addOutBoundVariable("out-variable-name-1",
+            integrationContext.addOutBoundVariable("out_variable_name_1",
                                                    "outName");
-            integrationContext.addOutBoundVariable("out-variable-name-2",
+            integrationContext.addOutBoundVariable("out_variable_name_2",
                                                    currentAge + offSet + integerConstantValue);
-            integrationContext.addOutBoundVariable("out-unmapped-variable-matching-name",
+            integrationContext.addOutBoundVariable("out_unmapped_variable_matching_name",
                                                    "outTest");
-            integrationContext.addOutBoundVariable("out-unmapped-variable-non-matching-name",
+            integrationContext.addOutBoundVariable("out_unmapped_variable_non_matching_name",
                                                    "outTest");
             return integrationContext;
         };

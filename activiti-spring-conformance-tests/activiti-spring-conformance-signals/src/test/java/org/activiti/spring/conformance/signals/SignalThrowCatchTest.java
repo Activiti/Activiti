@@ -114,7 +114,7 @@ public class SignalThrowCatchTest {
         clearEvents();
         SignalPayload signalPayload = ProcessPayloadBuilder.signal()
                 .withName("Test")
-                .withVariable("signal-variable",
+                .withVariable("signal_variable",
                               "test")
                 .build();
         processRuntime.signal(signalPayload);
@@ -138,7 +138,7 @@ public class SignalThrowCatchTest {
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
         assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
         assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
-        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal-variable")).isEqualTo("test");
+        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable")).isEqualTo("test");
 
     }
 
@@ -225,7 +225,7 @@ public class SignalThrowCatchTest {
         
         SignalPayload signalPayload = ProcessPayloadBuilder.signal()
                 .withName("Test")
-                .withVariable("signal-variable",
+                .withVariable("signal_variable",
                               "test")
                 .build();
         processRuntime.signal(signalPayload);
@@ -251,7 +251,7 @@ public class SignalThrowCatchTest {
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
         assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
         assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
-        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal-variable")).isEqualTo("test");
+        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable")).isEqualTo("test");
 
         clearEvents();
     }
@@ -262,7 +262,7 @@ public class SignalThrowCatchTest {
 
         SignalPayload signalPayload = ProcessPayloadBuilder.signal()
                 .withName("SignalStart")
-                .withVariable("signal-variable",
+                .withVariable("signal_variable",
                               "test")
                 .build();
         processRuntime.signal(signalPayload);
@@ -287,7 +287,7 @@ public class SignalThrowCatchTest {
         assertThat(event.getEntity().getSignalPayload()).isNotNull();
         assertThat(event.getEntity().getSignalPayload().getName()).isEqualTo(signalPayload.getName());
         assertThat(event.getEntity().getSignalPayload().getVariables().size()).isEqualTo(signalPayload.getVariables().size());
-        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal-variable")).isEqualTo("test");
+        assertThat(event.getEntity().getSignalPayload().getVariables().get("signal_variable")).isEqualTo("test");
 
         clearEvents();
     }
