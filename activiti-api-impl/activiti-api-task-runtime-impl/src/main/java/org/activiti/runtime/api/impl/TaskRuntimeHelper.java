@@ -25,7 +25,7 @@ public class TaskRuntimeHelper {
     public TaskRuntimeHelper(TaskService taskService,
                              APITaskConverter taskConverter,
                              SecurityManager securityManager,
-                             VariableNameValidator variableNameValidator) {
+                             TaskVariablesPayloadValidator taskVariablesValidator) {
         this.taskService = taskService;
         this.securityManager = securityManager;
         this.taskConverter = taskConverter;

@@ -117,12 +117,12 @@ public class TaskRuntimeAutoConfiguration {
     public TaskRuntimeHelper taskRuntimeHelper(TaskService taskService,
                                                APITaskConverter taskConverter,
                                                SecurityManager securityManager,
-                                               VariableNameValidator variableNameValidator) {
+                                               TaskVariablesPayloadValidator taskVariablesValidator) {
         return new TaskRuntimeHelper(
                              taskService,
                              taskConverter,
                              securityManager,
-                             variableNameValidator
+                             taskVariablesValidator
         );
     }
 
