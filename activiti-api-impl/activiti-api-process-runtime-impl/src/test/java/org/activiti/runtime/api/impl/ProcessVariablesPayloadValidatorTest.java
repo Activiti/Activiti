@@ -47,8 +47,8 @@ public class ProcessVariablesPayloadValidatorTest {
     private Map<String, ProcessExtensionModel> processExtensionModelMap;
     
     private DateFormatterProvider dateFormatterProvider = new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]");
-    private ObjectMapper objectMapper= new ObjectMapper();
-    private VariableNameValidator variableNameValidator= new VariableNameValidator();
+    private ObjectMapper objectMapper = new ObjectMapper();
+    private VariableNameValidator variableNameValidator = new VariableNameValidator();
     
     private Map<String, VariableType> variableTypeMap;
     
@@ -58,8 +58,6 @@ public class ProcessVariablesPayloadValidatorTest {
     @Before
     public void setUp() {
         initMocks(this);
-        
-        ProcessExtensionModel processExtensionModel;
         
         VariableDefinition variableDefinitionName = new VariableDefinition();
         variableDefinitionName.setName("name");
@@ -102,7 +100,7 @@ public class ProcessVariablesPayloadValidatorTest {
         Extension extension = new Extension();
         extension.setProperties(properties);
 
-        processExtensionModel = new ProcessExtensionModel();
+        ProcessExtensionModel processExtensionModel = new ProcessExtensionModel();
         processExtensionModel.setId("1");
         processExtensionModel.setExtensions(extension);
         
