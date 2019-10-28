@@ -18,14 +18,14 @@
       },
       "input-unmapped-variable-with-non-matching-name-id": {
         "id": "input-unmapped-variable-with-non-matching-connector-input-name-id",
-        "name": "input-unmapped-variable-with-non-matching-connector-input-name",
+        "name": "input_unmapped_variable_with_non_matching_connector_input_name",
         "type": "string",
         "required": false,
         "value": "inTest"
       },
       "output-unmapped-variable-with-non-matching-name-id": {
         "id": "output-unmapped-variable-with-non-matching-name-id",
-        "name": "output-unmapped-variable-with-non-matching-connector-output-name",
+        "name": "output_unmapped_variable_with_non_matching_connector_output_name",
         "type": "string",
         "required": false,
         "value": "default"
@@ -34,23 +34,23 @@
     "mappings": {
       "Task_0v0jw9c": {
         "inputs": {
-          "subprocess-input-var1": {
+          "subprocess_input_var1": {
             "type": "variable",
             "value": "name"
           },
-          "subprocess-input-var2": {
+          "subprocess_input_var2": {
             "type": "variable",
             "value": "age"
           },
-          "var-not-exist-in-subprocess-extension-file": {
+          "var_not_exist_in_subprocess_extension_file": {
             "type": "variable",
             "value": "age"
           },
-          "subprocess-input-var3": {
+          "subprocess_input_var3": {
             "type": "value",
             "value": 5
           },
-          "input-not-existing-value": {
+          "input_not_existing_value": {
             "type": "variable",
             "value": "not-existing"
           }
@@ -58,21 +58,21 @@
         "outputs": {
           "name": {
             "type": "variable",
-            "value" : "subprocess-out-var1"},
+            "value" : "subprocess_out_var1"},
           "age": {
             "type": "variable",
-            "value": "subprocess-out-var2"
+            "value": "subprocess_out_var2"
           },
           "not-existing": {
             "type": "variable",
-            "value": "subprocess-out-var1"
+            "value": "subprocess_out_var1"
           }
         }
       }
     },
     "constants": {
       "Task_0v0jw9c": {
-        "input-static-value": {
+        "input_static_value": {
           "value": "a static value"
         }
       }

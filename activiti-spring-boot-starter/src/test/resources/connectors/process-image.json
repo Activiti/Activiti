@@ -9,8 +9,8 @@
       "description": "...",
       "inputs": [
         {
-          "id": "input-variable-1",
-          "name": "input-variable-name-1",
+          "id": "input_variable_1",
+          "name": "input_variable_name_1",
           "type": "string",
           "required": false,
           "description": ""

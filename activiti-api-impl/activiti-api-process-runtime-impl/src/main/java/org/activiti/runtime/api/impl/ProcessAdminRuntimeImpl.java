@@ -61,17 +61,21 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     private final APIProcessInstanceConverter processInstanceConverter;
 
     private final ApplicationEventPublisher eventPublisher;
+    
+    private final ProcessVariablesPayloadValidator processVariablesValidator;
 
     public ProcessAdminRuntimeImpl(RepositoryService repositoryService,
                                    APIProcessDefinitionConverter processDefinitionConverter,
                                    RuntimeService runtimeService,
                                    APIProcessInstanceConverter processInstanceConverter,
-                                   ApplicationEventPublisher eventPublisher) {
+                                   ApplicationEventPublisher eventPublisher,
+                                   ProcessVariablesPayloadValidator processVariablesValidator) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
         this.processInstanceConverter = processInstanceConverter;
         this.eventPublisher = eventPublisher;
+        this.processVariablesValidator = processVariablesValidator;
     }
 
     @Override
@@ -125,6 +129,9 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         if (processDefinition == null) {
             throw new IllegalStateException("At least Process Definition Id or Key needs to be provided to start a process");
         }
+        
+        processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, startProcessPayload.getProcessDefinitionKey()); 
+        
         return processInstanceConverter.from(runtimeService
                 .createProcessInstanceBuilder()
                 .processDefinitionId(startProcessPayload.getProcessDefinitionId())
@@ -201,6 +208,9 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     @Transactional
     public void signal(SignalPayload signalPayload) {
+        processVariablesValidator.checkSignalPayloadVariables(signalPayload, 
+                                                              null);     
+        
         eventPublisher.publishEvent(signalPayload);
     }
 
@@ -231,6 +241,11 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
 
     @Override
     public void setVariables(SetProcessVariablesPayload setProcessVariablesPayload) {
+        ProcessInstanceImpl processInstance = (ProcessInstanceImpl) processInstance(setProcessVariablesPayload.getProcessInstanceId());
+        
+        processVariablesValidator.checkPayloadVariables(setProcessVariablesPayload, 
+                                                        processInstance.getProcessDefinitionKey());    
+        
         runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
                 setProcessVariablesPayload.getVariables());
 
@@ -245,6 +260,8 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     @Transactional
     public void receive(ReceiveMessagePayload messagePayload) {
+        processVariablesValidator.checkReceiveMessagePayloadVariables(messagePayload, 
+                                                                      null); 
         eventPublisher.publishEvent(messagePayload);
     }
 
@@ -253,6 +270,9 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         String messageName = messagePayload.getName();
         String businessKey = messagePayload.getBusinessKey();
         Map<String, Object> variables = messagePayload.getVariables();
+        
+        processVariablesValidator.checkStartMessagePayloadVariables(messagePayload, 
+                                                                    null);    
         
         ProcessInstance processInstance = processInstanceConverter.from(runtimeService.startProcessInstanceByMessage(messageName,
                                                                                                                      businessKey,

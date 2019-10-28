@@ -1,5 +1,12 @@
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.tuple;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -14,10 +21,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.assertj.core.api.Assertions.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -167,5 +170,110 @@ public class TaskRuntimeStandaloneTaskTest {
 
         assertThat(tasks.getContent()).hasSize(0);
     }
+    
+    @Test
+    public void should_throwExceptionOnTaskSave_when_charactersNotAllowedInVariableName() {
 
+        securityUtil.logInAs("user");
+        
+        Task task = taskRuntime.create(TaskPayloadBuilder.create()
+                                                 .withName("name")
+                                                 .withAssignee("user")
+                                                 .build());
+
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                                                         50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        
+        Map<String,Object> variables = new HashMap<>();
+        variables.put("var_name1","good_value");
+        variables.put("!wrong_name","!any_value>");
+        Throwable throwable = catchThrowable(() -> taskRuntime.save(TaskPayloadBuilder.save()
+                                                                    .withTaskId(task.getId())
+                                                                    .withVariables(variables)
+                                                                    .build()));
+
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class);
+        
+    }
+    
+    @Test
+    public void should_throwExceptionOnTaskComplete_when_charactersNotAllowedInVariableName() {
+
+        securityUtil.logInAs("user");
+        
+        Task task = taskRuntime.create(TaskPayloadBuilder.create()
+                                                 .withName("name")
+                                                 .withAssignee("user")
+                                                 .build());
+
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                                                         50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        
+        Map<String,Object> variables = new HashMap<>();
+        variables.put("var_name1","good_value");
+        variables.put("!wrong_name","!any_value>");
+        Throwable throwable = catchThrowable(() -> taskRuntime.complete(TaskPayloadBuilder.complete()
+                                                                        .withTaskId(task.getId())
+                                                                        .withVariables(variables)
+                                                                        .build()));
+
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class);
+        
+    }
+
+    @Test
+    public void should_throwExceptionOnCreateVariable_when_charactersNotAllowedInVariableName() {
+
+        securityUtil.logInAs("user");
+        
+        Task task = taskRuntime.create(TaskPayloadBuilder.create()
+                                                 .withName("name")
+                                                 .withAssignee("user")
+                                                 .build());
+
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                                                         50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        
+        Throwable throwable = catchThrowable(() -> taskRuntime.createVariable(TaskPayloadBuilder.createVariable()
+                                                                              .withTaskId(task.getId())
+                                                                              .withVariable("!wrong_name", "value")
+                                                                              .build()));
+
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class);
+        
+    }
+    
+    @Test
+    public void should_throwExceptionOnUpdateVariable_when_charactersNotAllowedInVariableName() {
+
+        securityUtil.logInAs("user");
+        
+        Task task = taskRuntime.create(TaskPayloadBuilder.create()
+                                                 .withName("name")
+                                                 .withAssignee("user")
+                                                 .build());
+
+        Page<Task> tasks = taskRuntime.tasks(Pageable.of(0,
+                                                         50));
+
+        assertThat(tasks.getContent()).hasSize(1);
+        
+        Throwable throwable = catchThrowable(() -> taskRuntime.updateVariable(TaskPayloadBuilder.updateVariable()
+                                                                              .withTaskId(task.getId())
+                                                                              .withVariable("!wrong_name", "value")
+                                                                              .build()));
+
+        assertThat(throwable)
+                .isInstanceOf(IllegalStateException.class);
+        
+    }
 }

@@ -1,5 +1,12 @@
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
@@ -15,13 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -140,14 +140,14 @@ public class ProcessExtensionsTest {
         ProcessRuntimeConfiguration configuration = processRuntime.configuration();
         assertThat(configuration).isNotNull();
 
-        assertThatExceptionOfType(ActivitiException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
             processRuntime.start(ProcessPayloadBuilder.start()
                     .withProcessDefinitionKey(INITIAL_VARS_PROCESS)
                     .withVariable("age", true)
                     .withVariable("name",7)
                     .withVariable("subscribe","ok")
-                    .withVariable("birth","thisisnotadate")
+                    .withVariable("birth","2007-10-01")
                     .build());
-        }).withMessage("Can't start process '" + INITIAL_VARS_PROCESS + "' as variables fail type validation - subscribe, name, birth, age");
+        }).withMessage("Variables fail type validation: subscribe, name, age");
     }
 }

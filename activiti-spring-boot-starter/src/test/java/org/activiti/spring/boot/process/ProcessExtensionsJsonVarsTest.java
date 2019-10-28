@@ -1,5 +1,14 @@
 package org.activiti.spring.boot.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.tuple;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -19,16 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.AssertionsForClassTypes.tuple;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -145,13 +144,13 @@ public class ProcessExtensionsJsonVarsTest {
         //by default jackson won't ser empty bean so it can't be handled as json
         assertThat(objectMapper.canSerialize(EmptyBean.class)).isFalse();
 
-        assertThatExceptionOfType(ActivitiException.class).isThrownBy(() -> {
+        assertThatExceptionOfType(IllegalStateException.class).isThrownBy(() -> {
             processRuntime.start(ProcessPayloadBuilder.start()
                     .withProcessDefinitionKey(JSON_VARS_PROCESS)
                     .withVariable("var2", new EmptyBean())
                     .withVariable("var5","this one is ok as doesn't have to be json")
                     .build());
-        }).withMessage("Can't start process '" + JSON_VARS_PROCESS + "' as variables fail type validation - var2");
+        }).withMessage("Variables fail type validation: var2");
 
         //we don't test for bad json in the extension file because the context doesn't load for that scenario as failure is during parsing
     }
