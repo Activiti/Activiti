@@ -50,7 +50,7 @@ public class ProcessRuntimeVariableMappingTest {
     }
     
     @Test
-    public void should_resolveExpression_when_expressionIsInInputMappingValue() {
+    public void should_resolveExpression_when_expressionIsInInputMappingValueOrInMappedProperty() {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(VARIABLE_MAPPING_EXPRESSION_PROCESS);
 
         List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
@@ -60,9 +60,10 @@ public class ProcessRuntimeVariableMappingTest {
                 .containsOnly(
                         tuple("name", "outName"),
                         tuple("age", 30),
-                        tuple("input-unmapped-variable-with-matching-name", "inTestExpression"),
+                        tuple("input-unmapped-variable-with-matching-name", "${valueToResolve}"),
                         tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTestExpression"),
                         tuple("valueToResolve", "expressionResolved"),
+                        tuple("variableToResolve", "${valueToResolve}"),
                         tuple("out-unmapped-variable-matching-name", "defaultExpression"),
                         tuple("output-unmapped-variable-with-non-matching-connector-output-name", "defaultExpression")
                 );

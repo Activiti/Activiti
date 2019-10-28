@@ -23,12 +23,19 @@
         "required": false,
         "value": "expressionResolved"
       },
+      "variable-to-resolve-id": {
+        "id": "variable-to-resolve-id",
+        "name": "variableToResolve",
+        "type": "string",
+        "required": false,
+        "value": "${valueToResolve}"
+      },
       "input-unmapped-variable-with-matching-name-id": {
         "id": "input-unmapped-variable-with-matching-name-id",
         "name": "input-unmapped-variable-with-matching-name",
         "type": "string",
         "required": false,
-        "value": "inTestExpression"
+        "value": "${valueToResolve}"
       },
       "input-unmapped-variable-with-non-matching-name-id": {
         "id": "input-unmapped-variable-with-non-matching-connector-input-name-id",
@@ -70,6 +77,10 @@
             "value": "age"
           },
           "input-variable-expression": {
+            "type": "variable",
+            "value": "variableToResolve"
+          },
+          "input-value-expression": {
             "type": "value",
             "value": "${valueToResolve}"
           },

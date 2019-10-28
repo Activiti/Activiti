@@ -46,7 +46,7 @@ public class VariablesMappingProvider {
                                                     ProcessExtensionModel extensions) {
         if (inputMapping != null) {
             if (Mapping.SourceMappingType.VALUE.equals(inputMapping.getType())) {
-                return Optional.of(expressionResolver.resolveExpressions(execution, inputMapping.getValue()));
+                return Optional.of(inputMapping.getValue());
             }
 
             if (Mapping.SourceMappingType.VARIABLE.equals(inputMapping.getType())) {
@@ -78,7 +78,7 @@ public class VariablesMappingProvider {
         } else {
             inboudVariables = calculateInputVariables(execution, extensions);
         }
-        
+        inboudVariables = expressionResolver.resolveExpressionsMap(execution,inboudVariables);
         inboudVariables.putAll(constants);
         return inboudVariables;
     }

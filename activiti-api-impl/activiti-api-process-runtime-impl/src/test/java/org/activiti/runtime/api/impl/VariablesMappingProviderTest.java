@@ -81,6 +81,13 @@ public class VariablesMappingProviderTest {
                                                                   ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
+        ExpressionResolverHelper.initContext(execution,
+                                             extensions);
+
+        ReflectionTestUtils.setField(variablesMappingProvider,
+                                     "expressionResolver",
+                                     new ExpressionResolver());
+        
         Map<String, Object> variables = new HashMap<>();
         variables.put("varone",
                       "one");
@@ -375,7 +382,7 @@ public class VariablesMappingProviderTest {
     }
 
     @Test
-    public void should_notSubstituteExpressions_when_expressionIsInProperties() throws Exception {
+    public void should_substituteExpressions_when_expressionIsInProperties() throws Exception {
         DelegateExecution execution = initExpressionResolverTest("expression-in-properties.json");
 
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
@@ -388,7 +395,7 @@ public class VariablesMappingProviderTest {
                               tuple("process_constant_2",
                                     "constant_2_value"),
                               tuple("task_input_variable_name_1",
-                                    "${process_variable_2}"),
+                                    "variable_value_2"),
                               tuple("task_input_variable_name_2",
                                     "static_value_1"));
 
