@@ -70,9 +70,9 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     parseChildElements(elementName, parentElement, xtr, null, model);
   }
 
-  public static void parseChildElements(String elementName, BaseElement parentElement, XMLStreamReader xtr, 
+  public static void parseChildElements(String elementName, BaseElement parentElement, XMLStreamReader xtr,
       Map<String, BaseChildElementParser> childParsers, BpmnModel model) throws Exception {
-    
+
     Map<String, BaseChildElementParser> localParserMap =
         new HashMap<String, BaseChildElementParser>(genericChildParserMap);
     if (childParsers != null) {
@@ -298,7 +298,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
 
   /**
    * add all attributes from XML to element extensionAttributes (except blackListed).
-   * 
+   *
    * @param xtr
    * @param element
    * @param blackLists
@@ -326,7 +326,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
 
   /**
    * write attributes to xtw (except blacklisted)
-   * 
+   *
    * @param attributes
    * @param xtw
    * @param blackLists
@@ -388,13 +388,13 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   }
 
   public static void writeIncomingElementChild(XMLStreamWriter xtw, SequenceFlow incomingSequence) throws Exception {
-    xtw.writeStartElement(ELEMENT_GATEWAY_INCOMING);
+    xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_GATEWAY_INCOMING, BPMN2_NAMESPACE);
     xtw.writeCharacters(incomingSequence.getId());
     xtw.writeEndElement();
   }
 
   public static void writeOutgoingElementChild(XMLStreamWriter xtw, SequenceFlow outgoingSequence) throws Exception {
-    xtw.writeStartElement(ELEMENT_GATEWAY_OUTGOING);
+    xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_GATEWAY_OUTGOING, BPMN2_NAMESPACE);
     xtw.writeCharacters(outgoingSequence.getId());
     xtw.writeEndElement();
   }

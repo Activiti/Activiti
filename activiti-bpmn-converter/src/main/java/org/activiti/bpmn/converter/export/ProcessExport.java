@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -34,7 +34,7 @@ public class ProcessExport implements BpmnXMLConstants {
   @SuppressWarnings("unchecked")
   public static void writeProcess(Process process, XMLStreamWriter xtw) throws Exception {
     // start process element
-    xtw.writeStartElement(ELEMENT_PROCESS);
+    xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_PROCESS, BPMN2_NAMESPACE);
     xtw.writeAttribute(ATTRIBUTE_ID, process.getId());
 
     if (StringUtils.isNotEmpty(process.getName())) {
@@ -56,7 +56,7 @@ public class ProcessExport implements BpmnXMLConstants {
 
     if (StringUtils.isNotEmpty(process.getDocumentation())) {
 
-      xtw.writeStartElement(ELEMENT_DOCUMENTATION);
+      xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_DOCUMENTATION, BPMN2_NAMESPACE);
       xtw.writeCharacters(process.getDocumentation());
       xtw.writeEndElement();
     }
