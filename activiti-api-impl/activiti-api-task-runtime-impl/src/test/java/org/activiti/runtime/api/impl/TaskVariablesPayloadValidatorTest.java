@@ -17,6 +17,7 @@
 package org.activiti.runtime.api.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.time.Duration;
 import java.util.Date;
@@ -32,10 +33,10 @@ import org.junit.Test;
 public class TaskVariablesPayloadValidatorTest {
 
     private TaskVariablesPayloadValidator taskVariablesPayloadValidator = new TaskVariablesPayloadValidator(new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]"),
-                                                                                                              new VariableNameValidator());
+                                                                                                            new VariableNameValidator());
 
     @Test
-    public void handleDatesForMap_should_convertStringToDate_whenStringRepresentsADate() {
+    public void should_convertStringToDate_when_stringRepresentsADate() {
         //given
         HashMap<String, Object> payloadMap = new HashMap<>();
         payloadMap.put("date", "1970-01-01");
@@ -60,7 +61,7 @@ public class TaskVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void handleDateForCreateTaskVariablePayload_should_convertStringToDate_when_stringRepresentsADate() {
+    public void should_convertStringToDate_when_stringRepresentsADateInCreateTaskVariablePayload() {
         //given
         CreateTaskVariablePayload payload = TaskPayloadBuilder.createVariable()
                 .withVariable("date",
@@ -75,7 +76,7 @@ public class TaskVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void handleDateForCreateTaskVariablePayload_should_convertStringToDate_when_stringRepresentsADateWithTime() {
+    public void should_convertStringToDate_when_stringRepresentsADateWithTimeInCreateTaskVariablePayload() {
         //given
         CreateTaskVariablePayload payload = TaskPayloadBuilder.createVariable()
                 .withVariable("date",
@@ -92,7 +93,7 @@ public class TaskVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void handleDateForCreateTaskVariablePayload_should_doNothing_when_stringIsNotADate() {
+    public void should_doNothing_when_stringIsNotADateInCreateTaskVariablePayload() {
         //given
         CreateTaskVariablePayload payload = TaskPayloadBuilder.createVariable()
                 .withVariable("notADate",
@@ -107,7 +108,7 @@ public class TaskVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void handleDateForCreateTaskVariablePayload_should_doNothing_when_itIsNotAString() {
+    public void should_doNothing_when_itIsNotAStringInCreateTaskVariablePayload() {
         //given
         CreateTaskVariablePayload payload = TaskPayloadBuilder.createVariable()
                 .withVariable("notAString",
@@ -122,7 +123,7 @@ public class TaskVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void handleDateForUpdateTaskPayload_should_convertStringToDate_when_stringRepresentsADate() {
+    public void should_convertStringToDate_when_stringRepresentsADateInUpdateTaskPayload() {
         //given
         UpdateTaskVariablePayload updateTaskVariablePayload = TaskPayloadBuilder.updateVariable().withVariable("date",
                                                                                           "1970-01-01").build();
@@ -134,7 +135,7 @@ public class TaskVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void handleDateForUpdateTaskPayload_should_convertStringToDate_when_stringRepresentsADateWithTime() {
+    public void should_convertStringToDate_when_stringRepresentsADateWithTimeInUpdateTaskPayload() {
         //given
         UpdateTaskVariablePayload updateTaskVariablePayload = TaskPayloadBuilder
                 .updateVariable()
@@ -152,7 +153,7 @@ public class TaskVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void handleDateForUpdateTaskPayload_should_doNothing_when_stringIsNotADate() {
+    public void should_doNothing_when_stringIsNotADateInUpdateTaskPayload() {
         //given
         UpdateTaskVariablePayload updateTaskVariablePayload = TaskPayloadBuilder
                 .updateVariable()
@@ -168,7 +169,7 @@ public class TaskVariablesPayloadValidatorTest {
     }
 
     @Test
-    public void handleDateForUpdateTaskPayload_should_doNothing_when_itIsNotAString() {
+    public void should_doNothing_when_itIsNotAStringInUpdateTaskPayload() {
         //given
         UpdateTaskVariablePayload updateTaskVariablePayload = TaskPayloadBuilder
                 .updateVariable()
@@ -181,6 +182,25 @@ public class TaskVariablesPayloadValidatorTest {
 
         //then
         assertThat(handledDatePayload.getValue()).isEqualTo(true);
+    }
+    
+    @Test
+    public void should_returnErrorList_when_setVariableWithWrongCharactersInName() throws Exception {
+
+        CreateTaskVariablePayload payload = TaskPayloadBuilder.createVariable()
+                .withVariable("wrong-name",
+                              10)
+                .build();
+
+        String expectedTypeErrorMessage = "wrong-name";
+
+        Throwable throwable = catchThrowable(() -> taskVariablesPayloadValidator.handleCreateTaskVariablePayload(payload));
+
+        assertThat(throwable).isInstanceOf(IllegalStateException.class); 
+        
+        assertThat(throwable.getMessage())
+            .contains(expectedTypeErrorMessage);
+        
     }
 
 }
