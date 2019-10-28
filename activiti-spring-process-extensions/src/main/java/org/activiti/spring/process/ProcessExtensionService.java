@@ -46,7 +46,7 @@ public class ProcessExtensionService {
         Map<String, ProcessExtensionModel> processExtensionModelMap = processExtensionModelDeploymentMap.get(deploymentId);
         if (processExtensionModelMap != null) {
             return processExtensionModelMap;
-    }
+        }
 
         List<ProcessExtensionModel> processExtensionModels = processExtensionLoader.loadResourcesForDeployment(deploymentId,
                 processExtensionReader);
