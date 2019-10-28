@@ -255,7 +255,8 @@ public class RuntimeTestConfiguration {
 
             String variableOne = "input-variable-name-1";
             String variableTwo = "input-variable-name-2";
-            String expressionValue = "input-variable-expression";
+            String expressionVariable = "input-variable-expression";
+            String expressionValue = "input-value-expression";
             String staticValue = "input-static-value";
             String integerConstant = "integer-constant";
 
@@ -270,6 +271,8 @@ public class RuntimeTestConfiguration {
                                   "inName"),
                             tuple(variableTwo,
                                   20),
+                            tuple(expressionVariable,
+                                    "expressionResolved"),
                             tuple(expressionValue,
                                   "expressionResolved"),
                             tuple(staticValue,

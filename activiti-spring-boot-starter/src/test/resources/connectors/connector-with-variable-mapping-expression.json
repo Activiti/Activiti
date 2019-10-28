@@ -30,6 +30,13 @@
           "description": ""
         },
         {
+          "id": "input-value-expression",
+          "name": "input-value-expression",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
           "id": "input-unmapped-variable-id",
           "name": "input-unmapped-variable-with-matching-name",
           "type": "string",
