@@ -73,7 +73,7 @@ public class ProcessExtensionService {
         Map<String, ProcessExtensionModel> processExtensionModelMap = getProcessExtensionsForDeploymentId(processDefinition.getDeploymentId());
         if (processExtensionModelMap != null) {
             processExtensionModel = processExtensionModelMap.get(processDefinition.getKey());
-    }
+        }
 
         return processExtensionModel != null ? processExtensionModel : EMPTY_EXTENSIONS;
     }
