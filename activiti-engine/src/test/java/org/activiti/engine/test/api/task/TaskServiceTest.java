@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -1433,18 +1433,15 @@ public class TaskServiceTest extends PluggableActivitiTestCase {
             assertNotNull(historicActivitiInstance);
 
             List<HistoricDetail> resultSet = historyService.createHistoricDetailQuery().variableUpdates().activityInstanceId(historicActivitiInstance.getId())
-                    .orderByTime().asc().list();
+                    .list();
 
-            assertEquals(2,
-                         resultSet.size());
-            assertEquals("variable1",
-                         ((HistoricVariableUpdate) resultSet.get(0)).getVariableName());
-            assertEquals("value1",
-                         ((HistoricVariableUpdate) resultSet.get(0)).getValue());
-            assertEquals("variable1",
-                         ((HistoricVariableUpdate) resultSet.get(1)).getVariableName());
-            assertEquals("value2",
-                         ((HistoricVariableUpdate) resultSet.get(1)).getValue());
+            assertThat(resultSet).hasSize(2);
+            assertThat(resultSet)
+                    .extracting(h -> ((HistoricVariableUpdate) h).getValue())
+                    .containsExactlyInAnyOrder("value1", "value2");
+            assertThat(resultSet)
+                    .extracting(h -> ((HistoricVariableUpdate) h).getVariableName())
+                    .containsOnly("variable1");
         }
     }
 
