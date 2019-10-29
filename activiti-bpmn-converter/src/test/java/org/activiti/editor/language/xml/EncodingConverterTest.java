@@ -13,13 +13,13 @@ public class EncodingConverterTest extends AbstractConverterTest {
 
   @Test
   public void convertXMLToModel() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
+    BpmnModel bpmnModel = readXMLFileEncoding("ISO-8859-1");
     validateModel(bpmnModel);
   }
 
   @Test
   public void convertModelToXML() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
+    BpmnModel bpmnModel = readXMLFileEncoding("ISO-8859-1");
     BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
     validateModel(parsedModel);
   }
