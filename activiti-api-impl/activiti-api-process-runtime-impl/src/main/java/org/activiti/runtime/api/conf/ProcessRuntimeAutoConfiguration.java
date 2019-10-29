@@ -118,6 +118,7 @@ import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
 import org.activiti.runtime.api.model.impl.ToActivityConverter;
 import org.activiti.runtime.api.model.impl.ToSignalConverter;
 import org.activiti.runtime.api.signal.SignalPayloadEventListener;
+import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.variable.VariableValidationService;
 import org.springframework.beans.factory.InitializingBean;
@@ -140,7 +141,7 @@ public class ProcessRuntimeAutoConfiguration {
     public SignalPayloadEventListener signalPayloadEventListener(RuntimeService runtimeService) {
         return new RuntimeSignalPayloadEventListener(runtimeService);
     }
-    
+
     /**
      * Creates default MessagePayloadEventListener bean if no existing bean found in ApplicationContext.
      */
@@ -149,9 +150,9 @@ public class ProcessRuntimeAutoConfiguration {
     public ReceiveMessagePayloadEventListener receiveMessagePayloadEventListener(RuntimeService runtimeService,
                                                                                  ManagementService managementService) {
         return new RuntimeReceiveMessagePayloadEventListener(runtimeService,
-                                                             managementService);
-    }    
-    
+                managementService);
+    }
+
     @Bean
     @ConditionalOnMissingBean(EventSubscriptionPayloadMappingProvider.class)
     public EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider(VariablesMappingProvider variablesMappingProvider) {
@@ -202,19 +203,19 @@ public class ProcessRuntimeAutoConfiguration {
     public APIProcessDefinitionConverter apiProcessDefinitionConverter(RepositoryService repositoryService) {
         return new APIProcessDefinitionConverter(repositoryService);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public ProcessVariablesPayloadValidator processVariablesValidator(DateFormatterProvider dateFormatterProvider,
-                                                                      Map<String, ProcessExtensionModel> processExtensionModelMap,
+                                                                      ProcessExtensionService processExtensionService,
                                                                       VariableValidationService variableValidationService,
                                                                       VariableNameValidator variableNameValidator) {
         return new ProcessVariablesPayloadValidator(dateFormatterProvider,
-                                                    processExtensionModelMap,
-                                                    variableValidationService,
-                                                    variableNameValidator);
+                processExtensionService,
+                variableValidationService,
+                variableNameValidator);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public APIProcessInstanceConverter apiProcessInstanceConverter() {
@@ -355,13 +356,13 @@ public class ProcessRuntimeAutoConfiguration {
     public BPMNTimerConverter bpmnTimerConveter() {
         return new BPMNTimerConverter();
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public BPMNMessageConverter bpmnMessageConveter() {
         return new BPMNMessageConverter();
     }
-    
+
     @Bean
     public BPMNErrorConverter bpmnErrorConverter() {
         return new BPMNErrorConverter();
@@ -430,8 +431,8 @@ public class ProcessRuntimeAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(name = "registerTimerCancelledListenerDelegate")
     public InitializingBean registerTimerCancelledListenerDelegate(RuntimeService runtimeService,
-                                                                  @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerCancelledEvent>> eventListeners,
-                                                                  BPMNTimerConverter bpmnTimerConverter) {
+                                                                   @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerCancelledEvent>> eventListeners,
+                                                                   BPMNTimerConverter bpmnTimerConverter) {
         return () -> runtimeService.addEventListener(new TimerCancelledListenerDelegate(getInitializedListeners(eventListeners),
                         new ToTimerCancelledConverter(bpmnTimerConverter)),
                 ActivitiEventType.JOB_CANCELED);
@@ -476,7 +477,7 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToMessageSentConverter(bpmnMessageConverter)),
                 ActivitiEventType.ACTIVITY_MESSAGE_SENT);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(name = "registerMessageReceivedListenerDelegate")
     public InitializingBean registerMessageReceivedListenerDelegate(RuntimeService runtimeService,
@@ -486,17 +487,17 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToMessageReceivedConverter(bpmnMessageConverter)),
                 ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(name = "registerMessageWaitingListenerDelegate")
     public InitializingBean registerMessageWaitingListenerDelegate(RuntimeService runtimeService,
-                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNMessageWaitingEvent>> eventListeners,
-                                                                    BPMNMessageConverter bpmnMessageConverter) {
+                                                                   @Autowired(required = false) List<BPMNElementEventListener<BPMNMessageWaitingEvent>> eventListeners,
+                                                                   BPMNMessageConverter bpmnMessageConverter) {
         return () -> runtimeService.addEventListener(new MessageWaitingListenerDelegate(getInitializedListeners(eventListeners),
                         new ToMessageWaitingConverter(bpmnMessageConverter)),
                 ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(name = "registerSequenceFlowTakenListenerDelegate")
     public InitializingBean registerSequenceFlowTakenListenerDelegate(RuntimeService runtimeService,
@@ -505,7 +506,7 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToSequenceFlowTakenConverter()),
                 ActivitiEventType.SEQUENCEFLOW_TAKEN);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(name = "registerErrorReceviedListenerDelegate")
     public InitializingBean registerErrorReceviedListenerDelegate(RuntimeService runtimeService,
