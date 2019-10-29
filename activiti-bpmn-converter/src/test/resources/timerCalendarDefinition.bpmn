@@ -2,6 +2,7 @@
 <definitions id="definitions"
              xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
              xmlns:activiti="http://activiti.org/bpmn"
+             xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
              targetNamespace="Examples">
 
   <process id="startTimerEventExampleCycle" name="Timer start event example">

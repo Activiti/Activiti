@@ -39,7 +39,7 @@ public class CollaborationExport implements BpmnXMLConstants {
       }
 
       for (MessageFlow messageFlow : model.getMessageFlows().values()) {
-        xtw.writeStartElement(ELEMENT_MESSAGE_FLOW);
+        xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_MESSAGE_FLOW, BPMN2_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_ID, messageFlow.getId());
         if (StringUtils.isNotEmpty(messageFlow.getName())) {
           xtw.writeAttribute(ATTRIBUTE_NAME, messageFlow.getName());

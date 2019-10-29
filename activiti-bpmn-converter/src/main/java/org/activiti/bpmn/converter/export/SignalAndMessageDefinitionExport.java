@@ -63,7 +63,7 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
         }
 
         for (Message message : model.getMessages()) {
-            xtw.writeStartElement(ELEMENT_MESSAGE);
+            xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_MESSAGE, BPMN2_NAMESPACE);
             String messageId = message.getId();
             // remove the namespace from the message id if set
             if (model.getTargetNamespace() != null && messageId.startsWith(model.getTargetNamespace())) {
