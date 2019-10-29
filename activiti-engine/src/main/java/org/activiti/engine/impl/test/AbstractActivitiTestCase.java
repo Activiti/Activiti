@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -95,7 +95,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
       deploymentIdFromDeploymentAnnotation = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
 
       super.runBare();
-      
+
       validateHistoryData();
 
     } catch (AssertionFailedError e) {
@@ -111,7 +111,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
       throw e;
 
     } finally {
-      
+
       if (deploymentIdFromDeploymentAnnotation != null) {
         TestHelper.annotationDeploymentTearDown(processEngine, deploymentIdFromDeploymentAnnotation, getClass(), getName());
         deploymentIdFromDeploymentAnnotation = null;
@@ -129,15 +129,15 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
       closeDownProcessEngine();
     }
   }
-  
+
   protected void validateHistoryData() {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-      
-      List<HistoricProcessInstance> historicProcessInstances = 
+
+      List<HistoricProcessInstance> historicProcessInstances =
           historyService.createHistoricProcessInstanceQuery().finished().list();
-      
+
       for (HistoricProcessInstance historicProcessInstance : historicProcessInstances) {
-        
+
         assertNotNull("Historic process instance has no process definition id", historicProcessInstance.getProcessDefinitionId());
         assertNotNull("Historic process instance has no process definition key", historicProcessInstance.getProcessDefinitionKey());
         assertNotNull("Historic process instance has no process definition version", historicProcessInstance.getProcessDefinitionVersion());
@@ -145,9 +145,9 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
         assertNotNull("Historic process instance has no start activiti id", historicProcessInstance.getStartActivityId());
         assertNotNull("Historic process instance has no start time", historicProcessInstance.getStartTime());
         assertNotNull("Historic process instance has no end time", historicProcessInstance.getEndTime());
-        
+
         String processInstanceId = historicProcessInstance.getId();
-        
+
         // tasks
         List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
             .processInstanceId(processInstanceId).list();
@@ -167,7 +167,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
             assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no end time", historicTaskInstance.getEndTime());
           }
         }
-        
+
         // activities
         List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery()
             .processInstanceId(processInstanceId).list();
@@ -184,7 +184,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
           }
         }
       }
-      
+
     }
   }
 
@@ -249,17 +249,17 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
     if (processInstance != null) {
       throw new AssertionFailedError("Expected finished process instance '" + processInstanceId + "' but it was still in the db");
     }
-    
+
     // Verify historical data if end times are correctly set
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-      
+
       // process instance
       HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery()
           .processInstanceId(processInstanceId).singleResult();
       assertEquals(processInstanceId, historicProcessInstance.getId());
       assertNotNull("Historic process instance has no start time", historicProcessInstance.getStartTime());
       assertNotNull("Historic process instance has no end time", historicProcessInstance.getEndTime());
-      
+
       // tasks
       List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
           .processInstanceId(processInstanceId).list();
@@ -270,7 +270,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
           assertNotNull("Historic task " + historicTaskInstance.getTaskDefinitionKey() + " has no end time", historicTaskInstance.getEndTime());
         }
       }
-      
+
       // activities
       List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery()
           .processInstanceId(processInstanceId).list();
@@ -295,7 +295,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
   public void executeJobExecutorForTime(long maxMillisToWait, long intervalMillis) {
     JobTestHelper.executeJobExecutorForTime(processEngineConfiguration, maxMillisToWait, intervalMillis);
   }
-  
+
   public void waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(long maxMillisToWait, long intervalMillis) {
     JobTestHelper.waitForJobExecutorToProcessAllJobsAndExecutableTimerJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis);
   }
@@ -306,6 +306,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
    */
   public BpmnModel createOneTaskTestProcess() {
     BpmnModel model = new BpmnModel();
+    model.addNamespace("bpmn2", "http://www.omg.org/spec/BPMN/20100524/MODEL");
     org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
     model.addProcess(process);
     process.setId("oneTaskProcess");
@@ -333,6 +334,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
 
   public BpmnModel createTwoTasksTestProcess() {
     BpmnModel model = new BpmnModel();
+    model.addNamespace("bpmn2", "http://www.omg.org/spec/BPMN/20100524/MODEL");
     org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
     model.addProcess(process);
     process.setId("twoTasksProcess");
@@ -368,7 +370,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
 
   /**
    * Creates and deploys the one task process. See {@link #createOneTaskTestProcess()}.
-   * 
+   *
    * @return The process definition id (NOT the process definition key) of deployed one task process.
    */
   public String deployOneTaskTestProcess() {
@@ -390,7 +392,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
     return processDefinition.getId();
   }
-  
+
   //
   // HELPERS
   //
@@ -412,7 +414,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
       }
     }
   }
-  
+
   protected void assertHistoricActivitiesDeleteReason(ProcessInstance processInstance, String expectedDeleteReason, String ... activityIds) {
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       for (String activityId : activityIds) {
@@ -422,7 +424,7 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
         for (HistoricActivityInstance historicActivityInstance : historicActivityInstances) {
           assertNotNull(historicActivityInstance.getEndTime());
           if (expectedDeleteReason == null) {
-            assertNull(historicActivityInstance.getDeleteReason()); 
+            assertNull(historicActivityInstance.getDeleteReason());
           } else {
             assertTrue(historicActivityInstance.getDeleteReason().startsWith(expectedDeleteReason));
           }
@@ -430,5 +432,5 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
       }
     }
   }
-  
+
 }
