@@ -32,6 +32,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -259,6 +260,10 @@ public class RuntimeTestConfiguration {
             String expressionValue = "input-value-expression";
             String staticValue = "input-static-value";
             String integerConstant = "integer-constant";
+            
+            Map<String,Object> variableOneValue = new HashMap<>();
+            variableOneValue.put("name","John");
+            variableOneValue.put("surname","Doe");
 
             Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
             Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
@@ -268,7 +273,7 @@ public class RuntimeTestConfiguration {
                                 Map.Entry::getValue)
                     .containsOnly(
                             tuple(variableOne,
-                                  "inName"),
+                                  variableOneValue),
                             tuple(variableTwo,
                                   20),
                             tuple(expressionVariable,

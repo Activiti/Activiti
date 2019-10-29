@@ -11,7 +11,7 @@
         {
           "id": "input-variable-1",
           "name": "input-variable-name-1",
-          "type": "string",
+          "type": "json",
           "required": false,
           "description": ""
         },
