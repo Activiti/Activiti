@@ -26,6 +26,7 @@ import org.activiti.bpmn.model.FlowNode;
  */
 public class EndEventXMLConverter extends BaseBpmnXMLConverter {
 
+  @Override
   public Class<? extends BaseElement> getBpmnElementType() {
     return EndEvent.class;
   }
@@ -49,8 +50,8 @@ public class EndEventXMLConverter extends BaseBpmnXMLConverter {
 
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+    BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode)element, xtw);
     EndEvent endEvent = (EndEvent) element;
     writeEventDefinitions(endEvent, endEvent.getEventDefinitions(), model, xtw);
-    BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode)element, xtw);
   }
 }
