@@ -41,9 +41,6 @@ import org.activiti.engine.impl.cmd.GetHistoricIdentityLinksForTaskCmd;
  */
 public class HistoryServiceImpl extends ServiceImpl implements HistoryService {
 
-  public HistoryServiceImpl() {
-
-  }
 
   public HistoryServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);

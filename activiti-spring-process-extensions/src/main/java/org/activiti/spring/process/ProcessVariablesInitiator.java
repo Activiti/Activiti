@@ -33,7 +33,7 @@ import java.util.Set;
 
 public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
-    private final ProcessExtensionService processExtensionService;
+    private ProcessExtensionService processExtensionService;
 
     private final VariableParsingService variableParsingService;
 
@@ -53,22 +53,20 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
             ProcessExtensionModel processExtensionModel = processExtensionService.getExtensionsFor(processDefinition);
 
-            processExtensionService.cache(processDefinition);
             Map<String, VariableDefinition> variableDefinitionMap = processExtensionModel.getExtensions().getProperties();
-            processedVariables = processVariables(variables,
-                                                                      variableDefinitionMap);
+            processedVariables = processVariables(variables, variableDefinitionMap);
 
             Set<String> missingRequiredVars = checkRequiredVariables(processedVariables,
-                                                                     variableDefinitionMap);
+                    variableDefinitionMap);
             if (!missingRequiredVars.isEmpty()) {
                 throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' without required variables - " + String.join(", ",
-                                                                                                                                                   missingRequiredVars));
+                        missingRequiredVars));
             }
             Set<String> varsWithMismatchedTypes = validateVariablesAgainstDefinitions(processedVariables,
-                                                                                      variableDefinitionMap);
+                    variableDefinitionMap);
             if (!varsWithMismatchedTypes.isEmpty()) {
                 throw new ActivitiException("Can't start process '" + processDefinition.getKey() + "' as variables fail type validation - " + String.join(", ",
-                                                                                                                                                          varsWithMismatchedTypes));
+                        varsWithMismatchedTypes));
             }
         }
 
@@ -77,31 +75,31 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
     @Override
     public ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
-                                                                          String businessKey,
-                                                                          String processInstanceName,
-                                                                          FlowElement initialFlowElement,
-                                                                          Process process,
-                                                                          Map<String, Object> variables,
-                                                                          Map<String, Object> transientVariables) {
+                                                                       String businessKey,
+                                                                       String processInstanceName,
+                                                                       FlowElement initialFlowElement,
+                                                                       Process process,
+                                                                       Map<String, Object> variables,
+                                                                       Map<String, Object> transientVariables) {
         Map<String, Object> processVariables = variables;
-        
+
         if (processExtensionService.hasExtensionsFor(processDefinition)) {
             processVariables = calculateVariablesFromExtensionFile(processDefinition,
-                                                                   variables);
+                    variables);
         }
-        
+
         return super.createProcessInstanceWithInitialFlowElement(processDefinition,
-                                                                 businessKey,
-                                                                 processInstanceName,
-                                                                 initialFlowElement,
-                                                                 process,
-                                                                 processVariables,
-                                                                 transientVariables);
-    }    
-    
+                businessKey,
+                processInstanceName,
+                initialFlowElement,
+                process,
+                processVariables,
+                transientVariables);
+    }
+
     private Map<String, Object> processVariables(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
         Map<String, Object> newVarsMap = new HashMap<>(Optional.ofNullable(variables).orElse(Collections.emptyMap()));
-        variableDefinitionMap.forEach((k,v) -> {
+        variableDefinitionMap.forEach((k, v) -> {
             if (!newVarsMap.containsKey(v.getName()) && v.getValue() != null) {
                 newVarsMap.put(v.getName(), createDefaultVariableValue(v));
             }
@@ -116,7 +114,7 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
     private Set<String> checkRequiredVariables(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
         Set<String> missingRequiredVars = new HashSet<>();
-        variableDefinitionMap.forEach((k,v) -> {
+        variableDefinitionMap.forEach((k, v) -> {
             if (!variables.containsKey(v.getName()) && v.isRequired()) {
                 missingRequiredVars.add(v.getName());
             }
@@ -126,10 +124,10 @@ public class ProcessVariablesInitiator extends ProcessInstanceHelper {
 
     private Set<String> validateVariablesAgainstDefinitions(Map<String, Object> variables, Map<String, VariableDefinition> variableDefinitionMap) {
         Set<String> mismatchedVars = new HashSet<>();
-        variableDefinitionMap.forEach((k,v) -> {
+        variableDefinitionMap.forEach((k, v) -> {
             //if we have definition for this variable then validate it
-            if (variables.containsKey(v.getName()) ) {
-                if(!variableValidationService.validate(variables.get(v.getName()),v)){
+            if (variables.containsKey(v.getName())) {
+                if (!variableValidationService.validate(variables.get(v.getName()), v)) {
                     mismatchedVars.add(v.getName());
                 }
             }

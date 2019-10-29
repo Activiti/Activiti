@@ -16,35 +16,11 @@
 
 package org.activiti.runtime.api.conf;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
-import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
-import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
-import org.activiti.api.process.model.events.BPMNErrorReceivedEvent;
-import org.activiti.api.process.model.events.BPMNMessageReceivedEvent;
-import org.activiti.api.process.model.events.BPMNMessageSentEvent;
-import org.activiti.api.process.model.events.BPMNMessageWaitingEvent;
-import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
-import org.activiti.api.process.model.events.BPMNSignalReceivedEvent;
-import org.activiti.api.process.model.events.BPMNTimerCancelledEvent;
-import org.activiti.api.process.model.events.BPMNTimerExecutedEvent;
-import org.activiti.api.process.model.events.BPMNTimerFailedEvent;
-import org.activiti.api.process.model.events.BPMNTimerFiredEvent;
-import org.activiti.api.process.model.events.BPMNTimerRetriesDecrementedEvent;
-import org.activiti.api.process.model.events.BPMNTimerScheduledEvent;
+import org.activiti.api.process.model.events.*;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
-import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
-import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
-import org.activiti.api.process.runtime.events.ProcessCreatedEvent;
-import org.activiti.api.process.runtime.events.ProcessResumedEvent;
-import org.activiti.api.process.runtime.events.ProcessStartedEvent;
-import org.activiti.api.process.runtime.events.ProcessSuspendedEvent;
-import org.activiti.api.process.runtime.events.ProcessUpdatedEvent;
+import org.activiti.api.process.runtime.events.*;
 import org.activiti.api.process.runtime.events.listener.BPMNElementEventListener;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.events.VariableEventListener;
@@ -56,69 +32,13 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.runtime.api.conf.impl.ProcessRuntimeConfigurationImpl;
-import org.activiti.runtime.api.event.impl.BPMNErrorConverter;
-import org.activiti.runtime.api.event.impl.BPMNMessageConverter;
-import org.activiti.runtime.api.event.impl.BPMNTimerConverter;
-import org.activiti.runtime.api.event.impl.ToAPIProcessCreatedEventConverter;
-import org.activiti.runtime.api.event.impl.ToAPIProcessStartedEventConverter;
-import org.activiti.runtime.api.event.impl.ToActivityCancelledConverter;
-import org.activiti.runtime.api.event.impl.ToActivityCompletedConverter;
-import org.activiti.runtime.api.event.impl.ToActivityStartedConverter;
-import org.activiti.runtime.api.event.impl.ToErrorReceivedConverter;
-import org.activiti.runtime.api.event.impl.ToMessageReceivedConverter;
-import org.activiti.runtime.api.event.impl.ToMessageSentConverter;
-import org.activiti.runtime.api.event.impl.ToMessageWaitingConverter;
-import org.activiti.runtime.api.event.impl.ToProcessCancelledConverter;
-import org.activiti.runtime.api.event.impl.ToProcessCompletedConverter;
-import org.activiti.runtime.api.event.impl.ToProcessResumedConverter;
-import org.activiti.runtime.api.event.impl.ToProcessSuspendedConverter;
-import org.activiti.runtime.api.event.impl.ToProcessUpdatedConverter;
-import org.activiti.runtime.api.event.impl.ToSequenceFlowTakenConverter;
-import org.activiti.runtime.api.event.impl.ToSignalReceivedConverter;
-import org.activiti.runtime.api.event.impl.ToTimerCancelledConverter;
-import org.activiti.runtime.api.event.impl.ToTimerExecutedConverter;
-import org.activiti.runtime.api.event.impl.ToTimerFailedConverter;
-import org.activiti.runtime.api.event.impl.ToTimerFiredConverter;
-import org.activiti.runtime.api.event.impl.ToTimerRetriesDecrementedConverter;
-import org.activiti.runtime.api.event.impl.ToTimerScheduledConverter;
-import org.activiti.runtime.api.event.internal.ActivityCancelledListenerDelegate;
-import org.activiti.runtime.api.event.internal.ActivityCompletedListenerDelegate;
-import org.activiti.runtime.api.event.internal.ActivityStartedListenerDelegate;
-import org.activiti.runtime.api.event.internal.ErrorReceivedListenerDelegate;
-import org.activiti.runtime.api.event.internal.MessageReceivedListenerDelegate;
-import org.activiti.runtime.api.event.internal.MessageSentListenerDelegate;
-import org.activiti.runtime.api.event.internal.MessageWaitingListenerDelegate;
-import org.activiti.runtime.api.event.internal.ProcessCancelledListenerDelegate;
-import org.activiti.runtime.api.event.internal.ProcessCompletedListenerDelegate;
-import org.activiti.runtime.api.event.internal.ProcessCreatedListenerDelegate;
-import org.activiti.runtime.api.event.internal.ProcessResumedEventListenerDelegate;
-import org.activiti.runtime.api.event.internal.ProcessStartedListenerDelegate;
-import org.activiti.runtime.api.event.internal.ProcessSuspendedListenerDelegate;
-import org.activiti.runtime.api.event.internal.ProcessUpdatedListenerDelegate;
-import org.activiti.runtime.api.event.internal.SequenceFlowTakenListenerDelegate;
-import org.activiti.runtime.api.event.internal.SignalReceivedListenerDelegate;
-import org.activiti.runtime.api.event.internal.TimerCancelledListenerDelegate;
-import org.activiti.runtime.api.event.internal.TimerExecutedListenerDelegate;
-import org.activiti.runtime.api.event.internal.TimerFailedListenerDelegate;
-import org.activiti.runtime.api.event.internal.TimerFiredListenerDelegate;
-import org.activiti.runtime.api.event.internal.TimerRetriesDecrementedListenerDelegate;
-import org.activiti.runtime.api.event.internal.TimerScheduledListenerDelegate;
-import org.activiti.runtime.api.impl.EventSubscriptionVariablesMappingProvider;
-import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
-import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
-import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
-import org.activiti.runtime.api.impl.RuntimeReceiveMessagePayloadEventListener;
-import org.activiti.runtime.api.impl.RuntimeSignalPayloadEventListener;
-import org.activiti.runtime.api.impl.VariableNameValidator;
-import org.activiti.runtime.api.impl.VariablesMappingProvider;
+import org.activiti.runtime.api.event.impl.*;
+import org.activiti.runtime.api.event.internal.*;
+import org.activiti.runtime.api.impl.*;
 import org.activiti.runtime.api.message.ReceiveMessagePayloadEventListener;
-import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
-import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
-import org.activiti.runtime.api.model.impl.APIVariableInstanceConverter;
-import org.activiti.runtime.api.model.impl.ToActivityConverter;
-import org.activiti.runtime.api.model.impl.ToSignalConverter;
+import org.activiti.runtime.api.model.impl.*;
 import org.activiti.runtime.api.signal.SignalPayloadEventListener;
-import org.activiti.spring.process.model.ProcessExtensionModel;
+import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.variable.VariableValidationService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,6 +47,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @AutoConfigureAfter(CommonRuntimeAutoConfiguration.class)
@@ -140,7 +63,7 @@ public class ProcessRuntimeAutoConfiguration {
     public SignalPayloadEventListener signalPayloadEventListener(RuntimeService runtimeService) {
         return new RuntimeSignalPayloadEventListener(runtimeService);
     }
-    
+
     /**
      * Creates default MessagePayloadEventListener bean if no existing bean found in ApplicationContext.
      */
@@ -149,9 +72,9 @@ public class ProcessRuntimeAutoConfiguration {
     public ReceiveMessagePayloadEventListener receiveMessagePayloadEventListener(RuntimeService runtimeService,
                                                                                  ManagementService managementService) {
         return new RuntimeReceiveMessagePayloadEventListener(runtimeService,
-                                                             managementService);
-    }    
-    
+                managementService);
+    }
+
     @Bean
     @ConditionalOnMissingBean(EventSubscriptionPayloadMappingProvider.class)
     public EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider(VariablesMappingProvider variablesMappingProvider) {
@@ -202,19 +125,19 @@ public class ProcessRuntimeAutoConfiguration {
     public APIProcessDefinitionConverter apiProcessDefinitionConverter(RepositoryService repositoryService) {
         return new APIProcessDefinitionConverter(repositoryService);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public ProcessVariablesPayloadValidator processVariablesValidator(DateFormatterProvider dateFormatterProvider,
-                                                                      Map<String, ProcessExtensionModel> processExtensionModelMap,
+                                                                      ProcessExtensionService processExtensionService,
                                                                       VariableValidationService variableValidationService,
                                                                       VariableNameValidator variableNameValidator) {
         return new ProcessVariablesPayloadValidator(dateFormatterProvider,
-                                                    processExtensionModelMap,
-                                                    variableValidationService,
-                                                    variableNameValidator);
+                processExtensionService,
+                variableValidationService,
+                variableNameValidator);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public APIProcessInstanceConverter apiProcessInstanceConverter() {
@@ -355,13 +278,13 @@ public class ProcessRuntimeAutoConfiguration {
     public BPMNTimerConverter bpmnTimerConveter() {
         return new BPMNTimerConverter();
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public BPMNMessageConverter bpmnMessageConveter() {
         return new BPMNMessageConverter();
     }
-    
+
     @Bean
     public BPMNErrorConverter bpmnErrorConverter() {
         return new BPMNErrorConverter();
@@ -430,8 +353,8 @@ public class ProcessRuntimeAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(name = "registerTimerCancelledListenerDelegate")
     public InitializingBean registerTimerCancelledListenerDelegate(RuntimeService runtimeService,
-                                                                  @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerCancelledEvent>> eventListeners,
-                                                                  BPMNTimerConverter bpmnTimerConverter) {
+                                                                   @Autowired(required = false) List<BPMNElementEventListener<BPMNTimerCancelledEvent>> eventListeners,
+                                                                   BPMNTimerConverter bpmnTimerConverter) {
         return () -> runtimeService.addEventListener(new TimerCancelledListenerDelegate(getInitializedListeners(eventListeners),
                         new ToTimerCancelledConverter(bpmnTimerConverter)),
                 ActivitiEventType.JOB_CANCELED);
@@ -476,7 +399,7 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToMessageSentConverter(bpmnMessageConverter)),
                 ActivitiEventType.ACTIVITY_MESSAGE_SENT);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(name = "registerMessageReceivedListenerDelegate")
     public InitializingBean registerMessageReceivedListenerDelegate(RuntimeService runtimeService,
@@ -486,17 +409,17 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToMessageReceivedConverter(bpmnMessageConverter)),
                 ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(name = "registerMessageWaitingListenerDelegate")
     public InitializingBean registerMessageWaitingListenerDelegate(RuntimeService runtimeService,
-                                                                    @Autowired(required = false) List<BPMNElementEventListener<BPMNMessageWaitingEvent>> eventListeners,
-                                                                    BPMNMessageConverter bpmnMessageConverter) {
+                                                                   @Autowired(required = false) List<BPMNElementEventListener<BPMNMessageWaitingEvent>> eventListeners,
+                                                                   BPMNMessageConverter bpmnMessageConverter) {
         return () -> runtimeService.addEventListener(new MessageWaitingListenerDelegate(getInitializedListeners(eventListeners),
                         new ToMessageWaitingConverter(bpmnMessageConverter)),
                 ActivitiEventType.ACTIVITY_MESSAGE_WAITING);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(name = "registerSequenceFlowTakenListenerDelegate")
     public InitializingBean registerSequenceFlowTakenListenerDelegate(RuntimeService runtimeService,
@@ -505,7 +428,7 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToSequenceFlowTakenConverter()),
                 ActivitiEventType.SEQUENCEFLOW_TAKEN);
     }
-    
+
     @Bean
     @ConditionalOnMissingBean(name = "registerErrorReceviedListenerDelegate")
     public InitializingBean registerErrorReceviedListenerDelegate(RuntimeService runtimeService,
