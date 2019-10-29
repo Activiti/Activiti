@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class UserTask extends Task {
+public class UserTask extends Task implements AcceptUpdates {
 
   protected String assignee;
   protected String owner;
@@ -35,9 +35,9 @@ public class UserTask extends Task {
   protected List<ActivitiListener> taskListeners = new ArrayList<ActivitiListener>();
   protected String skipExpression;
 
-  protected Map<String, Set<String>> customUserIdentityLinks = new HashMap<String, Set<String>>(); 
+  protected Map<String, Set<String>> customUserIdentityLinks = new HashMap<String, Set<String>>();
   protected Map<String, Set<String>> customGroupIdentityLinks = new HashMap<String, Set<String>>();
-  
+
   protected List<CustomProperty> customProperties = new ArrayList<CustomProperty>();
 
   public String getAssignee() {
@@ -176,14 +176,14 @@ public class UserTask extends Task {
   public void setCustomGroupIdentityLinks(Map<String, Set<String>> customGroupIdentityLinks) {
     this.customGroupIdentityLinks = customGroupIdentityLinks;
   }
-  
+
   public List<CustomProperty> getCustomProperties() {
     return customProperties;
   }
   public void setCustomProperties(List<CustomProperty> customProperties) {
     this.customProperties = customProperties;
   }
-  
+
   public String getSkipExpression() {
     return skipExpression;
   }
@@ -208,7 +208,7 @@ public class UserTask extends Task {
     setCategory(otherElement.getCategory());
     setExtensionId(otherElement.getExtensionId());
     setSkipExpression(otherElement.getSkipExpression());
-    
+
     setCandidateGroups(new ArrayList<String>(otherElement.getCandidateGroups()));
     setCandidateUsers(new ArrayList<String>(otherElement.getCandidateUsers()));
 
@@ -229,4 +229,10 @@ public class UserTask extends Task {
       }
     }
   }
+
+    @Override
+    public void accept(ReferenceOverrider referenceOverrider) {
+        referenceOverrider.override(this);
+    }
+
 }

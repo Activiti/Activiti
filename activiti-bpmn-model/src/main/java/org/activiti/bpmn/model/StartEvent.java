@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StartEvent extends Event {
+public class StartEvent extends Event implements AcceptUpdates {
 
   protected String initiator;
   protected String formKey;
@@ -65,7 +65,7 @@ public class StartEvent extends Event {
     setInitiator(otherEvent.getInitiator());
     setFormKey(otherEvent.getFormKey());
     setInterrupting(otherEvent.isInterrupting);
-    
+
     formProperties = new ArrayList<FormProperty>();
     if (otherEvent.getFormProperties() != null && !otherEvent.getFormProperties().isEmpty()) {
       for (FormProperty property : otherEvent.getFormProperties()) {
@@ -73,4 +73,9 @@ public class StartEvent extends Event {
       }
     }
   }
+
+    @Override
+    public void accept(ReferenceOverrider referenceOverrider) {
+        referenceOverrider.override(this);
+    }
 }
