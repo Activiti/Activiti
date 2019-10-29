@@ -64,6 +64,7 @@ public class ProcessRuntimeVariableMappingTest {
                         tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTestExpression"),
                         tuple("valueToResolve", "expressionResolved"),
                         tuple("variableToResolve", "${valueToResolve}"),
+                        tuple("surname", "Doe"),
                         tuple("out-unmapped-variable-matching-name", "defaultExpression"),
                         tuple("output-unmapped-variable-with-non-matching-connector-output-name", "defaultExpression")
                 );

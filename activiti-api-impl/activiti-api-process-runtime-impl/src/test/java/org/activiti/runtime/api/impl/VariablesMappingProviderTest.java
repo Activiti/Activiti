@@ -387,6 +387,12 @@ public class VariablesMappingProviderTest {
 
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
 
+        Map<String, Object> var1 = new HashMap<>();
+        var1.put("prop1",
+                 "property 1");
+        var1.put("prop2",
+                 "expressionResolved");
+
         assertThat(inputVariables).isNotEmpty();
         assertThat(inputVariables.entrySet()).extracting(Map.Entry::getKey,
                                                          Map.Entry::getValue)
@@ -395,7 +401,7 @@ public class VariablesMappingProviderTest {
                               tuple("process_constant_2",
                                     "constant_2_value"),
                               tuple("task_input_variable_name_1",
-                                    "variable_value_2"),
+                                    var1),
                               tuple("task_input_variable_name_2",
                                     "static_value_1"));
 

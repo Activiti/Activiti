@@ -37,10 +37,17 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 @Configuration
-@Import({ProcessCleanUpUtil.class, 
-         TaskCleanUpUtil.class, 
-         SecurityUtil.class, 
+@Import({ProcessCleanUpUtil.class,
+         TaskCleanUpUtil.class,
+         SecurityUtil.class,
          ProcessBaseRuntime.class,
          TaskBaseRuntime.class})
 public class RuntimeTestConfiguration {
@@ -66,7 +73,7 @@ public class RuntimeTestConfiguration {
     public static Set<TaskCandidateUserAddedEvent> taskCandidateUserAddedEvents = new HashSet<>();
 
     public static Set<TaskCandidateUserRemovedEvent> taskCandidateUserRemovedEvents = new HashSet<>();
-    
+
     @Bean
     public UserDetailsService myUserDetailsService() {
         ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
@@ -185,7 +192,7 @@ public class RuntimeTestConfiguration {
     public BPMNElementEventListener<BPMNSequenceFlowTakenEvent> sequenceFlowTakenEventListener() {
         return sequenceFlowTakenEvent -> sequenceFlowTakenEvents.add(sequenceFlowTakenEvent);
     }
-    
+
     @Bean
     public VariableEventListener<VariableCreatedEvent> variableCreatedEventFromProcessInstanceListener() {
         return variableCreatedEvent -> {
@@ -235,7 +242,7 @@ public class RuntimeTestConfiguration {
                                   "a static value"),
                             tuple(integerConstant,
                                   10));
-            
+
             integrationContext.addOutBoundVariable("out_variable_name_1",
                                                    "outName");
             integrationContext.addOutBoundVariable("out_variable_name_2",
@@ -247,7 +254,7 @@ public class RuntimeTestConfiguration {
             return integrationContext;
         };
     }
-    
+
     @Bean(name = "Variable Mapping Expression Connector.variableMappingExpressionActionName")
     public Connector variableMappingExpressionActionName() {
         return integrationContext -> {
@@ -260,6 +267,10 @@ public class RuntimeTestConfiguration {
             String staticValue = "input-static-value";
             String integerConstant = "integer-constant";
 
+            Map<String,Object> variableOneValue = new HashMap<>();
+            variableOneValue.put("name","John");
+            variableOneValue.put("surname","Doe");
+
             Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
             Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
 
@@ -268,7 +279,7 @@ public class RuntimeTestConfiguration {
                                 Map.Entry::getValue)
                     .containsOnly(
                             tuple(variableOne,
-                                  "inName"),
+                                  variableOneValue),
                             tuple(variableTwo,
                                   20),
                             tuple(expressionVariable,
@@ -279,7 +290,7 @@ public class RuntimeTestConfiguration {
                                   "a static value"),
                             tuple(integerConstant,
                                   10));
-            
+
             integrationContext.addOutBoundVariable("out-variable-name-1",
                                                    "outName");
             integrationContext.addOutBoundVariable("out-variable-name-2",
