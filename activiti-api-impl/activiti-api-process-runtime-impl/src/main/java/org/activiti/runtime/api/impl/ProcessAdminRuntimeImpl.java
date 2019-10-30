@@ -61,7 +61,7 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     private final APIProcessInstanceConverter processInstanceConverter;
 
     private final ApplicationEventPublisher eventPublisher;
-    
+
     private final ProcessVariablesPayloadValidator processVariablesValidator;
 
     public ProcessAdminRuntimeImpl(RepositoryService repositoryService,
@@ -129,13 +129,13 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         if (processDefinition == null) {
             throw new IllegalStateException("At least Process Definition Id or Key needs to be provided to start a process");
         }
-        
-        processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, startProcessPayload.getProcessDefinitionKey()); 
-        
+
+        processVariablesValidator.checkStartProcessPayloadVariables(startProcessPayload, processDefinition.getId());
+
         return processInstanceConverter.from(runtimeService
                 .createProcessInstanceBuilder()
-                .processDefinitionId(startProcessPayload.getProcessDefinitionId())
-                .processDefinitionKey(startProcessPayload.getProcessDefinitionKey())
+                .processDefinitionId(processDefinition.getId())
+                .processDefinitionKey(processDefinition.getKey())
                 .businessKey(startProcessPayload.getBusinessKey())
                 .variables(startProcessPayload.getVariables())
                 .name(startProcessPayload.getName())
@@ -208,9 +208,9 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     @Transactional
     public void signal(SignalPayload signalPayload) {
-        processVariablesValidator.checkSignalPayloadVariables(signalPayload, 
-                                                              null);     
-        
+        processVariablesValidator.checkSignalPayloadVariables(signalPayload,
+                                                              null);
+
         eventPublisher.publishEvent(signalPayload);
     }
 
@@ -242,10 +242,10 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     public void setVariables(SetProcessVariablesPayload setProcessVariablesPayload) {
         ProcessInstanceImpl processInstance = (ProcessInstanceImpl) processInstance(setProcessVariablesPayload.getProcessInstanceId());
-        
-        processVariablesValidator.checkPayloadVariables(setProcessVariablesPayload, 
-                                                        processInstance.getProcessDefinitionKey());    
-        
+
+        processVariablesValidator.checkPayloadVariables(setProcessVariablesPayload,
+                                                        processInstance.getProcessDefinitionId());
+
         runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
                 setProcessVariablesPayload.getVariables());
 
@@ -260,8 +260,8 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
     @Override
     @Transactional
     public void receive(ReceiveMessagePayload messagePayload) {
-        processVariablesValidator.checkReceiveMessagePayloadVariables(messagePayload, 
-                                                                      null); 
+        processVariablesValidator.checkReceiveMessagePayloadVariables(messagePayload,
+                                                                      null);
         eventPublisher.publishEvent(messagePayload);
     }
 
@@ -270,10 +270,10 @@ public class ProcessAdminRuntimeImpl implements ProcessAdminRuntime {
         String messageName = messagePayload.getName();
         String businessKey = messagePayload.getBusinessKey();
         Map<String, Object> variables = messagePayload.getVariables();
-        
-        processVariablesValidator.checkStartMessagePayloadVariables(messagePayload, 
-                                                                    null);    
-        
+
+        processVariablesValidator.checkStartMessagePayloadVariables(messagePayload,
+                                                                    null);
+
         ProcessInstance processInstance = processInstanceConverter.from(runtimeService.startProcessInstanceByMessage(messageName,
                                                                                                                      businessKey,
                                                                                                                      variables));

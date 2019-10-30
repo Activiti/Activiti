@@ -13,7 +13,6 @@
 
 package org.activiti.spring.process.conf;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +20,8 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.RepositoryService;
+import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
+import org.activiti.spring.process.ProcessExtensionResourceReader;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.ProcessVariablesInitiator;
 import org.activiti.spring.process.model.ProcessExtensionModel;
@@ -30,16 +31,18 @@ import org.activiti.spring.process.variable.types.DateVariableType;
 import org.activiti.spring.process.variable.types.JavaObjectVariableType;
 import org.activiti.spring.process.variable.types.JsonObjectVariableType;
 import org.activiti.spring.process.variable.types.VariableType;
+import org.activiti.spring.resources.DeploymentResourceLoader;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.support.ResourcePatternResolver;
 
 @Configuration
 public class ProcessExtensionsAutoConfiguration {
 
     @Bean
+    @ConditionalOnMissingBean
     public ProcessVariablesInitiator processVariablesInitiator(ProcessExtensionService processExtensionService,
                                                                VariableParsingService variableParsingService,
                                                                VariableValidationService variableValidationService) {
@@ -49,32 +52,52 @@ public class ProcessExtensionsAutoConfiguration {
     }
 
     @Bean
-    public Map<String, ProcessExtensionModel> processExtensionsMap(ProcessExtensionService processExtensionService) throws IOException {
-        return processExtensionService.readProcessExtensions();
-
+    @ConditionalOnMissingBean
+    public DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader() {
+        return new DeploymentResourceLoader<>();
     }
 
     @Bean
-    public ProcessExtensionService processExtensionService(@Value("${activiti.process.extensions.dir:classpath:/processes/}") String processExtensionsRoot,
-                                                            @Value("${activiti.process.extensions.suffix:**-extensions.json}") String processExtensionsSuffix,
-                                                            ObjectMapper objectMapper,
-                                                            ResourcePatternResolver resourceLoader,
+    @ConditionalOnMissingBean
+    public ProcessExtensionResourceReader processExtensionResourceReader(ObjectMapper objectMapper,
                                                             Map<String, VariableType> variableTypeMap) {
-        return new ProcessExtensionService(processExtensionsRoot,
-                                           processExtensionsSuffix,
-                                           objectMapper,
-                                           resourceLoader,
-                                           variableTypeMap);
+        return new ProcessExtensionResourceReader(objectMapper, variableTypeMap);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessExtensionService processExtensionService(ProcessExtensionResourceReader processExtensionResourceReader,
+                                                           DeploymentResourceLoader<ProcessExtensionModel> deploymentResourceLoader) {
+        return new ProcessExtensionService(
+                deploymentResourceLoader,
+                processExtensionResourceReader);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinderDescriptor(
+            @Value("${activiti.process.extensions.dir:classpath:**/processes/}") String locationPrefix,
+            @Value("${activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix) {
+        return new ProcessExtensionResourceFinderDescriptor(true,
+                locationPrefix,
+                locationSuffix);
     }
 
     @Bean
     InitializingBean initRepositoryServiceForProcessExtensionService(RepositoryService repositoryService,
-                                                                     ProcessExtensionService processExtensionService){
+                                                                     ProcessExtensionService processExtensionService) {
         return () -> processExtensionService.setRepositoryService(repositoryService);
     }
 
     @Bean
-    public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper, 
+    InitializingBean initRepositoryServiceForDeploymentResourceLoader(RepositoryService repositoryService,
+                                                                      DeploymentResourceLoader deploymentResourceLoader) {
+        return () -> deploymentResourceLoader.setRepositoryService(repositoryService);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(name = "variableTypeMap")
+    public Map<String, VariableType> variableTypeMap(ObjectMapper objectMapper,
                                                      DateFormatterProvider dateFormatterProvider) {
         Map<String, VariableType> variableTypeMap = new HashMap<>();
         variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));

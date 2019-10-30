@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -80,9 +80,6 @@ import org.activiti.engine.task.TaskQuery;
  */
 public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
-  public TaskServiceImpl() {
-
-  }
 
   public TaskServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
     super(processEngineConfiguration);
@@ -195,7 +192,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public void complete(String taskId, Map<String, Object> variables) {
     commandExecutor.execute(new CompleteTaskCmd(taskId, variables));
   }
-  
+
   @Override
   public void complete(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
     commandExecutor.execute(new CompleteTaskCmd(taskId, variables, transientVariables));
@@ -216,7 +213,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public void resolveTask(String taskId, Map<String, Object> variables) {
     commandExecutor.execute(new ResolveTaskCmd(taskId, variables));
   }
-  
+
   @Override
   public void resolveTask(String taskId, Map<String, Object> variables, Map<String, Object> transientVariables) {
     commandExecutor.execute(new ResolveTaskCmd(taskId, variables, transientVariables));
@@ -275,7 +272,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public <T> T getVariableLocal(String taskId, String variableName, Class<T> variableClass) {
     return variableClass.cast(getVariableLocal(taskId, variableName));
   }
-  
+
   public List<VariableInstance> getVariableInstancesLocalByTaskIds(Set<String> taskIds) {
     return commandExecutor.execute(new GetTasksLocalVariablesCmd(taskIds));
   }
