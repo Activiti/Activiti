@@ -1,8 +1,7 @@
 package org.activiti.editor.language.xml;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EndEvent;
@@ -33,20 +32,20 @@ public class EndEventConverterTest extends AbstractConverterTest {
     assertEquals(2, model.getDefinitionsAttributes().size());
     
     FlowElement flowElement = model.getMainProcess().getFlowElement("EndEvent_0mdpjzn");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof EndEvent);
+    assertThat(flowElement).isNotNull();
+    assertThat(flowElement instanceof EndEvent).isTrue();
     
     EndEvent endEvent = (EndEvent) flowElement;
     
-    assertTrue(endEvent.getIncomingFlows().size() == 1);
-    assertTrue(endEvent.getEventDefinitions().size() == 1);
+    assertThat(endEvent.getIncomingFlows().size()).isEqualTo(1);
+    assertThat(endEvent.getEventDefinitions().size()).isEqualTo(1);
     
     //Check that incoming xml element is coming before error event definition
-    assertTrue(endEvent.getIncomingFlows().get(0).getXmlRowNumber() < endEvent.getEventDefinitions().get(0).getXmlRowNumber());
+    assertThat(endEvent.getIncomingFlows().get(0).getXmlRowNumber()).isLessThan(endEvent.getEventDefinitions().get(0).getXmlRowNumber());
     
-    assertTrue(endEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition);
+    assertThat(endEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition).isTrue();
     ErrorEventDefinition errorEventDefinition = (ErrorEventDefinition) endEvent.getEventDefinitions().get(0);
     
-    assertTrue(errorEventDefinition.getErrorRef().equals("Error_01agmko"));
+    assertThat(errorEventDefinition.getErrorRef()).isEqualTo("Error_01agmko");
   }
 }
