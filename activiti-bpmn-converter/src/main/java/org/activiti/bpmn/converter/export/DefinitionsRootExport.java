@@ -42,6 +42,7 @@ public class DefinitionsRootExport implements BpmnXMLConstants {
     xtw.setDefaultNamespace(BPMN2_NAMESPACE);
     xtw.writeDefaultNamespace(BPMN2_NAMESPACE);
 
+    xtw.writeNamespace(BPMN2_PREFIX, BPMN2_NAMESPACE);
     xtw.writeNamespace(XSI_PREFIX, XSI_NAMESPACE);
     xtw.writeNamespace(XSD_PREFIX, SCHEMA_NAMESPACE);
     xtw.writeNamespace(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE);
