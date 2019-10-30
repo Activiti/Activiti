@@ -194,7 +194,6 @@
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-fluent</artifactId>
         <version>${json-unit.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.subethamail</groupId>
