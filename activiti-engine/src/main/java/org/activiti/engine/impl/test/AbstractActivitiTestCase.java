@@ -306,7 +306,6 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
    */
   public BpmnModel createOneTaskTestProcess() {
     BpmnModel model = new BpmnModel();
-    model.addNamespace("bpmn2", "http://www.omg.org/spec/BPMN/20100524/MODEL");
     org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
     model.addProcess(process);
     process.setId("oneTaskProcess");
@@ -334,7 +333,6 @@ public abstract class AbstractActivitiTestCase extends AbstractTestCase {
 
   public BpmnModel createTwoTasksTestProcess() {
     BpmnModel model = new BpmnModel();
-    model.addNamespace("bpmn2", "http://www.omg.org/spec/BPMN/20100524/MODEL");
     org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
     model.addProcess(process);
     process.setId("twoTasksProcess");

@@ -36,7 +36,6 @@ public class EventJavaTest extends PluggableActivitiTestCase {
 
   public void testStartEventWithExecutionListener() throws Exception {
     BpmnModel bpmnModel = new BpmnModel();
-    bpmnModel.addNamespace("bpmn2", "http://www.omg.org/spec/BPMN/20100524/MODEL");
     Process process = new Process();
     process.setId("simpleProcess");
     process.setName("Very simple process");
