@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ASCII"?>
-<model:definitions xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:di="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di_1="http://www.omg.org/spec/DD/20100524/DI" xmlns:model="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="BonitaSoft" exporterVersion="5.10" expressionLanguage="http://groovy.codehaus.org/" targetNamespace="http://bonitasoft.com/Check_quote_status">
+<model:definitions xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di_1="http://www.omg.org/spec/DD/20100524/DI" xmlns:model="http://www.omg.org/spec/BPMN/20100524/MODEL" exporter="BonitaSoft" exporterVersion="5.10" expressionLanguage="http://groovy.codehaus.org/" targetNamespace="http://bonitasoft.com/Check_quote_status">
   <model:collaboration id="Check_quote_status">
     <model:documentation></model:documentation>
     <model:participant id="Initiator">

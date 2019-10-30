@@ -5,7 +5,6 @@
   targetNamespace="Examples"
   xmlns:tns="Examples"
   xmlns:tns2="http://foo.bar.com/Examples"
-  xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" >
 
   <message id="writeReport" name="newWriteReport" itemRef="tns:writeReportItem"/>

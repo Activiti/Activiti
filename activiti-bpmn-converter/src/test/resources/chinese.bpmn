@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <bpmn2:process id="process" isExecutable="true">
-    <bpmn2:startEvent id="sid-8457F2D1-87A7-4B25-A6ED-FDE50CD54162"></bpmn2:startEvent>
-    <bpmn2:userTask id="sid-8FD9BE8E-3040-496B-8F0D-FAC03E245A56" name="中文名称去"></bpmn2:userTask>
-    <bpmn2:sequenceFlow id="sid-6D0B6878-8894-49B3-BBC9-CFB929A4BCE7" sourceRef="sid-8457F2D1-87A7-4B25-A6ED-FDE50CD54162" targetRef="sid-8FD9BE8E-3040-496B-8F0D-FAC03E245A56"></bpmn2:sequenceFlow>
-    <bpmn2:endEvent id="sid-70125006-F947-48E1-9C59-0575139B833B" name="end"></bpmn2:endEvent>
-    <bpmn2:sequenceFlow id="sid-270EA624-2853-469E-8C73-77B4EFC85719" sourceRef="sid-8FD9BE8E-3040-496B-8F0D-FAC03E245A56" targetRef="sid-70125006-F947-48E1-9C59-0575139B833B"></bpmn2:sequenceFlow>
-  </bpmn2:process>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="process" isExecutable="true">
+    <startEvent id="sid-8457F2D1-87A7-4B25-A6ED-FDE50CD54162"></startEvent>
+    <userTask id="sid-8FD9BE8E-3040-496B-8F0D-FAC03E245A56" name="中文名称去"></userTask>
+    <sequenceFlow id="sid-6D0B6878-8894-49B3-BBC9-CFB929A4BCE7" sourceRef="sid-8457F2D1-87A7-4B25-A6ED-FDE50CD54162" targetRef="sid-8FD9BE8E-3040-496B-8F0D-FAC03E245A56"></sequenceFlow>
+    <endEvent id="sid-70125006-F947-48E1-9C59-0575139B833B" name="end"></endEvent>
+    <sequenceFlow id="sid-270EA624-2853-469E-8C73-77B4EFC85719" sourceRef="sid-8FD9BE8E-3040-496B-8F0D-FAC03E245A56" targetRef="sid-70125006-F947-48E1-9C59-0575139B833B"></sequenceFlow>
+  </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_process">
     <bpmndi:BPMNPlane bpmnElement="process" id="BPMNPlane_process">
       <bpmndi:BPMNShape bpmnElement="sid-8457F2D1-87A7-4B25-A6ED-FDE50CD54162" id="BPMNShape_sid-8457F2D1-87A7-4B25-A6ED-FDE50CD54162">
@@ -28,4 +28,4 @@
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</bpmn2:definitions>
+</definitions>
