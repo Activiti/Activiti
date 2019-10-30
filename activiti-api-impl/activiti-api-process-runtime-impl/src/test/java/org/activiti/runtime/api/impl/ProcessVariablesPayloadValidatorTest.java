@@ -29,6 +29,7 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.common.util.DateFormatterProvider;
+import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.activiti.spring.process.model.VariableDefinition;
@@ -44,7 +45,7 @@ import org.mockito.Mock;
 public class ProcessVariablesPayloadValidatorTest {
  
     @Mock
-    private Map<String, ProcessExtensionModel> processExtensionModelMap;
+    private ProcessExtensionService processExtensionService;
     
     private DateFormatterProvider dateFormatterProvider = new DateFormatterProvider("yyyy-MM-dd[['T']HH:mm:ss[.SSS'Z']]");
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -93,7 +94,7 @@ public class ProcessVariablesPayloadValidatorTest {
         variableValidationService = new VariableValidationService(variableTypeMap); 
         
         processVariablesValidator = new ProcessVariablesPayloadValidator(dateFormatterProvider,
-                                                                         processExtensionModelMap,
+                                                                         processExtensionService,
                                                                          variableValidationService,
                                                                          variableNameValidator);
         
@@ -104,7 +105,7 @@ public class ProcessVariablesPayloadValidatorTest {
         processExtensionModel.setId("1");
         processExtensionModel.setExtensions(extension);
         
-        given(processExtensionModelMap.get(any()))
+        given(processExtensionService.getExtensionsForId(any()))
                    .willReturn(processExtensionModel);
     }
 
