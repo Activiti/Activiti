@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,9 @@ public class ProcessRuntimeVariableMappingTest {
 
         List<VariableInstance> variables = processBaseRuntime.getProcessVariablesByProcessId(processInstance.getId());
 
+        String[] array = { "first", "${name}", "${surname}", "last" };
+        List<String> list = Arrays.asList(array);
+
         Map<String, Object> dataMap = new HashMap();
         dataMap.put("age-in-months",
                     "${age * 12}");
@@ -70,6 +74,8 @@ public class ProcessRuntimeVariableMappingTest {
                     "${name} ${surname}");
         dataMap.put("demoString",
                     "expressionResolved");
+        dataMap.put("list",
+                    list);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode data = mapper.convertValue(dataMap, JsonNode.class);
 

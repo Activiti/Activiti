@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,11 +40,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
-@Import({ProcessCleanUpUtil.class,
-         TaskCleanUpUtil.class,
-         SecurityUtil.class,
-         ProcessBaseRuntime.class,
-         TaskBaseRuntime.class})
+@Import({ ProcessCleanUpUtil.class, TaskCleanUpUtil.class, SecurityUtil.class, ProcessBaseRuntime.class, TaskBaseRuntime.class })
 public class RuntimeTestConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeTestConfiguration.class);
@@ -79,7 +76,6 @@ public class RuntimeTestConfiguration {
         extendedInMemoryUserDetailsManager.createUser(new User("user",
                                                                "password",
                                                                userAuthorities));
-
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
@@ -222,22 +218,20 @@ public class RuntimeTestConfiguration {
             Integer offSet = (Integer) inBoundVariables.get(variableThree);
             Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
 
-            assertThat(inBoundVariables.entrySet())
-                    .extracting(Map.Entry::getKey,
-                                Map.Entry::getValue)
-                    .containsOnly(
-                            tuple(variableOne,
-                                  "inName"),
-                            tuple(variableTwo,
-                                  20),
-                            tuple(variableThree,
-                                  5),
-                            tuple(staticValue,
-                                  "a static value"),
-                            tuple(integerConstant,
-                                  10));
+            assertThat(inBoundVariables.entrySet()).extracting(Map.Entry::getKey,
+                                                               Map.Entry::getValue)
+                    .containsOnly(tuple(variableOne,
+                                        "inName"),
+                                  tuple(variableTwo,
+                                        20),
+                                  tuple(variableThree,
+                                        5),
+                                  tuple(staticValue,
+                                        "a static value"),
+                                  tuple(integerConstant,
+                                        10));
 
-            integrationContext.addOutBoundVariable("out_variable_name_1",
+            integrationContext.addOutBoundVariable("out-variable-name-1",
                                                    "outName");
             integrationContext.addOutBoundVariable("out_variable_name_2",
                                                    currentAge + offSet + integerConstantValue);
@@ -265,6 +259,9 @@ public class RuntimeTestConfiguration {
             Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
             Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
 
+            String[] array = { "first", "John", "Doe", "last" };
+            List<String> list = Arrays.asList(array);
+
             Map<String, Object> dataMap = new HashMap();
             dataMap.put("age-in-months",
                         240L);
@@ -272,6 +269,8 @@ public class RuntimeTestConfiguration {
                         "John Doe");
             dataMap.put("demoString",
                         "expressionResolved");
+            dataMap.put("list",
+                        list);
 
             assertThat(inBoundVariables.entrySet()).extracting(Map.Entry::getKey,
                                                                Map.Entry::getValue)
