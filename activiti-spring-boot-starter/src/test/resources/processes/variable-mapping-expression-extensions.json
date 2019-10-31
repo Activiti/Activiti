@@ -12,33 +12,48 @@
 			"name-id": {
 				"id": "name-id",
 				"name": "name",
-				"type": "json",
+				"type": "string",
 				"required": true,
+				"value": "John"
+			},
+			"surname-id": {
+				"id": "surname-id",
+				"name": "surname",
+				"type": "string",
+				"required": true,
+				"value": "Doe"
+			},
+			"data-id": {
+				"id": "data-id",
+				"name": "data",
+				"type": "json",
+				"required": false,
 				"value": {
-					"name": "John",
-					"surname": "${surname}"
+					"age-in-months": "${age * 12}",
+					"full-name": "${name} ${surname}",
+					"demoString": "expressionResolved"
 				}
 			},
-			"value-to-resolve-id": {
-				"id": "value-to-resolve-id",
-				"name": "valueToResolve",
+			"user-msg-id":{
+				"id": "user-msg-id",
+				"name": "user-msg",
 				"type": "string",
-				"required": false,
-				"value": "expressionResolved"
+				"required": true,
+				"value": "Hello ${name.concat(' ').concat(surname)}, today is your ${age}th birthday! It means ${age * 365.25} days of life"
 			},
 			"variable-to-resolve-id": {
 				"id": "variable-to-resolve-id",
 				"name": "variableToResolve",
 				"type": "string",
 				"required": false,
-				"value": "${valueToResolve}"
+				"value": "${name}"
 			},
 			"input-unmapped-variable-with-matching-name-id": {
 				"id": "input-unmapped-variable-with-matching-name-id",
 				"name": "input-unmapped-variable-with-matching-name",
 				"type": "string",
 				"required": false,
-				"value": "${valueToResolve}"
+				"value": "${surname}"
 			},
 			"input-unmapped-variable-with-non-matching-name-id": {
 				"id": "input-unmapped-variable-with-non-matching-connector-input-name-id",
@@ -66,26 +81,22 @@
 				"name": "property-with-no-default-value-name",
 				"type": "string",
 				"required": false
-			},
-			"property-surname-unmapped-id": {
-				"id": "property-surname-unmapped-id",
-				"name": "surname",
-				"type": "string",
-				"required": false,
-				"value":"Doe"
 			}
-			
 		},
 		"mappings": {
 			"serviceTask": {
 				"inputs": {
 					"input-variable-name-1": {
 						"type": "variable",
-						"value": "name"
+						"value": "data"
 					},
 					"input-variable-name-2": {
 						"type": "variable",
 						"value": "age"
+					},
+					"input-variable-name-3": {
+						"type": "variable",
+						"value": "user-msg"
 					},
 					"input-variable-expression": {
 						"type": "variable",
@@ -93,7 +104,7 @@
 					},
 					"input-value-expression": {
 						"type": "value",
-						"value": "${valueToResolve}"
+						"value": "${name}"
 					},
 					"input-variable-name-4": {
 						"type": "variable",

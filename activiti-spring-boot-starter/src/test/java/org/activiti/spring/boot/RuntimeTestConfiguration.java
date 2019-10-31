@@ -3,6 +3,13 @@ package org.activiti.spring.boot;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.activiti.api.model.shared.event.VariableCreatedEvent;
 import org.activiti.api.process.model.events.BPMNSequenceFlowTakenEvent;
 import org.activiti.api.process.runtime.connector.Connector;
@@ -30,13 +37,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Configuration
 @Import({ProcessCleanUpUtil.class, 
@@ -256,35 +256,40 @@ public class RuntimeTestConfiguration {
 
             String variableOne = "input-variable-name-1";
             String variableTwo = "input-variable-name-2";
+            String variableThree = "input-variable-name-3";
             String expressionVariable = "input-variable-expression";
             String expressionValue = "input-value-expression";
             String staticValue = "input-static-value";
             String integerConstant = "integer-constant";
             
-            Map<String,Object> variableOneValue = new HashMap<>();
-            variableOneValue.put("name","John");
-            variableOneValue.put("surname","Doe");
-
             Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
             Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
-
-            assertThat(inBoundVariables.entrySet())
-                    .extracting(Map.Entry::getKey,
-                                Map.Entry::getValue)
-                    .containsOnly(
-                            tuple(variableOne,
-                                  variableOneValue),
-                            tuple(variableTwo,
-                                  20),
-                            tuple(expressionVariable,
-                                    "expressionResolved"),
-                            tuple(expressionValue,
-                                  "expressionResolved"),
-                            tuple(staticValue,
-                                  "a static value"),
-                            tuple(integerConstant,
-                                  10));
             
+            Map<String, Object> dataMap = new HashMap();
+            dataMap.put("age-in-months",
+                        240L);
+            dataMap.put("full-name",
+                        "John Doe");
+            dataMap.put("demoString",
+                        "expressionResolved");
+
+            assertThat(inBoundVariables.entrySet()).extracting(Map.Entry::getKey,
+                                                               Map.Entry::getValue)
+                    .containsOnly(tuple(variableOne,
+                                        dataMap),
+                                  tuple(variableTwo,
+                                        20),
+                                  tuple(variableThree,
+                                        "Hello John Doe, today is your 20th birthday! It means 7305.0 days of life"),
+                                  tuple(expressionVariable,
+                                        "John"),
+                                  tuple(expressionValue,
+                                        "John"),
+                                  tuple(staticValue,
+                                        "a static value"),
+                                  tuple(integerConstant,
+                                        10));
+
             integrationContext.addOutBoundVariable("out-variable-name-1",
                                                    "outName");
             integrationContext.addOutBoundVariable("out-variable-name-2",

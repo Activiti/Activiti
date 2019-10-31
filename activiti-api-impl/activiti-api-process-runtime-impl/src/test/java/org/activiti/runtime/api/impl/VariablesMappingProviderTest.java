@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
@@ -32,12 +33,12 @@ public class VariablesMappingProviderTest {
 
     @Mock
     private ProcessExtensionService processExtensionService;
-
+    
     @Before
     public void setUp() {
         initMocks(this);
     }
-
+    
     @Test
     public void calculateInputVariablesShouldDoMappingWhenThereIsMappingSet() throws Exception {
 
@@ -47,12 +48,12 @@ public class VariablesMappingProviderTest {
                                                                   ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
-        ExpressionResolverHelper.initContext(execution,
-                                             extensions);
+        Supplier<ExpressionResolver> expressionResolverSupplier = ExpressionResolverHelper.initContext(execution,
+                                                                                                       extensions);
 
         ReflectionTestUtils.setField(variablesMappingProvider,
-                                     "expressionResolver",
-                                     new ExpressionResolver());
+                                     "expressionResolverSupplier",
+                                     expressionResolverSupplier);
 
         //when
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
@@ -81,12 +82,12 @@ public class VariablesMappingProviderTest {
                                                                   ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
-        ExpressionResolverHelper.initContext(execution,
-                                             extensions);
+        Supplier<ExpressionResolver> expressionResolverSupplier = ExpressionResolverHelper.initContext(execution,
+                                                                                                       extensions);
 
         ReflectionTestUtils.setField(variablesMappingProvider,
-                                     "expressionResolver",
-                                     new ExpressionResolver());
+                                     "expressionResolverSupplier",
+                                     expressionResolverSupplier);
         
         Map<String, Object> variables = new HashMap<>();
         variables.put("varone",
@@ -221,12 +222,12 @@ public class VariablesMappingProviderTest {
                                                                   ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
-        ExpressionResolverHelper.initContext(execution,
-                                             extensions);
+        Supplier<ExpressionResolver> expressionResolverSupplier = ExpressionResolverHelper.initContext(execution,
+                                                                                                       extensions);
 
         ReflectionTestUtils.setField(variablesMappingProvider,
-                                     "expressionResolver",
-                                     new ExpressionResolver());
+                                     "expressionResolverSupplier",
+                                     expressionResolverSupplier);
 
         return execution;
     }

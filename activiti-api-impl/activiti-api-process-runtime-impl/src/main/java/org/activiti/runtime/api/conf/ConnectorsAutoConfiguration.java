@@ -16,7 +16,10 @@
 
 package org.activiti.runtime.api.conf;
 
+import java.util.function.Supplier;
+
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.impl.ExpressionResolver;
@@ -32,15 +35,14 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ExpressionResolver expressionResolver() {
-        return new ExpressionResolver();
+    public Supplier<ExpressionResolver> expressionResolverSupplier() {
+        return () -> new ExpressionResolver(Context.getProcessEngineConfiguration().getExpressionManager());
     }
     
     @Bean
     @ConditionalOnMissingBean
-    public IntegrationContextBuilder integrationContextBuilder(ProcessExtensionService processExtensionService,
-                                                               ExpressionResolver expressionResolver) {
-        return new IntegrationContextBuilder(new VariablesMappingProvider(processExtensionService, expressionResolver));
+    public IntegrationContextBuilder integrationContextBuilder(ProcessExtensionService processExtensionService) {
+        return new IntegrationContextBuilder(new VariablesMappingProvider(processExtensionService, expressionResolverSupplier()));
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
@@ -55,8 +57,7 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService,
-                                                             ExpressionResolver expressionResolver) {
-        return new VariablesMappingProvider(processExtensionService, expressionResolver);
+    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService) {
+        return new VariablesMappingProvider(processExtensionService, expressionResolverSupplier());
     }
 }

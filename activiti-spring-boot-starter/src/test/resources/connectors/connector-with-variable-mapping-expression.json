@@ -23,6 +23,13 @@
           "description": ""
         },
         {
+          "id": "input-variable-3",
+          "name": "input-variable-name-3",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
           "id": "input-variable-expression",
           "name": "input-variable-expression",
           "type": "string",
