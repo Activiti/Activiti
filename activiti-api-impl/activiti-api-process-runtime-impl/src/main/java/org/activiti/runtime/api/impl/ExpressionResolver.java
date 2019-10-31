@@ -34,7 +34,6 @@ public class ExpressionResolver {
         this.expressionManager = expressionManager;
     }
 
-
     @SuppressWarnings("unchecked")
     public Object resolveExpressions(final DelegateExecution execution,
                                      final Object value) {
@@ -55,7 +54,6 @@ public class ExpressionResolver {
             return value;
         }
     }    
-    
 
     public List<Object> resolveExpressionsList(final DelegateExecution execution,
                                                 final List<?> sourceList) {
