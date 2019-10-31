@@ -15,7 +15,7 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StartEvent extends Event implements AcceptUpdates {
+public class StartEvent extends Event {
 
   protected String initiator;
   protected String formKey;

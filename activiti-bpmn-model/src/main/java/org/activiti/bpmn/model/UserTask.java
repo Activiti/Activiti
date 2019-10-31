@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class UserTask extends Task implements AcceptUpdates {
+public class UserTask extends Task {
 
   protected String assignee;
   protected String owner;

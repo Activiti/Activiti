@@ -15,7 +15,7 @@ package org.activiti.bpmn.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CallActivity extends Activity implements AcceptUpdates {
+public class CallActivity extends Activity {
 
   protected String calledElement;
   protected boolean inheritVariables;
