@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
@@ -34,11 +35,11 @@ public class VariablesMappingProvider {
 
     private ProcessExtensionService processExtensionService;
     
-    private ExpressionResolver expressionResolver;
+    private Supplier<ExpressionResolver> expressionResolverSupplier;
 
-    public VariablesMappingProvider(ProcessExtensionService processExtensionService, ExpressionResolver expressionResolver) {
+    public VariablesMappingProvider(ProcessExtensionService processExtensionService, Supplier<ExpressionResolver> expressionResolverSupplier) {
         this.processExtensionService = processExtensionService;
-        this.expressionResolver = expressionResolver;
+        this.expressionResolverSupplier = expressionResolverSupplier;
     }
 
     protected Optional<Object> calculateMappedValue(Mapping inputMapping,
@@ -78,7 +79,7 @@ public class VariablesMappingProvider {
         } else {
             inboudVariables = calculateInputVariables(execution, extensions);
         }
-        inboudVariables = expressionResolver.resolveExpressionsMap(execution,inboudVariables);
+        inboudVariables = expressionResolverSupplier.get().resolveExpressionsMap(execution,inboudVariables);
         inboudVariables.putAll(constants);
         return inboudVariables;
     }

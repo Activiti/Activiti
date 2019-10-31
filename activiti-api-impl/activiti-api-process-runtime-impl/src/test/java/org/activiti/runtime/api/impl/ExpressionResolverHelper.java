@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
@@ -28,7 +29,7 @@ public class ExpressionResolverHelper {
         given(processEngineConfiguration.getDelegateInterceptor()).willReturn(new DefaultDelegateInterceptor());
     }
 
-    public static DelegateExecution initContext(DelegateExecution execution,
+    public static Supplier<ExpressionResolver> initContext(DelegateExecution execution,
                                                 ProcessExtensionModel extensions)
             throws JsonParseException, JsonMappingException, IOException {
         initializeExpressionResolver();
@@ -44,7 +45,7 @@ public class ExpressionResolverHelper {
             given(execution.getVariableInstance(key)).willReturn(var);
             given(execution.getVariable(key)).willReturn(variables.get(key));
         }
-        return execution;
+        return () -> new ExpressionResolver(new ExpressionManager());
     }
 
     public static Map<String, Object> converstToStringObjectMap(Map<String, VariableDefinition> sourceMap) {

@@ -32,20 +32,15 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-<<<<<<< HEAD
-    public IntegrationContextBuilder integrationContextBuilder(VariablesMappingProvider variablesMappingProvider) {
-        return new IntegrationContextBuilder(variablesMappingProvider);
-=======
     public ExpressionResolver expressionResolver() {
         return new ExpressionResolver();
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
     public IntegrationContextBuilder integrationContextBuilder(ProcessExtensionService processExtensionService,
                                                                ExpressionResolver expressionResolver) {
         return new IntegrationContextBuilder(new VariablesMappingProvider(processExtensionService, expressionResolver));
->>>>>>> AAE-23 Expressions are only resolved in input mapping values
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
