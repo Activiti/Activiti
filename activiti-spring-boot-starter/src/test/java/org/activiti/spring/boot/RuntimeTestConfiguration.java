@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,11 +40,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 @Configuration
-@Import({ProcessCleanUpUtil.class, 
-         TaskCleanUpUtil.class, 
-         SecurityUtil.class, 
-         ProcessBaseRuntime.class,
-         TaskBaseRuntime.class})
+@Import({ ProcessCleanUpUtil.class, TaskCleanUpUtil.class, SecurityUtil.class, ProcessBaseRuntime.class, TaskBaseRuntime.class })
 public class RuntimeTestConfiguration {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RuntimeTestConfiguration.class);
@@ -67,7 +64,7 @@ public class RuntimeTestConfiguration {
     public static Set<TaskCandidateUserAddedEvent> taskCandidateUserAddedEvents = new HashSet<>();
 
     public static Set<TaskCandidateUserRemovedEvent> taskCandidateUserRemovedEvents = new HashSet<>();
-    
+
     @Bean
     public UserDetailsService myUserDetailsService() {
         ExtendedInMemoryUserDetailsManager extendedInMemoryUserDetailsManager = new ExtendedInMemoryUserDetailsManager();
@@ -79,7 +76,6 @@ public class RuntimeTestConfiguration {
         extendedInMemoryUserDetailsManager.createUser(new User("user",
                                                                "password",
                                                                userAuthorities));
-
 
         List<GrantedAuthority> adminAuthorities = new ArrayList<>();
         adminAuthorities.add(new SimpleGrantedAuthority("ROLE_ACTIVITI_ADMIN"));
@@ -186,7 +182,7 @@ public class RuntimeTestConfiguration {
     public BPMNElementEventListener<BPMNSequenceFlowTakenEvent> sequenceFlowTakenEventListener() {
         return sequenceFlowTakenEvent -> sequenceFlowTakenEvents.add(sequenceFlowTakenEvent);
     }
-    
+
     @Bean
     public VariableEventListener<VariableCreatedEvent> variableCreatedEventFromProcessInstanceListener() {
         return variableCreatedEvent -> {
@@ -222,21 +218,19 @@ public class RuntimeTestConfiguration {
             Integer offSet = (Integer) inBoundVariables.get(variableThree);
             Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
 
-            assertThat(inBoundVariables.entrySet())
-                    .extracting(Map.Entry::getKey,
-                                Map.Entry::getValue)
-                    .containsOnly(
-                            tuple(variableOne,
-                                  "inName"),
-                            tuple(variableTwo,
-                                  20),
-                            tuple(variableThree,
-                                  5),
-                            tuple(staticValue,
-                                  "a static value"),
-                            tuple(integerConstant,
-                                  10));
-            
+            assertThat(inBoundVariables.entrySet()).extracting(Map.Entry::getKey,
+                                                               Map.Entry::getValue)
+                    .containsOnly(tuple(variableOne,
+                                        "inName"),
+                                  tuple(variableTwo,
+                                        20),
+                                  tuple(variableThree,
+                                        5),
+                                  tuple(staticValue,
+                                        "a static value"),
+                                  tuple(integerConstant,
+                                        10));
+
             integrationContext.addOutBoundVariable("out-variable-name-1",
                                                    "outName");
             integrationContext.addOutBoundVariable("out-variable-name-2",
@@ -248,7 +242,7 @@ public class RuntimeTestConfiguration {
             return integrationContext;
         };
     }
-    
+
     @Bean(name = "Variable Mapping Expression Connector.variableMappingExpressionActionName")
     public Connector variableMappingExpressionActionName() {
         return integrationContext -> {
@@ -261,10 +255,13 @@ public class RuntimeTestConfiguration {
             String expressionValue = "input-value-expression";
             String staticValue = "input-static-value";
             String integerConstant = "integer-constant";
-            
+
             Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
             Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
-            
+
+            String[] array = { "first", "John", "Doe", "last" };
+            List<String> list = Arrays.asList(array);
+
             Map<String, Object> dataMap = new HashMap();
             dataMap.put("age-in-months",
                         240L);
@@ -272,6 +269,8 @@ public class RuntimeTestConfiguration {
                         "John Doe");
             dataMap.put("demoString",
                         "expressionResolved");
+            dataMap.put("list",
+                        list);
 
             assertThat(inBoundVariables.entrySet()).extracting(Map.Entry::getKey,
                                                                Map.Entry::getValue)
