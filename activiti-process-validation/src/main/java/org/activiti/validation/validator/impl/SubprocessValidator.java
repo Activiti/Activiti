@@ -36,7 +36,7 @@ public class SubprocessValidator extends ProcessLevelValidator {
       if (!(subProcess instanceof EventSubProcess)) {
 
         // Verify start events
-        List<StartEvent> startEvents = process.findBaseElementsInSubProcessOfType(subProcess, StartEvent.class, false);
+        List<StartEvent> startEvents = process.findFlowElementsInSubProcessOfType(subProcess, StartEvent.class, false);
         if (startEvents.size() > 1) {
           addError(errors, Problems.SUBPROCESS_MULTIPLE_START_EVENTS, process, subProcess, "Multiple start events not supported for subprocess");
         }

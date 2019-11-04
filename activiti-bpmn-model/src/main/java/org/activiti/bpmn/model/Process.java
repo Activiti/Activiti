@@ -292,19 +292,19 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
       }
       if (baseElement instanceof SubProcess) {
         if (goIntoSubprocesses) {
-            foundBaseElements.addAll(findBaseElementsInSubProcessOfType((SubProcess) baseElement, type));
+            foundBaseElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) baseElement, type));
         }
       }
     }
     return foundBaseElements;
   }
 
-  public <BaseElementType extends BaseElement> List<BaseElementType> findBaseElementsInSubProcessOfType(SubProcess subProcess, Class<BaseElementType> type) {
-    return findBaseElementsInSubProcessOfType(subProcess, type, true);
+  public <BaseElementType extends BaseElement> List<BaseElementType> findFlowElementsInSubProcessOfType(SubProcess subProcess, Class<BaseElementType> type) {
+    return findFlowElementsInSubProcessOfType(subProcess, type, true);
   }
 
   @SuppressWarnings("unchecked")
-  public <BaseElementType extends BaseElement> List<BaseElementType> findBaseElementsInSubProcessOfType(SubProcess subProcess, Class<BaseElementType> type, boolean goIntoSubprocesses) {
+  public <BaseElementType extends BaseElement> List<BaseElementType> findFlowElementsInSubProcessOfType(SubProcess subProcess, Class<BaseElementType> type, boolean goIntoSubprocesses) {
 
     List<BaseElementType> foundBaseElements = new ArrayList<BaseElementType>();
     for (FlowElement flowElement : subProcess.getFlowElements()) {
@@ -313,7 +313,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
       }
       if (flowElement instanceof SubProcess) {
         if (goIntoSubprocesses) {
-            foundBaseElements.addAll(findBaseElementsInSubProcessOfType((SubProcess) flowElement, type));
+            foundBaseElements.addAll(findFlowElementsInSubProcessOfType((SubProcess) flowElement, type));
         }
       }
     }

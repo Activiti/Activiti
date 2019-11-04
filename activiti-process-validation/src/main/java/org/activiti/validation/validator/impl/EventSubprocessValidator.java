@@ -35,7 +35,7 @@ public class EventSubprocessValidator extends ProcessLevelValidator {
     List<EventSubProcess> eventSubprocesses = process.findFlowElementsOfType(EventSubProcess.class);
     for (EventSubProcess eventSubprocess : eventSubprocesses) {
 
-      List<StartEvent> startEvents = process.findBaseElementsInSubProcessOfType(eventSubprocess, StartEvent.class);
+      List<StartEvent> startEvents = process.findFlowElementsInSubProcessOfType(eventSubprocess, StartEvent.class);
       for (StartEvent startEvent : startEvents) {
         if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
           EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
