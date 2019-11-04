@@ -31,7 +31,7 @@ public class SequenceflowValidator extends ProcessLevelValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<SequenceFlow> sequenceFlows = process.findBaseElementsOfType(SequenceFlow.class);
+    List<SequenceFlow> sequenceFlows = process.findFlowElementsOfType(SequenceFlow.class);
     for (SequenceFlow sequenceFlow : sequenceFlows) {
 
       String sourceRef = sequenceFlow.getSourceRef();

@@ -189,7 +189,7 @@ public class DeploymentEntityManagerImpl extends AbstractEntityManager<Deploymen
         org.activiti.bpmn.model.Process previousProcess = ProcessDefinitionUtil.getProcess(previousProcessDefinition.getId());
         if (CollectionUtil.isNotEmpty(previousProcess.getFlowElements())) {
           
-          List<StartEvent> startEvents = previousProcess.findBaseElementsOfType(StartEvent.class);
+          List<StartEvent> startEvents = previousProcess.findFlowElementsOfType(StartEvent.class);
           
           if (CollectionUtil.isNotEmpty(startEvents)) {
             for (StartEvent startEvent : startEvents) {

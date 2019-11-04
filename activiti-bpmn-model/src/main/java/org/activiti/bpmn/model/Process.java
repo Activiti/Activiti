@@ -279,7 +279,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     this.eventListeners = eventListeners;
   }
 
-  public <BaseElementType extends BaseElement> List<BaseElementType> findBaseElementsOfType(Class<BaseElementType> type) {
+  public <BaseElementType extends BaseElement> List<BaseElementType> findFlowElementsOfType(Class<BaseElementType> type) {
     return findBaseElementsOfType(type, true);
   }
 

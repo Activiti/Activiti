@@ -31,7 +31,7 @@ public class ServiceTaskValidator extends ExternalInvocationTaskValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<ServiceTask> serviceTasks = process.findBaseElementsOfType(ServiceTask.class);
+    List<ServiceTask> serviceTasks = process.findFlowElementsOfType(ServiceTask.class);
     for (ServiceTask serviceTask : serviceTasks) {
       verifyImplementation(process, serviceTask, errors);
       verifyType(process, serviceTask, errors);

@@ -31,7 +31,7 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<ExclusiveGateway> gateways = process.findBaseElementsOfType(ExclusiveGateway.class);
+    List<ExclusiveGateway> gateways = process.findFlowElementsOfType(ExclusiveGateway.class);
     for (ExclusiveGateway gateway : gateways) {
       validateExclusiveGateway(process, gateway, errors);
     }

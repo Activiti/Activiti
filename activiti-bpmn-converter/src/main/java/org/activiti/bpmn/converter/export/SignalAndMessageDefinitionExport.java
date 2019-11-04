@@ -20,7 +20,7 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
                                                XMLStreamWriter xtw) throws Exception {
 
         for (Process process : model.getProcesses()) {
-            for (FlowElement flowElement : process.findBaseElementsOfType(Event.class)) {
+            for (FlowElement flowElement : process.findFlowElementsOfType(Event.class)) {
                 Event event = (Event) flowElement;
                 if (!event.getEventDefinitions().isEmpty()) {
                     EventDefinition eventDefinition = event.getEventDefinitions().get(0);

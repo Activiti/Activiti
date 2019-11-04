@@ -38,7 +38,7 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<BoundaryEvent> boundaryEvents = process.findBaseElementsOfType(BoundaryEvent.class);
+    List<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class);
 
     // Only one boundary event of type 'cancel' can be attached to the same
     // element, so we store the count temporarily here

@@ -30,7 +30,7 @@ public class SubprocessValidator extends ProcessLevelValidator {
 
   @Override
   protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-    List<SubProcess> subProcesses = process.findBaseElementsOfType(SubProcess.class);
+    List<SubProcess> subProcesses = process.findFlowElementsOfType(SubProcess.class);
     for (SubProcess subProcess : subProcesses) {
 
       if (!(subProcess instanceof EventSubProcess)) {

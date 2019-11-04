@@ -749,7 +749,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
         // Draw activities and their sequence-flows
         for (Process process : bpmnModel.getProcesses()) {
-            for (FlowNode flowNode : process.findBaseElementsOfType(FlowNode.class)) {
+            for (FlowNode flowNode : process.findFlowElementsOfType(FlowNode.class)) {
                 drawActivity(processDiagramCanvas,
                              bpmnModel,
                              flowNode,

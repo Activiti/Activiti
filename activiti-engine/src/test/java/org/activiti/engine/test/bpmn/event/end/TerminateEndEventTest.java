@@ -909,7 +909,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
         .get(processDefinitionQuery.getId()).getBpmnModel();
 
     Map<String, List<ExtensionElement>> extensionElements = bpmnModel.getProcesses().get(0)
-        .findBaseElementsOfType(EndEvent.class).get(0).getExtensionElements();
+        .findFlowElementsOfType(EndEvent.class).get(0).getExtensionElements();
     assertThat(extensionElements.size(), is(1));
     List<ExtensionElement> strangeProperties = extensionElements.get("strangeProperty");
     assertThat(strangeProperties.size(), is(1));
