@@ -300,7 +300,7 @@ public class RuntimeTestConfiguration {
             return integrationContext;
         };
     }
-    
+
     @Bean(name = "OutputMappingExpVarConnector.outputMappingExpVarActionName")
     public Connector outputMappingVariableExpressionActionName() {
         return integrationContext -> {

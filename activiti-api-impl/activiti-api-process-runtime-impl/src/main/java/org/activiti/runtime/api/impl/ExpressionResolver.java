@@ -118,7 +118,7 @@ public class ExpressionResolver {
         matcher.appendTail(sb);
         return sb.toString();
     }
-    
+
     @SuppressWarnings("unchecked")
     public boolean containsExpression(final Object source) {
         if (source == null) {

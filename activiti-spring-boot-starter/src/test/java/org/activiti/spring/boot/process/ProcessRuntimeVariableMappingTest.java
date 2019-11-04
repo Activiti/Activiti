@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
-import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.engine.ActivitiException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +33,7 @@ public class ProcessRuntimeVariableMappingTest {
     private static final String VARIABLE_MAPPING_PROCESS = "connectorVarMapping";
 
     private static final String VARIABLE_MAPPING_EXPRESSION_PROCESS = "connectorVarMappingExpression";
-    
+
     private static final String OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS = "outputMappingExpVar";
 
     @Autowired
@@ -101,7 +100,7 @@ public class ProcessRuntimeVariableMappingTest {
 
         processBaseRuntime.delete(processInstance.getId(),"done");
     }
-    
+
     @Test
     public void should_throwActivitiException_when_expressionIsInOutputMapping() {
 
