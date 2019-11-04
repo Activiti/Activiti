@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.engine.ActivitiException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,8 @@ public class ProcessRuntimeVariableMappingTest {
     private static final String VARIABLE_MAPPING_PROCESS = "connectorVarMapping";
     
     private static final String VARIABLE_MAPPING_EXPRESSION_PROCESS = "connectorVarMappingExpression";
+    
+    private static final String OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS = "outputMappingExpVar";
 
     @Autowired
     private ProcessBaseRuntime processBaseRuntime;
@@ -94,5 +97,10 @@ public class ProcessRuntimeVariableMappingTest {
                 );
 
         processBaseRuntime.delete(processInstance.getId(),"done");
+    }
+    
+    @Test(expected = ActivitiException.class)
+    public void should_throwActivitiIllegalArgumentException_when_expressionIsInOutputMapping() {
+        processBaseRuntime.startProcessWithProcessDefinitionKey(OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS);
     }
 }

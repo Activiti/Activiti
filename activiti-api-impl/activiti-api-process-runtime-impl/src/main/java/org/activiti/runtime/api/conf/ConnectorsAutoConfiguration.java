@@ -16,10 +16,8 @@
 
 package org.activiti.runtime.api.conf;
 
-import java.util.function.Supplier;
-
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
 import org.activiti.runtime.api.connector.IntegrationContextBuilder;
 import org.activiti.runtime.api.impl.ExpressionResolver;
@@ -35,14 +33,22 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public Supplier<ExpressionResolver> expressionResolverSupplier() {
-        return () -> new ExpressionResolver(Context.getProcessEngineConfiguration().getExpressionManager());
+    public ExpressionManager expressionManager() {
+        return new ExpressionManager();
     }
-    
+
     @Bean
     @ConditionalOnMissingBean
-    public IntegrationContextBuilder integrationContextBuilder(ProcessExtensionService processExtensionService) {
-        return new IntegrationContextBuilder(new VariablesMappingProvider(processExtensionService, expressionResolverSupplier()));
+    public ExpressionResolver expressionResolver(ExpressionManager expressionManager) {
+        return new ExpressionResolver(expressionManager);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public IntegrationContextBuilder integrationContextBuilder(ProcessExtensionService processExtensionService,
+                                                               ExpressionResolver expressionResolver) {
+        return new IntegrationContextBuilder(new VariablesMappingProvider(processExtensionService,
+                                                                          expressionResolver));
     }
 
     @Bean(name = DefaultActivityBehaviorFactory.DEFAULT_SERVICE_TASK_BEAN_NAME)
@@ -51,13 +57,15 @@ public class ConnectorsAutoConfiguration {
                                                                  IntegrationContextBuilder integrationContextBuilder,
                                                                  VariablesMappingProvider outboundVariablesProvider) {
         return new DefaultServiceTaskBehavior(applicationContext,
-                integrationContextBuilder,
-                outboundVariablesProvider);
+                                              integrationContextBuilder,
+                                              outboundVariablesProvider);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService) {
-        return new VariablesMappingProvider(processExtensionService, expressionResolverSupplier());
+    public VariablesMappingProvider variablesMappingProvider(ProcessExtensionService processExtensionService,
+                                                             ExpressionResolver expressionResolver) {
+        return new VariablesMappingProvider(processExtensionService,
+                                            expressionResolver);
     }
 }

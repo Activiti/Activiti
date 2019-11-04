@@ -13,6 +13,7 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.runtime.api.impl.ExpressionResolver;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
@@ -87,6 +88,9 @@ public class    ProcessRuntimeIT {
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
+    
+    @Autowired
+    private ExpressionResolver expressionResolver;
 
     @After
     public void cleanUp(){
@@ -104,7 +108,8 @@ public class    ProcessRuntimeIT {
                                                      processInstanceConverter,
                                                      variableInstanceConverter,
                                                      configuration,
-                                                     eventPublisher));
+                                                     eventPublisher,
+                                                     expressionResolver));
 
         processAdminRuntimeMock = spy(new ProcessAdminRuntimeImpl(repositoryService,
                                                               processDefinitionConverter,

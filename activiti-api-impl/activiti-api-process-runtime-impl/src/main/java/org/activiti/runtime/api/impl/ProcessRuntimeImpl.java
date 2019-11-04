@@ -49,6 +49,7 @@ import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.core.common.spring.security.policies.ActivitiForbiddenException;
 import org.activiti.core.common.spring.security.policies.ProcessSecurityPoliciesManager;
 import org.activiti.core.common.spring.security.policies.SecurityPolicyAccess;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
@@ -79,6 +80,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
     private final ProcessSecurityPoliciesManager securityPoliciesManager;
 
     private final ApplicationEventPublisher eventPublisher;
+    
+    private final ExpressionResolver expressionResolver;
 
     public ProcessRuntimeImpl(RepositoryService repositoryService,
                               APIProcessDefinitionConverter processDefinitionConverter,
@@ -87,7 +90,8 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
                               APIProcessInstanceConverter processInstanceConverter,
                               APIVariableInstanceConverter variableInstanceConverter,
                               ProcessRuntimeConfiguration configuration,
-                              ApplicationEventPublisher eventPublisher) {
+                              ApplicationEventPublisher eventPublisher,
+                              ExpressionResolver expressionResolver) {
         this.repositoryService = repositoryService;
         this.processDefinitionConverter = processDefinitionConverter;
         this.runtimeService = runtimeService;
@@ -96,6 +100,7 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         this.variableInstanceConverter = variableInstanceConverter;
         this.configuration = configuration;
         this.eventPublisher = eventPublisher;
+        this.expressionResolver = expressionResolver;
     }
 
     @Override
@@ -225,6 +230,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         if (!securityPoliciesManager.canWrite(processDefinition.getKey())) {
             throw new ActivitiForbiddenException("Operation not permitted for " + processDefinition.getKey() + " due security policy violation");
         }
+        if (expressionResolver.containsExpression(startProcessPayload.getVariables())) {
+            throw new ActivitiIllegalArgumentException("Expressions are not allowed as variable values in the start payload");
+        }
         return processInstanceConverter.from(runtimeService
                 .createProcessInstanceBuilder()
                 .processDefinitionId(startProcessPayload.getProcessDefinitionId())
@@ -295,6 +303,9 @@ public class ProcessRuntimeImpl implements ProcessRuntime {
         ProcessInstanceImpl processInstance = (ProcessInstanceImpl) processInstance(setProcessVariablesPayload.getProcessInstanceId());
         if (!securityPoliciesManager.canWrite(processInstance.getProcessDefinitionKey())) {
             throw new ActivitiForbiddenException("Operation not permitted for " + processInstance.getProcessDefinitionKey() + " due security policy violation");
+        }
+        if (expressionResolver.containsExpression(setProcessVariablesPayload.getVariables())) {
+            throw new ActivitiIllegalArgumentException("Expressions are not allowed as variable values in set process variables payload");
         }
         runtimeService.setVariables(setProcessVariablesPayload.getProcessInstanceId(),
                 setProcessVariablesPayload.getVariables());
