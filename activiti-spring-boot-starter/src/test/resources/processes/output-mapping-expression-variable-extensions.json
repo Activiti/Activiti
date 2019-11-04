@@ -1,0 +1,42 @@
+{
+	"id": "outputMappingExpVar",
+	"name": "outputMappingExpVar.bpmn",
+	"extensions": {
+		"properties": {
+			"name-id": {
+				"id": "name-id",
+				"name": "name",
+				"type": "string",
+				"required": true,
+				"value": "John"
+			},
+			"out-var-id": {
+				"id": "out-var-id",
+				"name": "out-var",
+				"type": "string",
+				"required": false
+			}
+		},
+		"mappings": {
+			"serviceTask": {
+				"inputs": { },
+				"outputs": {
+					"out-var": {
+						"type": "variable",
+						"value": "out-variable-name-1"
+					}
+				}
+			}
+		},
+		"constants": {
+			"serviceTask": {
+				"input-static-value": {
+					"value": "a static value"
+				},
+				"integer-constant": {
+					"value": 10
+				}
+			}
+		}
+	}
+}

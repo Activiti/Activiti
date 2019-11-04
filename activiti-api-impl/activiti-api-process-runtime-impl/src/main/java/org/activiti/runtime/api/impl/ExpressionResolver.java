@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,12 +27,12 @@ public class ExpressionResolver {
     private static final int EXPRESSION_KEY_INDEX = 1;
 
     private ObjectMapper mapper;
-    
+
     private ExpressionManager expressionManager;
-    
+
     public ExpressionResolver(ExpressionManager expressionManager) {
-        this.mapper = new ObjectMapper();
         this.expressionManager = expressionManager;
+        this.mapper = new ObjectMapper();
     }
 
     @SuppressWarnings("unchecked")
@@ -53,10 +54,10 @@ public class ExpressionResolver {
         } else {
             return value;
         }
-    }    
+    }
 
     public List<Object> resolveExpressionsList(final DelegateExecution execution,
-                                                final List<?> sourceList) {
+                                               final List<?> sourceList) {
         final List<Object> result = new LinkedList<>();
         sourceList.forEach(value -> result.add(resolveExpressions(execution,
                                                                   value)));
@@ -117,5 +118,44 @@ public class ExpressionResolver {
         matcher.appendTail(sb);
         return sb.toString();
     }
+    
+    @SuppressWarnings("unchecked")
+    public boolean containsExpression(final Object source) {
+        if (source == null) {
+            return false;
+        } else if (source instanceof String) {
+            return containsExpressionString((String) source);
+        } else if (source instanceof ObjectNode) {
+            return containsExpressionMap(mapper.convertValue(source,
+                                                             Map.class));
+        } else if (source instanceof Map<?, ?>) {
+            return containsExpressionMap((Map<String, ?>) source);
+        } else if (source instanceof List<?>) {
+            return containsExpressionList((List<?>) source);
+        } else {
+            return false;
+        }
+    }
 
+    public boolean containsExpressionString(final String sourceString) {
+        return EXPRESSION_PATTERN.matcher(sourceString).find();
+    }
+
+    public boolean containsExpressionMap(final Map<String, ?> source) {
+        for (Entry<String, ?> entry : source.entrySet()) {
+            if (containsExpression(entry.getValue())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsExpressionList(List<?> source) {
+        for (Object item : source) {
+            if (containsExpression(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

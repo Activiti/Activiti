@@ -11,9 +11,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.ProcessExtensionModel;
 import org.junit.Before;
@@ -33,12 +34,12 @@ public class VariablesMappingProviderTest {
 
     @Mock
     private ProcessExtensionService processExtensionService;
-    
+
     @Before
     public void setUp() {
         initMocks(this);
     }
-    
+
     @Test
     public void calculateInputVariablesShouldDoMappingWhenThereIsMappingSet() throws Exception {
 
@@ -48,12 +49,12 @@ public class VariablesMappingProviderTest {
                                                                   ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
-        Supplier<ExpressionResolver> expressionResolverSupplier = ExpressionResolverHelper.initContext(execution,
-                                                                                                       extensions);
+        ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
+                                                                                             extensions);
 
         ReflectionTestUtils.setField(variablesMappingProvider,
-                                     "expressionResolverSupplier",
-                                     expressionResolverSupplier);
+                                     "expressionResolver",
+                                     expressionResolver);
 
         //when
         Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
@@ -82,13 +83,13 @@ public class VariablesMappingProviderTest {
                                                                   ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
-        Supplier<ExpressionResolver> expressionResolverSupplier = ExpressionResolverHelper.initContext(execution,
-                                                                                                       extensions);
+        ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
+                                                                                             extensions);
 
         ReflectionTestUtils.setField(variablesMappingProvider,
-                                     "expressionResolverSupplier",
-                                     expressionResolverSupplier);
-        
+                                     "expressionResolver",
+                                     expressionResolver);
+
         Map<String, Object> variables = new HashMap<>();
         variables.put("varone",
                       "one");
@@ -154,6 +155,10 @@ public class VariablesMappingProviderTest {
 
         DelegateExecution execution = buildExecution(extensions);
 
+        ReflectionTestUtils.setField(variablesMappingProvider,
+                                     "expressionResolver",
+                                     new ExpressionResolver(new ExpressionManager()));
+        
         Map<String, Object> entityVariables = new HashMap<>();
         entityVariables.put("task_output_variable_name_1",
                             "varone");
@@ -222,12 +227,12 @@ public class VariablesMappingProviderTest {
                                                                   ProcessExtensionModel.class);
 
         DelegateExecution execution = buildExecution(extensions);
-        Supplier<ExpressionResolver> expressionResolverSupplier = ExpressionResolverHelper.initContext(execution,
-                                                                                                       extensions);
+        ExpressionResolver expressionResolver = ExpressionResolverHelper.initContext(execution,
+                                                                                             extensions);
 
         ReflectionTestUtils.setField(variablesMappingProvider,
-                                     "expressionResolverSupplier",
-                                     expressionResolverSupplier);
+                                     "expressionResolver",
+                                     expressionResolver);
 
         return execution;
     }
@@ -405,6 +410,31 @@ public class VariablesMappingProviderTest {
                                     var1),
                               tuple("task_input_variable_name_2",
                                     "static_value_1"));
+    }
+    
+    @Test(expected = ActivitiIllegalArgumentException.class)
+    public void should_throwActivitiIllegalArgumentException_when_expressionIsOutputMapping() throws Exception {
+        DelegateExecution execution = initExpressionResolverTest("expression-in-properties.json");
+
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+
+        Map<String, Object> var1 = new HashMap<>();
+        var1.put("prop1",
+                 "property 1");
+        var1.put("prop2",
+                 "expressionResolved");
+
+        assertThat(inputVariables).isNotEmpty();
+        assertThat(inputVariables.entrySet()).extracting(Map.Entry::getKey,
+                                                         Map.Entry::getValue)
+                .containsOnly(tuple("process_constant_1",
+                                    "constant_1_value"),
+                              tuple("process_constant_2",
+                                    "constant_2_value"),
+                              tuple("task_input_variable_name_1",
+                                    var1),
+                              tuple("task_input_variable_name_2",
+                                    "static_value_1"));
 
         Map<String, Object> entityVariables = execution.getVariables();
         entityVariables.put("task_input_variable_name_1",
@@ -412,15 +442,7 @@ public class VariablesMappingProviderTest {
         entityVariables.put("task_input_variable_name_2",
                             "static_value_2");
 
-        Map<String, Object> outputVariables = variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
+        variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
                                                                                                 entityVariables);
-
-        assertThat(outputVariables).isNotEmpty();
-        assertThat(outputVariables.entrySet()).extracting(Map.Entry::getKey,
-                                                          Map.Entry::getValue)
-                .containsOnly(tuple("process_variable_3",
-                                    "variable_value_1"),
-                              tuple("process_variable_4",
-                                    "static_value_2"));
     }
 }

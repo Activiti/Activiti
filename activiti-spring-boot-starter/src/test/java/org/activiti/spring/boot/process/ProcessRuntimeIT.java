@@ -44,10 +44,10 @@ public class ProcessRuntimeIT {
     private static final String CATEGORIZE_PROCESS = "categorizeProcess";
     private static final String CATEGORIZE_HUMAN_PROCESS = "categorizeHumanProcess";
     private static final String ONE_STEP_PROCESS = "OneStepProcess";
-    
+
     private static final String SUB_PROCESS = "subProcess";
     private static final String SUPER_PROCESS = "superProcess";
-    
+
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -74,20 +74,20 @@ public class ProcessRuntimeIT {
 
     @Autowired
     private APIVariableInstanceConverter variableInstanceConverter;
-    
+
     @Autowired
     ProcessVariablesPayloadValidator processVariablesValidator;
 
     @Autowired
     private ProcessRuntimeConfiguration configuration;
-    
+
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
     private ApplicationEventPublisher eventPublisher;
-    
+
     private ProcessRuntime processRuntimeMock;
-    
+
     private ProcessAdminRuntime processAdminRuntimeMock;
 
     @Autowired
@@ -101,7 +101,7 @@ public class ProcessRuntimeIT {
     @Before
     public void init() {
         eventPublisher = spy(applicationEventPublisher);
-        
+
         processRuntimeMock = spy(new ProcessRuntimeImpl(repositoryService,
                                                      processDefinitionConverter,
                                                      runtimeService,
@@ -563,7 +563,7 @@ public class ProcessRuntimeIT {
         assertThat(deletedProcessInstance.getStatus()).isEqualTo(ProcessInstance.ProcessInstanceStatus.DELETED);
 
     }
-    
+
     @Test
     public void getSubprocesses() {
 
@@ -571,7 +571,7 @@ public class ProcessRuntimeIT {
 
         Page<ProcessInstance> processInstancePage;
         ProcessInstance parentProcess,subProcess;
-      
+
         //given
         // start a process with a business key to check filters
         parentProcess=processRuntime.start(ProcessPayloadBuilder.start()
@@ -592,29 +592,29 @@ public class ProcessRuntimeIT {
 
         assertThat( processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo(SUPER_PROCESS);
         assertThat( processInstancePage.getContent().get(1).getProcessDefinitionKey()).isEqualTo(SUB_PROCESS);
-        
-        
+
+
         //Check that parentProcess has 1 subprocess
         processInstancePage = processRuntime.processInstances(Pageable.of(0,
                                                                           50),
                                                                           ProcessPayloadBuilder
                                                                                   .subprocesses(parentProcess.getId()));
-        
-        
+
+
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
-        
+
         subProcess=processInstancePage.getContent().get(0);
-        
+
         assertThat(subProcess.getProcessDefinitionKey()).isEqualTo(SUB_PROCESS);
         assertThat(subProcess.getParentId()).isEqualTo(parentProcess.getId());
         assertThat(subProcess.getProcessDefinitionVersion()).isEqualTo(1);
 
-        
+
         processRuntime.delete(ProcessPayloadBuilder.delete(subProcess));
         processRuntime.delete(ProcessPayloadBuilder.delete(parentProcess));
-        
-        
+
+
 
     }
 
@@ -634,9 +634,9 @@ public class ProcessRuntimeIT {
         assertThat(processInstancePage).isNotNull();
         assertThat(processInstancePage.getContent()).hasSize(1);
         assertThat(processInstancePage.getContent().get(0).getProcessDefinitionKey()).isEqualTo("processWithSignalStart1");
-        
+
         verify(eventPublisher).publishEvent(signalPayload);
-        
+
         processRuntimeMock.delete(ProcessPayloadBuilder.delete(processInstancePage.getContent().get(0).getId()));
     }
 

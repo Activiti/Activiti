@@ -47,7 +47,7 @@ public class HistoryConfigurationTest {
 
     @Autowired
     private HistoryService historyService;
-    
+
     @Autowired
     private APIProcessDefinitionConverter processDefinitionConverter;
 
@@ -65,10 +65,10 @@ public class HistoryConfigurationTest {
 
     @Autowired
     private ProcessRuntimeConfiguration configuration;
-    
+
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
-    
+
     @Autowired
     ProcessVariablesPayloadValidator processVariablesValidator;
 
@@ -83,7 +83,7 @@ public class HistoryConfigurationTest {
     @Before
     public void init() {
         ApplicationEventPublisher eventPublisher = spy(applicationEventPublisher);
-        
+
         spy(new ProcessRuntimeImpl(repositoryService,
                      processDefinitionConverter,
                      runtimeService,

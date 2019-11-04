@@ -231,7 +231,7 @@ public class RuntimeTestConfiguration {
                                   tuple(integerConstant,
                                         10));
 
-            integrationContext.addOutBoundVariable("out-variable-name-1",
+            integrationContext.addOutBoundVariable("out_variable_name_1",
                                                    "outName");
             integrationContext.addOutBoundVariable("out_variable_name_2",
                                                    currentAge + offSet + integerConstantValue);
@@ -297,6 +297,15 @@ public class RuntimeTestConfiguration {
                                                    "outTest");
             integrationContext.addOutBoundVariable("out-unmapped-variable-non-matching-name",
                                                    "outTest");
+            return integrationContext;
+        };
+    }
+    
+    @Bean(name = "OutputMappingExpVarConnector.outputMappingExpVarActionName")
+    public Connector outputMappingVariableExpressionActionName() {
+        return integrationContext -> {
+            integrationContext.addOutBoundVariable("out-variable-name-1",
+                                                   "${name}");
             return integrationContext;
         };
     }

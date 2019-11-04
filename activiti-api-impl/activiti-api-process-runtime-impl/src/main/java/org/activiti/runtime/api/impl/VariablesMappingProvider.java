@@ -20,8 +20,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.ConstantDefinition;
@@ -35,11 +35,11 @@ public class VariablesMappingProvider {
 
     private ProcessExtensionService processExtensionService;
     
-    private Supplier<ExpressionResolver> expressionResolverSupplier;
+    private ExpressionResolver expressionResolver;
 
-    public VariablesMappingProvider(ProcessExtensionService processExtensionService, Supplier<ExpressionResolver> expressionResolverSupplier) {
+    public VariablesMappingProvider(ProcessExtensionService processExtensionService, ExpressionResolver expressionResolver) {
         this.processExtensionService = processExtensionService;
-        this.expressionResolverSupplier = expressionResolverSupplier;
+        this.expressionResolver = expressionResolver;
     }
 
     protected Optional<Object> calculateMappedValue(Mapping inputMapping,
@@ -79,7 +79,7 @@ public class VariablesMappingProvider {
         } else {
             inboudVariables = calculateInputVariables(execution, extensions);
         }
-        inboudVariables = expressionResolverSupplier.get().resolveExpressionsMap(execution,inboudVariables);
+        inboudVariables = expressionResolver.resolveExpressionsMap(execution,inboudVariables);
         inboudVariables.putAll(constants);
         return inboudVariables;
     }
@@ -144,6 +144,9 @@ public class VariablesMappingProvider {
         }
 
         if (!availableVariables.isEmpty()) {
+            if (expressionResolver.containsExpression(availableVariables)) {
+                throw new ActivitiIllegalArgumentException("Expressions are not allowed as variable values in the output mapping");
+            }
             return calculateOutPutVariables(execution, extensions, availableVariables);
         } else {
             return Collections.emptyMap();

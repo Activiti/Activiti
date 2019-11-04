@@ -20,15 +20,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.api.process.model.payloads.SetProcessVariablesPayload;
+import org.activiti.api.process.model.payloads.StartProcessPayload;
+import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.common.util.DateFormatterProvider;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.el.ExpressionManager;
+import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.repository.ProcessDefinitionQuery;
+import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
@@ -55,6 +66,8 @@ public class ProcessVariablesPayloadValidatorTest {
     
     private ProcessVariablesPayloadValidator processVariablesValidator;
     private VariableValidationService variableValidationService;
+    
+    private ExpressionResolver expressionResolver = new ExpressionResolver(new ExpressionManager());
 
     @Before
     public void setUp() {
@@ -96,7 +109,8 @@ public class ProcessVariablesPayloadValidatorTest {
         processVariablesValidator = new ProcessVariablesPayloadValidator(dateFormatterProvider,
                                                                          processExtensionService,
                                                                          variableValidationService,
-                                                                         variableNameValidator);
+                                                                         variableNameValidator,
+                                                                         expressionResolver);
         
         Extension extension = new Extension();
         extension.setProperties(properties);
@@ -196,5 +210,26 @@ public class ProcessVariablesPayloadValidatorTest {
         assertThat(throwable.getMessage())
             .contains(expectedTypeErrorMessage);
         
+    }
+    
+    @Test
+    public void should_throwIllegalStateException_when_startProcesWithOneExpressionVariable() {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("expression",
+                      "${exp}");
+        variables.put("variable",
+                      "no-expression");
+
+        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
+                                                                            ProcessPayloadBuilder
+                                                                                .setVariables()
+                                                                                .withVariables(variables)
+                                                                                .build(),
+                                                                            "10"));
+
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+        
+        assertThat(throwable.getMessage())
+            .contains("expression");     
     }
 }

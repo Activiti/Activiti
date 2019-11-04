@@ -1,12 +1,15 @@
 package org.activiti.spring.boot.process;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
 
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
+import org.activiti.engine.ActivitiException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -32,6 +34,8 @@ public class ProcessRuntimeVariableMappingTest {
     private static final String VARIABLE_MAPPING_PROCESS = "connectorVarMapping";
 
     private static final String VARIABLE_MAPPING_EXPRESSION_PROCESS = "connectorVarMappingExpression";
+    
+    private static final String OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS = "outputMappingExpVar";
 
     @Autowired
     private ProcessBaseRuntime processBaseRuntime;
@@ -96,5 +100,15 @@ public class ProcessRuntimeVariableMappingTest {
                 );
 
         processBaseRuntime.delete(processInstance.getId(),"done");
+    }
+    
+    @Test
+    public void should_throwActivitiException_when_expressionIsInOutputMapping() {
+
+        Throwable throwable = catchThrowable(() -> processBaseRuntime.startProcessWithProcessDefinitionKey(OUTPUT_MAPPING_EXPRESSION_VARIABLE_PROCESS));
+
+        assertThat(throwable).isInstanceOf(ActivitiException.class);
+
+        assertThat(throwable.getMessage()).contains("Expressions are not allowed as variable values in the output mapping");
     }
 }

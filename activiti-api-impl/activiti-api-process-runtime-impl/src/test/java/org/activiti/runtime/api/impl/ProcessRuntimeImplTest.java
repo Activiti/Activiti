@@ -31,6 +31,7 @@ import org.activiti.core.common.spring.security.policies.ProcessSecurityPolicies
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessInstanceConverter;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,19 +53,23 @@ public class ProcessRuntimeImplTest {
     @Mock
     private APIProcessInstanceConverter processInstanceConverter;
 
+    @Mock
+    private APIProcessDefinitionConverter processDefinitionConverter;
+
     @Before
     public void setUp() {
         initMocks(this);
         processRuntime = spy(new ProcessRuntimeImpl(repositoryService,
-                null,
-                runtimeService,
-                securityPoliciesManager,
-                processInstanceConverter,
-                null,
-                null,
-                null,
-                null));
+                                                    processDefinitionConverter,
+                                                    runtimeService,
+                                                    securityPoliciesManager,
+                                                    processInstanceConverter,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null));
         doReturn(true).when(securityPoliciesManager).canWrite("processDefinitionKey");
+        doReturn(true).when(securityPoliciesManager).canRead("processDefinitionKey");
 
     }
 
@@ -81,23 +86,18 @@ public class ProcessRuntimeImplTest {
         doReturn(processQuery).when(processQuery).processInstanceId("processId");
         doReturn(processQuery).when(runtimeService).createProcessInstanceQuery();
 
-
         org.activiti.engine.runtime.ProcessInstance internalProcess = mock(org.activiti.engine.runtime.ProcessInstance.class);
 
         doReturn(internalProcess).when(processQuery).singleResult();
 
-        UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update()
-                .withProcessInstanceId("processId")
-                .withBusinessKey("businessKey")
-                .withName("name")
-                .build();
+        UpdateProcessPayload updateProcessPayload = ProcessPayloadBuilder.update().withProcessInstanceId("processId").withBusinessKey("businessKey").withName("name").build();
 
         //when
         ProcessInstance updatedProcess = processRuntime.update(updateProcessPayload);
 
         //then
-        verify(runtimeService).updateBusinessKey("processId", "businessKey");
+        verify(runtimeService).updateBusinessKey("processId",
+                                                 "businessKey");
         verifyNoMoreInteractions(internalProcess);
     }
-
 }
