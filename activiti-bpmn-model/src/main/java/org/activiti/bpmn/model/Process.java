@@ -280,11 +280,11 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   }
 
   public <BaseElementType extends BaseElement> List<BaseElementType> findFlowElementsOfType(Class<BaseElementType> type) {
-    return findBaseElementsOfType(type, true);
+    return findFlowElementsOfType(type, true);
   }
 
   @SuppressWarnings("unchecked")
-  public <BaseElementType extends BaseElement> List<BaseElementType> findBaseElementsOfType(Class<BaseElementType> type, boolean goIntoSubprocesses) {
+  public <BaseElementType extends BaseElement> List<BaseElementType> findFlowElementsOfType(Class<BaseElementType> type, boolean goIntoSubprocesses) {
     List<BaseElementType> foundBaseElements = new ArrayList<BaseElementType>();
     for (BaseElement baseElement : this.getFlowElements()) {
       if (type.isInstance(baseElement)) {

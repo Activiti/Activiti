@@ -35,7 +35,7 @@ public class DataObjectValidator extends ProcessLevelValidator {
     // Gather data objects
     List<ValuedDataObject> allDataObjects = new ArrayList<ValuedDataObject>();
     allDataObjects.addAll(process.getDataObjects());
-    List<SubProcess> subProcesses = process.findBaseElementsOfType(SubProcess.class, true);
+    List<SubProcess> subProcesses = process.findFlowElementsOfType(SubProcess.class, true);
     for (SubProcess subProcess : subProcesses) {
       allDataObjects.addAll(subProcess.getDataObjects());
     }
