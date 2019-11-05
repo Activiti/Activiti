@@ -18,6 +18,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 
 /**
@@ -25,6 +26,7 @@ import org.activiti.bpmn.model.IntermediateCatchEvent;
  */
 public class CatchEventXMLConverter extends BaseBpmnXMLConverter {
 
+  @Override
   public Class<? extends BaseElement> getBpmnElementType() {
     return IntermediateCatchEvent.class;
   }
@@ -49,6 +51,7 @@ public class CatchEventXMLConverter extends BaseBpmnXMLConverter {
 
   @Override
   protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+    BpmnXMLUtil.writeIncomingAndOutgoingFlowElement((FlowNode)element, xtw);
     IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) element;
     writeEventDefinitions(catchEvent, catchEvent.getEventDefinitions(), model, xtw);
   }
