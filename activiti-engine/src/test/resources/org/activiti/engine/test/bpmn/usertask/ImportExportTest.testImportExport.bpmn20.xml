@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:activiti="http://activiti.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema"
+             expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/processdef">
     <message id="InterruptMessage" name="InterruptMessage"></message>
     <process id="process" isExecutable="true">
-        
+
         <boundaryEvent id="MessageEvent1" name="MessageEvent1" cancelActivity="false" attachedToRef="userTask1">
             <messageEventDefinition messageRef="InterruptMessage"></messageEventDefinition>
         </boundaryEvent>
-        
+
         <userTask id="userTask1" name="userTask1"></userTask>
         <sequenceFlow id="sid-33A8C195-DD0A-48B5-88D5-3BD44A896E8D" sourceRef="MessageEvent1" targetRef="userTask1"></sequenceFlow>
         <endEvent id="endElement" name="endElement"></endEvent>

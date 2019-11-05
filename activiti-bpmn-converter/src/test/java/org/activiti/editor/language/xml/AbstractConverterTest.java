@@ -20,6 +20,13 @@ public abstract class AbstractConverterTest {
     return new BpmnXMLConverter().convertToBpmnModel(xtr);
   }
 
+  protected BpmnModel readXMLFileEncoding(String encoding) throws Exception {
+     InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
+     XMLInputFactory xif = XMLInputFactory.newInstance();
+     XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, encoding);
+     return new BpmnXMLConverter().convertToBpmnModel(xtr);
+  }
+
   protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel) throws Exception {
     byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel);
     System.out.println("xml " + new String(xml, "UTF-8"));

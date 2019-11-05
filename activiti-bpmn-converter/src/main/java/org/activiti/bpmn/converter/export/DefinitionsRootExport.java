@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DefinitionsRootExport implements BpmnXMLConstants {
 
   /** default namespaces for definitions */
-  protected static final Set<String> defaultNamespaces = new HashSet<String>(Arrays.asList(XSI_PREFIX, XSD_PREFIX, ACTIVITI_EXTENSIONS_PREFIX, BPMNDI_PREFIX, OMGDC_PREFIX, OMGDI_PREFIX));
+  protected static final Set<String> defaultNamespaces = new HashSet<String>(Arrays.asList(BPMN2_PREFIX, XSI_PREFIX, XSD_PREFIX, ACTIVITI_EXTENSIONS_PREFIX, BPMNDI_PREFIX, OMGDC_PREFIX, OMGDI_PREFIX));
 
   protected static final List<ExtensionAttribute> defaultAttributes = Arrays.asList(new ExtensionAttribute(TYPE_LANGUAGE_ATTRIBUTE), new ExtensionAttribute(EXPRESSION_LANGUAGE_ATTRIBUTE),
       new ExtensionAttribute(TARGET_NAMESPACE_ATTRIBUTE));
@@ -38,9 +38,11 @@ public class DefinitionsRootExport implements BpmnXMLConstants {
     xtw.writeStartDocument(encoding, "1.0");
 
     // start definitions root element
-    xtw.writeStartElement(ELEMENT_DEFINITIONS);
+    xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_DEFINITIONS, BPMN2_NAMESPACE);
     xtw.setDefaultNamespace(BPMN2_NAMESPACE);
     xtw.writeDefaultNamespace(BPMN2_NAMESPACE);
+
+    xtw.writeNamespace(BPMN2_PREFIX, BPMN2_NAMESPACE);
     xtw.writeNamespace(XSI_PREFIX, XSI_NAMESPACE);
     xtw.writeNamespace(XSD_PREFIX, SCHEMA_NAMESPACE);
     xtw.writeNamespace(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE);
