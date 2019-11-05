@@ -22,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +43,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ProcessVariablesPayloadValidatorTest {
@@ -204,23 +206,74 @@ public class ProcessVariablesPayloadValidatorTest {
     }
     
     @Test
-    public void should_throwIllegalStateException_when_payloadVariableWithExpression() {
+    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInStringVariable() {
         Map<String, Object> variables = new HashMap<>();
-        variables.put("expression",
-                      "${exp}");
+        variables.put("expression_string",
+                      "${variable}");
         variables.put("variable",
                       "no-expression");
 
-        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
-                                                                            ProcessPayloadBuilder
-                                                                                .setVariables()
-                                                                                .withVariables(variables)
-                                                                                .build(),
-                                                                            "10"));
+        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(ProcessPayloadBuilder.setVariables().withVariables(variables).build(),
+                                                                                                   "10"));
 
         assertThat(throwable).isInstanceOf(IllegalStateException.class);
-        
-        assertThat(throwable.getMessage())
-            .contains("expression");     
+
+        assertThat(throwable.getMessage()).contains("expression");
+    }
+
+    @Test
+    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInObjectVariable() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode obj = mapper.readTree("{\"attr1\":\"value1\",\"attr2\":\"${variable}\"}");
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("expression_object",
+                      obj);
+        variables.put("variable",
+                      "no-expression");
+
+        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(ProcessPayloadBuilder.setVariables().withVariables(variables).build(),
+                                                                                                   "10"));
+
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+
+        assertThat(throwable.getMessage()).contains("expression");
+    }
+
+    @Test
+    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInList() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode obj = mapper.readTree("{\"attr1\":\"value1\",\"attr2\":[\"1\", \"${variable}\", \"2\"]}");
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("expression_list",
+                      obj);
+        variables.put("variable",
+                      "no-expression");
+
+        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(ProcessPayloadBuilder.setVariables().withVariables(variables).build(),
+                                                                                                   "10"));
+
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+
+        assertThat(throwable.getMessage()).contains("expression");
+    }
+
+    @Test
+    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInMap() {
+        Map<String, Object> object = new HashMap<>();
+        object.put("expression_string",
+                   "${variable}");
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("expression_map",
+                      object);
+
+        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(ProcessPayloadBuilder.setVariables().withVariables(variables).build(),
+                                                                                                   "10"));
+
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+
+        assertThat(throwable.getMessage()).contains("expression");
     }
 }

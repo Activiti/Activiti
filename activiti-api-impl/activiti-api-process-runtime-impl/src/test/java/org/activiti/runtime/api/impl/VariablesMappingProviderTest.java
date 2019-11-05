@@ -9,7 +9,9 @@ import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -391,14 +393,18 @@ public class VariablesMappingProviderTest {
     public void should_substituteExpressions_when_expressionIsInProperties() throws Exception {
         DelegateExecution execution = initExpressionResolverTest("expression-in-properties.json");
 
-        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+        String[] array = { "1", "this expressionResolved is OK", "2" };
+        List<String> list = Arrays.asList(array);
 
         Map<String, Object> var1 = new HashMap<>();
         var1.put("prop1",
                  "property 1");
         var1.put("prop2",
                  "expressionResolved");
+        var1.put("prop3",
+                 list);
 
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
         assertThat(inputVariables).isNotEmpty();
         assertThat(inputVariables.entrySet()).extracting(Map.Entry::getKey,
                                                          Map.Entry::getValue)
@@ -411,19 +417,23 @@ public class VariablesMappingProviderTest {
                               tuple("task_input_variable_name_2",
                                     "static_value_1"));
     }
-    
+
     @Test(expected = ActivitiIllegalArgumentException.class)
     public void should_throwActivitiIllegalArgumentException_when_expressionIsOutputMapping() throws Exception {
         DelegateExecution execution = initExpressionResolverTest("expression-in-properties.json");
 
-        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
+        String[] array = { "1", "this expressionResolved is OK", "2" };
+        List<String> list = Arrays.asList(array);
 
         Map<String, Object> var1 = new HashMap<>();
         var1.put("prop1",
                  "property 1");
         var1.put("prop2",
                  "expressionResolved");
+        var1.put("prop3",
+                 list);
 
+        Map<String, Object> inputVariables = variablesMappingProvider.calculateInputVariables(execution);
         assertThat(inputVariables).isNotEmpty();
         assertThat(inputVariables.entrySet()).extracting(Map.Entry::getKey,
                                                          Map.Entry::getValue)
@@ -443,6 +453,6 @@ public class VariablesMappingProviderTest {
                             "static_value_2");
 
         variablesMappingProvider.calculateOutPutVariables(buildMappingExecutionContext(execution),
-                                                                                                entityVariables);
+                                                          entityVariables);
     }
 }

@@ -9,7 +9,8 @@
 				"required": true,
 				"value": {
 					"prop1": "property 1",
-					"prop2": "${process_variable_5}"
+					"prop2": "${process_variable_5}",
+					"prop3": ["1", "this ${process_variable_5} is OK", "2"]
 				}
 			},
 			"variable-2-id": {
