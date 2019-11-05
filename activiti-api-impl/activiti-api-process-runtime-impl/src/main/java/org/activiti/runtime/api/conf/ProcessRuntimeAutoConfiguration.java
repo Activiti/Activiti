@@ -131,11 +131,13 @@ public class ProcessRuntimeAutoConfiguration {
     public ProcessVariablesPayloadValidator processVariablesValidator(DateFormatterProvider dateFormatterProvider,
                                                                       ProcessExtensionService processExtensionService,
                                                                       VariableValidationService variableValidationService,
-                                                                      VariableNameValidator variableNameValidator) {
+                                                                      VariableNameValidator variableNameValidator,
+                                                                      ExpressionResolver expressionResolver) {
         return new ProcessVariablesPayloadValidator(dateFormatterProvider,
                 processExtensionService,
                 variableValidationService,
-                variableNameValidator);
+                variableNameValidator,
+                expressionResolver);
     }
 
     @Bean

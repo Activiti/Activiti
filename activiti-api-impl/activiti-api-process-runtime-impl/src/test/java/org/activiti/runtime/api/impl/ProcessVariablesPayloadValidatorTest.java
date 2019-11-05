@@ -22,13 +22,16 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.common.util.DateFormatterProvider;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.Extension;
 import org.activiti.spring.process.model.ProcessExtensionModel;
@@ -55,6 +58,8 @@ public class ProcessVariablesPayloadValidatorTest {
     
     private ProcessVariablesPayloadValidator processVariablesValidator;
     private VariableValidationService variableValidationService;
+    
+    private ExpressionResolver expressionResolver = new ExpressionResolver(new ExpressionManager());
 
     @Before
     public void setUp() {
@@ -96,7 +101,8 @@ public class ProcessVariablesPayloadValidatorTest {
         processVariablesValidator = new ProcessVariablesPayloadValidator(dateFormatterProvider,
                                                                          processExtensionService,
                                                                          variableValidationService,
-                                                                         variableNameValidator);
+                                                                         variableNameValidator,
+                                                                         expressionResolver);
         
         Extension extension = new Extension();
         extension.setProperties(properties);
@@ -196,5 +202,77 @@ public class ProcessVariablesPayloadValidatorTest {
         assertThat(throwable.getMessage())
             .contains(expectedTypeErrorMessage);
         
+    }
+    
+    @Test
+    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInStringVariable() {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("expression_string",
+                      "${variable}");
+        variables.put("variable",
+                      "no-expression");
+
+        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(ProcessPayloadBuilder.setVariables().withVariables(variables).build(),
+                                                                                                   "10"));
+
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+
+        assertThat(throwable.getMessage()).contains("expression");
+    }
+
+    @Test
+    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInObjectVariable() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode obj = mapper.readTree("{\"attr1\":\"value1\",\"attr2\":\"${variable}\"}");
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("expression_object",
+                      obj);
+        variables.put("variable",
+                      "no-expression");
+
+        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(ProcessPayloadBuilder.setVariables().withVariables(variables).build(),
+                                                                                                   "10"));
+
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+
+        assertThat(throwable.getMessage()).contains("expression");
+    }
+
+    @Test
+    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInList() throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode obj = mapper.readTree("{\"attr1\":\"value1\",\"attr2\":[\"1\", \"${variable}\", \"2\"]}");
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("expression_list",
+                      obj);
+        variables.put("variable",
+                      "no-expression");
+
+        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(ProcessPayloadBuilder.setVariables().withVariables(variables).build(),
+                                                                                                   "10"));
+
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+
+        assertThat(throwable.getMessage()).contains("expression");
+    }
+
+    @Test
+    public void should_throwIllegalStateException_when_payloadVariableWithExpressionInMap() {
+        Map<String, Object> object = new HashMap<>();
+        object.put("expression_string",
+                   "${variable}");
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("expression_map",
+                      object);
+
+        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(ProcessPayloadBuilder.setVariables().withVariables(variables).build(),
+                                                                                                   "10"));
+
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+
+        assertThat(throwable.getMessage()).contains("expression");
     }
 }
