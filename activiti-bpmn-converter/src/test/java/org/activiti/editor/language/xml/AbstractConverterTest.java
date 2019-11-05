@@ -22,7 +22,6 @@ public abstract class AbstractConverterTest {
 
   protected BpmnModel readXMLFileEncoding(String encoding) throws Exception {
      InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(getResource());
-      System.out.println("Encoding: " +encoding);
      XMLInputFactory xif = XMLInputFactory.newInstance();
      XMLStreamReader xtr = xif.createXMLStreamReader(xmlStream, encoding);
      return new BpmnXMLConverter().convertToBpmnModel(xtr);
