@@ -12,22 +12,16 @@ package org.activiti.editor.language.xml;
  * limitations under the License.
  */
 
-import org.activiti.bpmn.BpmnAutoLayout;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.converter.util.InputStreamProvider;
 import org.activiti.bpmn.model.BpmnModel;
 import org.junit.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.junit.Assert.*;
-
-/**
-
- */
 public class PrefixConversionTest {
 
     @Test
@@ -49,14 +43,9 @@ public class PrefixConversionTest {
         }, false, false);
 
         byte[] bytesReconvertedXMLModel = bpmnXMLConverter.convertToXML(bpmnModel);
-        String stringifyOriginalXML = this.convertToUnspacedString(byteOriginalXMLStream);
-        String stringifyReconvertedModel = this.convertToUnspacedString(bytesReconvertedXMLModel);
+        String stringifyOriginalXML = new String(byteOriginalXMLStream);
+        String stringifyReconvertedModel = new String(bytesReconvertedXMLModel);
 
-        assertEquals(stringifyOriginalXML, stringifyReconvertedModel);
+        assertThat(stringifyReconvertedModel).isXmlEqualTo(stringifyOriginalXML);
     }
-
-    private String convertToUnspacedString(byte[] bytesToConvert) {
-        return new String(bytesToConvert).replaceAll("\\s+","");
-    }
-
 }
