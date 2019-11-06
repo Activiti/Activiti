@@ -95,7 +95,7 @@
         "input_static_value": {
           "value": "a static value"
         },
-        "integer_constant" : {
+        "integer_constant": {
           "value": 10
         }
       }

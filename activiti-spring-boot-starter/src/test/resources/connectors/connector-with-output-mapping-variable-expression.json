@@ -7,7 +7,7 @@
       "id": "outputMappingExpVarActionName",
       "name": "outputMappingExpVarActionName",
       "description": "...",
-      "inputs": [ ],
+      "inputs": [],
       "outputs": [
         {
           "id": "out-variable-1",
