@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import org.activiti.api.process.model.ProcessInstance;
 
-public class ProcessInstanceImpl implements ProcessInstance {
+public class ProcessInstanceImpl extends ApplicationElementImpl implements ProcessInstance {
 
     private String id;
     private String name;
@@ -73,13 +73,19 @@ public class ProcessInstanceImpl implements ProcessInstance {
     }
 
     @Override
-    public String getProcessDefinitionKey() { return processDefinitionKey; }
+    public String getProcessDefinitionKey() {
+        return processDefinitionKey;
+    }
 
     @Override
-    public String getParentId() { return parentId; }
+    public String getParentId() {
+        return parentId;
+    }
 
     @Override
-    public Integer getProcessDefinitionVersion() { return processDefinitionVersion; }
+    public Integer getProcessDefinitionVersion() {
+        return processDefinitionVersion;
+    }
     
     public void setId(String id) {
         this.id = id;
@@ -121,13 +127,15 @@ public class ProcessInstanceImpl implements ProcessInstance {
         this.processDefinitionVersion = processDefinitionVersion;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
             return false;
         }
         ProcessInstanceImpl that = (ProcessInstanceImpl) o;
@@ -137,31 +145,33 @@ public class ProcessInstanceImpl implements ProcessInstance {
                                that.name) &&
                 Objects.equals(processDefinitionId,
                                that.processDefinitionId) &&
-                Objects.equals(parentId,
-                               that.parentId) &&
+                Objects.equals(processDefinitionKey,
+                               that.processDefinitionKey) &&
                 Objects.equals(initiator,
                                that.initiator) &&
                 Objects.equals(startDate,
                                that.startDate) &&
                 Objects.equals(businessKey,
                                that.businessKey) &&
+                status == that.status &&
+                Objects.equals(parentId,
+                               that.parentId) &&
                 Objects.equals(processDefinitionVersion,
-                               that.processDefinitionVersion) &&
-                status == that.status;
+                               that.processDefinitionVersion);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id,
+        return Objects.hash(super.hashCode(),
+                            id,
                             name,
                             processDefinitionId,
                             processDefinitionKey,
                             initiator,
-                            parentId,
                             startDate,
                             businessKey,
                             status,
+                            parentId,
                             processDefinitionVersion);
     }
 

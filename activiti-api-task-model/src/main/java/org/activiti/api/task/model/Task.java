@@ -18,7 +18,9 @@ package org.activiti.api.task.model;
 
 import java.util.Date;
 
-public interface Task {
+import org.activiti.api.model.shared.model.ApplicationElement;
+
+public interface Task extends ApplicationElement {
 
     enum TaskStatus {
         CREATED,

@@ -19,9 +19,10 @@ package org.activiti.api.task.model.impl;
 import java.util.Date;
 import java.util.Objects;
 
+import org.activiti.api.runtime.model.impl.ApplicationElementImpl;
 import org.activiti.api.task.model.Task;
 
-public class TaskImpl implements Task {
+public class TaskImpl extends ApplicationElementImpl implements Task {
 
     private String id;
     private String name;
@@ -210,16 +211,20 @@ public class TaskImpl implements Task {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        if (!super.equals(o)) {
+            return false;
+        }
         TaskImpl task = (TaskImpl) o;
         return priority == task.priority &&
                 Objects.equals(id,
                                task.id) &&
+                Objects.equals(name,
+                               task.name) &&
+                status == task.status &&
                 Objects.equals(owner,
                                task.owner) &&
                 Objects.equals(assignee,
                                task.assignee) &&
-                Objects.equals(name,
-                               task.name) &&
                 Objects.equals(description,
                                task.description) &&
                 Objects.equals(createdDate,
@@ -236,20 +241,24 @@ public class TaskImpl implements Task {
                                task.parentTaskId) &&
                 Objects.equals(formKey,
                                task.formKey) &&
+                Objects.equals(completedDate,
+                               task.completedDate) &&
+                Objects.equals(duration,
+                               task.duration) &&
                 Objects.equals(processDefinitionVersion,
                                task.processDefinitionVersion) &&
                 Objects.equals(businessKey,
-                               task.businessKey) &&
-                status == task.status;
+                               task.businessKey);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id,
+        return Objects.hash(super.hashCode(),
+                            id,
+                            name,
+                            status,
                             owner,
                             assignee,
-                            name,
                             description,
                             createdDate,
                             claimedDate,
@@ -259,7 +268,8 @@ public class TaskImpl implements Task {
                             processInstanceId,
                             parentTaskId,
                             formKey,
-                            status,
+                            completedDate,
+                            duration,
                             processDefinitionVersion,
                             businessKey);
     }

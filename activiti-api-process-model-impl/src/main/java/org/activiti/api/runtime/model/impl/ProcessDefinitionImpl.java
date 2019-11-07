@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import org.activiti.api.process.model.ProcessDefinition;
 
-public class ProcessDefinitionImpl implements ProcessDefinition {
+public class ProcessDefinitionImpl extends ApplicationElementImpl implements ProcessDefinition {
 
     private String id;
     private String name;
@@ -89,6 +89,9 @@ public class ProcessDefinitionImpl implements ProcessDefinition {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
+        if (!super.equals(o)) {
+            return false;
+        }
         ProcessDefinitionImpl that = (ProcessDefinitionImpl) o;
         return version == that.version &&
                 Objects.equals(id,
@@ -105,8 +108,8 @@ public class ProcessDefinitionImpl implements ProcessDefinition {
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(id,
+        return Objects.hash(super.hashCode(),
+                            id,
                             name,
                             description,
                             version,
