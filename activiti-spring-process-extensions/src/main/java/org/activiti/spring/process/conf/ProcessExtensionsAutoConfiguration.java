@@ -74,16 +74,6 @@ public class ProcessExtensionsAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinderDescriptor(
-            @Value("${activiti.process.extensions.dir:classpath:**/processes/}") String locationPrefix,
-            @Value("${activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix) {
-        return new ProcessExtensionResourceFinderDescriptor(true,
-                locationPrefix,
-                locationSuffix);
-    }
-
-    @Bean
     InitializingBean initRepositoryServiceForProcessExtensionService(RepositoryService repositoryService,
                                                                      ProcessExtensionService processExtensionService) {
         return () -> processExtensionService.setRepositoryService(repositoryService);
