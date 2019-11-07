@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ProcessExtensionResourceFinderDescriptorAutoConfiguration {
 
-
     @Bean
     @ConditionalOnMissingBean
     public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinderDescriptor(
