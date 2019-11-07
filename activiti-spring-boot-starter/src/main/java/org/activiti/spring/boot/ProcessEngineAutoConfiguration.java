@@ -179,7 +179,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     @Bean
     @ConditionalOnMissingBean
     public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinderDescriptor(ActivitiProperties activitiProperties,
-                                                                                             @Value("${spring.activiti.process.extensions.dir:classpath:**/processes/}") String locationPrefix,
+                                                                                             @Value("${spring.activiti.process.extensions.dir:classpath*:**/processes/}") String locationPrefix,
                                                                                              @Value("${spring.activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix) {
         return new ProcessExtensionResourceFinderDescriptor(activitiProperties.isCheckProcessDefinitions(),
                 locationPrefix,
