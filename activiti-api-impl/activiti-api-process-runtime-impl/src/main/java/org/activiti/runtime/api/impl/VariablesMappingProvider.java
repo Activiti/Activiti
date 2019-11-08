@@ -166,10 +166,10 @@ public class VariablesMappingProvider {
 
             VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
 
-            if (processVariableDefinition != null && calculateOutPutMappedValue(mapping.getValue(),
-                    availableVariables).isPresent()) {
-                outboundVariables.put(name, calculateOutPutMappedValue(mapping.getValue(),
-                        availableVariables).get());
+            if (processVariableDefinition != null) {
+                calculateOutPutMappedValue(mapping.getValue(),
+                                           availableVariables)
+                        .ifPresent( value -> outboundVariables.put(name, value));
             }
         }
 
