@@ -12,7 +12,7 @@ continuation_indent_size = 8
 [*.properties]
 charset = latin1
 
-[*.{yml,jsp,scala,html,xml}]
+[*.{yml,jsp,scala,html,xml,json}]
 indent_size = 2
 continuation_indent_size = 4
 

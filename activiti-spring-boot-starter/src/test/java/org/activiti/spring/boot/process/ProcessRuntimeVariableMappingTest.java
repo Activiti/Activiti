@@ -9,18 +9,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.engine.ActivitiException;
+import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -35,6 +36,17 @@ public class ProcessRuntimeVariableMappingTest {
 
     @Autowired
     private ProcessBaseRuntime processBaseRuntime;
+
+    @Autowired
+    private ObjectMapper mapper;
+
+    @Autowired
+    private ProcessCleanUpUtil processCleanUpUtil;
+
+    @Before
+    public void setUp() {
+        processCleanUpUtil.cleanUpWithAdmin();
+    }
 
     @Test
     public void shouldMapVariables() {
@@ -54,10 +66,8 @@ public class ProcessRuntimeVariableMappingTest {
                         tuple("output_unmapped_variable_with_non_matching_connector_output_name", "default")
                 );
 
-        processBaseRuntime.delete(processInstance.getId(),"done");
     }
     
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Test
     public void should_resolveExpression_when_expressionIsInInputMappingValueOrInMappedProperty() {
         ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey(VARIABLE_MAPPING_EXPRESSION_PROCESS);
@@ -67,7 +77,7 @@ public class ProcessRuntimeVariableMappingTest {
         String[] array = { "first", "${name}", "${surname}", "last" };
         List<String> list = Arrays.asList(array);
 
-        Map<String, Object> dataMap = new HashMap();
+        Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("age-in-months",
                     "${age * 12}");
         dataMap.put("full-name",
@@ -76,7 +86,6 @@ public class ProcessRuntimeVariableMappingTest {
                     "expressionResolved");
         dataMap.put("list",
                     list);
-        ObjectMapper mapper = new ObjectMapper();
         JsonNode data = mapper.convertValue(dataMap, JsonNode.class);
 
 
@@ -92,10 +101,10 @@ public class ProcessRuntimeVariableMappingTest {
                         tuple("input-unmapped-variable-with-non-matching-connector-input-name", "inTestExpression"),
                         tuple("variableToResolve", "${name}"),
                         tuple("out-unmapped-variable-matching-name", "defaultExpression"),
-                        tuple("output-unmapped-variable-with-non-matching-connector-output-name", "defaultExpression")
+                        tuple("output-unmapped-variable-with-non-matching-connector-output-name", "defaultExpression"),
+                        tuple("resident", true)
                 );
 
-        processBaseRuntime.delete(processInstance.getId(),"done");
     }
 
     @Test

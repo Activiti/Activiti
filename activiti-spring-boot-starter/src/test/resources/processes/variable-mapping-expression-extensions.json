@@ -87,6 +87,13 @@
         "name": "property-with-no-default-value-name",
         "type": "string",
         "required": false
+      },
+      "local-resident-id": {
+        "id": "local-resident-id",
+        "name": "resident",
+        "type": "boolean",
+        "required": false,
+        "value": true
       }
     },
     "mappings": {
@@ -115,6 +122,14 @@
           "input-variable-name-4": {
             "type": "variable",
             "value": "property-with-no-default-value-name"
+          },
+          "input-json-template": {
+            "type": "value",
+            "value": {
+              "name": "${name}",
+              "age": "${age}",
+              "resident": "${resident}"
+            }
           }
         },
         "outputs": {

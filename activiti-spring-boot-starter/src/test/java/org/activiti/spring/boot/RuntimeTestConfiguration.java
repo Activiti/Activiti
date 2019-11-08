@@ -269,7 +269,7 @@ public class RuntimeTestConfiguration {
             String[] array = { "first", "John", "Doe", "last" };
             List<String> list = Arrays.asList(array);
 
-            Map<String, Object> dataMap = new HashMap();
+            Map<String, Object> dataMap = new HashMap<>();
             dataMap.put("age-in-months",
                         240L);
             dataMap.put("full-name",
@@ -278,6 +278,11 @@ public class RuntimeTestConfiguration {
                         "expressionResolved");
             dataMap.put("list",
                         list);
+
+            Map<String, Object> expectedResolvedJsonTemplate = new HashMap<>();
+            expectedResolvedJsonTemplate.put("name", "John");
+            expectedResolvedJsonTemplate.put("age", 20);
+            expectedResolvedJsonTemplate.put("resident", true);
 
             assertThat(inBoundVariables.entrySet()).extracting(Map.Entry::getKey,
                                                                Map.Entry::getValue)
@@ -294,7 +299,9 @@ public class RuntimeTestConfiguration {
                                   tuple(staticValue,
                                         "a static value"),
                                   tuple(integerConstant,
-                                        10));
+                                        10),
+                                  tuple("input-json-template",
+                                        expectedResolvedJsonTemplate));
 
             integrationContext.addOutBoundVariable("out-variable-name-1",
                                                    "outName");
@@ -304,6 +311,11 @@ public class RuntimeTestConfiguration {
                                                    "outTest");
             integrationContext.addOutBoundVariable("out-unmapped-variable-non-matching-name",
                                                    "outTest");
+
+            Map<String, Object> conferenceInfo = new HashMap<>();
+            conferenceInfo.put("City", "London");
+            conferenceInfo.put("numberOfAttendees", 5000);
+            integrationContext.addOutBoundVariable("conferenceInfo", conferenceInfo);
             return integrationContext;
         };
     }
