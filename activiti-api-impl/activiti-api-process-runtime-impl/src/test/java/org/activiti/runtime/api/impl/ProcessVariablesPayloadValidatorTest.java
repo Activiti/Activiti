@@ -59,7 +59,8 @@ public class ProcessVariablesPayloadValidatorTest {
     private ProcessVariablesPayloadValidator processVariablesValidator;
     private VariableValidationService variableValidationService;
     
-    private ExpressionResolver expressionResolver = new ExpressionResolver(new ExpressionManager());
+    private ExpressionResolver expressionResolver = new ExpressionResolver(new ExpressionManager(),
+                                                                           objectMapper);
 
     @Before
     public void setUp() {

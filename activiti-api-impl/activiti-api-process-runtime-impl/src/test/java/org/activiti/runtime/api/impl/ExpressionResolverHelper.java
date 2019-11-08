@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
@@ -20,6 +21,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 public class ExpressionResolverHelper {
+
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     private static void initializeExpressionResolver() {
         ProcessEngineConfigurationImpl processEngineConfiguration = mock(ProcessEngineConfigurationImpl.class);
@@ -44,7 +47,8 @@ public class ExpressionResolverHelper {
             given(execution.getVariableInstance(key)).willReturn(var);
             given(execution.getVariable(key)).willReturn(variables.get(key));
         }
-        return new ExpressionResolver(new ExpressionManager());
+        return new ExpressionResolver(new ExpressionManager(),
+                                      objectMapper);
     }
 
     public static Map<String, Object> converstToStringObjectMap(Map<String, VariableDefinition> sourceMap) {

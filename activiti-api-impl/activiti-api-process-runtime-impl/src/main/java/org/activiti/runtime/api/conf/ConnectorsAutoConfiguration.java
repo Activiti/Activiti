@@ -16,6 +16,7 @@
 
 package org.activiti.runtime.api.conf;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.runtime.api.connector.DefaultServiceTaskBehavior;
@@ -39,8 +40,8 @@ public class ConnectorsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ExpressionResolver expressionResolver(ExpressionManager expressionManager) {
-        return new ExpressionResolver(expressionManager);
+    public ExpressionResolver expressionResolver(ExpressionManager expressionManager, ObjectMapper objectMapper) {
+        return new ExpressionResolver(expressionManager, objectMapper);
     }
 
     @Bean

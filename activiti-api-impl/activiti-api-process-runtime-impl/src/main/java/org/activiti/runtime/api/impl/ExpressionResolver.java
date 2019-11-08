@@ -30,9 +30,10 @@ public class ExpressionResolver {
 
     private ExpressionManager expressionManager;
 
-    public ExpressionResolver(ExpressionManager expressionManager) {
+    public ExpressionResolver(ExpressionManager expressionManager,
+                              ObjectMapper mapper) {
         this.expressionManager = expressionManager;
-        this.mapper = new ObjectMapper();
+        this.mapper = mapper;
     }
 
     @SuppressWarnings("unchecked")
@@ -65,7 +66,7 @@ public class ExpressionResolver {
     }
 
     public Map<String, Object> resolveExpressionsMap(final DelegateExecution execution,
-                                                     final Map<String, ? extends Object> sourceMap) {
+                                                     final Map<String, ?> sourceMap) {
         final Map<String, Object> result = new LinkedHashMap<>();
         sourceMap.forEach((key,
                            value) -> result.put(key,
