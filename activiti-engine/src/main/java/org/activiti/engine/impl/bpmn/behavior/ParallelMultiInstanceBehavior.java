@@ -254,7 +254,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
                     parentExecution.getId(),
                     parentExecution.getProcessInstanceId(),
                     parentExecution.getProcessDefinitionId(),
-                    parseActivityType((FlowNode) parentExecution.getCurrentFlowElement()),
+                    "multi-instance " + parseActivityType((FlowNode) parentExecution.getCurrentFlowElement()),
                     "Complete Condition Expression Passed"
             ));
         }

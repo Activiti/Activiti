@@ -48,7 +48,9 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEve
                 taskQuery.taskDefinitionKey(internalEvent.getActivityId());
             }
 
-            if (internalEvent.getExecutionId() != null) {
+            if (internalEvent.getActivityType() != null &&
+                internalEvent.getActivityType().contains("multi-instance") &&
+                internalEvent.getExecutionId() != null) {
                 taskQuery.executionId(internalEvent.getExecutionId());
             }
         } else {
