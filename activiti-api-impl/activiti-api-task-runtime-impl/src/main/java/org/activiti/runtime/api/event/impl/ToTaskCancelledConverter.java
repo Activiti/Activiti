@@ -47,6 +47,10 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEve
             if (internalEvent.getActivityId() != null) {
                 taskQuery.taskDefinitionKey(internalEvent.getActivityId());
             }
+
+            if (internalEvent.getExecutionId() != null) {
+                taskQuery.executionId(internalEvent.getExecutionId());
+            }
         } else {
             if (internalEvent.getExecutionId() != null) {
                 //temporary workaround for stand alone tasks, task id is mapped as execution id
