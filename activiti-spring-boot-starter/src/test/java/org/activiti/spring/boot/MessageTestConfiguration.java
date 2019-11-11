@@ -3,6 +3,7 @@ package org.activiti.spring.boot;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.api.process.model.events.BPMNMessageCancelledEvent;
 import org.activiti.api.process.model.events.BPMNMessageEvent;
 import org.activiti.api.process.model.events.BPMNMessageReceivedEvent;
 import org.activiti.api.process.model.events.BPMNMessageSentEvent;
@@ -30,5 +31,9 @@ public class MessageTestConfiguration {
     public BPMNElementEventListener<BPMNMessageWaitingEvent> messageWaitingEventListener() {
         return bpmnMessageWaitingEvent -> messageEvents.add(bpmnMessageWaitingEvent);
     }  
- 
+    
+    @Bean
+    public BPMNElementEventListener<BPMNMessageCancelledEvent> messageCancelledEventListener() {
+        return bpmnMessageCancelledEvent -> messageEvents.add(bpmnMessageCancelledEvent);
+    }  
 }
