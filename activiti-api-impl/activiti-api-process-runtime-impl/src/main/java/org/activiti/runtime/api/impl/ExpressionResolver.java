@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -20,6 +21,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ExpressionResolver {
 
+    private static final TypeReference<Map<String, ?>> MAP_STRING_OBJECT_TYPE = new TypeReference<Map<String, ?>>() {
+    };
     private final Logger logger = LoggerFactory.getLogger(ExpressionResolver.class);
 
     private static final String EXPRESSION_PATTERN_STRING = "([\\$]\\{([^\\}]*)\\})";
@@ -36,16 +39,15 @@ public class ExpressionResolver {
         this.mapper = mapper;
     }
 
-    @SuppressWarnings("unchecked")
-    public Object resolveExpressions(final DelegateExecution execution,
-                                     final Object value) {
+    private Object resolveExpressions(final DelegateExecution execution,
+                                      final Object value) {
         if (value instanceof String) {
             return resolveExpressionsString(execution,
                                             (String) value);
         } else if (value instanceof ObjectNode) {
             return resolveExpressionsMap(execution,
                                          mapper.convertValue(value,
-                                                             Map.class));
+                                                             MAP_STRING_OBJECT_TYPE));
         } else if (value instanceof Map<?, ?>) {
             return resolveExpressionsMap(execution,
                                          (Map<String, ?>) value);
@@ -57,8 +59,8 @@ public class ExpressionResolver {
         }
     }
 
-    public List<Object> resolveExpressionsList(final DelegateExecution execution,
-                                               final List<?> sourceList) {
+    private List<Object> resolveExpressionsList(final DelegateExecution execution,
+                                                final List<?> sourceList) {
         final List<Object> result = new LinkedList<>();
         sourceList.forEach(value -> result.add(resolveExpressions(execution,
                                                                   value)));
@@ -75,8 +77,8 @@ public class ExpressionResolver {
         return result;
     }
 
-    public Object resolveExpressionsString(final DelegateExecution execution,
-                                           final String sourceString) {
+    private Object resolveExpressionsString(final DelegateExecution execution,
+                                            final String sourceString) {
         if (sourceString == null || sourceString.isEmpty()) {
             return sourceString;
         }
@@ -94,14 +96,14 @@ public class ExpressionResolver {
         try {
             return expressionManager.createExpression(sourceString).getValue(execution);
         } catch (final Exception e) {
-            logger.error("Unable to resolve expression in variables",
+            logger.warn("Unable to resolve expression in variables, keeping original value",
                          e);
             return sourceString;
         }
     }
 
-    public String resolveInStringPlaceHolder(final DelegateExecution execution,
-                                             final String sourceString) {
+    private String resolveInStringPlaceHolder(final DelegateExecution execution,
+                                              final String sourceString) {
         final Matcher matcher = EXPRESSION_PATTERN.matcher(sourceString);
         final StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
@@ -112,7 +114,7 @@ public class ExpressionResolver {
                 matcher.appendReplacement(sb,
                                           Objects.toString(value));
             } catch (final Exception e) {
-                logger.error("Unable to resolve expression in variables",
+                logger.warn("Unable to resolve expression in variables, keeping original value",
                              e);
             }
         }
@@ -120,7 +122,6 @@ public class ExpressionResolver {
         return sb.toString();
     }
 
-    @SuppressWarnings("unchecked")
     public boolean containsExpression(final Object source) {
         if (source == null) {
             return false;
@@ -128,7 +129,7 @@ public class ExpressionResolver {
             return containsExpressionString((String) source);
         } else if (source instanceof ObjectNode) {
             return containsExpressionMap(mapper.convertValue(source,
-                                                             Map.class));
+                                                             MAP_STRING_OBJECT_TYPE));
         } else if (source instanceof Map<?, ?>) {
             return containsExpressionMap((Map<String, ?>) source);
         } else if (source instanceof List<?>) {
@@ -138,11 +139,11 @@ public class ExpressionResolver {
         }
     }
 
-    public boolean containsExpressionString(final String sourceString) {
+    private boolean containsExpressionString(final String sourceString) {
         return EXPRESSION_PATTERN.matcher(sourceString).find();
     }
 
-    public boolean containsExpressionMap(final Map<String, ?> source) {
+    private boolean containsExpressionMap(final Map<String, ?> source) {
         for (Entry<String, ?> entry : source.entrySet()) {
             if (containsExpression(entry.getValue())) {
                 return true;
@@ -151,7 +152,7 @@ public class ExpressionResolver {
         return false;
     }
 
-    public boolean containsExpressionList(List<?> source) {
+    private boolean containsExpressionList(List<?> source) {
         for (Object item : source) {
             if (containsExpression(item)) {
                 return true;
