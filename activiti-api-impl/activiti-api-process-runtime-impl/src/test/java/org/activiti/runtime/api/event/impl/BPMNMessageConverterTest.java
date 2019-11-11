@@ -16,21 +16,23 @@
 
 package org.activiti.runtime.api.event.impl;
 
-import org.activiti.api.process.model.payloads.MessageEventPayload;
-import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
-import org.activiti.engine.delegate.event.ActivitiMessageEvent;
-import org.junit.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+
+import org.activiti.api.process.model.payloads.MessageEventPayload;
+import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.delegate.event.ActivitiMessageEvent;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl;
+import org.junit.Test;
 
 public class BPMNMessageConverterTest {
 
     private BPMNMessageConverter bpmnMessageConverter = new BPMNMessageConverter();
 
     @Test
-    public void convertShouldReturnBPMNMessage() {
+    public void should_returnBPMNMessage_when_convertedFromActivitiMessageEvent() {
   
         ActivitiMessageEvent internalEvent = mock(ActivitiMessageEvent.class);
         given(internalEvent.getMessageBusinessKey()).willReturn("businessKey");
@@ -52,6 +54,33 @@ public class BPMNMessageConverterTest {
                             MessageEventPayload::getCorrelationKey)
                 .contains("messageName",
                           "businessKey",
+                          "correlationKey");
+    }
+    
+    @Test
+    public void should_returnBPMNMessage_when_convertedFromActivitiEntityEvent() {
+  
+        ActivitiEntityEvent internalEvent = mock(ActivitiEntityEvent.class);
+             
+        EventSubscriptionEntityImpl entity = mock(EventSubscriptionEntityImpl.class);
+        given(entity.getConfiguration()).willReturn("correlationKey");
+        given(entity.getProcessDefinitionId()).willReturn("procDefId");
+        given(entity.getProcessInstanceId()).willReturn("procInstId");
+        given(entity.getEventName()).willReturn("messageName");  
+ 
+        given((EventSubscriptionEntityImpl)internalEvent.getEntity()).willReturn(entity);
+            
+        BPMNMessageImpl bpmnMessage = bpmnMessageConverter.convertToBPMNMessage(internalEvent);
+
+        //then
+        assertThat(bpmnMessage).isNotNull();
+        assertThat(bpmnMessage.getProcessInstanceId()).isEqualTo("procInstId");
+        assertThat(bpmnMessage.getProcessDefinitionId()).isEqualTo("procDefId");
+        assertThat(bpmnMessage.getMessagePayload())
+                .isNotNull()
+                .extracting(MessageEventPayload::getName,
+                            MessageEventPayload::getCorrelationKey)
+                .contains("messageName",
                           "correlationKey");
     }
 
