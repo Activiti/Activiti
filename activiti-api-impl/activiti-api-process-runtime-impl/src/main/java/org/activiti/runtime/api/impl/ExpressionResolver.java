@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.el.ExpressionManager;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,7 +80,7 @@ public class ExpressionResolver {
 
     private Object resolveExpressionsString(final DelegateExecution execution,
                                             final String sourceString) {
-        if (sourceString == null || sourceString.isEmpty()) {
+        if (StringUtils.isBlank(sourceString)) {
             return sourceString;
         }
         if (sourceString.matches(EXPRESSION_PATTERN_STRING)) {
@@ -97,7 +98,7 @@ public class ExpressionResolver {
             return expressionManager.createExpression(sourceString).getValue(execution);
         } catch (final Exception e) {
             logger.warn("Unable to resolve expression in variables, keeping original value",
-                         e);
+                        e);
             return sourceString;
         }
     }
@@ -115,7 +116,7 @@ public class ExpressionResolver {
                                           Objects.toString(value));
             } catch (final Exception e) {
                 logger.warn("Unable to resolve expression in variables, keeping original value",
-                             e);
+                            e);
             }
         }
         matcher.appendTail(sb);
