@@ -766,7 +766,7 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         process.getId(),
                                                         "testMessage",
                                                         "correlationKey",
-                                                        null,
+                                                        process.getBusinessKey(),
                                                         null));
          
     }  

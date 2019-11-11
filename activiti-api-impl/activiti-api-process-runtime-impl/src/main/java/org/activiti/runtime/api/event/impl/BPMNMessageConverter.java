@@ -17,9 +17,11 @@
 package org.activiti.runtime.api.event.impl;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.activiti.api.process.model.payloads.MessageEventPayload;
 import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
+import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiMessageEvent;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityImpl;
@@ -44,14 +46,15 @@ public class BPMNMessageConverter {
     public BPMNMessageImpl convertToBPMNMessage(ActivitiEntityEvent internalEvent) {
 
         EventSubscriptionEntityImpl entity = (EventSubscriptionEntityImpl)internalEvent.getEntity();
+        String businessKey = Optional.of(entity.getExecution()).map(DelegateExecution::getProcessInstanceBusinessKey).orElse(null);
         
         BPMNMessageImpl bpmnMessage = new BPMNMessageImpl(entity.getActivityId());
         bpmnMessage.setProcessDefinitionId(entity.getProcessDefinitionId());
         bpmnMessage.setProcessInstanceId(entity.getProcessInstanceId());
-   
+       
         bpmnMessage.setMessagePayload(new MessageEventPayload(entity.getEventName(),
                                                               entity.getConfiguration(),
-                                                              null,
+                                                              businessKey,
                                                               null));  
         return bpmnMessage;
     }
