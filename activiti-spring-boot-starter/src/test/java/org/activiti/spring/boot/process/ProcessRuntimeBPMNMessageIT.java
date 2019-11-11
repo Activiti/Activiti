@@ -20,6 +20,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.MessagePayloadBuilder;
@@ -43,9 +46,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Collections;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -74,17 +74,16 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Autowired
     private TaskRuntime taskRuntime;
-    
+
     @Autowired
     private SecurityUtil securityUtil;
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
-    
-    @Before
-    public void setUp() {
-        MessageTestConfiguration.messageEvents.clear();
         
+    @Before
+    public void setUp() {       
+        MessageTestConfiguration.messageEvents.clear();
     }
 
     @After
@@ -725,6 +724,51 @@ public class ProcessRuntimeBPMNMessageIT {
 
         // then
         assertThat(thrown).isInstanceOf(ActivitiObjectNotFoundException.class);
+    }  
+    
+    
+    @Test
+    public void should_getMessageCancelledEvent_when_processIsEnded() {
+
+        securityUtil.logInAs("user");
+
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                       .withBusinessKey("businessKey")
+                                                       .withVariable("correlationKey", "correlationKey")
+                                                       .withProcessDefinitionKey(CATCH_MESSAGE)
+                                                       .build());
+        
+        processRuntime.delete(ProcessPayloadBuilder.delete(process.getId()));    
+        
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                                  .extracting(BPMNMessageEvent::getEventType,
+                                              BPMNMessageEvent::getProcessDefinitionId,
+                                              BPMNMessageEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> event.getEntity().getMessagePayload().getName(),
+                                              event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                                              event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                                              event -> event.getEntity().getMessagePayload().getVariables())
+                                  .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "testMessage",
+                                                        "correlationKey",
+                                                        process.getBusinessKey(),
+                                                        null),
+                                            Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_CANCELLED,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "testMessage",
+                                                        "correlationKey",
+                                                        null,
+                                                        null));
+         
     }  
     
 }
