@@ -106,6 +106,7 @@ import org.activiti.runtime.api.event.internal.TimerFiredListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerRetriesDecrementedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerScheduledListenerDelegate;
 import org.activiti.runtime.api.impl.EventSubscriptionVariablesMappingProvider;
+import org.activiti.runtime.api.impl.ExpressionResolver;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
