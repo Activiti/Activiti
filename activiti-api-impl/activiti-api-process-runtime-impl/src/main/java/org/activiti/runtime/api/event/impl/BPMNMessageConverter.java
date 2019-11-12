@@ -17,7 +17,6 @@
 package org.activiti.runtime.api.event.impl;
 
 import java.util.Map;
-import java.util.Optional;
 
 import org.activiti.api.process.model.payloads.MessageEventPayload;
 import org.activiti.api.runtime.model.impl.BPMNMessageImpl;
@@ -33,7 +32,7 @@ public class BPMNMessageConverter {
 
         BPMNMessageImpl bpmnMessage = new BPMNMessageImpl(internalEvent.getActivityId());
         bpmnMessage.setProcessDefinitionId(internalEvent.getProcessDefinitionId());
-        bpmnMessage.setProcessInstanceId(internalEvent.getProcessInstanceId());
+        bpmnMessage.setProcessInstanceId(internalEvent.getProcessInstanceId());;
    
         bpmnMessage.setMessagePayload(new MessageEventPayload(internalEvent.getMessageName(),
                                                               internalEvent.getMessageCorrelationKey(),
@@ -46,7 +45,10 @@ public class BPMNMessageConverter {
     public BPMNMessageImpl convertToBPMNMessage(ActivitiEntityEvent internalEvent) {
 
         EventSubscriptionEntityImpl entity = (EventSubscriptionEntityImpl)internalEvent.getEntity();
-        String businessKey = Optional.of(entity.getExecution()).map(DelegateExecution::getProcessInstanceBusinessKey).orElse(null);
+        
+        String businessKey =  entity.getExecution() != null ? 
+                              ((DelegateExecution)(entity.getExecution())).getProcessInstanceBusinessKey():
+                              null;
         
         BPMNMessageImpl bpmnMessage = new BPMNMessageImpl(entity.getActivityId());
         bpmnMessage.setProcessDefinitionId(entity.getProcessDefinitionId());
