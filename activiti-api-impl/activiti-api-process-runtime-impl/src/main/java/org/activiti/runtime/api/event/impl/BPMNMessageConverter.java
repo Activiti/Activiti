@@ -47,7 +47,7 @@ public class BPMNMessageConverter {
         EventSubscriptionEntityImpl entity = (EventSubscriptionEntityImpl)internalEvent.getEntity();
         
         String businessKey =  entity.getExecution() != null ? 
-                              ((DelegateExecution)(entity.getExecution())).getProcessInstanceBusinessKey():
+                              ((DelegateExecution)(entity.getExecution())).getProcessInstanceBusinessKey() :
                               null;
         
         BPMNMessageImpl bpmnMessage = new BPMNMessageImpl(entity.getActivityId());
