@@ -34,6 +34,7 @@ import org.activiti.api.process.model.events.BPMNTimerFailedEvent;
 import org.activiti.api.process.model.events.BPMNTimerFiredEvent;
 import org.activiti.api.process.model.events.BPMNTimerRetriesDecrementedEvent;
 import org.activiti.api.process.model.events.BPMNTimerScheduledEvent;
+import org.activiti.api.process.model.events.MessageSubscriptionCancelledEvent;
 import org.activiti.api.process.runtime.ProcessAdminRuntime;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.conf.ProcessRuntimeConfiguration;
@@ -68,6 +69,7 @@ import org.activiti.runtime.api.event.impl.ToActivityStartedConverter;
 import org.activiti.runtime.api.event.impl.ToErrorReceivedConverter;
 import org.activiti.runtime.api.event.impl.ToMessageReceivedConverter;
 import org.activiti.runtime.api.event.impl.ToMessageSentConverter;
+import org.activiti.runtime.api.event.impl.ToMessageSubscriptionCancelledConverter;
 import org.activiti.runtime.api.event.impl.ToMessageWaitingConverter;
 import org.activiti.runtime.api.event.impl.ToProcessCancelledConverter;
 import org.activiti.runtime.api.event.impl.ToProcessCompletedConverter;
@@ -88,6 +90,7 @@ import org.activiti.runtime.api.event.internal.ActivityStartedListenerDelegate;
 import org.activiti.runtime.api.event.internal.ErrorReceivedListenerDelegate;
 import org.activiti.runtime.api.event.internal.MessageReceivedListenerDelegate;
 import org.activiti.runtime.api.event.internal.MessageSentListenerDelegate;
+import org.activiti.runtime.api.event.internal.MessageSubscriptionCancelledListenerDelegate;
 import org.activiti.runtime.api.event.internal.MessageWaitingListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessCancelledListenerDelegate;
 import org.activiti.runtime.api.event.internal.ProcessCompletedListenerDelegate;
@@ -105,6 +108,7 @@ import org.activiti.runtime.api.event.internal.TimerFiredListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerRetriesDecrementedListenerDelegate;
 import org.activiti.runtime.api.event.internal.TimerScheduledListenerDelegate;
 import org.activiti.runtime.api.impl.EventSubscriptionVariablesMappingProvider;
+import org.activiti.runtime.api.impl.ExpressionResolver;
 import org.activiti.runtime.api.impl.ProcessAdminRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessRuntimeImpl;
 import org.activiti.runtime.api.impl.ProcessVariablesPayloadValidator;
@@ -530,4 +534,14 @@ public class ProcessRuntimeAutoConfiguration {
                         new ToErrorReceivedConverter(bpmnErrorConverter)),
                 ActivitiEventType.ACTIVITY_ERROR_RECEIVED);
     }
+    
+    @Bean
+    @ConditionalOnMissingBean(name = "registerMessageSubscriptionCancelledListenerDelegate")
+    public InitializingBean registerMessageSubscriptionCancelledListenerDelegate(RuntimeService runtimeService,
+                                                                                 List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>> eventListeners,
+                                                                                 MessageSubscriptionConverter converter) {
+        return () -> runtimeService.addEventListener(new MessageSubscriptionCancelledListenerDelegate(eventListeners,
+                                                                                                      new ToMessageSubscriptionCancelledConverter(converter)),
+                                                     ActivitiEventType.ENTITY_DELETED);
+    }    
 }
