@@ -20,12 +20,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.process.model.MessageEventSubscription;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.StartMessageDeploymentDefinition;
 import org.activiti.api.process.model.builders.MessagePayloadBuilder;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNMessageEvent;
+import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.api.runtime.event.impl.StartMessageDeployedEvents;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -42,13 +51,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestComponent;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.event.EventListener;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Collections;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Import({ProcessRuntimeBPMNMessageIT.TestStartMessageDeployedRuntimeEventListener.class,
+         ProcessRuntimeBPMNMessageIT.TestStartMessageDeployedApplicationEventListener.class})
 public class ProcessRuntimeBPMNMessageIT {
 
     private static final String EVENT_GATEWAY_MESSAGE = "eventGatewayMessage";
@@ -68,7 +79,39 @@ public class ProcessRuntimeBPMNMessageIT {
     private static final String PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT = "intermediateThrowMessageEvent";
 
     private static final String CATCH_MESSAGE_PAYLOAD = "catchMessagePayload";
+    
+    @TestComponent
+    public static class TestStartMessageDeployedRuntimeEventListener implements ProcessRuntimeEventListener<StartMessageDeployedEvent>{
+        private List<StartMessageDeployedEvent> startMessageDeployedEvents = new ArrayList<>(); 
 
+        @Override
+        public void onEvent(StartMessageDeployedEvent event) {
+            startMessageDeployedEvents.add(event);
+        }
+
+        
+        public List<StartMessageDeployedEvent> getStartMessageDeployedEvents() {
+            return startMessageDeployedEvents;
+        }
+    }
+    
+    @TestComponent
+    public static class TestStartMessageDeployedApplicationEventListener {
+        private List<StartMessageDeployedEvent> startMessageDeployedEvents = new ArrayList<>(); 
+
+        @EventListener
+        public void onEvent(StartMessageDeployedEvents event) {
+            startMessageDeployedEvents.addAll(event.getStartMessageDeployedEvents());
+        }
+
+        
+        public List<StartMessageDeployedEvent> getStartMessageDeployedEvents() {
+            return startMessageDeployedEvents;
+        }
+    }
+    
+    
+    
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -80,6 +123,12 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
+    
+    @Autowired
+    private TestStartMessageDeployedRuntimeEventListener startMessageDeployedRuntimeEventListener;
+
+    @Autowired
+    private TestStartMessageDeployedApplicationEventListener startMessageDeployedApplicationEventListener;
     
     @Before
     public void setUp() {
@@ -93,6 +142,21 @@ public class ProcessRuntimeBPMNMessageIT {
         MessageTestConfiguration.messageEvents.clear();
     }
 
+    @Test
+    public void shouldProduceStartMessageDeployedEvents() {
+        List<StartMessageDeployedEvent> events = startMessageDeployedRuntimeEventListener.getStartMessageDeployedEvents();
+        
+        assertThat(events).isNotEmpty()
+                          .extracting(StartMessageDeployedEvent::getEntity)
+                          .extracting(StartMessageDeploymentDefinition::getMessageEventSubscription)
+                          .extracting(MessageEventSubscription::getEventName)
+                          .contains("testMessage",
+                                    "startMessagePayload");
+        
+        assertThat(startMessageDeployedApplicationEventListener.getStartMessageDeployedEvents())
+                .containsExactly(events.toArray(new StartMessageDeployedEvent[] {}));
+    }
+    
     @Test
     public void shouldThrowIntermediateMessageEvent() {
 
