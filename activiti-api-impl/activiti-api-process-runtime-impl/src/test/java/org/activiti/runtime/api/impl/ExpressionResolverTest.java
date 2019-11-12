@@ -320,7 +320,7 @@ public class ExpressionResolverTest {
     }
 
     @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ListContainsAnExpression() throws IOException {
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_ListContainsAnExpression() {
         //given
         DelegateExecution execution = mock(DelegateExecution.class);
 
@@ -329,14 +329,18 @@ public class ExpressionResolverTest {
 
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
                                                                               Collections.singletonMap("places",
-                                                                                                       Arrays.asList(new String[] { "${place}", "Paris", "Berlin" })));
+                                                                                                       Arrays.asList("${place}",
+                                                                                                                     "Paris",
+                                                                                                                     "Berlin")));
         //then
         assertThat(result).containsEntry("places",
-                                         Arrays.asList(new String[] { "London", "Paris", "Berlin" }));
+                                         Arrays.asList("London",
+                                                       "Paris",
+                                                       "Berlin"));
     }
     
     @Test
-    public void resolveExpressionsMap_should_keepExpressionContent_when_ListContainsAnExpressionUnableToBeResolved() throws IOException {
+    public void resolveExpressionsMap_should_keepExpressionContent_when_ListContainsAnExpressionUnableToBeResolved() {
         //given
         DelegateExecution execution = mock(DelegateExecution.class);
 
@@ -345,14 +349,18 @@ public class ExpressionResolverTest {
 
         Map<String, Object> result = expressionResolver.resolveExpressionsMap(execution,
                                                                               Collections.singletonMap("places",
-                                                                                                       Arrays.asList(new String[] { "${place}", "Paris", "Berlin" })));
+                                                                                                       Arrays.asList("${place}",
+                                                                                                                     "Paris",
+                                                                                                                     "Berlin")));
         //then
         assertThat(result).containsEntry("places",
-                                         Arrays.asList(new String[] { "${place}", "Paris", "Berlin" }));
+                                         Arrays.asList("${place}",
+                                                       "Paris",
+                                                       "Berlin"));
     }
     
     @Test
-    public void resolveExpressionsMap_should_replaceExpressionByValue_when_MapContainsAnExpression() throws IOException {
+    public void resolveExpressionsMap_should_replaceExpressionByValue_when_MapContainsAnExpression() {
         //given
         DelegateExecution execution = mock(DelegateExecution.class);
 
@@ -388,7 +396,7 @@ public class ExpressionResolverTest {
     }
     
     @Test
-    public void resolveExpressionsMap_should_keepExpressionContent_when_MapContainsAnExpressionUnableToBeResolved() throws IOException {
+    public void resolveExpressionsMap_should_keepExpressionContent_when_MapContainsAnExpressionUnableToBeResolved() {
         //given
         DelegateExecution execution = mock(DelegateExecution.class);
 
