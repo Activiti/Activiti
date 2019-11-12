@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -244,6 +246,85 @@ public class RuntimeTestConfiguration {
                                                    "outTest");
             integrationContext.addOutBoundVariable("out_unmapped_variable_non_matching_name",
                                                    "outTest");
+            return integrationContext;
+        };
+    }
+    
+    @Bean(name = "Variable Mapping Expression Connector.variableMappingExpressionActionName")
+    public Connector variableMappingExpressionActionName() {
+        return integrationContext -> {
+            Map<String, Object> inBoundVariables = integrationContext.getInBoundVariables();
+
+            String variableOne = "input-variable-name-1";
+            String variableTwo = "input-variable-name-2";
+            String variableThree = "input-variable-name-3";
+            String expressionVariable = "input-variable-expression";
+            String expressionValue = "input-value-expression";
+            String staticValue = "input-static-value";
+            String integerConstant = "integer-constant";
+
+            Integer currentAge = (Integer) inBoundVariables.get(variableTwo);
+            Integer integerConstantValue = (Integer) inBoundVariables.get(integerConstant);
+
+            String[] array = { "first", "John", "Doe", "last" };
+            List<String> list = Arrays.asList(array);
+
+            Map<String, Object> dataMap = new HashMap<>();
+            dataMap.put("age-in-months",
+                        240L);
+            dataMap.put("full-name",
+                        "John Doe");
+            dataMap.put("demoString",
+                        "expressionResolved");
+            dataMap.put("list",
+                        list);
+
+            Map<String, Object> expectedResolvedJsonTemplate = new HashMap<>();
+            expectedResolvedJsonTemplate.put("name", "John");
+            expectedResolvedJsonTemplate.put("age", 20);
+            expectedResolvedJsonTemplate.put("resident", true);
+
+            assertThat(inBoundVariables.entrySet()).extracting(Map.Entry::getKey,
+                                                               Map.Entry::getValue)
+                    .containsOnly(tuple(variableOne,
+                                        dataMap),
+                                  tuple(variableTwo,
+                                        20),
+                                  tuple(variableThree,
+                                        "Hello John Doe, today is your 20th birthday! It means 7305.0 days of life"),
+                                  tuple(expressionVariable,
+                                        "John"),
+                                  tuple(expressionValue,
+                                        "John"),
+                                  tuple(staticValue,
+                                        "a static value"),
+                                  tuple(integerConstant,
+                                        10),
+                                  tuple("input-json-template",
+                                        expectedResolvedJsonTemplate));
+
+            integrationContext.addOutBoundVariable("out-variable-name-1",
+                                                   "outName");
+            integrationContext.addOutBoundVariable("out-variable-name-2",
+                                                   currentAge + integerConstantValue);
+            integrationContext.addOutBoundVariable("out-unmapped-variable-matching-name",
+                                                   "outTest");
+            integrationContext.addOutBoundVariable("out-unmapped-variable-non-matching-name",
+                                                   "outTest");
+
+            Map<String, Object> conferenceInfo = new HashMap<>();
+            conferenceInfo.put("City", "London");
+            conferenceInfo.put("numberOfAttendees", 5000);
+            integrationContext.addOutBoundVariable("conferenceInfo", conferenceInfo);
+            return integrationContext;
+        };
+    }
+
+    @Bean(name = "OutputMappingExpVarConnector.outputMappingExpVarActionName")
+    public Connector outputMappingVariableExpressionActionName() {
+        return integrationContext -> {
+            integrationContext.addOutBoundVariable("out-variable-name-1",
+                                                   "${name}");
             return integrationContext;
         };
     }

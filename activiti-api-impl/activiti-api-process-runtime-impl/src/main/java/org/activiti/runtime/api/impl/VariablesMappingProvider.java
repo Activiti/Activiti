@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.spring.process.ProcessExtensionService;
 import org.activiti.spring.process.model.ConstantDefinition;
@@ -33,9 +34,12 @@ import org.activiti.spring.process.model.VariableDefinition;
 public class VariablesMappingProvider {
 
     private ProcessExtensionService processExtensionService;
+    
+    private ExpressionResolver expressionResolver;
 
-    public VariablesMappingProvider(ProcessExtensionService processExtensionService) {
+    public VariablesMappingProvider(ProcessExtensionService processExtensionService, ExpressionResolver expressionResolver) {
         this.processExtensionService = processExtensionService;
+        this.expressionResolver = expressionResolver;
     }
 
     protected Optional<Object> calculateMappedValue(Mapping inputMapping,
@@ -75,7 +79,7 @@ public class VariablesMappingProvider {
         } else {
             inboudVariables = calculateInputVariables(execution, extensions);
         }
-
+        inboudVariables = expressionResolver.resolveExpressionsMap(execution, inboudVariables);
         inboudVariables.putAll(constants);
         return inboudVariables;
     }
@@ -140,6 +144,9 @@ public class VariablesMappingProvider {
         }
 
         if (!availableVariables.isEmpty()) {
+            if (expressionResolver.containsExpression(availableVariables)) {
+                throw new ActivitiIllegalArgumentException("Expressions are not allowed as variable values in the output mapping");
+            }
             return calculateOutPutVariables(execution, extensions, availableVariables);
         } else {
             return Collections.emptyMap();
@@ -159,10 +166,10 @@ public class VariablesMappingProvider {
 
             VariableDefinition processVariableDefinition = extensions.getExtensions().getPropertyByName(name);
 
-            if (processVariableDefinition != null && calculateOutPutMappedValue(mapping.getValue(),
-                    availableVariables).isPresent()) {
-                outboundVariables.put(name, calculateOutPutMappedValue(mapping.getValue(),
-                        availableVariables).get());
+            if (processVariableDefinition != null) {
+                calculateOutPutMappedValue(mapping.getValue(),
+                                           availableVariables)
+                        .ifPresent( value -> outboundVariables.put(name, value));
             }
         }
 

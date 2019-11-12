@@ -43,15 +43,18 @@ public class ProcessVariablesPayloadValidator  {
     private final DateFormatterProvider dateFormatterProvider;
     private final ProcessExtensionService processExtensionService;
     private final VariableNameValidator variableNameValidator;
+    private final ExpressionResolver expressionResolver;
 
     public ProcessVariablesPayloadValidator(DateFormatterProvider dateFormatterProvider,
                                             ProcessExtensionService processExtensionService,
                                             VariableValidationService variableValidationService,
-                                            VariableNameValidator variableNameValidator) {
+                                            VariableNameValidator variableNameValidator, 
+                                            ExpressionResolver expressionResolver) {
         this.dateFormatterProvider = dateFormatterProvider;
         this.processExtensionService = processExtensionService;
         this.variableValidationService = variableValidationService;
         this.variableNameValidator = variableNameValidator;
+        this.expressionResolver = expressionResolver;
     }
 
     private Optional<Map<String, VariableDefinition>> getVariableDefinitionMap(String processDefinitionId) {
@@ -111,6 +114,7 @@ public class ProcessVariablesPayloadValidator  {
 
         final String errorVariableName = "Variable has not a valid name: {0}";
         final String errorVariableType = "Variables fail type validation: {0}";
+        final String errorVariableExpressionValue = "Expressions in variable values are only allowed as default value when modeling the process: {0}";
 
         final Optional<Map<String, VariableDefinition>> variableDefinitionMap = getVariableDefinitionMap(processDefinitionId);
         List<ActivitiException> activitiExceptions = new ArrayList<>();
@@ -122,6 +126,8 @@ public class ProcessVariablesPayloadValidator  {
                 // Check variable name
                 if (!variableNameValidator.validate(name)) {
                     activitiExceptions.add(new ActivitiException(MessageFormat.format(errorVariableName, (name != null ? name : "null" ))));
+                } else if (expressionResolver.containsExpression(payloadVar.getValue())) {
+                    activitiExceptions.add(new ActivitiException(MessageFormat.format(errorVariableExpressionValue, (name != null ? name : "null" ))));
                 } else {
 
                     boolean found = validateVariablesAgainstDefinitions(variableDefinitionMap,
