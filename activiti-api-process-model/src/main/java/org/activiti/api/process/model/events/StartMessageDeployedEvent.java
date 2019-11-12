@@ -16,14 +16,13 @@
 
 package org.activiti.api.process.model.events;
 
-import org.activiti.api.model.shared.event.RuntimeEvent;
-import org.activiti.api.process.model.BPMNMessage;
+import org.activiti.api.process.model.StartMessageDeploymentDefinition;
 
-public interface BPMNMessageEvent extends RuntimeEvent<BPMNMessage, BPMNMessageEvent.MessageEvents> {
+public interface StartMessageDeployedEvent extends MessageDefinitionEvent<StartMessageDeploymentDefinition> {
 
-    enum MessageEvents {
-        MESSAGE_WAITING,
-        MESSAGE_RECEIVED,
-        MESSAGE_SENT
+    @Override
+    default MessageDefinitionEvents getEventType() {
+        return MessageDefinitionEvents.START_MESSAGE_DEPLOYED;
     }
+    
 }

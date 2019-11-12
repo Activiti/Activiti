@@ -121,6 +121,10 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> 
         this.processInstanceId = processInstanceId;
     }
 
+    protected void setEntity(ENTITY_TYPE entity) {
+        this.entity = entity;
+    }
+    
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -156,7 +160,8 @@ public abstract class RuntimeEventImpl<ENTITY_TYPE, EVENT_TYPE extends Enum<?>> 
                             processDefinitionKey,
                             processDefinitionVersion,
                             processInstanceId,
-                            timestamp);
+                            timestamp,
+                            getEventType());
     }
 
     @Override

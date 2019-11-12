@@ -17,13 +17,11 @@
 package org.activiti.api.process.model.events;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
-import org.activiti.api.process.model.BPMNMessage;
+import org.activiti.api.process.model.MessageSubscription;
 
-public interface BPMNMessageEvent extends RuntimeEvent<BPMNMessage, BPMNMessageEvent.MessageEvents> {
+public interface MessageSubscriptionEvent extends RuntimeEvent<MessageSubscription, MessageSubscriptionEvent.MessageSubscriptionEvents> {
 
-    enum MessageEvents {
-        MESSAGE_WAITING,
-        MESSAGE_RECEIVED,
-        MESSAGE_SENT
+    enum MessageSubscriptionEvents {
+        MESSAGE_SUBSCRIPTION_CANCELLED
     }
 }

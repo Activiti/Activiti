@@ -24,7 +24,7 @@ public interface ProcessDefinitionEvent extends RuntimeEvent<ProcessDefinition, 
     enum ProcessDefinitionEvents {
 
         PROCESS_DEPLOYED
-
+        
     }
 
 }

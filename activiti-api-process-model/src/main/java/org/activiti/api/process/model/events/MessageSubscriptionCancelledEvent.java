@@ -16,14 +16,9 @@
 
 package org.activiti.api.process.model.events;
 
-import org.activiti.api.model.shared.event.RuntimeEvent;
-import org.activiti.api.process.model.BPMNMessage;
+public interface MessageSubscriptionCancelledEvent extends MessageSubscriptionEvent {
 
-public interface BPMNMessageEvent extends RuntimeEvent<BPMNMessage, BPMNMessageEvent.MessageEvents> {
-
-    enum MessageEvents {
-        MESSAGE_WAITING,
-        MESSAGE_RECEIVED,
-        MESSAGE_SENT
+    default MessageSubscriptionEvents getEventType() {
+        return MessageSubscriptionEvent.MessageSubscriptionEvents.MESSAGE_SUBSCRIPTION_CANCELLED;
     }
 }
