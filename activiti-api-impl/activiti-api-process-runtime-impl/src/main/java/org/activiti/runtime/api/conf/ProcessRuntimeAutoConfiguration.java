@@ -58,7 +58,8 @@ import org.activiti.runtime.api.conf.impl.ProcessRuntimeConfigurationImpl;
 import org.activiti.runtime.api.event.impl.BPMNErrorConverter;
 import org.activiti.runtime.api.event.impl.BPMNMessageConverter;
 import org.activiti.runtime.api.event.impl.BPMNTimerConverter;
-import org.activiti.runtime.api.event.impl.MessageEventSubscriptionConverter;
+import org.activiti.runtime.api.event.impl.MessageSubscriptionConverter;
+import org.activiti.runtime.api.event.impl.StartMessageSubscriptionConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessCreatedEventConverter;
 import org.activiti.runtime.api.event.impl.ToAPIProcessStartedEventConverter;
 import org.activiti.runtime.api.event.impl.ToActivityCancelledConverter;
@@ -199,8 +200,14 @@ public class ProcessRuntimeAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public MessageEventSubscriptionConverter messageEventSubscriptionConverter() {
-        return new MessageEventSubscriptionConverter(); 
+    public MessageSubscriptionConverter messageEventSubscriptionConverter() {
+        return new MessageSubscriptionConverter(); 
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public StartMessageSubscriptionConverter startMessageEventSubscriptionConverter() {
+        return new StartMessageSubscriptionConverter(); 
     }
     
     @Bean

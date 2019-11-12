@@ -25,9 +25,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.activiti.api.model.shared.model.VariableInstance;
-import org.activiti.api.process.model.MessageEventSubscription;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.StartMessageDeploymentDefinition;
+import org.activiti.api.process.model.StartMessageSubscription;
 import org.activiti.api.process.model.builders.MessagePayloadBuilder;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNMessageEvent;
@@ -148,8 +148,8 @@ public class ProcessRuntimeBPMNMessageIT {
         
         assertThat(events).isNotEmpty()
                           .extracting(StartMessageDeployedEvent::getEntity)
-                          .extracting(StartMessageDeploymentDefinition::getMessageEventSubscription)
-                          .extracting(MessageEventSubscription::getEventName)
+                          .extracting(StartMessageDeploymentDefinition::getMessageSubscription)
+                          .extracting(StartMessageSubscription::getEventName)
                           .contains("testMessage",
                                     "startMessagePayload");
         

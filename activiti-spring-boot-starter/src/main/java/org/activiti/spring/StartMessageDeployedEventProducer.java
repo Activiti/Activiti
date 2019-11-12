@@ -32,7 +32,7 @@ import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
-import org.activiti.runtime.api.event.impl.MessageEventSubscriptionConverter;
+import org.activiti.runtime.api.event.impl.StartMessageSubscriptionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationEventPublisher;
@@ -43,13 +43,13 @@ public class StartMessageDeployedEventProducer implements ApplicationListener<Ap
     private RepositoryService repositoryService;
     private ManagementService managementService;
     private APIProcessDefinitionConverter converter;
-    private MessageEventSubscriptionConverter subscriptionConverter;
+    private StartMessageSubscriptionConverter subscriptionConverter;
     private List<ProcessRuntimeEventListener<StartMessageDeployedEvent>> listeners;
     private ApplicationEventPublisher eventPublisher;
 
     public StartMessageDeployedEventProducer(RepositoryService repositoryService,
                                         ManagementService managementService,
-                                        MessageEventSubscriptionConverter subscriptionConverter,
+                                        StartMessageSubscriptionConverter subscriptionConverter,
                                         APIProcessDefinitionConverter converter,
                                         List<ProcessRuntimeEventListener<StartMessageDeployedEvent>> listeners,
                                         ApplicationEventPublisher eventPublisher) {
@@ -69,7 +69,7 @@ public class StartMessageDeployedEventProducer implements ApplicationListener<Ap
         for (ProcessDefinition processDefinition : processDefinitions) {
             managementService.executeCommand(new FindStartMessageEventSubscriptions(processDefinition.getId()))
                              .stream()
-                             .map(subscriptionConverter::convertToMessageEventSubscription)
+                             .map(subscriptionConverter::convertToStartMessageSubscription)
                              .map(messageEventSubscription -> StartMessageDeploymentDefinitionImpl.builder()
                                                                                                   .withMessageEventSubscription(messageEventSubscription)
                                                                                                   .withProcessDefinition(processDefinition)

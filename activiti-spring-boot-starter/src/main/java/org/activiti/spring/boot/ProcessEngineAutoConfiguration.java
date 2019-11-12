@@ -32,7 +32,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
-import org.activiti.runtime.api.event.impl.MessageEventSubscriptionConverter;
+import org.activiti.runtime.api.event.impl.StartMessageSubscriptionConverter;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.spring.ProcessDeployedEventProducer;
@@ -210,7 +210,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     @ConditionalOnMissingBean
     public StartMessageDeployedEventProducer startMessageDeployedEventProducer(RepositoryService repositoryService,
                                                                                ManagementService managementService,
-                                                                               MessageEventSubscriptionConverter subscriptionConverter,
+                                                                               StartMessageSubscriptionConverter subscriptionConverter,
                                                                                APIProcessDefinitionConverter converter,
                                                                                List<ProcessRuntimeEventListener<StartMessageDeployedEvent>> listeners,
                                                                                ApplicationEventPublisher eventPublisher) {
