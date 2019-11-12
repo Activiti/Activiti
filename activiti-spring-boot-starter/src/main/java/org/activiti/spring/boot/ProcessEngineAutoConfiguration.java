@@ -96,7 +96,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
         conf.setDbHistoryUsed(activitiProperties.isDbHistoryUsed());
         conf.setAsyncExecutorActivate(activitiProperties.isAsyncExecutorActivate());
         addAsyncPropertyValidator(activitiProperties,
-                                  conf);
+                conf);
         conf.setMailServerHost(activitiProperties.getMailServerHost());
         conf.setMailServerPort(activitiProperties.getMailServerPort());
         conf.setMailServerUsername(activitiProperties.getMailServerUserName());
@@ -156,7 +156,7 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     }
 
     protected void addAsyncPropertyValidator(ActivitiProperties activitiProperties,
-                                           SpringProcessEngineConfiguration conf) {
+                                             SpringProcessEngineConfiguration conf) {
         if (!activitiProperties.isAsyncExecutorActivate()) {
             ValidatorSet springBootStarterValidatorSet = new ValidatorSet("activiti-spring-boot-starter");
             springBootStarterValidatorSet.addValidator(new AsyncPropertyValidator());
@@ -179,8 +179,10 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
     @Bean
     @ConditionalOnMissingBean
     public ProcessExtensionResourceFinderDescriptor processExtensionResourceFinderDescriptor(ActivitiProperties activitiProperties,
-                                                                                             @Value("${spring.activiti.process.extensions.dir:classpath*:**/processes/}") String locationPrefix,
+                                                                                             @Value("${spring.activiti.process.extensions.dir:NOT_DEFINED}") String locationPrefix,
                                                                                              @Value("${spring.activiti.process.extensions.suffix:**-extensions.json}") String locationSuffix) {
+        if (locationPrefix.equalsIgnoreCase("NOT_DEFINED"))
+            locationPrefix = activitiProperties.getProcessDefinitionLocationPrefix();
         return new ProcessExtensionResourceFinderDescriptor(activitiProperties.isCheckProcessDefinitions(),
                 locationPrefix,
                 locationSuffix);
@@ -193,20 +195,20 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                                                                      @Autowired(required = false) List<ProcessRuntimeEventListener<ProcessDeployedEvent>> listeners,
                                                                      ApplicationEventPublisher eventPublisher) {
         return new ProcessDeployedEventProducer(repositoryService,
-                                                converter,
-                                                Optional.ofNullable(listeners)
-                                                        .orElse(Collections.emptyList()),
-                                                eventPublisher);
+                converter,
+                Optional.ofNullable(listeners)
+                        .orElse(Collections.emptyList()),
+                eventPublisher);
     }
 
     @Bean(name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
-    @ConditionalOnMissingBean (name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
+    @ConditionalOnMissingBean(name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
     public DefaultActivityBehaviorFactoryMappingConfigurer defaultActivityBehaviorFactoryMappingConfigurer(VariablesMappingProvider variablesMappingProvider,
                                                                                                            ProcessVariablesInitiator processVariablesInitiator,
                                                                                                            EventSubscriptionPayloadMappingProvider eventSubscriptionPayloadMappingProvider) {
         return new DefaultActivityBehaviorFactoryMappingConfigurer(variablesMappingProvider,
-                                                                   processVariablesInitiator,
-                                                                   eventSubscriptionPayloadMappingProvider);
+                processVariablesInitiator,
+                eventSubscriptionPayloadMappingProvider);
     }
 
     @Bean
