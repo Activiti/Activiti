@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,7 @@ package org.activiti.bpmn.constants;
 public interface BpmnXMLConstants {
 
   public static final String BPMN2_NAMESPACE = "http://www.omg.org/spec/BPMN/20100524/MODEL";
+  public static final String BPMN2_PREFIX = "bpmn2";
   public static final String XSI_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance";
   public static final String XSI_PREFIX = "xsi";
   public static final String SCHEMA_NAMESPACE = "http://www.w3.org/2001/XMLSchema";
@@ -52,7 +53,7 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_FLOWNODE_REF = "flowNodeRef";
   public static final String ATTRIBUTE_PROCESS_REF = "processRef";
   public static final String ELEMENT_RESOURCE = "resource";
-  
+
   public static final String ELEMENT_PROCESS = "process";
   public static final String ATTRIBUTE_PROCESS_EXECUTABLE = "isExecutable";
   public static final String ELEMENT_POTENTIAL_STARTER = "potentialStarter";

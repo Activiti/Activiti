@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,10 +24,10 @@ public class CollaborationExport implements BpmnXMLConstants {
 
   public static void writePools(BpmnModel model, XMLStreamWriter xtw) throws Exception {
     if (!model.getPools().isEmpty()) {
-      xtw.writeStartElement(ELEMENT_COLLABORATION);
+      xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_COLLABORATION, BPMN2_NAMESPACE);
       xtw.writeAttribute(ATTRIBUTE_ID, "Collaboration");
       for (Pool pool : model.getPools()) {
-        xtw.writeStartElement(ELEMENT_PARTICIPANT);
+        xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_PARTICIPANT, BPMN2_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_ID, pool.getId());
         if (StringUtils.isNotEmpty(pool.getName())) {
           xtw.writeAttribute(ATTRIBUTE_NAME, pool.getName());
@@ -39,7 +39,7 @@ public class CollaborationExport implements BpmnXMLConstants {
       }
 
       for (MessageFlow messageFlow : model.getMessageFlows().values()) {
-        xtw.writeStartElement(ELEMENT_MESSAGE_FLOW);
+        xtw.writeStartElement(BPMN2_PREFIX, ELEMENT_MESSAGE_FLOW, BPMN2_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_ID, messageFlow.getId());
         if (StringUtils.isNotEmpty(messageFlow.getName())) {
           xtw.writeAttribute(ATTRIBUTE_NAME, messageFlow.getName());
