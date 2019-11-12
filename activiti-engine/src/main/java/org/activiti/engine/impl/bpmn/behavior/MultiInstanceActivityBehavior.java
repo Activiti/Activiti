@@ -29,6 +29,8 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehavior;
@@ -329,6 +331,19 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
       }
     }
     return multiInstanceRootExecution;
+  }
+
+  protected void postMultiInstanceIterationCompleteEvent(DelegateExecution execution) {
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    Context.getCommandContext().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityEvent(
+            ActivitiEventType.ACTIVITY_COMPLETED,
+            executionEntity.getActivityId(),
+            executionEntity.getName(),
+            executionEntity.getId(),
+            executionEntity.getProcessInstanceId(),
+            executionEntity.getProcessDefinitionId(),
+            executionEntity.getCurrentFlowElement()
+    ));
   }
 
   // Getters and Setters

@@ -213,8 +213,10 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         executionToUse.setMultiInstanceRoot(false);
         Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionToUse, true);
       }
+      postMultiInstanceIterationCompleteEvent(executionEntity);
 
     } else {
+      postMultiInstanceIterationCompleteEvent(executionEntity);
       removeLocalLoopVariable(execution, getCollectionElementIndexVariable());
       execution.setMultiInstanceRoot(false);
       super.leave(execution);
