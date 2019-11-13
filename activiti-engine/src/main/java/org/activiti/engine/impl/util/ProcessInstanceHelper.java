@@ -12,10 +12,18 @@
  */
 package org.activiti.engine.impl.util;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.StartEvent;
@@ -34,13 +42,6 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
 
@@ -103,15 +104,23 @@ public class ProcessInstanceHelper {
     }
 
     FlowElement initialFlowElement = null;
+    BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinition.getId());
     for (FlowElement flowElement : process.getFlowElements()) {
       if (flowElement instanceof StartEvent) {
         StartEvent startEvent = (StartEvent) flowElement;
         if (CollectionUtil.isNotEmpty(startEvent.getEventDefinitions()) && startEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
 
           MessageEventDefinition messageEventDefinition = (MessageEventDefinition) startEvent.getEventDefinitions().get(0);
-          if (messageEventDefinition.getMessageRef().equals(messageName)) {
+          String messageRef = messageEventDefinition.getMessageRef();
+          if (messageRef.equals(messageName)) {
             initialFlowElement = flowElement;
             break;
+          } // FIXME: We should not need to reset eventDefinition messageRef to message name
+          else if (bpmnModel.containsMessageId(messageRef)) {
+              Message message = bpmnModel.getMessage(messageRef);
+              messageEventDefinition.setMessageRef(message.getName());
+              initialFlowElement = flowElement;
+              break;
           }
         }
       }
