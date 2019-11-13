@@ -19,21 +19,26 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+
 import javax.sql.DataSource;
 
 import org.activiti.api.process.model.events.ProcessDeployedEvent;
+import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.core.common.spring.project.ProjectModelService;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.event.EventSubscriptionPayloadMappingProvider;
 import org.activiti.engine.impl.persistence.StrongUuidGenerator;
+import org.activiti.runtime.api.event.impl.StartMessageSubscriptionConverter;
 import org.activiti.runtime.api.impl.VariablesMappingProvider;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
 import org.activiti.spring.ProcessDeployedEventProducer;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
+import org.activiti.spring.StartMessageDeployedEventProducer;
 import org.activiti.spring.boot.process.validation.AsyncPropertyValidator;
 import org.activiti.spring.process.ProcessExtensionResourceFinderDescriptor;
 import org.activiti.spring.process.ProcessVariablesInitiator;
@@ -200,6 +205,23 @@ public class ProcessEngineAutoConfiguration extends AbstractProcessEngineAutoCon
                         .orElse(Collections.emptyList()),
                 eventPublisher);
     }
+    
+    @Bean
+    @ConditionalOnMissingBean
+    public StartMessageDeployedEventProducer startMessageDeployedEventProducer(RepositoryService repositoryService,
+                                                                               ManagementService managementService,
+                                                                               StartMessageSubscriptionConverter subscriptionConverter,
+                                                                               APIProcessDefinitionConverter converter,
+                                                                               List<ProcessRuntimeEventListener<StartMessageDeployedEvent>> listeners,
+                                                                               ApplicationEventPublisher eventPublisher) {
+        return new StartMessageDeployedEventProducer(repositoryService,
+                                                     managementService,
+                                                     subscriptionConverter,
+                                                     converter,
+                                                     listeners,
+                                                     eventPublisher);
+    }
+    
 
     @Bean(name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)
     @ConditionalOnMissingBean(name = BEHAVIOR_FACTORY_MAPPING_CONFIGURER)

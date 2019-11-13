@@ -20,12 +20,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.process.model.StartMessageDeploymentDefinition;
+import org.activiti.api.process.model.StartMessageSubscription;
 import org.activiti.api.process.model.builders.MessagePayloadBuilder;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNMessageEvent;
+import org.activiti.api.process.model.events.MessageSubscriptionCancelledEvent;
+import org.activiti.api.process.model.events.MessageSubscriptionEvent;
+import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
+import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
+import org.activiti.api.runtime.event.impl.StartMessageDeployedEvents;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
@@ -42,13 +53,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestComponent;
+import org.springframework.context.annotation.Import;
+import org.springframework.context.event.EventListener;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.Collections;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Import({ProcessRuntimeBPMNMessageIT.TestStartMessageDeployedRuntimeEventListener.class,
+         ProcessRuntimeBPMNMessageIT.TestStartMessageDeployedApplicationEventListener.class})
 public class ProcessRuntimeBPMNMessageIT {
 
     private static final String EVENT_GATEWAY_MESSAGE = "eventGatewayMessage";
@@ -68,7 +81,36 @@ public class ProcessRuntimeBPMNMessageIT {
     private static final String PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT = "intermediateThrowMessageEvent";
 
     private static final String CATCH_MESSAGE_PAYLOAD = "catchMessagePayload";
+    
+    @TestComponent
+    public static class TestStartMessageDeployedRuntimeEventListener implements ProcessRuntimeEventListener<StartMessageDeployedEvent>{
+        private List<StartMessageDeployedEvent> startMessageDeployedEvents = new ArrayList<>(); 
 
+        @Override
+        public void onEvent(StartMessageDeployedEvent event) {
+            startMessageDeployedEvents.add(event);
+        }
+       
+        public StartMessageDeployedEvent[] getStartMessageDeployedEvents() {
+            return startMessageDeployedEvents.toArray(new StartMessageDeployedEvent[] {});
+        }
+    }
+    
+    @TestComponent
+    public static class TestStartMessageDeployedApplicationEventListener {
+        private List<StartMessageDeployedEvent> startMessageDeployedEvents = new ArrayList<>(); 
+
+        @EventListener
+        public void onEvent(StartMessageDeployedEvents event) {
+            startMessageDeployedEvents.addAll(event.getStartMessageDeployedEvents());
+        }
+
+        
+        public StartMessageDeployedEvent[] getStartMessageDeployedEvents() {
+            return startMessageDeployedEvents.toArray(new StartMessageDeployedEvent[] {});
+        }
+    }
+    
     @Autowired
     private ProcessRuntime processRuntime;
 
@@ -81,10 +123,16 @@ public class ProcessRuntimeBPMNMessageIT {
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
     
+    @Autowired
+    private TestStartMessageDeployedRuntimeEventListener startMessageDeployedRuntimeEventListener;
+
+    @Autowired
+    private TestStartMessageDeployedApplicationEventListener startMessageDeployedApplicationEventListener;
+    
     @Before
     public void setUp() {
         MessageTestConfiguration.messageEvents.clear();
-        
+        securityUtil.logInAs("user");
     }
 
     @After
@@ -94,10 +142,21 @@ public class ProcessRuntimeBPMNMessageIT {
     }
 
     @Test
+    public void shouldProduceStartMessageDeployedEvents() {
+        StartMessageDeployedEvent[] events = startMessageDeployedRuntimeEventListener.getStartMessageDeployedEvents();
+        
+        assertThat(events).isNotEmpty()
+                          .extracting(StartMessageDeployedEvent::getEntity)
+                          .extracting(StartMessageDeploymentDefinition::getMessageSubscription)
+                          .extracting(StartMessageSubscription::getEventName)
+                          .contains("testMessage",
+                                    "startMessagePayload");
+        
+        assertThat(startMessageDeployedApplicationEventListener.getStartMessageDeployedEvents()).containsExactly(events);
+    }
+    
+    @Test
     public void shouldThrowIntermediateMessageEvent() {
-
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withBusinessKey("businessKey")
                                                                             .withProcessDefinitionKey(PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT)
@@ -128,9 +187,6 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Test
     public void shouldReceiveCatchMessageWithCorrelationKeyAndMappedPayload() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withBusinessKey("businessKey")
                                                        .withVariable("correlationKey", "foo")
@@ -188,9 +244,6 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Test
     public void shouldStartProcessByMessageWithMappedPayload() {
-        // given
-        securityUtil.logInAs("user");
-
         // when
         ProcessInstance process = processRuntime.start(MessagePayloadBuilder.start(START_MESSAGE_PAYLOAD)
                                                                             .withBusinessKey("businessKey")
@@ -231,9 +284,6 @@ public class ProcessRuntimeBPMNMessageIT {
      
     @Test
     public void shouldStartProcessByMessage() {
-        // given
-        securityUtil.logInAs("user");
-
         // when
         ProcessInstance process = processRuntime.start(MessagePayloadBuilder.start(TEST_MESSAGE)
                                                                             .withBusinessKey("businessKey")
@@ -265,9 +315,6 @@ public class ProcessRuntimeBPMNMessageIT {
       
     @Test
     public void shouldReceiveCatchMessageWithCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withBusinessKey("businessKey")
                                                        .withVariable("correlationKey", "foo")
@@ -314,15 +361,12 @@ public class ProcessRuntimeBPMNMessageIT {
       
     @Test
     public void shouldThrowEndMessageEvent() {
-        // given
-        securityUtil.logInAs("user");
-
+        // when
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withBusinessKey("businessKey")
                                                        .withProcessDefinitionKey(END_MESSAGE)
                                                        .build());
-        
-        // when
+
         // then
         assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
                                   .extracting(BPMNMessageEvent::getEventType,
@@ -347,9 +391,6 @@ public class ProcessRuntimeBPMNMessageIT {
      
     @Test
     public void shouldReceiveBoundaryMessageWithCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withBusinessKey("businessKey")
                                                        .withVariable("correlationKey", "foo")
@@ -396,9 +437,6 @@ public class ProcessRuntimeBPMNMessageIT {
   
     @Test
     public void shouldReceiveSubprocessMessageWithCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withBusinessKey("businessKey")
                                                                             .withVariable("correlationKey", "foo")
@@ -445,9 +483,6 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Test
     public void shouldReceiveEventGatewayMessageWithCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withBusinessKey("businessKey")
                                                                             .withVariable("correlationKey", "foo")
@@ -493,9 +528,6 @@ public class ProcessRuntimeBPMNMessageIT {
      
     @Test
     public void shouldReceiveEventSubprocessMessageWithCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withBusinessKey("businessKey")
                                                                             .withVariable("correlationKey", "foo")
@@ -540,9 +572,6 @@ public class ProcessRuntimeBPMNMessageIT {
  
     @Test
     public void shouldTestCatchMessageExpressionWithVariableMappingExtensions() {
-        // given
-        securityUtil.logInAs("user");
-
         // when
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withBusinessKey("businessKey")
@@ -642,9 +671,6 @@ public class ProcessRuntimeBPMNMessageIT {
     
     @Test
     public void shouldTestBoundaryMessageExpression() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withVariable("correlationKey", "correlationId")
                                                                             .withProcessDefinitionKey("testBoundaryMessageExpression")
@@ -688,9 +714,6 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Test
     public void shouldTestBoundaryMessageExpressionWithNotMatchingCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         processRuntime.start(ProcessPayloadBuilder.start()
                                                   .withVariable("correlationKey", "correlationId")
                                                   .withProcessDefinitionKey("testBoundaryMessageExpression")
@@ -708,9 +731,6 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Test
     public void shouldTestBoundaryMessageExpressionWithNotFoundMessageEventSubscription() {
-        // given
-        securityUtil.logInAs("user");
-
         processRuntime.start(ProcessPayloadBuilder.start()
                                                   .withVariable("correlationKey", "correlationId")
                                                   .withProcessDefinitionKey("testBoundaryMessageExpression")
@@ -725,6 +745,60 @@ public class ProcessRuntimeBPMNMessageIT {
 
         // then
         assertThat(thrown).isInstanceOf(ActivitiObjectNotFoundException.class);
+    }  
+    
+    @Test
+    public void should_getMessageSubscriptionCancelledEvent_when_processIsDeleted() {
+        //when
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                       .withBusinessKey("businessKey")
+                                                       .withVariable("correlationKey", "correlationKey")
+                                                       .withProcessDefinitionKey(CATCH_MESSAGE)
+                                                       .build());
+        
+        //then
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                                  .extracting(BPMNMessageEvent::getEventType,
+                                              BPMNMessageEvent::getProcessDefinitionId,
+                                              BPMNMessageEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> event.getEntity().getMessagePayload().getName(),
+                                              event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                                              event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                                              event -> event.getEntity().getMessagePayload().getVariables())
+                                  .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "testMessage",
+                                                        "correlationKey",
+                                                        process.getBusinessKey(),
+                                                        null));
+
+        //when
+        processRuntime.delete(ProcessPayloadBuilder.delete(process.getId()));
+
+        //then
+        assertThat(MessageTestConfiguration.messageSubscriptionCancelledEvents).isNotEmpty()
+                                  .extracting(MessageSubscriptionCancelledEvent::getEventType,
+                                              MessageSubscriptionCancelledEvent::getProcessDefinitionId,
+                                              MessageSubscriptionCancelledEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> event.getEntity().getEventName(),
+                                              event -> event.getEntity().getConfiguration(),
+                                              event -> event.getEntity().getBusinessKey()
+                                              )           
+                                  .contains(Tuple.tuple(MessageSubscriptionEvent.MessageSubscriptionEvents.MESSAGE_SUBSCRIPTION_CANCELLED,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "testMessage",
+                                                        "correlationKey",
+                                                        process.getBusinessKey()));                        
     }  
     
 }
