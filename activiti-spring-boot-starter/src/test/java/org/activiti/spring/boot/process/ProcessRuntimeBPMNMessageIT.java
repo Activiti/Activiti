@@ -790,18 +790,18 @@ public class ProcessRuntimeBPMNMessageIT {
     }  
     
     @Test
-    public void should_getMessageCancelledEvent_when_processIsEnded() {
+    public void should_getMessageSubscriptionCancelledEvent_when_processIsDeleted() {
 
         securityUtil.logInAs("user");
 
+        //when
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withBusinessKey("businessKey")
                                                        .withVariable("correlationKey", "correlationKey")
                                                        .withProcessDefinitionKey(CATCH_MESSAGE)
                                                        .build());
         
-        processRuntime.delete(ProcessPayloadBuilder.delete(process.getId()));    
-        
+        //then
         assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
                                   .extracting(BPMNMessageEvent::getEventType,
                                               BPMNMessageEvent::getProcessDefinitionId,
@@ -821,7 +821,11 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         "correlationKey",
                                                         process.getBusinessKey(),
                                                         null));
-        
+
+        //when
+        processRuntime.delete(ProcessPayloadBuilder.delete(process.getId()));
+
+        //then
         assertThat(MessageTestConfiguration.messageSubscriptionCancelledEvents).isNotEmpty()
                                   .extracting(MessageSubscriptionCancelledEvent::getEventType,
                                               MessageSubscriptionCancelledEvent::getProcessDefinitionId,
