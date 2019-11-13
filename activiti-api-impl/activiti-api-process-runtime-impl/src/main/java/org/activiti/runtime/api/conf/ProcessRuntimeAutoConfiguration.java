@@ -538,9 +538,9 @@ public class ProcessRuntimeAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean(name = "registerMessageSubscriptionCancelledListenerDelegate")
     public InitializingBean registerMessageSubscriptionCancelledListenerDelegate(RuntimeService runtimeService,
-                                                                                 List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>> eventListeners,
+                                                                                 @Autowired(required = false) List<ProcessRuntimeEventListener<MessageSubscriptionCancelledEvent>> eventListeners,
                                                                                  MessageSubscriptionConverter converter) {
-        return () -> runtimeService.addEventListener(new MessageSubscriptionCancelledListenerDelegate(eventListeners,
+        return () -> runtimeService.addEventListener(new MessageSubscriptionCancelledListenerDelegate(getInitializedListeners(eventListeners),
                                                                                                       new ToMessageSubscriptionCancelledConverter(converter)),
                                                      ActivitiEventType.ENTITY_DELETED);
     }    
