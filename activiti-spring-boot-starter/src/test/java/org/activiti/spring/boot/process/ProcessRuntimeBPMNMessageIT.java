@@ -90,8 +90,8 @@ public class ProcessRuntimeBPMNMessageIT {
         }
 
         
-        public List<StartMessageDeployedEvent> getStartMessageDeployedEvents() {
-            return startMessageDeployedEvents;
+        public StartMessageDeployedEvent[] getStartMessageDeployedEvents() {
+            return startMessageDeployedEvents.toArray(new StartMessageDeployedEvent[] {});
         }
     }
     
@@ -105,8 +105,8 @@ public class ProcessRuntimeBPMNMessageIT {
         }
 
         
-        public List<StartMessageDeployedEvent> getStartMessageDeployedEvents() {
-            return startMessageDeployedEvents;
+        public StartMessageDeployedEvent[] getStartMessageDeployedEvents() {
+            return startMessageDeployedEvents.toArray(new StartMessageDeployedEvent[] {});
         }
     }
     
@@ -144,7 +144,7 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Test
     public void shouldProduceStartMessageDeployedEvents() {
-        List<StartMessageDeployedEvent> events = startMessageDeployedRuntimeEventListener.getStartMessageDeployedEvents();
+        StartMessageDeployedEvent[] events = startMessageDeployedRuntimeEventListener.getStartMessageDeployedEvents();
         
         assertThat(events).isNotEmpty()
                           .extracting(StartMessageDeployedEvent::getEntity)
@@ -153,8 +153,7 @@ public class ProcessRuntimeBPMNMessageIT {
                           .contains("testMessage",
                                     "startMessagePayload");
         
-        assertThat(startMessageDeployedApplicationEventListener.getStartMessageDeployedEvents())
-                .containsExactly(events.toArray(new StartMessageDeployedEvent[] {}));
+        assertThat(startMessageDeployedApplicationEventListener.getStartMessageDeployedEvents()).containsExactly(events);
     }
     
     @Test
