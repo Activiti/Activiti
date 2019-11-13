@@ -24,13 +24,13 @@ import org.activiti.api.process.model.StartMessageSubscription;
 
 public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploymentDefinition {
     
-    private StartMessageSubscription messageEventSubscription;
+    private StartMessageSubscription messageSubscription;
 
     private ProcessDefinition processDefinition;
 
 
     private StartMessageDeploymentDefinitionImpl(Builder builder) {
-        this.messageEventSubscription = builder.messageEventSubscription;
+        this.messageSubscription = builder.messageSubscription;
         this.processDefinition = builder.processDefinition;
     }
 
@@ -41,12 +41,12 @@ public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploym
     }
     
     public StartMessageSubscription getMessageSubscription() {
-        return messageEventSubscription;
+        return messageSubscription;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(messageEventSubscription, processDefinition);
+        return Objects.hash(messageSubscription, processDefinition);
     }
 
     @Override
@@ -61,15 +61,15 @@ public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploym
             return false;
         }
         StartMessageDeploymentDefinitionImpl other = (StartMessageDeploymentDefinitionImpl) obj;
-        return Objects.equals(messageEventSubscription, other.messageEventSubscription) && 
+        return Objects.equals(messageSubscription, other.messageSubscription) && 
                Objects.equals(processDefinition, other.processDefinition);
     }
 
     @Override
     public String toString() {
         StringBuilder builder2 = new StringBuilder();
-        builder2.append("StartMessageEventSubscriptionImpl [messageEventSubscription=")
-                .append(messageEventSubscription)
+        builder2.append("StartMessageDeploymentDefinitionImpl [messageSubscription=")
+                .append(messageSubscription)
                 .append(", processDefinition=")
                 .append(processDefinition)
                 .append("]");
@@ -94,14 +94,14 @@ public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploym
      */
     public static final class Builder {
 
-        private StartMessageSubscription messageEventSubscription;
+        private StartMessageSubscription messageSubscription;
         private ProcessDefinition processDefinition;
 
         public Builder() {
         }
 
         private Builder(StartMessageDeploymentDefinitionImpl startMessageEventSubscriptionImpl) {
-            this.messageEventSubscription = startMessageEventSubscriptionImpl.messageEventSubscription;
+            this.messageSubscription = startMessageEventSubscriptionImpl.messageSubscription;
             this.processDefinition = startMessageEventSubscriptionImpl.processDefinition;
         }
 
@@ -110,8 +110,8 @@ public class StartMessageDeploymentDefinitionImpl implements StartMessageDeploym
         * @param messageEventSubscription field to set
         * @return builder
         */
-        public Builder withMessageEventSubscription(StartMessageSubscription messageEventSubscription) {
-            this.messageEventSubscription = messageEventSubscription;
+        public Builder withMessageSubscription(StartMessageSubscription messageEventSubscription) {
+            this.messageSubscription = messageEventSubscription;
             return this;
         }
 
