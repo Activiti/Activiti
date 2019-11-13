@@ -31,6 +31,8 @@ import org.activiti.api.process.model.StartMessageSubscription;
 import org.activiti.api.process.model.builders.MessagePayloadBuilder;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.model.events.BPMNMessageEvent;
+import org.activiti.api.process.model.events.MessageSubscriptionCancelledEvent;
+import org.activiti.api.process.model.events.MessageSubscriptionEvent;
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
@@ -88,8 +90,7 @@ public class ProcessRuntimeBPMNMessageIT {
         public void onEvent(StartMessageDeployedEvent event) {
             startMessageDeployedEvents.add(event);
         }
-
-        
+       
         public StartMessageDeployedEvent[] getStartMessageDeployedEvents() {
             return startMessageDeployedEvents.toArray(new StartMessageDeployedEvent[] {});
         }
@@ -109,8 +110,6 @@ public class ProcessRuntimeBPMNMessageIT {
             return startMessageDeployedEvents.toArray(new StartMessageDeployedEvent[] {});
         }
     }
-    
-    
     
     @Autowired
     private ProcessRuntime processRuntime;
@@ -788,6 +787,59 @@ public class ProcessRuntimeBPMNMessageIT {
 
         // then
         assertThat(thrown).isInstanceOf(ActivitiObjectNotFoundException.class);
+    }  
+    
+    @Test
+    public void should_getMessageCancelledEvent_when_processIsEnded() {
+
+        securityUtil.logInAs("user");
+
+        ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
+                                                       .withBusinessKey("businessKey")
+                                                       .withVariable("correlationKey", "correlationKey")
+                                                       .withProcessDefinitionKey(CATCH_MESSAGE)
+                                                       .build());
+        
+        processRuntime.delete(ProcessPayloadBuilder.delete(process.getId()));    
+        
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                                  .extracting(BPMNMessageEvent::getEventType,
+                                              BPMNMessageEvent::getProcessDefinitionId,
+                                              BPMNMessageEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> event.getEntity().getMessagePayload().getName(),
+                                              event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                                              event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                                              event -> event.getEntity().getMessagePayload().getVariables())
+                                  .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "testMessage",
+                                                        "correlationKey",
+                                                        process.getBusinessKey(),
+                                                        null));
+        
+        assertThat(MessageTestConfiguration.messageSubscriptionCancelledEvents).isNotEmpty()
+                                  .extracting(MessageSubscriptionCancelledEvent::getEventType,
+                                              MessageSubscriptionCancelledEvent::getProcessDefinitionId,
+                                              MessageSubscriptionCancelledEvent::getProcessInstanceId,
+                                              event -> event.getEntity().getProcessDefinitionId(),
+                                              event -> event.getEntity().getProcessInstanceId(),
+                                              event -> event.getEntity().getEventName(),
+                                              event -> event.getEntity().getConfiguration(),
+                                              event -> event.getEntity().getBusinessKey()
+                                              )           
+                                  .contains(Tuple.tuple(MessageSubscriptionEvent.MessageSubscriptionEvents.MESSAGE_SUBSCRIPTION_CANCELLED,
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        process.getProcessDefinitionId(),
+                                                        process.getId(),
+                                                        "testMessage",
+                                                        "correlationKey",
+                                                        process.getBusinessKey()));                        
     }  
     
 }
