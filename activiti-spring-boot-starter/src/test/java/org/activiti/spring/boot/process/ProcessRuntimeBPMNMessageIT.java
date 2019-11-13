@@ -132,7 +132,7 @@ public class ProcessRuntimeBPMNMessageIT {
     @Before
     public void setUp() {
         MessageTestConfiguration.messageEvents.clear();
-        
+        securityUtil.logInAs("user");
     }
 
     @After
@@ -157,9 +157,6 @@ public class ProcessRuntimeBPMNMessageIT {
     
     @Test
     public void shouldThrowIntermediateMessageEvent() {
-
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withBusinessKey("businessKey")
                                                                             .withProcessDefinitionKey(PROCESS_INTERMEDIATE_THROW_MESSAGE_EVENT)
@@ -190,9 +187,6 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Test
     public void shouldReceiveCatchMessageWithCorrelationKeyAndMappedPayload() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withBusinessKey("businessKey")
                                                        .withVariable("correlationKey", "foo")
@@ -250,9 +244,6 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Test
     public void shouldStartProcessByMessageWithMappedPayload() {
-        // given
-        securityUtil.logInAs("user");
-
         // when
         ProcessInstance process = processRuntime.start(MessagePayloadBuilder.start(START_MESSAGE_PAYLOAD)
                                                                             .withBusinessKey("businessKey")
@@ -293,9 +284,6 @@ public class ProcessRuntimeBPMNMessageIT {
      
     @Test
     public void shouldStartProcessByMessage() {
-        // given
-        securityUtil.logInAs("user");
-
         // when
         ProcessInstance process = processRuntime.start(MessagePayloadBuilder.start(TEST_MESSAGE)
                                                                             .withBusinessKey("businessKey")
@@ -327,9 +315,6 @@ public class ProcessRuntimeBPMNMessageIT {
       
     @Test
     public void shouldReceiveCatchMessageWithCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withBusinessKey("businessKey")
                                                        .withVariable("correlationKey", "foo")
@@ -376,15 +361,12 @@ public class ProcessRuntimeBPMNMessageIT {
       
     @Test
     public void shouldThrowEndMessageEvent() {
-        // given
-        securityUtil.logInAs("user");
-
+        // when
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withBusinessKey("businessKey")
                                                        .withProcessDefinitionKey(END_MESSAGE)
                                                        .build());
-        
-        // when
+
         // then
         assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
                                   .extracting(BPMNMessageEvent::getEventType,
@@ -409,9 +391,6 @@ public class ProcessRuntimeBPMNMessageIT {
      
     @Test
     public void shouldReceiveBoundaryMessageWithCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withBusinessKey("businessKey")
                                                        .withVariable("correlationKey", "foo")
@@ -458,9 +437,6 @@ public class ProcessRuntimeBPMNMessageIT {
   
     @Test
     public void shouldReceiveSubprocessMessageWithCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withBusinessKey("businessKey")
                                                                             .withVariable("correlationKey", "foo")
@@ -507,9 +483,6 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Test
     public void shouldReceiveEventGatewayMessageWithCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withBusinessKey("businessKey")
                                                                             .withVariable("correlationKey", "foo")
@@ -555,9 +528,6 @@ public class ProcessRuntimeBPMNMessageIT {
      
     @Test
     public void shouldReceiveEventSubprocessMessageWithCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withBusinessKey("businessKey")
                                                                             .withVariable("correlationKey", "foo")
@@ -602,9 +572,6 @@ public class ProcessRuntimeBPMNMessageIT {
  
     @Test
     public void shouldTestCatchMessageExpressionWithVariableMappingExtensions() {
-        // given
-        securityUtil.logInAs("user");
-
         // when
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withBusinessKey("businessKey")
@@ -704,9 +671,6 @@ public class ProcessRuntimeBPMNMessageIT {
     
     @Test
     public void shouldTestBoundaryMessageExpression() {
-        // given
-        securityUtil.logInAs("user");
-
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                                             .withVariable("correlationKey", "correlationId")
                                                                             .withProcessDefinitionKey("testBoundaryMessageExpression")
@@ -750,9 +714,6 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Test
     public void shouldTestBoundaryMessageExpressionWithNotMatchingCorrelationKey() {
-        // given
-        securityUtil.logInAs("user");
-
         processRuntime.start(ProcessPayloadBuilder.start()
                                                   .withVariable("correlationKey", "correlationId")
                                                   .withProcessDefinitionKey("testBoundaryMessageExpression")
@@ -770,9 +731,6 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Test
     public void shouldTestBoundaryMessageExpressionWithNotFoundMessageEventSubscription() {
-        // given
-        securityUtil.logInAs("user");
-
         processRuntime.start(ProcessPayloadBuilder.start()
                                                   .withVariable("correlationKey", "correlationId")
                                                   .withProcessDefinitionKey("testBoundaryMessageExpression")
@@ -791,9 +749,6 @@ public class ProcessRuntimeBPMNMessageIT {
     
     @Test
     public void should_getMessageSubscriptionCancelledEvent_when_processIsDeleted() {
-
-        securityUtil.logInAs("user");
-
         //when
         ProcessInstance process = processRuntime.start(ProcessPayloadBuilder.start()
                                                        .withBusinessKey("businessKey")
