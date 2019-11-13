@@ -57,7 +57,7 @@ public class MessageSubscriptionCancelledListenerDelegate implements ActivitiEve
     protected boolean isValidEvent(ActivitiEvent event) {
         return Optional.ofNullable(event)
                        .filter(ActivitiEntityEvent.class::isInstance)
-                       .map(MessageEventSubscriptionEntity.class::isInstance)
+                       .map(e -> ((ActivitiEntityEvent) event).getEntity() instanceof MessageEventSubscriptionEntity)
                        .orElse(false);
     }
 }
