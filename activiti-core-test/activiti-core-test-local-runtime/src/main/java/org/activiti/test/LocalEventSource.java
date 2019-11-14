@@ -16,26 +16,38 @@
 
 package org.activiti.test;
 
+import static java.util.stream.Collectors.collectingAndThen;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
 
 public class LocalEventSource implements EventSource {
 
-    private List<RuntimeEvent<?,?>> collectedEvents = new ArrayList<>();
+    private List<RuntimeEvent<?, ?>> collectedEvents = new ArrayList<>();
 
-    public List<RuntimeEvent<?,?>> getCollectedEvents() {
-        return collectedEvents;
-    }
-
-    public void addCollectedEvents(RuntimeEvent<?,?> event) {
+    public void addCollectedEvents(RuntimeEvent<?, ?> event) {
         this.collectedEvents.add(event);
     }
 
     @Override
     public List<RuntimeEvent<?, ?>> getEvents() {
-        return collectedEvents;
+        return Collections.unmodifiableList(collectedEvents);
     }
 
+    public void clearEvents() {
+        collectedEvents.clear();
+    }
+
+    public <T extends RuntimeEvent<?,?>> List<T> getEventsOfType(Class<T> eventType) {
+        return collectedEvents
+                .stream()
+                .filter(eventType::isInstance)
+                .map(eventType::cast)
+                .collect(collectingAndThen(Collectors.toList(),
+                                           Collections::unmodifiableList));
+    }
 }

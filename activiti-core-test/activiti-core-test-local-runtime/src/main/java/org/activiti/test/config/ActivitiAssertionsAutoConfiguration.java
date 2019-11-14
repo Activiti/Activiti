@@ -38,6 +38,7 @@ import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListe
 import org.activiti.api.runtime.shared.events.VariableEventListener;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.api.task.runtime.events.TaskAssignedEvent;
+import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
 import org.activiti.api.task.runtime.events.TaskSuspendedEvent;
@@ -172,6 +173,11 @@ public class ActivitiAssertionsAutoConfiguration {
 
     @Bean
     public TaskEventListener<TaskAssignedEvent> keepInMemoryTaskAssignedEventListener() {
+        return localEventProvider::addCollectedEvents;
+    }
+
+    @Bean
+    public TaskEventListener<TaskCancelledEvent> keepInMemoryTaskCancelledEventListener() {
         return localEventProvider::addCollectedEvents;
     }
 
