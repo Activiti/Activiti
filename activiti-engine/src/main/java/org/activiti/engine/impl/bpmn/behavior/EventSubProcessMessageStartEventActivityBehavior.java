@@ -23,7 +23,9 @@ import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.bpmn.parser.factory.MessageExecutionContext;
 import org.activiti.engine.impl.context.Context;
@@ -78,6 +80,15 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
         if (!childExecution.getId().equals(executionEntity.getId())) {
           executionEntityManager.deleteExecutionAndRelatedData(childExecution, 
               DeleteReason.EVENT_SUBPROCESS_INTERRUPTING + "(" + startEvent.getId() + ")", false);
+          commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityCancelledEvent(
+                  childExecution.getActivityId(),
+                  childExecution.getName(),
+                  childExecution.getId(),
+                  childExecution.getProcessInstanceId(),
+                  childExecution.getProcessDefinitionId(),
+                  parseActivityType((FlowNode) childExecution.getCurrentFlowElement()),
+                  "Interrupted Message Received"
+          ));
         }
       }
     }
