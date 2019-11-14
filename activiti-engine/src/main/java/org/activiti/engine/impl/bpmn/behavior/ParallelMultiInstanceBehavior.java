@@ -16,7 +16,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.activiti.bpmn.model.*;
+import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
@@ -245,17 +252,17 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     }
 
     if (deleteExecution) {
-        Boolean isActiveElement = parentExecution.isActive();
+        boolean isActiveElement = parentExecution.isActive();
         executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
-        if(isActiveElement) {
+        if (isActiveElement) {
             commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityCancelledEvent(
                     parentExecution.getActivityId(),
                     parentExecution.getName(),
                     parentExecution.getId(),
                     parentExecution.getProcessInstanceId(),
                     parentExecution.getProcessDefinitionId(),
-                    "multi-instance " + parseActivityType((FlowNode) parentExecution.getCurrentFlowElement()),
-                    "Complete Condition Expression Passed"
+                    parseActivityType((FlowNode) parentExecution.getCurrentFlowElement()),
+                    "Multi-instance complete condition expression passed"
             ));
         }
     }
