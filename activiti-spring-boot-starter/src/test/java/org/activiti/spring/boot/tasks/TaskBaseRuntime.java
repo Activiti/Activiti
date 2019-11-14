@@ -18,17 +18,18 @@ package org.activiti.spring.boot.tasks;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Collections;
 
+import org.activiti.api.model.shared.model.VariableInstance;
+import org.activiti.api.process.model.ProcessInstance;
+import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.Task.TaskStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
 import org.activiti.api.task.runtime.TaskRuntime;
-import org.activiti.api.model.shared.model.VariableInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestComponent;
 
 @TestComponent
@@ -49,12 +50,20 @@ public class TaskBaseRuntime {
         return taskList;
     }
 
+    public List<Task> getTasks(ProcessInstance processInstance) {
+        return getTasksByProcessInstanceId(processInstance.getId());
+    }
+
     public List<VariableInstance> getTasksVariablesByTaskId(String taskId) {
         return taskRuntime.variables(TaskPayloadBuilder.variables().withTaskId(taskId).build());
     }
 
     public void completeTask(String taskId) {
-        this.completeTask(taskId, Collections.<String, Object>emptyMap());
+        completeTask(taskId, Collections.emptyMap());
+    }
+
+    public void completeTask(Task task) {
+        this.completeTask(task.getId(), Collections.emptyMap());
     }
 
     public void completeTask(String taskId, Map<String, Object> variables) {
