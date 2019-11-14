@@ -26,6 +26,7 @@ public class ProcessCompletedImpl extends RuntimeEventImpl<ProcessInstance, Proc
 
     public ProcessCompletedImpl(ProcessInstance entity) {
         super(entity);
+        setProcessInstanceId(entity.getId());
     }
 
     @Override

@@ -16,6 +16,14 @@
 
 package org.activiti.runtime.api.event.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.util.Collections;
+
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
@@ -29,14 +37,6 @@ import org.junit.Test;
 import org.mockito.Answers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.util.Collections;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ToTaskCancelledConverterTest {
 
@@ -55,13 +55,15 @@ public class ToTaskCancelledConverterTest {
     }
 
     @Test
-    public void fromShouldFilterOnProcessInstanceAndTaskDefinitionKeyWhenTheyAreSet() {
+    public void from_shouldFilterOnProcessInstanceTaskDefinitionKeyAndExecution_when_TheyAreSet() {
         //given
         String procInstId = "procInstId";
         String activityId = "activityId";
+        String executionId = "executionId";
         ActivitiActivityCancelledEventImpl internalEvent = new ActivitiActivityCancelledEventImpl();
         internalEvent.setProcessInstanceId(procInstId);
         internalEvent.setActivityId(activityId);
+        internalEvent.setExecutionId(executionId);
 
         TaskQuery taskQuery = mock(TaskQuery.class,
                               Answers.RETURNS_SELF);
@@ -85,10 +87,11 @@ public class ToTaskCancelledConverterTest {
 
         verify(taskQuery).processInstanceId(procInstId);
         verify(taskQuery).taskDefinitionKey(activityId);
+        verify(taskQuery).executionId(executionId);
     }
 
     @Test
-    public void fromShouldFilterOnTaskIdWhenProcessInstanceIsNotSet() {
+    public void from_should_filterOnTaskId_when_processInstanceIsNotSet() {
         //given
         String taskId = "taskId";
         ActivitiActivityCancelledEventImpl internalEvent = new ActivitiActivityCancelledEventImpl();
