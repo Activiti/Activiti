@@ -180,5 +180,10 @@
             <artifactId>awaitility</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.activiti.core.common</groupId>
+            <artifactId>activiti-core-test-local-runtime</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

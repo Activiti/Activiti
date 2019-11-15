@@ -16,16 +16,17 @@
 
 package org.activiti.runtime.api.event.impl;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
+import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
-
-import java.util.List;
-import java.util.Optional;
 
 public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEvent, ActivitiActivityCancelledEvent> {
 
@@ -46,6 +47,13 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEve
             taskQuery.processInstanceId(internalEvent.getProcessInstanceId());
             if (internalEvent.getActivityId() != null) {
                 taskQuery.taskDefinitionKey(internalEvent.getActivityId());
+            }
+            // in case of parallel multi-instance we need to also filter on execution id because more than will task can
+            // be returned for same process instance id and task definition key.
+            // Note that's not possible to always filter on execution id, because in some cases the execution related to
+            // cancel action is not the the task itself. For instance, boundary events.
+            if (ParallelMultiInstanceBehavior.class.getName().equals(internalEvent.getBehaviorClass()) && internalEvent.getExecutionId() != null) {
+                taskQuery.executionId(internalEvent.getExecutionId());
             }
         } else {
             if (internalEvent.getExecutionId() != null) {
