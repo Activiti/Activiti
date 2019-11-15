@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+  <message id="interruptedMessage" name="interruptedMessage" />
+
+  <process id="messageInterruptingSubProcess" name="messageInterruptingSubProcess">
+
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="shipOrder" />
+
+    <userTask id="shipOrder" name="User Task" activiti:assignee="user" />
+
+    <sequenceFlow sourceRef="shipOrder" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+    <subProcess id="eventSubProcess" name="eventSubProcess" triggeredByEvent="true">
+      <startEvent id="catchMessage" isInterrupting="true">
+        <messageEventDefinition messageRef="interruptedMessage" activiti:correlationKey="${correlationKey}"/>
+      </startEvent>
+      <sequenceFlow id="flow2" sourceRef="catchMessage" targetRef="endSubProcess" />
+      <endEvent id="endSubProcess" />
+    </subProcess>
+
+  </process>
+
+</definitions>

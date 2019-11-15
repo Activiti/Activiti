@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.model.shared.model.VariableInstance;
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.StartMessageDeploymentDefinition;
@@ -41,11 +42,14 @@ import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.builders.TaskPayloadBuilder;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.TaskRuntime;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.spring.boot.MessageTestConfiguration;
 import org.activiti.spring.boot.security.util.SecurityUtil;
+import org.activiti.spring.boot.tasks.TaskBaseRuntime;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
+import org.activiti.test.LocalEventSource;
 import org.assertj.core.groups.Tuple;
 import org.junit.After;
 import org.junit.Before;
@@ -122,7 +126,13 @@ public class ProcessRuntimeBPMNMessageIT {
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
-    
+
+    @Autowired
+    private LocalEventSource localEventSource;
+
+    @Autowired
+    private TaskBaseRuntime taskBaseRuntime;
+
     @Autowired
     private TestStartMessageDeployedRuntimeEventListener startMessageDeployedRuntimeEventListener;
 
@@ -131,6 +141,7 @@ public class ProcessRuntimeBPMNMessageIT {
     
     @Before
     public void setUp() {
+        localEventSource.clearEvents();
         MessageTestConfiguration.messageEvents.clear();
         securityUtil.logInAs("user");
     }
@@ -799,6 +810,197 @@ public class ProcessRuntimeBPMNMessageIT {
                                                         "testMessage",
                                                         "correlationKey",
                                                         process.getBusinessKey()));                        
-    }  
-    
+    }
+
+    @Test
+    public void should_cancelTask_when_interruptedMessageReceived() {
+
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+                .withBusinessKey("businessKey")
+                .withVariable("correlationKey", "correlationKey")
+                .withProcessDefinitionKey("messageInterruptingSubProcess")
+                .build());
+
+        List<Task> allTasks = taskRuntime.tasks(Pageable.of(0, 2),
+                TaskPayloadBuilder.tasks()
+                        .withProcessInstanceId(processInstance.getId())
+                        .build()).getContent();
+        assertThat(allTasks.size()).isEqualTo(1);
+
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                .extracting(BPMNMessageEvent::getEventType,
+                        BPMNMessageEvent::getProcessDefinitionId,
+                        BPMNMessageEvent::getProcessInstanceId,
+                        event -> event.getEntity().getProcessDefinitionId(),
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getMessagePayload().getName(),
+                        event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                        event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                        event -> event.getEntity().getMessagePayload().getVariables())
+                .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getId(),
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getId(),
+                        "interruptedMessage",
+                        "correlationKey",
+                        processInstance.getBusinessKey(),
+                        null));
+        assertThat(localEventSource.getEvents())
+                .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
+                .extracting(RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName())
+                .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.get(0).getName()));
+
+
+        // sending the Interrupted Start Message to process
+        processRuntime.receive(MessagePayloadBuilder.receive("interruptedMessage")
+                .withCorrelationKey("correlationKey")
+                .build());
+
+
+        //then
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                .extracting(BPMNMessageEvent::getEventType,
+                        BPMNMessageEvent::getProcessDefinitionId,
+                        BPMNMessageEvent::getProcessInstanceId,
+                        event -> event.getEntity().getProcessDefinitionId(),
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getMessagePayload().getName(),
+                        event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                        event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                        event -> event.getEntity().getMessagePayload().getVariables())
+                .contains(
+                        Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
+                                processInstance.getProcessDefinitionId(),
+                                processInstance.getId(),
+                                processInstance.getProcessDefinitionId(),
+                                processInstance.getId(),
+                                "interruptedMessage",
+                                "correlationKey",
+                                processInstance.getBusinessKey(),
+                                null),
+                        Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
+                                processInstance.getProcessDefinitionId(),
+                                processInstance.getId(),
+                                processInstance.getProcessDefinitionId(),
+                                processInstance.getId(),
+                                "interruptedMessage",
+                                "correlationKey",
+                                processInstance.getBusinessKey(),
+                                null)
+                );
+
+        // then
+        assertThat(taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId())).isEmpty();
+
+        assertThat(localEventSource.getEvents())
+                .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
+                .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED, allTasks.get(0).getName())
+                );
+
+    }
+
+    @Test
+    public void should_not_cancelTask_when_nonInterruptedMessageReceived() {
+
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+                .withBusinessKey("businessKey")
+                .withVariable("correlationKey", "correlationKey")
+                .withProcessDefinitionKey("messageNonInterruptingSubProcess")
+                .build());
+
+        List<Task> allTasks = taskRuntime.tasks(Pageable.of(0, 2),
+                TaskPayloadBuilder.tasks()
+                        .withProcessInstanceId(processInstance.getId())
+                        .build()).getContent();
+        assertThat(allTasks.size()).isEqualTo(1);
+
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                .extracting(BPMNMessageEvent::getEventType,
+                        BPMNMessageEvent::getProcessDefinitionId,
+                        BPMNMessageEvent::getProcessInstanceId,
+                        event -> event.getEntity().getProcessDefinitionId(),
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getMessagePayload().getName(),
+                        event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                        event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                        event -> event.getEntity().getMessagePayload().getVariables())
+                .contains(Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getId(),
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getId(),
+                        "nonInterruptedMessage",
+                        "correlationKey",
+                        processInstance.getBusinessKey(),
+                        null));
+
+        assertThat(localEventSource.getEvents())
+                .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
+                .extracting(RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName())
+                .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.get(0).getName()));
+
+        // sending the Non Interrupted Start Message to process
+        processRuntime.receive(MessagePayloadBuilder.receive("nonInterruptedMessage")
+                .withCorrelationKey("correlationKey")
+                .build());
+
+
+        //then
+        assertThat(MessageTestConfiguration.messageEvents).isNotEmpty()
+                .extracting(BPMNMessageEvent::getEventType,
+                        BPMNMessageEvent::getProcessDefinitionId,
+                        BPMNMessageEvent::getProcessInstanceId,
+                        event -> event.getEntity().getProcessDefinitionId(),
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getMessagePayload().getName(),
+                        event -> event.getEntity().getMessagePayload().getCorrelationKey(),
+                        event -> event.getEntity().getMessagePayload().getBusinessKey(),
+                        event -> event.getEntity().getMessagePayload().getVariables())
+                .contains(
+                        Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_WAITING,
+                                processInstance.getProcessDefinitionId(),
+                                processInstance.getId(),
+                                processInstance.getProcessDefinitionId(),
+                                processInstance.getId(),
+                                "nonInterruptedMessage",
+                                "correlationKey",
+                                processInstance.getBusinessKey(),
+                                null),
+                        Tuple.tuple(BPMNMessageEvent.MessageEvents.MESSAGE_RECEIVED,
+                                processInstance.getProcessDefinitionId(),
+                                processInstance.getId(),
+                                processInstance.getProcessDefinitionId(),
+                                processInstance.getId(),
+                                "nonInterruptedMessage",
+                                "correlationKey",
+                                processInstance.getBusinessKey(),
+                                null)
+                );
+
+        // then
+        assertThat(taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId()).size()).isEqualTo(1);
+        assertThat(localEventSource.getEvents())
+                .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
+                .extracting(RuntimeEvent::getEventType,
+                        event -> ((Task) event.getEntity()).getName())
+                .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, allTasks.get(0).getName()));
+
+        localEventSource.clearEvents();
+
+        taskBaseRuntime.completeTask(allTasks.get(0).getId());
+
+        assertThat(localEventSource.getEvents())
+                .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED))
+                .extracting(RuntimeEvent::getEventType, event -> ((Task) event.getEntity()).getName())
+                .containsExactly(
+                        tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, allTasks.get(0).getName())
+                );
+
+    }
+
 }
