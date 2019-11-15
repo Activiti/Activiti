@@ -134,4 +134,74 @@ public class TaskRuntimeMultiInstanceIT {
                 .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
                                 processInstance.getId()));
     }
+
+    @Test
+    public void processWithMultiInstancesOnSubProcess_should_emmitEventsAndContinueOnceCompletionConditionIsReached() {
+        //when
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelSubprocessCompletionCondition");
+
+        //then
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .containsExactlyInAnyOrder("Task in sub-process 0",
+                          "Task in sub-process 1",
+                          "Task in sub-process 2",
+                          "Task in sub-process 3");
+
+        List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
+                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
+                .map(TaskCreatedEvent.class::cast)
+                .collect(Collectors.toList());
+        assertThat(taskCreatedEvents)
+                .extracting(event -> event.getEntity().getName())
+                .containsExactlyInAnyOrder("Task in sub-process 0",
+                                           "Task in sub-process 1",
+                                           "Task in sub-process 2",
+                                           "Task in sub-process 3");
+
+        //given
+        Task taskToComplete = tasks.get(0);
+        localEventSource.clearEvents();
+
+        //when first multi instance is completed: 3 remaining / completion condition not reached
+        taskBaseRuntime.completeTask(taskToComplete);
+
+        //then
+        assertThat(localEventSource.getEvents())
+                .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED)
+                        || event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
+                .extracting(RuntimeEvent::getEventType,
+                            event -> ((Task) event.getEntity()).getName())
+                .containsExactly(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                                       taskToComplete.getName()));
+
+        //given
+        localEventSource.clearEvents();
+        taskToComplete = tasks.get(1);
+
+        //when second multi instance is completed: 2 remaining / completion condition reached
+        taskBaseRuntime.completeTask(taskToComplete);
+
+        //then
+        assertThat(localEventSource.getEvents())
+                .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED)
+                        || event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
+                .extracting(RuntimeEvent::getEventType,
+                            event -> ((Task) event.getEntity()).getName())
+                .containsExactlyInAnyOrder(tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED,
+                                                 taskToComplete.getName()),
+                                           tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
+                                                 tasks.get(2).getName()),
+                                           tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED,
+                                                 tasks.get(3).getName())
+                );
+
+        assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
+        assertThat(localEventSource.getEvents())
+                .extracting(RuntimeEvent::getEventType,
+                            RuntimeEvent::getProcessInstanceId)
+                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                                processInstance.getId()));
+    }
 }

@@ -89,7 +89,6 @@ public class ToTaskCancelledConverterTest {
 
         verify(taskQuery).processInstanceId(procInstId);
         verify(taskQuery).taskDefinitionKey(activityId);
-        verify(taskQuery).executionId(executionId);
     }
 
     @Test
