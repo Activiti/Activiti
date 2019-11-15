@@ -21,7 +21,6 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -256,12 +255,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
         if (isActiveElement) {
             commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityCancelledEvent(
-                    parentExecution.getActivityId(),
-                    parentExecution.getName(),
-                    parentExecution.getId(),
-                    parentExecution.getProcessInstanceId(),
-                    parentExecution.getProcessDefinitionId(),
-                    parseActivityType((FlowNode) parentExecution.getCurrentFlowElement()),
+                    parentExecution,
                     "Multi-instance complete condition expression passed"
             ));
         }

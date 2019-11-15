@@ -29,6 +29,7 @@ import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.delegate.event.impl.ActivitiActivityCancelledEventImpl;
+import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
@@ -64,6 +65,7 @@ public class ToTaskCancelledConverterTest {
         internalEvent.setProcessInstanceId(procInstId);
         internalEvent.setActivityId(activityId);
         internalEvent.setExecutionId(executionId);
+        internalEvent.setBehaviorClass(ParallelMultiInstanceBehavior.class.getName());
 
         TaskQuery taskQuery = mock(TaskQuery.class,
                               Answers.RETURNS_SELF);

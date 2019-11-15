@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.delegate.event.impl;
 
+import java.util.Map;
+
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -37,8 +39,6 @@ import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.Task;
-
-import java.util.Map;
 
 /**
  * Builder class used to create {@link ActivitiEvent} implementations.
@@ -245,6 +245,22 @@ public class ActivitiEventBuilder {
     newEvent.setCause(cause);
     return newEvent;
   }
+
+    public static ActivitiActivityCancelledEvent createActivityCancelledEvent(ExecutionEntity execution,
+                                                                              Object cause) {
+        FlowNode currentFlowNode = (FlowNode) execution.getCurrentFlowElement();
+
+        ActivitiActivityCancelledEventImpl newEvent = new ActivitiActivityCancelledEventImpl();
+        newEvent.setActivityId(execution.getActivityId());
+        newEvent.setActivityName(currentFlowNode.getName());
+        newEvent.setExecutionId(execution.getId());
+        newEvent.setProcessDefinitionId(execution.getProcessDefinitionId());
+        newEvent.setProcessInstanceId(execution.getProcessInstanceId());
+        newEvent.setActivityType(parseActivityType(currentFlowNode));
+        newEvent.setBehaviorClass(parseActivityBehavior(currentFlowNode));
+        newEvent.setCause(cause);
+        return newEvent;
+    }
 
   public static ActivitiCancelledEvent createCancelledEvent(String executionId, String processInstanceId, String processDefinitionId, Object cause) {
     ActivitiProcessCancelledEventImpl newEvent = new ActivitiProcessCancelledEventImpl();
