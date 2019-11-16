@@ -34,11 +34,13 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.runtime.api.event.impl.StartMessageSubscriptionConverter;
 import org.activiti.runtime.api.model.impl.APIProcessDefinitionConverter;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.ApplicationListener;
 
-public class StartMessageDeployedEventProducer implements ApplicationListener<ApplicationReadyEvent> {
+public class StartMessageDeployedEventProducer extends AbstractActivitiSmartLifeCycle {
+    
+    private static Logger logger = LoggerFactory.getLogger(StartMessageDeployedEventProducer.class);
 
     private RepositoryService repositoryService;
     private ManagementService managementService;
@@ -46,7 +48,7 @@ public class StartMessageDeployedEventProducer implements ApplicationListener<Ap
     private StartMessageSubscriptionConverter subscriptionConverter;
     private List<ProcessRuntimeEventListener<StartMessageDeployedEvent>> listeners;
     private ApplicationEventPublisher eventPublisher;
-
+    
     public StartMessageDeployedEventProducer(RepositoryService repositoryService,
                                         ManagementService managementService,
                                         StartMessageSubscriptionConverter subscriptionConverter,
@@ -60,9 +62,8 @@ public class StartMessageDeployedEventProducer implements ApplicationListener<Ap
         this.listeners = listeners;
         this.eventPublisher = eventPublisher;
     }
-
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent event) {
+    
+    public void doStart() {
         List<ProcessDefinition> processDefinitions = converter.from(repositoryService.createProcessDefinitionQuery().list());
         List<StartMessageDeployedEvent> messageDeployedEvents = new ArrayList<>();
         
@@ -85,6 +86,10 @@ public class StartMessageDeployedEventProducer implements ApplicationListener<Ap
         if (!messageDeployedEvents.isEmpty()) {
             eventPublisher.publishEvent(new StartMessageDeployedEvents(messageDeployedEvents));
         }
+    }
+    
+    public void doStop() {
+        // nothing
     }
 
     class DispatchStartMessageDeployedEvents implements Command<Void> {
@@ -124,4 +129,5 @@ public class StartMessageDeployedEventProducer implements ApplicationListener<Ap
                                                                  .collect(Collectors.toList());
         }
     }
+
 }
