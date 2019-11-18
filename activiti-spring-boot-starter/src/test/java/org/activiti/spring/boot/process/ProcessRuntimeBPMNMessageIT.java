@@ -35,6 +35,7 @@ import org.activiti.api.process.model.events.BPMNMessageEvent;
 import org.activiti.api.process.model.events.MessageSubscriptionCancelledEvent;
 import org.activiti.api.process.model.events.MessageSubscriptionEvent;
 import org.activiti.api.process.model.events.StartMessageDeployedEvent;
+import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.process.runtime.ProcessRuntime;
 import org.activiti.api.process.runtime.events.listener.ProcessRuntimeEventListener;
 import org.activiti.api.runtime.event.impl.StartMessageDeployedEvents;
@@ -901,6 +902,11 @@ public class ProcessRuntimeBPMNMessageIT {
                         tuple(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED, allTasks.get(0).getName())
                 );
 
+        assertThat(localEventSource.getEvents())
+                .extracting(RuntimeEvent::getEventType,
+                        RuntimeEvent::getProcessInstanceId)
+                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                        processInstance.getId()));
     }
 
     @Test
@@ -982,7 +988,6 @@ public class ProcessRuntimeBPMNMessageIT {
                                 null)
                 );
 
-        // then
         assertThat(taskBaseRuntime.getTasksByProcessInstanceId(processInstance.getId()).size()).isEqualTo(1);
         assertThat(localEventSource.getEvents())
                 .filteredOn(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
@@ -1001,6 +1006,11 @@ public class ProcessRuntimeBPMNMessageIT {
                         tuple(TaskRuntimeEvent.TaskEvents.TASK_COMPLETED, allTasks.get(0).getName())
                 );
 
+        assertThat(localEventSource.getEvents())
+                .extracting(RuntimeEvent::getEventType,
+                        RuntimeEvent::getProcessInstanceId)
+                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                        processInstance.getId()));
     }
 
 }
