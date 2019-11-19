@@ -16,6 +16,14 @@
 
 package org.activiti.spring;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -30,19 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationEventPublisher;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class ProcessDeployedEventProducerTest {
 
@@ -91,7 +87,7 @@ public class ProcessDeployedEventProducerTest {
         given(repositoryService.getProcessModel("id2")).willReturn(new ByteArrayInputStream("content2".getBytes()));
 
         //when
-        producer.onApplicationEvent(buildApplicationReadyEvent(WebApplicationType.SERVLET));
+        producer.start();
 
         //then
         ArgumentCaptor<ProcessDeployedEvent> captor = ArgumentCaptor.forClass(ProcessDeployedEvent.class);
@@ -121,21 +117,4 @@ public class ProcessDeployedEventProducerTest {
         return processDefinition;
     }
 
-    private ApplicationReadyEvent buildApplicationReadyEvent(WebApplicationType applicationType) {
-        SpringApplication springApplication = mock(SpringApplication.class);
-        given(springApplication.getWebApplicationType()).willReturn(applicationType);
-
-        ApplicationReadyEvent applicationReadyEvent = mock(ApplicationReadyEvent.class);
-        given(applicationReadyEvent.getSpringApplication()).willReturn(springApplication);
-        return applicationReadyEvent;
-    }
-
-    @Test
-    public void shouldNotCallRegisteredListenerWhenApplicationTypeIsNone() {
-        //when
-        producer.onApplicationEvent(buildApplicationReadyEvent(WebApplicationType.NONE));
-
-        //then
-        verifyZeroInteractions(firstListener, secondListener);
-    }
 }
