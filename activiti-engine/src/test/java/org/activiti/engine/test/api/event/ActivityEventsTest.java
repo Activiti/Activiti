@@ -344,7 +344,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 
     // Only a message-event should be present, no signal-event, since the event-subprocess is
     // not signaled, but executed instead
-    assertEquals(2, listener.getEventsReceived().size());
+    assertEquals(3, listener.getEventsReceived().size());
 
     // An ACTIVITY_MESSAGE_WAITING event is expected
     assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiMessageEvent);
@@ -367,6 +367,15 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
     assertEquals("messageName", messageEvent.getMessageName());
     assertNull(messageEvent.getMessageData());
+
+    // An ACTIVITY_CANCELLED event is expected
+    assertTrue(listener.getEventsReceived().get(2) instanceof ActivitiActivityCancelledEvent);
+    ActivitiActivityEvent activityEvent = (ActivitiActivityEvent) listener.getEventsReceived().get(2);
+    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, activityEvent.getType());
+    assertEquals("shipOrder", activityEvent.getActivityId());
+    assertEquals("userTask", activityEvent.getActivityType());
+    assertEquals(executionWithMessage.getProcessInstanceId(), activityEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
   }
 
   /**
