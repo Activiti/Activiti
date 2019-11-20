@@ -33,7 +33,7 @@ pipeline {
         steps {
           container('maven') {
             // ensure we're not on a detached head
-            sh "git checkout develop123"
+            sh "git checkout develop"
             sh "git config --global credential.helper store"
 
             sh "jx step git credentials"
