@@ -5,7 +5,6 @@ pipeline {
     environment {
       ORG               = 'activiti'
       APP_NAME          = 'activiti-build'
-      CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
     }
     stages {
       stage('CI Build and push snapshot') {
@@ -94,6 +93,13 @@ pipeline {
       }
     }
     post {
+        failure {
+           slackSend(
+             channel: "#activiti-community-builds",
+             color: "danger",
+             message: "jenkins-x-image branch=$BRANCH_NAME is failed http://jenkins.jx.35.242.205.159.nip.io/job/Activiti/job/jenkins-x-image"
+           )
+        } 
         always {
             cleanWs()
         }
