@@ -105,10 +105,10 @@ pipeline {
            slackSend(
              channel: "#activiti-community-builds",
              color: "danger",
-             message: "Activiti branch=$BRANCH_NAME is failed http://jenkins.jx.35.242.205.159.nip.io/job/Activiti/"
+             message: "Activiti branch=$BRANCH_NAME is failed http://jenkins.jx.35.240.9.95.nip.io/job/Activiti/ "
            )
         } 
-        always {
+         always {
             cleanWs()
         }
     }
