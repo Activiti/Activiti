@@ -82,13 +82,18 @@ public class ProcessVariablesPayloadValidatorTest {
         variableDefinitionDate.setName("mydate");
         variableDefinitionDate.setType("date");
 
+        VariableDefinition variableDefinitionDatetime = new VariableDefinition();
+        variableDefinitionDate.setName("mydatetime");
+        variableDefinitionDate.setType("datetime");
+
         Map<String, VariableDefinition> properties = new HashMap<>();
         properties.put("name", variableDefinitionName);
         properties.put("age", variableDefinitionAge);
         properties.put("subscribe", variableDefinitionSubscribe);
         properties.put("mydate", variableDefinitionDate);
+        properties.put("mydatetime", variableDefinitionDate);
 
-       
+
         variableTypeMap = new HashMap<>();
         variableTypeMap.put("boolean", new JavaObjectVariableType(Boolean.class));
         variableTypeMap.put("string", new JavaObjectVariableType(String.class));
@@ -96,8 +101,9 @@ public class ProcessVariablesPayloadValidatorTest {
         variableTypeMap.put("json", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("file", new JsonObjectVariableType(objectMapper));
         variableTypeMap.put("date", new DateVariableType(Date.class, dateFormatterProvider));
-        
-        variableValidationService = new VariableValidationService(variableTypeMap); 
+        variableTypeMap.put("datetime", new DateVariableType(Date.class, dateFormatterProvider));
+
+        variableValidationService = new VariableValidationService(variableTypeMap);
         
         processVariablesValidator = new ProcessVariablesPayloadValidator(dateFormatterProvider,
                                                                          processExtensionService,
