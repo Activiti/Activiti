@@ -150,6 +150,7 @@ public class ProcessRuntimeBPMNMessageIT {
     @After
     public void tearDown() {
         processCleanUpUtil.cleanUpWithAdmin();
+        localEventSource.clearEvents();
         MessageTestConfiguration.messageEvents.clear();
     }
 
