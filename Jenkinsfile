@@ -101,7 +101,6 @@ pipeline {
       }
     }
     post {
-        post {
         failure {
            slackSend(
              channel: "#activiti-community-builds",
