@@ -35,7 +35,7 @@
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
         <property name="javax.persistence.jdbc.driver" value="org.h2.Driver" />
-        <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:activiti-jpa;DB_CLOSE_DELAY=1000;MVCC=TRUE" />
+        <property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:activiti-jpa;DB_CLOSE_DELAY=1000" />
         <property name="javax.persistence.jdbc.user" value="sa" />
         <property name="javax.persistence.jdbc.password" value="" />
         <property name="hibernate.show_sql" value="true" />

@@ -9,7 +9,7 @@
         <property name="targetDataSource">
             <bean class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
                 <property name="driverClass" value="org.h2.Driver"/>
-                <property name="url" value="jdbc:h2:mem:activiti-spring-async-executor-test;DB_CLOSE_DELAY=1000;mvcc=true;"/>
+                <property name="url" value="jdbc:h2:mem:activiti-spring-async-executor-test;DB_CLOSE_DELAY=1000;"/>
                 <property name="username" value="sa"/>
                 <property name="password" value=""/>
             </bean>
