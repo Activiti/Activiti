@@ -33,7 +33,7 @@ pipeline {
         steps {
           container('maven') {
             // ensure we're not on a detached head
-            sh "git checkout develop"
+            sh "git checkout develop123"
             sh "git config --global credential.helper store"
 
             sh "jx step git credentials"
@@ -101,6 +101,14 @@ pipeline {
       }
     }
     post {
+        post {
+        failure {
+           slackSend(
+             channel: "#activiti-community-builds",
+             color: "danger",
+             message: "Activiti branch=$BRANCH_NAME is failed http://jenkins.jx.35.242.205.159.nip.io/job/Activiti/job/Activiti"
+           )
+        } 
         always {
             cleanWs()
         }
