@@ -24,7 +24,6 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.history.DeleteReason;
 import org.activiti.engine.impl.bpmn.parser.factory.MessageExecutionContext;
 import org.activiti.engine.impl.context.Context;
@@ -77,9 +76,8 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
       List<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(executionEntity.getParentId());
       for (ExecutionEntity childExecution : childExecutions) {
         if (!childExecution.getId().equals(executionEntity.getId())) {
-          executionEntityManager.deleteExecutionAndRelatedData(childExecution, 
-              DeleteReason.EVENT_SUBPROCESS_INTERRUPTING + "(" + startEvent.getId() + ")", false);
-          commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityCancelledEvent(childExecution, "Interrupted Message Received"));
+          executionEntityManager.deleteExecutionAndRelatedData(childExecution,
+              DeleteReason.EVENT_SUBPROCESS_INTERRUPTING + "(" + startEvent.getId() + ")", true);
         }
       }
     }
@@ -106,7 +104,7 @@ public class EventSubProcessMessageStartEventActivityBehavior extends AbstractBp
   }
 
   protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
-    Map<String, Object> variablesMap = new HashMap<String, Object>();
+    Map<String, Object> variablesMap = new HashMap<>();
     // convert data objects to process variables
     if (dataObjects != null) {
       for (ValuedDataObject dataObject : dataObjects) {
