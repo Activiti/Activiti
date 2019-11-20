@@ -5,7 +5,6 @@ pipeline {
     environment {
       ORG               = 'activiti'
       APP_NAME          = 'activiti-api'
-      CHARTMUSEUM_CREDS = credentials('jenkins-x-chartmuseum')
     }
     stages {
       stage('CI Build and push snapshot') {
@@ -22,7 +21,6 @@ pipeline {
             sh "mvn versions:set -DnewVersion=$PREVIEW_VERSION"
             sh "mvn install"
           }
-
         }
       }
       stage('Build Release') {
@@ -101,6 +99,13 @@ pipeline {
       }
     }
     post {
+        failure {
+           slackSend(
+             channel: "#activiti-community-builds",
+             color: "danger",
+             message: "activiti-api branch=$BRANCH_NAME is failed http://jenkins.jx.35.240.9.95.nip.io/job/Activiti/job/activiti-api/"
+           )
+        } 
         always {
             cleanWs()
         }
