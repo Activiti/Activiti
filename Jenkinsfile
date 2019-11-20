@@ -44,6 +44,13 @@ pipeline {
       }
     }
     post {
+        failure {
+           slackSend(
+             channel: "#activiti-community-builds",
+             color: "danger",
+             message: "activiti-examples branch=$BRANCH_NAME is failed http://jenkins.jx.35.240.9.95.nip.io/job/Activiti/job/activiti-examples/"
+           )
+        } 
         always {
             cleanWs()
         }
