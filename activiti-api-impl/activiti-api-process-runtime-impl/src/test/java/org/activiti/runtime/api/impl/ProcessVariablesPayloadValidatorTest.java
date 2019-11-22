@@ -27,8 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.common.util.DateFormatterProvider;
 import org.activiti.engine.impl.el.ExpressionManager;
@@ -44,6 +42,9 @@ import org.activiti.spring.process.variable.types.VariableType;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ProcessVariablesPayloadValidatorTest {
  
@@ -83,15 +84,15 @@ public class ProcessVariablesPayloadValidatorTest {
         variableDefinitionDate.setType("date");
 
         VariableDefinition variableDefinitionDatetime = new VariableDefinition();
-        variableDefinitionDate.setName("mydatetime");
-        variableDefinitionDate.setType("datetime");
+        variableDefinitionDatetime.setName("mydatetime");
+        variableDefinitionDatetime.setType("datetime");
 
         Map<String, VariableDefinition> properties = new HashMap<>();
         properties.put("name", variableDefinitionName);
         properties.put("age", variableDefinitionAge);
         properties.put("subscribe", variableDefinitionSubscribe);
         properties.put("mydate", variableDefinitionDate);
-        properties.put("mydatetime", variableDefinitionDate);
+        properties.put("mydatetime", variableDefinitionDatetime);
 
 
         variableTypeMap = new HashMap<>();
@@ -176,6 +177,23 @@ public class ProcessVariablesPayloadValidatorTest {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("mydate", "2019-08-26TT10:20:30.000Z");
+
+        Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
+                                                                            ProcessPayloadBuilder
+                                                                                .setVariables()
+                                                                                .withVariables(variables)
+                                                                                .build(),
+                                                                            "10"));
+
+        assertThat(throwable).isInstanceOf(IllegalStateException.class);
+        
+    }
+
+    @Test
+    public void should_returnError_when_setVariablesWithWrongDatetimeFormat() throws Exception {
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("mydatetime", "2019-08-26TT10:20:30.000Z");
 
         Throwable throwable = catchThrowable(() -> processVariablesValidator.checkPayloadVariables(
                                                                             ProcessPayloadBuilder
