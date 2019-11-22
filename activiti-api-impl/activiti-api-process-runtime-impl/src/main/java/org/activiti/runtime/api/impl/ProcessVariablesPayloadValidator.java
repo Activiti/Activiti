@@ -81,7 +81,7 @@ public class ProcessVariablesPayloadValidator  {
                 if (variableDefinitionEntry.getValue().getName().equals(name)) {
                     String type = variableDefinitionEntry.getValue().getType();
 
-                    if ("date".equals(type) &&  value != null) {
+                    if (type.contains("date") &&  value != null) {
                         try {
                             payloadVar.setValue(dateFormatterProvider.toDate(value));
                         } catch (Exception e) {
