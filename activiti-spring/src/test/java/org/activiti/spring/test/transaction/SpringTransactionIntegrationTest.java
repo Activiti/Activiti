@@ -13,6 +13,7 @@
 
 package org.activiti.spring.test.transaction;
 
+import java.util.List;
 import javax.sql.DataSource;
 
 import org.activiti.bpmn.exceptions.XMLException;
@@ -37,6 +38,20 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
 
   @Autowired
   protected DataSource dataSource;
+
+
+  private void cleanUp() {
+    List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
+    for (org.activiti.engine.repository.Deployment deployment : deployments) {
+      repositoryService.deleteDeployment(deployment.getId(),
+                                         true);
+    }
+  }
+
+  @Override
+  public void tearDown() {
+    cleanUp();
+  }
 
   @Deployment
   public void testBasicActivitiSpringIntegration() {

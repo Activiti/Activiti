@@ -12,6 +12,7 @@
  */
 package org.activiti.spring.test.fieldinjection;
 
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.util.CollectionUtil;
@@ -27,6 +28,19 @@ import org.springframework.test.context.ContextConfiguration;
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/fieldinjection/fieldInjectionSpringTest-context.xml")
 public class ListenerFieldInjectionTest extends SpringActivitiTestCase {
+
+    private void cleanUp() {
+        List<org.activiti.engine.repository.Deployment> deployments = repositoryService.createDeploymentQuery().list();
+        for (org.activiti.engine.repository.Deployment deployment : deployments) {
+            repositoryService.deleteDeployment(deployment.getId(),
+                                               true);
+        }
+    }
+
+    @Override
+    public void tearDown() {
+        cleanUp();
+    }
 
     @Deployment
     public void testDelegateExpressionListenerFieldInjection() {

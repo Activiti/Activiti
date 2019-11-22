@@ -123,10 +123,8 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
   }
 
   protected void autoDeployResources(ProcessEngine processEngine) {
-    if (deploymentResources != null && deploymentResources.length > 0) {
       final AutoDeploymentStrategy strategy = getAutoDeploymentStrategy(deploymentMode);
       strategy.deployResources(deploymentName, deploymentResources, processEngine.getRepositoryService());
-    }
   }
 
   @Override
