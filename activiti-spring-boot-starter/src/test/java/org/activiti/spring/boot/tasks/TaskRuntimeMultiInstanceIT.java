@@ -311,7 +311,8 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miTasks".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(4);
+                .isGreaterThan(2)
+                .isLessThan(4);
 
         assertThat(localEventSource.getEvents().stream()
                 .filter(event-> event.getEventType() == BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED)
@@ -346,7 +347,8 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miServiceTask".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(4);
+                .isGreaterThan(2)
+                .isLessThan(4);
 
         assertThat(localEventSource.getEvents().stream()
                 .filter(event-> event.getEventType() == BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED)
@@ -393,7 +395,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miTasks".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(5);
+                .isEqualTo(4);
 
 
         List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
@@ -424,7 +426,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miTasks".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isGreaterThan(4);
+                .isEqualTo(4);
 
 
         assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
@@ -457,7 +459,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miSubProcess".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(5);
+                .isEqualTo(4);
 
         List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
                 .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
@@ -549,7 +551,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miCallActivity".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(5);
+                .isEqualTo(4);
 
         assertThat(localEventSource.getEvents().stream()
                 .filter(event-> event.getEventType() == BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED)
@@ -557,7 +559,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miCallActivity".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(5);
+                .isEqualTo(4);
 
 
         assertThat(localEventSource.getEvents())
@@ -597,7 +599,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miTasks".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(5);
+                .isEqualTo(4);
 
         List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
                 .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
@@ -632,7 +634,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miTasks".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isGreaterThan(4);
+                .isEqualTo(4);
 
 
         assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
@@ -674,7 +676,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miSubProcess".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(5);
+                .isEqualTo(4);
 
         for(int i = 0; i< 4;i ++) {
             //then
@@ -721,7 +723,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miCallActivity".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(5);
+                .isEqualTo(4);
 
         assertThat(localEventSource.getEvents().stream()
                 .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED))
@@ -794,7 +796,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> "miCallActivity".equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(5);
+                .isEqualTo(4);
 
         assertThat(processBaseRuntime.getProcessInstances()).isEmpty();
 
@@ -832,7 +834,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> elementId.equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(5);
+                .isEqualTo(4);
 
         assertThat(localEventSource.getEvents().stream()
                 .filter(event-> event.getEventType() == BPMNActivityEvent.ActivityEvents.ACTIVITY_COMPLETED)
@@ -840,7 +842,7 @@ public class TaskRuntimeMultiInstanceIT {
                 .filter(event -> elementId.equals(event.getEntity().getElementId()))
                 .collect(Collectors.toList())
                 .size())
-                .isEqualTo(5);
+                .isEqualTo(4);
 
 
         assertThat(localEventSource.getEvents())
