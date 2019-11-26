@@ -1,15 +1,15 @@
 create table ACT_GE_PROPERTY (
     NAME_ varchar(64),
-    VALUE_ varchar(2000),
+    VALUE_ varchar(300),
     REV_ integer,
     primary key (NAME_)
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '7.1.0-M5', 1);
+values ('schema.version', '7.1.0-M6', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(7.1.0-M5)', 1);
+values ('schema.history', 'create(7.1.0-M6)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
