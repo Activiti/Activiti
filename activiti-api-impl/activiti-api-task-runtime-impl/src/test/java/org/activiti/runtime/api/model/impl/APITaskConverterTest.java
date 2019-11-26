@@ -16,21 +16,21 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.api.task.model.Task;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InjectMocks;
-
-import java.util.Date;
-
 import static org.activiti.api.task.model.Task.TaskStatus.ASSIGNED;
 import static org.activiti.api.task.model.Task.TaskStatus.CANCELLED;
-import static org.activiti.api.task.model.Task.TaskStatus.SUSPENDED;
 import static org.activiti.api.task.model.Task.TaskStatus.CREATED;
+import static org.activiti.api.task.model.Task.TaskStatus.SUSPENDED;
 import static org.activiti.runtime.api.model.impl.MockTaskBuilder.taskBuilder;
 import static org.activiti.runtime.api.model.impl.MockTaskBuilder.taskEntityBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.util.Date;
+
+import org.activiti.api.task.model.Task;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InjectMocks;
 
 public class APITaskConverterTest {
 
@@ -60,6 +60,7 @@ public class APITaskConverterTest {
                         .withProcessInstanceId("testProcessInstanceId")
                         .withParentTaskId("testParentTaskId")
                         .withFormKey("testFormKey")
+                        .withTaskDefinitionKey("taskDefinitionKey")
                         .build()
         );
 
@@ -78,7 +79,8 @@ public class APITaskConverterTest {
                             Task::getProcessInstanceId,
                             Task::getParentTaskId,
                             Task::getFormKey,
-                            Task::getStatus)
+                            Task::getStatus,
+                            Task::getTaskDefinitionKey)
                 .containsExactly("testTaskId",
                                  "testUser",
                                  "testTaskName",
@@ -91,7 +93,8 @@ public class APITaskConverterTest {
                                  "testProcessInstanceId",
                                  "testParentTaskId",
                                  "testFormKey",
-                                 ASSIGNED);
+                                 ASSIGNED,
+                                 "taskDefinitionKey");
     }
 
     @Test

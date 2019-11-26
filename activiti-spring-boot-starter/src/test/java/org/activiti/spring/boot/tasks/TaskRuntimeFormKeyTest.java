@@ -45,7 +45,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TaskRuntimeFormKeyTest {
 
-
     private static final String SINGLE_TASK_PROCESS = "SingleTaskProcess";
 
     @Autowired
@@ -56,7 +55,6 @@ public class TaskRuntimeFormKeyTest {
     private SecurityUtil securityUtil;
     @Autowired
     private TaskCleanUpUtil taskCleanUpUtil;
-
     
     @After
     public void taskCleanUp(){
