@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,8 +32,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
@@ -68,15 +66,9 @@ import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
-
-
- */
 public class DbSqlSession implements Session {
 
     private static final Logger log = LoggerFactory.getLogger(DbSqlSession.class);
-
-    protected static final Pattern CLEAN_VERSION_REGEX = Pattern.compile("\\d\\.\\d*");
 
     protected static final String LAST_V5_VERSION = "5.99.0.0";
 
@@ -118,11 +110,11 @@ public class DbSqlSession implements Session {
         ACTIVITI_VERSIONS.add(new ActivitiVersion("5.20.0.1"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion("5.20.0.2"));
         ACTIVITI_VERSIONS.add(new ActivitiVersion("5.21.0.0"));
-    
+
     /*
      * Version 5.18.0.1 is the latest v5 version in the list here, although if you would look at the v5 code,
      * you'll see there are a few other releases afterwards.
-     * 
+     *
      * The reasoning is as follows: after 5.18.0.1, no database changes were done anymore.
      * And if there would be database changes, they would have been part of both 5.x _and_ 6.x upgrade scripts.
      * The logic below will assume it's one of these releases in case it isn't found in the list here
@@ -141,6 +133,7 @@ public class DbSqlSession implements Session {
 
         // Version 7
         ACTIVITI_VERSIONS.add(new ActivitiVersion("7.0.0.0"));
+        ACTIVITI_VERSIONS.add(new ActivitiVersion("7.1.0-M5"));
 
         /* Current */
         ACTIVITI_VERSIONS.add(new ActivitiVersion(ProcessEngine.VERSION));
@@ -1188,49 +1181,6 @@ public class DbSqlSession implements Session {
         } catch (Exception e) {
             throw new ActivitiException("couldn't check if tables are already present using metadata: " + e.getMessage(),
                                         e);
-        }
-    }
-
-    protected boolean isUpgradeNeeded(String versionInDatabase) {
-        if (ProcessEngine.VERSION.equals(versionInDatabase)) {
-            return false;
-        }
-
-        String cleanDbVersion = getCleanVersion(versionInDatabase);
-        String[] cleanDbVersionSplitted = cleanDbVersion.split("\\.");
-        int dbMajorVersion = Integer.valueOf(cleanDbVersionSplitted[0]);
-        int dbMinorVersion = Integer.valueOf(cleanDbVersionSplitted[1]);
-
-        String cleanEngineVersion = getCleanVersion(ProcessEngine.VERSION);
-        String[] cleanEngineVersionSplitted = cleanEngineVersion.split("\\.");
-        int engineMajorVersion = Integer.valueOf(cleanEngineVersionSplitted[0]);
-        int engineMinorVersion = Integer.valueOf(cleanEngineVersionSplitted[1]);
-
-        if ((dbMajorVersion > engineMajorVersion) || ((dbMajorVersion <= engineMajorVersion) && (dbMinorVersion > engineMinorVersion))) {
-            throw new ActivitiException("Version of activiti database (" + versionInDatabase + ") is more recent than the engine (" + ProcessEngine.VERSION + ")");
-        } else if (cleanDbVersion.compareTo(cleanEngineVersion) == 0) {
-            // Versions don't match exactly, possibly snapshot is being used
-            log.warn("Engine-version is the same, but not an exact match: {} vs. {}. Not performing database-upgrade.",
-                     versionInDatabase,
-                     ProcessEngine.VERSION);
-            return false;
-        }
-        return true;
-    }
-
-    protected String getCleanVersion(String versionString) {
-        Matcher matcher = CLEAN_VERSION_REGEX.matcher(versionString);
-        if (!matcher.find()) {
-            throw new ActivitiException("Illegal format for version: " + versionString);
-        }
-
-        String cleanString = matcher.group();
-        try {
-            Double.parseDouble(cleanString); // try to parse it, to see if it is
-            // really a number
-            return cleanString;
-        } catch (NumberFormatException nfe) {
-            throw new ActivitiException("Illegal format for version: " + versionString);
         }
     }
 

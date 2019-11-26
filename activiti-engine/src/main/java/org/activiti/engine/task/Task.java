@@ -79,4 +79,8 @@ public interface Task extends TaskInfo {
   /** Indicates whether this task is suspended or not. */
   boolean isSuspended();
 
+  Integer getAppVersion();
+
+  void setAppVersion(Integer appVersion);
+
 }

@@ -80,6 +80,8 @@ public class BpmnDeployer implements Deployer {
                     getPreviousVersionsOfProcessDefinitions(parsedDeployment);
             setProcessDefinitionVersionsAndIds(parsedDeployment,
                                                mapOfNewProcessDefinitionToPreviousVersion);
+            setProcessDefinitionAppVersion(parsedDeployment);
+
             persistProcessDefinitionsAndAuthorizations(parsedDeployment);
             updateTimersAndEvents(parsedDeployment,
                                   mapOfNewProcessDefinitionToPreviousVersion);
@@ -435,6 +437,15 @@ public class BpmnDeployer implements Deployer {
             isEqual = true;
         }
         return isEqual;
+    }
+
+    private void setProcessDefinitionAppVersion(ParsedDeployment parsedDeployment) {
+        if (parsedDeployment.getDeployment().getProjectReleaseVersion() != null) {
+            Integer version = parsedDeployment.getDeployment().getVersion();
+            for (ProcessDefinitionEntity processDefinition : parsedDeployment.getAllProcessDefinitions()) {
+                processDefinition.setAppVersion(version);
+            }
+        }
     }
 
     protected boolean localizeDataObjectElements(List<ValuedDataObject> dataObjects,

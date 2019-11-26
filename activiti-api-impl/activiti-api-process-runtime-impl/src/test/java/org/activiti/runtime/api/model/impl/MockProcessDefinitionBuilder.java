@@ -61,6 +61,11 @@ public class MockProcessDefinitionBuilder {
         return this;
     }
 
+    public MockProcessDefinitionBuilder withAppVersion(Integer appVersion) {
+        when(processDefinition.getAppVersion()).thenReturn(appVersion);
+        return this;
+    }
+
     public ProcessDefinition build() {
         return processDefinition;
     }

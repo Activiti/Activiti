@@ -16,6 +16,8 @@
 
 package org.activiti.runtime.api.model.impl;
 
+import java.util.Objects;
+
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -45,6 +47,7 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
         task.setPriority(internalTask.getPriority());
         task.setFormKey(internalTask.getFormKey());
         task.setTaskDefinitionKey(internalTask.getTaskDefinitionKey());
+        task.setAppVersion(Objects.toString(internalTask.getAppVersion(), null));
         return task;
     }
 

@@ -82,7 +82,7 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
                                      existingDeployment)) {
                   return existingDeployment;
               } else {
-                  deployment.setVersion(existingDeployment.getVersion() != null? existingDeployment.getVersion() + 1 : 2);
+                  deployment.setVersion(existingDeployment.getVersion() + 1);
               }
           }
     }

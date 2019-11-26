@@ -15,15 +15,15 @@
   -->
 
 
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
-  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
 
   <!-- TASK INSERT -->
-  
+
   <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     insert into ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
-                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_)
+                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_)
     values (#{id, jdbcType=VARCHAR},
             1,
             #{name, jdbcType=VARCHAR},
@@ -43,15 +43,16 @@
             #{suspensionState, jdbcType=INTEGER},
             #{tenantId, jdbcType=VARCHAR},
             #{formKey, jdbcType=VARCHAR},
-            #{claimTime, jdbcType=TIMESTAMP}
+            #{claimTime, jdbcType=TIMESTAMP},
+            #{appVersion, jdbcType=INTEGER}
            )
   </insert>
 
   <insert id="bulkInsertTask" parameterType="java.util.List">
     INSERT INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
-                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_)
-    VALUES 
-      <foreach collection="list" item="task" index="index" separator=","> 
+                      ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_)
+    VALUES
+      <foreach collection="list" item="task" index="index" separator=",">
         (#{task.id, jdbcType=VARCHAR},
          1,
          #{task.name, jdbcType=VARCHAR},
@@ -71,16 +72,17 @@
          #{task.suspensionState, jdbcType=INTEGER},
          #{task.tenantId, jdbcType=VARCHAR},
          #{task.formKey, jdbcType=VARCHAR},
-         #{task.claimTime, jdbcType=TIMESTAMP})
+         #{task.claimTime, jdbcType=TIMESTAMP},
+         #{task.appVersion, jdbcType=INTEGER})
     </foreach>
   </insert>
 
   <insert id="bulkInsertTask" databaseId="oracle" parameterType="java.util.List">
-    INSERT ALL 
+    INSERT ALL
       <foreach collection="list" item="task" index="index">
         INTO ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
              ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_,
-             SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_) VALUES
+             SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_, CLAIM_TIME_, APP_VERSION_) VALUES
         (#{task.id, jdbcType=VARCHAR},
          1,
          #{task.name, jdbcType=VARCHAR},
@@ -100,13 +102,14 @@
          #{task.suspensionState, jdbcType=INTEGER},
          #{task.tenantId, jdbcType=VARCHAR},
          #{task.formKey, jdbcType=VARCHAR},
-         #{task.claimTime, jdbcType=TIMESTAMP})
+         #{task.claimTime, jdbcType=TIMESTAMP},
+         #{task.appVersion, jdbcType=INTEGER})
     </foreach>
     SELECT * FROM dual
   </insert>
-  
+
   <!-- TASK UPDATE -->
-  
+
   <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     update ${prefix}ACT_RU_TASK
     <set>
@@ -130,7 +133,7 @@
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
-  
+
   <update id="updateTaskTenantIdForDeployment" parameterType="java.util.Map">
     update ${prefix}ACT_RU_TASK set
       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
@@ -138,11 +141,11 @@
       ID_ in (
         SELECT T.ID_ from ${prefix}ACT_RU_TASK T
         inner join ${prefix}ACT_RE_PROCDEF P on T.PROC_DEF_ID_  = P.ID_
-        inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_ 
+        inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
         where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
-      ) 
+      )
   </update>
-  
+
     <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
        Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance0 -->
   <update id="updateTaskTenantIdForDeployment" databaseId="mysql" parameterType="java.util.Map">
@@ -156,28 +159,28 @@
                 SELECT T.ID_ as tempId
                 FROM  ${prefix}ACT_RU_TASK T
                 inner join ${prefix}ACT_RE_PROCDEF P on T.PROC_DEF_ID_  = P.ID_
-                inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_ 
+                inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_
                 where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
-                
-        ) AS tempTask 
+
+        ) AS tempTask
 
     )
   </update>
-  
+
   <!-- TASK DELETE -->
   <delete id="deleteTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     delete from ${prefix}ACT_RU_TASK where ID_ = #{id} and REV_ = #{revision}
   </delete>
-  
+
   <delete id="bulkDeleteTask" parameterType="java.util.Collection">
-    delete from ${prefix}ACT_RU_TASK where 
+    delete from ${prefix}ACT_RU_TASK where
     <foreach item="task" collection="list" index="index" separator=" or ">
         ID_ = #{task.id, jdbcType=VARCHAR}
     </foreach>
   </delete>
-  
+
   <!-- TASK RESULTMAP -->
-  
+
   <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
@@ -199,8 +202,9 @@
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
+    <result property="appVersion" column="APP_VERSION_" jdbcType="INTEGER" />
   </resultMap>
-  
+
   <resultMap id="taskAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntityImpl">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
@@ -222,6 +226,7 @@
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
     <result property="claimTime" column="CLAIM_TIME_" jdbcType="TIMESTAMP" />
+    <result property="appVersion" column="APP_VERSION_" jdbcType="INTEGER" />
     <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntityImpl">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -238,12 +243,12 @@
     </collection>
   </resultMap>
 
-  <!-- TASK SELECT -->  
+  <!-- TASK SELECT -->
 
   <select id="selectTask" parameterType="string" resultMap="taskResultMap">
    select * from ${prefix}ACT_RU_TASK where ID_ = #{id, jdbcType=VARCHAR}
   </select>
-  
+
   <select id="selectTasksByParentTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
     select * from ${prefix}ACT_RU_TASK where PARENT_TASK_ID_ = #{parameter}
   </select>
@@ -253,18 +258,18 @@
     from ${prefix}ACT_RU_TASK T
     where T.EXECUTION_ID_ = #{parameter}
   </select>
-  
+
   <select id="selectTasksByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
     select T.*
     from ${prefix}ACT_RU_TASK T
     where T.PROC_INST_ID_ = #{parameter}
   </select>
-  
+
   <!-- Using distinct here because a task can appear multiple times in a resultset when -->
   <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
     ${limitBefore}
     select distinct RES.* ${limitBetween}
-    <include refid="selectTaskByQueryCriteriaSql"/> 
+    <include refid="selectTaskByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
   </select>
@@ -273,26 +278,26 @@
     select count(distinct RES.ID_)
     <include refid="selectTaskByQueryCriteriaSql"/>
   </select>
-  
-  <sql id="selectTaskByQueryCriteriaSql">  
+
+  <sql id="selectTaskByQueryCriteriaSql">
     from ${prefix}ACT_RU_TASK RES
     <include refid="commonSelectTaskByQueryCriteriaSql"/>
   </sql>
-  
+
   <select id="selectTaskWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskAndVariablesResultMap">
-    <include refid="selectTaskWithVariablesByQueryCriteriaColumns"/> 
-    <include refid="selectTaskWithVariablesByQueryCriteriaSql"/> 
+    <include refid="selectTaskWithVariablesByQueryCriteriaColumns"/>
+    <include refid="selectTaskWithVariablesByQueryCriteriaSql"/>
     ${orderBy}
     ${limitAfter}
   </select>
-  
+
   <sql id="selectTaskWithVariablesByQueryCriteriaColumns">
     ${limitBefore}
   	<if test="_databaseId != 'db2' and _databaseId != 'mssql'">
     select RES.*,
     VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
     VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, VAR.TASK_ID_ as VAR_TASK_ID_,
-    VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_, 
+    VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_,
     VAR.TEXT_ as VAR_TEXT_, VAR.TEXT2_ as VAR_TEXT2_, VAR.LONG_ as VAR_LONG_
     ${limitBetween}
     </if>
@@ -306,7 +311,7 @@
     TEMPRES_DUE_DATE_ as DUE_DATE_, TEMPRES_SUSPENSION_STATE_ as SUSPENSION_STATE_, TEMPRES_CATEGORY_ as CATEGORY_,
     TEMPVAR_ID_ as VAR_ID_, TEMPVAR_NAME_ as VAR_NAME_, TEMPVAR_TYPE_ as VAR_TYPE_, TEMPVAR_REV_ as VAR_REV_,
     TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_, TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_, TEMPVAR_TASK_ID_ as VAR_TASK_ID_,
-    TEMPVAR_BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, TEMPVAR_DOUBLE_ as VAR_DOUBLE_, 
+    TEMPVAR_BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, TEMPVAR_DOUBLE_ as VAR_DOUBLE_,
     TEMPVAR_TEXT_ as VAR_TEXT_, TEMPVAR_TEXT2_ as VAR_TEXT2_, TEMPVAR_LONG_ as VAR_LONG_
     ${limitOuterJoinBetween}
     RES.ID_ as TEMPRES_ID_, RES.REV_ as TEMPRES_REV_, RES.NAME_ as TEMPRES_NAME_,
@@ -318,12 +323,12 @@
     RES.DUE_DATE_ as TEMPRES_DUE_DATE_, RES.SUSPENSION_STATE_ as TEMPRES_SUSPENSION_STATE_, RES.CATEGORY_ as TEMPRES_CATEGORY_,
     VAR.ID_ as TEMPVAR_ID_, VAR.NAME_ as TEMPVAR_NAME_, VAR.TYPE_ as TEMPVAR_TYPE_, VAR.REV_ as TEMPVAR_REV_,
     VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, VAR.TASK_ID_ as TEMPVAR_TASK_ID_,
-    VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, VAR.DOUBLE_ as TEMPVAR_DOUBLE_, 
+    VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, VAR.DOUBLE_ as TEMPVAR_DOUBLE_,
     VAR.TEXT_ as TEMPVAR_TEXT_, VAR.TEXT2_ as TEMPVAR_TEXT2_, VAR.LONG_ as TEMPVAR_LONG_
     </if>
   </sql>
-  
-  <sql id="selectTaskWithVariablesByQueryCriteriaSql">  
+
+  <sql id="selectTaskWithVariablesByQueryCriteriaSql">
     from ${prefix}ACT_RU_TASK RES
     <choose>
       <when test="includeTaskLocalVariables &amp;&amp; includeProcessVariables">
@@ -340,7 +345,7 @@
     </choose>
     <include refid="commonSelectTaskByQueryCriteriaSql"/>
   </sql>
-  
+
   <sql id="commonSelectTaskByQueryCriteriaSql">
     <if test="candidateUser != null || candidateGroups != null || bothCandidateAndAssigned || involvedGroups != null">
       <choose>
@@ -352,12 +357,12 @@
     <foreach collection="queryVariableValues" index="index" item="var">
       <choose>
         <when test="var.local">
-          inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.ID_ = A${index}.TASK_ID_ 
+          inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.ID_ = A${index}.TASK_ID_
         </when>
         <otherwise>
-          inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_ 
+          inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_
         </otherwise>
-      </choose>       
+      </choose>
     </foreach>
     <foreach collection="orQueryObjects" index="orIndex" item="orQueryObject">
       <if test="orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null || orQueryObject.bothCandidateAndAssigned || orQueryObject.involvedGroups != null">
@@ -380,16 +385,16 @@
       <if test="orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null || (orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0) || (orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0) || (orQueryObject.processDefinitionKeys != null &amp;&amp; orQueryObject.processDefinitionKeys.size() &gt; 0)">
         left outer join ${prefix}ACT_RE_PROCDEF D_OR${orIndex} on RES.PROC_DEF_ID_ = D_OR${orIndex}.ID_
       </if>
-      
+
       <if test="orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
         inner join ${prefix}ACT_RU_EXECUTION E_OR${orIndex} on RES.PROC_INST_ID_ = E_OR${orIndex}.ID_
       </if>
-      
+
       <if test="orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)">
         left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P_OR${orIndex} ON RES.PROC_DEF_ID_ = DEPLOY_P_OR${orIndex}.ID_
       </if>
     </foreach>
-    
+
     <if test="processDefinitionKey != null || processDefinitionKeyLike != null ||  processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0) || (processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0) || (processDefinitionKeys != null &amp;&amp; processDefinitionKeys.size() &gt; 0)">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
@@ -399,7 +404,7 @@
     <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0)">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
-    <where> 
+    <where>
       <if test="taskId != null">
         RES.ID_ = #{taskId}
       </if>
@@ -437,13 +442,13 @@
       </if>
       <if test="priority != null">
         and RES.PRIORITY_ = #{priority}
-      </if> 
+      </if>
       <if test="minPriority != null">
         and RES.PRIORITY_ &gt;= #{minPriority}
-      </if> 
+      </if>
       <if test="maxPriority != null">
         and RES.PRIORITY_ &lt;= #{maxPriority}
-      </if> 
+      </if>
       <if test="assignee != null">
         and RES.ASSIGNEE_ = #{assignee}
       </if>
@@ -455,7 +460,7 @@
       </if>
       <if test="assigneeIds != null &amp;&amp; assigneeIds.size() &gt; 0">
         and RES.ASSIGNEE_ IN
-        <foreach item="assigneeId" index="index" collection="assigneeIds" 
+        <foreach item="assigneeId" index="index" collection="assigneeIds"
                  open="(" separator="," close=")">
           #{assigneeId}
         </foreach>
@@ -486,7 +491,7 @@
       </if>
       <if test="processInstanceIds != null &amp;&amp; processInstanceIds.size() &gt; 0">
         and RES.PROC_INST_ID_ IN
-        <foreach item="processInstance" index="index" collection="processInstanceIds" 
+        <foreach item="processInstance" index="index" collection="processInstanceIds"
                  open="(" separator="," close=")">
           #{processInstance}
         </foreach>
@@ -496,10 +501,10 @@
       </if>
       <if test="processInstanceBusinessKeyLike != null">
         and E.BUSINESS_KEY_ like #{processInstanceBusinessKeyLike}${wildcardEscapeClause}
-      </if>      
+      </if>
       <if test="processInstanceBusinessKeyLikeIgnoreCase != null">
         and lower(E.BUSINESS_KEY_) like #{processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}
-      </if>         
+      </if>
       <if test="executionId != null">
         and RES.EXECUTION_ID_ = #{executionId}
       </if>
@@ -561,7 +566,7 @@
       </if>
       <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
         and DEPLOY_P.DEPLOYMENT_ID_ IN
-        <foreach item="deployment" index="index" collection="deploymentIds" 
+        <foreach item="deployment" index="index" collection="deploymentIds"
                  open="(" separator="," close=")">
           #{deployment}
         </foreach>
@@ -590,17 +595,17 @@
       <if test="!bothCandidateAndAssigned &amp;&amp; (candidateUser != null || candidateGroups != null)">
         and RES.ASSIGNEE_ is null
         and I.TYPE_ = 'candidate'
-        and 
-        ( 
+        and
+        (
           <if test="candidateUser != null">
-            I.USER_ID_ = #{candidateUser}          
+            I.USER_ID_ = #{candidateUser}
           </if>
           <if test="candidateUser != null &amp;&amp; candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
             or
           </if>
           <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
             I.GROUP_ID_ IN
-            <foreach item="group" index="index" collection="candidateGroups" 
+            <foreach item="group" index="index" collection="candidateGroups"
                      open="(" separator="," close=")">
               #{group}
             </foreach>
@@ -641,7 +646,7 @@
         <if test="!var.type.equals('null')">
           and A${index}.TYPE_ = #{var.type}
         </if>
-        
+
         <!-- Variable value -->
         <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
           <choose>
@@ -651,22 +656,22 @@
             <otherwise>
               and A${index}.TEXT_
             </otherwise>
-          </choose> 
+          </choose>
           <choose>
               <when test="var.operator.equals('LIKE') || var.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
               <otherwise><include refid="executionVariableOperator" /></otherwise>
-          </choose>          
+          </choose>
           #{var.textValue}
           <choose>
               <when test="var.operator.equals('LIKE') || var.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
           </choose>
         </if>
         <if test="var.textValue2 != null">
-          and A${index}.TEXT2_ 
+          and A${index}.TEXT2_
           <choose>
             <when test="var.operator.equals('LIKE')">LIKE</when>
             <otherwise><include refid="executionVariableOperator" /></otherwise>
-          </choose>          
+          </choose>
           #{var.textValue2}
           <choose>
             <when test="var.operator.equals('LIKE')">${wildcardEscapeClause}</when>
@@ -678,7 +683,7 @@
           #{var.longValue}
         </if>
         <if test="var.doubleValue != null">
-          and A${index}.DOUBLE_ 
+          and A${index}.DOUBLE_
           <include refid="executionVariableOperator" />
           #{var.doubleValue}
         </if>
@@ -691,7 +696,7 @@
             <otherwise>
               and A${index}.TEXT_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
             </otherwise>
-          </choose>          
+          </choose>
         </if>
       </foreach>
       <if test="suspensionState != null">
@@ -736,7 +741,7 @@
         </when>
       </choose>
       <foreach item="orQueryObject" index="orIndex" collection="orQueryObjects">
-        and 
+        and
         <trim prefix="(" prefixOverrides="OR" suffix=")">
             <if test="orQueryObject.taskId != null">
               RES.ID_ = #{orQueryObject.taskId}
@@ -775,13 +780,13 @@
             </if>
             <if test="orQueryObject.priority != null">
               or RES.PRIORITY_ = #{orQueryObject.priority}
-            </if> 
+            </if>
             <if test="orQueryObject.minPriority != null">
               or RES.PRIORITY_ &gt;= #{orQueryObject.minPriority}
-            </if> 
+            </if>
             <if test="orQueryObject.maxPriority != null">
               or RES.PRIORITY_ &lt;= #{orQueryObject.maxPriority}
-            </if> 
+            </if>
             <if test="orQueryObject.assignee != null">
               or RES.ASSIGNEE_ = #{orQueryObject.assignee}
             </if>
@@ -793,7 +798,7 @@
             </if>
              <if test="orQueryObject.assigneeIds != null &amp;&amp; orQueryObject.assigneeIds.size() &gt; 0">
 		      or RES.ASSIGNEE_ IN
-		      <foreach item="assigneeId" index="index" collection="orQueryObject.assigneeIds" 
+		      <foreach item="assigneeId" index="index" collection="orQueryObject.assigneeIds"
 		               open="(" separator="," close=")">
 		        #{assigneeId}
 		      </foreach>
@@ -824,7 +829,7 @@
             </if>
             <if test="orQueryObject.processInstanceIds != null &amp;&amp; orQueryObject.processInstanceIds.size() &gt; 0">
               or RES.PROC_INST_ID_ IN
-              <foreach item="processInstance" index="index" collection="orQueryObject.processInstanceIds" 
+              <foreach item="processInstance" index="index" collection="orQueryObject.processInstanceIds"
                        open="(" separator="," close=")">
                 #{processInstance}
               </foreach>
@@ -834,10 +839,10 @@
             </if>
             <if test="orQueryObject.processInstanceBusinessKeyLike != null">
               or E_OR${orIndex}.BUSINESS_KEY_ like #{orQueryObject.processInstanceBusinessKeyLike}${wildcardEscapeClause}
-            </if>      
+            </if>
             <if test="orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null">
               or lower(E.BUSINESS_KEY_) like #{orQueryObject.processInstanceBusinessKeyLikeIgnoreCase}${wildcardEscapeClause}
-            </if>         
+            </if>
             <if test="orQueryObject.executionId != null">
               or RES.EXECUTION_ID_ = #{orQueryObject.executionId}
             </if>
@@ -899,7 +904,7 @@
             </if>
             <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
               or DEPLOY_P_OR${orIndex}.DEPLOYMENT_ID_ IN
-              <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" 
+              <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds"
                        open="(" separator="," close=")">
                 #{deployment}
               </foreach>
@@ -922,21 +927,21 @@
             <if test="orQueryObject.excludeSubtasks">
               or RES.PARENT_TASK_ID_ IS NULL
             </if>
-            
+
             <if test="!orQueryObject.bothCandidateAndAssigned &amp;&amp; (orQueryObject.candidateUser != null || orQueryObject.candidateGroups != null)">
               or (RES.ASSIGNEE_ is null
               and I_OR${orIndex}.TYPE_ = 'candidate'
-              and 
-              ( 
+              and
+              (
                 <if test="orQueryObject.candidateUser != null">
-                  I_OR${orIndex}.USER_ID_ = #{orQueryObject.candidateUser}          
+                  I_OR${orIndex}.USER_ID_ = #{orQueryObject.candidateUser}
                 </if>
                 <if test="orQueryObject.candidateUser != null &amp;&amp; orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size() &gt; 0">
                   or
                 </if>
                 <if test="orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size() &gt; 0">
                   I_OR${orIndex}.GROUP_ID_ IN
-                  <foreach item="group" index="index" collection="orQueryObject.candidateGroups" 
+                  <foreach item="group" index="index" collection="orQueryObject.candidateGroups"
                            open="(" separator="," close=")">
                     #{group}
                   </foreach>
@@ -963,7 +968,7 @@
               )
             </if>
             <foreach item="var" collection="orQueryObject.queryVariableValues" index="index">
-              or 
+              or
               <trim prefix="(" prefixOverrides="AND" suffix=")">
               <choose>
                 <when test="!var.local">
@@ -994,11 +999,11 @@
                   <otherwise>
                     and A_${orLocal}OR${orIndex}.TEXT_
                   </otherwise>
-                </choose> 
+                </choose>
                 <choose>
                     <when test="var.operator.equals('LIKE') || var.operator.equals('LIKE_IGNORE_CASE')">LIKE</when>
                     <otherwise><include refid="executionVariableOperator" /></otherwise>
-                </choose>          
+                </choose>
                 #{var.textValue}
                 <choose>
                   <when test="var.operator.equals('LIKE') || var.operator.equals('LIKE_IGNORE_CASE')">${wildcardEscapeClause}</when>
@@ -1009,7 +1014,7 @@
                 <choose>
                   <when test="var.operator.equals('LIKE')">LIKE</when>
                   <otherwise><include refid="executionVariableOperator" /></otherwise>
-                </choose>          
+                </choose>
                 #{var.textValue2}
                 <choose>
                   <when test="var.operator.equals('LIKE')">${wildcardEscapeClause}</when>
@@ -1034,7 +1039,7 @@
                   <otherwise>
                     and A_${orLocal}OR${orIndex}.TEXT_ is null and A_${orLocal}OR${orIndex}.TEXT2_ is null and A_${orLocal}OR${orIndex}.LONG_ is null and A_${orLocal}OR${orIndex}.DOUBLE_ is null and A_${orLocal}OR${orIndex}.BYTEARRAY_ID_ is null
                   </otherwise>
-                </choose>          
+                </choose>
               </if>
               </trim>
             </foreach>
@@ -1083,7 +1088,7 @@
         </foreach>
      </where>
   </sql>
-  
+
   <sql id="executionVariableOperator">
     <choose>
       <when test="var.operator.equals('EQUALS')">=</when>
@@ -1095,12 +1100,12 @@
       <when test="var.operator.equals('LESS_THAN')">&lt;</when>
       <when test="var.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
    </choose>
-  </sql>  
+  </sql>
 
   <select id="selectTaskByNativeQuery" parameterType="java.util.Map" resultMap="taskResultMap">
   	<include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
   </select>
-  
+
   <select id="selectTaskCountByNativeQuery" parameterType="java.util.Map" resultType="long">
      ${sql}
   </select>

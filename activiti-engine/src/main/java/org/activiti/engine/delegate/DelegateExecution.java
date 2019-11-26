@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,7 @@ import org.activiti.bpmn.model.FlowElement;
 
 /**
  * Execution used in {@link JavaDelegate}s and {@link ExecutionListener}s.
- * 
+ *
 
 
  */
@@ -33,7 +33,7 @@ public interface DelegateExecution extends VariableScope {
 
   /** Reference to the overall process instance */
   String getProcessInstanceId();
-  
+
   /**
    * The 'root' process instance. When using call activity for example, the processInstance
    * set will not always be the root. This method returns the topmost process instance.
@@ -44,9 +44,9 @@ public interface DelegateExecution extends VariableScope {
    * Will contain the event name in case this execution is passed in for an {@link ExecutionListener}.
    */
   String getEventName();
-  
+
   /**
-   * Sets the current event (typically when execution an {@link ExecutionListener}). 
+   * Sets the current event (typically when execution an {@link ExecutionListener}).
    */
   void setEventName(String eventName);
 
@@ -79,26 +79,26 @@ public interface DelegateExecution extends VariableScope {
    * Returns the tenant id, if any is set before on the process definition or process instance.
    */
   String getTenantId();
-  
+
   /**
-   * The BPMN element where the execution currently is at. 
+   * The BPMN element where the execution currently is at.
    */
   FlowElement getCurrentFlowElement();
 
   /**
-   * Change the current BPMN element the execution is at. 
+   * Change the current BPMN element the execution is at.
    */
   void setCurrentFlowElement(FlowElement flowElement);
-  
+
   /**
    * Returns the {@link ActivitiListener} instance matching an {@link ExecutionListener}
-   * if currently an execution listener is being execution. 
+   * if currently an execution listener is being execution.
    * Returns null otherwise.
    */
   ActivitiListener getCurrentActivitiListener();
 
   /**
-   * Called when an {@link ExecutionListener} is being executed. 
+   * Called when an {@link ExecutionListener} is being executed.
    */
   void setCurrentActivitiListener(ActivitiListener currentActivitiListener);
 
@@ -160,12 +160,12 @@ public interface DelegateExecution extends VariableScope {
    * Changes whether this execution is a scope or not.
    */
   void setScope(boolean isScope);
-  
+
   /**
    * Returns whather this execution is the root of a multi instance execution.
    */
   boolean isMultiInstanceRoot();
-  
+
   /**
    * Changes whether this execution is a multi instance root or not.
    * @param isMultiInstanceRoot
