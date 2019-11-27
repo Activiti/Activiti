@@ -1,5 +1,7 @@
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -16,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeClaimTaskFromProcessTest {
@@ -32,7 +32,8 @@ public class TaskRuntimeClaimTaskFromProcessTest {
     private SecurityUtil securityUtil;
 
     private static final String TWOTASK_PROCESS = "twoTaskProcess";
-
+    private static final String ONETASK_PROCESS = "SingleTaskProcess";
+    
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
@@ -67,6 +68,42 @@ public class TaskRuntimeClaimTaskFromProcessTest {
 
     }
 
+    @Test
+    public void claimTaskWithoutCandidatesAfterTaskRelease() {
+
+        securityUtil.logInAs("salaboy");
+
+        //when
+        ProcessInstance processInstance = processRuntime.start(ProcessPayloadBuilder.start()
+                .withProcessDefinitionKey(ONETASK_PROCESS)
+                .build());
+
+        securityUtil.logInAs("garth");
+
+        Task task = taskRuntime.tasks(Pageable.of(0, 10),TaskPayloadBuilder.tasks().build()).getContent().get(0);
+        String taskId = task.getId();
+        
+        assertThat(task.getAssignee()).isEqualTo("garth");
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+        
+        Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(taskId).build());
+        
+        assertThat(releasedTask.getAssignee()).isNull();
+        assertThat(releasedTask.getStatus()).isEqualTo(Task.TaskStatus.CREATED);
+        
+        //This should not happen
+        taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(taskId).build());
+        
+        task = taskRuntime.task(taskId);
+        assertThat(task).isNotNull();
+        assertThat(task.getAssignee()).isEqualTo("garth");
+        assertThat(task.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+
+        taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
+
+    }
+    
+    
 
 
 
