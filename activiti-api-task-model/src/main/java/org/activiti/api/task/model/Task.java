@@ -68,4 +68,6 @@ public interface Task extends ApplicationElement {
     String getBusinessKey();
 
     boolean isStandalone();
+    
+    String getTaskDefinitionKey();
 }
