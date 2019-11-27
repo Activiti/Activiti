@@ -10,7 +10,7 @@
         <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="miServiceTask"></sequenceFlow>
 
         <serviceTask id="miServiceTask" name="miServiceTask ${loopCounter}"
-                     activiti:class="org.activiti.spring.boot.tasks.delegate.MultiInstanceDelegate">
+                     implementation="testConnectorMultiInstanceExecution">
             <multiInstanceLoopCharacteristics isSequential="false">
                 <loopCardinality>${4}</loopCardinality>
             </multiInstanceLoopCharacteristics>
