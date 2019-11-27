@@ -73,22 +73,24 @@ public class TaskRuntimeMultiInstanceIT {
         //then
         List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
         assertThat(tasks)
-                .extracting(Task::getName)
-                .containsExactlyInAnyOrder("My Task 0",
-                          "My Task 1",
-                          "My Task 2",
-                          "My Task 3");
+                .extracting(Task::getName,
+                            Task::getTaskDefinitionKey)
+                .containsExactlyInAnyOrder(tuple("My Task 0", "miTasks"),
+                                           tuple("My Task 1", "miTasks"),
+                                           tuple("My Task 2", "miTasks"),
+                                           tuple("My Task 3", "miTasks"));
 
         List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
                 .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
                 .map(TaskCreatedEvent.class::cast)
                 .collect(Collectors.toList());
         assertThat(taskCreatedEvents)
-                .extracting(event -> event.getEntity().getName())
-                .containsExactlyInAnyOrder("My Task 0",
-                                           "My Task 1",
-                                           "My Task 2",
-                                           "My Task 3");
+                .extracting(event -> event.getEntity().getName(),
+                            event -> event.getEntity().getTaskDefinitionKey())
+                .containsExactlyInAnyOrder(tuple("My Task 0", "miTasks"),
+                                           tuple("My Task 1", "miTasks"),
+                                           tuple("My Task 2", "miTasks"),
+                                           tuple("My Task 3", "miTasks"));
 
         //given
         Task taskToComplete = tasks.get(0);

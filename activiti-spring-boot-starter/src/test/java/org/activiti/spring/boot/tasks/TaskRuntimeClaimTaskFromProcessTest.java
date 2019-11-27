@@ -1,5 +1,7 @@
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.builders.ProcessPayloadBuilder;
 import org.activiti.api.process.runtime.ProcessRuntime;
@@ -16,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class TaskRuntimeClaimTaskFromProcessTest {
@@ -32,7 +32,6 @@ public class TaskRuntimeClaimTaskFromProcessTest {
     private SecurityUtil securityUtil;
 
     private static final String TWOTASK_PROCESS = "twoTaskProcess";
-
 
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
@@ -66,8 +65,5 @@ public class TaskRuntimeClaimTaskFromProcessTest {
         taskRuntime.complete(TaskPayloadBuilder.complete().withTaskId(task.getId()).build());
 
     }
-
-
-
 
 }

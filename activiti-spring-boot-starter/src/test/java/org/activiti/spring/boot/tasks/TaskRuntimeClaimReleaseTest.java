@@ -1,5 +1,8 @@
 package org.activiti.spring.boot.tasks;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
 import org.activiti.api.runtime.shared.NotFoundException;
 import org.activiti.api.runtime.shared.query.Page;
 import org.activiti.api.runtime.shared.query.Pageable;
@@ -15,9 +18,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -63,6 +63,7 @@ public class TaskRuntimeClaimReleaseTest {
         Task claimedTask = taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(task.getId()).build());
         assertThat(claimedTask.getAssignee()).isEqualTo("user");
         assertThat(claimedTask.getStatus()).isEqualTo(Task.TaskStatus.ASSIGNED);
+        assertThat(claimedTask.getTaskDefinitionKey()).isNull();
 
         Task releasedTask = taskRuntime.release(TaskPayloadBuilder.release().withTaskId(claimedTask.getId()).build());
         assertThat(releasedTask.getAssignee()).isNull();
@@ -90,7 +91,6 @@ public class TaskRuntimeClaimReleaseTest {
         );
         assertThat(thrown).isInstanceOf(IllegalStateException.class);
     }
-
 
     @Test
     public void createStandaloneTaskAndClaimAndReleaseUnAuthorized() {

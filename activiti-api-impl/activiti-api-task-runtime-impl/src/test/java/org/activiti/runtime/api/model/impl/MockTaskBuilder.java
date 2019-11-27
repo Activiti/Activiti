@@ -16,13 +16,13 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.task.Task;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Date;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.task.Task;
 
 /**
  * Mock task builder.
@@ -124,6 +124,11 @@ public class MockTaskBuilder {
 
     public MockTaskBuilder withFormKey(String formKey) {
         when(task.getFormKey()).thenReturn(formKey);
+        return this;
+    }
+    
+    public MockTaskBuilder withTaskDefinitionKey(String taskDefinitionKey) {
+        when(task.getTaskDefinitionKey()).thenReturn(taskDefinitionKey);
         return this;
     }
 
