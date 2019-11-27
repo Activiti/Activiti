@@ -47,6 +47,25 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
         return task;
     }
 
+    public Task from(TaskEntity internalTask,
+                             Task.TaskStatus status) {
+        TaskImpl task = new TaskImpl(internalTask.getId(),
+                                     internalTask.getName(),
+                                     status);
+        task.setProcessDefinitionId(internalTask.getProcessDefinitionId());
+        task.setProcessInstanceId(internalTask.getProcessInstanceId());
+        task.setAssignee(internalTask.getAssignee());
+        task.setClaimedDate(internalTask.getClaimTime());
+        task.setCreatedDate(internalTask.getCreateTime());
+        task.setDueDate(internalTask.getDueDate());
+        task.setDescription(internalTask.getDescription());
+        task.setOwner(internalTask.getOwner());
+        task.setParentTaskId(internalTask.getParentTaskId());
+        task.setPriority(internalTask.getPriority());
+        task.setFormKey(internalTask.getFormKey());
+        return task;
+    }
+
     private Task.TaskStatus calculateStatus(org.activiti.engine.task.Task source) {
         if (source instanceof TaskEntity &&
                 (((TaskEntity) source).isDeleted() || ((TaskEntity) source).isCanceled())) {

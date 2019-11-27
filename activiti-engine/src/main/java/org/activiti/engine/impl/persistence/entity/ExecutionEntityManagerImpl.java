@@ -648,7 +648,7 @@ public class ExecutionEntityManagerImpl extends AbstractEntityManager<ExecutionE
         eventSubscriptionEntityManager.delete(eventSubscription);
       }
     }
-    
+
   }
 
   // OTHER METHODS
