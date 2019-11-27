@@ -1,6 +1,6 @@
 create table ACT_GE_PROPERTY (
     NAME_ varchar(64),
-    VALUE_ varchar(300),
+    VALUE_ varchar(2000),
     REV_ integer,
     primary key (NAME_)
 );
