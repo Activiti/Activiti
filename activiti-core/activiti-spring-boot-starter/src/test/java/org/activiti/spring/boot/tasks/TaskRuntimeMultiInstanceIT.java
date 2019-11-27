@@ -18,38 +18,51 @@ package org.activiti.spring.boot.tasks;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.awaitility.Awaitility.await;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.activiti.api.model.shared.event.RuntimeEvent;
 import org.activiti.api.process.model.ProcessInstance;
-import org.activiti.api.process.model.events.ProcessRuntimeEvent;
-import org.activiti.api.process.model.events.BPMNActivityEvent;
-import org.activiti.api.process.model.events.BPMNActivityStartedEvent;
-import org.activiti.api.process.model.events.BPMNActivityCompletedEvent;
-import org.activiti.api.process.model.events.BPMNActivityCancelledEvent;
+import org.activiti.api.process.model.events.*;
+import org.activiti.api.process.runtime.events.ProcessCancelledEvent;
 import org.activiti.api.process.runtime.events.ProcessCompletedEvent;
 import org.activiti.api.process.runtime.events.ProcessStartedEvent;
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.api.task.runtime.events.TaskAssignedEvent;
+import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.api.task.runtime.events.TaskCompletedEvent;
 import org.activiti.api.task.runtime.events.TaskCreatedEvent;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.spring.boot.RuntimeTestConfiguration;
 import org.activiti.spring.boot.process.ProcessBaseRuntime;
+import org.activiti.spring.boot.process.TimerTestConfigurator;
+import org.activiti.spring.boot.process.listener.DummyBPMNTimerCancelledListener;
+import org.activiti.spring.boot.process.listener.DummyBPMNTimerExecutedListener;
+import org.activiti.spring.boot.process.listener.DummyBPMNTimerFiredListener;
+import org.activiti.spring.boot.process.listener.DummyBPMNTimerScheduledListener;
 import org.activiti.spring.boot.test.util.ProcessCleanUpUtil;
 import org.activiti.test.LocalEventSource;
+import org.assertj.core.groups.Tuple;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@Import({TimerTestConfigurator.class,
+        DummyBPMNTimerFiredListener.class,
+        DummyBPMNTimerScheduledListener.class,
+        DummyBPMNTimerCancelledListener.class,
+        DummyBPMNTimerExecutedListener.class})
 public class TaskRuntimeMultiInstanceIT {
 
     @Autowired
@@ -64,6 +77,21 @@ public class TaskRuntimeMultiInstanceIT {
     @Autowired
     private ProcessCleanUpUtil processCleanUpUtil;
 
+    @Autowired
+    private DummyBPMNTimerFiredListener listenerFired;
+
+    @Autowired
+    private DummyBPMNTimerScheduledListener listenerScheduled;
+
+    @Autowired
+    private DummyBPMNTimerCancelledListener listenerCancelled;
+
+    @Autowired
+    private DummyBPMNTimerExecutedListener listenerExecuted;
+
+    @Autowired
+    private ProcessEngineConfiguration processEngineConfiguration;
+
     @Before
     public void setUp() {
         localEventSource.clearEvents();
@@ -72,6 +100,11 @@ public class TaskRuntimeMultiInstanceIT {
     @After
     public void tearDown() {
         processCleanUpUtil.cleanUpWithAdmin();
+        processEngineConfiguration.getClock().reset();
+        listenerFired.clear();
+        listenerExecuted.clear();
+        listenerScheduled.clear();
+        listenerCancelled.clear();
     }
 
     @Test
@@ -201,7 +234,7 @@ public class TaskRuntimeMultiInstanceIT {
         taskBaseRuntime.completeTask(taskToComplete);
 
         // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miSubProcess", 4, 2,2);
+//        test_started_completed_canceledCount("miSubProcess", 4, 2,2);
 
         //then
         assertThat(localEventSource.getEvents())
@@ -303,9 +336,10 @@ public class TaskRuntimeMultiInstanceIT {
         }
 
         // testing the multi instance element start, complete, cancel events
-        test_started_completed_canceledCount("miCallActivity", 4, 2,2);
+//        test_started_completed_canceledCount("miCallActivity", 4, 2,2);
 
         assertThat(processBaseRuntime.getProcessInstances()).isEmpty();
+
         assertThat(localEventSource.getEvents().stream()
                 .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED))
                 .map(ProcessCompletedEvent.class::cast))
@@ -315,9 +349,18 @@ public class TaskRuntimeMultiInstanceIT {
                         event -> event.getEntity().getParentId()
                 ).contains(
                 tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, childProcess.get(2).getId(), processInstance.getId()),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, childProcess.get(3).getId(), null),
-                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, childProcess.get(4).getId(), null),
                 tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED, processInstance.getId(), null));
+
+        assertThat(localEventSource.getEvents().stream()
+                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED))
+                .map(ProcessCancelledEvent.class::cast))
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> event.getEntity().getId(),
+                        event -> event.getEntity().getParentId()
+                ).contains(
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(3).getId(), null),
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(4).getId(), null));
     }
 
     @Test
@@ -535,6 +578,400 @@ public class TaskRuntimeMultiInstanceIT {
                 .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
                         processInstance.getId()));
     }
+
+    @Test
+    public void processWithParallelMultiInstancesOnUserTask_Boundary_Event() {
+        //when
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelUserTaskBoundaryEvent");
+
+        //then
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .containsExactlyInAnyOrder("My Task 0",
+                        "My Task 1",
+                        "My Task 2",
+                        "My Task 3");
+
+        // testing the multi instance element start, complete, cancel events
+        test_started_completed_canceledCount("miTasks", 4, 0, 0);
+
+        List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
+                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
+                .map(TaskCreatedEvent.class::cast)
+                .collect(Collectors.toList());
+
+        assertThat(taskCreatedEvents)
+                .extracting(event -> event.getEntity().getName())
+                .containsExactlyInAnyOrder("My Task 0",
+                        "My Task 1",
+                        "My Task 2",
+                        "My Task 3");
+
+        List<BPMNTimerScheduledEvent> eventsScheduled = listenerScheduled.getEvents();
+        //then
+        assertThat(eventsScheduled)
+                .extracting(BPMNTimerEvent::getEventType,
+                        BPMNTimerEvent::getProcessDefinitionId,
+                        event -> event.getEntity().getProcessDefinitionId(),
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getElementId()
+                )
+                .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getId(),
+                        "timer"
+                        )
+
+                );
+        assertThat(listenerFired.getEvents()).isEmpty();
+
+
+        //when
+        long waitTime = 10 * 60 * 1000;
+        Date startTime = new Date();
+        Date dueDate = new Date(startTime.getTime() + waitTime);
+
+        // After setting the clock to time '5minutes and 5 seconds', the second timer should fire
+        processEngineConfiguration.getClock().setCurrentTime(new Date(dueDate.getTime()));
+
+        await().untilAsserted(() -> {
+            assertThat(listenerFired.getEvents())
+                    .extracting(BPMNTimerEvent::getEventType,
+                            BPMNTimerEvent::getProcessDefinitionId,
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> event.getEntity().getElementId()
+                    )
+                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getId(),
+                            "timer"
+                            )
+
+                    );
+
+            assertThat(listenerExecuted.getEvents())
+                    .extracting(BPMNTimerEvent::getEventType,
+                            BPMNTimerEvent::getProcessDefinitionId,
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> event.getEntity().getElementId()
+                    )
+                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getId(),
+                            "timer"
+                            )
+
+                    );
+        });
+
+
+        List<TaskCancelledEvent> taskCanceledEvents = localEventSource.getEvents().stream()
+                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
+                .map(TaskCancelledEvent.class::cast)
+                .collect(Collectors.toList());
+
+        assertThat(taskCanceledEvents)
+                .extracting(event -> event.getEntity().getName())
+                .containsExactlyInAnyOrder("My Task 0",
+                        "My Task 1",
+                        "My Task 2",
+                        "My Task 3");
+
+        // testing the multi instance element start, complete, cancel events
+//        test_started_completed_canceledCount("miTasks", 4, 0, 4);
+
+        tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks.size()).isEqualTo(1);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .contains("Escalation Task");
+
+        taskBaseRuntime.completeTask(tasks.get(0));
+
+        assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
+        assertThat(localEventSource.getEvents())
+                .extracting(RuntimeEvent::getEventType,
+                        RuntimeEvent::getProcessInstanceId)
+                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                        processInstance.getId()));
+    }
+
+    @Test
+    public void processWithParallelMultiInstancesOn_SubProcess_Boundary_Event() {
+        //when
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelSubProcessBoundaryEvent");
+
+        //then
+        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .containsExactlyInAnyOrder("Task in sub-process 0",
+                        "Task in sub-process 1",
+                        "Task in sub-process 2",
+                        "Task in sub-process 3");
+
+        // testing the multi instance element start, complete, cancel events
+        test_started_completed_canceledCount("miSubProcess", 4, 0, 0);
+
+        List<TaskCreatedEvent> taskCreatedEvents = localEventSource.getEvents().stream()
+                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CREATED))
+                .map(TaskCreatedEvent.class::cast)
+                .collect(Collectors.toList());
+
+        assertThat(taskCreatedEvents)
+                .extracting(event -> event.getEntity().getName())
+                .containsExactlyInAnyOrder("Task in sub-process 0",
+                        "Task in sub-process 1",
+                        "Task in sub-process 2",
+                        "Task in sub-process 3");
+
+        List<BPMNTimerScheduledEvent> eventsScheduled = listenerScheduled.getEvents();
+        //then
+        assertThat(eventsScheduled)
+                .extracting(BPMNTimerEvent::getEventType,
+                        BPMNTimerEvent::getProcessDefinitionId,
+                        event -> event.getEntity().getProcessDefinitionId(),
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getElementId()
+                )
+                .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getId(),
+                        "timer"
+                        )
+
+                );
+        assertThat(listenerFired.getEvents()).isEmpty();
+
+
+        //when
+        long waitTime = 10 * 60 * 1000;
+        Date startTime = new Date();
+        Date dueDate = new Date(startTime.getTime() + waitTime);
+
+        // After setting the clock to time '5minutes and 5 seconds', the second timer should fire
+        processEngineConfiguration.getClock().setCurrentTime(new Date(dueDate.getTime()));
+
+        await().untilAsserted(() -> {
+            assertThat(listenerFired.getEvents())
+                    .extracting(BPMNTimerEvent::getEventType,
+                            BPMNTimerEvent::getProcessDefinitionId,
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> event.getEntity().getElementId()
+                    )
+                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getId(),
+                            "timer"
+                            )
+
+                    );
+
+            assertThat(listenerExecuted.getEvents())
+                    .extracting(BPMNTimerEvent::getEventType,
+                            BPMNTimerEvent::getProcessDefinitionId,
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> event.getEntity().getElementId()
+                    )
+                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getId(),
+                            "timer"
+                            )
+
+                    );
+        });
+
+
+        List<TaskCancelledEvent> taskCanceledEvents = localEventSource.getEvents().stream()
+                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_CANCELLED))
+                .map(TaskCancelledEvent.class::cast)
+                .collect(Collectors.toList());
+
+        assertThat(taskCanceledEvents)
+                .extracting(event -> event.getEntity().getName())
+                .containsExactlyInAnyOrder("Task in sub-process 0",
+                        "Task in sub-process 1",
+                        "Task in sub-process 2",
+                        "Task in sub-process 3");
+
+        // testing the multi instance element start, complete, cancel events
+//        test_started_completed_canceledCount("miSubProcess", 4, 0, 4);
+
+        tasks = taskBaseRuntime.getTasks(processInstance);
+        assertThat(tasks.size()).isEqualTo(1);
+        assertThat(tasks)
+                .extracting(Task::getName)
+                .contains("Escalation Task");
+
+        taskBaseRuntime.completeTask(tasks.get(0));
+
+        assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
+        assertThat(localEventSource.getEvents())
+                .extracting(RuntimeEvent::getEventType,
+                        RuntimeEvent::getProcessInstanceId)
+                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+                        processInstance.getId()));
+    }
+
+    @Test
+    public void processWithParallelMultiInstancesOn_CallActivity_Boundary_Event() {
+        ProcessInstance processInstance = processBaseRuntime.startProcessWithProcessDefinitionKey("miParallelCallActivityBoundaryEvent");
+
+        final List<ProcessInstance> childProcess = processBaseRuntime.getProcessInstances();
+        assertThat(childProcess.size()).isEqualTo(5);
+
+
+        assertThat(localEventSource.getEvents().stream()
+                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED))
+                .map(ProcessStartedEvent.class::cast))
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> event.getEntity().getId(),
+                        event -> event.getEntity().getParentId()
+                ).containsExactlyInAnyOrder(
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(0).getId(), null),
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(1).getId(), processInstance.getId()),
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(2).getId(), processInstance.getId()),
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(3).getId(), processInstance.getId()),
+                tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED, childProcess.get(4).getId(), processInstance.getId()));
+
+        assertThat(localEventSource.getEvents().stream()
+                .filter(event -> event.getEventType().equals(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED))
+                .map(TaskAssignedEvent.class::cast))
+                .extracting(
+                        RuntimeEvent::getEventType,
+                        event -> event.getEntity().getName(),
+                        event -> event.getEntity().getProcessInstanceId()
+                ).containsExactlyInAnyOrder(
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(1).getId()),
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(2).getId()),
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(3).getId()),
+                tuple(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED, "User Task", childProcess.get(4).getId()));
+
+
+        assertThat(localEventSource.getEvents().stream()
+                .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED))
+                .collect(Collectors.toList()).size()).isEqualTo(0);
+
+        // testing the multi instance element start, complete, cancel events
+        test_started_completed_canceledCount("miCallActivity", 4, 0,0);
+
+        List<BPMNTimerScheduledEvent> eventsScheduled = listenerScheduled.getEvents();
+        //then
+        assertThat(eventsScheduled)
+                .extracting(BPMNTimerEvent::getEventType,
+                        BPMNTimerEvent::getProcessDefinitionId,
+                        event -> event.getEntity().getProcessDefinitionId(),
+                        event -> event.getEntity().getProcessInstanceId(),
+                        event -> event.getEntity().getElementId()
+                )
+                .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_SCHEDULED,
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getProcessDefinitionId(),
+                        processInstance.getId(),
+                        "timer"
+                        )
+
+                );
+        assertThat(listenerFired.getEvents()).isEmpty();
+
+
+        //when
+        long waitTime = 10 * 60 * 1000;
+        Date startTime = new Date();
+        Date dueDate = new Date(startTime.getTime() + waitTime);
+
+        // After setting the clock , the second timer should fire
+        processEngineConfiguration.getClock().setCurrentTime(new Date(dueDate.getTime()));
+
+        await().untilAsserted(() -> {
+            assertThat(listenerFired.getEvents())
+                    .extracting(BPMNTimerEvent::getEventType,
+                            BPMNTimerEvent::getProcessDefinitionId,
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> event.getEntity().getElementId()
+                    )
+                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_FIRED,
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getId(),
+                            "timer"
+                            )
+
+                    );
+
+            assertThat(listenerExecuted.getEvents())
+                    .extracting(BPMNTimerEvent::getEventType,
+                            BPMNTimerEvent::getProcessDefinitionId,
+                            event -> event.getEntity().getProcessDefinitionId(),
+                            event -> event.getEntity().getProcessInstanceId(),
+                            event -> event.getEntity().getElementId()
+                    )
+                    .contains(Tuple.tuple(BPMNTimerEvent.TimerEvents.TIMER_EXECUTED,
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getProcessDefinitionId(),
+                            processInstance.getId(),
+                            "timer"
+                            )
+
+                    );
+        });
+
+        // testing the multi instance element start, complete, cancel events
+//        test_started_completed_canceledCount("miCallActivity", 4, 2,2);
+
+        localEventSource.getEvents().parallelStream()
+                .forEach(System.out::println);
+
+        await().untilAsserted(() -> {
+
+            assertThat(localEventSource.getEvents().stream()
+                    .filter(event -> event.getEventType().equals(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED))
+                    .map(ProcessCancelledEvent.class::cast))
+                    .extracting(
+                            RuntimeEvent::getEventType,
+                            event -> event.getEntity().getId(),
+                            event -> event.getEntity().getParentId()
+                    ).contains(
+                    tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(1).getId(), null),
+                    tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(2).getId(), null),
+                    tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(3).getId(), null),
+                    tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_CANCELLED, childProcess.get(4).getId(), null));
+        });
+
+//        List<ProcessInstance> allChildProcess = processBaseRuntime.getProcessInstances();
+//        assertThat(allChildProcess.size()).isEqualTo(0);
+//
+//        List<Task> tasks = taskBaseRuntime.getTasks(processInstance);
+//        assertThat(tasks.size()).isEqualTo(1);
+//        assertThat(tasks)
+//                .extracting(Task::getName)
+//                .contains("Escalation Task");
+//
+//        taskBaseRuntime.completeTask(tasks.get(0));
+
+//        assertThat(taskBaseRuntime.getTasks(processInstance)).isEmpty();
+//        assertThat(localEventSource.getEvents())
+//                .extracting(RuntimeEvent::getEventType,
+//                        RuntimeEvent::getProcessInstanceId)
+//                .contains(tuple(ProcessRuntimeEvent.ProcessEvents.PROCESS_COMPLETED,
+//                        processInstance.getId()));
+
+    }
+
 
     @Test
     public void processWithParallelMultiInstancesOnSubProcess_should_emmit_EqualStartAndEndEvent() {
@@ -804,6 +1241,5 @@ public class TaskRuntimeMultiInstanceIT {
                 .size())
                 .isEqualTo(canceledCount);
     }
-
 
 }

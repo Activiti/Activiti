@@ -199,7 +199,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
                     && callActivityExecutionIds.contains(childExecution.getSuperExecutionId())) {
 
                   executionEntityManager.deleteProcessInstanceExecutionEntity(childExecution.getId(), activity.getId(),
-                      "call activity completion condition met", true, false);
+                      "call activity completion condition met", true, true);
                 }
               }
 
@@ -253,14 +253,15 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     }
 
     if (deleteExecution) {
-        boolean isActiveElement = parentExecution.isActive();
-        executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
-        if (isActiveElement) {
-            commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityCancelledEvent(
-                    parentExecution,
-                    "Multi-instance complete condition expression passed"
-            ));
-        }
+        executionEntityManager.deleteExecutionAndRelatedData(parentExecution, "Multi-instance complete condition expression passed", true);
+
+//        boolean isActiveElement = parentExecution.isActive();
+//        executionEntityManager.deleteExecutionAndRelatedData(parentExecution, null, false);
+//        if (isActiveElement) {
+//            commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createActivityCancelledEvent(
+//                    parentExecution,
+//                    "Multi-instance complete condition expression passed"
+//            ));
     }
   }
 

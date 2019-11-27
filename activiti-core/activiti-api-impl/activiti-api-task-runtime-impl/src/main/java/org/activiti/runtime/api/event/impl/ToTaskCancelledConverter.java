@@ -17,19 +17,17 @@
 package org.activiti.runtime.api.event.impl;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.api.task.runtime.events.TaskCancelledEvent;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
-import org.activiti.engine.task.TaskQuery;
+import org.activiti.engine.delegate.event.ActivitiEntityEvent;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.runtime.api.model.impl.APITaskConverter;
 
-public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEvent, ActivitiActivityCancelledEvent> {
+public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEvent, ActivitiEntityEvent> {
 
     private APITaskConverter taskConverter;
 
@@ -42,44 +40,17 @@ public class ToTaskCancelledConverter implements EventConverter<TaskCancelledEve
     }
 
     @Override
-    public Optional<TaskCancelledEvent> from(ActivitiActivityCancelledEvent internalEvent) {
-        TaskQuery taskQuery = taskService.createTaskQuery();
-        if (internalEvent.getProcessInstanceId() != null) {
-            taskQuery.processInstanceId(internalEvent.getProcessInstanceId());
-            if (internalEvent.getActivityId() != null) {
-                taskQuery.taskDefinitionKey(internalEvent.getActivityId());
-            }
-        } else {
-            if (internalEvent.getExecutionId() != null) {
-                //temporary workaround for stand alone tasks, task id is mapped as execution id
-                taskQuery.taskId(internalEvent.getExecutionId());
-            }
-        }
-        List<org.activiti.engine.task.Task> tasks = taskQuery.list();
-        tasks = filterMultiInstances(internalEvent,
-                                     tasks);
+    public Optional<TaskCancelledEvent> from(ActivitiEntityEvent internalEvent) {
         TaskCancelledEvent event = null;
-        if (tasks.size() == 1) {
-            Task task = taskConverter.from(tasks.get(0));
-            ((TaskImpl) task).setStatus(Task.TaskStatus.CANCELLED);
+        if (internalEvent.getEntity() != null && internalEvent.getEntity() instanceof TaskEntity && ((TaskEntity) internalEvent.getEntity()).isCanceled()) {
+
+            TaskEntity taskEntity = (TaskEntity) internalEvent.getEntity();
+
+            Task task = this.taskConverter.from(taskEntity, Task.TaskStatus.CANCELLED);
             event = new TaskCancelledImpl(task);
+
         }
         return Optional.ofNullable(event);
     }
 
-    private List<org.activiti.engine.task.Task> filterMultiInstances(ActivitiActivityCancelledEvent internalEvent,
-                                                                     List<org.activiti.engine.task.Task> tasks) {
-        // in case of parallel multi-instance we need to also filter on execution id because more than will task can
-        // be returned for same process instance id and task definition key.
-        // Note that's not possible to always filter on execution id, because in some cases the execution related to
-        // cancel action is not the the task itself. For instance, boundary events.
-        if (tasks.size() > 1) {
-            tasks = tasks
-                    .stream()
-                    .filter(task -> Objects.equals(task.getExecutionId(),
-                                                   internalEvent.getExecutionId()))
-                    .collect(Collectors.toList());
-        }
-        return tasks;
-    }
 }

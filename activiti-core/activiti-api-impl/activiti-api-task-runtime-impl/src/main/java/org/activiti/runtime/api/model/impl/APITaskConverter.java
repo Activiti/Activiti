@@ -16,8 +16,6 @@
 
 package org.activiti.runtime.api.model.impl;
 
-import java.util.Objects;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.impl.TaskImpl;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -46,8 +44,25 @@ public class APITaskConverter extends ListConverter<org.activiti.engine.task.Tas
         task.setParentTaskId(internalTask.getParentTaskId());
         task.setPriority(internalTask.getPriority());
         task.setFormKey(internalTask.getFormKey());
-        task.setTaskDefinitionKey(internalTask.getTaskDefinitionKey());
-        task.setAppVersion(Objects.toString(internalTask.getAppVersion(), null));
+        return task;
+    }
+
+    public Task from(TaskEntity internalTask,
+                             Task.TaskStatus status) {
+        TaskImpl task = new TaskImpl(internalTask.getId(),
+                                     internalTask.getName(),
+                                     status);
+        task.setProcessDefinitionId(internalTask.getProcessDefinitionId());
+        task.setProcessInstanceId(internalTask.getProcessInstanceId());
+        task.setAssignee(internalTask.getAssignee());
+        task.setClaimedDate(internalTask.getClaimTime());
+        task.setCreatedDate(internalTask.getCreateTime());
+        task.setDueDate(internalTask.getDueDate());
+        task.setDescription(internalTask.getDescription());
+        task.setOwner(internalTask.getOwner());
+        task.setParentTaskId(internalTask.getParentTaskId());
+        task.setPriority(internalTask.getPriority());
+        task.setFormKey(internalTask.getFormKey());
         return task;
     }
 

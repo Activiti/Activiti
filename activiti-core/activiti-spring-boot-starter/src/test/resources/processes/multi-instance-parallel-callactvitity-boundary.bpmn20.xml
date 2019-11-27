@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2019 Alfresco, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<definitions id="definition"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+  <process id="miParallelCallActivityBoundaryEvent">
+    <startEvent id="StartEvent_1"/>
+
+    <sequenceFlow id="SequenceFlow_1jajnpy" sourceRef="StartEvent_1" targetRef="miCallActivity"/>
+
+    <endEvent id="EndEvent_1vhhezw">
+      <incoming>SequenceFlow_14aevtt</incoming>
+    </endEvent>
+
+    <sequenceFlow id="SequenceFlow_14aevtt" sourceRef="miCallActivity" targetRef="EndEvent_1vhhezw"/>
+
+    <callActivity id="miCallActivity" calledElement="externalSubProcess">
+      <multiInstanceLoopCharacteristics isSequential="false">
+        <loopCardinality>${4}</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </callActivity>
+
+    <sequenceFlow id="flow3" sourceRef="miCallActivity" targetRef="theEnd"/>
+    <endEvent id="theEnd"/>
+
+    <sequenceFlow id="SequenceFlow_0hboyq1" sourceRef="timer" targetRef="UserTask_0zvkbgi"/>
+
+    <sequenceFlow id="SequenceFlow_1pryz48" sourceRef="UserTask_0zvkbgi" targetRef="EndEvent_02ciezx"/>
+
+    <userTask id="UserTask_0zvkbgi" name="Escalation Task" activiti:assignee="user"/>
+
+    <endEvent id="EndEvent_02ciezx"/>
+
+    <boundaryEvent id="timer" attachedToRef="miCallActivity">
+      <timerEventDefinition>
+        <timeDuration>PT10S</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+  </process>
+</definitions>
