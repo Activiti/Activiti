@@ -32,6 +32,8 @@ create table ACT_RE_DEPLOYMENT (
     TENANT_ID_ nvarchar(255) default '',
     DEPLOY_TIME_ datetime,
     ENGINE_VERSION_ nvarchar(255),
+    VERSION_ int,
+    PROJECT_RELEASE_VERSION_ nvarchar(255),
     primary key (ID_)
 );
 
