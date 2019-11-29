@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class TaskRuntimeAppVersionTest {
+public class TaskRuntimeAppVersionIT {
 
     @Autowired
     private TaskRuntime taskRuntime;

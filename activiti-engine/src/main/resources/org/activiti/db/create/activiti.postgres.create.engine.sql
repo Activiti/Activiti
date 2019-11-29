@@ -1,6 +1,6 @@
 create table ACT_GE_PROPERTY (
     NAME_ varchar(64),
-    VALUE_ varchar(2000),
+    VALUE_ varchar(300),
     REV_ integer,
     primary key (NAME_)
 );
@@ -32,7 +32,7 @@ create table ACT_RE_DEPLOYMENT (
     TENANT_ID_ varchar(255) default '',
     DEPLOY_TIME_ timestamp,
     ENGINE_VERSION_ varchar(255),
-    VERSION_ integer DEFAULT 1,
+    VERSION_ integer default 1,
     PROJECT_RELEASE_VERSION_ varchar(255),
     primary key (ID_)
 );
