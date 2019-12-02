@@ -78,4 +78,8 @@ public interface ProcessDefinition {
   /** The engine version for this process definition (5 or 6) */
   String getEngineVersion();
 
+  void setAppVersion(Integer appVersion);
+
+  Integer getAppVersion();
+
 }

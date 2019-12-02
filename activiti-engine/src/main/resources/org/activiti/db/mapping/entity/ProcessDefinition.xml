@@ -7,7 +7,7 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityImpl">
-    insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_)
+    insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_, APP_VERSION_)
     values (#{id, jdbcType=VARCHAR},
     		1,
             #{category, jdbcType=VARCHAR},
@@ -22,11 +22,12 @@
             #{isGraphicalNotationDefined, jdbcType=BOOLEAN},
             #{suspensionState, jdbcType=INTEGER},
             #{tenantId, jdbcType=VARCHAR},
-            #{engineVersion, jdbcType=VARCHAR})
+            #{engineVersion, jdbcType=VARCHAR},
+            #{appVersion, jdbcType=INTEGER})
   </insert>
 
   <insert id="bulkInsertProcessDefinition" parameterType="java.util.List">
-    INSERT INTO ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_)
+    INSERT INTO ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_, APP_VERSION_)
     VALUES 
       <foreach collection="list" item="processDefinition" index="index" separator=","> 
         (#{processDefinition.id, jdbcType=VARCHAR},
@@ -43,7 +44,8 @@
          #{processDefinition.isGraphicalNotationDefined, jdbcType=BOOLEAN},
          #{processDefinition.suspensionState, jdbcType=INTEGER},
          #{processDefinition.tenantId, jdbcType=VARCHAR},
-         #{processDefinition.engineVersion, jdbcType=VARCHAR})
+         #{processDefinition.engineVersion, jdbcType=VARCHAR},
+         #{processDefinition.appVersion, jdbcType=INTEGER})
     </foreach>
   </insert>
 
@@ -117,6 +119,7 @@
     <result property="isGraphicalNotationDefined" column="HAS_GRAPHICAL_NOTATION_" jdbcType="BOOLEAN" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
     <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="VARCHAR" />
+    <result property="appVersion" column="APP_VERSION_" jdbcType="INTEGER" />
   </resultMap>
 
   <!-- PROCESSDEFINITION SELECT -->

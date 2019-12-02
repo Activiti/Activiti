@@ -22,10 +22,6 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.context.Context;
 
-/**
-
-
- */
 public class ProcessDefinitionEntityImpl extends AbstractEntity implements ProcessDefinitionEntity, Serializable {
 
   private static final long serialVersionUID = 1L;
@@ -47,6 +43,7 @@ public class ProcessDefinitionEntityImpl extends AbstractEntity implements Proce
   protected boolean isIdentityLinksInitialized;
   protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
   protected IOSpecification ioSpecification;
+  protected Integer appVersion;
 
     // Backwards compatibility
   protected String engineVersion;
@@ -216,6 +213,14 @@ public class ProcessDefinitionEntityImpl extends AbstractEntity implements Proce
   
   public String toString() {
     return "ProcessDefinitionEntity[" + id + "]";
+  }
+
+  public void setAppVersion(Integer appVersion){
+      this.appVersion = appVersion;
+  }
+
+  public Integer getAppVersion(){
+      return this.appVersion;
   }
 
 }

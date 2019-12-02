@@ -92,6 +92,8 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   protected Date claimTime;
 
+  protected Integer appVersion;
+
   public TaskEntityImpl() {
     
   }
@@ -598,6 +600,14 @@ public class TaskEntityImpl extends VariableScopeImpl implements TaskEntity, Ser
 
   public void setClaimTime(Date claimTime) {
     this.claimTime = claimTime;
+  }
+
+  public Integer getAppVersion(){
+      return this.appVersion;
+  }
+
+  public void setAppVersion (Integer appVersion){
+      this.appVersion = appVersion;
   }
 
   public String toString() {

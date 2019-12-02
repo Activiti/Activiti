@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2018 Alfresco, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +15,8 @@
  */
 
 package org.activiti.runtime.api.model.impl;
+
+import java.util.Objects;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
@@ -37,6 +39,7 @@ public class APIProcessInstanceConverter extends ListConverter<org.activiti.engi
         processInstance.setBusinessKey(internalProcessInstance.getBusinessKey());
         processInstance.setStatus(calculateStatus(internalProcessInstance));
         processInstance.setProcessDefinitionVersion(internalProcessInstance.getProcessDefinitionVersion());
+        processInstance.setAppVersion(Objects.toString(internalProcessInstance.getAppVersion(), null));
         return processInstance;
     }
 

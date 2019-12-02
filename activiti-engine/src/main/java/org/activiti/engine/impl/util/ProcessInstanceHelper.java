@@ -132,9 +132,9 @@ public class ProcessInstanceHelper {
     // Map message payload variables before creating process instance
     Map<String, Object> processVariables = commandContext.getProcessEngineConfiguration()
                                                          .getEventSubscriptionPayloadMappingProvider()
-                                                         .apply(messageVariables, 
+                                                         .apply(messageVariables,
                                                                 eventSubscription);
-    
+
     // Create process instance with executions but defer to start process after dispatching ACTIVITY_MESSAGE_RECEIVED
     ExecutionEntity processInstance = createProcessInstanceWithInitialFlowElement(processDefinition,
                                                                                   businessKey,
@@ -145,13 +145,13 @@ public class ProcessInstanceHelper {
                                                                                   transientVariables);
     // Dispatch message received event
     dispatchStartMessageReceivedEvent(processInstance, messageName, messageVariables);
-    
-    // Finally start the process 
+
+    // Finally start the process
     startProcessInstance(processInstance, commandContext, processVariables);
-    
+
     return processInstance;
   }
-  
+
   public ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
       String businessKey, String processInstanceName, FlowElement initialFlowElement,
       Process process, Map<String, Object> variables, Map<String, Object> transientVariables, boolean startProcessInstance) {
@@ -164,8 +164,8 @@ public class ProcessInstanceHelper {
                                                                                       variables,
                                                                                       transientVariables);
     if (startProcessInstance) {
-        CommandContext commandContext = Context.getCommandContext(); 
-        
+        CommandContext commandContext = Context.getCommandContext();
+
         startProcessInstance(processInstance, commandContext, variables);
       }
 
@@ -196,19 +196,19 @@ public class ProcessInstanceHelper {
                 ExecutionEntity messageExecution = commandContext.getExecutionEntityManager().createChildExecution(processInstance);
                 messageExecution.setCurrentFlowElement(startEvent);
                 messageExecution.setEventScope(true);
-                
-                String messageName = getMessageName(commandContext, 
-                                                    messageEventDefinition, 
+
+                String messageName = getMessageName(commandContext,
+                                                    messageEventDefinition,
                                                     messageExecution);
-                
+
                 MessageEventSubscriptionEntity subscription = commandContext.getEventSubscriptionEntityManager()
                                                                             .insertMessageEvent(messageName,
-                                                                                                messageExecution);                
-                Optional<String> correlationKey = getCorrelationKey(commandContext, 
-                                                                    messageEventDefinition, 
+                                                                                                messageExecution);
+                Optional<String> correlationKey = getCorrelationKey(commandContext,
+                                                                    messageEventDefinition,
                                                                     messageExecution);
                 correlationKey.ifPresent(subscription::setConfiguration);
-                
+
                 messageEventSubscriptions.add(subscription);
               }
             }
@@ -216,14 +216,17 @@ public class ProcessInstanceHelper {
         }
       }
     }
-    
+
     ExecutionEntity execution = processInstance.getExecutions().get(0); // There will always be one child execution created
+
+    execution.setAppVersion(processInstance.getAppVersion());
+
     commandContext.getAgenda().planContinueProcessOperation(execution);
 
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
         eventDispatcher.dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(execution, variables, false));
-        
+
         for (MessageEventSubscriptionEntity messageEventSubscription : messageEventSubscriptions) {
             commandContext.getProcessEngineConfiguration().getEventDispatcher()
                     .dispatchEvent(ActivitiEventBuilder.createMessageWaitingEvent(messageEventSubscription.getExecution(),
@@ -243,39 +246,39 @@ public class ProcessInstanceHelper {
     }
     return variablesMap;
   }
-  
+
   protected Optional<String> getCorrelationKey(CommandContext commandContext,
                                                MessageEventDefinition messageEventDefinition,
                                                DelegateExecution execution) {
       ExpressionManager expressionManager = commandContext.getProcessEngineConfiguration()
                                                           .getExpressionManager();
-      
+
       return Optional.ofNullable(messageEventDefinition.getCorrelationKey())
                      .map(correlationKey -> {
                           Expression expression = expressionManager.createExpression(messageEventDefinition.getCorrelationKey());
 
                           return expression.getValue(execution)
                                            .toString();
-                     });    
+                     });
   }
-  
+
   protected String getMessageName(CommandContext commandContext,
                                   MessageEventDefinition messageEventDefinition,
                                   DelegateExecution execution) {
       ExpressionManager expressionManager = commandContext.getProcessEngineConfiguration()
                                                           .getExpressionManager();
-      
-      
+
+
       String messageName = Optional.ofNullable(messageEventDefinition.getMessageRef())
                                    .orElse(messageEventDefinition.getMessageExpression());
-      
+
       Expression expression = expressionManager.createExpression(messageName);
 
       return expression.getValue(execution)
                        .toString();
 
   }
-  
+
 
     public ExecutionEntity createProcessInstanceWithInitialFlowElement(ProcessDefinition processDefinition,
                                                                        String businessKey,
@@ -345,19 +348,19 @@ public class ProcessInstanceHelper {
                                                    Map<String, Object> variables) {
         // Dispatch message received event
         if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            
-            // There will always be one child execution created        
+
+            // There will always be one child execution created
             DelegateExecution execution = processInstance.getExecutions()
                                                          .get(0);
 
             ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration()
                                                              .getEventDispatcher();
-            
+
             eventDispatcher.dispatchEvent(ActivitiEventBuilder.createMessageReceivedEvent(execution,
                                                                                           messageName,
                                                                                           null,
                                                                                           variables));
         }
     }
-  
+
 }

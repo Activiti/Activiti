@@ -38,56 +38,60 @@ public class APIProcessInstanceConverterTest {
     private static final String PROCESS_DEFINITION_KEY = "processDefinitionKey";
     private static final String PROCESS_DEFINITION_ID = "processDefinitionId";
     private static final String PROCESS_INSTANCE_ID = "processInstanceId";
+    public static final int APP_VERSION = 1;
+    private static final String APP_VERSION_STRING = "1";
+    private static final Date START_TIME = new Date();
 
     private APIProcessInstanceConverter subject = new APIProcessInstanceConverter();
-    private Date startTime = new Date();
 
     @Test
-    public void shouldConvertFromInternalProcessInstanceWithRunningStatus() {
-        //given
-        ExecutionEntity internalProcessInstance = anInternalProcessInstance(startTime);
+    public void should_convertFromInternalProcessInstance_when_withRunningStatus() {
+        ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
 
-        internalProcessInstance.setActive(true);
-
-        //when
         ProcessInstance result = subject.from(internalProcessInstance);
 
-        //then
         assertValidProcessInstanceResult(result);
         assertThat(result.getStatus()).isEqualTo(ProcessInstanceStatus.RUNNING);
     }
 
     @Test
-    public void shouldConvertFromInternalProcessInstanceWithSuspendedStatus() {
-        //given
-        ExecutionEntity internalProcessInstance = anInternalProcessInstance(startTime);
+    public void should_convertFromInternalProcessInstance_when_withSuspendedStatus() {
+        ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
 
         internalProcessInstance.setSuspensionState(SuspensionState.SUSPENDED.getStateCode());
 
-        //when
         ProcessInstance result = subject.from(internalProcessInstance);
 
-        //then
         assertValidProcessInstanceResult(result);
         assertThat(result.getStatus()).isEqualTo(ProcessInstanceStatus.SUSPENDED);
     }
 
     @Test
-    public void shouldConvertFromInternalProcessInstanceWithCompletedStatus() {
-        //given
-        ExecutionEntity internalProcessInstance = anInternalProcessInstance(startTime);
+    public void should_convertFromInternalProcessInstance_when_withCompletedStatus() {
+        ExecutionEntity internalProcessInstance = anInternalProcessInstance(APP_VERSION);
 
         internalProcessInstance.setEnded(true);
 
-        //when
         ProcessInstance result = subject.from(internalProcessInstance);
 
-        //then
         assertValidProcessInstanceResult(result);
         assertThat(result.getStatus()).isEqualTo(ProcessInstanceStatus.COMPLETED);
     }
 
-    private void assertValidProcessInstanceResult(ProcessInstance result) {
+    @Test
+    public void should_convertFromInternalProcessInstance_when_appVersionIsNotSet() {
+        ExecutionEntity internalProcessInstance = anInternalProcessInstance(null);
+
+        ProcessInstance result = subject.from(internalProcessInstance);
+
+        assertValidProcessInstanceResult(result, null);
+    }
+
+    private static void assertValidProcessInstanceResult(ProcessInstance result) {
+        assertValidProcessInstanceResult(result, APP_VERSION_STRING);
+    }
+
+    private static void assertValidProcessInstanceResult(ProcessInstance result, String appVersionString) {
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(PROCESS_INSTANCE_ID);
         assertThat(result.getBusinessKey()).isEqualTo(BUSINESS_KEY);
@@ -98,10 +102,11 @@ public class APIProcessInstanceConverterTest {
         assertThat(result.getName()).isEqualTo(NAME);
         assertThat(result.getParentId()).isEqualTo(PARENT_PROCESS_INSTANCE_ID);
         assertThat(result.getInitiator()).isEqualTo(START_USER_ID);
-        assertThat(result.getStartDate()).isEqualTo(startTime);
+        assertThat(result.getStartDate()).isEqualTo(START_TIME);
+        assertThat(result.getAppVersion()).isEqualTo(appVersionString);
     }
 
-    private ExecutionEntity anInternalProcessInstance(Date startTime) {
+    private ExecutionEntity anInternalProcessInstance(Integer appVersion) {
         ExecutionEntity internalProcessInstance = new ExecutionEntityImpl();
 
         internalProcessInstance.setId(PROCESS_INSTANCE_ID);
@@ -113,8 +118,9 @@ public class APIProcessInstanceConverterTest {
         internalProcessInstance.setName(NAME);
         internalProcessInstance.setDescription(DESCRIPTION);
         internalProcessInstance.setStartUserId(START_USER_ID);
-        internalProcessInstance.setStartTime(startTime);
+        internalProcessInstance.setStartTime(START_TIME);
         internalProcessInstance.setActive(true);
+        internalProcessInstance.setAppVersion(appVersion);
 
         return internalProcessInstance;
     }

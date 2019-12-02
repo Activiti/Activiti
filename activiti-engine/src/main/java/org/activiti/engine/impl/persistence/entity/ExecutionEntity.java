@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,11 +22,9 @@ import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
-/**
- */
 @Internal
 public interface ExecutionEntity extends DelegateExecution, Execution, ProcessInstance, Entity, HasRevision {
-  
+
   void setBusinessKey(String businessKey);
 
   void setProcessDefinitionId(String processDefinitionId);
@@ -42,7 +40,7 @@ public interface ExecutionEntity extends DelegateExecution, Execution, ProcessIn
   ExecutionEntity getProcessInstance();
 
   void setProcessInstance(ExecutionEntity processInstance);
-  
+
   ExecutionEntity getParent();
 
   void setParent(ExecutionEntity parent);
@@ -56,25 +54,25 @@ public interface ExecutionEntity extends DelegateExecution, Execution, ProcessIn
   void setSubProcessInstance(ExecutionEntity subProcessInstance);
 
   void setRootProcessInstanceId(String rootProcessInstanceId);
-  
+
   public void setParentProcessInstanceId(String parentProcessInstanceId);
-  
+
   ExecutionEntity getRootProcessInstance();
-  
+
   void setRootProcessInstance(ExecutionEntity rootProcessInstance);
-  
+
   List<? extends ExecutionEntity> getExecutions();
-  
+
   void addChildExecution(ExecutionEntity executionEntity);
-  
+
   List<TaskEntity> getTasks();
 
   List<EventSubscriptionEntity> getEventSubscriptions();
 
   List<JobEntity> getJobs();
-  
+
   List<TimerJobEntity> getTimerJobs();
-  
+
   List<IdentityLinkEntity> getIdentityLinks();
 
   void setProcessInstanceId(String processInstanceId);
@@ -96,19 +94,19 @@ public interface ExecutionEntity extends DelegateExecution, Execution, ProcessIn
   boolean isEventScope();
 
   void setEventScope(boolean isEventScope);
-  
+
   boolean isMultiInstanceRoot();
-  
+
   void setMultiInstanceRoot(boolean isMultiInstanceRoot);
 
   void setName(String name);
-  
+
   void setDescription(String description);
 
   void setLocalizedName(String localizedName);
-  
+
   void setLocalizedDescription(String localizedDescription);
-  
+
   void setTenantId(String tenantId);
 
   Date getLockTime();
@@ -118,7 +116,7 @@ public interface ExecutionEntity extends DelegateExecution, Execution, ProcessIn
   boolean isDeleted();
 
   void setDeleted(boolean isDeleted);
-  
+
   void forceUpdate();
 
   String getStartUserId();
@@ -128,5 +126,5 @@ public interface ExecutionEntity extends DelegateExecution, Execution, ProcessIn
   Date getStartTime();
 
   void setStartTime(Date startTime);
-  
+
 }

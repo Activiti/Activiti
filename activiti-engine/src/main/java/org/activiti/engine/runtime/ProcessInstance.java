@@ -99,4 +99,8 @@ public interface ProcessInstance extends Execution {
    * Returns the user id of this process instance.
    */
   String getStartUserId();
+
+    void setAppVersion(Integer appVersion);
+
+    Integer getAppVersion();
 }

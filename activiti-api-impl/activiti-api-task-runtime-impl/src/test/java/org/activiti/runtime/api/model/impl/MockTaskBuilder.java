@@ -132,6 +132,11 @@ public class MockTaskBuilder {
         return this;
     }
 
+    public MockTaskBuilder withAppVersion(Integer appVersion) {
+        when(task.getAppVersion()).thenReturn(appVersion);
+        return this;
+    }
+
     public Task build() {
         return task;
     }

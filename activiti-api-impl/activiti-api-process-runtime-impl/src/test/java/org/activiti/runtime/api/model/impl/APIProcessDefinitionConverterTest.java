@@ -28,7 +28,8 @@ import org.mockito.Mock;
 
 import static org.activiti.runtime.api.model.impl.MockProcessDefinitionBuilder.processDefinitionBuilderBuilder;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 public class APIProcessDefinitionConverterTest {
@@ -53,11 +54,11 @@ public class APIProcessDefinitionConverterTest {
         BpmnModel model = new BpmnModel();
         model.addProcess(process);
 
-        when(repositoryService.getBpmnModel("anId")).thenReturn(model);
+        given(repositoryService.getBpmnModel(any())).willReturn(model);
     }
 
     @Test
-    public void convertFromProcessDefinitionShouldSetAllFieldsInTheConvertedProcessDefinition() {
+    public void should_convertFromProcessDefinition_when_allFieldsAreSet() {
         ProcessDefinition convertedProcessDefinition = processDefinitionConverter.from(
                 processDefinitionBuilderBuilder()
                         .withId("anId")
@@ -65,10 +66,10 @@ public class APIProcessDefinitionConverterTest {
                         .withName("Process Name")
                         .withDescription("process description")
                         .withVersion(3)
+                        .withAppVersion(1)
                         .build()
         );
 
-        //THEN
         assertThat(convertedProcessDefinition)
                 .isNotNull()
                 .extracting(ProcessDefinition::getId,
@@ -76,6 +77,7 @@ public class APIProcessDefinitionConverterTest {
                         ProcessDefinition::getName,
                         ProcessDefinition::getDescription,
                         ProcessDefinition::getVersion,
+                        ProcessDefinition::getAppVersion,
                         ProcessDefinition::getFormKey)
                 .containsExactly(
                         "anId",
@@ -83,6 +85,21 @@ public class APIProcessDefinitionConverterTest {
                         "Process Name",
                         "process description",
                         3,
+                        "1",
                         "AFormKey");
+    }
+
+    @Test
+    public void should_convertProcessDefinition_when_appVersionNull() {
+        ProcessDefinition convertedProcessDefinition = processDefinitionConverter.from(
+                processDefinitionBuilderBuilder()
+                        .withKey("processKey")
+                        .withAppVersion(null)
+                        .build());
+
+        assertThat(convertedProcessDefinition)
+                .isNotNull()
+                .extracting(ProcessDefinition::getAppVersion)
+                .isNull();
     }
 }

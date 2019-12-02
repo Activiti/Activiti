@@ -77,14 +77,15 @@ create table ACT_RU_EXECUTION (
     START_USER_ID_ nvarchar(255),
     LOCK_TIME_ datetime,
     IS_COUNT_ENABLED_ tinyint,
-    EVT_SUBSCR_COUNT_ int, 
-    TASK_COUNT_ int, 
-    JOB_COUNT_ int, 
+    EVT_SUBSCR_COUNT_ int,
+    TASK_COUNT_ int,
+    JOB_COUNT_ int,
     TIMER_JOB_COUNT_ int,
     SUSP_JOB_COUNT_ int,
     DEADLETTER_JOB_COUNT_ int,
-    VAR_COUNT_ int, 
+    VAR_COUNT_ int,
     ID_LINK_COUNT_ int,
+    APP_VERSION_ int,
     primary key (ID_)
 );
 
@@ -183,6 +184,7 @@ create table ACT_RE_PROCDEF (
     SUSPENSION_STATE_ tinyint,
     TENANT_ID_ nvarchar(255) default '',
     ENGINE_VERSION_ nvarchar(255),
+    APP_VERSION_ int,
     primary key (ID_)
 );
 
@@ -207,6 +209,7 @@ create table ACT_RU_TASK (
     TENANT_ID_ nvarchar(255) default '',
     FORM_KEY_ nvarchar(255),
     CLAIM_TIME_ datetime,
+    APP_VERSION_ int,
     primary key (ID_)
 );
 
@@ -328,62 +331,62 @@ create index ACT_IDX_DEADLETTER_JOB_EXCEPTION_STACK_ID on ACT_RU_DEADLETTER_JOB(
 create index ACT_IDX_INFO_PROCDEF on ACT_PROCDEF_INFO(PROC_DEF_ID_);
 
 alter table ACT_GE_BYTEARRAY
-    add constraint ACT_FK_BYTEARR_DEPL 
-    foreign key (DEPLOYMENT_ID_) 
+    add constraint ACT_FK_BYTEARR_DEPL
+    foreign key (DEPLOYMENT_ID_)
     references ACT_RE_DEPLOYMENT (ID_);
 
 alter table ACT_RE_PROCDEF
     add constraint ACT_UNIQ_PROCDEF
     unique (KEY_,VERSION_, TENANT_ID_);
-    
+
 alter table ACT_RU_EXECUTION
-    add constraint ACT_FK_EXE_PARENT 
-    foreign key (PARENT_ID_) 
-    references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_EXECUTION
-    add constraint ACT_FK_EXE_SUPER 
-    foreign key (SUPER_EXEC_) 
+    add constraint ACT_FK_EXE_PARENT
+    foreign key (PARENT_ID_)
     references ACT_RU_EXECUTION (ID_);
 
 alter table ACT_RU_EXECUTION
-    add constraint ACT_FK_EXE_PROCDEF 
-    foreign key (PROC_DEF_ID_) 
+    add constraint ACT_FK_EXE_SUPER
+    foreign key (SUPER_EXEC_)
+    references ACT_RU_EXECUTION (ID_);
+
+alter table ACT_RU_EXECUTION
+    add constraint ACT_FK_EXE_PROCDEF
+    foreign key (PROC_DEF_ID_)
     references ACT_RE_PROCDEF (ID_);
 
 alter table ACT_RU_IDENTITYLINK
-    add constraint ACT_FK_TSKASS_TASK 
-    foreign key (TASK_ID_) 
+    add constraint ACT_FK_TSKASS_TASK
+    foreign key (TASK_ID_)
     references ACT_RU_TASK (ID_);
-    
+
 alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_ATHRZ_PROCEDEF
-    foreign key (PROC_DEF_ID_) 
+    foreign key (PROC_DEF_ID_)
     references ACT_RE_PROCDEF (ID_);
-    
+
 alter table ACT_RU_IDENTITYLINK
     add constraint ACT_FK_IDL_PROCINST
-    foreign key (PROC_INST_ID_) 
-    references ACT_RU_EXECUTION (ID_);       
-    
+    foreign key (PROC_INST_ID_)
+    references ACT_RU_EXECUTION (ID_);
+
 alter table ACT_RU_TASK
     add constraint ACT_FK_TASK_EXE
     foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION (ID_);
-    
+
 alter table ACT_RU_TASK
     add constraint ACT_FK_TASK_PROCINST
     foreign key (PROC_INST_ID_)
     references ACT_RU_EXECUTION (ID_);
-    
+
 alter table ACT_RU_TASK
   	add constraint ACT_FK_TASK_PROCDEF
   	foreign key (PROC_DEF_ID_)
   	references ACT_RE_PROCDEF (ID_);
-  
-alter table ACT_RU_VARIABLE 
-    add constraint ACT_FK_VAR_EXE 
-    foreign key (EXECUTION_ID_) 
+
+alter table ACT_RU_VARIABLE
+    add constraint ACT_FK_VAR_EXE
+    foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION (ID_);
 
 alter table ACT_RU_VARIABLE
@@ -391,121 +394,121 @@ alter table ACT_RU_VARIABLE
     foreign key (PROC_INST_ID_)
     references ACT_RU_EXECUTION(ID_);
 
-alter table ACT_RU_VARIABLE 
-    add constraint ACT_FK_VAR_BYTEARRAY 
-    foreign key (BYTEARRAY_ID_) 
+alter table ACT_RU_VARIABLE
+    add constraint ACT_FK_VAR_BYTEARRAY
+    foreign key (BYTEARRAY_ID_)
     references ACT_GE_BYTEARRAY (ID_);
-  
-alter table ACT_RU_JOB 
-    add constraint ACT_FK_JOB_EXECUTION 
-    foreign key (EXECUTION_ID_) 
+
+alter table ACT_RU_JOB
+    add constraint ACT_FK_JOB_EXECUTION
+    foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_JOB 
-    add constraint ACT_FK_JOB_PROCESS_INSTANCE 
-    foreign key (PROCESS_INSTANCE_ID_) 
+
+alter table ACT_RU_JOB
+    add constraint ACT_FK_JOB_PROCESS_INSTANCE
+    foreign key (PROCESS_INSTANCE_ID_)
     references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_JOB 
+
+alter table ACT_RU_JOB
     add constraint ACT_FK_JOB_PROC_DEF
-    foreign key (PROC_DEF_ID_) 
+    foreign key (PROC_DEF_ID_)
     references ACT_RE_PROCDEF (ID_);
 
-alter table ACT_RU_JOB 
-    add constraint ACT_FK_JOB_EXCEPTION 
-    foreign key (EXCEPTION_STACK_ID_) 
+alter table ACT_RU_JOB
+    add constraint ACT_FK_JOB_EXCEPTION
+    foreign key (EXCEPTION_STACK_ID_)
     references ACT_GE_BYTEARRAY (ID_);
-    
-alter table ACT_RU_TIMER_JOB 
-    add constraint ACT_FK_TIMER_JOB_EXECUTION 
-    foreign key (EXECUTION_ID_) 
+
+alter table ACT_RU_TIMER_JOB
+    add constraint ACT_FK_TIMER_JOB_EXECUTION
+    foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_TIMER_JOB 
-    add constraint ACT_FK_TIMER_JOB_PROCESS_INSTANCE 
-    foreign key (PROCESS_INSTANCE_ID_) 
+
+alter table ACT_RU_TIMER_JOB
+    add constraint ACT_FK_TIMER_JOB_PROCESS_INSTANCE
+    foreign key (PROCESS_INSTANCE_ID_)
     references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_TIMER_JOB 
+
+alter table ACT_RU_TIMER_JOB
     add constraint ACT_FK_TIMER_JOB_PROC_DEF
-    foreign key (PROC_DEF_ID_) 
+    foreign key (PROC_DEF_ID_)
     references ACT_RE_PROCDEF (ID_);
-    
-alter table ACT_RU_TIMER_JOB 
-    add constraint ACT_FK_TIMER_JOB_EXCEPTION 
-    foreign key (EXCEPTION_STACK_ID_) 
+
+alter table ACT_RU_TIMER_JOB
+    add constraint ACT_FK_TIMER_JOB_EXCEPTION
+    foreign key (EXCEPTION_STACK_ID_)
     references ACT_GE_BYTEARRAY (ID_);
-    
-alter table ACT_RU_SUSPENDED_JOB 
-    add constraint ACT_FK_SUSPENDED_JOB_EXECUTION 
-    foreign key (EXECUTION_ID_) 
+
+alter table ACT_RU_SUSPENDED_JOB
+    add constraint ACT_FK_SUSPENDED_JOB_EXECUTION
+    foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_SUSPENDED_JOB 
-    add constraint ACT_FK_SUSPENDED_JOB_PROCESS_INSTANCE 
-    foreign key (PROCESS_INSTANCE_ID_) 
+
+alter table ACT_RU_SUSPENDED_JOB
+    add constraint ACT_FK_SUSPENDED_JOB_PROCESS_INSTANCE
+    foreign key (PROCESS_INSTANCE_ID_)
     references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_SUSPENDED_JOB 
+
+alter table ACT_RU_SUSPENDED_JOB
     add constraint ACT_FK_SUSPENDED_JOB_PROC_DEF
-    foreign key (PROC_DEF_ID_) 
+    foreign key (PROC_DEF_ID_)
     references ACT_RE_PROCDEF (ID_);
-    
-alter table ACT_RU_SUSPENDED_JOB 
-    add constraint ACT_FK_SUSPENDED_JOB_EXCEPTION 
-    foreign key (EXCEPTION_STACK_ID_) 
+
+alter table ACT_RU_SUSPENDED_JOB
+    add constraint ACT_FK_SUSPENDED_JOB_EXCEPTION
+    foreign key (EXCEPTION_STACK_ID_)
     references ACT_GE_BYTEARRAY (ID_);
-    
-alter table ACT_RU_DEADLETTER_JOB 
-    add constraint ACT_FK_DEADLETTER_JOB_EXECUTION 
-    foreign key (EXECUTION_ID_) 
+
+alter table ACT_RU_DEADLETTER_JOB
+    add constraint ACT_FK_DEADLETTER_JOB_EXECUTION
+    foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_DEADLETTER_JOB 
-    add constraint ACT_FK_DEADLETTER_JOB_PROCESS_INSTANCE 
-    foreign key (PROCESS_INSTANCE_ID_) 
+
+alter table ACT_RU_DEADLETTER_JOB
+    add constraint ACT_FK_DEADLETTER_JOB_PROCESS_INSTANCE
+    foreign key (PROCESS_INSTANCE_ID_)
     references ACT_RU_EXECUTION (ID_);
-    
-alter table ACT_RU_DEADLETTER_JOB 
+
+alter table ACT_RU_DEADLETTER_JOB
     add constraint ACT_FK_DEADLETTER_JOB_PROC_DEF
-    foreign key (PROC_DEF_ID_) 
+    foreign key (PROC_DEF_ID_)
     references ACT_RE_PROCDEF (ID_);
-    
-alter table ACT_RU_DEADLETTER_JOB 
-    add constraint ACT_FK_DEADLETTER_JOB_EXCEPTION 
-    foreign key (EXCEPTION_STACK_ID_) 
+
+alter table ACT_RU_DEADLETTER_JOB
+    add constraint ACT_FK_DEADLETTER_JOB_EXCEPTION
+    foreign key (EXCEPTION_STACK_ID_)
     references ACT_GE_BYTEARRAY (ID_);
-    
+
 alter table ACT_RU_EVENT_SUBSCR
     add constraint ACT_FK_EVENT_EXEC
     foreign key (EXECUTION_ID_)
     references ACT_RU_EXECUTION(ID_);
-    
-alter table ACT_RE_MODEL 
-    add constraint ACT_FK_MODEL_SOURCE 
-    foreign key (EDITOR_SOURCE_VALUE_ID_) 
+
+alter table ACT_RE_MODEL
+    add constraint ACT_FK_MODEL_SOURCE
+    foreign key (EDITOR_SOURCE_VALUE_ID_)
     references ACT_GE_BYTEARRAY (ID_);
 
-alter table ACT_RE_MODEL 
-    add constraint ACT_FK_MODEL_SOURCE_EXTRA 
-    foreign key (EDITOR_SOURCE_EXTRA_VALUE_ID_) 
+alter table ACT_RE_MODEL
+    add constraint ACT_FK_MODEL_SOURCE_EXTRA
+    foreign key (EDITOR_SOURCE_EXTRA_VALUE_ID_)
     references ACT_GE_BYTEARRAY (ID_);
 
-alter table ACT_RE_MODEL 
-    add constraint ACT_FK_MODEL_DEPLOYMENT 
-    foreign key (DEPLOYMENT_ID_) 
-    references ACT_RE_DEPLOYMENT (ID_);    
+alter table ACT_RE_MODEL
+    add constraint ACT_FK_MODEL_DEPLOYMENT
+    foreign key (DEPLOYMENT_ID_)
+    references ACT_RE_DEPLOYMENT (ID_);
 
-alter table ACT_PROCDEF_INFO 
-    add constraint ACT_FK_INFO_JSON_BA 
-    foreign key (INFO_JSON_ID_) 
+alter table ACT_PROCDEF_INFO
+    add constraint ACT_FK_INFO_JSON_BA
+    foreign key (INFO_JSON_ID_)
     references ACT_GE_BYTEARRAY (ID_);
 
-alter table ACT_PROCDEF_INFO 
-    add constraint ACT_FK_INFO_PROCDEF 
-    foreign key (PROC_DEF_ID_) 
+alter table ACT_PROCDEF_INFO
+    add constraint ACT_FK_INFO_PROCDEF
+    foreign key (PROC_DEF_ID_)
     references ACT_RE_PROCDEF (ID_);
-    
+
 alter table ACT_PROCDEF_INFO
     add constraint ACT_UNIQ_INFO_PROCDEF
     unique (PROC_DEF_ID_);
